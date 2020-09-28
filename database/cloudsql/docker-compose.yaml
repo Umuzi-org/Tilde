@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  postgres:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.12
+    ports:
+      - "5432:5432"
+    command: /cloud_sql_proxy -instances=$SQL_CONNECTION_NAME=tcp:0.0.0.0:5432 -credential_file=/config/$GOOGLE_APPLICATION_CREDENTIALS_FILE_NAME
+    volumes:
+      - $SECRET_DIR:/config

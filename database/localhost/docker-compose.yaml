@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    volumes:
+      - ./gitignore/postgresql:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "6543:5432"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
