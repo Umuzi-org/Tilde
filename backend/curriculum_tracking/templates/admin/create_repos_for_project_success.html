@@ -1,0 +1,19 @@
+{% extends "admin/base_site.html" %} 
+{% load i18n admin_urls static admin_list%} 
+{% block title %}Create Repos for Cohort - SUCCESS{% endblock %} 
+{% block content %}
+
+<h1>Successfully created repos for cohort {{ cohort }}</h1>
+
+<table>
+  {% for d in creation_log %}
+  <tr>
+    <td>{{ d.recruit.email }}</td>
+    <td>{{ d.project }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<div class="submit-row"></div>
+
+{% endblock %}

@@ -1,0 +1,7 @@
+migrations/
+__pycache__/
+.vscode/
+gitignore/
+collectstatic/
+*.log
+*.csv
