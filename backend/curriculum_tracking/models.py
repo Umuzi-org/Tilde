@@ -231,7 +231,10 @@ class ContentAvailableFlavour(models.Model):
 
 
 class CurriculumContentRequirement(models.Model, Mixins):
-    content_item = models.ForeignKey(ContentItem, on_delete=models.CASCADE,)
+    content_item = models.ForeignKey(
+        ContentItem,
+        on_delete=models.CASCADE,
+    )
     # TODO: protect
     curriculum = models.ForeignKey(
         Curriculum, on_delete=models.CASCADE, related_name="content_requirements"
@@ -245,6 +248,10 @@ class CurriculumContentRequirement(models.Model, Mixins):
 
     class Meta(object):
         ordering = ["order"]
+
+    @property
+    def flavour_names(self):
+        return [o.name for o in self.flavours.all()]
 
 
 class RecruitProject(models.Model, Mixins):
@@ -510,7 +517,10 @@ class RecruitProject(models.Model, Mixins):
 
 class RecruitProjectReview(models.Model, Mixins):
 
-    status = models.CharField(max_length=3, choices=REVIEW_STATUS_CHOICES,)
+    status = models.CharField(
+        max_length=3,
+        choices=REVIEW_STATUS_CHOICES,
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = models.TextField()
     recruit_project = models.ForeignKey(
@@ -559,7 +569,10 @@ class TopicProgress(models.Model, Mixins):
 
 
 class TopicReview(models.Model, Mixins):
-    status = models.CharField(max_length=3, choices=REVIEW_STATUS_CHOICES,)
+    status = models.CharField(
+        max_length=3,
+        choices=REVIEW_STATUS_CHOICES,
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(blank=True, null=True)
     topic_progress = models.ForeignKey(
@@ -634,10 +647,14 @@ class AgileCard(models.Model, Mixins):
         related_name="agile_card",
     )
     assignees = models.ManyToManyField(
-        User, related_name="assigned_agile_cards", blank=True,
+        User,
+        related_name="assigned_agile_cards",
+        blank=True,
     )
     reviewers = models.ManyToManyField(
-        User, related_name="agile_cards_to_review", blank=True,
+        User,
+        related_name="agile_cards_to_review",
+        blank=True,
     )
 
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
@@ -849,7 +866,7 @@ class AgileCard(models.Model, Mixins):
         return repo
 
     def start_project(self):
-        """ the user has chosen to start a project. That means:
+        """the user has chosen to start a project. That means:
         - create the project (if not exists)
         - create the repo (ditto)
         - add assignees as collaborator
@@ -1034,4 +1051,3 @@ class AgileCard(models.Model, Mixins):
                 self.recruit_project.code_review_ny_competent_since_last_review_request
             )
         return 0
-

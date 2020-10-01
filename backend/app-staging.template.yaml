@@ -1,0 +1,34 @@
+# [START django_app]
+runtime: python37
+
+service: $GAE_SERVICE
+instance_class: F2
+
+handlers:
+  # This configures Google App Engine to serve the files in the app's static
+  # directory.
+  - url: /static
+    static_dir: collectstatic/
+
+  # This handler routes all requests not caught above to your main app. It is
+  # required when static routes are defined, but can be omitted (along with
+  # the entire handlers section) when there are no static files defined.
+  - url: /.*
+    script: auto
+# [END django_app]
+
+env_variables:
+  TILDE_SQL_DB: $TILDE_SQL_DB
+  TILDE_SQL_USER: $TILDE_SQL_USER
+  TILDE_SQL_PASS: $TILDE_SQL_PASS
+  SQL_CONNECTION_NAME: $SQL_CONNECTION_NAME
+  GS_BUCKET_NAME: $GS_BUCKET_NAME
+  GAE_PROJECT: $GAE_PROJECT
+  # EMAIL_HOST_USER: $EMAIL_HOST_USER
+  # EMAIL_HOST_PASSWORD: $EMAIL_HOST_PASSWORD
+  GAE_SERVICE: $GAE_SERVICE
+  PROD_MODE: $PROD_MODE
+  PROD_SECRET_KEY: $PROD_SECRET_KEY
+
+  GITHUB_CLIENT_ID: $GITHUB_CLIENT_ID
+  GITHUB_CLIENT_SECRET: $GITHUB_CLIENT_SECRET

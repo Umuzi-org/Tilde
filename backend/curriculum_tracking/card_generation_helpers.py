@@ -30,7 +30,11 @@ def get_ordered_content_items(curriculum):
     content_requirements = models.CurriculumContentRequirement.objects.filter(
         curriculum=curriculum
     ).order_by("order")
-    return list(_recurse_generate_ordered_content_items(content_requirements,))
+    return list(
+        _recurse_generate_ordered_content_items(
+            content_requirements,
+        )
+    )
 
 
 def _recurse_generate_ordered_content_items(content_requirements):
@@ -70,7 +74,9 @@ def _recurse_generate_ordered_content_items(content_requirements):
         #     continue
 
         # already_yielded_content_items.append(content_item)
-        all_required_items = _explode_content_item_requirements(content_item,)
+        all_required_items = _explode_content_item_requirements(
+            content_item,
+        )
 
         for required_item in all_required_items:
             # if required_item in already_yielded_content_items:
@@ -125,6 +131,9 @@ def general_update_card_progress(
             for o in all_progress
             if sorted([o.name for o in o.flavours.all()]) == flavours
         ]
+
+        if len(filtered_progress) > 1:
+            breakpoint()
         assert len(filtered_progress) in [0, 1], filtered_progress
 
         if filtered_progress:
@@ -197,8 +206,10 @@ def update_workshop_card_progress(user):
         assignees__in=[user], content_item__content_type=models.ContentItem.WORKSHOP
     )
 
-    get_unfiltered_progress = lambda card, user: models.WorkshopAttendance.objects.filter(
-        content_item=card.content_item, attendee_user=user
+    get_unfiltered_progress = (
+        lambda card, user: models.WorkshopAttendance.objects.filter(
+            content_item=card.content_item, attendee_user=user
+        )
     )
 
     progress_to_status = lambda *args: models.AgileCard.COMPLETE
@@ -266,11 +277,16 @@ def generate_and_update_all_cards_for_user(user, curricullum):
 
 
 def _get_or_create_or_update_card(
-    user, content_item, defaults, overrides, flavours,
+    user,
+    content_item,
+    defaults,
+    overrides,
+    flavours,
 ):
 
     cards = models.AgileCard.objects.filter(
-        assignees__in=[user], content_item=content_item,
+        assignees__in=[user],
+        content_item=content_item,
     )
 
     matching_card = None
@@ -285,7 +301,10 @@ def _get_or_create_or_update_card(
         return matching_card
 
     # no matching card, make one
-    card = models.AgileCard.objects.create(content_item=content_item, **defaults,)
+    card = models.AgileCard.objects.create(
+        content_item=content_item,
+        **defaults,
+    )
     card.update(**overrides)
     card.set_content_flavours(flavours)
     card.assignees.add(user)
