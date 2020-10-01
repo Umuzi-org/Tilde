@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     "curriculum_tracking.apps.CurriculumTrackingConfig",
     "git_real.apps.GitRealConfig",
     "social_auth.apps.SocialAuthConfig",
+    "dev_helpers.apps.DevHelpersConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -304,9 +305,21 @@ LOGGING = {  # TODO: copy this back into template project
             "level": "INFO",
         },
     },
-    "root": {"handlers": ["console",], "level": "INFO", "propagate": True},
+    "root": {
+        "handlers": [
+            "console",
+        ],
+        "level": "INFO",
+        "propagate": True,
+    },
     "loggers": {
-        "django": {"handlers": ["console",], "level": "INFO", "propagate": False,},
+        "django": {
+            "handlers": [
+                "console",
+            ],
+            "level": "INFO",
+            "propagate": False,
+        },
         # "django.server": {
         #     "handlers": ["console"],
         #     "level": "INFO",

@@ -18,5 +18,5 @@ class UserGroupAdmin(admin.ModelAdmin):
 
 admin.site.register(models.ProductTeam)
 admin.site.register(models.UserProfile)
-# admin.site.register(models.RecruitCohort)
+admin.site.register(models.RecruitCohort)
 admin.site.register(models.EmployerPartner)

@@ -78,9 +78,9 @@ https://docs.rocket.chat/guides/developer/branches-and-releases
 
 ## Donate
 
+TODO?
 The better this is the more people we can educate and connect.
 
-TODO?
 
 https://www.digitalocean.com/community/tutorial_series/an-introduction-to-open-source
 https://hacktoberfest.digitalocean.com/details/#quality
