@@ -14,8 +14,9 @@ function cleanAndFilterUserGroups(userGroups, filterBy) {
   }
   return ret;
 }
+function ignore() {}
 
-function cleanAndFilterUsers(userGroups, filterBy) {
+function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
   let users = {};
 
   for (let group of Object.values(userGroups)) {
@@ -37,6 +38,14 @@ function cleanAndFilterUsers(userGroups, filterBy) {
       };
     }
   }
+  if (filterUsersByGroupName) {
+    let usersFilteredByGroup = {};
+    for (let email of Object.keys(users)) {
+      if (users[email].groups[filterUsersByGroupName])
+        usersFilteredByGroup[email] = users[email];
+    }
+    return usersFilteredByGroup;
+  }
   return users;
 }
 
@@ -50,12 +59,27 @@ function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
     filterByGroup: {},
     filterByUser: {},
   });
+  const [filterUsersByGroupName, setFilterUsersByGroupName] = React.useState(
+    ""
+  );
+  ignore(formState, formErrors, dataFromState);
+
+  const handleUserGroupClick = (name) => {
+    if (name === filterUsersByGroupName) setFilterUsersByGroupName("");
+    else setFilterUsersByGroupName(name);
+  };
 
   const props = {
     userGroups: cleanAndFilterUserGroups(userGroups, filterByGroup.value),
-    users: cleanAndFilterUsers(userGroups, filterByUser.value),
+    users: cleanAndFilterUsers(
+      userGroups,
+      filterByUser.value,
+      filterUsersByGroupName
+    ),
     filterByGroup,
     filterByUser,
+    filterUsersByGroupName,
+    handleUserGroupClick,
   };
 
   React.useEffect(() => {

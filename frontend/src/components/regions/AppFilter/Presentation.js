@@ -140,7 +140,7 @@ export default function Presentation({
 
                       <TableBody>
                         {currentCohort.filteredCohortRecruitUserEmails.map(
-                          (userEmail, index) => {
+                          (userEmail) => {
                             const className =
                               viewRecruitUserEmail === userEmail
                                 ? classes.selectedRow

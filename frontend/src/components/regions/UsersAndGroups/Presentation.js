@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
+// hactoberfest: Visual debt. Make this look better: max height of container should fit viewport
+
 import {
   TableRow,
   TableHead,
@@ -14,15 +16,26 @@ import {
 
 // import FilterListIcon from "@material-ui/icons/FilterList";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  highlightedGroup: {
+    backgroundColor: theme.palette.primary.light,
+  },
+  container: {
+    maxHeight: 800,
+  },
+}));
 
 export default function Presentation({
   userGroups,
   users,
   filterByGroup,
   filterByUser,
+
+  filterUsersByGroupName,
+  handleUserGroupClick,
 }) {
   const classes = useStyles();
+  //   const usersLabel = filterUsersByGroupName ? "": "Users"
   return (
     <Grid container>
       <Grid item xs={4} className={classes.grid}>
@@ -42,9 +55,17 @@ export default function Presentation({
             <TableBody>
               {userGroups.map((group) => {
                 return (
-                  <TableRow key={group.id}>
-                    <TableCell>{group.name}</TableCell>
-                    <TableCell></TableCell>
+                  <TableRow
+                    key={group.id}
+                    className={
+                      group.name === filterUsersByGroupName
+                        ? classes.highlightedGroup
+                        : ""
+                    }
+                  >
+                    <TableCell onClick={() => handleUserGroupClick(group.name)}>
+                      {group.name}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -60,7 +81,7 @@ export default function Presentation({
               <TableRow>
                 <TableCell>
                   <TextField
-                    label="Users"
+                    label={`${filterUsersByGroupName} Users`}
                     variant="outlined"
                     {...filterByUser}
                   />
