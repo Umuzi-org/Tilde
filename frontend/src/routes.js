@@ -1,17 +1,26 @@
-// import TimelineIcon from "@material-ui/icons/Timeline";
-// // import LocalLibraryIcon from "@material-ui/icons/LocalLibrary";
-// import RoomIcon from "@material-ui/icons/Room";
-// import StarIcon from "@material-ui/icons/Star";
-
 import UserProfile from "./components/regions/UserProfile";
 import Dashboard from "./components/regions/Dashboard";
 import RecruitAgileBoard from "./components/regions/RecruitAgileBoard";
-// import Library from "./components/regions/Library";
-// import Favourites from "./components/regions/Favourites";
+import UsersAndGroups from "./components/regions/UsersAndGroups";
 
 const exact = true;
 
 export const routes = {
+  groupNav: {
+    route: {
+      // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
+      exact,
+      path: "/users",
+      component: UsersAndGroups,
+    },
+    sliderNavigation: {
+      //these get used to draw buttons in the left hand side slider/hamburger menu
+      icon: () => "U",
+      label: "Users",
+    },
+    show: ({ authUser }) => authUser.isStaff,
+  },
+
   board: {
     route: {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
