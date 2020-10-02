@@ -52,6 +52,13 @@ export const routes = {
     },
     show: ({ authUser }) => authUser.isStaff,
   },
+  userBoard: {
+    route: {
+      exact,
+      path: "/boards/:id",
+      component: RecruitAgileBoard,
+    },
+  },
 
   //   library: {
   //     route: {
