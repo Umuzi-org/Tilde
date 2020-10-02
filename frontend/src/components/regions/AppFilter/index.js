@@ -13,7 +13,6 @@ function anyLoading({ callLog }) {
 }
 
 function AppFilterUnconnected({
-  appFilter,
   FETCH_COHORTS_PAGE,
   fetchCohortsPages,
   cohorts,
