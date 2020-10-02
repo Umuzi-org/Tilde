@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 // hactoberfest: Visual debt. Make this look better: max height of container should fit viewport
+import { Link } from "react-router-dom";
 
 import {
   TableRow,
@@ -12,8 +13,10 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  Button,
 } from "@material-ui/core";
 
+import { routes } from "../../../routes";
 // import FilterListIcon from "@material-ui/icons/FilterList";
 
 const useStyles = makeStyles((theme) => ({
@@ -93,6 +96,18 @@ export default function Presentation({
                 return (
                   <TableRow key={email}>
                     <TableCell>{email}</TableCell>
+                    <TableCell>
+                      <Link
+                        to={routes.userBoard.route.path.replace(
+                          ":id",
+                          users[email].userId
+                        )}
+                      >
+                        <Button size="small" variant="outlined">
+                          Board
+                        </Button>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 );
               })}
