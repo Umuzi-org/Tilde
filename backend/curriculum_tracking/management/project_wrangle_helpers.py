@@ -97,17 +97,6 @@ def assign_flavours_to_user_by_email(email, default_flavour):
     assign_flavours_to_user(user, default_flavour)
 
 
-# curriculum_tracking//.py
-# from curriculum_tracking.management.project_wragle_helpers import assign_flavours
-# for o in l:
-#     if 'web' in o.cohort_curriculum.name:
-#         print(o)
-#         assign_flavours(o.id, javascript)
-#     if 'data' in o.cohort_curriculum.name:
-#         print(o)
-#         assign_flavours(o.id, python)
-
-
 def remove_flavours(cohort_id):
     cohort = Cohort.objects.get(pk=cohort_id)
     users = [o.user for o in RecruitCohort.objects.filter(cohort=cohort)]
@@ -263,51 +252,6 @@ def delete_nosubmit_instances():
     ).delete()
 
 
-# assign_flavours_to_topic_progress(path="topics/angular-testing-cucumber" flavour="typescript,angular")
-# assign_flavours_to_topic_progress(path="topics/angular-mocking" flavour="typescript,angular")
-# assign_flavours_to_topic_progress(path="topics/ionic/introduction-to-ionic" flavour="typescript,angular,ionic")
-
-# assign_flavours_to_topic_progress(path="topics/ionic/ionic-tools-and-patterns" flavour="typescript,angular,ionic")
-# assign_flavours_to_topic_progress(path="topics/ionic/progressive-web-apps" flavour="typescript,angular,ionic")
-
-
-# TODO!!!
-
-# python manage.py delete_and_recreate_user_cards thanyani.tshikonwani@umuzi.org
-# python manage.py delete_and_recreate_user_cards thotsana.mabotsa@umuzi.org
-# python manage.py delete_and_recreate_user_cards ngwako.moshobane@umuzi.org
-
-
-# unflavoured_progress = [<RecruitProject: Animals Part 2. Adding Tests - thanyani.tshikonwani@umuzi.org>]
-
-# unflavoured_progress = [<RecruitProject: Animals Part 2. Adding Tests - thotsana.mabotsa@umuzi.org>]
-
-
-# content_item_id = 225
-# user_email = "thotsana.mabotsa@umuzi.org"
-# user = User.objects.get(email=user_email)
-# project = RecruitProject.objects.get(recruit_users__in=[user],content_item_id=content_item_id)
-# project.repository.full_name
-
-
-# # misc web devs
-# # data scientists
-
-
-# C19s -
-# anda.pika@umuzi.org
-# khanya.nelani@umuzi.org
-# nkosinathi.siyeni@umuzi.org
-# nuraan.barnes@umuzi.org
-# thembela.selani@umuzi.org
-# yanga.kanzi@umuzi.org
-
-# C21s -
-# andisiwe.nkwana@umuzi.org
-# anttonert.maphosa@umuzi.org
-# simon.zikhali@umuzi.org
-
-
 def get_all_recruits_in_cohorts_with_matching_curriculum(curriculum_id):
     ds_users = []
     for cohort in Cohort.objects.filter(cohort_curriculum_id=2, active=True):
@@ -316,51 +260,3 @@ def get_all_recruits_in_cohorts_with_matching_curriculum(curriculum_id):
         for o in RecruitCohort.objects.filter(cohort=cohort, user__active=True):
             ds_users.append(o.user)
     return ds_users
-
-
-# ds_users = get_all_recruits_in_cohorts_with_matching_curriculum(2)
-# for user in ds_users:
-#     print(user.email)
-
-# web_users = get_all_recruits_in_cohorts_with_matching_curriculum(3)
-# for user in web_users:
-#     print(user.email)
-
-# d_eng_users = get_all_recruits_in_cohorts_with_matching_curriculum(4)
-# for user in d_eng_users:
-#     print(user.email)
-
-# DS
-# ntokozo.mfene @ umuzi.org
-# masai.mahapa @ umuzi.org
-# phethehile.molefe @ umuzi.org
-# puleng.moru @ umuzi.org
-# boitshepo.masemola @ umuzi.org
-# bokang.kama @ umuzi.org
-# johan.khanye @ umuzi.org
-# olebogeng.seribe @ umuzi.org
-# phathu.ramakhanya @ umuzi.org
-# singita.ngobeni @ umuzi.org
-# themba.mbulwana @ umuzi.org
-# wandile.nxumalo @ umuzi.org
-# kevin.mntambo @ umuzi.org
-# vhambelani.maelekano @ umuzi.org
-# andy.nkumane @ umuzi.org
-# milpontia.ngwenya @ umuzi.org
-# dimpho.mashile @ umuzi.org
-# hlobisile.mlebuka @ umuzi.org
-# allen.mkandla @ umuzi.org
-# joy.masemola @ umuzi.org
-# mahnatse.choung @ umuzi.org
-# mpho.khotleng @ umuzi.org
-# shalom.mothapo @ umuzi.org
-# sibusiso.fikizolo @ umuzi.org
-# siphiwe.mahlangu @ umuzi.org
-# mayika.thabo @ umuzi.org
-# tshepo.rampai @ umuzi.org
-# faith.mabule @ umuzi.org
-# yanga.lusiti @ umuzi.org
-# eric.maza @ umuzi.org
-# khomotso.talane @ umuzi.org
-# rethabile.thulo @ umuzi.org
-# vuyile.magwaza @ umuzi.org

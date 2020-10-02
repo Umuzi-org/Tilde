@@ -70,16 +70,16 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=25, blank=True)
     preferred_name = models.CharField(max_length=25, blank=True, null=True)
 
-    is_student = models.BooleanField("is student", default=False)
+    # is_student = models.BooleanField("is student", default=False)
     is_staff = models.BooleanField("is staff", default=False)  # ACN staff member
     is_superuser = models.BooleanField("is superuser", default=False)
 
-    is_reviewer = models.BooleanField(
-        "is reviewer", default=False
-    )  # can review anyone's code
-    is_trusted_reviewer = models.BooleanField(
-        "is trusted reviewer", default=False
-    )  # competent and excellent reviews move cards always
+    # is_reviewer = models.BooleanField(
+    #     "is reviewer", default=False
+    # )  # can review anyone's code
+    # is_trusted_reviewer = models.BooleanField(
+    #     "is trusted reviewer", default=False
+    # )  # competent and excellent reviews move cards always
 
     USERNAME_FIELD = "email"
     # The fields required when user is created. Email and password are required by default
@@ -171,6 +171,7 @@ class UserProfile(models.Model, Mixins):
     school_organisation = models.ForeignKey(
         Organisation, blank=True, null=True, on_delete=models.PROTECT
     )
+    employed_by_
 
 
 class UserGroup(models.Model, Mixins):
