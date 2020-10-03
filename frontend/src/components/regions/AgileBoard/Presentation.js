@@ -32,6 +32,7 @@ export default ({ board, cards, handleColumnScroll, canStart }) => {
 
   return (
     <React.Fragment>
+      {/* <h1>{userId}</h1> */}
       <Grid container wrap="nowrap">
         {board.map((column) => {
           return (

@@ -69,6 +69,18 @@ export default function Presentation({
                     <TableCell onClick={() => handleUserGroupClick(group.name)}>
                       {group.name}
                     </TableCell>
+                    <TableCell>
+                      <Link
+                        to={routes.groupCardSummary.route.path.replace(
+                          ":groupId",
+                          group.id
+                        )}
+                      >
+                        <Button size="small" variant="outlined">
+                          Cards
+                        </Button>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -99,7 +111,7 @@ export default function Presentation({
                     <TableCell>
                       <Link
                         to={routes.userBoard.route.path.replace(
-                          ":id",
+                          ":userId",
                           users[email].userId
                         )}
                       >

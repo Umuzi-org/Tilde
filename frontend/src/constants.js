@@ -16,6 +16,13 @@ export const AGILE_CARD_STATUS_CHOICES = {
   [COMPLETE]: "Complete",
 };
 
+export const AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER = [
+  // if a user is the reviewer for a card, and the card is in one of these columns, then show it on the board
+  IN_PROGRESS,
+  REVIEW_FEEDBACK,
+  IN_REVIEW,
+];
+
 export const AGILE_COLUMNS = {
   Backlog: [READY, BLOCKED],
   "In Progress": [IN_PROGRESS],
@@ -40,4 +47,5 @@ export default {
   AGILE_CARD_STATUS_CHOICES,
   AGILE_COLUMNS,
   REVIEW_STATUS_CHOICES,
+  AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER,
 };

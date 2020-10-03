@@ -1,6 +1,7 @@
 import UserProfile from "./components/regions/UserProfile";
 import Dashboard from "./components/regions/Dashboard";
-import RecruitAgileBoard from "./components/regions/RecruitAgileBoard";
+import AgileBoard from "./components/regions/AgileBoard";
+import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
 
 const exact = true;
@@ -26,7 +27,7 @@ export const routes = {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
       exact,
       path: "/",
-      component: RecruitAgileBoard,
+      component: AgileBoard,
     },
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
@@ -55,9 +56,17 @@ export const routes = {
   userBoard: {
     route: {
       exact,
-      path: "/boards/:id",
-      component: RecruitAgileBoard,
+      path: "/boards/:userId",
+      component: AgileBoard,
     },
+  },
+  groupCardSummary: {
+    route: {
+      exact,
+      path: "/groups/:groupId/card_summary",
+      component: GroupCardSummary,
+    },
+    show: () => true,
   },
 
   //   library: {

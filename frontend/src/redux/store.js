@@ -3,7 +3,7 @@ import { rootSaga } from "./sagas";
 import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
-import RecruitAgileBoard from "../components/regions/RecruitAgileBoard/redux";
+import AgileBoard from "../components/regions/AgileBoard/redux";
 import AppFilter from "../components/regions/AppFilter/redux";
 import CardDetailsModal from "../components/regions/CardDetailsModal/redux";
 
@@ -30,7 +30,7 @@ const sagaMiddleware = createSagaMiddleware();
 export const store = createStore(
   combineReducers({
     App,
-    RecruitAgileBoard,
+    AgileBoard,
     googleLogin,
     AppFilter,
     CardDetailsModal,
