@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Presentation from "./Presentation";
 
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { connect } from "react-redux";
 
 import consts, { READY } from "../../../constants";
+
+import { useParams } from "react-router-dom";
 
 const maxStartIndex = 5;
 
@@ -85,10 +87,18 @@ export function getLatestCallNextPageValue({
 
 function AgileBoardUnconnected({
   cards,
-  AppFilter,
   fetchCardPages,
   fetchCardsCallLog,
+  authedUserId,
+  fetchInitialCards,
 }) {
+  let urlParams = useParams() || {};
+  const userId = parseInt(urlParams.userId || authedUserId || 0);
+
+  useEffect(() => {
+    fetchInitialCards({ userId });
+  });
+
   function fetchNextColumnPage(columnLabel) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];
 
@@ -98,27 +108,27 @@ function AgileBoardUnconnected({
       let assignedPageNumber = getLatestCallNextPageValue({
         fetchCardsCallLog,
         status,
-        assigneeUserId: AppFilter.userId,
+        assigneeUserId: userId,
       });
 
       if (assignedPageNumber !== null) {
         callSequenceData.push({
           page: assignedPageNumber,
           status,
-          assigneeUserId: AppFilter.userId,
+          assigneeUserId: userId,
         });
       }
 
       let reviewPageNumber = getLatestCallNextPageValue({
         fetchCardsCallLog,
         status,
-        reviewerUserId: AppFilter.userId,
+        reviewerUserId: userId,
       });
       if (reviewPageNumber !== null) {
         callSequenceData.push({
           page: reviewPageNumber,
           status,
-          reviewerUserId: AppFilter.userId,
+          reviewerUserId: userId,
         });
       }
     }
@@ -140,34 +150,30 @@ function AgileBoardUnconnected({
 
   const filteredCards = filterCardsByUserId({
     cards,
-    userId: AppFilter.userId,
+    userId,
   });
-
-  let props = {
-    cards: filteredCards,
-    board: boardFromCards({ cards: filteredCards }),
-  };
 
   const canStart = ({ card, index }) => {
     if (card.status !== READY) return false;
     return index <= maxStartIndex;
     // # TODO: check number of work in progress issues
   };
+  let props = {
+    cards: filteredCards,
+    board: boardFromCards({ cards: filteredCards }),
 
-  return (
-    <Presentation
-      {...props}
-      handleColumnScroll={handleColumnScroll}
-      canStart={canStart}
-    />
-  );
+    handleColumnScroll,
+    canStart,
+  };
+
+  return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
   return {
-    AppFilter: state.AppFilter,
     cards: state.Entities.cards || {},
     fetchCardsCallLog: state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    authedUserId: state.App.authUser.userId,
   };
 };
 
@@ -180,15 +186,35 @@ const mapDispatchToProps = (dispatch) => {
         )
       );
     },
-    // fetchAgileCardsPageStart: ({ page, status, assigneeUserId }) => {
-    //   dispatch(
-    //     apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.forceStart(
-    //       {
-    //         data: { page, status, assigneeUserId },
-    //       }
-    //     )
-    //   );
-    // },
+
+    fetchInitialCards: ({ userId }) => {
+      const dataSequence1 = Object.keys(consts.AGILE_CARD_STATUS_CHOICES).map(
+        (status) => {
+          return {
+            page: 1,
+            assigneeUserId: userId,
+            status,
+          };
+        }
+      );
+      const dataSequence2 = consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.map(
+        (status) => {
+          return {
+            page: 1,
+            reviewerUserId: userId,
+            status,
+          };
+        }
+      );
+
+      const dataSequence = [dataSequence1, dataSequence2].flat();
+
+      dispatch(
+        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(
+          { dataSequence }
+        )
+      );
+    },
   };
 };
 
