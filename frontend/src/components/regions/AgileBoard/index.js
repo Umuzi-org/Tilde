@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";

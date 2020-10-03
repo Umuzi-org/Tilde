@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
+import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 const arrayToObjectWithIdKeys = ({ data }) => {
   let dataAsObject = {};
@@ -61,22 +63,75 @@ const getRows = ({ cards }) => {
   return rows;
 };
 
-const GroupCardSummaryUnconnected = ({ cards }) => {
+const filteredCardsAsArray = ({ cards, userGroup }) => {
+  if (userGroup === undefined) return [];
+  const groupUsers = userGroup.members.map((member) => member.userId);
+  return Object.values(cards).filter((card) => {
+    for (let assignee of card.assignees) {
+      if (groupUsers.indexOf(assignee) !== -1) return true;
+    }
+    return false;
+  });
+};
+
+const GroupCardSummaryUnconnected = ({
+  cards,
+  userGroups,
+  fetchSingleUserGroup,
+  fetchUserGroupSummaryCards,
+}) => {
+  const { groupId } = useParams();
+  const userGroup = userGroups[groupId];
+  useEffect(() => {
+    if (userGroup === undefined) {
+      fetchSingleUserGroup({ groupId });
+    } else {
+      fetchUserGroupSummaryCards({ userGroup });
+    }
+  });
+
+  const filteredCards = filteredCardsAsArray({ cards, userGroup });
   const props = {
-    columns: getColumns({ cards }),
-    rows: getRows({ cards }),
+    columns: getColumns({ cards: filteredCards }),
+    rows: getRows({ cards: filteredCards }),
+    userGroup: userGroup || {},
   };
 
   return <Presentation {...props} />;
 };
 
 const mapStateToProps = (state) => {
+  const cards = state.Entities.projectSummaryCards || {};
+  const userGroups = state.Entities.userGroups || {};
+
   return {
-    cards: [],
+    cards,
+    userGroups,
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    fetchSingleUserGroup: ({ groupId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER_GROUP.operations.maybeStart({
+          data: { groupId },
+        })
+      );
+    },
+
+    fetchUserGroupSummaryCards: ({ userGroup }) => {
+      const dataSequence = userGroup.members
+        .filter((member) => member.permissionStudent || true) // TODO: fix data
+        .map((member) => {
+          return { assigneeUserId: member.userId, page: 1 };
+        });
+      dispatch(
+        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE.operations.maybeStartCallSequence(
+          { dataSequence }
+        )
+      );
+    },
+  };
 };
 
 const GroupCardSummary = connect(
