@@ -97,6 +97,11 @@ function AgileBoardUnconnected({
 
   useEffect(() => {
     fetchInitialCards({ userId });
+  }, [fetchInitialCards, userId]);
+
+  const filteredCards = filterCardsByUserId({
+    cards,
+    userId,
   });
 
   function fetchNextColumnPage(columnLabel) {
@@ -147,11 +152,6 @@ function AgileBoardUnconnected({
     }
     return eventHandler;
   }
-
-  const filteredCards = filterCardsByUserId({
-    cards,
-    userId,
-  });
 
   const canStart = ({ card, index }) => {
     if (card.status !== READY) return false;

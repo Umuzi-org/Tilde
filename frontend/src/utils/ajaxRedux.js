@@ -26,7 +26,7 @@ function equalObjects(o1, o2) {
 
 export function createReduxApp({
   BASE_TYPE,
-  reasonsNotToStart = [],
+  //   reasonsNotToStart = [],
   apiCaller,
   take = takeEvery,
 }) {
@@ -39,6 +39,7 @@ export function createReduxApp({
   const types = {
     ADD_NEW_START: `API_${BASE_TYPE}_ADD_NEW_START`,
     ADD_NEW_START_SEQUENCE: `API_${BASE_TYPE}_ADD_NEW_START_SEQUENCE`,
+    MAYBE_ADD_NEW_START_SEQUENCE: `API_${BASE_TYPE}_MAYBE_ADD_NEW_START_SEQUENCE`,
     START: `API_${BASE_TYPE}_START`,
     SUCCESS: `API_${BASE_TYPE}_SUCCESS`,
     ERROR: `API_${BASE_TYPE}_ERROR`,
@@ -289,7 +290,7 @@ export function createReduxApp({
   }
 
   function* addNewStartSequenceSideEffects(action) {
-    //   console.log(action)
+    console.log(action);
     const { force } = action;
     if (force === undefined) throw new Error("force should be set");
     const callLog = yield select((state) => state[BASE_TYPE]);
@@ -307,10 +308,12 @@ export function createReduxApp({
         .find((callStatus) => equalObjects(callStatus.requestData, data));
 
       if (force | !matchingCall) {
+        const currentCallIndex = callIndex + parseInt(index);
+        // console.log(`starting ${currentCallIndex}`);
         yield put(
           operations._start({
             data,
-            callIndex: callIndex + parseInt(index),
+            callIndex: currentCallIndex,
           })
         );
       }

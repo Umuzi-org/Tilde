@@ -39,7 +39,7 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     ) {
       whoAmIStart({ authUser });
     }
-  });
+  }, [authUser, whoAmIStart]);
 
   const token = getAuthToken();
 

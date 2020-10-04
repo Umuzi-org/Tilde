@@ -5,6 +5,8 @@ import Presentation from "./Presentation";
 import { cardDetailsModalOperations } from "../../CardDetailsModal/redux";
 
 const SummaryCardUnconnected = ({ card, openCardDetailsModal }) => {
+  if (card === undefined) return <div></div>;
+
   const handleClickOpenCardDetails = () => {
     openCardDetailsModal({ cardId: card.id });
   };
