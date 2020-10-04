@@ -8,8 +8,11 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  IconButton,
 } from "@material-ui/core";
 import CardReviewBadges from "../../../widgets/CardReviewBadges";
+// import CardButton from "../../../widgets/CardButton";
+import MoreIcon from "@material-ui/icons/More";
 
 import {
   AGILE_CARD_STATUS_CHOICES,
@@ -28,22 +31,6 @@ import red from "@material-ui/core/colors/red";
 import grey from "@material-ui/core/colors/grey";
 import blue from "@material-ui/core/colors/blue";
 
-// codeReviewCompetentSinceLastReviewRequest: 1
-// codeReviewExcellentSinceLastReviewRequest: 0
-// codeReviewNyCompetentSinceLastReviewRequest: 0
-// codeReviewRedFlagSinceLastReviewRequest: 0
-// : null
-// contentItem: 288
-// contentItemUrl: "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/git-exercises/_index.md"
-// : null
-// id: 13492
-// order: 44
-// recruitProject: 2500
-// : "2020-08-17T09:33:33.286342Z"
-// : null
-// status: "C"
-// title: "Git Basic Exercises"
-
 const useStyles = makeStyles((theme) => {
   const card = {
     // borderWidth: 3,
@@ -54,7 +41,7 @@ const useStyles = makeStyles((theme) => {
   return {
     root: {
       margin: theme.spacing(1),
-      width: theme.spacing(32),
+      width: theme.spacing(40),
       //   height: theme.spacing(16),
     },
 
@@ -104,7 +91,7 @@ const TimesTable = ({ card }) => {
   );
 };
 
-export default ({ card }) => {
+export default ({ card, handleClickOpenCardDetails }) => {
   const classes = useStyles();
   const title = `${card.title} - ${card.assigneeNames.join(", ")}`;
   return (
@@ -113,6 +100,11 @@ export default ({ card }) => {
         <Table size="small">
           <TableBody>
             <TableRow>
+              <TableCell>
+                <IconButton onClick={handleClickOpenCardDetails}>
+                  <MoreIcon />
+                </IconButton>
+              </TableCell>
               <TableCell>
                 <Paper className={classes[card.status]} variant="outlined">
                   <Typography>

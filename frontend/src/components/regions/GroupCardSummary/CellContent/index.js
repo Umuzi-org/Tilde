@@ -5,12 +5,12 @@ import Presentation from "./Presentation";
 import { cardDetailsModalOperations } from "../../CardDetailsModal/redux";
 
 const SummaryCardUnconnected = ({ card, openCardDetailsModal }) => {
-  const handleClickOpenDetails = () => {
+  const handleClickOpenCardDetails = () => {
     openCardDetailsModal({ cardId: card.id });
   };
 
   const props = {
-    handleClickOpenDetails,
+    handleClickOpenCardDetails,
     card,
   };
   return <Presentation {...props} />;

@@ -32,6 +32,7 @@ function CardDetailsModalUnconnected({
   fetchProjectReviews,
   fetchTopicProgress,
   fetchTopicReviews,
+  fetchAgileCard,
 }) {
   React.useEffect(() => {
     if (projectId) {
@@ -41,6 +42,9 @@ function CardDetailsModalUnconnected({
     if (topicProgressId) {
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
+    }
+    if (cardId && card === undefined) {
+      fetchAgileCard({ cardId });
     }
   });
 
@@ -169,6 +173,14 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleClose: () => {
       dispatch(operations.closeCardDetailsModal());
+    },
+
+    fetchAgileCard: ({ cardId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
+          data: { cardId },
+        })
+      );
     },
 
     fetchProject: ({ projectId }) => {
