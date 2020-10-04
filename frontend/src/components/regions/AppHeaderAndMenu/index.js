@@ -57,7 +57,6 @@ const mapStateToProps = (state) => {
   return {
     LOGOUT: state.LOGOUT,
     authUser: state.App.authUser,
-    // appFilter: state.App.appFilter,
   };
 };
 const mapDispatchToProps = (dispatch) => {

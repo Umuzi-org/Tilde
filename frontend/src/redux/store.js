@@ -4,13 +4,10 @@ import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
-import AppFilter from "../components/regions/AppFilter/redux";
 import CardDetailsModal from "../components/regions/CardDetailsModal/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
-
-import ProjectReport from "../components/regions/Dashboard/ProjectReport/redux";
 
 import Entities from "../apiAccess/redux";
 
@@ -32,12 +29,10 @@ export const store = createStore(
     App,
     AgileBoard,
     googleLogin,
-    AppFilter,
     CardDetailsModal,
     AddCardReviewModal,
     MarkSingleCardAttendanceModal,
     Entities,
-    ProjectReport,
     ...apiReduxReducers,
   }),
   applyMiddleware(logger, sagaMiddleware)

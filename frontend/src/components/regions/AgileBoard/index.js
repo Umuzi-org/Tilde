@@ -159,6 +159,7 @@ function AgileBoardUnconnected({
     // # TODO: check number of work in progress issues
   };
   let props = {
+    userId,
     cards: filteredCards,
     board: boardFromCards({ cards: filteredCards }),
 

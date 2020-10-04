@@ -232,7 +232,7 @@ function AgileCardActions({
 export default ({
   card,
   authUser,
-  AppFilter,
+  filterUserId,
 
   handleClickAddReview,
   handleClickOpenCardDetails,
@@ -267,7 +267,7 @@ export default ({
       className={getCardClassName({
         classes,
         card,
-        filterUserId: AppFilter.userId,
+        filterUserId,
       })}
       variant="outlined"
     >

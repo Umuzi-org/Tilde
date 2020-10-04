@@ -289,6 +289,7 @@ export function createReduxApp({
   }
 
   function* addNewStartSequenceSideEffects(action) {
+    //   console.log(action)
     const { force } = action;
     if (force === undefined) throw new Error("force should be set");
     const callLog = yield select((state) => state[BASE_TYPE]);

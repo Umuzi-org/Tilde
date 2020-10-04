@@ -1,14 +1,9 @@
 import { takeLatest, put } from "redux-saga/effects";
 import operations from "./operations";
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
-import { appFilterOperations } from "../../regions/AppFilter/redux";
 
 function* authUserResponseSideEffects(action) {
   yield put(operations.setAuthUser({ data: action.data }));
-  //   if (action.data.isRecruit)
-  yield put(
-    appFilterOperations.setFilterByUserId({ userId: action.data.userId })
-  );
 }
 
 function* watchWhoAmISuccess() {

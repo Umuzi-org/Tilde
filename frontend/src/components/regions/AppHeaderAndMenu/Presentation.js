@@ -20,7 +20,6 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import { Link } from "react-router-dom";
 
-import AppFilter from "../AppFilter";
 import CardDetailsModal from "../CardDetailsModal";
 import AddCardReviewModal from "../AddCardReviewModal";
 
@@ -247,8 +246,6 @@ export default function Presentation(props) {
 
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        {authUser.isStaff ? <AppFilter /> : <React.Fragment />}
-
         {props.children}
       </main>
     </div>
