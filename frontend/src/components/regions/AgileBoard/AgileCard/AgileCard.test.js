@@ -14,11 +14,13 @@ test("showButtons doesn't show addreview for topic", () => {
       reviewers: [],
       assignees: [1],
       contentType: "topic",
+      topicNeedsReview: false,
       status: IN_PROGRESS,
     },
     authUser: { isStaff: 1 },
     startAllowed: true,
   });
+  console.log(`${showButtonAddReview}`);
 
   expect(showButtonAddReview).toBe(false);
 });
