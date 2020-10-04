@@ -17,6 +17,10 @@ class ProjectCardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         "code_review_excellent_since_last_review_request",
         "code_review_red_flag_since_last_review_request",
         "code_review_ny_competent_since_last_review_request",
+        "due_time",
+        "complete_time",
+        "review_request_time",
+        "start_time",
     ]
 
     def verbose_instance_factory(self):
