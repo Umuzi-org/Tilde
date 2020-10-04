@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default ({ board, cards, handleColumnScroll, canStart, userId }) => {
   const classes = useStyles();
-
   return (
     <React.Fragment>
       {/* <Typography>{user.email}</Typography> */}

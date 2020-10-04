@@ -83,6 +83,7 @@ function AgileCardUnconnected({
   authUser,
   openReviewFormModal,
   startAllowed, // according to the greater scheme of things, should starting work on this be allowed
+  filterUserId,
 }) {
   const handleClickOpenCardDetails = () => {
     openCardDetailsModal({ cardId: card.id });
@@ -130,6 +131,7 @@ function AgileCardUnconnected({
     handleClickAddReview,
 
     authUser,
+    filterUserId,
     handleRequestReview,
     handleStartProject,
     handleCancelReviewRequest,

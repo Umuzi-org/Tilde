@@ -14,10 +14,11 @@ import {
   TableCell,
   TableContainer,
   Button,
+  Typography,
+  Tooltip,
 } from "@material-ui/core";
 
 import { routes } from "../../../routes";
-// import FilterListIcon from "@material-ui/icons/FilterList";
 
 const useStyles = makeStyles((theme) => ({
   highlightedGroup: {
@@ -25,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: 800,
+  },
+  groupName: {
+    cursor: "pointer",
   },
 }));
 
@@ -43,7 +47,7 @@ export default function Presentation({
     <Grid container>
       <Grid item xs={4} className={classes.grid}>
         <TableContainer className={classes.container}>
-          <Table stickyHeader>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
@@ -66,9 +70,14 @@ export default function Presentation({
                         : ""
                     }
                   >
-                    <TableCell onClick={() => handleUserGroupClick(group.name)}>
-                      {group.name}
-                    </TableCell>
+                    <Tooltip title="click on the group name to filter users. Click again to cancel the filter">
+                      <TableCell
+                        onClick={() => handleUserGroupClick(group.name)}
+                        className={classes.groupName}
+                      >
+                        <Typography>{group.name}</Typography>
+                      </TableCell>
+                    </Tooltip>
                     <TableCell>
                       <Link
                         to={routes.groupCardSummary.route.path.replace(
@@ -91,7 +100,7 @@ export default function Presentation({
 
       <Grid item xs={4} className={classes.grid}>
         <TableContainer className={classes.container}>
-          <Table stickyHeader>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
