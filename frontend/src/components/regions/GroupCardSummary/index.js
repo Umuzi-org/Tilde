@@ -88,7 +88,7 @@ const GroupCardSummaryUnconnected = ({
     } else {
       fetchUserGroupSummaryCards({ userGroup });
     }
-  });
+  }, [userGroup, fetchSingleUserGroup, groupId, fetchUserGroupSummaryCards]);
 
   const filteredCards = filteredCardsAsArray({ cards, userGroup });
   const props = {

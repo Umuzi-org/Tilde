@@ -46,7 +46,17 @@ function CardDetailsModalUnconnected({
     if (cardId && card === undefined) {
       fetchAgileCard({ cardId });
     }
-  });
+  }, [
+    projectId,
+    fetchProject,
+    fetchProjectReviews,
+    topicProgressId,
+    fetchTopicProgress,
+    fetchTopicReviews,
+    cardId,
+    fetchAgileCard,
+    card,
+  ]);
 
   const [
     formState,

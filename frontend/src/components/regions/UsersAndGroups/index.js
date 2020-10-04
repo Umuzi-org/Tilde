@@ -86,7 +86,7 @@ function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
     fetchUserGroupsPages({
       dataSequence: [{ page: 1 }, { page: 2 }],
     });
-  });
+  }, [fetchUserGroupsPages]);
 
   return <Presentation {...props} />;
 }
