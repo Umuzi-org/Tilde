@@ -27,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ board, cards, handleColumnScroll, canStart }) => {
+export default ({ board, cards, handleColumnScroll, canStart, userId }) => {
   const classes = useStyles();
 
   return (
     <React.Fragment>
-      {/* <h1>{userId}</h1> */}
+      {/* <Typography>{user.email}</Typography> */}
       <Grid container wrap="nowrap">
         {board.map((column) => {
           return (
@@ -57,6 +57,7 @@ export default ({ board, cards, handleColumnScroll, canStart }) => {
                         <AgileCard
                           key={cardId}
                           card={cards[cardId]}
+                          filterUserId={userId}
                           startAllowed={canStart({
                             card: cards[cardId],
                             index,

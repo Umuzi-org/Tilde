@@ -47,6 +47,13 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     return <Login />;
   }
 
+  if (
+    shouldCallWhoAmI({
+      authUser: authUser,
+    })
+  )
+    return <div>Loading...</div>;
+
   return (
     <Router>
       <ThemeProvider theme={theme}>

@@ -81,7 +81,6 @@ function AgileCardUnconnected({
   removeWorkshopAttendance,
   addWorkshopAttendance,
   authUser,
-  AppFilter,
   openReviewFormModal,
   startAllowed, // according to the greater scheme of things, should starting work on this be allowed
 }) {
@@ -131,7 +130,6 @@ function AgileCardUnconnected({
     handleClickAddReview,
 
     authUser,
-    AppFilter,
     handleRequestReview,
     handleStartProject,
     handleCancelReviewRequest,
@@ -151,7 +149,6 @@ function AgileCardUnconnected({
 const mapStateToProps = (state) => {
   return {
     authUser: state.App.authUser,
-    AppFilter: state.AppFilter,
   };
 };
 

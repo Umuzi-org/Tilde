@@ -1,5 +1,4 @@
 import UserProfile from "./components/regions/UserProfile";
-import Dashboard from "./components/regions/Dashboard";
 import AgileBoard from "./components/regions/AgileBoard";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
@@ -37,22 +36,6 @@ export const routes = {
     show: () => true,
   },
 
-  dashboard: {
-    route: {
-      // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
-      exact,
-      path: "/summary",
-      component: Dashboard,
-    },
-    sliderNavigation: {
-      //these get used to draw buttons in the left hand side slider/hamburger menu
-      //   icon: TimelineIcon,
-      icon: () => "P",
-
-      label: "Projects",
-    },
-    show: ({ authUser }) => authUser.isStaff,
-  },
   userBoard: {
     route: {
       exact,
@@ -60,6 +43,7 @@ export const routes = {
       component: AgileBoard,
     },
   },
+
   groupCardSummary: {
     route: {
       exact,
@@ -68,34 +52,6 @@ export const routes = {
     },
     show: () => true,
   },
-
-  //   library: {
-  //     route: {
-  //       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
-  //       exact,
-  //       path: "/library",
-  //       component: Library,
-  //     },
-  //     sliderNavigation: {
-  //       //these get used to draw buttons in the left hand side slider/hamburger menu
-  //       icon: LocalLibraryIcon,
-  //       label: "Library",
-  //     },
-  //   },
-
-  //   favourites: {
-  //     route: {
-  //       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
-  //       exact,
-  //       path: "/favourites",
-  //       component: Favourites,
-  //     },
-  //     sliderNavigation: {
-  //       //these get used to draw buttons in the left hand side slider/hamburger menu
-  //       icon: StarIcon,
-  //       label: "Favourites",
-  //     },
-  //   },
 
   profile: {
     route: {
