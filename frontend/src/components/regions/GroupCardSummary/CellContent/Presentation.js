@@ -46,7 +46,10 @@ import blue from "@material-ui/core/colors/blue";
 
 const useStyles = makeStyles((theme) => {
   const card = {
-    borderWidth: 3,
+    // borderWidth: 3,
+    borderRadius: theme.spacing(2),
+    // margin: theme.spacing(1),
+    textAlign: "center",
   };
   return {
     root: {
@@ -55,12 +58,12 @@ const useStyles = makeStyles((theme) => {
       //   height: theme.spacing(16),
     },
 
-    [BLOCKED]: { ...card, borderColor: grey[400] },
-    [READY]: { ...card, borderColor: blue[400] },
-    [IN_PROGRESS]: { ...card, borderColor: green[400] },
-    [REVIEW_FEEDBACK]: { ...card, borderColor: red[400] },
-    [IN_REVIEW]: { ...card, borderColor: orange[400] },
-    [COMPLETE]: { ...card, borderColor: yellow[400] },
+    [BLOCKED]: { ...card, backgroundColor: grey[400] },
+    [READY]: { ...card, backgroundColor: blue[400] },
+    [IN_PROGRESS]: { ...card, backgroundColor: green[400] },
+    [REVIEW_FEEDBACK]: { ...card, backgroundColor: red[400] },
+    [IN_REVIEW]: { ...card, backgroundColor: orange[400] },
+    [COMPLETE]: { ...card, backgroundColor: yellow[400] },
 
     row: {
       padding: 5,
@@ -78,7 +81,7 @@ const TimesTable = ({ card }) => {
   };
 
   return (
-    <Table>
+    <Table size="small">
       <TableBody>
         <TableRow className={classes.row}>
           <TableCell>Due</TableCell>
@@ -89,7 +92,7 @@ const TimesTable = ({ card }) => {
           <TableCell>{nice(card.startTime)}</TableCell>
         </TableRow>
         <TableRow className={classes.row}>
-          <TableCell>Review Requested</TableCell>
+          <TableCell>Review Request</TableCell>
           <TableCell>{nice(card.reviewRequestTime)}</TableCell>
         </TableRow>
         <TableRow className={classes.row}>
@@ -107,11 +110,23 @@ export default ({ card }) => {
   return (
     <Tooltip title={title}>
       <Paper variant="outlined" className={classes.root}>
-        <Paper className={classes[card.status]} variant="outlined">
-          <Typography>{AGILE_CARD_STATUS_CHOICES[card.status]}</Typography>
-        </Paper>
+        <Table size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Paper className={classes[card.status]} variant="outlined">
+                  <Typography>
+                    {AGILE_CARD_STATUS_CHOICES[card.status]}
+                  </Typography>
+                </Paper>
+              </TableCell>
+              <TableCell>
+                <CardReviewBadges card={card} />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
         <TimesTable card={card} />
-        <CardReviewBadges card={card} />
       </Paper>
     </Tooltip>
   );
