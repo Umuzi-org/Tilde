@@ -4,6 +4,10 @@ Related issues: [please specify]
 
 What are you up to? Fill us in :)
 
+## Screenshots/videos
+
+<!-- If there is a visual component to what you did, please save us time by adding a screenshot. You can even link to a video demonstrating your feature, that would be cool too -->
+
 ## I solemnly swear that:
 
 - [ ] My code follows the style guidelines of this project
