@@ -202,11 +202,16 @@ def save_content(file_path, content_type, repo_base_dir, available_content_flavo
             )
 
             print(f"continue from existing content item: {continue_from_repo}")
-            continue_from_repo = save_content(  # saving it anyway because there are new fields...
-                file_path=repo_base_dir / "content" / meta["from_repo"] / "_index.md",
-                content_type=models.ContentItem.PROJECT,
-                repo_base_dir=repo_base_dir,
-                available_content_flavours=available_content_flavours,
+            continue_from_repo = (
+                save_content(  # saving it anyway because there are new fields...
+                    file_path=repo_base_dir
+                    / "content"
+                    / meta["from_repo"]
+                    / "_index.md",
+                    content_type=models.ContentItem.PROJECT,
+                    repo_base_dir=repo_base_dir,
+                    available_content_flavours=available_content_flavours,
+                )
             )
 
         except models.ContentItem.DoesNotExist:
@@ -536,13 +541,12 @@ def _get_ordered_curriculum_items_from_page(file_stream):
                 yield content_item, hard_requirement, flavours
 
 
-def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir):
+def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):
     for curriculum in models.Curriculum.objects.all():
-        print(f"Processing curriculum: {curriculum}")
         name = curriculum.short_name.lower().replace(" ", "-")
-        # # TODO::::
-        # if "django" not in name:
-        #     continue
+        if currculum_name and name != currculum_name:
+            continue
+        print(f"Processing curriculum: {curriculum}")
         file_path = curriculums_base_dir / f"{name}.md"
         set_up_single_curriculum_from_file(curriculum, file_path)
 
@@ -555,29 +559,31 @@ def validate_card_creation():
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument("path_to_tech_dept_repo", type=str, nargs="?")
+        parser.add_argument("path_to_tech_dept_repo", type=str)
+        parser.add_argument("process_content", type=int)
+        parser.add_argument("process_curriculums", type=int)
+        parser.add_argument("currculum_name", type=str, nargs="?")
 
     def handle(self, *args, **options):
         path_to_repo = options.get("path_to_tech_dept_repo", "")
-        if path_to_repo:
-            repo_base_dir = Path(path_to_repo)
-            curriculums_base_dir = repo_base_dir / "content/syllabuses"
-        else:
-            # we are working with the latest and greatest...
-            download_latest_tech_dept_repo()
-            repo_base_dir = constants.FULL_PATH
-            curriculums_base_dir = constants.CURRICULUMS_BASE_DIR
+        process_content = options["process_content"]
+        process_curriculums = options["process_curriculums"]
 
-        load_all_content_items_with_known_ids(repo_base_dir)
-        remove_missing_content_items_from_db(repo_base_dir)
-        load_content_from_tech_dept_repo(repo_base_dir)
-        add_all_prereq(repo_base_dir)
+        repo_base_dir = Path(path_to_repo)
+        curriculums_base_dir = repo_base_dir / "content/syllabuses"
 
-        set_up_curriculums_from_tech_dept_repo(curriculums_base_dir)
+        if process_content:
+            print("Processing Content....")
+            load_all_content_items_with_known_ids(repo_base_dir)
+            remove_missing_content_items_from_db(repo_base_dir)
+            load_content_from_tech_dept_repo(repo_base_dir)
+            add_all_prereq(repo_base_dir)
 
-        if not path_to_repo:
-            # working locally, this might not actually exist yet
-            check_content_urls_exist()
+        if process_curriculums:
+            print("Processing Curriculums....")
+            set_up_curriculums_from_tech_dept_repo(
+                curriculums_base_dir, options.get("currculum_name")
+            )
 
 
 # TODO: BUG: optional syllabus content requirements are skipped over
