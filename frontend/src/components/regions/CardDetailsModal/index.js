@@ -43,7 +43,7 @@ function CardDetailsModalUnconnected({
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
     }
-    if (cardId && card === undefined) {
+    if (cardId && (card === undefined || card === null || card === {})) {
       fetchAgileCard({ cardId });
     }
   }, [
