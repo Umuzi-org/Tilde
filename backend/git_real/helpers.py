@@ -71,7 +71,7 @@ def _protection_settings(restrictions_users=None, restrictions_teams=None):
 
 def protect_master(api, repo_full_name):
     response = api.put(
-        f"repos/{repo_full_name}/branches/master/protection",
+        f"repos/{repo_full_name}/branches/main/protection",
         _protection_settings(),
         headers={"Accept": "application/vnd.github.luke-cage-preview+json"},
     )
@@ -141,7 +141,9 @@ def save_repo(repo: dict, user=None):
             "owner": repo["owner"]["login"],
             "ssh_url": repo["ssh_url"],
             "private": repo["private"],
-            "created_at": strp_github_standard_time(repo["created_at"],),
+            "created_at": strp_github_standard_time(
+                repo["created_at"],
+            ),
             "archived": repo["archived"],
             "user": user,
         },

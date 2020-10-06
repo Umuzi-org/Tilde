@@ -75,17 +75,26 @@ def export_projects_without_flavours():
                 )
 
 
-def assign_flavours(cohort_id, default_flavour):
+def assign_flavours_to_cohort(cohort_id, default_flavour):
     cohort = Cohort.objects.get(pk=cohort_id)
     users = [o.user for o in RecruitCohort.objects.filter(cohort=cohort)]
     for user in users:
-        for project in RecruitProject.objects.filter(recruit_users__in=[user]):
-            if project.flavours.count() > 0:
-                continue
-            available_flavours = project.content_item.available_flavours.all()
-            if default_flavour in available_flavours:
-                print(f"project: {project.id} {project}")
-                project.flavours.add(default_flavour)
+        assign_flavours_to_user(user, default_flavour)
+
+
+def assign_flavours_to_user(user, default_flavour):
+    for project in RecruitProject.objects.filter(recruit_users__in=[user]):
+        if project.flavours.count() > 0:
+            continue
+        available_flavours = project.content_item.available_flavours.all()
+        if default_flavour in available_flavours:
+            print(f"project: {project.id} {project}")
+            project.flavours.add(default_flavour)
+
+
+def assign_flavours_to_user_by_email(email, default_flavour):
+    user = User.objects.get(email=email)
+    assign_flavours_to_user(user, default_flavour)
 
 
 # curriculum_tracking//.py
@@ -355,4 +364,3 @@ def get_all_recruits_in_cohorts_with_matching_curriculum(curriculum_id):
 # khomotso.talane @ umuzi.org
 # rethabile.thulo @ umuzi.org
 # vuyile.magwaza @ umuzi.org
-

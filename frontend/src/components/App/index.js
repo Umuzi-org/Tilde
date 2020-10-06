@@ -39,13 +39,20 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     ) {
       whoAmIStart({ authUser });
     }
-  });
+  }, [authUser, whoAmIStart]);
 
   const token = getAuthToken();
 
   if (token === null) {
     return <Login />;
   }
+
+  if (
+    shouldCallWhoAmI({
+      authUser: authUser,
+    })
+  )
+    return <div>Loading...</div>;
 
   return (
     <Router>

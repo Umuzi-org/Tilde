@@ -159,7 +159,11 @@ class ProjectCardSummarySerializer(serializers.ModelSerializer):
             # "nice_status",
             # "project_due_time",
             "recruit_project",
-            "project_review_request_time",
+            # "project_review_request_time",
+            "due_time",
+            "complete_time",
+            "review_request_time",
+            "start_time",
             "assignees",
             "assignee_names",
             "code_review_competent_since_last_review_request",
@@ -272,4 +276,3 @@ class ProjectSubmitLink(serializers.ModelSerializer):
         fields = ["link_submission"]
 
     # TODO: validators based on model validators (look inside save method)
-

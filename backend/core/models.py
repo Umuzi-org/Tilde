@@ -66,8 +66,8 @@ class User(AbstractBaseUser):
     # staff = models.BooleanField(default=False)
     # admin = models.BooleanField(default=False)
 
-    first_name = models.CharField(max_length=25)
-    last_name = models.CharField(max_length=25)
+    first_name = models.CharField(max_length=25, blank=True)
+    last_name = models.CharField(max_length=25, blank=True)
     preferred_name = models.CharField(max_length=25, blank=True, null=True)
 
     is_student = models.BooleanField("is student", default=False)
@@ -312,7 +312,8 @@ class RecruitCohort(models.Model, Mixins):
         Cohort, on_delete=models.PROTECT, related_name="cohort_recruits"
     )
     employer_partner = models.ForeignKey(
-        EmployerPartner, on_delete=models.PROTECT,  # TODO blank=True, null=True
+        EmployerPartner,
+        on_delete=models.PROTECT,  # TODO blank=True, null=True
     )
     start_date = models.DateField()  # TODO blank=True, null=True
     end_date = models.DateField()  # TODO blank=True, null=True

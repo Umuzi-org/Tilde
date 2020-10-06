@@ -4,13 +4,10 @@ import { authSagas as googleSagas } from "../utils/googleLogin";
 
 import { apiReduxWatchers } from "../apiAccess/redux/apiApps";
 import { appSagas } from "../components/App/redux";
-import { recruitAgileBoardSagas } from "../components/regions/RecruitAgileBoard/redux";
-import { appFilterSagas } from "../components/regions/AppFilter/redux";
+import { agileBoardSagas } from "../components/regions/AgileBoard/redux";
 import { cardDetailsModalSagas } from "../components/regions/CardDetailsModal/redux";
 
 import { addCardReviewSagas } from "../components/regions/AddCardReviewModal/redux";
-
-import { projectReportSagas } from "../components/regions/Dashboard/ProjectReport/redux";
 
 // import { markSingleCardWorkshopAttendanceSagas } from "../components/regions/MarkSingleCardAttendanceModal/redux";
 
@@ -22,11 +19,9 @@ export function* rootSaga() {
     ...apiReduxWatchers,
     ...entitiesSagas,
     ...appSagas,
-    ...recruitAgileBoardSagas,
+    ...agileBoardSagas,
     ...cardDetailsModalSagas,
     ...addCardReviewSagas,
     // ...markSingleCardWorkshopAttendanceSagas,
-    ...appFilterSagas,
-    ...projectReportSagas,
   ]);
 }

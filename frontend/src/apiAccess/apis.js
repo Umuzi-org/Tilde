@@ -43,6 +43,12 @@ async function userGroupsPage({ page }) {
   return { response, responseData };
 }
 
+async function userGroupsEntity({ groupId }) {
+  const url = `${API_BASE_URL}/api/user_groups/${groupId}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
 async function recruitProjectsPage({ userId, page }) {
   const url = `${API_BASE_URL}/api/recruit_projects/?recruit_users=${userId}&page=${page}`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -229,6 +235,7 @@ export default {
     logout,
     authenticateWithOneTimeToken,
     userGroupsPage,
+    userGroupsEntity,
   },
 
   recruits: {

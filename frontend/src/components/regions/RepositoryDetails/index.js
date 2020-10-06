@@ -18,7 +18,7 @@ function RepositoryDetailsUnconnected({
       fetchCommits({ repositoryId });
       fetchPullRequests({ repositoryId });
     }
-  });
+  }, [repositoryId, fetchRepository, fetchCommits, fetchPullRequests]);
   const [tabValue, setTabValue] = React.useState(0);
 
   const handleChangeTab = (event, newValue) => {

@@ -1,0 +1,169 @@
+{
+  "content_item_orders": [
+    {
+      "hard_requirement": true,
+      "post": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/different-kinds-of-cards/_index.md",
+      "pre": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/intro-to-tilde/_index.md"
+    },
+    {
+      "hard_requirement": true,
+      "post": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md",
+      "pre": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/github/intro/_index.md"
+    },
+    {
+      "hard_requirement": true,
+      "post": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-2/_index.md",
+      "pre": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md"
+    }
+  ],
+  "content_items": [
+    {
+      "available_flavours": [],
+      "content_type": "T",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "introduction-to-tilde",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Introduction to Tilde",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/intro-to-tilde/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "T",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "tilde-tutorial-how-cards-work",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Tilde tutorial: How cards work",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/different-kinds-of-cards/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "P",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "tilde-project-tutorial-how-to-submit-a-link",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Tilde project tutorial: How to submit a link",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/link-card-tutorial/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "T",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "basic-introduction-to-github",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Basic introduction to Github",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/github/intro/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "P",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "tilde-project-tutorial-how-repo-projects-work",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Tilde project tutorial: How Repo projects work",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "P",
+      "continue_from_repo": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md",
+      "link_regex": null,
+      "project_submission_type": "C",
+      "slug": "contentitem",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Tilde project tutorial: How Continue Repo projects work",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-2/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "T",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "understanding-the-review-column",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Understanding the review column",
+      "topic_needs_review": true,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/understanding-the-review-column/_index.md"
+    },
+    {
+      "available_flavours": [],
+      "content_type": "T",
+      "continue_from_repo": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "honor-code",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Honor Code",
+      "topic_needs_review": false,
+      "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/messaging/honor-code/_index.md"
+    }
+  ],
+  "curriculum": {
+    "name": "Tilde: Intro for students",
+    "short_name": "tilde intro student"
+  },
+  "curriculum_content_requirements": [
+    {
+      "content_item": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/different-kinds-of-cards/_index.md",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 1
+    },
+    {
+      "content_item": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/link-card-tutorial/_index.md",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 2
+    },
+    {
+      "content_item": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-2/_index.md",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 3
+    },
+    {
+      "content_item": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/understanding-the-review-column/_index.md",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 4
+    },
+    {
+      "content_item": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/messaging/honor-code/_index.md",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 5
+    }
+  ]
+}
