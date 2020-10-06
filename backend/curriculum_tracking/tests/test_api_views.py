@@ -308,3 +308,15 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
 
 #     def verbose_instance_factory(self):
 #         return factories.ContentItemOrderFactory()
+
+
+class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "workshopattendance-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    
+    def verbose_instance_factory(self):
+        workshop_attendance = factories.WorkshopAttendanceFactory()
+        content = workshop_attendance.content_item
+        content.topic_needs_review = False
+        content.save()
+        return workshop_attendance
