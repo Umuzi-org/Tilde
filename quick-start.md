@@ -2,6 +2,8 @@
 
 This guide will help you get set up to run all these goodies locally.
 
+Here's a video that shows you all the things: https://www.youtube.com/watch?v=NXpwv5CO5Dg&feature=youtu.be
+
 ## Prerequisites
 
 We use docker-compose and Python3. That's about it.
