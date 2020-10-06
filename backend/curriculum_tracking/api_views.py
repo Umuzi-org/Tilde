@@ -572,3 +572,31 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
     # TODO: bulk set due dates
 
+
+class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
+    
+    serializer_class = serializers.WorkshopAttendanceSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["attendee_user"]
+
+    def get_permissions(self):
+        if self.action == "retrieve":
+            permission_classes = [
+                curriculum_permissions.IsProjectAssignee
+                | permissions.IsAdminUser
+                | core_permissions.IsStaffUser
+            ]
+        else:
+            permission_classes = [
+                permissions.IsAdminUser
+                | core_permissions.IsStaffUser
+                | core_permissions.IsCurrentUserInSpecificFilter("attendee_user")
+            ]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        return models.WorkshopAttendance.objects.order_by("pk").prefetch_related(
+            "agile_card", "content_item", "flavours",
+        )
+
