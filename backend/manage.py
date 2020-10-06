@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
-from backend.settings import RUNNING_IN_GAE
+# from backend.settings import RUNNING_IN_GAE
 
-if RUNNING_IN_GAE:
-    try:
-        import googleclouddebugger
+# if RUNNING_IN_GAE:
+#     try:
+#         import googleclouddebugger
 
-        googleclouddebugger.enable()
-    except ImportError:
-        pass
+#         googleclouddebugger.enable()
+#     except ImportError:
+#         pass
 
 import os
 import sys
