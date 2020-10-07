@@ -574,7 +574,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
 
 class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
-    
+
     serializer_class = serializers.WorkshopAttendanceSerializer
 
     filter_backends = [DjangoFilterBackend]
@@ -597,6 +597,5 @@ class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.WorkshopAttendance.objects.order_by("pk").prefetch_related(
-            "agile_card", "content_item", "flavours",
+            "agile_card", "content_item",
         )
-
