@@ -313,20 +313,17 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
 class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "workshopattendance-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
-    
+
     def verbose_instance_factory(self):
         workshop_attendance = factories.WorkshopAttendanceFactory()
         content = workshop_attendance.content_item
         content.topic_needs_review = False
         content.save()
         return workshop_attendance
-    
-    
+
     def test_get_list(self):
         attendee_user = UserFactory(is_superuser=True, is_staff=True)
         self.login(attendee_user)
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        
-        
