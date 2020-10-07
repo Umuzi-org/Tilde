@@ -287,5 +287,4 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "timestamp",
             "content_item",
             "attendee_user",
-            "flavours",
         ]
