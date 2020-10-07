@@ -320,3 +320,13 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         content.topic_needs_review = False
         content.save()
         return workshop_attendance
+    
+    
+    def test_get_list(self):
+        attendee_user = UserFactory(is_superuser=True, is_staff=True)
+        self.login(attendee_user)
+        url = self.get_list_url()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        
+        
