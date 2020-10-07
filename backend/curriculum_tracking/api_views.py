@@ -576,14 +576,14 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
 
     serializer_class = serializers.WorkshopAttendanceSerializer
-
+    queryset = models.WorkshopAttendance.objects.order_by("pk")
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["attendee_user"]
 
     def get_permissions(self):
         if self.action == "retrieve":
             permission_classes = [
-                curriculum_permissions.IsProjectAssignee
+                curriculum_permissions.IsCardAssignee
                 | permissions.IsAdminUser
                 | core_permissions.IsStaffUser
             ]
@@ -595,7 +595,4 @@ class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
             ]
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self):
-        return models.WorkshopAttendance.objects.order_by("pk").prefetch_related(
-            "agile_card", "content_item",
-        )
+  
