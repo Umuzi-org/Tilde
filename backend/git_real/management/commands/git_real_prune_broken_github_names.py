@@ -27,8 +27,3 @@ def check_git_usernames():
 class Command(BaseCommand):
     def handle(self, *args, **options):
         check_git_usernames()
-
-
-# bongi.vilakazi@umuzi.org: bongi-vilakazi
-# thanyani.tshikonwani@umuzi.org: Tshikonwani
-# puleng.moru@umuzi.org: Pulengmoru@gmail.com
