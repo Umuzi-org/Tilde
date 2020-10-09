@@ -46,9 +46,10 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "complete_time",
             "review_request_time",
             "topic_reviews",
-            "topic_needs_review"
-            # "flavours", # todo
+            "topic_needs_review",
+            "flavours",
         ]
+    flavours = serializers.CharField(help_text="comma seperated list of flavours")
 
 
 class RecruitProjectReviewSerializer(serializers.ModelSerializer):
