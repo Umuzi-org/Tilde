@@ -27,7 +27,7 @@ export default ({ loading, error, handleLoginWithGoogle }) => {
     <Card className={classes.root}>
       <CardContent>
         <Typography>
-          Please log in. Use your @umuzi.org email address if you have one
+          Please log in. Use a Gmail registered account.
         </Typography>
 
         <br />
