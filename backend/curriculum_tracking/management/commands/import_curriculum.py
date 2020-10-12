@@ -27,4 +27,23 @@ def save_curriculum_to_db(json_file):
     df_dict = {i: pd.DataFrame(data[i]) if i != 'curriculum' else pd.DataFrame(pd.Series(data[i])).transpose() for i in data}
     # dataframes present in dictionary `df_dict` (4) `content_item_orders`, `content_items`, `curriculum`, `curriculum_content_requirements`
 
-    
+    for i in df_dict:
+        df = df_dict[i]
+
+
+        for idx, row in df.iterrows():
+            if i == 'content_item_orders'
+                content_item_orders, created = ContentItemOrder.objects.get_or_create(
+                    hard_requirement = row['hard_requirement']
+                    post = row['post']
+                    pre = row['pre']
+                )
+            
+            elif i == 'content_items'
+                _, created = MODEL.objects.get_or_create(_= row[''])
+
+            elif i == 'curriculum'
+                _, created = MODEL.objects.get_or_create(_= row[''])
+
+            elif i == 'curriculum_content_requirements'
+                _, created = MODEL.objects.get_or_create(_= row[''])
