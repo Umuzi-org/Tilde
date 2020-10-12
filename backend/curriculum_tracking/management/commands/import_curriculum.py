@@ -34,32 +34,37 @@ def save_curriculum_to_db(json_file):
         for idx, row in df.iterrows():
             if i == 'content_item_orders'
                 content_item_orders, created = ContentItemOrder.objects.get_or_create(
-                    hard_requirement = row['hard_requirement']
-                    post = row['post']
+                    hard_requirement = row['hard_requirement'],
+                    post = row['post'],
                     pre = row['pre']
                 )
             
             elif i == 'content_items'
                 content_items, created = ContentItem.objects.get_or_create(
-                    available_flavours = row['available_flavours']
-                    content_type = row['content_type']
-                    continue_from_repo = row['continue_from_repo']
-                    link_regex = row['link_regex']
-                    project_submission_type = row['project_submission_type']
-                    slug = row['slug']
-                    story_points = row['story_points']
-                    tags = row['tags']
-                    template_repo = row['template_repo']
-                    title = row['title']
-                    topic_needs_review = row['topic_needs_review']
+                    available_flavours = row['available_flavours'],
+                    content_type = row['content_type'],
+                    continue_from_repo = row['continue_from_repo'],
+                    link_regex = row['link_regex'],
+                    project_submission_type = row['project_submission_type'],
+                    slug = row['slug'],
+                    story_points = row['story_points'],
+                    tags = row['tags'],
+                    template_repo = row['template_repo'],
+                    title = row['title'],
+                    topic_needs_review = row['topic_needs_review'],
                     url = row['url']
                 )
 
             elif i == 'curriculum'
                 curriculum, created = Curriculum.objects.get_or_create(
-                    name = row['name']
+                    name = row['name'],
                     short_name = row['short_name']
                 )
 
             elif i == 'curriculum_content_requirements'
-                _, created = MODEL.objects.get_or_create(_= row[''])
+                curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
+                    content_item = row['content_item'],
+                    flavours = row['flavours'],
+                    hard_requirement = row['hard_requirement'],
+                    order = row['order']
+                )
