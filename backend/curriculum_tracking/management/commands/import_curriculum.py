@@ -40,7 +40,20 @@ def save_curriculum_to_db(json_file):
                 )
             
             elif i == 'content_items'
-                _, created = MODEL.objects.get_or_create(_= row[''])
+                content_items, created = ContentItem.objects.get_or_create(
+                    available_flavours = row['available_flavours']
+                    content_type = row['content_type']
+                    continue_from_repo = row['continue_from_repo']
+                    link_regex = row['link_regex']
+                    project_submission_type = row['project_submission_type']
+                    slug = row['slug']
+                    story_points = row['story_points']
+                    tags = row['tags']
+                    template_repo = row['template_repo']
+                    title = row['title']
+                    topic_needs_review = row['topic_needs_review']
+                    url = row['url']
+                )
 
             elif i == 'curriculum'
                 _, created = MODEL.objects.get_or_create(_= row[''])
