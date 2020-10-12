@@ -56,7 +56,10 @@ def save_curriculum_to_db(json_file):
                 )
 
             elif i == 'curriculum'
-                _, created = MODEL.objects.get_or_create(_= row[''])
+                curriculum, created = Curriculum.objects.get_or_create(
+                    name = row['name']
+                    short_name = row['short_name']
+                )
 
             elif i == 'curriculum_content_requirements'
                 _, created = MODEL.objects.get_or_create(_= row[''])
