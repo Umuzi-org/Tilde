@@ -37,6 +37,22 @@ def save_curriculum_to_db(json_file):
                     short_name = row['short_name']
                 )
 
+            elif i == 'content_items':
+                content_items, created = ContentItem.objects.get_or_create(
+                    # available_flavours = ','.join(row['available_flavours']),
+                    content_type = row['content_type'],
+                    continue_from_repo = find_url_index(row['continue_from_repo']),
+                    link_regex = row['link_regex'],
+                    project_submission_type = row['project_submission_type'],
+                    slug = row['slug'],
+                    story_points = row['story_points'],
+                    # tags = ','.join(row['tags']),
+                    template_repo = row['template_repo'],
+                    title = row['title'],
+                    topic_needs_review = row['topic_needs_review'],
+                    url = row['url']
+                )
+
             # elif i == 'content_item_orders':
             #     content_item_orders, created = ContentItemOrder.objects.get_or_create(
             #         hard_requirement = row['hard_requirement'],
@@ -44,24 +60,6 @@ def save_curriculum_to_db(json_file):
             #         pre = row['pre']
             #     )
             
-            # elif i == 'content_items':
-            #     content_items, created = ContentItem.objects.get_or_create(
-            #         # available_flavours = ','.join(row['available_flavours']),
-            #         content_type = row['content_type'],
-            #         continue_from_repo = find_url_index(row['continue_from_repo']),
-            #         link_regex = row['link_regex'],
-            #         project_submission_type = row['project_submission_type'],
-            #         slug = row['slug'],
-            #         story_points = row['story_points'],
-            #         # tags = ','.join(row['tags']),
-            #         template_repo = row['template_repo'],
-            #         title = row['title'],
-            #         topic_needs_review = row['topic_needs_review'],
-            #         url = row['url']
-            #     )
-
-
-
             # elif i == 'curriculum_content_requirements':
             #     curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
             #         content_item = row['content_item'],
@@ -69,3 +67,11 @@ def save_curriculum_to_db(json_file):
             #         hard_requirement = row['hard_requirement'],
             #         order = row['order']
             #     )
+
+def find_url_index(link):
+    if link == None:
+        return 
+    else:
+        for index, value in enumerate(ContentItem.objects.all()):
+            if value.url == link:
+                return ContentItem.objects.filter(url=link).first()
