@@ -60,13 +60,14 @@ def save_curriculum_to_db(json_file):
                     pre = find_url_index(row['pre'], ContentItem)
                 )
             
-            # elif i == 'curriculum_content_requirements':
-            #     curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
-            #         content_item = find_url_index(url=row['content_item'], ContentItem),
-            #         flavours = row['flavours'],
-            #         hard_requirement = row['hard_requirement'],
-            #         order = row['order']
-            #     )
+            elif i == 'curriculum_content_requirements':
+                curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
+                    content_item = find_url_index(row['content_item'], ContentItem),
+                    # flavours = row['flavours'],
+                    curriculum = Curriculum.objects.filter(short_name='tilde intro student').first(),
+                    hard_requirement = row['hard_requirement'],
+                    order = row['order']
+                )
 
 def find_url_index(link, model):
     if link == None:
