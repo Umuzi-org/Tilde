@@ -41,7 +41,7 @@ def save_curriculum_to_db(json_file):
                 content_items, created = ContentItem.objects.get_or_create(
                     # available_flavours = ','.join(row['available_flavours']),
                     content_type = row['content_type'],
-                    continue_from_repo = find_url_index(row['continue_from_repo']),
+                    continue_from_repo = find_url_index(row['continue_from_repo'], ContentItem),
                     link_regex = row['link_regex'],
                     project_submission_type = row['project_submission_type'],
                     slug = row['slug'],
@@ -53,25 +53,25 @@ def save_curriculum_to_db(json_file):
                     url = row['url']
                 )
 
-            # elif i == 'content_item_orders':
-            #     content_item_orders, created = ContentItemOrder.objects.get_or_create(
-            #         hard_requirement = row['hard_requirement'],
-            #         post = row['post'],
-            #         pre = row['pre']
-            #     )
+            elif i == 'content_item_orders':
+                content_item_orders, created = ContentItemOrder.objects.get_or_create(
+                    hard_requirement = row['hard_requirement'],
+                    post = find_url_index(row['post'], ContentItem),
+                    pre = find_url_index(row['pre'], ContentItem)
+                )
             
             # elif i == 'curriculum_content_requirements':
             #     curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
-            #         content_item = row['content_item'],
+            #         content_item = find_url_index(url=row['content_item'], ContentItem),
             #         flavours = row['flavours'],
             #         hard_requirement = row['hard_requirement'],
             #         order = row['order']
             #     )
 
-def find_url_index(link):
+def find_url_index(link, model):
     if link == None:
         return 
     else:
-        for index, value in enumerate(ContentItem.objects.all()):
+        for index, value in enumerate(model.objects.all()):
             if value.url == link:
-                return ContentItem.objects.filter(url=link).first()
+                return model.objects.filter(url=link).first()
