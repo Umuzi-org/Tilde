@@ -11,10 +11,6 @@ import pandas as pd
 
 
 class Command(BaseCommand):
-    # def add_arguments(self, parser):
-    #     parser.add_argument("curriculum", type=str)
-    #     parser.add_argument("save_path", type=str)
-
     def handle(self, *args, **options):
         json_file = "dev_helpers/data/intro-to-tilde-course.json"
         save_curriculum_to_db(json_file)
