@@ -7,7 +7,6 @@ from curriculum_tracking.models import (
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 import json
 from django.core.management.base import BaseCommand
-import pandas as pd
 
 
 class Command(BaseCommand):
