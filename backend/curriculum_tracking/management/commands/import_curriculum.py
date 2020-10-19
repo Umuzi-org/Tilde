@@ -20,50 +20,11 @@ def save_curriculum_to_db(json_file):
     with open(json_file) as f:
         data = json.load(f)
 
-    df_dict = {i: pd.DataFrame(data[i]) if i != 'curriculum' else pd.DataFrame(pd.Series(data[i])).transpose() for i in data}
-    # dataframes present in dictionary `df_dict` (4) `content_item_orders`, `content_items`, `curriculum`, `curriculum_content_requirements`
-
-    for i in df_dict:
-        df = df_dict[i]
-
-        for idx, row in df.iterrows():
-            if i == 'curriculum':
-                curriculum, created = Curriculum.objects.get_or_create(
-                    name = row['name'],
-                    short_name = row['short_name']
-                )
-
-            elif i == 'content_items':
-                content_items, created = ContentItem.objects.get_or_create(
-                    # available_flavours = ','.join(row['available_flavours']),
-                    content_type = row['content_type'],
-                    continue_from_repo = find_url_index(row['continue_from_repo'], ContentItem),
-                    link_regex = row['link_regex'],
-                    project_submission_type = row['project_submission_type'],
-                    slug = row['slug'],
-                    story_points = row['story_points'],
-                    # tags = ','.join(row['tags']),
-                    template_repo = row['template_repo'],
-                    title = row['title'],
-                    topic_needs_review = row['topic_needs_review'],
-                    url = row['url']
-                )
-
-            elif i == 'content_item_orders':
-                content_item_orders, created = ContentItemOrder.objects.get_or_create(
-                    hard_requirement = row['hard_requirement'],
-                    post = find_url_index(row['post'], ContentItem),
-                    pre = find_url_index(row['pre'], ContentItem)
-                )
-            
-            elif i == 'curriculum_content_requirements':
-                curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
-                    content_item = find_url_index(row['content_item'], ContentItem),
-                    # flavours = row['flavours'],
-                    curriculum = Curriculum.objects.filter(short_name='tilde intro student').first(),
-                    hard_requirement = row['hard_requirement'],
-                    order = row['order']
-                )
+    # keys in dictionary `data` (4) `content_item_orders`, `content_items`, `curriculum`, `curriculum_content_requirements`
+    create_content_items(data['content_items'])
+    create_content_item_orders(data['content_item_orders'])
+    create_curriculum(data['curriculum'])
+    create_curriculum_content_requirements(data['curriculum_content_requirements'])
 
 def find_url_index(link, model):
     if link == None:
@@ -72,3 +33,46 @@ def find_url_index(link, model):
         for index, value in enumerate(model.objects.all()):
             if value.url == link:
                 return model.objects.filter(url=link).first()
+
+def create_content_items(data):
+    for content in data:
+        content_items, created = ContentItem.objects.get_or_create(
+            # available_flavours = ','.join(content['available_flavours']),
+            content_type = content['content_type'],
+            continue_from_repo = find_url_index(content['continue_from_repo'], ContentItem),
+            link_regex = content['link_regex'],
+            project_submission_type = content['project_submission_type'],
+            slug = content['slug'],
+            story_points = content['story_points'],
+            # tags = ','.join(content['tags']),
+            template_repo = content['template_repo'],
+            title = content['title'],
+            topic_needs_review = content['topic_needs_review'],
+            url = content['url']
+        )
+
+
+def create_content_item_orders(data):
+    for order in data:
+        content_item_orders, created = ContentItemOrder.objects.get_or_create(
+            hard_requirement = order['hard_requirement'],
+            post = find_url_index(order['post'], ContentItem),
+            pre = find_url_index(order['pre'], ContentItem)
+        )
+
+
+def create_curriculum(data):
+    curriculum, created = Curriculum.objects.get_or_create(
+        name = data['name'],
+        short_name = data['short_name']
+    )
+
+def create_curriculum_content_requirements(data):
+    for requirement in data:
+        curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
+            content_item = find_url_index(requirement['content_item'], ContentItem),
+            # flavours = requirement['flavours'],
+            curriculum = Curriculum.objects.filter(short_name='tilde intro student').first(),
+            hard_requirement = requirement['hard_requirement'],
+            order = requirement['order']
+        )
