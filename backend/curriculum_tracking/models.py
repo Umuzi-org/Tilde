@@ -45,10 +45,10 @@ class CourseRegistration(models.Model):
 
 class ContentItemOrder(models.Model, Mixins):
     post = models.ForeignKey(
-        "ContentItem", on_delete=models.PROTECT, related_name="pre_ordered_content", null=True
+        "ContentItem", on_delete=models.PROTECT, related_name="pre_ordered_content"
     )
     pre = models.ForeignKey(
-        "ContentItem", on_delete=models.PROTECT, related_name="post_ordered_content", null=True
+        "ContentItem", on_delete=models.PROTECT, related_name="post_ordered_content"
     )
     hard_requirement = models.BooleanField(default=True)
 
