@@ -4,7 +4,7 @@ There were a lot of different messes to be cleaned up
 
 from taggit.models import Tag
 import csv
-from core.models import Cohort, RecruitCohort, User, UserGroup
+from core.models import Cohort, RecruitCohort, User, UserGroup, UserGroupMembership
 from curriculum_tracking.models import (
     RecruitProject,
     ContentItem,
@@ -78,6 +78,13 @@ def export_projects_without_flavours():
 def assign_flavours_to_cohort(cohort_id, default_flavour):
     cohort = Cohort.objects.get(pk=cohort_id)
     users = [o.user for o in RecruitCohort.objects.filter(cohort=cohort)]
+    for user in users:
+        assign_flavours_to_user(user, default_flavour)
+
+
+def assign_flavours_to_group(group_id, default_flavour):
+    group = UserGroup.objects.get(pk=group_id)
+    users = [o.user for o in UserGroupMembership.objects.filter(group=group)]
     for user in users:
         assign_flavours_to_user(user, default_flavour)
 

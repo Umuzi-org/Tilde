@@ -23,7 +23,8 @@ GIT = "GitHub Username"
 COURSE = "Course"
 
 
-GROUP_NAME = "Boot Oct 2020"
+GROUP_NAME = "Boot 12 Oct 2020"
+TODO = "todo"
 group = UserGroup.objects.get_or_create(name=GROUP_NAME)[0]
 
 DS = "ds"
@@ -41,6 +42,8 @@ def get_df():
         url="https://docs.google.com/spreadsheets/d/1xOwSUOc7iiyi08QvIBbSna0HRMaX6GyLi8jdCn5Q2rU/edit#gid=101393965"
     )
     df = df.dropna(subset=[EMAIL])
+    df = df.dropna(subset=[TODO])
+    df = df[df[TODO] == 1]
     df.columns = [s.strip() for s in df.columns]
     return df
 
