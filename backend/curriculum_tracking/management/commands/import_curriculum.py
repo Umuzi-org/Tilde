@@ -10,9 +10,11 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        json_file = "dev_helpers/data/intro-to-tilde-course.json"
-        save_curriculum_to_db(json_file)
+    def add_arguments(self, parser):
+        parser.add_argument("json_file", type=str)
+
+    def handle(self, *args, **options):  
+        save_curriculum_to_db(options["json_file"]) #"dev_helpers/data/intro-to-tilde-course.json"
 
 
 def save_curriculum_to_db(json_file):
