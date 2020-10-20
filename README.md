@@ -17,7 +17,7 @@ https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_
 
 ## Community
 
-Join the conversation on [Discord](https://discord.gg/HMn3haq).
+Join the conversation on [Discord](https://discord.gg/JHayHBG).
 
 Some channels:
 
