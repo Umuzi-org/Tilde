@@ -87,16 +87,13 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(
             content_item=factories.ProjectContentItemFactory(), recruit_project=None
         )
-        self._test_set_due_time_permissions(
-            card, lambda card: card.recruit_project)
+        self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
     def test_set_topic_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(
-                content_type=ContentItem.TOPIC)
+            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC)
         )
-        self._test_set_due_time_permissions(
-            card, lambda card: card.topic_progress)
+        self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
         recruit = UserFactory()
@@ -123,8 +120,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         card.refresh_from_db()
         progress = get_progress(card)
-        self.assertEqual(progress.due_time.strftime(
-            "%c"), due_time_1.strftime("%c"))
+        self.assertEqual(progress.due_time.strftime("%c"), due_time_1.strftime("%c"))
 
         response = self.client.post(url, data={"due_time": due_time_1})
 
@@ -137,8 +133,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
 
         progress.refresh_from_db()
-        self.assertEqual(progress.due_time.strftime(
-            "%c"), due_time_2.strftime("%c"))
+        self.assertEqual(progress.due_time.strftime("%c"), due_time_2.strftime("%c"))
 
     def test_list_assignees_permissions_on_list(self):
 
@@ -320,36 +315,25 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        workshop_attendance = factories.WorkshopAttendanceFactory()
+        workshop = factories.ContentItemFactory(content_type=ContentItem.WORKSHOP)
+        workshop_attendance = factories.WorkshopAttendanceFactory(content_item=workshop)
         content = workshop_attendance.content_item
         content.topic_needs_review = False
         content.save()
         return workshop_attendance
 
-    def test_get_list(self):
-        attendee_user = UserFactory(is_superuser=True, is_staff=True)
-        self.login(attendee_user)
+    def test_get_instance_permissions(self):
+
+        random_human = UserFactory(is_superuser=False, is_staff=False)
+        self.login(random_human)
         url = self.get_list_url()
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        workshop_attendance = factories.WorkshopAttendanceFactory()
-        worshop_attendee = workshop_attendance.attendee_user
-        
-
-        random_recruit = UserFactory(is_superuser=False, is_staff=False)
-        assert random_recruit != worshop_attendee
-        self.login(random_recruit)
-        url2 = f"{url}?attendee_user={random_recruit.id}"
-        response = self.client.get(url2)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response, "permission_denied")
-        
-        recruit = UserFactory(is_superuser=False, is_staff=False)
-        assert recruit == worshop_attendee
-        self.login(recruit)
-        url3 = f"{url}?attendee_user={recruit.id}"
-        response = self.client.get(url3)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        workshop_attendance = self.verbose_instance_factory()
+        attendee_user = workshop_attendance.attendee_user
+        self.login(attendee_user)
+        url2 = f"{url}?attendee_user={attendee_user.id}"
+        response = self.client.get(url2)
         self.assertEqual(response.status_code, 200)
-        
-        
