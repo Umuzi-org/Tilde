@@ -1,3 +1,16 @@
+from django.db.models import Q
+from git_real import models as git_models
+from git_real import serializers as git_serializers
+from django.utils import timezone
+from django.http import Http404, HttpResponseForbidden
+from rest_framework.decorators import action
+from curriculum_tracking import permissions as curriculum_permissions
+from core import permissions as core_permissions
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions
+from view_mixins import AuthMixin
+from . import serializers
+from . import models
 from rest_framework import mixins
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -7,24 +20,6 @@ from rest_framework.response import Response
 from rest_framework import viewsets, filters, status
 
 User = get_user_model()
-
-from . import models
-from . import serializers
-from view_mixins import AuthMixin
-from rest_framework import permissions
-from django_filters.rest_framework import DjangoFilterBackend
-
-from core import permissions as core_permissions
-from curriculum_tracking import permissions as curriculum_permissions
-
-from rest_framework.decorators import action
-from django.http import Http404, HttpResponseForbidden
-from django.utils import timezone
-
-from git_real import serializers as git_serializers
-from git_real import models as git_models
-
-from django.db.models import Q
 
 
 class ProjectCardSummaryViewset(AuthMixin, viewsets.ModelViewSet):
@@ -583,9 +578,9 @@ class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "retrieve":
             permission_classes = [
-                curriculum_permissions.IsCardAssignee
-                | permissions.IsAdminUser
+                permissions.IsAdminUser
                 | core_permissions.IsStaffUser
+                | curriculum_permissions.IsWorkshopAttendee
             ]
         else:
             permission_classes = [
@@ -594,5 +589,3 @@ class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
                 | core_permissions.IsCurrentUserInSpecificFilter("attendee_user")
             ]
         return [permission() for permission in permission_classes]
-
-  
