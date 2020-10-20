@@ -23,11 +23,11 @@ def save_curriculum_to_db(json_file):
     create_content_items(data['content_items'])
     create_content_item_orders(data['content_item_orders'])
     create_curriculum(data['curriculum'])
-    create_curriculum_content_requirements(data['curriculum_content_requirements'])
+    create_curriculum_content_requirements(data['curriculum_content_requirements'],data['curriculum']['short_name'])
 
-def get_content_item_from_url(link):
-    if link:
-        return ContentItem.objects.get(url=link)
+def get_content_item_from_url(url):
+    if url:
+        return ContentItem.objects.get(url=url)
 
 def create_content_items(data):
     for content in data:
@@ -62,12 +62,13 @@ def create_curriculum(data):
         short_name = data['short_name']
     )
 
-def create_curriculum_content_requirements(data):
+def create_curriculum_content_requirements(data, curriculum_name):
+    curriculum = Curriculum.objects.get(short_name=curriculum_name)
     for requirement in data:
         curriculum_content_requirements, created = CurriculumContentRequirement.objects.get_or_create(
             content_item = get_content_item_from_url(requirement['content_item']),
-            # flavours = requirement['flavours'],
-            curriculum = Curriculum.objects.filter(short_name='tilde intro student').first(),
+            # flavours = ','.join(requirement['flavours']),
+            curriculum = curriculum,
             hard_requirement = requirement['hard_requirement'],
             order = requirement['order']
         )
