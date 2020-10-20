@@ -170,3 +170,10 @@ def IsUserManager(user_id_field):
             todo
 
     return _IsUserManager
+
+
+class IsWorkshopAttendee(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        workshop_attendance = view.get_object()
+        return workshop_attendance.attendee_user == user
