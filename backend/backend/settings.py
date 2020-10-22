@@ -191,6 +191,15 @@ else:
             "NAME": os.getenv("TILDE_SQL_DB", "db"),
             "USER": os.getenv("TILDE_SQL_USER", "pguser"),
             "PASSWORD": os.getenv("TILDE_SQL_PASS", "password"),
+        },
+    #add mongodb / djongo settings
+        "mongodb": {
+            "ENGINE": "djongo",
+            "HOST": os.getenv("TILDE_MONGO_HOST", "127.0.0.1"),
+            "PORT": os.getenv("TILDE_MONGO_PORT", 27017),
+            "NAME": os.getenv("TILDE_MONGO_DB", "root-db"),
+            "USER": os.getenv("TILDE_MONGO_USER", "root"),
+            "PASSWORD": os.getenv("TILDE_MONGO_PASS", "password"),
         }
     }
 # [END db_setup]
