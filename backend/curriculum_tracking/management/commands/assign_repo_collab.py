@@ -19,12 +19,24 @@ GIT_USER_REPO_ONLY = "GIT_USER_REPO_ONLY"
 GIT_USER_AS_REVIEWER = "GIT_USER_AS_REVIEWER"
 
 
-def get_user_projects(users, content_item):
+# def get_user_projects(users, content_item):
+#     projects = set()
+#     # TODO: ISSUE make this function more efficient
+#     for user in users:
+#         for proj in RecruitProject.objects.filter(
+#             content_item=content_item, recruit_users__in=[user]
+#         ):
+#             projects.add(proj)
+
+#     return projects
+
+
+def get_user_project_cards(users, content_item):
     projects = set()
     # TODO: ISSUE make this function more efficient
     for user in users:
-        for proj in RecruitProject.objects.filter(
-            content_item=content_item, recruit_users__in=[user]
+        for proj in AgileCard.objects.filter(
+            content_item=content_item, assignees__in=[user]
         ):
             projects.add(proj)
 
