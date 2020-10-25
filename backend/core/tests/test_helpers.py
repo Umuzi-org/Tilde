@@ -28,9 +28,3 @@ class get_auth_token_for_email_TestCase(TestCase):
         self.assertIsNotNone(token)
         self.assertFalse(user_created)
         self.assertEqual(user, token.user)
-
-    def test_internal_email_user_does_not_exist(self):
-        token, user_created = get_auth_token_for_email(self.internal_email)
-        self.assertIsNotNone(token)
-        self.assertTrue(user_created)
-        self.assertEqual(token.user.email, self.internal_email)
