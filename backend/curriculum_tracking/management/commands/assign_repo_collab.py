@@ -12,35 +12,30 @@ from social_auth.models import SocialProfile
 
 User = get_user_model()
 
-
 GROUP_SELF_REVIEW = "GROUP_SELF_REVIEW"
 GROUP_REVIEW_OTHER = "GROUP_REVIEW_OTHER"
 GIT_USER_REPO_ONLY = "GIT_USER_REPO_ONLY"
 GIT_USER_AS_REVIEWER = "GIT_USER_AS_REVIEWER"
 
 
-# def get_user_projects(users, content_item):
-#     projects = set()
-#     # TODO: ISSUE make this function more efficient
-#     for user in users:
-#         for proj in RecruitProject.objects.filter(
-#             content_item=content_item, recruit_users__in=[user]
-#         ):
-#             projects.add(proj)
-
-#     return projects
-
-
 def get_user_project_cards(users, content_item):
-    projects = set()
+    cards = set()
     # TODO: ISSUE make this function more efficient
     for user in users:
         for proj in AgileCard.objects.filter(
             content_item=content_item, assignees__in=[user]
         ):
-            projects.add(proj)
+            cards.add(proj)
 
-    return projects
+    return cards
+
+
+def get_group(group_name):
+    return UserGroup.objects.get(name=group_name)
+
+
+def get_group_project_cards(group, content_item):
+    return get_user_project_cards(group.active_student_users, content_item)
 
 
 def has_social_profile(user):
@@ -51,28 +46,20 @@ def has_social_profile(user):
     return True
 
 
-def shuffle_project_reviewers(projects, users):
-    projects = list(projects)
+def shuffle_project_reviewers(cards, users):
+    print("shuffle")
+    cards = list(cards)
     users = [o for o in users if has_social_profile(o) and o.active]
     random.shuffle(users)
-    while len(users) < len(projects):
+    while len(users) < len(cards):
         users.extend(users)
 
-    for (project, user) in zip(projects, users):
-        if (user in project.recruit_users.all()) or (
-            user in project.reviewer_users.all()
-        ):
-            return shuffle_project_reviewers(projects, users)
+    for (card, user) in zip(cards, users):
+        if (user in card.assignees.all()) or (user in card.reviewers.all()):
+            return shuffle_project_reviewers(cards, users)
     # we have a winner
-    return zip(projects, users)
-
-
-def get_group(group_name):
-    return UserGroup.objects.get(name=group_name)
-
-
-def get_group_projects(group, content_item):
-    return get_user_projects(group.active_student_users, content_item)
+    print("win")
+    return zip(cards, users)
 
 
 def group_self_review(group_name, content_item, reviewer=None):
@@ -81,53 +68,48 @@ def group_self_review(group_name, content_item, reviewer=None):
             "Unexpected reviewer argument. When shuffling a group then dont supply a reviewer"
         )
     group = get_group(group_name)
-    projects = get_group_projects(group, content_item)
+    projects = get_group_project_cards(group, content_item)
     users = group.active_student_users
-    assign_random_reviewers(projects, users)
+    assign_random_reviewers(cards, users)
 
 
 def group_review_other(group_name, content_item, reviewer):
     group = get_group(group_name)
-    projects = get_group_projects(group, content_item)
+    cards = get_group_project_cards(group, content_item)
     reviewer_group = get_group(reviewer)
     reviewer_users = reviewer_group.active_student_users
-    assign_random_reviewers(projects, reviewer_users)
+    assign_random_reviewers(cards, reviewer_users)
 
 
-def assign_random_reviewers(projects, users):
+def assign_random_reviewers(cards, users):
     api = Api(PERSONAL_GITHUB_NAME)
     shuffled_reviewers = list(
-        shuffle_project_reviewers(projects, [o for o in users if o.active])
+        shuffle_project_reviewers(cards, [o for o in users if o.active])
     )
-    broken = [
-        project
-        for project, _ in shuffled_reviewers
-        if not project.repository.full_name.startswith(ORGANISATION)
-    ]
-    # assert broken == [], "\n".join([f"{project.id} {project}" for project in broken])
 
-    for project, user in shuffled_reviewers:
+    for card, user in shuffled_reviewers:
         print(user)
-        if project.repository and project.repository.full_name.startswith(ORGANISATION):
-            add_collaborator(
-                api, project.repository.full_name, user.social_profile.github_name
-            )
-        project.reviewer_users.add(user)
-        project.save()
-        try:
-            card = project.agile_card
-        except AgileCard.DoesNotExist:
-            pass
-        else:
-            assert card is not None
-            card.reviewers.set(project.reviewer_users.all())
+
+        if card.recruit_project:
+            project = card.recruit_project
+            if project.repository and project.repository.full_name.startswith(
+                ORGANISATION
+            ):
+                add_collaborator(
+                    api, project.repository.full_name, user.social_profile.github_name
+                )
+            project.reviewer_users.add(user)
+            project.save()
+
+        if user not in card.reviewers.all():
+            card.reviewers.add(user)
             card.save()
 
 
 def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
     api = Api(PERSONAL_GITHUB_NAME)
 
-    projects = get_group_projects(group, content_item)
+    projects = get_group_project_cards(group, content_item)
 
     if "@" in reviewer:
         user = User.objects.get(email=reviewer)
