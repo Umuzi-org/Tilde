@@ -22,6 +22,10 @@ from .constants import (
 from git_real.constants import GITHUB_BOT_USERNAME
 import re
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class CourseRegistration(models.Model):
     """associates a user with a curriculum"""
@@ -339,7 +343,7 @@ class RecruitProject(models.Model, Mixins):
         try:
             social = social_models.SocialProfile.objects.get(user=recruit_user)
         except social_models.SocialProfile.DoesNotExist:
-            print(f"{recruit_user.id} {recruit_user} has no github name")
+            logger.error(f"{recruit_user.id} {recruit_user} has no github name")
             raise
         github_name = social.github_name
         assert github_name, f"{recruit_user.id} {recruit_user} has no github name"
@@ -798,10 +802,10 @@ class AgileCard(models.Model, Mixins):
 
     @classmethod
     def derive_status_from_project(cls, project):
-        if not project.start_time:
+        # if not project.start_time:
 
-            card.status_ready_or_blocked()
-        elif project.review_request_time:
+        #     card.status_ready_or_blocked()
+        if project.review_request_time:
             get_trusted_review = lambda: project.latest_review(
                 trusted=True, timestamp_greater_than=project.review_request_time
             )
