@@ -4,9 +4,13 @@ from core.models import UserGroup, UserGroupMembership
 from curriculum_tracking.models import RecruitProjectReview, AgileCard, ContentItem
 import yaml
 from ..helpers import get_student_users
+from pathlib import Path
+from django.utils import timezone
+import logging
 
+logger = logging.getLogger(__name__)
 
-cutoff = datetime.datetime.now() - datetime.timedelta(days=7)
+cutoff = timezone.now() - datetime.timedelta(days=7)
 
 
 def sum_card_weights(cards):
@@ -20,8 +24,16 @@ def user_as_assignee_stats(user):
 
     number_of_review_feedback_cards = cards_with_feedback.count()
 
+    number_of_in_progress_cards = (
+        AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
+        .filter(assignees__in=[user])
+        .count()
+    )
+
     latest_reviews = [
-        card.recruit_project.latest_review() for card in cards_with_feedback
+        card.recruit_project.latest_review()
+        for card in cards_with_feedback
+        if card.recruit_project
     ]
     latest_reviews.sort(key=lambda o: o.timestamp)
 
@@ -39,23 +51,30 @@ def user_as_assignee_stats(user):
     complete_projects = project_cards.filter(status=AgileCard.COMPLETE)
     number_of_complete_project_cards = complete_projects.count()
     weight_of_complete_project_cards = sum_card_weights(complete_projects)
-
-    percent_projects_complete_by_weight = (
-        float(weight_of_complete_project_cards) / total_weight_of_project_cards
+    last_completed_project = (
+        complete_projects.filter(recruit_project__complete_time__isnull=False)
+        .order_by("recruit_project__complete_time")
+        .last()
     )
-    percent_projects_complete_by_count = (
-        float(number_of_complete_project_cards) / total_number_of_project_cards
-    )
+    if last_completed_project:
+        if last_completed_project.complete_time:
+            last_time_a_project_was_completed = (
+                last_completed_project.complete_time.strftime("%c")
+            )
+        else:
+            last_time_a_project_was_completed = "missing data"
+    else:
+        last_time_a_project_was_completed = None
 
     return {
+        "number_of_in_progress_cards": number_of_in_progress_cards,
         "number_of_review_feedback_cards": number_of_review_feedback_cards,
         "oldest_review_feedback_card": oldest_review_feedback_card,
         "number_of_complete_project_cards": number_of_complete_project_cards,
         "weight_of_complete_project_cards": weight_of_complete_project_cards,
         "total_number_of_project_cards": total_number_of_project_cards,
         "total_weight_of_project_cards": total_weight_of_project_cards,
-        # "percent_projects_complete_by_weight": percent_projects_complete_by_weight,
-        # "percent_projects_complete_by_count": percent_projects_complete_by_count,
+        "last_time_a_project_was_completed": last_time_a_project_was_completed,
     }
 
 
@@ -111,7 +130,7 @@ def user_as_reviewer_stats(user):
 
 
 def get_user_report(user):
-
+    logger.info(f"...Processing user: {user}")
     return {
         "email": user.email,
         "id": user.id,
@@ -121,15 +140,23 @@ def get_user_report(user):
 
 
 def get_group_report(group):
-    for o in UserGroupMembership.objects.filter(group=group):
-        d = get_user_report(o.user)
-        print(yaml.dump(d))
+    logger.info(f"processing group: {group}")
+    return {
+        o.user.email: get_user_report(o.user)
+        for o in UserGroupMembership.objects.filter(group=group, user__active=True)
+    }
 
 
 class Command(BaseCommand):
-    # def add_arguments(self, parser):
-    #     parser.add_argument("days", type=int, nargs="?", default=0)
     def handle(self, *args, **options):
-        # group = UserGroup.objects.get(pk=119) #bbd
-        group = UserGroup.objects.get(pk=90)  # c21 web
-        d = get_group_report(group)
+        today = datetime.datetime.now().date()
+
+        groups = UserGroup.objects.filter(active=True)
+        for group in groups:
+            group_data = get_group_report(group)
+
+            with open(
+                Path(f"gitignore/group_report_{today.strftime('%a %d %b %Y')}.yaml"),
+                "w",
+            ) as f:
+                yaml.dump(group_data, f)
