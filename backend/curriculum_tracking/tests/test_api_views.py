@@ -7,6 +7,8 @@ from core.tests import factories as core_factories
 from django.utils.timezone import datetime
 from datetime import timedelta
 from curriculum_tracking.models import ContentItem
+from django.utils import timezone
+
 
 
 class ProjectCardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -331,20 +333,21 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_get_instance_permissions(self):
 
-        workshop_attendance = self.verbose_instance_factory()
-        
-        random_human = UserFactory(is_superuser=False, is_staff=False)
-        self.login(random_human)
-        # url = self.get_list_url()
-        url = f"{self.get_list_url()}/{workshop_attendance.id}"
 
+        workshop_attendance = factories.WorkshopAttendanceFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.WORKSHOP), timestamp=timezone.datetime.now())
+
+        random_human = UserFactory(is_superuser=False, is_staff=False)
+
+        self.login(random_human)
+        url = f"{self.get_list_url()}/{workshop_attendance.id}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
         attendee_user = workshop_attendance.attendee_user
         self.login(attendee_user)
-        # url2 = f"{url}?attendee_user={attendee_user.id}"
         url2 = f"{self.get_list_url()}/{workshop_attendance.id}"
         response = self.client.get(url2)
         self.assertEqual(response.status_code, 200)
