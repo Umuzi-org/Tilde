@@ -1,0 +1,39 @@
+# [START service]
+# The tilde-backend service provides a load-balancing proxy over the tilde-backend app
+# pods. By specifying the type as a 'LoadBalancer', Container Engine will
+# create an external HTTP load balancer.
+# For more information about Services see:
+#   https://cloud.google.com/container-engine/docs/services/
+# For more information about external HTTP load balancing see:
+#   https://cloud.google.com/container-engine/docs/load-balancer
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: tilde-backend-loadbalancer
+#   labels:
+#     app: tilde-backend
+# spec:
+#   type: LoadBalancer
+#   ports:
+#     - port: 80
+#       targetPort: 8080
+#   selector:
+#     app: tilde-backend
+# [END service]
+
+# ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tilde-backend
+  labels:
+    app: tilde-backend
+#   namespace: default
+spec:
+  ports:
+    - port: 8080
+      #   protocol: TCP
+      targetPort: 8080
+  selector:
+    app: tilde-backend
+  type: NodePort
