@@ -1,3 +1,6 @@
 .vscode/
 gitignore/
 venv/
+
+.DS_Store
+.idea/

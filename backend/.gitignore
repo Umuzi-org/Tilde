@@ -5,3 +5,7 @@ gitignore/
 collectstatic/
 *.log
 *.csv
+
+.DS_Store
+.idea/
+
