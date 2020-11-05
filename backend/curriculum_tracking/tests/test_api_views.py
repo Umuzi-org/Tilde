@@ -333,21 +333,22 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_get_instance_permissions(self):
 
-
+        attendee_user = UserFactory(is_superuser=False, is_staff=False)
         workshop_attendance = factories.WorkshopAttendanceFactory(
             content_item=factories.ContentItemFactory(
-                content_type=ContentItem.WORKSHOP), timestamp=timezone.datetime.now())
+                content_type=ContentItem.WORKSHOP), 
+            timestamp=timezone.datetime.now(),
+            attendee_user=attendee_user)
+
+        self.login(attendee_user)
+        url = self.get_list_url()
+        response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
+        self.assertEqual(response.status_code, 200)
 
         random_human = UserFactory(is_superuser=False, is_staff=False)
-
         self.login(random_human)
-        url = f"{self.get_list_url()}/{workshop_attendance.id}"
-        response = self.client.get(url)
+        response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
-        attendee_user = workshop_attendance.attendee_user
-        self.login(attendee_user)
-        url2 = f"{self.get_list_url()}/{workshop_attendance.id}"
-        response = self.client.get(url2)
-        self.assertEqual(response.status_code, 200)
+        
