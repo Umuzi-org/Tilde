@@ -26,7 +26,7 @@ spec:
       containers:
         - name: tilde-backend-app
           # Replace  with your project ID or use `make template`
-          image: gcr.io/umuzi-prod/tilde-backend
+          image: gcr.io/umuzi-prod/tilde-backend:latest
           # This setting makes nodes pull the docker image every time before
           # starting the pod. This is useful when debugging, but should be turned
           # off in production.

@@ -12,5 +12,4 @@ kubectl create secret generic miscbackend --from-literal=PROD_SECRET_KEY=$PROD_S
 kubectl create secret generic gitreal --from-literal=GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID --from-literal=GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET
 
 # LOGIN WITH GOOGLE
-
 kubectl create secret generic google-oauth-onetime-creds --from-file=google-oauth-onetime-creds.json=$GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE 
