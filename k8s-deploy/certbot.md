@@ -5,20 +5,12 @@ sudo snap install --classic certbot
 sudo certbot certonly --manual --preferred-challenges dns
 ```
 
-<<<<<<< HEAD
-When prompted, enter the follwing info:
-=======
-When prompted, enter the ofllwing info:
->>>>>>> 3299902b76c307c29ffca2b485d3cc58b925f3c7
+When prompted, enter the following info:
 
 - email address: `code@umuzi.org`
 - domain: `*.tilde.umuzi.org`
 
-<<<<<<< HEAD
 Use dns checker to check dns propagation:
-=======
-Use dns checker to check dns propogation:
->>>>>>> 3299902b76c307c29ffca2b485d3cc58b925f3c7
 
 https://dnschecker.org/#TXT/_acme-challenge.tilde.umuzi.org
 
