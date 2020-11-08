@@ -7,10 +7,13 @@ from ..helpers import get_student_users
 from pathlib import Path
 from django.utils import timezone
 import logging
+import csv
 
 logger = logging.getLogger(__name__)
 
 cutoff = timezone.now() - datetime.timedelta(days=7)
+AS_REVIEWER = "AS REVIEWER"
+AS_ASSIGNEE = "AS ASSIGNEE"
 
 
 def sum_card_weights(cards):
@@ -31,9 +34,13 @@ def user_as_assignee_stats(user):
     )
 
     latest_reviews = [
-        card.recruit_project.latest_review()
-        for card in cards_with_feedback
-        if card.recruit_project
+        o
+        for o in [
+            card.recruit_project.latest_review()
+            for card in cards_with_feedback
+            if card.recruit_project
+        ]
+        if o
     ]
     latest_reviews.sort(key=lambda o: o.timestamp)
 
@@ -74,7 +81,7 @@ def user_as_assignee_stats(user):
         "weight_of_complete_project_cards": weight_of_complete_project_cards,
         "total_number_of_project_cards": total_number_of_project_cards,
         "total_weight_of_project_cards": total_weight_of_project_cards,
-        "last_time_a_project_was_completed": last_time_a_project_was_completed,
+        # "last_time_a_project_was_completed": last_time_a_project_was_completed, # TODO
     }
 
 
@@ -129,22 +136,58 @@ def user_as_reviewer_stats(user):
     }
 
 
-def get_user_report(user):
+def get_user_report(user, extra=None):
     logger.info(f"...Processing user: {user}")
-    return {
-        "email": user.email,
-        "id": user.id,
-        "user_as_reviewer": user_as_reviewer_stats(user),
-        "user_as_assignee": user_as_assignee_stats(user),
+    stats = {
+        "_email": user.email,
+        "_id": user.id,
     }
+
+    for k, v in (extra or {}).items():
+        stats[k] = v
+
+    user_as_reviewer = user_as_reviewer_stats(user)
+    user_as_assignee = user_as_assignee_stats(user)
+    for s in user_as_reviewer:
+        stats[f"{AS_REVIEWER} {s}"] = user_as_reviewer[s]
+    for s in user_as_assignee:
+        stats[f"{AS_ASSIGNEE} {s}"] = user_as_assignee[s]
+    return stats
 
 
 def get_group_report(group):
     logger.info(f"processing group: {group}")
-    return {
-        o.user.email: get_user_report(o.user)
-        for o in UserGroupMembership.objects.filter(group=group, user__active=True)
-    }
+    ret = [
+        get_user_report(o.user, {"_group": group.name})
+        for o in UserGroupMembership.objects.filter(
+            group=group, user__active=True, permission_student=True
+        )
+    ]
+
+    manager_users = UserGroupMembership.objects.filter(
+        group=group, user__active=True, permission_manage=True
+    )
+
+    if ret == []:
+        return ret
+
+    numeric_values = {}
+
+    for key, value in ret[0].items():
+        if key.startswith("_"):
+            continue
+        if type(value) in [int, float]:
+            numeric_values[key] = []
+
+    for key in numeric_values:
+        values = [d[key] for d in ret]
+
+        for d in ret:
+            d[f"{key} group total"] = sum(values)
+            d[f"{key} group average"] = sum(values) / len(values)
+            d["_group_managers"] = [o.user.email for o in manager_users]
+
+    return ret
 
 
 class Command(BaseCommand):
@@ -152,11 +195,22 @@ class Command(BaseCommand):
         today = datetime.datetime.now().date()
 
         groups = UserGroup.objects.filter(active=True)
+        all_data = []
         for group in groups:
-            group_data = get_group_report(group)
+            all_data.extend(get_group_report(group))
+            # break
 
-            with open(
-                Path(f"gitignore/group_report_{today.strftime('%a %d %b %Y')}.yaml"),
-                "w",
-            ) as f:
-                yaml.dump(group_data, f)
+        headings = []
+        for data in all_data:
+            headings.extend(data.keys())
+        headings = sorted(
+            set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
+        )
+
+        with open(
+            Path(f"gitignore/group_report_{today.strftime('%a %d %b %Y')}.csv"),
+            "w",
+        ) as f:
+            writer = csv.writer(f)
+            writer.writerow(headings)
+            writer.writerows([[d[heading] for heading in headings] for d in all_data])

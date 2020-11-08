@@ -1,3 +1,10 @@
+"""
+python manage.py assign_repo_collab GROUP_SELF_REVIEW $USER_GROUP_NAME $CONTENT_ITEM_TITLE 
+python manage.py assign_repo_collab GROUP_REVIEW_OTHER $USER_GROUP_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
+python manage.py assign_repo_collab GIT_USER_REPO_ONLY $USER_GROUP_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
+python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $USER_GROUP_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
+"""
+
 from django.core.management.base import BaseCommand
 from core.models import UserGroup, UserGroupMembership
 from curriculum_tracking.models import ContentItem, RecruitProject, AgileCard
@@ -10,32 +17,14 @@ import random
 from django.contrib.auth import get_user_model
 from social_auth.models import SocialProfile
 
+from ..helpers import get_group, get_group_project_cards
+
 User = get_user_model()
 
 GROUP_SELF_REVIEW = "GROUP_SELF_REVIEW"
 GROUP_REVIEW_OTHER = "GROUP_REVIEW_OTHER"
 GIT_USER_REPO_ONLY = "GIT_USER_REPO_ONLY"
 GIT_USER_AS_REVIEWER = "GIT_USER_AS_REVIEWER"
-
-
-def get_user_project_cards(users, content_item):
-    cards = set()
-    # TODO: ISSUE make this function more efficient
-    for user in users:
-        for proj in AgileCard.objects.filter(
-            content_item=content_item, assignees__in=[user]
-        ):
-            cards.add(proj)
-
-    return cards
-
-
-def get_group(group_name):
-    return UserGroup.objects.get(name=group_name)
-
-
-def get_group_project_cards(group, content_item):
-    return get_user_project_cards(group.active_student_users, content_item)
 
 
 def has_social_profile(user):
@@ -68,7 +57,7 @@ def group_self_review(group_name, content_item, reviewer=None):
             "Unexpected reviewer argument. When shuffling a group then dont supply a reviewer"
         )
     group = get_group(group_name)
-    projects = get_group_project_cards(group, content_item)
+    cards = get_group_project_cards(group, content_item)
     users = group.active_student_users
     assign_random_reviewers(cards, users)
 
@@ -109,7 +98,7 @@ def assign_random_reviewers(cards, users):
 def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
     api = Api(PERSONAL_GITHUB_NAME)
 
-    projects = get_group_project_cards(group, content_item)
+    cards = get_group_project_cards(group, content_item)
 
     if "@" in reviewer:
         user = User.objects.get(email=reviewer)
@@ -120,14 +109,16 @@ def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
     # else:
     #     github_name = reviewer
 
-    for project in projects:
-        print(project)
-        if project.repository:
-            add_collaborator(api, project.repository.full_name, github_name)
-        project.save()
+    for card in cards:
+
+        if card.recruit_project and card.repository:
+            add_collaborator(api, card.repository.full_name, github_name)
+        card.save()
         if add_as_project_reviewer:
-            project.reviewer_users.add(user)
-        project.save()
+            card.reviewers.add(user)
+            if card.recruit_project:
+                card.recruit_project.reviewer_users.add(user)
+        card.save()
         # project.agile_card.reviewers =
 
 
