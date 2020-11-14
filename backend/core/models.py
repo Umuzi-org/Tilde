@@ -127,6 +127,7 @@ class Curriculum(models.Model, Mixins):
 
 
 class EmployerPartner(models.Model, Mixins):
+    # depricated
     name = models.CharField(max_length=40)  # eg: Investic
 
     def __str__(self):
@@ -304,6 +305,7 @@ class Cohort(models.Model, Mixins):
 
 
 class RecruitCohort(models.Model, Mixins):
+    # depricated
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="recruit_cohorts"
     )

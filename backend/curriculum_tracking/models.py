@@ -802,9 +802,6 @@ class AgileCard(models.Model, Mixins):
 
     @classmethod
     def derive_status_from_project(cls, project):
-        # if not project.start_time:
-
-        #     card.status_ready_or_blocked()
         if project.review_request_time:
             get_trusted_review = lambda: project.latest_review(
                 trusted=True, timestamp_greater_than=project.review_request_time
