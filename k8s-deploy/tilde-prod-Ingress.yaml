@@ -7,6 +7,7 @@ metadata:
   name: tilde-prod-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: k8s-ingress
+    # https://console.cloud.google.com/networking/addresses/list
 spec:
   tls:
     - secretName: tilde-domain-ssl # SEE certbot.md to see how to generate this secret
