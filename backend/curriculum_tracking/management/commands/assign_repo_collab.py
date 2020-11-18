@@ -106,8 +106,6 @@ def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
         user = User.objects.get(social_profile__github_name=reviewer)
 
     github_name = user.social_profile.github_name
-    # else:
-    #     github_name = reviewer
 
     for card in cards:
 
