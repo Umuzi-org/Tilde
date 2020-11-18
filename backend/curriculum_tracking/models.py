@@ -596,6 +596,7 @@ class WorkshopAttendance(models.Model, Mixins):
     flavours = TaggableManager(blank=True)
 
 
+
 class AgileCard(models.Model, Mixins):
     BLOCKED = "B"
     READY = "R"
@@ -800,8 +801,13 @@ class AgileCard(models.Model, Mixins):
         else:
             return card.status_ready_or_blocked()
 
+
     @classmethod
     def derive_status_from_project(cls, project):
+        if not project.start_time:
+            card = project.agile_card
+            return card.status_ready_or_blocked()
+
         if project.review_request_time:
             get_trusted_review = lambda: project.latest_review(
                 trusted=True, timestamp_greater_than=project.review_request_time

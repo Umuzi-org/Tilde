@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 
 from google_helpers.utils import fetch_sheet
 
-COHORT_INTAKE_NUMBER = 23
 
 from core.models import User, UserGroup, UserGroupMembership
 from social_auth.models import SocialProfile
@@ -18,10 +17,10 @@ import requests
 
 FIRST_NAME = "Name"
 LAST_NAME = "Surname"
-EMAIL = "Email Address"
-GIT = "GitHub Username"
+EMAIL = "Gmail Address"
+GIT = "Link to your github profile, eg https://github.com/[YOUR_VERY_OWN_USERNAME]"
 COURSE = "Course"
-
+BOOTCAMP_NAME = "bootcamp_name"
 
 # TODO = "todo"
 # group = UserGroup.objects.get_or_create(name=GROUP_NAME)[0]
@@ -43,7 +42,7 @@ WE_BOOT = 12
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1xOwSUOc7iiyi08QvIBbSna0HRMaX6GyLi8jdCn5Q2rU/edit#gid=101393965"
+        url="https://docs.google.com/spreadsheets/d/1xOwSUOc7iiyi08QvIBbSna0HRMaX6GyLi8jdCn5Q2rU/"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
@@ -80,14 +79,14 @@ def check_github(row):
         print(f"ERROR {row[EMAIL]} {row[GIT]}")
 
 
-def get_group(course):
+def get_group(course,title):
 
     courses = {
         DS: "Data Sci",
         DE: "Data Eng",
         WD: "Web Dev",
     }
-    name = f"Boot {courses[course]} 01 Nov 2020"
+    name = f"Boot {courses[course]} {title}"
     # print(name)
     return UserGroup.objects.get_or_create(name=name)[0]
 
@@ -111,7 +110,7 @@ def process_row(row):
     profile.github_name = github
     profile.save()
 
-    group = get_group(course)
+    group = get_group(course, row[BOOTCAMP_NAME])
 
     UserGroupMembership.objects.get_or_create(
         user=user, group=group, permission_student=True
