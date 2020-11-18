@@ -110,12 +110,14 @@ export default ({
   linkSubmission,
   formErrors,
 }) => {
+
   const classes = useStyles();
 
   const workshopAttendance = false;
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>
+          
         <Paper className={classes.paper}>
           {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
 
