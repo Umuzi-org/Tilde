@@ -38,6 +38,18 @@ IMPORTANT NOTES:
   Donating to EFF: https://eff.org/donate-le
 ```
 
+## Renewing secrets
+
+```
+certbot renew --manual-auth-hook ./null.sh
+```
+
+We are using a dns based challenge, go add the txt record to the dns, and be quick abou it
+
+Then delete and recreate the tls secrets
+
+You may need to delete and recreate the ingress
+
 ## Configuring cluster to use secrets
 
 Followed : https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl
