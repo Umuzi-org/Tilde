@@ -76,7 +76,7 @@ def user_as_assignee_stats(user):
     latest_reviews.sort(key=lambda o: o.timestamp)
 
     if latest_reviews:
-        oldest_review_feedback_card = latest_reviews[0].timestamp
+        oldest_review_feedback_card = latest_reviews[0].timestamp.strftime(DATE_FORMAT)
     else:
         oldest_review_feedback_card = None
 
@@ -96,7 +96,7 @@ def user_as_assignee_stats(user):
     )
     if last_completed_project:
         last_time_a_project_was_completed = (
-                last_completed_project.complete_time
+                last_completed_project.complete_time.strftime(DATE_FORMAT)
             )
         # else:
         #     last_time_a_project_was_completed = None
@@ -299,12 +299,14 @@ class Command(BaseCommand):
             all_data.extend(get_group_report(group))
             # break
 
-        headings = []
-        for data in all_data:
-            headings.extend(data.keys())
-        headings = sorted(
-            set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
-        )
+        # headings = []
+        # for data in all_data:
+        #     headings.extend(data.keys())
+        # headings = sorted(
+        #     set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
+        # )
+
+        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days""".split("\t")
 
         with open(
             Path(f"gitignore/group_report_{today.strftime('%a %d %b %Y')}.csv"),
@@ -313,3 +315,9 @@ class Command(BaseCommand):
             writer = csv.writer(f)
             writer.writerow(headings)
             writer.writerows([[d[heading] for heading in headings] for d in all_data])
+
+        for data in all_data:
+            for key in data.keys():
+                if key not in headings:
+                    breakpoint()
+                    pass
