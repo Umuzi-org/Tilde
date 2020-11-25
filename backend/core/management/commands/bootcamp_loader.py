@@ -42,7 +42,7 @@ WE_BOOT = 12
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1xOwSUOc7iiyi08QvIBbSna0HRMaX6GyLi8jdCn5Q2rU/"
+        url="https://docs.google.com/spreadsheets/d/1FrDXAjl3NWOdD5urQvpxe-NaUmDXEOo-K0Dp3V3I81g/"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
