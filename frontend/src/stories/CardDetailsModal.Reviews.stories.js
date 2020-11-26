@@ -24,8 +24,9 @@ export default {
       reviewIds: [4857],
       reviews: [
 
-        {"id":4857,"status":"NYC","timestamp":"2020-10-29T03:47:20.636784Z","comments":"This is good work! There are "},
+        {"id":4857,"status":"R","timestamp":"2020-10-29T03:47:20.636784Z","comments":"This is good work! There are "},
         reviewObject,
-{"id":4857,"status":"NYC","timestamp":"2020-10-29T03:47:20.636784Z","comments":"This is good work! There are "},
+        {"id":4857,"status":"E","timestamp":"2020-10-29T03:47:20.636784Z","comments":"This is good work! There are "},
+        {"id":4857,"status":"C","timestamp":"2020-10-29T03:47:20.636784Z","comments":"This is good work! There are "},
       ]
   };

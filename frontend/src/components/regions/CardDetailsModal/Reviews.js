@@ -12,6 +12,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Markdown from "react-markdown";
 
+import ReviewStatus from "../../widgets/ReviewStatus";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1, 2, 1),
@@ -19,15 +21,21 @@ const useStyles = makeStyles((theme) => ({
 
   commentColumn: {
     minWidth: 300,
+    maxWidth:300,
   },
 
   tableContainer: {
     maxHeight: 200,
   },
+  
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),
+    maxWidth: "100%",
+    maxHeight: "100%",
   },
+
+ 
 }));
 
 export default ({ reviewIds, reviews }) => {
@@ -41,7 +49,7 @@ export default ({ reviewIds, reviews }) => {
             return (
               <TableRow key={review.id}>
                 <TableCell>{review.timestamp}</TableCell>
-                <TableCell>{review.status}</TableCell>
+                <TableCell><ReviewStatus status={review.status}/></TableCell>
                 <TableCell>{review.reviewerUserEmail}</TableCell>
                 <TableCell className={classes.commentColumn}>
                   <Markdown source={review.comments}></Markdown>
