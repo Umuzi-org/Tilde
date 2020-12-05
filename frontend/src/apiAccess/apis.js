@@ -38,7 +38,7 @@ async function authenticateWithOneTimeToken(data) {
 }
 
 async function userGroupsPage({ page }) {
-  const url = `${API_BASE_URL}/api/user_groups/?page=${page}`;
+  const url = `${API_BASE_URL}/api/user_groups/?active=true&page=${page}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }

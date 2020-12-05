@@ -9,15 +9,15 @@ import LaunchIcon from "@material-ui/icons/Launch";
 //   };
 // });
 
-function getViewUrl({ contentUrl }) {
-  let urlEnd = contentUrl.slice(
-    contentUrl.search("/content/") + "/content/".length
-  );
-  // 'projects/nodejs/sql/_index.md'
-  urlEnd = urlEnd.slice(0, urlEnd.length - "/index.md".length);
-  // 'projects/nodejs/sql/'
-  return `https://umuzi-org.github.io/tech-department/${urlEnd}`;
-}
+// function getViewUrl({ contentUrl }) {
+//   let urlEnd = contentUrl.slice(
+//     contentUrl.search("/content/") + "/content/".length
+//   );
+//   // 'projects/nodejs/sql/_index.md'
+//   urlEnd = urlEnd.slice(0, urlEnd.length - "/index.md".length);
+//   // 'projects/nodejs/sql/'
+//   return `https://umuzi-org.github.io/tech-department/${urlEnd}`;
+// }
 
 export default ({ contentItemId, contentUrl, className }) => {
   //   const classes = useStyles();
@@ -26,7 +26,7 @@ export default ({ contentItemId, contentUrl, className }) => {
 
   return (
     <a
-      href={getViewUrl({ contentUrl })}
+      href={ contentUrl }
       target="_blank"
       rel="noopener noreferrer"
     >
