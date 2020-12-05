@@ -41,38 +41,53 @@ const getColumns = ({ cards }) => {
     .sort((card1, card2) => card1.order - card2.order);
 };
 
-const getRows = ({ cards }) => {
-  const names = cards
-    .map((card) => card.assigneeNames)
+const getRows = ({ cards,filterByUsers }) => {
+  const userIds = cards
+    .map((card) => card.assignees)
     .flat()
     .filter((v, i, a) => a.indexOf(v) === i)
+    .filter((value)=> filterByUsers[value])
     .sort();
+
 
   let rows = {};
 
-  for (let name of names) {
-    rows[name] = {};
+  for (let userId of userIds) {
+    rows[userId] = {};
   }
 
   for (let card of cards) {
-    for (let name of card.assigneeNames) {
-      rows[name][card.contentItem] = card;
+    for (let userId of card.assignees) {
+        if (rows[userId] !== undefined){
+
+            rows[userId][card.contentItem] = card;
+        }
     }
   }
 
   return rows;
 };
 
-const filteredCardsAsArray = ({ cards, userGroup }) => {
-  if (userGroup === undefined) return [];
-  const groupUsers = userGroup.members.map((member) => member.userId);
+const filteredCardsAsArray = ({ cards,filterByUsers }) => {
   return Object.values(cards).filter((card) => {
     for (let assignee of card.assignees) {
-      if (groupUsers.indexOf(assignee) !== -1) return true;
+      if (filterByUsers[assignee]) return true;
     }
     return false;
   });
 };
+
+
+const getStudentUserDisplayData = ({userGroup}) => {
+    if (!userGroup) return {}
+    let ret = {}
+    userGroup.members.forEach((member)=>{
+        if (member.permissionStudent){
+            ret[member.userId] = member.userEmail
+        }
+    })
+    return ret
+}
 
 const GroupCardSummaryUnconnected = ({
   cards,
@@ -90,11 +105,15 @@ const GroupCardSummaryUnconnected = ({
     }
   }, [userGroup, fetchSingleUserGroup, groupId, fetchUserGroupSummaryCards]);
 
-  const filteredCards = filteredCardsAsArray({ cards, userGroup });
+  const studentUsers = getStudentUserDisplayData({userGroup})
+
+
+  const filteredCards = filteredCardsAsArray({ cards, filterByUsers:studentUsers });
   const props = {
     columns: getColumns({ cards: filteredCards }),
-    rows: getRows({ cards: filteredCards }),
+    rows: getRows({ cards: filteredCards, filterByUsers:studentUsers }),
     userGroup: userGroup || {},
+    displayUsers:studentUsers,
   };
 
   return <Presentation {...props} />;
@@ -121,7 +140,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchUserGroupSummaryCards: ({ userGroup }) => {
       const dataSequence = userGroup.members
-        .filter((member) => member.permissionStudent || true) // TODO: fix data
+        // .filter((member) => member.permissionStudent || true) // TODO: fix data
         .map((member) => {
           return { assigneeUserId: member.userId, page: 1 };
         });

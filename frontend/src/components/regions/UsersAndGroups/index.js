@@ -20,7 +20,6 @@ export function cleanAndFilterUserGroups({userGroups, filterBy}) {
                 return false
         }
         return true
-    
     });
   }
   return ret;
@@ -35,7 +34,7 @@ function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
     for (let member of group.members) {
       const email = member.userEmail;
 
-      if (filterBy && email.indexOf(filterBy) === -1) continue;
+      if (filterBy && email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) continue;
 
       users[email] = {
         ...users[email],
@@ -58,6 +57,7 @@ function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
+//   console.log(users)
   return users;
 }
 

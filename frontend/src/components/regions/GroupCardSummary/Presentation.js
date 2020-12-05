@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 
 import CellContent from "./CellContent";
+import LinkToUserBoard from "../../widgets/LinkToUserBoard"
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -20,11 +21,12 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default ({ userGroup, columns, rows }) => {
+export default ({ userGroup, columns, rows,displayUsers }) => {
   const classes = useStyles();
+  
   return (
     <React.Fragment>
-      <Typography>{userGroup.name}</Typography>
+      <Typography variant="h4">{userGroup.name}</Typography>
 
       <Table>
         <TableHead>
@@ -49,11 +51,18 @@ export default ({ userGroup, columns, rows }) => {
         <TableBody>
           {Object.keys(rows)
             .sort()
-            .map((name, index) => {
-              const row = rows[name];
+            .map((userId, index) => {
+              const row = rows[userId];
+
               return (
                 <TableRow key={index}>
-                  <TableCell>{name}</TableCell>
+                  <TableCell>
+                      <Typography>
+                          
+                          {displayUsers[userId]}
+                          </Typography> 
+                      <LinkToUserBoard userId={userId}/>
+                    </TableCell>
                   {columns.map((column) => {
                     return (
                       <TableCell key={column.id} className={classes.cell}>

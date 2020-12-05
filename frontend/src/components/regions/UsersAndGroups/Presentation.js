@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 // hactoberfest: Visual debt. Make this look better: max height of container should fit viewport
 import { Link } from "react-router-dom";
 
+import LinkToUserBoard from "../../widgets/LinkToUserBoard"
+
 import {
   TableRow,
   TableHead,
@@ -113,21 +115,13 @@ export default function Presentation({
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(users).map((email) => {
+              {Object.keys(users).sort().map((email) => {
                 return (
                   <TableRow key={email}>
                     <TableCell>{email}</TableCell>
                     <TableCell>
-                      <Link
-                        to={routes.userBoard.route.path.replace(
-                          ":userId",
-                          users[email].userId
-                        )}
-                      >
-                        <Button size="small" variant="outlined">
-                          Board
-                        </Button>
-                      </Link>
+                      <LinkToUserBoard 
+                      userId= {users[email].userId}/>
                     </TableCell>
                   </TableRow>
                 );
