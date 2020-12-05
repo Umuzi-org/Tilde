@@ -6,14 +6,26 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
-function cleanAndFilterUserGroups(userGroups, filterBy) {
+export function cleanAndFilterUserGroups({userGroups, filterBy}) {
   let ret = Object.values(userGroups);
   ret.sort((a, b) => (a.name > b.name ? 1 : -1));
+  
   if (filterBy) {
-    return ret.filter((group) => group.name.indexOf(filterBy) !== -1);
+    let terms = filterBy.toLowerCase().split(' ').filter((s)=>s)
+
+    return ret.filter((group) => {
+        let name = group.name.toLowerCase();
+        for (let term of terms){
+            if (name.indexOf(term) === -1)
+                return false
+        }
+        return true
+    
+    });
   }
   return ret;
 }
+
 function ignore() {}
 
 function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
@@ -70,7 +82,7 @@ function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
   };
 
   const props = {
-    userGroups: cleanAndFilterUserGroups(userGroups, filterByGroup.value),
+    userGroups: cleanAndFilterUserGroups({userGroups, filterBy:filterByGroup.value}),
     users: cleanAndFilterUsers(
       userGroups,
       filterByUser.value,
