@@ -147,6 +147,7 @@ function AgileBoardUnconnected({
         e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
 
       if (atBottom) {
+        //   console.log("At bottom")
         fetchNextColumnPage(column.label);
       }
     }
@@ -182,7 +183,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchCardPages: ({ dataSequence }) => {
       dispatch(
-        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(
+        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.startCallSequence(
           { dataSequence }
         )
       );
