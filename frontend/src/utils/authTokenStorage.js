@@ -8,8 +8,9 @@ export const setAuthToken = ({ value, keep }) => {
 };
 
 export const getAuthToken = () => {
-  const token =
+    const token =
     sessionStorage.getItem(AUTH_TOKEN) || localStorage.getItem(AUTH_TOKEN);
+
   if (token !== "undefined") return token;
 };
 

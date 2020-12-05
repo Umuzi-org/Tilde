@@ -32,7 +32,7 @@ async function authenticateWithOneTimeToken(data) {
     method: "POST",
     data,
   });
-  setAuthToken({ value: responseData["token"] });
+  setAuthToken({ value: responseData["token"], keep:true });
 
   return { response, responseData };
 }
