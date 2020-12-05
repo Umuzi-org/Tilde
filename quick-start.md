@@ -121,3 +121,34 @@ export GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE=/path/to/your/credentials/file
 ```
 
 What I generally do is export all the things at the top of by virtualenvironment activate script. Then whenever I run the frontend or the backend I activate the same venv. This is nice because then the whole lot is specified in one place and if you need to change your keys or anything then it's easy peasy.
+
+## Creating a user and their cards
+
+There are a few convenience commands that you can use to set things up for first time use/poking around:
+
+Note, to see details of any of these commands you can do the following: `python manage.py THE_COMMAND --help`
+
+```
+# create your sweet self as a superuser
+python manage.py create_full_user sheena.oconnell@umuzi.org true true sheenarbw
+
+# add a new group
+python manage.py create_user_group "demo group"
+
+# add a user to a group with default permissions. You can use this command to set people up with different roles
+
+python manage.py add_user_to_user_group "sheena.oconnell@umuzi.org" "demo group"
+
+
+# add a curriulum
+TODO
+
+# register a user for a course
+# the intro to Tilde course basically demonstrates all the different things Tilde can do from a student's perspective so it's a good way to get to poke around with all functionality
+python manage.py add_course_reg "sheena.oconnell@umuzi.org" "Tilde: Intro for students"
+
+# regenerate cards for the user
+python manage.py delete_and_recreate_user_cards "sheena.oconnell@umuzi.org"
+```
+
+If you follow these steps then you should be able to log into the frontend as this user and poke around your board
