@@ -7,6 +7,8 @@ from core.tests import factories as core_factories
 from django.utils.timezone import datetime
 from datetime import timedelta
 from curriculum_tracking.models import ContentItem
+from django.utils import timezone
+
 
 
 class ProjectCardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -87,13 +89,16 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(
             content_item=factories.ProjectContentItemFactory(), recruit_project=None
         )
-        self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
+        self._test_set_due_time_permissions(
+            card, lambda card: card.recruit_project)
 
     def test_set_topic_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC)
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.TOPIC)
         )
-        self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
+        self._test_set_due_time_permissions(
+            card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
         recruit = UserFactory()
@@ -120,7 +125,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         card.refresh_from_db()
         progress = get_progress(card)
-        self.assertEqual(progress.due_time.strftime("%c"), due_time_1.strftime("%c"))
+        self.assertEqual(progress.due_time.strftime(
+            "%c"), due_time_1.strftime("%c"))
 
         response = self.client.post(url, data={"due_time": due_time_1})
 
@@ -133,7 +139,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
 
         progress.refresh_from_db()
-        self.assertEqual(progress.due_time.strftime("%c"), due_time_2.strftime("%c"))
+        self.assertEqual(progress.due_time.strftime(
+            "%c"), due_time_2.strftime("%c"))
 
     def test_list_assignees_permissions_on_list(self):
 
@@ -308,3 +315,40 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
 
 #     def verbose_instance_factory(self):
 #         return factories.ContentItemOrderFactory()
+
+
+class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "workshopattendance-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        workshop = factories.ContentItemFactory(
+            content_type=ContentItem.WORKSHOP)
+        workshop_attendance = factories.WorkshopAttendanceFactory(
+            content_item=workshop)
+        content = workshop_attendance.content_item
+        content.topic_needs_review = False
+        content.save()
+        return workshop_attendance
+
+    def test_get_instance_permissions(self):
+
+        attendee_user = UserFactory(is_superuser=False, is_staff=False)
+        workshop_attendance = factories.WorkshopAttendanceFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.WORKSHOP), 
+            timestamp=timezone.datetime.now(),
+            attendee_user=attendee_user)
+
+        self.login(attendee_user)
+        url = self.get_list_url()
+        response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        random_human = UserFactory(is_superuser=False, is_staff=False)
+        self.login(random_human)
+        response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        

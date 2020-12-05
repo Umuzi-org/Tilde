@@ -105,6 +105,12 @@ router.register(
     "topicprogress",
 )
 
+router.register(
+    r"workshop_attendance",
+    curriculum_tracking_api_views.WorkshopAttendanceViewset,
+    "workshopattendance",
+)
+
 
 # router.register(
 #     r"agile_card_add_review",

@@ -277,3 +277,14 @@ class ProjectSubmitLink(serializers.ModelSerializer):
         fields = ["link_submission"]
 
     # TODO: validators based on model validators (look inside save method)
+
+
+class WorkshopAttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.WorkshopAttendance
+        fields = [
+            "id",
+            "timestamp",
+            "content_item",
+            "attendee_user",
+        ]
