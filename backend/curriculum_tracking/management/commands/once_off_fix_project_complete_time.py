@@ -5,8 +5,6 @@ from django.core.management.base import BaseCommand
 from curriculum_tracking.models import (
     ContentItem,
     AgileCard,
-    RecruitProject,
-    RecruitProjectReview,
 )
 
 

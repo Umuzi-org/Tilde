@@ -70,11 +70,13 @@ class generate_all_content_cards_for_user_Tests(TestCase):
         for content in self.unflavoured_content:
 
             CurriculumContentRequirementFactory(
-                content_item=content, curriculum=registration1.curriculum,
+                content_item=content,
+                curriculum=registration1.curriculum,
             )
 
             CurriculumContentRequirementFactory(
-                content_item=content, curriculum=registration2.curriculum,
+                content_item=content,
+                curriculum=registration2.curriculum,
             )
 
     def test_two_courses_with_overlapping_content_and_no_project_or_content_progress(
@@ -436,6 +438,7 @@ class update_project_card_progress_Tests(TestCase):
         progress = factories.RecruitProjectFactory(
             content_item=content_item,
             review_request_time=timezone.datetime.now() - timezone.timedelta(days=1),
+            start_time=timezone.datetime.now() - timezone.timedelta(days=2),
         )
         progress.recruit_users.add(self.user)
 
@@ -470,7 +473,9 @@ class update_project_card_progress_Tests(TestCase):
         card_js.assignees.add(self.user)
 
         progress = factories.RecruitProjectFactory(
-            content_item=content_item, review_request_time=None,
+            content_item=content_item,
+            review_request_time=None,
+            start_time=timezone.datetime.now() - timezone.timedelta(days=2),
         )
         progress.recruit_users.add(self.user)
         progress.flavours.add(
@@ -481,7 +486,7 @@ class update_project_card_progress_Tests(TestCase):
         card_ts.refresh_from_db()
         card_js.refresh_from_db()
 
-        self.assertEqual(card_js.status, card_ts.READY)
+        self.assertEqual(card_js.status, card_js.READY)
         self.assertEqual(card_ts.status, card_ts.IN_PROGRESS)
 
 
@@ -503,12 +508,14 @@ class RegenerateCardTests(TestCase):
 
         for o in [self.topic, self.project, self.workshop]:
             js_req = models.CurriculumContentRequirement.objects.create(
-                content_item=o, curriculum=self.js_curriculum,
+                content_item=o,
+                curriculum=self.js_curriculum,
             )
             js_req.flavours.add(JAVASCRIPT)
 
             ts_req = models.CurriculumContentRequirement.objects.create(
-                content_item=o, curriculum=self.ts_curriculum,
+                content_item=o,
+                curriculum=self.ts_curriculum,
             )
             ts_req.flavours.add(TYPESCRIPT)
 
@@ -539,4 +546,3 @@ class RegenerateCardTests(TestCase):
         self.assertEqual(
             models.AgileCard.objects.filter(assignees__in=[user]).count(), 6
         )
-

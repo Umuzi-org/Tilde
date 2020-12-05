@@ -2,7 +2,6 @@ from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
     RecruitProject,
-    RecruitProjectReview,
     WorkshopAttendance,
     ContentItem,
     TopicReview,
@@ -291,7 +290,8 @@ class start_project_Tests(TestCase):
 
         continue_repo = ready_card._get_repo_to_continue_from()
         self.assertEqual(
-            continue_repo, progressed_card.recruit_project.repository,
+            continue_repo,
+            progressed_card.recruit_project.repository,
         )
 
         ready_card.content_item.save()
@@ -309,7 +309,8 @@ class start_project_Tests(TestCase):
         )
 
         self.assertNotEqual(
-            ready_card.recruit_project, progressed_card.recruit_project,
+            ready_card.recruit_project,
+            progressed_card.recruit_project,
         )
         self.assertTrue(invite_github_collaborators_to_repo.called)
 
@@ -333,7 +334,8 @@ class start_project_Tests(TestCase):
             status=AgileCard.COMPLETE,
             content_flavours=card_flavours,
             recruit_project=factories.RecruitProjectFactory(
-                content_item=pre_content, repository=factories.RepositoryFactory(),
+                content_item=pre_content,
+                repository=factories.RepositoryFactory(),
             ),
         )
         pre_card.assignees.set([assignee])
@@ -555,7 +557,13 @@ class Project_set_due_time_Tests(TestCase):
 class derive_status_from_project_Tests(TestCase):
     def setUp(self):
         self.project = factories.RecruitProjectFactory()
-        self.trusted_user = UserFactory(is_staff=True,)
+        self.trusted_user = UserFactory(
+            is_staff=True,
+        )
+
+    def set_project_start_time(self):
+        self.project.start_time = timezone.now() - timedelta(days=15)
+        self.project.save()
 
     def test_no_reviews_or_review_request(self):
         self.assertEqual(
@@ -563,7 +571,8 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_trusted_nyc_after_request_for_review(self):
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
+        self.set_project_start_time()
+        self.project.request_review(force_timestamp=timezone.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
@@ -578,7 +587,8 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_untrusted_nyc_after_request_for_review(self):
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
+        self.set_project_start_time()
+        self.project.request_review(force_timestamp=timezone.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT, recruit_project=self.project
         )
@@ -597,6 +607,7 @@ class derive_status_from_project_Tests(TestCase):
         )
         self.assertTrue(review.trusted)
 
+        self.set_project_start_time()
         self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
 
         self.assertEqual(
@@ -604,8 +615,10 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_untrusted_nyc_before_request_for_review(self):
+        self.set_project_start_time()
         review = factories.RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT, recruit_project=self.project,
+            status=NOT_YET_COMPETENT,
+            recruit_project=self.project,
         )
         self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
 
@@ -621,6 +634,7 @@ class derive_status_from_project_Tests(TestCase):
             recruit_project=self.project,
             reviewer_user=self.trusted_user,
         )
+        self.set_project_start_time()
         self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
 
         self.assertTrue(review.trusted)
@@ -633,6 +647,7 @@ class derive_status_from_project_Tests(TestCase):
         review = factories.RecruitProjectReviewFactory(
             status=COMPETENT, recruit_project=self.project
         )
+        self.set_project_start_time()
         self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
 
         self.assertFalse(review.trusted)
@@ -791,4 +806,3 @@ class WorkshopMovementTests(TestCase):
         self.assertIsNone(self.card.workshop_attendance)
         self.assertEqual(WorkshopAttendance.objects.count(), 0)
         self.assertEqual(self.card.status, AgileCard.READY)
-

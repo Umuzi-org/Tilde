@@ -239,7 +239,7 @@ class UserGroupMembership(models.Model, Mixins):
     )
 
     permission_student = models.BooleanField(
-        default=False
+        default=True
     )  # this user is a student to be managed. They can see their own things
     permission_view = models.BooleanField(default=False)  # can look at all the things
     permission_manage = models.BooleanField(default=False)  # can take managment actions

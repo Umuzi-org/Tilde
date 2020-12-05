@@ -14,24 +14,24 @@ TYPESCRIPT = "ts"
 User = get_user_model()
 
 
-class get_full_url_from_content_link_param_Tests(TestCase):
-    def test_various(self):
-        for url_part in [
-            "content/workshops/intro-to-ncit/_index.md",
-            "content/workshops/intro-to-ncit/",
-            "/workshops/intro-to-ncit/",
-            "https://umuzi-org.github.io/tech-department/workshops/intro-to-ncit/",
-        ]:
+# class get_full_url_from_content_link_param_Tests(TestCase):
+#     def test_various(self):
+#         for url_part in [
+#             "content/workshops/intro-to-ncit/_index.md",
+#             "content/workshops/intro-to-ncit/",
+#             "/workshops/intro-to-ncit/",
+#             "https://umuzi-org.github.io/tech-department/workshops/intro-to-ncit/",
+#         ]:
 
-            result = helpers.get_full_url_from_content_link_param(url_part)
+#             result = helpers.get_full_url_from_content_link_param(url_part)
 
-            self.assertEqual(
-                result,
-                constants.RAW_CONTENT_URL.format(
-                    content_sub_dir="content/workshops/intro-to-ncit/_index.md"
-                ),
-                url_part,
-            )
+#             self.assertEqual(
+#                 result,
+#                 constants.RAW_CONTENT_URL.format(
+#                     content_sub_dir="content/workshops/intro-to-ncit/_index.md"
+#                 ),
+#                 url_part,
+#             )
 
 
 class get_ordered_content_items_Tests(TestCase):
@@ -161,4 +161,3 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual(l[3].is_hard_milestone, False)
         self.assertEqual(l[3].is_soft_milestone, True)
         self.assertEqual([o.name for o in l[3].flavours], [JAVASCRIPT])
-

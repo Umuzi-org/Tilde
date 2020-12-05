@@ -3,11 +3,12 @@ from curriculum_tracking import models
 from curriculum_tracking.tests import factories
 from core.tests import factories as core_factories
 from curriculum_tracking.constants import (
-    RED_FLAG,
     NOT_YET_COMPETENT,
     COMPETENT,
-    EXCELLENT,
 )
+
+from django.utils import timezone
+from datetime import timedelta
 
 
 class RecruitProjectReviewCreationTests(TestCase):
@@ -98,6 +99,17 @@ class RecruitProjectTests(TestCase):
             status=models.AgileCard.COMPLETE
         )
 
+        self.ip_card.recruit_project.start_time = timezone.now() - timedelta(days=15)
+        self.review_card.recruit_project.start_time = timezone.now() - timedelta(
+            days=15
+        )
+        self.feedback_card.recruit_project.start_time = timezone.now() - timedelta(
+            days=15
+        )
+        self.complete_card.recruit_project.start_time = timezone.now() - timedelta(
+            days=15
+        )
+
         self.cards = [
             self.blocked_card,
             self.ready_card,
@@ -108,8 +120,10 @@ class RecruitProjectTests(TestCase):
         ]
 
     def test_that_requesting_a_review_moves_the_card_to_in_review_when_it_should(self):
-        self.blocked_card.recruit_project.request_review()
-        self.ready_card.recruit_project.request_review()
+
+        # self.blocked_card.recruit_project.request_review()
+        # self.ready_card.recruit_project.request_review()
+
         self.ip_card.recruit_project.request_review()
         self.review_card.recruit_project.request_review()
         self.feedback_card.recruit_project.request_review()
@@ -137,7 +151,7 @@ class RecruitProjectTests(TestCase):
 
         project = card.recruit_project
 
-
+        project.start_time = timezone.now() - timedelta(days=15)
         project.request_review()
 
         card.refresh_from_db()

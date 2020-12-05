@@ -187,7 +187,8 @@ class ContentItem(models.Model, Mixins):
         super(ContentItem, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.title or self.url or ""
+        name = self.title or self.url or ""
+        return f"{self.content_type}: {name}"
 
     def set_available_flavours(self, flavour_strings):
         created_tags = [
@@ -433,6 +434,7 @@ class RecruitProject(models.Model, Mixins):
         # self.review_request_time = (
         #     force_timestamp or self.review_request_time or timezone.now()
         # )
+        assert self.start_time, "cannot request a review if the project isn't started"
 
         self.review_request_time = force_timestamp or timezone.now()
 
@@ -594,7 +596,6 @@ class WorkshopAttendance(models.Model, Mixins):
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     attendee_user = models.ForeignKey(User, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
-
 
 
 class AgileCard(models.Model, Mixins):
@@ -801,12 +802,14 @@ class AgileCard(models.Model, Mixins):
         else:
             return card.status_ready_or_blocked()
 
-
     @classmethod
     def derive_status_from_project(cls, project):
         if not project.start_time:
-            card = project.agile_card
-            return card.status_ready_or_blocked()
+            try:
+                card = project.agile_card
+                return card.status_ready_or_blocked()
+            except AgileCard.DoesNotExist:
+                pass
 
         if project.review_request_time:
             get_trusted_review = lambda: project.latest_review(

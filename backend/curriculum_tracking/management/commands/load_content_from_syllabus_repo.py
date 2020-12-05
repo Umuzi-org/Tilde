@@ -27,24 +27,180 @@ SOFT = "soft"
 DB_ID = "_db_id"
 
 
-def content_type_from_url(url):
-    if "/projects/" in url:
-        return models.ContentItem.PROJECT
-    if "/topics/" in url:
-        return models.ContentItem.TOPIC
-    if "/workshops/" in url:
-        return models.ContentItem.WORKSHOP
-    raise Exception(f"cant find content type in url: {url}")
+# def content_type_from_url(url):
+#     if "/projects/" in url:
+#         return models.ContentItem.PROJECT
+#     if "/topics/" in url:
+#         return models.ContentItem.TOPIC
+#     if "/workshops/" in url:
+#         return models.ContentItem.WORKSHOP
+#     raise Exception(f"cant find content type in url: {url}")
+
+
+class Helper:
+    content_items_seen_by_id: Dict[int, str] = {}
+
+    @classmethod
+    def get_full_url_from_partial(cls, part: str):
+        part = str(part)
+        part = part.strip("/")
+        if part.endswith("_index.md"):
+            part = part[: -len("/_index.md")]
+        if part.startswith("content/"):
+            part = part[len("content/") :]
+        assert not part.endswith("index.md"), f"invalid url part: {part}"
+        assert not part.startswith("content/"), f"invalid url part: {part}"
+
+        return cls.url_template.format(url_part=part)
+
+    @classmethod
+    def set_url_template(cls, url_template: str):
+        cls.url_template = url_template
+
+    @classmethod
+    def set_repo_base_dir(cls, repo_base_dir):
+        cls.repo_base_dir = Path(repo_base_dir)
+
+    @classmethod
+    def load_available_content_flavours(cls):
+        full_path = Helper.repo_base_dir / "flavours.yaml"
+        with open(full_path, "r") as f:
+            cls.available_content_flavours = yaml.load(f)
+
+    @classmethod
+    def save_content(cls, file_path):
+        print(f"processing {file_path}")
+
+        content_item_post = frontmatter.load(file_path)
+        meta = dict(content_item_post)
+
+        assert meta["title"], f"Title missing in frontmatter: {file_path} => {meta}"
+
+        content_sub_dir = str(file_path).replace(str(cls.repo_base_dir), "").strip("/")
+        # url = helpers.get_full_url_from_content_link_param(content_sub_dir)
+        url = Helper.get_full_url_from_partial(content_sub_dir)
+        # assert requests.get(url).status_code != 404, f"{file_path} {content_type} => {url}"
+
+        # actual_content_type = content_type
+        # if (content_type == models.ContentItem.PROJECT) and meta.get(NO_FORM):
+        #     actual_content_type = models.ContentItem.TOPIC
+        reverse_content_types = {t[1]: t[0] for t in models.ContentItem.CONTENT_TYPES}
+        reverse_submission_types = {
+            t[1]: t[0] for t in models.ContentItem.PROJECT_SUBMISSION_TYPES
+        }
+
+        actual_content_type = reverse_content_types[meta["content_type"]]
+
+        project_submission_type = (
+            reverse_submission_types[meta["submission_type"]]
+            if "submission_type" in meta
+            else None
+        )
+
+        if "from_repo" in meta:
+            try:
+                continue_from_repo = models.ContentItem.objects.get(
+                    # url=helpers.get_full_url_from_content_link_param(meta["from_repo"])
+                    url=Helper.get_full_url_from_partial(meta["from_repo"])
+                )
+
+                print(f"continue from existing content item: {continue_from_repo}")
+                continue_from_repo = cls.save_content(  # saving it anyway because there are new fields...
+                    file_path=cls.repo_base_dir
+                    / "content"
+                    / meta["from_repo"]
+                    / "_index.md",
+                )
+
+            except models.ContentItem.DoesNotExist:
+
+                continue_from_repo = cls.save_content(
+                    file_path=cls.repo_base_dir
+                    / "content"
+                    / meta["from_repo"]
+                    / "_index.md",
+                )
+                print(f"continue from new content item: {continue_from_repo}")
+            assert continue_from_repo
+            assert continue_from_repo.content_type == models.ContentItem.PROJECT
+
+        else:
+            continue_from_repo = None
+
+        defaults = {
+            "content_type": actual_content_type,
+            "title": meta["title"],
+            "story_points": int(meta.get("story_points", 1)),
+            "url": url,
+            # "available_flavours": meta.get("available_flavours"),
+            "topic_needs_review": meta.get("topic_needs_review", False),
+            "project_submission_type": project_submission_type,
+            "continue_from_repo": continue_from_repo,
+            "template_repo": meta.get("template_repo"),
+        }
+
+        print(f"saving  {defaults['title']}")
+
+        if DB_ID in meta:
+            content_item, created = models.ContentItem.get_or_create_or_update(
+                pk=meta[DB_ID], defaults=defaults, overrides=defaults
+            )
+        else:
+            try:
+                content_item = models.ContentItem.objects.get(url=url)
+            except models.ContentItem.DoesNotExist:
+                content_item = models.ContentItem.objects.create(
+                    id=models.ContentItem.get_next_available_id(), url=url
+                )
+            content_item.update(**defaults)
+            content_item.save()
+
+        set_available_flavours(
+            content_item,
+            meta.get("available_flavours", []),
+            cls.available_content_flavours,
+        )
+
+        # if (
+        #     content_item.project_submission_type
+        #     and content_item.project_submission_type != content_item.NO_SUBMIT
+        # ):
+        #     assert (
+        #         content_item.available_flavours.count()
+        #     ), f"{content_item} has no flavours!!"
+
+        assert (
+            content_item.title
+        ), f"{content_item.id} {content_item} has no title (file_path={file_path} meta={meta})"
+        assert (
+            content_item.content_type
+        ), f"{content_item.id} {content_item} has no content_type"
+
+        _update_tags(meta, content_item)
+        content_item.save()
+
+        nice_content_type = dict(models.ContentItem.CONTENT_TYPES)[actual_content_type]
+
+        print(f"saved {content_item.id}")
+        content_item_post[DB_ID] = content_item.id
+        content_item_post["content_type"] = nice_content_type
+
+        with open(file_path, "wb") as f:
+            frontmatter.dump(content_item_post, f)
+
+        cls.content_items_seen_by_id[content_item.id] = content_item.url
+        return content_item
 
 
 def _add_prerequisite(
     content_item: models.ContentItem, prerequisite: str, hard_requirement: bool
 ) -> models.ContentItemOrder:
 
-    url = helpers.get_full_url_from_content_link_param(url_part=prerequisite)
+    url = Helper.get_full_url_from_partial(prerequisite)
 
     print(content_item)
     print(f"processing preprequisite: {prerequisite}")
+    print(f"url = {url}")
     required_content_item = models.ContentItem.objects.get(
         url=url,  # defaults={"content_type": content_type_from_url(url)}
     )
@@ -161,168 +317,37 @@ def set_available_flavours(
     ), f"Flavours dpnt match: Expected {available_flavours} but got {final}"
 
 
-def save_content(file_path, content_type, repo_base_dir, available_content_flavours):
-    print(f"processing {file_path}")
+# def create_or_update_content(content_type, available_content_flavours):
 
-    content_item_post = frontmatter.load(file_path)
-    meta = dict(content_item_post)
-    assert meta["title"], f"{file_path} => {meta}"
+#     for file_path in recurse_get_all_content_index_file_paths():
+#         assert file_path.name == "_index.md", f"Bad content name: {file_path}"
 
-    content_sub_dir = str(file_path).replace(str(repo_base_dir), "").strip("/")
-    url = helpers.get_full_url_from_content_link_param(content_sub_dir)
+#         Helper.save_content(
+#             file_path=file_path,
+#             content_type=content_type,
+#             available_content_flavours=available_content_flavours,
+#         )
 
-    # assert requests.get(url).status_code != 404, f"{file_path} {content_type} => {url}"
-
-    # actual_content_type = content_type
-    # if (content_type == models.ContentItem.PROJECT) and meta.get(NO_FORM):
-    #     actual_content_type = models.ContentItem.TOPIC
-    reverse_content_types = {t[1]: t[0] for t in models.ContentItem.CONTENT_TYPES}
-    reverse_submission_types = {
-        t[1]: t[0] for t in models.ContentItem.PROJECT_SUBMISSION_TYPES
-    }
-
-    actual_content_type = (
-        reverse_content_types[meta["content_type"]]
-        if "content_type" in meta
-        else content_type
-    )
-
-    project_submission_type = (
-        reverse_submission_types[meta["submission_type"]]
-        if "submission_type" in meta
-        else None
-    )
-
-    assert actual_content_type, f"{file_path} {content_type} => {actual_content_type}"
-
-    if "from_repo" in meta:
-        try:
-            continue_from_repo = models.ContentItem.objects.get(
-                url=helpers.get_full_url_from_content_link_param(meta["from_repo"])
-            )
-
-            print(f"continue from existing content item: {continue_from_repo}")
-            continue_from_repo = (
-                save_content(  # saving it anyway because there are new fields...
-                    file_path=repo_base_dir
-                    / "content"
-                    / meta["from_repo"]
-                    / "_index.md",
-                    content_type=models.ContentItem.PROJECT,
-                    repo_base_dir=repo_base_dir,
-                    available_content_flavours=available_content_flavours,
-                )
-            )
-
-        except models.ContentItem.DoesNotExist:
-
-            continue_from_repo = save_content(
-                file_path=repo_base_dir / "content" / meta["from_repo"] / "_index.md",
-                content_type=models.ContentItem.PROJECT,
-                repo_base_dir=repo_base_dir,
-                available_content_flavours=available_content_flavours,
-            )
-            print(f"continue from new content item: {continue_from_repo}")
-        assert continue_from_repo
-
-    else:
-        continue_from_repo = None
-
-    defaults = {
-        "content_type": actual_content_type,
-        "title": meta["title"],
-        "story_points": int(meta.get("story_points", 1)),
-        "url": url,
-        # "available_flavours": meta.get("available_flavours"),
-        "topic_needs_review": meta.get("topic_needs_review", False),
-        "project_submission_type": project_submission_type,
-        "continue_from_repo": continue_from_repo,
-        "template_repo": meta.get("template_repo"),
-    }
-
-    print(f"saving  {defaults['title']}")
-
-    if DB_ID in meta:
-        content_item, created = models.ContentItem.get_or_create_or_update(
-            pk=meta[DB_ID], defaults=defaults, overrides=defaults
-        )
-    else:
-        try:
-            content_item = models.ContentItem.objects.get(url=url)
-        except models.ContentItem.DoesNotExist:
-            content_item = models.ContentItem.objects.create(
-                id=models.ContentItem.get_next_available_id(), url=url
-            )
-            content_item.update(**defaults)
-            content_item.save()
-
-    set_available_flavours(
-        content_item, meta.get("available_flavours", []), available_content_flavours
-    )
-
-    # if (
-    #     content_item.project_submission_type
-    #     and content_item.project_submission_type != content_item.NO_SUBMIT
-    # ):
-    #     assert (
-    #         content_item.available_flavours.count()
-    #     ), f"{content_item} has no flavours!!"
-
-    assert (
-        content_item.title
-    ), f"{content_item.id} {content_item} has no title (file_path={file_path} meta={meta})"
-    assert (
-        content_item.content_type
-    ), f"{content_item.id} {content_item} has no content_type"
-
-    _update_tags(meta, content_item)
-    content_item.save()
-
-    nice_content_type = dict(models.ContentItem.CONTENT_TYPES)[actual_content_type]
-
-    print(f"saved {content_item.id}")
-    content_item_post[DB_ID] = content_item.id
-    content_item_post["content_type"] = nice_content_type
-
-    with open(file_path, "wb") as f:
-        frontmatter.dump(content_item_post, f)
-
-    return content_item
+# assert root_path.is_dir(), root_path
+# for child in root_path.iterdir():
+#     if child.is_dir():
+#         create_or_update_content(
+#             content_type, child, repo_base_dir, available_content_flavours
+#         )
+#     else:
+#         name = child.name
+#         if name == "_index.md":
+#             save_content(
+#                 file_path=child,
+#                 content_type=content_type,
+#                 repo_base_dir=repo_base_dir,
+#                 available_content_flavours=available_content_flavours,
+#             )
 
 
-def create_or_update_content(
-    content_type, root_path, repo_base_dir, available_content_flavours
-):
+def recurse_get_all_content_index_file_paths(root_path=None):
 
-    for file_path in recurse_get_all_content_index_file_paths(root_path):
-        assert file_path.name == "_index.md", f"Bad content name: {file_path}"
-
-        save_content(
-            file_path=file_path,
-            content_type=content_type,
-            repo_base_dir=repo_base_dir,
-            available_content_flavours=available_content_flavours,
-        )
-
-    # assert root_path.is_dir(), root_path
-    # for child in root_path.iterdir():
-    #     if child.is_dir():
-    #         create_or_update_content(
-    #             content_type, child, repo_base_dir, available_content_flavours
-    #         )
-    #     else:
-    #         name = child.name
-    #         if name == "_index.md":
-    #             save_content(
-    #                 file_path=child,
-    #                 content_type=content_type,
-    #                 repo_base_dir=repo_base_dir,
-    #                 available_content_flavours=available_content_flavours,
-    #             )
-
-
-def recurse_get_all_content_index_file_paths(root_path):
-
+    root_path = root_path or Helper.repo_base_dir
     assert root_path.is_dir(), root_path
     for child in root_path.iterdir():
         if child.is_dir():
@@ -334,11 +359,10 @@ def recurse_get_all_content_index_file_paths(root_path):
                 yield child
 
 
-def load_all_content_items_with_known_ids(root_path):
+def load_all_content_items_with_known_ids():
     seen_ids = {}
-    contnent_paths = recurse_get_all_content_index_file_paths(root_path)
-    available_content_flavours = _load_available_content_flavours(root_path)
-    for file_path in contnent_paths:
+    content_paths = recurse_get_all_content_index_file_paths()
+    for file_path in content_paths:
         # if "angular-testing-cucumber" not in str(file_path):  # TODO
         #     continue
         content_item_post = frontmatter.load(file_path)
@@ -351,11 +375,8 @@ def load_all_content_items_with_known_ids(root_path):
             db_id not in seen_ids
         ), f"Same ID on two content items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
         seen_ids[db_id] = file_path
-        save_content(
+        Helper.save_content(
             file_path,
-            content_type=None,
-            repo_base_dir=root_path,
-            available_content_flavours=available_content_flavours,
         )
 
 
@@ -374,31 +395,54 @@ def download_latest_tech_dept_repo():
     os.chdir(cwd)
 
 
-def content_item_file_path(repo_base_dir, content_item):
-    parts = content_item.url.split("/content/")
-    assert len(parts) == 2, parts
-    return repo_base_dir / "content" / parts[1]
+# def content_item_file_path(repo_base_dir, content_item):
+#     parts = content_item.url.split("/content/")
+#     assert len(parts) == 2, parts
+#     return repo_base_dir / "content" / parts[1]
 
 
-def add_all_prereq(repo_base_dir):
-    for content_item in models.ContentItem.objects.all():
-        print(f"{content_item.id} {content_item}")
+def add_all_prereq():
 
-        file_path = content_item_file_path(repo_base_dir, content_item)
+    for file_path in recurse_get_all_content_index_file_paths():
+        # for content_item in models.ContentItem.objects.all():
         print(file_path)
+        content_sub_dir = (
+            str(file_path).replace(str(Helper.repo_base_dir), "").strip("/")
+        )
+
+        # file_path = content_item_file_path(repo_base_dir, content_item)
         meta = dict(frontmatter.load(file_path))
+        url = Helper.get_full_url_from_partial(content_sub_dir)
+        content_item = models.ContentItem.objects.get(url=url)
+        print(f"{content_item.id} {content_item}")
 
         _manage_prerequisites(meta, content_item)
         content_item.save()
 
 
-def remove_missing_content_items_from_db(repo_base_dir):
+def user_prompt(question: str) -> bool:
+    """ Prompt the yes/no-*question* to the user. """
+    from distutils.util import strtobool
+
+    while True:
+        user_input = input(question + " [y/n]: ").lower()
+        try:
+            return bool(strtobool(user_input))
+        except ValueError:
+            print("Please use y/n or yes/no.\n")
+
+
+def remove_missing_content_items_from_db():
     """if there is a content item in the database that doesnt exist in the content repo then delete it"""
 
     for content_item in models.ContentItem.objects.all():
-        file_path = content_item_file_path(repo_base_dir, content_item)
-        print(f"checking {file_path} exists")
-        if not os.path.exists(file_path):
+        # file_path = content_item_file_path(repo_base_dir, content_item)
+        if content_item.id not in Helper.content_items_seen_by_id and user_prompt(
+            f"Delete {content_item}"
+        ):
+
+            # print(f"checking {file_path} exists")
+            # if not os.path.exists(file_path):
             print("deleting!")
             models.AgileCard.objects.filter(content_item=content_item).delete()
             models.ContentItemOrder.objects.filter(post=content_item).delete()
@@ -408,33 +452,28 @@ def remove_missing_content_items_from_db(repo_base_dir):
             content_item.delete()
 
 
-def _load_available_content_flavours(repo_base_dir):
-    full_path = repo_base_dir / "flavours.yaml"
-    with open(full_path, "r") as f:
-        return yaml.load(f)
+def load_content_from_tech_dept_repo():
 
+    # repo_base_dir = Helper.repo_base_dir
 
-def load_content_from_tech_dept_repo(repo_base_dir):
-    available_content_flavours = _load_available_content_flavours(repo_base_dir)
+    # for name in os.listdir(repo_base_dir / "content"):
+    #     path = repo_base_dir / "content" / name
+    #     if not path.is_dir():
+    #         continue
 
-    create_or_update_content(
-        content_type=models.ContentItem.WORKSHOP,
-        root_path=repo_base_dir / "content/workshops",
-        repo_base_dir=repo_base_dir,
-        available_content_flavours=available_content_flavours,
-    )
-    create_or_update_content(
-        content_type=models.ContentItem.TOPIC,
-        root_path=repo_base_dir / "content/topics",
-        repo_base_dir=repo_base_dir,
-        available_content_flavours=available_content_flavours,
-    )
-    create_or_update_content(
-        content_type=models.ContentItem.PROJECT,
-        root_path=repo_base_dir / "content/projects",
-        repo_base_dir=repo_base_dir,
-        available_content_flavours=available_content_flavours,
-    )
+    #     create_or_update_content(
+    #         content_type=models.ContentItem.WORKSHOP,
+    #         root_path=path,
+    #         repo_base_dir=repo_base_dir,
+    #         available_content_flavours=available_content_flavours,
+    #     )
+
+    for file_path in recurse_get_all_content_index_file_paths():
+        assert file_path.name == "_index.md", f"Bad content name: {file_path}"
+
+        Helper.save_content(
+            file_path=file_path,
+        )
 
 
 def check_content_urls_exist():
@@ -507,7 +546,8 @@ def _get_ordered_curriculum_items_from_page(file_stream):
             # l = [s.strip() for s in match.split('"') if s.strip()]
             # assert len(l) in [1, 2], f"malformed content link {match}"
             hard_requirement = bool(int(params.get("optional", 0)))
-            url = helpers.get_full_url_from_content_link_param(params["path"])
+            # url = helpers.get_full_url_from_content_link_param(params["path"])
+            url = Helper.get_full_url_from_partial(params["path"])
 
             try:
                 content_item = models.ContentItem.objects.get(url=url)
@@ -565,19 +605,28 @@ class Command(BaseCommand):
         parser.add_argument("currculum_name", type=str, nargs="?")
 
     def handle(self, *args, **options):
+        url_template = "http://syllabus.africacode.net/{url_part}/"
         path_to_repo = options.get("path_to_tech_dept_repo", "")
         process_content = options["process_content"]
         process_curriculums = options["process_curriculums"]
 
-        repo_base_dir = Path(path_to_repo)
-        curriculums_base_dir = repo_base_dir / "content/syllabuses"
+        Helper.set_url_template(url_template)
+        Helper.set_repo_base_dir(path_to_repo)
+        Helper.load_available_content_flavours()
 
+        curriculums_base_dir = Helper.repo_base_dir / "content/syllabuses"
         if process_content:
             print("Processing Content....")
-            load_all_content_items_with_known_ids(repo_base_dir)
-            remove_missing_content_items_from_db(repo_base_dir)
-            load_content_from_tech_dept_repo(repo_base_dir)
-            add_all_prereq(repo_base_dir)
+            # first we make sure that if something has an id, it gets saved first
+            # this is because we generate the next available id based on what is already in the db. This stops id conflicts
+            load_all_content_items_with_known_ids()
+            load_content_from_tech_dept_repo()
+
+            # now that all the content is loaded up, we check what should be removed
+            remove_missing_content_items_from_db()
+
+            # now all the content is right. Link things up
+            add_all_prereq()
 
         if process_curriculums:
             print("Processing Curriculums....")

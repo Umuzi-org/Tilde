@@ -6,13 +6,11 @@ python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $USER_GROUP_NAME $CONTE
 """
 
 from django.core.management.base import BaseCommand
-from core.models import UserGroup, UserGroupMembership
-from curriculum_tracking.models import ContentItem, RecruitProject, AgileCard
+from curriculum_tracking.models import ContentItem
 from git_real.constants import PERSONAL_GITHUB_NAME, ORGANISATION
 
 from git_real.helpers import add_collaborator
 from social_auth.github_api import Api
-import re
 import random
 from django.contrib.auth import get_user_model
 from social_auth.models import SocialProfile

@@ -18,7 +18,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class CurriculumSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Curriculum
-        fields = ["id"]
+        fields = [
+            "id",
+            "short_name",
+            "name",
+        ]
 
 
 class EmployerPartnerSerializer(serializers.ModelSerializer):
@@ -136,4 +140,3 @@ class UserErrorSerialiser(serializers.Serializer):
         fields = ["message"]
 
     message = serializers.CharField()
-
