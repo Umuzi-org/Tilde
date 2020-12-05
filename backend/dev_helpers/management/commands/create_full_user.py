@@ -1,24 +1,8 @@
 """Create a user and set them up for access to boards and stuff"""
 
-from django.core.management.base import BaseCommand, CommandError
-from core.models import (
-    User,
-    Cohort,
-    UserGroup,
-    UserGroupMembership,
-    RecruitCohort,
-    Curriculum,
-)
-
-from django.utils import timezone
-
-now = timezone.now()
-
-
-def add_user_to_dev_cohort(user):
-    Cohort.objects.get_or_create(
-        curriculum=curriculum, defaults={"start_date": now, "end_date": now}
-    )
+from django.core.management.base import BaseCommand
+from core.models import User
+from social_auth.models import SocialProfile
 
 
 class Command(BaseCommand):
@@ -27,7 +11,7 @@ class Command(BaseCommand):
         parser.add_argument("is_staff", type=bool)
         parser.add_argument("is_superuser", type=bool)
         parser.add_argument(
-            "--github_name",
+            "github_name",
             type=str,
             default=None,
         )
@@ -53,7 +37,4 @@ class Command(BaseCommand):
             )
             if not created:
                 social_profile.github_name = github_name
-
-        add_user_to_dev_cohort(user)
-        # add_user_to_dev_group(user) # TODO. we'll need this when we get rid of cohorts, or when user group ui is implemtented
-        add_cards_for_user(user)
+                social_profile.save()
