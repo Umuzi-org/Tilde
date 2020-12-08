@@ -52,9 +52,6 @@ class UserAdminChangeForm(forms.ModelForm):
             "is_superuser",
             "first_name",
             "last_name",
-            # "email",
-            # "id_number",
-            # "cell_number",
         )
 
     def clean_password(self):
@@ -62,4 +59,3 @@ class UserAdminChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
-

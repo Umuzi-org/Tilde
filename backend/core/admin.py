@@ -21,4 +21,4 @@ admin.site.register(models.UserProfile)
 admin.site.register(models.RecruitCohort)
 admin.site.register(models.EmployerPartner)
 
-admin.site.site_header = "Tilde Administration";
+admin.site.site_header = "Tilde Administration"
