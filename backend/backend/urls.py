@@ -29,9 +29,6 @@ router = routers.DefaultRouter()
 router.register(r"users", core_views.UserViewSet, "user")
 router.register(r"user_profiles", core_views.UserProfileViewSet, "userprofile")
 router.register(r"curriculums", core_views.CurriculumViewSet, "curriculum")
-router.register(
-    r"employer_partners", core_views.EmployerPartnerViewSet, "employerpartner"
-)
 
 router.register(r"recruit_cohorts", core_views.RecruitCohortViewSet, "recruitcohort")
 router.register(r"cohorts", core_views.CohortViewSet, "cohort")
@@ -58,7 +55,9 @@ router.register(
 )
 
 router.register(
-    r"content_item", curriculum_tracking_api_views.ContentItemViewset, "contentitem",
+    r"content_item",
+    curriculum_tracking_api_views.ContentItemViewset,
+    "contentitem",
 )
 
 router.register(
@@ -68,19 +67,27 @@ router.register(
 )
 
 router.register(
-    r"agile_card", curriculum_tracking_api_views.AgileCardViewset, "agilecard",
+    r"agile_card",
+    curriculum_tracking_api_views.AgileCardViewset,
+    "agilecard",
 )
 
 router.register(
-    r"repository", curriculum_tracking_api_views.RepositoryViewset, "repository",
+    r"repository",
+    curriculum_tracking_api_views.RepositoryViewset,
+    "repository",
 )
 
 router.register(
-    r"commit", curriculum_tracking_api_views.CommitViewSet, "commit",
+    r"commit",
+    curriculum_tracking_api_views.CommitViewSet,
+    "commit",
 )
 
 router.register(
-    r"pull_request", curriculum_tracking_api_views.PullRequestViewSet, "pullrequest",
+    r"pull_request",
+    curriculum_tracking_api_views.PullRequestViewSet,
+    "pullrequest",
 )
 
 router.register(
@@ -96,7 +103,9 @@ router.register(
 )
 
 router.register(
-    r"topic_reviews", curriculum_tracking_api_views.TopicReviewViewset, "topicreview",
+    r"topic_reviews",
+    curriculum_tracking_api_views.TopicReviewViewset,
+    "topicreview",
 )
 
 router.register(

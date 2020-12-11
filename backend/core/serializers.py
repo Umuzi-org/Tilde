@@ -25,12 +25,6 @@ class CurriculumSerializer(serializers.ModelSerializer):
         ]
 
 
-class EmployerPartnerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.EmployerPartner
-        fields = ["id"]
-
-
 class RecruitCohortSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitCohort

@@ -1,25 +1,8 @@
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
-from django.urls import reverse
+
+# from django.urls import reverse
 from . import factories
-
-# TODO: test all these:
-# class UserSerializer(serializers.ModelSerializer):
-# class UserProfileSerializer(serializers.ModelSerializer):
-# class CurriculumSerializer(serializers.ModelSerializer):
-# class RecruitCophortSerializer(serializers.ModelSerializer):
-# class CohortSerializer(serializers.ModelSerializer):
-
-
-class TestEmployerPartnerViewSet(APITestCase, APITestCaseMixin):
-    LIST_URL_NAME = "employerpartner-list"
-
-    def verbose_instance_factory(self):
-        partner = factories.EmployerPartnerFactory()
-        return partner
-
-    def generate_post_create_data(self):
-        return {"name": "Investic"}
 
 
 class TestUserGroupViewSet(APITestCase, APITestCaseMixin):
@@ -36,7 +19,7 @@ class TestUserGroupViewSet(APITestCase, APITestCaseMixin):
         managed_group = factories.UserGroupFactory()
         viewable_group = factories.UserGroupFactory()
         student_group = factories.UserGroupFactory()
-        nothing_group = factories.UserGroupFactory()
+        # nothing_group = factories.UserGroupFactory()
 
         factories.UserGroupMembership(
             user=user, group=student_group, permission_student=True
@@ -69,4 +52,3 @@ class TestUserGroupViewSet(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data["count"], 1)
         returned_id = response.data["results"][0]["id"]
         self.assertEqual(returned_id, group.id)
-

@@ -8,21 +8,16 @@ from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
-from view_mixins import AuthMixin
 from . import serializers
 from . import models
-from rest_framework import mixins
-from rest_framework import generics
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, status
 
 User = get_user_model()
 
 
-class ProjectCardSummaryViewset(AuthMixin, viewsets.ModelViewSet):
+class ProjectCardSummaryViewset(viewsets.ModelViewSet):
     # TODO: make this view only
     permission_classes = [
         permissions.IsAdminUser
@@ -43,7 +38,7 @@ class ProjectCardSummaryViewset(AuthMixin, viewsets.ModelViewSet):
     )
 
 
-class AgileCardViewset(AuthMixin, viewsets.ModelViewSet):
+class AgileCardViewset(viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAdminUser
         | core_permissions.IsStaffUser
@@ -353,7 +348,7 @@ class AgileCardViewset(AuthMixin, viewsets.ModelViewSet):
     #     AgileCard.objects.filter(status=AgileCard.READY).filter(content_item__content_type=ContentItem.WORKSHOP).values('content_item','content_item__title').distinct()
 
 
-class RecruitProjectViewset(AuthMixin, viewsets.ModelViewSet):
+class RecruitProjectViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.RecruitProjectSerializer
 
@@ -382,7 +377,7 @@ class RecruitProjectViewset(AuthMixin, viewsets.ModelViewSet):
         )
 
 
-class TopicProgressViewset(AuthMixin, viewsets.ModelViewSet):
+class TopicProgressViewset(viewsets.ModelViewSet):
     serializer_class = serializers.TopicProgressSerializer
     queryset = models.TopicProgress.objects.order_by("pk")
     filter_backends = [DjangoFilterBackend]
@@ -405,7 +400,7 @@ class TopicProgressViewset(AuthMixin, viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class TopicReviewViewset(AuthMixin, viewsets.ModelViewSet):
+class TopicReviewViewset(viewsets.ModelViewSet):
     serializer_class = serializers.TopicReviewSerializer
     queryset = models.TopicReview.objects.order_by("pk")
     filter_backends = [DjangoFilterBackend]
@@ -427,7 +422,7 @@ class TopicReviewViewset(AuthMixin, viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class RecruitProjectReviewViewset(AuthMixin, viewsets.ModelViewSet):
+class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     serializer_class = serializers.RecruitProjectReviewSerializer
     queryset = models.RecruitProjectReview.objects.order_by("pk")
     filter_backends = [DjangoFilterBackend]
@@ -456,17 +451,17 @@ class RecruitProjectReviewViewset(AuthMixin, viewsets.ModelViewSet):
     #     RecruitProjectReview.objects.filter(timestamp__gte=before).values('reviewer_user','reviewer_user__email', 'reviewer_user__is_staff','recruit_project__content_item__title').annotate(dcount=Count('reviewer_user'))
 
 
-class ContentItemViewset(AuthMixin, viewsets.ModelViewSet):
+class ContentItemViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ContentItemSerializer
     queryset = models.ContentItem.objects.order_by("pk")
 
 
-class ContentItemOrderViewset(AuthMixin, viewsets.ModelViewSet):
+class ContentItemOrderViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ContentItemOrderSerializer
     queryset = models.ContentItemOrder.objects.order_by("pk")
 
 
-class RepositoryViewset(AuthMixin, viewsets.ModelViewSet):
+class RepositoryViewset(viewsets.ModelViewSet):
     serializer_class = git_serializers.RepositorySerializer
     queryset = git_models.Repository.objects.all()
 
@@ -484,7 +479,7 @@ class RepositoryViewset(AuthMixin, viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class CommitViewSet(AuthMixin, viewsets.ModelViewSet):
+class CommitViewSet(viewsets.ModelViewSet):
     serializer_class = git_serializers.CommitSerializer
     queryset = git_models.Commit.objects.order_by("-datetime")
     filter_backends = [DjangoFilterBackend]
@@ -499,7 +494,7 @@ class CommitViewSet(AuthMixin, viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class PullRequestViewSet(AuthMixin, viewsets.ModelViewSet):
+class PullRequestViewSet(viewsets.ModelViewSet):
     serializer_class = git_serializers.PullRequestSerializer
     queryset = git_models.PullRequest.objects.order_by("-created_at")
     filter_backends = [DjangoFilterBackend]
@@ -514,7 +509,7 @@ class PullRequestViewSet(AuthMixin, viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class PullRequestReviewViewSet(AuthMixin, viewsets.ModelViewSet):
+class PullRequestReviewViewSet(viewsets.ModelViewSet):
     serializer_class = git_serializers.PullRequestReviewSerializer
     queryset = git_models.PullRequestReview.objects.order_by("-submitted_at")
     filter_backends = [DjangoFilterBackend]
@@ -569,7 +564,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     # TODO: bulk set due dates
 
 
-class WorkshopAttendanceViewset(AuthMixin, viewsets.ModelViewSet):
+class WorkshopAttendanceViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.WorkshopAttendanceSerializer
     queryset = models.WorkshopAttendance.objects.order_by("pk")

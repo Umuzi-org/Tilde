@@ -28,6 +28,7 @@ class oauth_one_time_token_auth_TestCase(APITestCase):
         user = UserFactory()
         user = User.objects.get(email=user.email)
         get_email_from_one_time_code.return_value = user.email
+        # breakpoint()
         response = self.make_request()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

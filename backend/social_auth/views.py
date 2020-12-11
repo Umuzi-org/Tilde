@@ -22,9 +22,9 @@ from core import serializers as core_serializers
 from core import helpers as core_helpers
 from core import constants as core_constants
 
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.response import Response
 from rest_framework import viewsets, status
@@ -111,6 +111,7 @@ def authorize_github_callback(request):
 
 
 @api_view(["post"])
+@permission_classes([])
 def oauth_one_time_token_auth(request):
     """based on https://developers.google.com/identity/sign-in/web/server-side-flow"""
 

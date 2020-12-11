@@ -2,13 +2,11 @@ from django.shortcuts import render
 from . import models
 from rest_framework import viewsets
 from . import serializers
-from . import permissions
 from rest_framework.decorators import action
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from view_mixins import AuthMixin
 
 from rest_framework import permissions as drf_permissions
 from django.db.models import Q
@@ -56,7 +54,7 @@ def test_logs(request):
     raise Exception(f"{__name__}:Not really an error. It's all going quite swimmingly")
 
 
-class UserViewSet(AuthMixin, viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
@@ -65,7 +63,7 @@ class UserViewSet(AuthMixin, viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
 
 
-class UserProfileViewSet(AuthMixin, viewsets.ModelViewSet):
+class UserProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows user profiles to be viewed or edited.
     """
@@ -74,17 +72,12 @@ class UserProfileViewSet(AuthMixin, viewsets.ModelViewSet):
     serializer_class = serializers.UserProfileSerializer
 
 
-class CurriculumViewSet(AuthMixin, viewsets.ModelViewSet):
+class CurriculumViewSet(viewsets.ModelViewSet):
     queryset = models.Curriculum.objects.all().order_by("name")
     serializer_class = serializers.CurriculumSerializer
 
 
-class EmployerPartnerViewSet(AuthMixin, viewsets.ModelViewSet):
-    queryset = models.EmployerPartner.objects.all().order_by("name")
-    serializer_class = serializers.EmployerPartnerSerializer
-
-
-class RecruitCohortViewSet(AuthMixin, viewsets.ModelViewSet):
+class RecruitCohortViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["cohort"]
 
@@ -92,7 +85,7 @@ class RecruitCohortViewSet(AuthMixin, viewsets.ModelViewSet):
     serializer_class = serializers.RecruitCohortSerializer
 
 
-class CohortViewSet(AuthMixin, viewsets.ModelViewSet):
+class CohortViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["active"]
 
@@ -106,7 +99,7 @@ class CohortViewSet(AuthMixin, viewsets.ModelViewSet):
     serializer_class = serializers.CohortSerializer
 
 
-class UserGroupViewSet(AuthMixin, viewsets.ModelViewSet):
+class UserGroupViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserGroupSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["active"]
