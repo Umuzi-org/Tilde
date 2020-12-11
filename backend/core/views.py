@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from . import models
 from rest_framework import viewsets
 from . import serializers
@@ -10,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import permissions as drf_permissions
 from django.db.models import Q
-from core.permissions import IsReadOnly
+from core import permissions as core_permissions
 
 
 @api_view(["POST"])
@@ -96,35 +95,41 @@ class TeamViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["active"]
 
-    permission_classes = [drf_permissions.IsAuthenticated and IsReadOnly]
+    permission_classes = [
+        drf_permissions.IsAuthenticated and core_permissions.IsReadOnly
+    ]
 
     def get_queryset(self):
         user = self.request.user
         queryset = (  # TODO: only fetch groups where I have view access
             models.Team.objects.all()
             .order_by("name")
-            .prefetch_related("group_memberships")
-            .prefetch_related("group_memberships__user")
+            .prefetch_related("team_memberships")
+            .prefetch_related("team_memberships__user")
         )
+        return queryset
         if user.is_staff or user.is_superuser:
             return queryset
 
-        return queryset.filter(group_memberships__user=user).filter(
-            Q(group_memberships__permission_view=True)
-            | Q(group_memberships__permission_manage=True)
+        return queryset.filter(team_memberships__user=user).filter(
+            Q(team_memberships__permission_view=True)
+            | Q(team_memberships__permission_manage=True)
         )
 
     @action(
         detail=True,
         methods=["get"],
-        # permission_classes=[
-        #     permissions.IsAdminUser
-        #     | core_permissions.IsStaffUser
-        #     | (
-        #         curriculum_permissions.IsCardAssignee
-        #         & curriculum_permissions.CardDueTimeIsNotSet
-        #     )
-        # ],
+        permission_classes=[
+            # drf_permissions.IsAdminUser,
+            core_permissions.HasObjectPermission(
+                models.Team.PERMISSION_ASSIGN_REVIEWERS
+            )
+            #     | core_permissions.IsStaffUser
+            #     | (
+            #         curriculum_permissions.IsCardAssignee
+            #         & curriculum_permissions.CardDueTimeIsNotSet
+            #     )
+        ],
     )
     def shuffle_reviewers(self, request, pk=None):
         return Response("TODO")

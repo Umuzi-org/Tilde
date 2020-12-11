@@ -93,7 +93,6 @@ class RecruitProjectAdmin(admin.ModelAdmin):
 #     extra = 0
 
 
-
 @admin.register(models.AgileCard)
 class AgileCardAdmin(admin.ModelAdmin):
 
@@ -147,6 +146,10 @@ class CourseRegistrationInline(
     model = models.CourseRegistration
 
 
+# class GroupInline(admin.TabularInline):
+#     model = core_models.Group
+
+
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserAdminChangeForm
@@ -158,14 +161,19 @@ class UserAdmin(BaseUserAdmin):
     # that reference specific fields on auth.User.
     inlines = (
         CourseRegistrationInline,
+        # GroupInline,
         # RecruitProjectInline,
     )
     list_display = ("email", "is_superuser")
-    list_filter = ("is_superuser", "is_staff", "active")
+    list_filter = (
+        "is_superuser",
+        "is_staff",
+        "active",
+    )
     fieldsets = (
         ("Personal info", {"fields": ("first_name", "last_name")}),
         (None, {"fields": ("email", "password")}),
-        ("Permissions", {"fields": ("is_superuser", "is_staff", "active")}),
+        ("Permissions", {"fields": ("is_superuser", "is_staff", "active", "groups")}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -175,6 +183,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email", "first_name", "last_name")
     filter_horizontal = ()
+    filter_horizontal = (
+        "groups",
+        # "user_permissions",
+    )
 
 
 admin.site.register(User, UserAdmin)

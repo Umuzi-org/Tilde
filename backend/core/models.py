@@ -2,13 +2,15 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import send_mail
-import secrets
+
+# from django.template.loader import render_to_string
+# from django.utils.html import strip_tags
+# from django.core.mail import send_mail
+# import secrets
 import re
 from model_mixins import Mixins
 from django_countries.fields import CountryField
+from django.contrib.auth.models import Group as AuthGroup
 
 
 class UserManager(BaseUserManager):
@@ -60,7 +62,17 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class Group(AuthGroup):
+    class Meta:
+        proxy = True
+        app_label = "core"
+        verbose_name = "Group"
+
+
+from django.contrib.auth.models import PermissionsMixin
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     active = models.BooleanField(default=True)
     # staff = models.BooleanField(default=False)
@@ -81,6 +93,8 @@ class User(AbstractBaseUser):
         "is trusted reviewer", default=False
     )  # competent and excellent reviews move cards always
 
+    # groups = models.ManyToManyField(Group)
+
     USERNAME_FIELD = "email"
     # The fields required when user is created. Email and password are required by default
     REQUIRED_FIELDS = ["first_name", "last_name"]
@@ -96,26 +110,26 @@ class User(AbstractBaseUser):
     def get_short_name(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        return True
+    # def has_perm(self, perm, obj=None):
+    #     from django.contrib.auth.models import _user_has_perm
 
-    def has_module_perms(self, app_labels):
-        return True
+    #     if self.is_active and self.is_superuser:
+    #         return True
+
+    #     # Otherwise we need to check the backends.
+    #     return _user_has_perm(self, perm, obj)
+
+    # def has_module_perms(self, app_labels):
+    #     from django.contrib.auth.models import _user_has_module_perms
+
+    #     if self.is_active and self.is_superuser:
+    #         return True
+
+    #     return _user_has_module_perms(self, app_label)
 
     @property
     def is_active(self):
         return self.active
-
-    @property
-    def cohort(self):
-        try:
-            recruit_cohorts = self.recruit_cohorts
-        except self.recruit_cohorts.RelatedObjectDoesNotExist:
-            return None
-        try:
-            return recruit_cohorts.cohort
-        except recruit_cohorts.cohort.RelatedObjectDoesNotExist:
-            return None
 
 
 class Curriculum(models.Model, Mixins):
@@ -182,7 +196,16 @@ class UserProfile(models.Model, Mixins):
     )
 
 
+PERMISSION_MOVE_CARDS = "MOVE_CARDS"
+PERMISSION_VIEW_ALL = "VIEW_ALL"
+PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
+
+
 class Team(models.Model, Mixins):
+
+    PERMISSION_MOVE_CARDS = PERMISSION_MOVE_CARDS
+    PERMISSION_VIEW_ALL = PERMISSION_VIEW_ALL
+    PERMISSION_ASSIGN_REVIEWERS = PERMISSION_ASSIGN_REVIEWERS
 
     sponsor_organisation = models.ForeignKey(
         Organisation,
@@ -202,13 +225,11 @@ class Team(models.Model, Mixins):
     users = models.ManyToManyField(User, related_name="teams", through="TeamMembership")
 
     class Meta:
-        _PERMISSION_MOVE_CARDS = "MOVE_CARDS"
-        _PERMISSION_VIEW_ALL = "VIEW_ALL"
-        _PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
+
         permissions = (
-            (_PERMISSION_MOVE_CARDS, "Can move cards"),
-            (_PERMISSION_VIEW_ALL, "View all"),
-            (_PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
+            (PERMISSION_MOVE_CARDS, "Can move cards"),
+            (PERMISSION_VIEW_ALL, "View all"),
+            (PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
         )
 
     def __str__(self):
@@ -224,7 +245,7 @@ class Team(models.Model, Mixins):
     @property
     def members(self):
         """return a dictionary describing the group members. This is exposed via the api. See serialisers.TeamSerializer"""
-        for membership in self.group_memberships.all():
+        for membership in self.team_memberships.all():
             yield {
                 "user_id": membership.user_id,
                 "user_email": membership.user.email,
@@ -237,10 +258,10 @@ class Team(models.Model, Mixins):
 class TeamMembership(models.Model, Mixins):
 
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="group_memberships"
+        User, on_delete=models.CASCADE, related_name="team_memberships"
     )
-    group = models.ForeignKey(
-        Team, on_delete=models.CASCADE, related_name="group_memberships"
+    team = models.ForeignKey(
+        Team, on_delete=models.CASCADE, related_name="team_memberships"
     )
 
     permission_student = models.BooleanField(
@@ -250,7 +271,7 @@ class TeamMembership(models.Model, Mixins):
     permission_manage = models.BooleanField(default=False)  # can take managment actions
 
     class Meta:
-        unique_together = ["user", "group"]
+        unique_together = ["user", "team"]
 
 
 class Cohort(models.Model, Mixins):

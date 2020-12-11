@@ -7,6 +7,28 @@ class IsStaffUser(BasePermission):
         return user.is_staff
 
 
+def HasObjectPermission(permission, get_object=None):
+    class _HasObjectPermission(BasePermission):
+        def has_permission(self, request, view):
+            # from guardian.shortcuts import get_perms
+
+            user = request.user
+            if user.is_superuser:
+                return True
+
+            instance = (
+                get_object(self, request, view) if get_object else view.get_object()
+            )
+            # permissions = get_perms(user, instance)
+            return user.has_perm(permission, instance)
+            # result = permission in permissions
+
+            # assert answer == result
+            # return answer
+
+    return _HasObjectPermission
+
+
 def clean_user_id(user_id):
     import re
 
@@ -40,4 +62,3 @@ class IsReadOnly(BasePermission):
 # permissions.AllowAny
 # permissions.IsAuthenticatedOrReadOnly
 # permissions.IsAdminUser
-
