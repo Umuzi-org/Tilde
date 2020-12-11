@@ -201,6 +201,16 @@ class Team(models.Model, Mixins):
 
     users = models.ManyToManyField(User, related_name="teams", through="TeamMembership")
 
+    class Meta:
+        _PERMISSION_MOVE_CARDS = "MOVE_CARDS"
+        _PERMISSION_VIEW_ALL = "VIEW_ALL"
+        _PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
+        permissions = (
+            (_PERMISSION_MOVE_CARDS, "Can move cards"),
+            (_PERMISSION_VIEW_ALL, "View all"),
+            (_PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
+        )
+
     def __str__(self):
         return self.name
 

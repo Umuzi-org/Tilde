@@ -1,5 +1,6 @@
 from django.contrib import admin
 from . import models
+from guardian.admin import GuardedModelAdmin
 
 
 class TeamMembershipInline(admin.StackedInline):  # or admin.StackedInline
@@ -7,7 +8,7 @@ class TeamMembershipInline(admin.StackedInline):  # or admin.StackedInline
 
 
 @admin.register(models.Team)
-class TeamAdmin(admin.ModelAdmin):
+class TeamAdmin(GuardedModelAdmin):
     list_display = ["name", "active"]
     list_filter = ["active"]
     inlines = (

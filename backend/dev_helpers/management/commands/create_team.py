@@ -7,7 +7,7 @@ from core.models import Team
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("group_name", type=str)
-        parser.add_argument("activate", type=bool, default=True)
+        parser.add_argument("activate", type=bool, default=True, nargs="?")
 
     def handle(self, *args, **options):
         o, created = Team.objects.get_or_create(name=options["group_name"])

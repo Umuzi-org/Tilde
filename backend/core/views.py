@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import permissions as drf_permissions
 from django.db.models import Q
+from core.permissions import IsReadOnly
 
 
 @api_view(["POST"])
@@ -54,15 +55,6 @@ def test_logs(request):
     raise Exception(f"{__name__}:Not really an error. It's all going quite swimmingly")
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-
-    queryset = models.User.objects.all().order_by("last_name")
-    serializer_class = serializers.UserSerializer
-
-
 class UserProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows user profiles to be viewed or edited.
@@ -104,7 +96,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["active"]
 
-    permission_classes = [drf_permissions.IsAuthenticated]
+    permission_classes = [drf_permissions.IsAuthenticated and IsReadOnly]
 
     def get_queryset(self):
         user = self.request.user
@@ -121,3 +113,30 @@ class TeamViewSet(viewsets.ModelViewSet):
             Q(group_memberships__permission_view=True)
             | Q(group_memberships__permission_manage=True)
         )
+
+    @action(
+        detail=True,
+        methods=["get"],
+        # permission_classes=[
+        #     permissions.IsAdminUser
+        #     | core_permissions.IsStaffUser
+        #     | (
+        #         curriculum_permissions.IsCardAssignee
+        #         & curriculum_permissions.CardDueTimeIsNotSet
+        #     )
+        # ],
+    )
+    def shuffle_reviewers(self, request, pk=None):
+        return Response("TODO")
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+
+    queryset = models.User.objects.all().order_by("last_name")
+    serializer_class = serializers.UserSerializer
+
+    def assign_as_reviewer(self, request, pk=None):
+        return Response("TODO")
