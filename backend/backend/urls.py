@@ -33,7 +33,7 @@ router.register(r"curriculums", core_views.CurriculumViewSet, "curriculum")
 router.register(r"recruit_cohorts", core_views.RecruitCohortViewSet, "recruitcohort")
 router.register(r"cohorts", core_views.CohortViewSet, "cohort")
 
-router.register(r"user_groups", core_views.UserGroupViewSet, "usergroup")
+router.register(r"teams", core_views.TeamViewSet, "team")
 
 
 router.register(

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import datetime
-from core.models import UserGroup, UserGroupMembership
+from core.models import Team, TeamMembership
 from curriculum_tracking.models import RecruitProjectReview, AgileCard, ContentItem
 from pathlib import Path
 from django.utils import timezone
@@ -257,12 +257,12 @@ def get_group_report(group):
     logger.info(f"processing group: {group}")
     ret = [
         get_user_report(o.user, {"_group": group.name})
-        for o in UserGroupMembership.objects.filter(
+        for o in TeamMembership.objects.filter(
             group=group, user__active=True, permission_student=True
         )
     ]
 
-    manager_users = UserGroupMembership.objects.filter(
+    manager_users = TeamMembership.objects.filter(
         group=group, user__active=True, permission_manage=True
     )
 
@@ -295,7 +295,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         today = datetime.datetime.now().date()
 
-        groups = UserGroup.objects.filter(active=True)
+        groups = Team.objects.filter(active=True)
         all_data = []
         for group in groups:
             all_data.extend(get_group_report(group))

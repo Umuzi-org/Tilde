@@ -267,7 +267,7 @@ def update_cards_accorrding_to_progress(user):
     update_workshop_card_progress(user)
 
 
-def generate_all_content_cards_for_user_group(user_group):
+def generate_all_content_cards_for_team(team):
     todo
 
 

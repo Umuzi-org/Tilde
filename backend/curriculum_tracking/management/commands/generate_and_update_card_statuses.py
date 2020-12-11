@@ -8,7 +8,7 @@ from curriculum_tracking.models import Curriculum
 
 from curriculum_tracking.card_generation_helpers import (
     generate_and_update_all_cards_for_user,
-    generate_all_content_cards_for_user_group,
+    generate_all_content_cards_for_team,
 )
 
 User = get_user_model()
@@ -21,7 +21,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user = None
-        cohort = None
         who = options["who"]
 
         name = options["curriculum"]
@@ -36,5 +35,5 @@ class Command(BaseCommand):
                 generate_and_update_all_cards_for_user(user, curriculum)
 
             else:
-                user_group = core_models.UserGroup.objects.get(name=who)
-                generate_all_content_cards_for_user_group(user_group, curriculum)
+                team = core_models.Team.objects.get(name=who)
+                generate_all_content_cards_for_team(team, curriculum)

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import UserGroup, User, UserGroupMembership
+from core.models import Team, User, TeamMembership
 
 
 class Command(BaseCommand):
@@ -10,9 +10,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user = User.objects.get(email=options["email"])
-        group = UserGroup.objects.get(name=options["group_name"])
+        group = Team.objects.get(name=options["group_name"])
 
-        membership, created = UserGroupMembership.objects.get_or_create(
+        membership, created = TeamMembership.objects.get_or_create(
             user=user, group=group
         )
 

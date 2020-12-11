@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from core.forms import UserGroupForm
+from core.forms import TeamForm
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.urls import resolve
@@ -32,7 +32,7 @@ DAYS_PAST = 14
 
 def index(request):
     if request.method == "POST":
-        form = UserGroupForm(request.POST)
+        form = TeamForm(request.POST)
         if form.is_valid():
             cohort_id = form.cleaned_data["cohort"]
             product_team_id = form.cleaned_data["product_team"]
@@ -50,8 +50,8 @@ def index(request):
 
             return HttpResponseRedirect(url)
     else:
-        form = UserGroupForm()
-    return render(request, "attendance/select_user_group.html", {"form": form})
+        form = TeamForm()
+    return render(request, "attendance/select_team.html", {"form": form})
 
 
 def _entry_score_to_label(row):
@@ -139,7 +139,9 @@ def _return_graph_response(request, heading, attendance_querysets, users):
                 f"{email} [score = {score}]" for email, score in user_scores.items()
             ],
         },
-        xaxis={"showticklabels": True,},
+        xaxis={
+            "showticklabels": True,
+        },
     )
 
     return render(
@@ -199,7 +201,9 @@ def product_attendance_graph(request, id):
     )
 
 
-def staff_attendance_graph(request,):
+def staff_attendance_graph(
+    request,
+):
     # TODO: create api endpoint for exposiong this data (#164)
     cutoff = datetime.datetime.now() - datetime.timedelta(days=DAYS_PAST)
     users = User.objects.filter(is_staff=True)

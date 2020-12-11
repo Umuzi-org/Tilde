@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from google_helpers.utils import fetch_sheet
 
 
-from core.models import User, UserGroup, UserGroupMembership
+from core.models import User, Team, TeamMembership
 from social_auth.models import SocialProfile
 from curriculum_tracking.models import CourseRegistration, AgileCard
 import datetime
@@ -23,7 +23,7 @@ COURSE = "Course"
 BOOTCAMP_NAME = "bootcamp_name"
 
 # TODO = "todo"
-# group = UserGroup.objects.get_or_create(name=GROUP_NAME)[0]
+# group = Team.objects.get_or_create(name=GROUP_NAME)[0]
 # ADDED_TO_TILDE = "added to tilde"
 
 
@@ -99,7 +99,7 @@ def get_group(course, title):
     courses = {DS: "Data Sci", DE: "Data Eng", WD: "Web Dev", JAVA: "Java"}
     name = f"Boot {courses[course]} {title}"
     # print(name)
-    return UserGroup.objects.get_or_create(name=name)[0]
+    return Team.objects.get_or_create(name=name)[0]
 
 
 def process_row(row):
@@ -125,7 +125,7 @@ def process_row(row):
 
     group = get_group(course, row[BOOTCAMP_NAME])
 
-    UserGroupMembership.objects.get_or_create(
+    TeamMembership.objects.get_or_create(
         user=user, group=group, permission_student=True
     )
 

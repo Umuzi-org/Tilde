@@ -1,4 +1,4 @@
-"""if a usergroup is supplied, then remove the students in that group from all review requests, this student or group of students needs to focus on their own stuff for a while because they are behind"""
+"""if a Team is supplied, then remove the students in that group from all review requests, this student or group of students needs to focus on their own stuff for a while because they are behind"""
 from django.core.management.base import BaseCommand
 from ..helpers import get_student_users
 from curriculum_tracking.models import AgileCard

@@ -7,7 +7,7 @@ def get_choices(Model):
     return lambda: [("", "")] + [(o.id, str(o)) for o in Model.objects.all()]
 
 
-class UserGroupForm(forms.Form):
+class TeamForm(forms.Form):
     cohort = forms.ChoiceField(choices=get_choices(models.Cohort), required=False)
     product_team = forms.ChoiceField(
         choices=get_choices(models.ProductTeam), required=False
@@ -17,7 +17,7 @@ class UserGroupForm(forms.Form):
 
     def clean(self):
 
-        data = super(UserGroupForm, self).clean()
+        data = super(TeamForm, self).clean()
 
         number_of_fields = sum([bool(x) for x in data.values()])
         if number_of_fields != 1:

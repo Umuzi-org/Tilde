@@ -2,16 +2,16 @@ from django.contrib import admin
 from . import models
 
 
-class UserGroupMembershipInline(admin.StackedInline):  # or admin.StackedInline
-    model = models.UserGroupMembership
+class TeamMembershipInline(admin.StackedInline):  # or admin.StackedInline
+    model = models.TeamMembership
 
 
-@admin.register(models.UserGroup)
-class UserGroupAdmin(admin.ModelAdmin):
+@admin.register(models.Team)
+class TeamAdmin(admin.ModelAdmin):
     list_display = ["name", "active"]
     list_filter = ["active"]
     inlines = (
-        UserGroupMembershipInline,
+        TeamMembershipInline,
         # RecruitProjectInline,
     )
 

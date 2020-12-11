@@ -1,7 +1,7 @@
-"create a user group if it does not yet exist. If the group was not active then activate it. You can choose not to activate existing usergroups by setting the activate command-line parameter to false"
+"create a user group if it does not yet exist. If the group was not active then activate it. You can choose not to activate existing Teams by setting the activate command-line parameter to false"
 
 from django.core.management.base import BaseCommand
-from core.models import UserGroup
+from core.models import Team
 
 
 class Command(BaseCommand):
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         parser.add_argument("activate", type=bool, default=True)
 
     def handle(self, *args, **options):
-        o, created = UserGroup.objects.get_or_create(name=options["group_name"])
+        o, created = Team.objects.get_or_create(name=options["group_name"])
         if created:
             print("Created")
         else:

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import UserGroupMembership
+from core.models import TeamMembership
 from curriculum_tracking.models import RecruitProjectReview
 from django.utils import timezone
 from collections import namedtuple
@@ -11,7 +11,7 @@ Result = namedtuple("Result", "email count weight")
 
 
 def get_reviews_for_group(group_name):
-    members = UserGroupMembership.objects.filter(group__name=group_name)
+    members = TeamMembership.objects.filter(group__name=group_name)
 
     for member in members:
         reviews = RecruitProjectReview.objects.filter(
@@ -30,7 +30,7 @@ class Command(BaseCommand):
         # parser.add_argument("da")
 
     def handle(self, *args, **options):
-        # group = UserGroup.objects.get(name=options["group_name"])
+        # group = Team.objects.get(name=options["group_name"])
         # print(options["group_names"])
 
         results = []

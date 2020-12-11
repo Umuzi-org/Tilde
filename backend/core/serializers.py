@@ -57,9 +57,9 @@ class CohortSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserGroupSerializer(serializers.ModelSerializer):
+class TeamSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserGroup
+        model = models.Team
         fields = [
             "id",
             "name",

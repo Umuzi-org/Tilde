@@ -23,10 +23,9 @@ class Command(BaseCommand):
                 generate_and_update_all_cards_for_user(user, None)
 
             else:
-                user_group = core_models.UserGroup.objects.get(name=who)
-                # generate_all_content_cards_for_user_group(user_group)
-                for o in core_models.UserGroupMembership.objects.filter(
-                    group=user_group, permission_student=True
+                team = core_models.Team.objects.get(name=who)
+                for o in core_models.TeamMembership.objects.filter(
+                    team=team, permission_student=True
                 ):
                     user = o.user
                     models.AgileCard.objects.filter(assignees__in=[user]).delete()

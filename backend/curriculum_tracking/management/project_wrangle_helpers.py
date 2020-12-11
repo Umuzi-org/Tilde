@@ -4,7 +4,7 @@ There were a lot of different messes to be cleaned up
 
 from taggit.models import Tag
 import csv
-from core.models import Cohort, RecruitCohort, User, UserGroup, UserGroupMembership
+from core.models import Cohort, RecruitCohort, User, Team, TeamMembership
 from curriculum_tracking.models import (
     RecruitProject,
     ContentItem,
@@ -27,7 +27,7 @@ def get_project_info(content_item_id, user_id):
     projects = RecruitProject.objects.filter(
         content_item_id=content_item_id, recruit_users__in=[user]
     )
-    groups = UserGroup.objects.filter(users__in=[user])
+    groups = Team.objects.filter(users__in=[user])
     cohorts = [o.cohort for o in RecruitCohort.objects.filter(user=user)]
     content_item = ContentItem.objects.get(pk=content_item_id)
     print(f"user = {user}")
@@ -55,7 +55,7 @@ def export_projects_without_flavours():
                     all_groups.extend(
                         [
                             f"group {o.id} {o.name}"
-                            for o in UserGroup.objects.filter(users__in=[user])
+                            for o in Team.objects.filter(users__in=[user])
                         ]
                     )
                     all_groups.extend(
@@ -83,8 +83,8 @@ def assign_flavours_to_cohort(cohort_id, default_flavour):
 
 
 def assign_flavours_to_group(group_id, default_flavour):
-    group = UserGroup.objects.get(pk=group_id)
-    users = [o.user for o in UserGroupMembership.objects.filter(group=group)]
+    group = Team.objects.get(pk=group_id)
+    users = [o.user for o in TeamMembership.objects.filter(group=group)]
     for user in users:
         assign_flavours_to_user(user, default_flavour)
 
@@ -218,7 +218,7 @@ def get_project_info(content_item_id, user_id):
     flavours = [",".join(l) for l in flavours]
     if len(set(flavours)) == projects.count():
         return
-    groups = UserGroup.objects.filter(users__in=[user])
+    groups = Team.objects.filter(users__in=[user])
     cohorts = [o.cohort for o in RecruitCohort.objects.filter(user=user)]
     content_item = ContentItem.objects.get(pk=content_item_id)
     print(f"user = {user}")

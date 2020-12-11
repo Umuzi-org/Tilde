@@ -99,8 +99,8 @@ class CohortViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CohortSerializer
 
 
-class UserGroupViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.UserGroupSerializer
+class TeamViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.TeamSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["active"]
 
@@ -109,7 +109,7 @@ class UserGroupViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = (  # TODO: only fetch groups where I have view access
-            models.UserGroup.objects.all()
+            models.Team.objects.all()
             .order_by("name")
             .prefetch_related("group_memberships")
             .prefetch_related("group_memberships__user")

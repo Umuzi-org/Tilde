@@ -38,20 +38,20 @@ class UserFactory(DjangoModelFactory):
     is_staff = False
 
 
-class UserGroupFactory(DjangoModelFactory):
+class TeamFactory(DjangoModelFactory):
     class Meta:
-        model = "core.UserGroup"
+        model = "core.Team"
 
     name = factory.lazy_attribute(lambda *args, **kwargs: next(_group_name_iterator))
-    # kind = models.UserGroup.CLASS_ROOM
+    # kind = models.Team.CLASS_ROOM
 
 
-class UserGroupMembership(DjangoModelFactory):
+class TeamMembership(DjangoModelFactory):
     class Meta:
-        model = "core.UserGroupMembership"
+        model = "core.TeamMembership"
 
     user = factory.SubFactory(UserFactory)
-    group = factory.SubFactory(UserGroupFactory)
+    group = factory.SubFactory(TeamFactory)
 
 
 class CurriculumFactory(DjangoModelFactory):

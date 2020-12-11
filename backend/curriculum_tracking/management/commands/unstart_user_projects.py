@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import UserGroup, User, UserGroupMembership
+from core.models import Team, User, TeamMembership
 from curriculum_tracking.models import AgileCard, ContentItem
 from ..helpers import get_student_users
 

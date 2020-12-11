@@ -182,51 +182,38 @@ class UserProfile(models.Model, Mixins):
     )
 
 
-class UserGroup(models.Model, Mixins):
-    # COHORT = "CH"
-    # CLASS_ROOM = "C" # this could be a part of a cohort. Eg the C21 group was big so
-    # PRODUCT_TEAM = "PT"
-
-    # BOOTCAMP = "B" ? What kinds of groups might we query?
-
-    # GROUP_KINDS = [
-    #     (CLASS_ROOM, "classroom"),
-    #     # (PRODUCT_TEAM, "product team"),
-    # ]
+class Team(models.Model, Mixins):
 
     sponsor_organisation = models.ForeignKey(
         Organisation,
         blank=True,
         null=True,
         on_delete=models.PROTECT,
-        related_name="sponsored_user_groups",
+        related_name="sponsored_teams",
     )
     school_organisation = models.ForeignKey(
         Organisation, blank=True, null=True, on_delete=models.PROTECT
     )
 
     name = models.CharField(max_length=50, unique=True)
-    # kind = models.CharField(max_length=2, choices=GROUP_KINDS)
     created_date = models.DateField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
-    users = models.ManyToManyField(
-        User, related_name="user_groups", through="UserGroupMembership"
-    )
+    users = models.ManyToManyField(User, related_name="teams", through="TeamMembership")
 
     def __str__(self):
         return self.name
 
     @property
     def active_student_users(self):
-        l = UserGroupMembership.objects.filter(
+        l = TeamMembership.objects.filter(
             group=self, permission_student=True, user__active=True
         )
         return [o.user for o in l]
 
     @property
     def members(self):
-        """return a dictionary describing the group members. This is exposed via the api. See serialisers.UserGroupSerializer"""
+        """return a dictionary describing the group members. This is exposed via the api. See serialisers.TeamSerializer"""
         for membership in self.group_memberships.all():
             yield {
                 "user_id": membership.user_id,
@@ -237,13 +224,13 @@ class UserGroup(models.Model, Mixins):
             }
 
 
-class UserGroupMembership(models.Model, Mixins):
+class TeamMembership(models.Model, Mixins):
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="group_memberships"
     )
     group = models.ForeignKey(
-        UserGroup, on_delete=models.CASCADE, related_name="group_memberships"
+        Team, on_delete=models.CASCADE, related_name="group_memberships"
     )
 
     permission_student = models.BooleanField(

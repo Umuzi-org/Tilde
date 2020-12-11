@@ -1,8 +1,8 @@
 """
-python manage.py assign_repo_collab GROUP_SELF_REVIEW $USER_GROUP_NAME $CONTENT_ITEM_TITLE 
-python manage.py assign_repo_collab GROUP_REVIEW_OTHER $USER_GROUP_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
-python manage.py assign_repo_collab GIT_USER_REPO_ONLY $USER_GROUP_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
-python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $USER_GROUP_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
+python manage.py assign_repo_collab GROUP_SELF_REVIEW $TEAM_NAME $CONTENT_ITEM_TITLE 
+python manage.py assign_repo_collab GROUP_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
+python manage.py assign_repo_collab GIT_USER_REPO_ONLY $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
+python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
 """
 
 from django.core.management.base import BaseCommand

@@ -4,7 +4,7 @@ from django.urls import reverse
 from core.models import Cohort, ProductTeam
 from django.contrib.auth import get_user_model
 from . import models
-from core.forms import UserGroupForm
+from core.forms import TeamForm
 
 User = get_user_model()
 from .models import Commit
@@ -18,7 +18,7 @@ import string
 
 def index(request):
     if request.method == "POST":
-        form = UserGroupForm(request.POST)
+        form = TeamForm(request.POST)
         if form.is_valid():
             cohort_id = form.cleaned_data["cohort"]
             product_team_id = form.cleaned_data["product_team"]
@@ -36,8 +36,8 @@ def index(request):
 
             return HttpResponseRedirect(url)
     else:
-        form = UserGroupForm()
-    return render(request, "git_real/select_user_group.html", {"form": form})
+        form = TeamForm()
+    return render(request, "git_real/select_team.html", {"form": form})
 
 
 def commit_history_graph(request, id=None):

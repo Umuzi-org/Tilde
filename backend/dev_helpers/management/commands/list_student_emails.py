@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import UserGroup, User, UserGroupMembership
+from core.models import Team, User, TeamMembership
 
 
 class Command(BaseCommand):
@@ -7,11 +7,9 @@ class Command(BaseCommand):
         parser.add_argument("group_name", type=str)
 
     def handle(self, *args, **options):
-        group = UserGroup.objects.get(name=options["group_name"])
+        group = Team.objects.get(name=options["group_name"])
 
-        members = UserGroupMembership.objects.filter(
-            group=group, permission_student=True
-        )
+        members = TeamMembership.objects.filter(group=group, permission_student=True)
 
         for member in members:
             print(member.user.email)

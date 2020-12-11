@@ -49,6 +49,7 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "topic_needs_review",
             "flavours",
         ]
+
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
 
 
@@ -206,8 +207,8 @@ class SetDueTimeSerializer(serializers.ModelSerializer):
         fields = ["due_time"]
 
 
-class UserGroupField(serializers.RelatedField):
-    queryset = core_models.UserGroup.objects.filter(active=True).order_by("name")
+class TeamField(serializers.RelatedField):
+    queryset = core_models.Team.objects.filter(active=True).order_by("name")
 
     def to_representation(self, value):
         return value.id
@@ -237,7 +238,7 @@ class GroupSelfReviewSerialiser(serializers.Serializer):
 
     content_item = ProjectContentItemField()
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
-    group = UserGroupField()
+    group = TeamField()
 
 
 class GroupReviewByOtherSerialiser(serializers.Serializer):
@@ -246,8 +247,8 @@ class GroupReviewByOtherSerialiser(serializers.Serializer):
 
     content_item = ProjectContentItemField()
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
-    group = UserGroupField()
-    reviewer_group = UserGroupField()
+    group = TeamField()
+    reviewer_group = TeamField()
 
 
 class GroupReviewByUserSerialiser(serializers.Serializer):
@@ -267,7 +268,7 @@ class GroupReviewByUserSerialiser(serializers.Serializer):
 
     content_item = ProjectContentItemField()
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
-    group = UserGroupField()
+    group = TeamField()
     reviewer_user = serializers.EmailField()
 
 
