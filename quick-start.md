@@ -131,13 +131,14 @@ Note, to see details of any of these commands you can do the following: `python 
 ```
 # create your sweet self as a superuser
 python manage.py create_full_user sheena.oconnell@umuzi.org true true sheenarbw
+python manage.py set_password sheena.oconnell@umuzi.org sheena.oconnell@umuzi.org
 
 # add a new group
-python manage.py create_user_group "demo group"
+python manage.py create_team "demo team"
 
 # add a user to a group with default permissions. You can use this command to set people up with different roles
 
-python manage.py add_user_to_user_group "sheena.oconnell@umuzi.org" "demo group"
+python manage.py add_user_to_team "sheena.oconnell@umuzi.org" "demo team"
 
 
 # add a curriulum
