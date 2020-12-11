@@ -1,9 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 import datetime
 from core.models import UserGroup, UserGroupMembership
 from curriculum_tracking.models import RecruitProjectReview, AgileCard, ContentItem
-import yaml
-from ..helpers import get_student_users
 from pathlib import Path
 from django.utils import timezone
 import logging
@@ -15,9 +13,7 @@ from curriculum_tracking.constants import (
 from django.db.models import Q
 
 
-
 logger = logging.getLogger(__name__)
-
 cutoff = timezone.now() - datetime.timedelta(days=7)
 
 AS_REVIEWER = "R"
@@ -44,24 +40,18 @@ def user_as_assignee_stats(user):
         status=AgileCard.REVIEW_FEEDBACK
     ).filter(assignees__in=[user])
 
-
-    in_progress_cards = (
-        AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
-        .filter(assignees__in=[user])
+    in_progress_cards = AgileCard.objects.filter(status=AgileCard.IN_PROGRESS).filter(
+        assignees__in=[user]
     )
 
-
-    complete_cards = (
-        AgileCard.objects.filter(status=AgileCard.COMPLETE)
-        .filter(assignees__in=[user])
+    complete_cards = AgileCard.objects.filter(status=AgileCard.COMPLETE).filter(
+        assignees__in=[user]
     )
-    ready_cards = (
-        AgileCard.objects.filter(status=AgileCard.READY)
-        .filter(assignees__in=[user])
+    ready_cards = AgileCard.objects.filter(status=AgileCard.READY).filter(
+        assignees__in=[user]
     )
-    blocked_cards = (
-        AgileCard.objects.filter(status=AgileCard.BLOCKED)
-        .filter(assignees__in=[user])
+    blocked_cards = AgileCard.objects.filter(status=AgileCard.BLOCKED).filter(
+        assignees__in=[user]
     )
 
     latest_reviews = [
@@ -96,18 +86,28 @@ def user_as_assignee_stats(user):
     )
     if last_completed_project:
         last_time_a_project_was_completed = (
-                last_completed_project.complete_time.strftime(DATE_FORMAT)
-            )
+            last_completed_project.complete_time.strftime(DATE_FORMAT)
+        )
         # else:
         #     last_time_a_project_was_completed = None
     else:
         last_time_a_project_was_completed = None
 
-      
-    complete_projects_with_status = [(o,o.recruit_project.latest_review(trusted=True).status) for o in complete_projects if o.recruit_project]
-    excellent_complete_projects = [project for (project, status) in complete_projects_with_status if status == EXCELLENT ]
-    competent_complete_projects = [project for (project, status) in complete_projects_with_status if status == COMPETENT]
-
+    complete_projects_with_status = [
+        (o, o.recruit_project.latest_review(trusted=True).status)
+        for o in complete_projects
+        if o.recruit_project
+    ]
+    excellent_complete_projects = [
+        project
+        for (project, status) in complete_projects_with_status
+        if status == EXCELLENT
+    ]
+    competent_complete_projects = [
+        project
+        for (project, status) in complete_projects_with_status
+        if status == COMPETENT
+    ]
 
     return {
         "number_of_in_progress_cards": in_progress_cards.count(),
@@ -133,18 +133,15 @@ def user_as_assignee_stats(user):
         # / total_weight_of_project_cards
         # if total_weight_of_project_cards
         # else 0,
-
         "number_of_excellent_complete_project_cards": len(excellent_complete_projects),
-        "weight_of_excellent_complete_project_cards": sum_card_weights(excellent_complete_projects),
-        
+        "weight_of_excellent_complete_project_cards": sum_card_weights(
+            excellent_complete_projects
+        ),
         "number_of_competent_complete_project_cards": len(competent_complete_projects),
-        "weight_of_competent_complete_project_cards": sum_card_weights(competent_complete_projects),
-
-
+        "weight_of_competent_complete_project_cards": sum_card_weights(
+            competent_complete_projects
+        ),
     }
-
-
-
 
 
 def recent_review_count(card, user):
@@ -189,35 +186,41 @@ def user_as_reviewer_stats(user):
     if review_request_timestamps:
         oldest_card_awaiting_review = min(review_request_timestamps).strftime("%c")
 
+    projects_reviewed_this_week = set(
+        [o.recruit_project for o in reviews_done_this_week]
+    )
 
-    projects_reviewed_this_week = set([o.recruit_project for o in reviews_done_this_week])
-
-
-    projects_reviewed_this_week_with_positive = [(o,o.recruit_project) for o in reviews_done_this_week.filter(
-
-        Q(status=COMPETENT) | Q(status=EXCELLENT)
-    )]
+    projects_reviewed_this_week_with_positive = [
+        (o, o.recruit_project)
+        for o in reviews_done_this_week.filter(
+            Q(status=COMPETENT) | Q(status=EXCELLENT)
+        )
+    ]
     seen = []
     bad_review_projects = []
-    for review,project in projects_reviewed_this_week_with_positive:
+    for review, project in projects_reviewed_this_week_with_positive:
         if project in seen:
-            continue 
-        latest_trusted_review_since = project.latest_review(trusted=True,timestamp_greater_than=review.timestamp)
-        if latest_trusted_review_since and latest_trusted_review_since.status not in [COMPETENT,EXCELLENT]:
+            continue
+        latest_trusted_review_since = project.latest_review(
+            trusted=True, timestamp_greater_than=review.timestamp
+        )
+        if latest_trusted_review_since and latest_trusted_review_since.status not in [
+            COMPETENT,
+            EXCELLENT,
+        ]:
             bad_review_projects.append(project)
 
-
-
-
     return {
-        "number_of_reviews_done_in_last_7_days": number_of_reviews_this_week, # actual review instances
+        "number_of_reviews_done_in_last_7_days": number_of_reviews_this_week,  # actual review instances
         "weight_of_reviews_done_in_last_7_days": weight_of_reviews_this_week,
         "number_of_cards_reviewed_in_last_7_days": len(projects_reviewed_this_week),
-        "weight_of_cards_reviewed_in_last_7_days": sum_card_weights(projects_reviewed_this_week),
-        "number_of_cards_reviewed_incorrectly_in_last_7_days" : len(bad_review_projects),
-        "weight_of_cards_reviewed_incorrectly_in_last_7_days" : sum_card_weights(bad_review_projects),
-
-
+        "weight_of_cards_reviewed_in_last_7_days": sum_card_weights(
+            projects_reviewed_this_week
+        ),
+        "number_of_cards_reviewed_incorrectly_in_last_7_days": len(bad_review_projects),
+        "weight_of_cards_reviewed_incorrectly_in_last_7_days": sum_card_weights(
+            bad_review_projects
+        ),
         "number_of_cards_in_review_as_reviewer": number_of_cards_in_review_as_reviewer,
         "weight_of_cards_in_review_as_reviewer": weight_of_cards_in_review_as_reviewer,
         "oldest_card_awaiting_review": oldest_card_awaiting_review,
@@ -230,12 +233,11 @@ def get_user_report(user, extra=None):
         "_email": user.email,
         "_id": user.id,
         "_snapshot_date": datetime.datetime.now(),
-
         "_employer_partner": "",
         "_last_login_time": None,
         "_start_date": None,
         "_end_date": None,
-        "_percentage_of_time_spent": None
+        "_percentage_of_time_spent": None,
     }
 
     for k, v in (extra or {}).items():
@@ -284,7 +286,7 @@ def get_group_report(group):
     for d in ret:
         d[f"{key} grp tot"] = sum(values)
         d[f"{key} grp ave"] = sum(values) / len(values)
-        d["_group_managers"] = ','.join([o.user.email for o in manager_users])
+        d["_group_managers"] = ",".join([o.user.email for o in manager_users])
 
     return ret
 
@@ -306,7 +308,9 @@ class Command(BaseCommand):
         #     set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
         # )
 
-        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days""".split("\t")
+        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days""".split(
+            "\t"
+        )
 
         with open(
             Path(f"gitignore/group_report_{today.strftime('%a %d %b %Y')}.csv"),
