@@ -470,7 +470,11 @@ class RecruitProject(models.Model, Mixins):
     def is_trusted_reviewer(self, user):
         """should we take this user's review as the truth?"""
         # TODO: something clever
-        return user.is_staff
+        trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
+        for trust in trusts:
+            if trust.flavours_match(self.flavours):
+                return True
+        return False
 
     @property
     def submission_type_nice(self):
