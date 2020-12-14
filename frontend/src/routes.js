@@ -1,5 +1,6 @@
 import UserProfile from "./components/regions/UserProfile";
 import AgileBoard from "./components/regions/AgileBoard";
+import UserStats from "./components/regions/UserStats";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
 
@@ -53,7 +54,7 @@ export const routes = {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
       exact,
       path: "/stats",
-      component: AgileBoard,
+      component: UserStats,
     },
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
@@ -83,7 +84,7 @@ export const routes = {
     route: {
       exact,
       path: "/users/:userId/stats",
-      component: AgileBoard,
+      component: UserStats,
     },
   },
 
