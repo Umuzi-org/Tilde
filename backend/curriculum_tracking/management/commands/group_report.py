@@ -258,7 +258,7 @@ def get_group_report(group):
     ret = [
         get_user_report(o.user, {"_group": group.name})
         for o in TeamMembership.objects.filter(
-            group=group, user__active=True, permission_student=True
+            group=group, user__active=True
         )
     ]
 

@@ -126,7 +126,7 @@ def process_row(row):
     group = get_group(course, row[BOOTCAMP_NAME])
 
     TeamMembership.objects.get_or_create(
-        user=user, group=group, permission_student=True
+        user=user, group=group
     )
 
     courses = []

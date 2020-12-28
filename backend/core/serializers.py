@@ -25,37 +25,6 @@ class CurriculumSerializer(serializers.ModelSerializer):
         ]
 
 
-class RecruitCohortSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.RecruitCohort
-        fields = [
-            "id",
-            "user",
-            "cohort",
-            "employer_partner",
-            "start_date",
-            "end_date",
-            # "email",
-        ]
-
-
-class CohortSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Cohort
-        fields = [
-            "id",
-            "start_date",
-            "end_date",
-            "cohort_number",
-            "cohort_curriculum",
-            "curriculum_short_name",
-            "curriculum_name",
-            "label",
-            "cohort_recruit_users",
-            "cohort_recruit_user_emails",
-            "active",
-        ]
-
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:

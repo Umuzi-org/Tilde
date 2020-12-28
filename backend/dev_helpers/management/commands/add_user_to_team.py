@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.models import Team, User, TeamMembership
 
-
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("email", type=str)

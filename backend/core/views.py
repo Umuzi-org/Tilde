@@ -68,28 +68,6 @@ class CurriculumViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CurriculumSerializer
 
 
-class RecruitCohortViewSet(viewsets.ModelViewSet):
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["cohort"]
-
-    queryset = models.RecruitCohort.objects.all().order_by("id")
-    serializer_class = serializers.RecruitCohortSerializer
-
-
-class CohortViewSet(viewsets.ModelViewSet):
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["active"]
-
-    queryset = (
-        models.Cohort.objects.all()
-        .order_by("cohort_number")
-        .prefetch_related("cohort_recruits")
-        .prefetch_related("cohort_recruits__user")
-    )
-
-    serializer_class = serializers.CohortSerializer
-
-
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TeamSerializer
     filter_backends = [DjangoFilterBackend]
@@ -120,15 +98,9 @@ class TeamViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=["get"],
         permission_classes=[
-            # drf_permissions.IsAdminUser,
             core_permissions.HasObjectPermission(
                 models.Team.PERMISSION_ASSIGN_REVIEWERS
             )
-            #     | core_permissions.IsStaffUser
-            #     | (
-            #         curriculum_permissions.IsCardAssignee
-            #         & curriculum_permissions.CardDueTimeIsNotSet
-            #     )
         ],
     )
     def shuffle_reviewers(self, request, pk=None):

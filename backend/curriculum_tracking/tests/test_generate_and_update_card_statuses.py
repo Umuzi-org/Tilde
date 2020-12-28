@@ -40,9 +40,9 @@ class generate_all_content_cards_for_user_Tests(TestCase):
         )
         self.workshop1 = ContentItemFactory(content_type=models.ContentItem.WORKSHOP)
 
-        self.topic1.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
-        self.project1.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
-        self.workshop1.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.topic1.set_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.project1.set_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.workshop1.set_flavours([JAVASCRIPT, TYPESCRIPT])
 
         self.topic2 = ContentItemFactory(content_type=models.ContentItem.TOPIC)
         self.project2 = ProjectContentItemFactory(
@@ -91,12 +91,13 @@ class generate_all_content_cards_for_user_Tests(TestCase):
         for content in self.flavoured_content:
             cards = models.AgileCard.objects.filter(content_item=content)
             self.assertEqual(len(cards), 2)
-            for card in cards:
-                options = [card.content_flavour_names for card in cards]
-                option_counts = [len(l) for l in options]
-                self.assertEqual(option_counts, [1, 1])
-                flat_options = sorted([s for l in options for s in l])
-                self.assertEqual(flat_options, [JAVASCRIPT, TYPESCRIPT])
+            # for card in cards:
+                
+            options = [card.flavour_names for card in cards]
+            option_counts = [len(l) for l in options]
+            self.assertEqual(option_counts, [1, 1])
+            flat_options = sorted([s for l in options for s in l])
+            self.assertEqual(flat_options, [JAVASCRIPT, TYPESCRIPT])
 
             # [o.content_options for o in models.AgileCard.objects.filter(content_item=content)
 
@@ -118,8 +119,8 @@ class generate_all_content_cards_for_user_Tests(TestCase):
         project2_requirement = project2_card.requires_cards.get()
         # self.assertEqual(len(project2_requirement), 1)
         self.assertEqual(project2_requirement.content_item, self.topic2)
-        self.assertEqual(project2_card.content_flavour_names, [])
-        self.assertEqual(project2_requirement.content_flavour_names, [])
+        self.assertEqual(project2_card.flavour_names, [])
+        self.assertEqual(project2_requirement.flavour_names, [])
 
         # project 1 has pre-req and two different flavours
         project1_cards = models.AgileCard.objects.filter(content_item=self.project1)
@@ -129,22 +130,22 @@ class generate_all_content_cards_for_user_Tests(TestCase):
             self.assertTrue(project2_requirement in card.requires_cards.all())
 
         ts_project_card = [
-            card for card in project1_cards if TYPESCRIPT in card.content_flavour_names
+            card for card in project1_cards if TYPESCRIPT in card.flavour_names
         ][0]
 
         js_project_card = [
-            card for card in project1_cards if JAVASCRIPT in card.content_flavour_names
+            card for card in project1_cards if JAVASCRIPT in card.flavour_names
         ][0]
 
         ts_required_card = ts_project_card.requires_cards.filter(
             content_item=self.topic1
         ).get()
-        self.assertEqual(ts_required_card.content_flavour_names, [TYPESCRIPT])
+        self.assertEqual(ts_required_card.flavour_names, [TYPESCRIPT])
 
         js_required_card = js_project_card.requires_cards.filter(
             content_item=self.topic1
         ).get()
-        self.assertEqual(js_required_card.content_flavour_names, [JAVASCRIPT])
+        self.assertEqual(js_required_card.flavour_names, [JAVASCRIPT])
 
 
 class update_topic_card_progress_Tests(TestCase):
@@ -197,16 +198,16 @@ class update_topic_card_progress_Tests(TestCase):
     def test_with_flavours(self):
         content_item = factories.ContentItemFactory(
             content_type=models.ContentItem.TOPIC,
-            available_flavours=[JAVASCRIPT, TYPESCRIPT],
+            flavours=[JAVASCRIPT, TYPESCRIPT],
         )
 
         card_ts = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[TYPESCRIPT]
+            content_item=content_item, flavours=[TYPESCRIPT]
         )
         card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[JAVASCRIPT]
+            content_item=content_item, flavours=[JAVASCRIPT]
         )
         card_js.assignees.add(self.user)
 
@@ -228,11 +229,11 @@ class update_topic_card_progress_Tests(TestCase):
     def test_error_gets_raised_if_card_has_flavours_but_progress_doesnt(self):
         content_item = factories.ContentItemFactory(
             content_type=models.ContentItem.TOPIC,
-            available_flavours=[JAVASCRIPT, TYPESCRIPT],
+            flavours=[JAVASCRIPT, TYPESCRIPT],
         )
 
         card_ts = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[TYPESCRIPT]
+            content_item=content_item, flavours=[TYPESCRIPT]
         )
         card_ts.assignees.add(self.user)
 
@@ -368,16 +369,16 @@ class update_workshop_card_progress_Tests(TestCase):
     def test_with_flavours(self):
         content_item = factories.ContentItemFactory(
             content_type=models.ContentItem.WORKSHOP,
-            available_flavours=[JAVASCRIPT, TYPESCRIPT],
+            flavours=[JAVASCRIPT, TYPESCRIPT],
         )
 
         card_ts = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[TYPESCRIPT]
+            content_item=content_item, flavours=[TYPESCRIPT]
         )
         card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[JAVASCRIPT]
+            content_item=content_item, flavours=[JAVASCRIPT]
         )
         card_js.assignees.add(self.user)
 
@@ -399,11 +400,11 @@ class update_workshop_card_progress_Tests(TestCase):
     def test_error_gets_raised_if_card_has_flavours_but_progress_doesnt(self):
         content_item = factories.ContentItemFactory(
             content_type=models.ContentItem.WORKSHOP,
-            available_flavours=[JAVASCRIPT, TYPESCRIPT],
+            flavours=[JAVASCRIPT, TYPESCRIPT],
         )
 
         card_ts = factories.AgileCardFactory(
-            content_item=content_item, content_flavours=[TYPESCRIPT]
+            content_item=content_item, flavours=[TYPESCRIPT]
         )
         card_ts.assignees.add(self.user)
 
@@ -455,19 +456,19 @@ class update_project_card_progress_Tests(TestCase):
     def test_with_flavours(self):
         content_item = factories.ProjectContentItemFactory(
             content_type=models.ContentItem.PROJECT,
-            available_flavours=[JAVASCRIPT, TYPESCRIPT],
+            flavours=[JAVASCRIPT, TYPESCRIPT],
         )
 
         card_ts = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[TYPESCRIPT],
+            flavours=[TYPESCRIPT],
             recruit_project=None,
         )
         card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[JAVASCRIPT],
+            flavours=[JAVASCRIPT],
             recruit_project=None,
         )
         card_js.assignees.add(self.user)
@@ -499,9 +500,9 @@ class RegenerateCardTests(TestCase):
         )
         self.workshop = ContentItemFactory(content_type=models.ContentItem.WORKSHOP)
 
-        self.topic.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
-        self.project.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
-        self.workshop.set_available_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.topic.set_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.project.set_flavours([JAVASCRIPT, TYPESCRIPT])
+        self.workshop.set_flavours([JAVASCRIPT, TYPESCRIPT])
 
         self.js_curriculum = core_factories.CurriculumFactory()
         self.ts_curriculum = core_factories.CurriculumFactory()

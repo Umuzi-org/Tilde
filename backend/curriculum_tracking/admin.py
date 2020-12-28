@@ -1,13 +1,8 @@
 from django.contrib import admin
-
 from . import models
-from core import admin as core_admin
 from core import models as core_models
-from django.contrib.admin.sites import NotRegistered
 from adminsortable2.admin import SortableInlineAdminMixin
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from core.models import Cohort, RecruitCohort
+
 
 
 class ContentItemOrderPostAdmin(admin.TabularInline):
@@ -49,48 +44,14 @@ class CurriculumContentInline(
 class CurriculumAdmin(admin.ModelAdmin):
     inlines = (CurriculumContentInline,)
 
-
-class RecruitCohortInline(admin.TabularInline):
-    model = RecruitCohort
-    fields = ["user"]
-    extra = 0
-
-
-# @admin.register(core_models.Cohort)
-# class CohortAdmin(admin.ModelAdmin):
-#     inlines = (RecruitCohortInline,)
-#     change_form_template = "admin/cohort_changeform.html"
-#     list_display = (
-#         "__str__",
-#         "active",
-#         "suppress_card_generation",
-#         "start_date",
-#         "end_date",
-#     )
-#     ordering = ("-active", "cohort_number", "cohort_curriculum__short_name")
-
-#     def response_change(self, request, obj):
-#         if "_create_repos_for_project" in request.POST:
-#             return HttpResponseRedirect(
-#                 reverse("create_repos_for_project", kwargs={"cohort_id": obj.id})
-#             )
-#         return super().response_change(request, obj)
-
-
 class RecruitProjectReviewInLine(admin.TabularInline):
     model = models.RecruitProjectReview
     extra = 0
-
 
 @admin.register(models.RecruitProject)
 class RecruitProjectAdmin(admin.ModelAdmin):
     inlines = (RecruitProjectReviewInLine,)
     list_filter = ["content_item"]
-
-
-# class RecruitProjectInline(admin.TabularInline):
-#     model = models.RecruitProject.recruit_users.through
-#     extra = 0
 
 
 @admin.register(models.AgileCard)

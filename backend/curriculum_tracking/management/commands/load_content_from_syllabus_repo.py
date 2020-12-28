@@ -124,7 +124,7 @@ class Helper:
             "title": meta["title"],
             "story_points": int(meta.get("story_points", 1)),
             "url": url,
-            # "available_flavours": meta.get("available_flavours"),
+            # "flavours": meta.get("flavours"),
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,
             "continue_from_repo": continue_from_repo,
@@ -147,9 +147,9 @@ class Helper:
             content_item.update(**defaults)
             content_item.save()
 
-        set_available_flavours(
+        set_flavours(
             content_item,
-            meta.get("available_flavours", []),
+            meta.get("flavours", []),
             cls.available_content_flavours,
         )
 
@@ -158,7 +158,7 @@ class Helper:
         #     and content_item.project_submission_type != content_item.NO_SUBMIT
         # ):
         #     assert (
-        #         content_item.available_flavours.count()
+        #         content_item.flavours.count()
         #     ), f"{content_item} has no flavours!!"
 
         assert (
@@ -257,28 +257,28 @@ def _update_tags(meta, content_item):
         content_item.tags.add(tag)
 
 
-def set_available_flavours(
-    content_item, raw_available_flavours, available_content_flavours
+def set_flavours(
+    content_item, raw_flavours, available_content_flavours
 ):
     right_hand_side = [i for l in available_content_flavours.values() for i in l]
 
-    available_flavours = []
-    for flavour in raw_available_flavours:
+    flavours = []
+    for flavour in raw_flavours:
         if flavour in right_hand_side:
-            available_flavours.append(flavour)
+            flavours.append(flavour)
         else:
-            available_flavours.extend(available_content_flavours[flavour])
+            flavours.extend(available_content_flavours[flavour])
     if (
         content_item.content_type == content_item.PROJECT
         and content_item.project_submission_type != content_item.NO_SUBMIT
     ):
         assert (
-            available_flavours
-        ), f"no available flavours specified. Be explicit. Perhaps you forgot to say available_flavours: ['none']\n\t{content_item.url}"
+            flavours
+        ), f"no available flavours specified. Be explicit. Perhaps you forgot to say flavours: ['none']\n\t{content_item.url}"
 
-    if "none" in available_flavours:
+    if "none" in flavours:
         assert (
-            len(available_flavours) == 1
+            len(flavours) == 1
         ), f"either it is None or it isnt!\n\t{content_item.url}"
         return  # nothing to do
 
@@ -286,7 +286,7 @@ def set_available_flavours(
         t[0]
         for t in [
             taggit.models.Tag.objects.get_or_create(name=tag_name)
-            for tag_name in available_flavours
+            for tag_name in flavours
         ]
     ]
 
@@ -297,16 +297,16 @@ def set_available_flavours(
             tag=tag, content_item=content_item
         )
     # remove the unnecessary ones
-    for tag in content_item.available_flavours.all():
+    for tag in content_item.flavours.all():
         if tag not in tags:
             models.ContentAvailableFlavour.objects.get(
                 tag=tag, content_item=content_item
             ).delete()
 
-    final = sorted([o.name for o in content_item.available_flavours.all()])
+    final = sorted([o.name for o in content_item.flavours.all()])
     assert final == sorted(
-        available_flavours
-    ), f"Flavours dpnt match: Expected {available_flavours} but got {final}"
+        flavours
+    ), f"Flavours dpnt match: Expected {flavours} but got {final}"
 
 
 # def create_or_update_content(content_type, available_content_flavours):
@@ -535,25 +535,25 @@ def _get_ordered_curriculum_items_from_page(file_stream):
                 raise Exception(f"cannot find contentitem with url = {url}")
 
             flavours = [s.strip() for s in params.get("flavour", "").split(",") if s]
-            available_flavour_names = content_item.available_flavour_names
+            flavour_names = content_item.flavour_names
 
-            if "none" in available_flavour_names:
+            if "none" in flavour_names:
                 assert (
-                    len(available_flavour_names) == 1
-                ), f"available_flavour_names = {available_flavour_names}. Either it's None or it isn't!\n\t{params['path']}"
-            available_flavour_names = [
-                s for s in available_flavour_names if s != "none"
+                    len(flavour_names) == 1
+                ), f"flavour_names = {flavour_names}. Either it's None or it isn't!\n\t{params['path']}"
+            flavour_names = [
+                s for s in flavour_names if s != "none"
             ]
 
-            if available_flavour_names:
+            if flavour_names:
                 assert (
                     flavours
-                ), f"No flavours specfied, choose at least one of: {available_flavour_names}\n\t{line}"
+                ), f"No flavours specfied, choose at least one of: {flavour_names}\n\t{line}"
 
             for flavour in flavours:
                 assert (
-                    flavour in available_flavour_names
-                ), f"{flavour} not allowed in {url}, choose one of: {available_flavour_names}\n\tpath={params['path']}"
+                    flavour in flavour_names
+                ), f"{flavour} not allowed in {url}, choose one of: {flavour_names}\n\tpath={params['path']}"
 
             if not content_item.id in seen_content_item_ids:
                 # we haven't seen it before

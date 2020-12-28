@@ -70,7 +70,7 @@ def get_card_data(user):
     for card in cards:
         tag_names = [
             o.name
-            for o in list(card.content_flavours.all())
+            for o in list(card.flavours.all())
             + list(card.content_item.tags.all())
         ]
 
@@ -166,7 +166,7 @@ class Command(BaseCommand):
 
         users = [
             o.user
-            for o in TeamMembership.objects.filter(group=group, permission_student=True)
+            for o in TeamMembership.objects.filter(group=group)
         ]
 
         rows = [get_report_data(user=user, path=path) for user in users]

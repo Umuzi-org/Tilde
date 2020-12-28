@@ -1,5 +1,6 @@
+from typing import List
 from django.db import models
-from core.models import Curriculum, Cohort, User
+from core.models import Curriculum, User
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -25,6 +26,83 @@ import re
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+class ReviewableMixin:
+    def is_trusted_reviewer(self, user):
+        """should we take this user's review as the truth?"""
+        trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
+        for trust in trusts:
+            if trust.flavours_match(self.flavour_names):
+                return True
+        return False
+
+
+class FlavourMixin:
+    def flavours_match(self, flavour_strings: List[str]):
+        return sorted(self.flavour_names) == sorted(flavour_strings)
+
+    @property
+    def flavour_names(self):
+        return [o.name for o in self.flavours.all()]
+
+    def set_flavours(self, flavour_strings):
+        flavour_tags = [
+            taggit.models.Tag.objects.get_or_create(name=name)[0]
+            for name in flavour_strings
+        ]
+
+        for flavour in self.flavours.all():
+            if flavour not in flavour_tags:
+                self.flavours.remove(flavour)
+        for tag in flavour_tags:
+            if tag not in self.flavours.all():
+                self.flavours.add(tag)
+
+class ContentItemProxyMixin:
+    @property
+    def content_type_nice(self):
+        return self.content_item.content_type_nice
+
+    @property
+    def content_type(self):
+        return self.content_item.content_type
+
+    @property
+    def title(self):
+        return self.content_item.title
+
+    @property
+    def content_url(self):
+        return self.content_item.url
+
+    @property
+    def story_points(self):
+        return self.content_item.story_points
+
+    @property
+    def tag_names(self):
+        return self.content_item.tag_names
+
+    @property
+    def submission_type_nice(self):
+        return self.content_item.project_submission_type_nice
+
+    @property
+    def topic_needs_review(self):
+        return self.content_item.topic_needs_review
+
+    @property
+    def project_submission_type_nice(self):
+        return self.content_item.project_submission_type_nice
+
+    @property
+    def topic_needs_review(self):
+        return self.content_item.topic_needs_review
+class TagMixin:
+    @property
+    def tag_names(self):
+        return [o.name for o in self.tags.all()]
 
 
 class CourseRegistration(models.Model):
@@ -68,7 +146,7 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
-class ContentItem(models.Model, Mixins):
+class ContentItem(models.Model, Mixins,FlavourMixin,TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
     TOPIC = "T"
@@ -120,7 +198,7 @@ class ContentItem(models.Model, Mixins):
 
     tags = TaggableManager(blank=True)
 
-    available_flavours = models.ManyToManyField(
+    flavours = models.ManyToManyField(
         taggit.models.Tag,
         blank=True,
         through="ContentAvailableFlavour",
@@ -155,14 +233,6 @@ class ContentItem(models.Model, Mixins):
                     f"Cannot set `topic_needs_review` for non TOPIC item. content_type = {self.content_type}"
                 )
         if self.content_type == self.PROJECT:
-            # if (
-            #     self.project_submission_type != self.NO_SUBMIT
-            #     and self.available_flavours.count() == 0
-            # ):
-            #     raise ValidationError(
-            #         "This project has no available flavours! it needs at least one"
-            #     )
-
             if self.project_submission_type == None:
                 raise ValidationError(
                     "Since this is a Project, the submission type cannot be null"
@@ -190,29 +260,6 @@ class ContentItem(models.Model, Mixins):
         name = self.title or self.url or ""
         return f"{self.content_type}: {name}"
 
-    def set_available_flavours(self, flavour_strings):
-        created_tags = [
-            taggit.models.Tag.objects.get_or_create(name=flavour)
-            for flavour in flavour_strings
-        ]
-        tags = [t[0] for t in created_tags]
-        current_flavours = ContentAvailableFlavour.objects.filter(content_item=self)
-
-        for o in current_flavours:
-            if o.flavour not in tags:
-                o.delete()
-
-        for tag in tags:
-            ContentAvailableFlavour.objects.get_or_create(tag=tag, content_item=self)
-
-    @property
-    def tag_names(self):
-        return [str(tag) for tag in self.tags.all()]
-
-    @property
-    def available_flavour_names(self):
-        return [str(tag) for tag in self.available_flavours.all()]
-
     @property
     def project_submission_type_nice(self):
         return dict(ContentItem.PROJECT_SUBMISSION_TYPES).get(
@@ -229,13 +276,12 @@ class ContentItem(models.Model, Mixins):
     def hard_prerequisite_content_items(self):
         return [o.pre for o in self.pre_ordered_content.filter(hard_requirement=True)]
 
-
 class ContentAvailableFlavour(models.Model):
     tag = models.ForeignKey(taggit.models.Tag, on_delete=models.PROTECT)
     content_item = models.ForeignKey("ContentItem", on_delete=models.CASCADE)
 
 
-class CurriculumContentRequirement(models.Model, Mixins):
+class CurriculumContentRequirement(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
     content_item = models.ForeignKey(
         ContentItem,
         on_delete=models.CASCADE,
@@ -254,16 +300,16 @@ class CurriculumContentRequirement(models.Model, Mixins):
     class Meta(object):
         ordering = ["order"]
 
-    @property
-    def flavour_names(self):
-        return [o.name for o in self.flavours.all()]
+class ReviewTrust(models.Model, FlavourMixin,ContentItemProxyMixin):
+    content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    flavours = TaggableManager(blank=True)
 
 
-class RecruitProject(models.Model, Mixins):
+class RecruitProject(models.Model, Mixins, FlavourMixin,ReviewableMixin,ContentItemProxyMixin):
     """what a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
-
     complete_time = models.DateTimeField(null=True, blank=True)
     review_request_time = models.DateTimeField(null=True, blank=True)
     start_time = models.DateTimeField(null=True, blank=True)
@@ -409,21 +455,8 @@ class RecruitProject(models.Model, Mixins):
             ), f"len({project_name}) ={len(project_name)}. Expected 100 "
         return project_name
 
-    def set_flavours(self, flavour_strings):
-        flavour_tags = [
-            taggit.models.Tag.objects.get_or_create(name=name)[0]
-            for name in flavour_strings
-        ]
 
-        for flavour in self.flavours.all():
-            if flavour not in flavour_tags:
-                self.flavours.remove(flavour)
-        for tag in flavour_tags:
-            if tag not in self.flavours.all():
-                self.flavours.add(tag)
 
-    def flavours_match(self, flavour_strings):
-        return sorted(self.flavour_names) == sorted(flavour_strings)
 
     def cancel_request_review(self):
         self.review_request_time = None
@@ -467,22 +500,9 @@ class RecruitProject(models.Model, Mixins):
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
 
-    def is_trusted_reviewer(self, user):
-        """should we take this user's review as the truth?"""
-        # TODO: something clever
-        trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
-        for trust in trusts:
-            if trust.flavours_match(self.flavours):
-                return True
-        return False
 
-    @property
-    def submission_type_nice(self):
-        return self.content_item.project_submission_type_nice
 
-    @property
-    def flavour_names(self):
-        return [o.name for o in self.flavours.all()]
+
 
     @property
     def latest_review_status(self):
@@ -496,21 +516,6 @@ class RecruitProject(models.Model, Mixins):
         if latest_review:
             return latest_review.status
 
-    @property
-    def title(self):
-        return self.content_item.title
-
-    @property
-    def content_url(self):
-        return self.content_item.url
-
-    @property
-    def story_points(self):
-        return self.content_item.story_points
-
-    @property
-    def tags(self):
-        return self.content_item.tag_names
 
     @property
     def recruit_user_names(self):
@@ -550,7 +555,7 @@ class RecruitProjectReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class TopicProgress(models.Model, Mixins):
+class TopicProgress(models.Model, Mixins,ContentItemProxyMixin):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     due_time = models.DateTimeField(blank=True, null=True)
@@ -568,14 +573,6 @@ class TopicProgress(models.Model, Mixins):
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
 
-    def is_trusted_reviewer(self, user):
-        """should we take this user's review as the truth?"""
-        # TODO: something clever
-        return user.is_staff
-
-    @property
-    def topic_needs_review(self):
-        return self.content_item.topic_needs_review
 
 
 class TopicReview(models.Model, Mixins):
@@ -595,14 +592,14 @@ class TopicReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class WorkshopAttendance(models.Model, Mixins):
+class WorkshopAttendance(models.Model, Mixins,ContentItemProxyMixin):
     timestamp = models.DateTimeField()
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     attendee_user = models.ForeignKey(User, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
 
 
-class AgileCard(models.Model, Mixins):
+class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
     BLOCKED = "B"
     READY = "R"
     IN_PROGRESS = "IP"
@@ -627,7 +624,7 @@ class AgileCard(models.Model, Mixins):
     }
 
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
-    content_flavours = TaggableManager(blank=True)
+    flavours = TaggableManager(blank=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES)
 
     workshop_attendance = models.OneToOneField(
@@ -686,6 +683,7 @@ class AgileCard(models.Model, Mixins):
     # curriculum and what they have done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
+
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
@@ -701,25 +699,6 @@ class AgileCard(models.Model, Mixins):
             return self.BLOCKED
         return self.READY
 
-    @property
-    def content_flavour_names(self):
-        return [str(tag) for tag in self.content_flavours.all()]
-
-    def flavours_match(self, flavour_strings):
-        return sorted(self.content_flavour_names) == sorted(flavour_strings)
-
-    def set_content_flavours(self, flavour_strings):
-        created_tags = [
-            taggit.models.Tag.objects.get_or_create(name=flavour)
-            for flavour in flavour_strings
-        ]
-        tags = [t[0] for t in created_tags]
-
-        for tag in tags:
-            self.content_flavours.add(tag)
-        for tag in self.content_flavours.all():
-            if tag not in tags:
-                self.content_flavours.remove(tag)
 
     @property
     def due_time(self):
@@ -752,14 +731,6 @@ class AgileCard(models.Model, Mixins):
     @property
     def project_review_request_time(self):
         return self.recruit_project.review_request_time
-
-    @property
-    def project_submission_type_nice(self):
-        return self.content_item.project_submission_type_nice
-
-    @property
-    def topic_needs_review(self):
-        return self.content_item.topic_needs_review
 
     @property
     def project_link_submission(self):
@@ -834,10 +805,10 @@ class AgileCard(models.Model, Mixins):
             return cls.IN_PROGRESS
 
     def set_instance_flavours_to_match(self, progress_instance):
-        for flavour in self.content_flavours.all():
+        for flavour in self.flavours.all():
             progress_instance.flavours.add(flavour)
         for flavour in progress_instance.flavours.all():
-            if flavour not in self.content_flavours.all():
+            if flavour not in self.flavours.all():
                 progress_instance.flavours.remove(flavour)
 
     def set_due_time(self, time):
@@ -897,7 +868,7 @@ class AgileCard(models.Model, Mixins):
 
         if self.content_item.project_submission_type == ContentItem.REPOSITORY:
             self.recruit_project.create_repo_and_assign_collaborators(
-                card_flavour_names=self.content_flavour_names
+                card_flavour_names=self.flavour_names
             )
             assert self.recruit_project.repository
 
@@ -1010,21 +981,7 @@ class AgileCard(models.Model, Mixins):
         self.save()
         attendance.delete()
 
-    @property
-    def title(self):
-        return self.content_item.title
 
-    @property
-    def content_type(self):
-        return self.content_item.content_type_nice
-
-    @property
-    def story_points(self):
-        return self.content_item.story_points
-
-    @property
-    def tags(self):
-        return self.content_item.tag_names
 
     @property
     def repository(self):

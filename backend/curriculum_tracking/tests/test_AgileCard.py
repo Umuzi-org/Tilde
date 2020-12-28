@@ -1,3 +1,4 @@
+import mock
 from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
@@ -9,11 +10,8 @@ from curriculum_tracking.models import (
 from . import factories
 from core.tests.factories import UserFactory
 from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
-from git_real.tests.factories import RepositoryFactory
-
 from django.utils.timezone import datetime
 from datetime import timedelta
-import mock
 from git_real.constants import GITHUB_BOT_USERNAME, GITHUB_DATETIME_FORMAT
 
 from curriculum_tracking.constants import (
@@ -136,14 +134,14 @@ class start_project_Tests(TestCase):
         self, create_repo_and_assign_contributer, get_repo, add_collaborator, Api
     ):
         content_item = factories.ProjectContentItemFactory(
-            available_flavours=[TYPESCRIPT, JAVASCRIPT]
+            flavours=[TYPESCRIPT, JAVASCRIPT]
         )
 
         card_ts = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=None,
             content_item=content_item,
-            content_flavours=[TYPESCRIPT],
+            flavours=[TYPESCRIPT],
         )
         card_ts.assignees.add(SocialProfileFactory().user)
 
@@ -151,7 +149,7 @@ class start_project_Tests(TestCase):
             status=AgileCard.READY,
             recruit_project=None,
             content_item=content_item,
-            content_flavours=[JAVASCRIPT],
+            flavours=[JAVASCRIPT],
         )
         card_js.assignees.add(SocialProfileFactory().user)
 
@@ -189,10 +187,7 @@ class start_project_Tests(TestCase):
         self.assertIn(JAVASCRIPT, card_js.recruit_project.repository.full_name)
         self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.ssh_url)
         self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.full_name)
-
-        # breakpoint()
-        # create_repo_and_assign_contributer.called(typescript in repo_full_name)
-
+        
     @mock.patch("social_auth.github_api.Api")
     @mock.patch("git_real.helpers.add_collaborator")
     @mock.patch("git_real.helpers.get_repo")
@@ -216,18 +211,18 @@ class start_project_Tests(TestCase):
         content_item = factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.REPOSITORY,
-            available_flavours=[TYPESCRIPT, JAVASCRIPT],
+            flavours=[TYPESCRIPT, JAVASCRIPT],
         )
 
         card_js = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[JAVASCRIPT],
+            flavours=[JAVASCRIPT],
             status=AgileCard.READY,
             recruit_project=None,
         )
         card_ts = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[TYPESCRIPT],
+            flavours=[TYPESCRIPT],
             status=AgileCard.READY,
             recruit_project=None,
         )
@@ -316,7 +311,7 @@ class start_project_Tests(TestCase):
 
     def create_continue_repo_card(
         self,
-        content_flavours,
+        flavours,
         card_flavours,
         assignee,
         reviewer,
@@ -327,12 +322,12 @@ class start_project_Tests(TestCase):
         pre_content = pre_content_item or factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.REPOSITORY,
-            available_flavours=content_flavours,
+            flavours=flavours,
         )
         pre_card = factories.AgileCardFactory(
             content_item=pre_content,
             status=AgileCard.COMPLETE,
-            content_flavours=card_flavours,
+            flavours=card_flavours,
             recruit_project=factories.RecruitProjectFactory(
                 content_item=pre_content,
                 repository=factories.RepositoryFactory(),
@@ -347,9 +342,9 @@ class start_project_Tests(TestCase):
                 content_type=ContentItem.PROJECT,
                 project_submission_type=ContentItem.CONTINUE_REPO,
                 continue_from_repo=pre_card.content_item,
-                available_flavours=content_flavours,
+                flavours=flavours,
             ),
-            content_flavours=card_flavours,
+            flavours=card_flavours,
             status=AgileCard.READY,
             recruit_project=None,
         )
@@ -364,18 +359,18 @@ class start_project_Tests(TestCase):
         content_item = factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.LINK,
-            available_flavours=[TYPESCRIPT, JAVASCRIPT],
+            flavours=[TYPESCRIPT, JAVASCRIPT],
         )
 
         card_js = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[JAVASCRIPT],
+            flavours=[JAVASCRIPT],
             status=AgileCard.READY,
             recruit_project=None,
         )
         card_ts = factories.AgileCardFactory(
             content_item=content_item,
-            content_flavours=[TYPESCRIPT],
+            flavours=[TYPESCRIPT],
             status=AgileCard.READY,
             recruit_project=None,
         )
@@ -404,7 +399,7 @@ class start_project_Tests(TestCase):
         assignee = SocialProfileFactory().user
         reviewer = SocialProfileFactory().user
         card_js = self.create_continue_repo_card(
-            content_flavours=[TYPESCRIPT, JAVASCRIPT],
+            flavours=[TYPESCRIPT, JAVASCRIPT],
             card_flavours=[JAVASCRIPT],
             assignee=assignee,
             reviewer=reviewer,
@@ -414,7 +409,7 @@ class start_project_Tests(TestCase):
         pre_content_item = content_item.continue_from_repo
 
         card_ts = self.create_continue_repo_card(
-            content_flavours=[TYPESCRIPT, JAVASCRIPT],
+            flavours=[TYPESCRIPT, JAVASCRIPT],
             card_flavours=[TYPESCRIPT],
             assignee=assignee,
             reviewer=reviewer,
@@ -556,10 +551,15 @@ class Project_set_due_time_Tests(TestCase):
 
 class derive_status_from_project_Tests(TestCase):
     def setUp(self):
-        self.project = factories.RecruitProjectFactory()
-        self.trusted_user = UserFactory(
-            is_staff=True,
+        self.project = factories.RecruitProjectFactory(
+            flavours = [JAVASCRIPT]
         )
+        
+        trust = factories.ReviewTrustFactory(
+            content_item = self.project.content_item,
+            flavours = [JAVASCRIPT]
+        ) 
+        self.trusted_user = trust.user
 
     def set_project_start_time(self):
         self.project.start_time = timezone.now() - timedelta(days=15)
@@ -652,7 +652,6 @@ class derive_status_from_project_Tests(TestCase):
 
         self.assertFalse(review.trusted)
 
-        # breakpoint()
         derived = AgileCard.derive_status_from_project(self.project)
         self.assertEqual(derived, AgileCard.IN_REVIEW)
 

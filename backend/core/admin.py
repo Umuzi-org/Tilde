@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.admin import GroupAdmin
 
 
-class TeamMembershipInline(admin.StackedInline):  # or admin.StackedInline
+class TeamMembershipInline(admin.StackedInline):  
     model = models.TeamMembership
 
 
@@ -19,12 +19,7 @@ class TeamAdmin(GuardedModelAdmin):
     )
 
 
-admin.site.register(models.ProductTeam)
 admin.site.register(models.UserProfile)
-admin.site.register(models.RecruitCohort)
-admin.site.register(models.EmployerPartner)
-
-
 admin.site.unregister(AuthGroup)
 admin.site.register(models.Group, GroupAdmin)
 

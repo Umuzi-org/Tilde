@@ -8,10 +8,7 @@ def get_choices(Model):
 
 
 class TeamForm(forms.Form):
-    cohort = forms.ChoiceField(choices=get_choices(models.Cohort), required=False)
-    product_team = forms.ChoiceField(
-        choices=get_choices(models.ProductTeam), required=False
-    )
+    team = forms.ChoiceField(choices=get_choices(models.Team), required=False)
     staff = forms.BooleanField(required=False)
     # everyone = forms.BooleanField(required=False)
 

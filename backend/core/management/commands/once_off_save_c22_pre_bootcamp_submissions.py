@@ -1,27 +1,10 @@
-from core.models import (
-    User,
-    # UserProfile,
-    # Curriculum,
-    # Cohort,
-    # RecruitCohort,
-    # EmployerPartner,
-)
+from core.models import User
 from curriculum_tracking.models import ContentItem, AgileCard, RecruitProject
 from git_real.models import Repository
 from django.utils import timezone
-
-# from curriculum_tracking.models import CourseRegistration
-# from social_auth.models import SocialProfile
 from django.core.management.base import BaseCommand
-
-from curriculum_tracking.card_generation_helpers import (
-    generate_and_update_all_cards_for_user,
-)
 from google_helpers.utils import fetch_sheet
 import re
-
-from git_real.constants import PERSONAL_GITHUB_NAME
-from git_real import helpers as git_helpers
 
 GIT_EXCERCISES_ID = 288
 PRE_BOOTCAMP_CHALLENGES_ID = 416
@@ -122,7 +105,7 @@ def save_project_and_update_card(row):
             content_item=content_item, repository=repo,
         )
         project.recruit_users.add(user)
-        for flavour in card.content_flavours.all():
+        for flavour in card.flavours.all():
             project.flavours.add(flavour)
 
     card.recruit_project = project
@@ -137,7 +120,7 @@ def save_project_and_update_card(row):
     # if card.status == AgileCard.BLOCKED:
 
     # recruit_user=self.assignees.first(),
-    # flavour_names=self.content_flavour_names,
+    # flavour_names=self.flavour_names,
 
     # card.save()
     # print(user)

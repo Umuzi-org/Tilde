@@ -25,7 +25,7 @@ class Command(BaseCommand):
             else:
                 team = core_models.Team.objects.get(name=who)
                 for o in core_models.TeamMembership.objects.filter(
-                    team=team, permission_student=True
+                    team=team
                 ):
                     user = o.user
                     models.AgileCard.objects.filter(assignees__in=[user]).delete()

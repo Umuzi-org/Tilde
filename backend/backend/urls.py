@@ -15,23 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import include, url
-
+from django.conf.urls import include
 from rest_framework import routers
 from core import views as core_views
-
 from curriculum_tracking import api_views as curriculum_tracking_api_views
-
-# from git_real import api_views as git_real_api_views
-from attendance import views as attendance_views
 
 router = routers.DefaultRouter()
 router.register(r"users", core_views.UserViewSet, "user")
 router.register(r"user_profiles", core_views.UserProfileViewSet, "userprofile")
 router.register(r"curriculums", core_views.CurriculumViewSet, "curriculum")
 
-router.register(r"recruit_cohorts", core_views.RecruitCohortViewSet, "recruitcohort")
-router.register(r"cohorts", core_views.CohortViewSet, "cohort")
 
 router.register(r"teams", core_views.TeamViewSet, "team")
 
@@ -133,15 +126,12 @@ router.register(
 #     "user-recrtuitprojects",
 # )
 
-# router.register(r"attendances", attendance_views.AttendanceView, "attendance")
 
 urlpatterns = [
-    path("admin/curriculum_tracking/", include("curriculum_tracking.admin_urls")),
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/", include(router.urls)),
     path("api/", include("core.urls")),
-    path("attendance/", include("attendance.urls")),
     path("git_real/", include("git_real.urls")),
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),

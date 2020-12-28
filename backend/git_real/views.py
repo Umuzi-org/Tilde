@@ -1,19 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from core.models import Cohort, ProductTeam
 from django.contrib.auth import get_user_model
-from . import models
 from core.forms import TeamForm
 
-User = get_user_model()
 from .models import Commit
 
 from django.urls import resolve
 import datetime
-import os
-import random
-import string
+User = get_user_model()
+
 
 
 def index(request):

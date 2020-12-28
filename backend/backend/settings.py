@@ -101,7 +101,6 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "core.apps.CoreConfig",
-    "attendance.apps.AttendanceConfig",
     "curriculum_tracking.apps.CurriculumTrackingConfig",
     "git_real.apps.GitRealConfig",
     "social_auth.apps.SocialAuthConfig",

@@ -82,16 +82,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=25, blank=True)
     preferred_name = models.CharField(max_length=25, blank=True, null=True)
 
-    is_student = models.BooleanField("is student", default=False)
+    # is_student = models.BooleanField("is student", default=False)
     is_staff = models.BooleanField("is staff", default=False)  # ACN staff member
     is_superuser = models.BooleanField("is superuser", default=False)
 
-    is_reviewer = models.BooleanField(
-        "is reviewer", default=False
-    )  # can review anyone's code
-    is_trusted_reviewer = models.BooleanField(
-        "is trusted reviewer", default=False
-    )  # competent and excellent reviews move cards always
+    # is_reviewer = models.BooleanField(
+    #     "is reviewer", default=False
+    # )  # can review anyone's code
+    # is_trusted_reviewer = models.BooleanField(
+    #     "is trusted reviewer", default=False
+    # )  # competent and excellent reviews move cards always
 
     # groups = models.ManyToManyField(Group)
 
@@ -236,9 +236,9 @@ class Team(models.Model, Mixins):
         return self.name
 
     @property
-    def active_student_users(self):
+    def active_users(self):
         l = TeamMembership.objects.filter(
-            group=self, permission_student=True, user__active=True
+            team=self, user__active=True
         )
         return [o.user for o in l]
 
@@ -249,9 +249,6 @@ class Team(models.Model, Mixins):
             yield {
                 "user_id": membership.user_id,
                 "user_email": membership.user.email,
-                "permission_student": membership.permission_student,
-                "permission_view": membership.permission_view,
-                "permission_manage": membership.permission_manage,
             }
 
 
@@ -263,111 +260,6 @@ class TeamMembership(models.Model, Mixins):
     team = models.ForeignKey(
         Team, on_delete=models.CASCADE, related_name="team_memberships"
     )
-
-    permission_student = models.BooleanField(
-        default=True
-    )  # this user is a student to be managed. They can see their own things
-    permission_view = models.BooleanField(default=False)  # can look at all the things
-    permission_manage = models.BooleanField(default=False)  # can take managment actions
-
     class Meta:
         unique_together = ["user", "team"]
 
-
-class Cohort(models.Model, Mixins):
-    start_date = models.DateField()
-    end_date = models.DateField()
-
-    cohort_number = models.IntegerField()
-    cohort_curriculum = models.ForeignKey(
-        Curriculum, on_delete=models.PROTECT, related_name="cohorts"
-    )
-    label = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # eg for C14 web BBD this value would be "BBD"
-
-    active = models.BooleanField(default=True)
-    suppress_card_generation = models.BooleanField(default=False)
-
-    def __str__(self):
-        s = f"C{self.cohort_number} {self.cohort_curriculum.short_name}"
-        if self.label:
-            return f"{s} ({self.label})"
-        return s
-
-    def get_member_users(self):
-        return [o.user for o in RecruitCohort.objects.filter(cohort=self)]
-
-    @property
-    def cohort_recruit_users(self):
-        """return a list of ids for use by api"""
-        # return [o.user_id for o in RecruitCohort.objects.filter(cohort=self)]
-        return [o.user_id for o in self.cohort_recruits.all()]
-
-    @property
-    def cohort_recruit_user_emails(self):
-        return [o.user.email for o in self.cohort_recruits.all()]
-
-    @property
-    def curriculum_short_name(self):
-        return self.cohort_curriculum.short_name
-
-    @property
-    def curriculum_name(self):
-        return self.cohort_curriculum.name
-
-    @classmethod
-    def get_from_short_name(cls, name):
-        if name.startswith("C"):
-            name = name[1:]
-        found = re.search("^(\d+) (.+)$", name)
-        assert (
-            found
-        ), "badly formed name. Should be something like C21 web dev, where 'web dev' would be the short_name of the cohort"
-        (number, short_name) = found.groups()
-        return cls.objects.get(
-            cohort_number=int(number), cohort_curriculum__short_name=short_name.strip()
-        )
-
-
-class RecruitCohort(models.Model, Mixins):
-    # depricated
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="recruit_cohorts"
-    )
-
-    cohort = models.ForeignKey(
-        Cohort, on_delete=models.PROTECT, related_name="cohort_recruits"
-    )
-    employer_partner = models.ForeignKey(
-        EmployerPartner,
-        on_delete=models.PROTECT,  # TODO blank=True, null=True
-    )
-    start_date = models.DateField()  # TODO blank=True, null=True
-    end_date = models.DateField()  # TODO blank=True, null=True
-
-    def __str__(self):
-        return f"{self.cohort} - {self.user}"
-
-    @property
-    def email(self):
-        return user.email
-
-
-class ProductTeam(models.Model, Mixins):
-    name = models.CharField(max_length=50)
-
-    users = models.ManyToManyField(
-        User, related_name="product_teams", through="ProductTeamMembership"
-    )
-
-    def __str__(self):
-        return self.name
-
-    def get_member_users(self):
-        return self.users.all()
-
-
-class ProductTeamMembership(models.Model, Mixins):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_team = models.ForeignKey(ProductTeam, on_delete=models.CASCADE)

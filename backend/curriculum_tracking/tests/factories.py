@@ -48,12 +48,29 @@ def _next_int_generator():
 _next_int_iterator = _next_int_generator()
 
 
-# def _content_item_id_generator():
-#     while True:
-#         yield models.ContentItem.get_next_available_id()
+class FlavourMixin:
 
+    @staticmethod
+    def flavours(self, create, extracted, **kwargs):
+        if not create:
+            return
 
-# _content_item_iterator
+        if extracted:
+            self.set_flavours(extracted)
+        else:
+            pass
+
+class TagMixin:
+    @staticmethod
+    def tags(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for tag in extracted:
+                self.tags.add(tag)
+        else:
+            self.tags.add(TagFactory())
 
 
 class TagFactory(DjangoModelFactory):
@@ -63,7 +80,9 @@ class TagFactory(DjangoModelFactory):
     name = factory.LazyAttribute(lambda *args, **kwargs: next(_tag_name_iterator))
 
 
-class ProjectContentItemFactory(DjangoModelFactory):
+
+
+class ProjectContentItemFactory(DjangoModelFactory,TagMixin):
     class Meta:
         model = "curriculum_tracking.ContentItem"
 
@@ -77,31 +96,17 @@ class ProjectContentItemFactory(DjangoModelFactory):
     project_submission_type = models.ContentItem.REPOSITORY
     template_repo = "https://github.com/Umuzi-org/bwahahhahaaaa"
 
-    @factory.post_generation  # TODO: this isn't DRY
-    def tags(self, create, extracted, **kwargs):
-        if not create:
-            return
 
-        if extracted:
-            for tag in extracted:
-                self.tags.add(tag)
-        else:
-            self.tags.add(TagFactory())
+    @factory.post_generation
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 
-    @factory.post_generation  # TODO: this isn't DRY
-    def available_flavours(self, create, extracted, **kwargs):
-        import taggit
-
-        if not create:
-            return
-
-        if extracted:
-            self.set_available_flavours(extracted)
-        else:
-            pass
+    @factory.post_generation
+    def tags(self, *args, **kwargs):
+        TagMixin.tags(self,*args, **kwargs)
 
 
-class ContentItemFactory(DjangoModelFactory):  # TODO: make DRY
+class ContentItemFactory(DjangoModelFactory): 
     class Meta:
         model = "curriculum_tracking.ContentItem"
 
@@ -115,28 +120,25 @@ class ContentItemFactory(DjangoModelFactory):  # TODO: make DRY
     story_points = 5
 
     @factory.post_generation
-    def tags(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for tag in extracted:
-                self.tags.add(tag)
-        else:
-            self.tags.add(TagFactory())
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 
     @factory.post_generation
-    def available_flavours(self, create, extracted, **kwargs):
-        import taggit
+    def tags(self, *args, **kwargs):
+        TagMixin.tags(self,*args, **kwargs)
 
-        if not create:
-            return
 
-        if extracted:
-            self.set_available_flavours(extracted)
-        else:
-            pass
+class ReviewTrustFactory(DjangoModelFactory):
+    class Meta:
+        model = "curriculum_tracking.ReviewTrust"
 
+    user = factory.SubFactory(UserFactory)
+    content_item = factory.SubFactory(ContentItemFactory)
+
+    @factory.post_generation
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
+        
 
 class RecruitProjectFactory(DjangoModelFactory):
     class Meta:
@@ -159,16 +161,8 @@ class RecruitProjectFactory(DjangoModelFactory):
             self.recruit_users.add(UserFactory())
 
     @factory.post_generation
-    def flavours(self, create, extracted, **kwargs):
-        import taggit
-
-        if not create:
-            return
-
-        if extracted:
-            self.set_flavours(extracted)
-        else:
-            pass
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 
 
 class RecruitProjectReviewFactory(DjangoModelFactory):
@@ -192,18 +186,10 @@ class TopicProgressFactory(DjangoModelFactory):
     # start_time
     # complete_time
     # review_request_time
-
     @factory.post_generation
-    def flavours(self, create, extracted, **kwargs):
-        import taggit
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 
-        if not create:
-            return
-
-        if extracted:
-            self.set_flavours(extracted)
-        else:
-            pass
 
 
 class TopicReviewFactory(DjangoModelFactory):
@@ -242,19 +228,8 @@ class AgileCardFactory(DjangoModelFactory):
     order = 1
 
     @factory.post_generation
-    def content_flavours(self, create, extracted, **kwargs):
-        import taggit
-
-        if not create:
-            return
-
-        if extracted:
-            for flavour_name in extracted:
-                self.content_flavours.add(
-                    taggit.models.Tag.objects.get_or_create(name=flavour_name)[0]
-                )
-        else:
-            pass
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 
     # @factory.post_generation
     # def assignees(self, create, extracted, **kwargs):
@@ -292,21 +267,8 @@ class CurriculumContentRequirementFactory(DjangoModelFactory):
     order = factory.LazyAttribute(lambda o: next(_next_int_iterator))
 
     @factory.post_generation
-    def flavours(self, create, extracted, **kwargs):
-        import taggit
-
-        if not create:
-            return
-
-        if extracted:
-            for flavour_name in extracted:
-                self.flavours.add(
-                    taggit.models.Tag.objects.get_or_create(name=flavour_name)[0]
-                )
-        else:
-            pass
-
-
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self,*args, **kwargs)
 class CourseRegistrationFactory(DjangoModelFactory):
     class Meta:
         model = "curriculum_tracking.CourseRegistration"

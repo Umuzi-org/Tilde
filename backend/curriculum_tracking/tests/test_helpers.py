@@ -62,19 +62,19 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual(l[1].is_soft_milestone, True)
         self.assertEqual(l[1].flavours, [])
 
-    def test_prereq_with_no_available_flavours(self):
+    def test_prereq_with_no_flavours(self):
         """ requirements have flavours and prereq doesnt """
 
         content_item = factories.ContentItemFactory()
 
         requirement1 = factories.CurriculumContentRequirementFactory(
-            content_item=factories.ContentItemFactory(available_flavours=[TYPESCRIPT]),
+            content_item=factories.ContentItemFactory(flavours=[TYPESCRIPT]),
             curriculum=self.curriculum,
             hard_requirement=True,
             flavours=[TYPESCRIPT],
         )
         requirement2 = factories.CurriculumContentRequirementFactory(
-            content_item=factories.ContentItemFactory(available_flavours=[JAVASCRIPT]),
+            content_item=factories.ContentItemFactory(flavours=[JAVASCRIPT]),
             curriculum=self.curriculum,
             hard_requirement=False,
             flavours=[JAVASCRIPT],
@@ -109,21 +109,21 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual(l[2].is_soft_milestone, True)
         self.assertEqual([o.name for o in l[2].flavours], [JAVASCRIPT])
 
-    def test_prereq_with_available_flavours(self):
+    def test_prereq_with_flavours(self):
         """ requirements have flavours and prereq does too, therefore moar cards """
 
         content_item = factories.ContentItemFactory(
-            available_flavours=[TYPESCRIPT, JAVASCRIPT]
+            flavours=[TYPESCRIPT, JAVASCRIPT]
         )
 
         requirement1 = factories.CurriculumContentRequirementFactory(
-            content_item=factories.ContentItemFactory(available_flavours=[TYPESCRIPT]),
+            content_item=factories.ContentItemFactory(flavours=[TYPESCRIPT]),
             curriculum=self.curriculum,
             hard_requirement=True,
             flavours=[TYPESCRIPT],
         )
         requirement2 = factories.CurriculumContentRequirementFactory(
-            content_item=factories.ContentItemFactory(available_flavours=[JAVASCRIPT]),
+            content_item=factories.ContentItemFactory(flavours=[JAVASCRIPT]),
             curriculum=self.curriculum,
             hard_requirement=False,
             flavours=[JAVASCRIPT],

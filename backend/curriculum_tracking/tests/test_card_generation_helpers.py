@@ -35,7 +35,7 @@ class RegenerateCardsTests(TestCase):
         self.user2 = registration2.user
         self.curriculum = registration.curriculum
         self.content_item = factories.ProjectContentItemFactory(
-            available_flavours=[JAVASCRIPT]
+            flavours=[JAVASCRIPT]
         )
 
         factories.CurriculumContentRequirementFactory(

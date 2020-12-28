@@ -1,10 +1,6 @@
 from django.core.management.base import BaseCommand
-from curriculum_tracking.models import RecruitProjectReview, AgileCard, ContentItem
-from core.models import RecruitCohort, User
+from curriculum_tracking.models import RecruitProjectReview
 from django.utils.timezone import datetime, timedelta
-import os
-from pathlib import Path
-import csv
 import pandas as pd
 
 

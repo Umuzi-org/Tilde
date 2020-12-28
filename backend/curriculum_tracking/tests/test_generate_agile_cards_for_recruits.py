@@ -8,21 +8,13 @@ from curriculum_tracking.card_generation_helpers import (
     _get_or_create_or_update_card,
 )
 from core.tests import factories as core_factories
-from django.utils import timezone
 from taggit.models import Tag
-from curriculum_tracking.constants import (
-    RED_FLAG,
-    NOT_YET_COMPETENT,
-    COMPETENT,
-    EXCELLENT,
-)
 
 
 JAVASCRIPT = "JAVASCRIPT"
 PYTHON = "PYTHON"
 
-
-class _get_or_create_or_update_card_Test(TestCase):
+class get_or_create_or_update_card_Test(TestCase):
     defaults = {"is_hard_milestone": True, "is_soft_milestone": False}
 
     def setUp(self):
@@ -196,9 +188,9 @@ class recurse_generate_ordered_content_items_Tests(TestCase):
 
 class create_or_update_content_cards_for_user_Tests(TestCase):
     def setUp(self):
-        self.recruit_cohort = core_factories.RecruitCohortFactory()
-        self.recruit = self.recruit_cohort.user
-        self.curriculum = self.recruit_cohort.cohort.cohort_curriculum
+        self.team_membership = core_factories.TeamMembershipFactory()
+        self.recruit = self.team_membership.user
+        # self.curriculum = self.team_membership.cohort.cohort_curriculum
         self.content_item = factories.ContentItemFactory()
         self.card = factories.AgileCardFactory(
             status=models.AgileCard.READY,

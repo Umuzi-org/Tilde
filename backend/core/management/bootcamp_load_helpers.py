@@ -1,19 +1,6 @@
-from core.models import (
-    User,
-    UserProfile,
-    Curriculum,
-    Cohort,
-    RecruitCohort,
-    EmployerPartner,
-)
-from curriculum_tracking.models import CourseRegistration
-from social_auth.models import SocialProfile
-from django.core.management.base import BaseCommand
+from core.models import Curriculum
 
-from curriculum_tracking.card_generation_helpers import (
-    generate_and_update_all_cards_for_user,
-)
-from google_helpers.utils import fetch_sheet
+
 
 CURRICULUM_SHORT_NAME_DS_PRE_BOOT = "data sci prebootcamp"
 CURRICULUM_SHORT_NAME_DS_BOOT = "data sci boot"

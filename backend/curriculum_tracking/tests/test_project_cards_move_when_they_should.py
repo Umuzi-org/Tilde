@@ -13,12 +13,8 @@ from datetime import timedelta
 
 class RecruitProjectReviewCreationTests(TestCase):
     def setUp(self):
-        self.trusted_user = core_factories.UserFactory(
-            is_staff=True
-        )  # TODO: trust different people for diferent reasons
-        self.untrusted_user = core_factories.UserFactory(
-            is_staff=False
-        )  # TODO: trust different people for diferent reasons
+        self.trusted_user = core_factories.UserFactory()
+        self.untrusted_user = core_factories.UserFactory()
 
         self.ready_card = factories.AgileCardFactory(status=models.AgileCard.READY)
         self.ip_card = factories.AgileCardFactory(status=models.AgileCard.IN_PROGRESS)
@@ -31,12 +27,23 @@ class RecruitProjectReviewCreationTests(TestCase):
             self.feedback_card,
         ]
 
+        for card in self.cards:
+            factories.ReviewTrustFactory(
+                content_item = card.content_item,
+                user=self.trusted_user,
+                flavours = card.recruit_project.flavour_names
+            ) 
+            assert card.recruit_project.is_trusted_reviewer(self.trusted_user)
+
+
     def test_review_knows_it_it_is_trusted_or_not(self):
         trusted = factories.RecruitProjectReviewFactory(
             reviewer_user=self.trusted_user,
+            recruit_project = self.ip_card.recruit_project
         )
         untrusted = factories.RecruitProjectReviewFactory(
             reviewer_user=self.untrusted_user,
+            recruit_project = self.ip_card.recruit_project
         )
         self.assertTrue(trusted.trusted)
         self.assertFalse(untrusted.trusted)

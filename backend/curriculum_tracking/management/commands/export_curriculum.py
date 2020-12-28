@@ -55,7 +55,7 @@ def get_export_dict(curriculum):
                 "url": o.url,
                 "story_points": o.story_points,
                 "tags": o.tag_names,
-                "available_flavours": o.available_flavour_names,
+                "flavours": o.flavour_names,
                 "topic_needs_review": o.topic_needs_review,
                 "project_submission_type": o.project_submission_type,
                 "continue_from_repo": o.continue_from_repo and o.continue_from_repo.url,

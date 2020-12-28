@@ -3,26 +3,15 @@ from django.core.management.base import BaseCommand
 
 from google_helpers.utils import fetch_sheet
 
-COHORT_INTAKE_NUMBER = 23
+INTAKE_NUMBER = 23
 
-from core.models import User, Team, TeamMembership, Cohort, RecruitCohort
+from core.models import User, Team, TeamMembership
 from social_auth.models import SocialProfile
-from curriculum_tracking.models import CourseRegistration, AgileCard
+from curriculum_tracking.models import CourseRegistration
 import datetime
 
 now = datetime.datetime.now()
 group = Team.objects.get_or_create(name="ds bootcamp sept 20")[0]
-cohort = Cohort.objects.get_or_create(
-    cohort_number="23",
-    start_date=now,
-    end_date=now,
-    cohort_curriculum_id=28,
-    label="boot ds",
-)[0]
-
-from curriculum_tracking.card_generation_helpers import (
-    generate_and_update_all_cards_for_user,
-)
 
 
 def get_df():
@@ -63,16 +52,9 @@ def process_row(row):
         user.active = False
     user.save()
 
-    # RecruitCohort.objects.filter(user=user).delete()
-    RecruitCohort.objects.get_or_create(
-        user=user,
-        cohort=cohort,
-        defaults={"start_date": now, "end_date": now},
-        employer_partner_id=4,
-    )
 
     TeamMembership.objects.get_or_create(
-        user=user, group=group, permission_student=True
+        user=user, group=group
     )
     CourseRegistration.objects.get_or_create(
         user=user, curriculum_id=33, order=1

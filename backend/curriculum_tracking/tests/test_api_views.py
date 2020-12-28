@@ -8,8 +8,7 @@ from django.utils.timezone import datetime
 from datetime import timedelta
 from curriculum_tracking.models import ContentItem
 from django.utils import timezone
-
-
+from taggit.models import Tag
 
 class ProjectCardSummaryViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "projectcardsummary-list"
@@ -72,6 +71,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "complete_time",
         "review_request_time",
         "start_time",
+        "tag_names"
     ]
 
     def verbose_instance_factory(self):
@@ -79,9 +79,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(recruit_project=project)
         card.reviewers.add(core_factories.UserFactory())
         card.assignees.add(core_factories.UserFactory())
-        from taggit.models import Tag
 
-        card.content_flavours.add(Tag.objects.create(name="asdsasa"))
+        card.flavours.add(Tag.objects.create(name="asdsasa"))
 
         return card
 
@@ -198,7 +197,9 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         link_1 = "https://wnning.com"
         link_2 = "https://wnning.com/boom"
         self.login(recruit)
+
         response = self.client.post(url, data={"link_submission": link_1})
+        self.assertEqual(response.status_code, 200)
 
         project = card.recruit_project
         project.refresh_from_db()
@@ -295,7 +296,7 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
 
     NUMBER_OF_INSTANCES_CREATED_BY_VERBOSE_FACTORY = 3
     FIELDS_THAT_CAN_BE_FALSEY = [
-        "available_flavour_names",
+        "flavour_names",
         "topic_needs_review",
         "continue_from_repo",
         "project_submission_type_nice",

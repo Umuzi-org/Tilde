@@ -21,7 +21,7 @@ def _flavour_subset(content_item, specified_flavours):
     """The content item has some available flavours, eg: ts and js and python, the specified flavours is the specific flavour requested by the syllabus. Eg eg if python is requested then that's allowed. Basically we want an intersection"""
 
     subset = [
-        o for o in specified_flavours if o in content_item.available_flavours.all()
+        o for o in specified_flavours if o in content_item.flavours.all()
     ]
     return subset
 
@@ -119,7 +119,7 @@ def general_update_card_progress(
 
         all_progress = get_unfiltered_progress(card, user)
 
-        flavours = sorted([o.name for o in card.content_flavours.all()])
+        flavours = sorted([o.name for o in card.flavours.all()])
 
         if len(flavours):
             unflavoured_progress = [o for o in all_progress if o.flavours.count() == 0]
@@ -306,7 +306,7 @@ def _get_or_create_or_update_card(
         **defaults,
     )
     card.update(**overrides)
-    card.set_content_flavours(flavours)
+    card.set_flavours(flavours)
     card.assignees.add(user)
     return card
 
@@ -404,10 +404,10 @@ def create_or_update_content_cards_for_user(user, ordered_content_items, start_o
         )
 
         card.requires_cards.set(requires_cards)
-        card.set_content_flavours(flavours)
+        card.set_flavours(flavours)
         assert card.flavours_match(
             [o.name for o in flavours]
-        ), f"{card.content_flavours.all()} != {flavours}"
+        ), f"{card.flavours.all()} != {flavours}"
 
         if card.status == models.AgileCard.COMPLETE:
             completed_cards.append(card)

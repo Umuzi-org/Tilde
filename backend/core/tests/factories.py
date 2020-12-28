@@ -1,10 +1,8 @@
 from factory.django import DjangoModelFactory
 import factory
-from core import models
 from backend.settings import (
     AUTH_USER_MODEL,
 )  # there's probably a cleaner way to import this.
-from django.utils import timezone
 
 
 def _email_generator():
@@ -46,12 +44,12 @@ class TeamFactory(DjangoModelFactory):
     # kind = models.Team.CLASS_ROOM
 
 
-class TeamMembership(DjangoModelFactory):
+class TeamMembershipFactory(DjangoModelFactory):
     class Meta:
         model = "core.TeamMembership"
 
     user = factory.SubFactory(UserFactory)
-    group = factory.SubFactory(TeamFactory)
+    team = factory.SubFactory(TeamFactory)
 
 
 class CurriculumFactory(DjangoModelFactory):
@@ -62,30 +60,3 @@ class CurriculumFactory(DjangoModelFactory):
     name = "hello"
 
 
-class CohortFactory(DjangoModelFactory):
-    class Meta:
-        model = "core.Cohort"
-
-    start_date = timezone.datetime.now()
-    end_date = timezone.datetime.now()
-    cohort_number = 15
-    cohort_curriculum = factory.SubFactory(CurriculumFactory)
-    label = "test"
-
-
-class EmployerPartnerFactory(DjangoModelFactory):
-    class Meta:
-        model = "core.EmployerPartner"
-
-    name = factory.Faker("company")
-
-
-class RecruitCohortFactory(DjangoModelFactory):
-    class Meta:
-        model = "core.RecruitCohort"
-
-    user = factory.SubFactory(UserFactory)
-    cohort = factory.SubFactory(CohortFactory)
-    employer_partner = factory.SubFactory(EmployerPartnerFactory)
-    start_date = timezone.datetime.now()
-    end_date = timezone.datetime.now()

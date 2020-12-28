@@ -46,6 +46,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         | core_permissions.IsCurrentUserInSpecificFilter("reviewers")
         # curriculum_permissions.ProjectOrReviewIsMine
         | curriculum_permissions.CardBelongsToRequestingUser
+        # | curriculum_permissions.IsCardAssignee
     ]
 
     serializer_class = serializers.AgileCardSerializer
@@ -181,7 +182,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         card = self.get_object()
         if status_or_404 and card.status != status_or_404:
             raise Http404()
-        if card.content_type != dict(models.ContentItem.CONTENT_TYPES)[type_or_404]:
+        if card.content_type != type_or_404:
             raise Http404()
 
         return card

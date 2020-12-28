@@ -18,7 +18,7 @@
   ],
   "content_items": [
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "T",
       "continue_from_repo": null,
       "link_regex": null,
@@ -32,7 +32,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/intro-to-tilde/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "T",
       "continue_from_repo": null,
       "link_regex": null,
@@ -46,7 +46,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/different-kinds-of-cards/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "P",
       "continue_from_repo": null,
       "link_regex": null,
@@ -60,7 +60,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/link-card-tutorial/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "T",
       "continue_from_repo": null,
       "link_regex": null,
@@ -74,7 +74,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/github/intro/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "P",
       "continue_from_repo": null,
       "link_regex": null,
@@ -88,7 +88,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "P",
       "continue_from_repo": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-1/_index.md",
       "link_regex": null,
@@ -102,7 +102,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tilde/repo-card-tutorial/part-2/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "T",
       "continue_from_repo": null,
       "link_regex": null,
@@ -116,7 +116,7 @@
       "url": "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/topics/tilde/understanding-the-review-column/_index.md"
     },
     {
-      "available_flavours": [],
+      "flavours": [],
       "content_type": "T",
       "continue_from_repo": null,
       "link_regex": null,

@@ -4,7 +4,7 @@ There were a lot of different messes to be cleaned up
 
 from taggit.models import Tag
 import csv
-from core.models import Cohort, RecruitCohort, User, Team, TeamMembership
+from core.models import  User, Team, TeamMembership
 from curriculum_tracking.models import (
     RecruitProject,
     ContentItem,
@@ -70,7 +70,7 @@ def export_projects_without_flavours():
                         str(project),
                         set(all_groups),
                         project.repository.ssh_url if project.repository else "",
-                        [o.name for o in project.content_item.available_flavours.all()],
+                        [o.name for o in project.content_item.flavours.all()],
                     ]
                 )
 
@@ -93,8 +93,8 @@ def assign_flavours_to_user(user, default_flavour):
     for project in RecruitProject.objects.filter(recruit_users__in=[user]):
         if project.flavours.count() > 0:
             continue
-        available_flavours = project.content_item.available_flavours.all()
-        if default_flavour in available_flavours:
+        flavours = project.content_item.flavours.all()
+        if default_flavour in flavours:
             print(f"project: {project.id} {project}")
             project.flavours.add(default_flavour)
 
@@ -145,7 +145,7 @@ def export_project_flavours(cohort_id):
                 "content_item",
                 "repository.full_name",
                 "project.flavours",
-                "content_item.available_flavours",
+                "content_item.flavours",
             ]
         )
         for project in all_projects:
@@ -155,7 +155,7 @@ def export_project_flavours(cohort_id):
                     project.content_item,
                     project.repository.full_name,
                     [o.name for o in project.flavours.all()],
-                    [o.name for o in project.content_item.available_flavours.all()],
+                    [o.name for o in project.content_item.flavours.all()],
                 ]
             )
 
@@ -168,8 +168,8 @@ def if_one_flavour_available_then_assign(cohort_id=None):
         for project in RecruitProject.objects.filter(recruit_users__in=[user]):
             if project.flavours.count() > 0:
                 continue
-            if project.content_item.available_flavours.count() == 1:
-                flavour = project.content_item.available_flavours.first()
+            if project.content_item.flavours.count() == 1:
+                flavour = project.content_item.flavours.first()
                 if flavour != none:
                     print(f"adding {flavour.name} to {project}")
                     project.flavours.add(flavour)

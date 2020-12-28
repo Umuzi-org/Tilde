@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         group = Team.objects.get(name=options["group_name"])
 
-        members = TeamMembership.objects.filter(group=group, permission_student=True)
+        members = TeamMembership.objects.filter(group=group, )
 
         for member in members:
             print(member.user.email)

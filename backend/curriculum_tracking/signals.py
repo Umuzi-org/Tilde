@@ -72,6 +72,7 @@ from curriculum_tracking.constants import (
 
 @receiver([pre_save], sender=models.RecruitProjectReview)
 def set_trusted_on_create(sender, instance, **kwargs):
+    
     if instance.trusted == None:
         instance.trusted = instance.recruit_project.is_trusted_reviewer(
             instance.reviewer_user
