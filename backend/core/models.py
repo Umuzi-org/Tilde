@@ -7,10 +7,14 @@ from phonenumber_field.modelfields import PhoneNumberField
 # from django.utils.html import strip_tags
 # from django.core.mail import send_mail
 # import secrets
-import re
+# import re
+
+# from rest_framework.generics import RetrieveAPIView
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
+
+from django.contrib.auth.models import PermissionsMixin
 
 
 class UserManager(BaseUserManager):
@@ -69,31 +73,16 @@ class Group(AuthGroup):
         verbose_name = "Group"
 
 
-from django.contrib.auth.models import PermissionsMixin
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     active = models.BooleanField(default=True)
-    # staff = models.BooleanField(default=False)
-    # admin = models.BooleanField(default=False)
 
     first_name = models.CharField(max_length=25, blank=True)
     last_name = models.CharField(max_length=25, blank=True)
     preferred_name = models.CharField(max_length=25, blank=True, null=True)
 
-    # is_student = models.BooleanField("is student", default=False)
     is_staff = models.BooleanField("is staff", default=False)  # ACN staff member
     is_superuser = models.BooleanField("is superuser", default=False)
-
-    # is_reviewer = models.BooleanField(
-    #     "is reviewer", default=False
-    # )  # can review anyone's code
-    # is_trusted_reviewer = models.BooleanField(
-    #     "is trusted reviewer", default=False
-    # )  # competent and excellent reviews move cards always
-
-    # groups = models.ManyToManyField(Group)
 
     USERNAME_FIELD = "email"
     # The fields required when user is created. Email and password are required by default
@@ -110,22 +99,32 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.email
 
-    # def has_perm(self, perm, obj=None):
-    #     from django.contrib.auth.models import _user_has_perm
+    def get_permissions(self):
+        from guardian.shortcuts import (
+            get_objects_for_user,
+        )
 
-    #     if self.is_active and self.is_superuser:
-    #         return True
+        permissions = [t[0] for t in Team._meta.permissions]
+        teams = get_objects_for_user(
+            user=self,
+            perms=permissions,
+            klass=Team.objects.all(),
+            with_superuser=False,
+            any_perm=True,
+        )
 
-    #     # Otherwise we need to check the backends.
-    #     return _user_has_perm(self, perm, obj)
+        team_permissions = {}
+        for permission, nice in Team._meta.permissions:
+            for team in get_objects_for_user(
+                user=self,
+                perms=permission,
+                klass=teams,
+                with_superuser=False,
+            ):
+                team_permissions[team.id] = team_permissions.get(team.id, [])
+                team_permissions[team.id].append((permission, nice))
 
-    # def has_module_perms(self, app_labels):
-    #     from django.contrib.auth.models import _user_has_module_perms
-
-    #     if self.is_active and self.is_superuser:
-    #         return True
-
-    #     return _user_has_module_perms(self, app_label)
+        return {"teams": team_permissions}
 
     @property
     def is_active(self):
@@ -196,16 +195,25 @@ class UserProfile(models.Model, Mixins):
     )
 
 
-PERMISSION_MOVE_CARDS = "MOVE_CARDS"
+PERMISSION_MANAGE_CARDS = "MANAGE_CARDS"
 PERMISSION_VIEW_ALL = "VIEW_ALL"
 PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
+PERMISSION_REVIEW_CARDS = "REVIEW_CARDS"
 
 
 class Team(models.Model, Mixins):
 
-    PERMISSION_MOVE_CARDS = PERMISSION_MOVE_CARDS
-    PERMISSION_VIEW_ALL = PERMISSION_VIEW_ALL
+    PERMISSION_MANAGE_CARDS = PERMISSION_MANAGE_CARDS  # start cards, set due date,
+    PERMISSION_VIEW_ALL = PERMISSION_VIEW_ALL  # look at anything
     PERMISSION_ASSIGN_REVIEWERS = PERMISSION_ASSIGN_REVIEWERS
+    PERMISSION_REVIEW_CARDS = PERMISSION_REVIEW_CARDS
+
+    PERMISSION_VIEW = [
+        PERMISSION_MANAGE_CARDS,
+        PERMISSION_VIEW_ALL,
+        PERMISSION_ASSIGN_REVIEWERS,
+        PERMISSION_REVIEW_CARDS,
+    ]
 
     sponsor_organisation = models.ForeignKey(
         Organisation,
@@ -227,9 +235,14 @@ class Team(models.Model, Mixins):
     class Meta:
         # Team._meta.permissions
         permissions = (
-            (PERMISSION_MOVE_CARDS, "Can move cards"),
+            (PERMISSION_MANAGE_CARDS, "Can move cards"),
             (PERMISSION_VIEW_ALL, "View all"),
-            (PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
+            # (PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
+            (
+                PERMISSION_REVIEW_CARDS,
+                "Review any card (note, this does not imply trusted reviewer)",
+            ),
+            # TODO: permission Trusted reviewer. This would be so that ACN members can be given rights over their own groups. Gets a little tricky though. This needs thought
         )
 
     def __str__(self):
@@ -237,9 +250,7 @@ class Team(models.Model, Mixins):
 
     @property
     def active_users(self):
-        l = TeamMembership.objects.filter(
-            team=self, user__active=True
-        )
+        l = TeamMembership.objects.filter(team=self, user__active=True)
         return [o.user for o in l]
 
     @property
@@ -261,6 +272,6 @@ class TeamMembership(models.Model, Mixins):
     team = models.ForeignKey(
         Team, on_delete=models.CASCADE, related_name="team_memberships"
     )
+
     class Meta:
         unique_together = ["user", "team"]
-
