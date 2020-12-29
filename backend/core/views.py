@@ -6,10 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-
 from rest_framework import permissions as drf_permissions
 from django.db.models import Q
 from core import permissions as core_permissions
+from core.filters import ObjectPermissionsFilter
 
 
 @api_view(["POST"])
@@ -70,7 +70,10 @@ class CurriculumViewSet(viewsets.ModelViewSet):
 
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TeamSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [
+        DjangoFilterBackend,
+        ObjectPermissionsFilter([t[0] for t in models.Team._meta.permissions]),
+    ]
     filterset_fields = ["active"]
 
     permission_classes = [

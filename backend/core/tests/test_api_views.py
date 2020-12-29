@@ -1,6 +1,10 @@
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from . import factories
+from core.models import Team
+from guardian.shortcuts import assign_perm
+from django.contrib.auth.models import Group
+
 
 class TestTeamViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "team-list"
@@ -10,22 +14,52 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         membership = factories.TeamMembershipFactory()
         return membership.team
 
-    # def test_only_returns_teams_i_can_see(self):   # ACL TODO
-    #     user = factories.UserFactory(is_superuser=False)
+    def test_only_returns_teams_i_can_see(self):
 
-    #     managed_team = factories.TeamFactory()
-        
-    #     #TODO
+        url = self.get_list_url()
+        super_user = factories.UserFactory(is_superuser=True)
+        staff_user = factories.UserFactory(is_staff=True)
+        normal_user = factories.UserFactory()
 
-    #     self.login(user)
-    #     url = self.get_list_url()
+        team_1 = factories.TeamFactory()
+        team_2 = factories.TeamFactory()
 
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.data["count"], 2)
+        self.login(super_user)
 
-    #     ids = sorted([d["id"] for d in response.data["results"]])
-    #     expected_ids = sorted([]) # TODO
-    #     self.assertEqual(ids, expected_ids)
+        response = self.client.get(url)
+        self.assertEqual(response.data["count"], 2)
+
+        self.login(staff_user)
+
+        response = self.client.get(url)
+        self.assertEqual(response.data["count"], 2)
+
+        for permission, _ in Team._meta.permissions:
+            # make sure that users can read what they need to
+            user = factories.UserFactory()
+            assign_perm(permission, user, team_1)
+            self.login(user)
+
+            response = self.client.get(url)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["id"], team_1.id)
+
+            # check that it works for groups as well
+            group = Group.objects.create(name=f"{permission} group")
+            user = factories.UserFactory()
+            group.user_set.add(user)
+            assign_perm(permission, group, team_1)
+
+            self.login(user)
+
+            response = self.client.get(url)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["id"], team_1.id)
+
+        self.login(normal_user)
+
+        response = self.client.get(url)
+        self.assertEqual(response.data["count"], 0)
 
     def test_staff_users_see_all_teams(self):
         user = factories.UserFactory(is_superuser=False, is_staff=True)

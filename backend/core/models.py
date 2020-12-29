@@ -225,7 +225,7 @@ class Team(models.Model, Mixins):
     users = models.ManyToManyField(User, related_name="teams", through="TeamMembership")
 
     class Meta:
-
+        # Team._meta.permissions
         permissions = (
             (PERMISSION_MOVE_CARDS, "Can move cards"),
             (PERMISSION_VIEW_ALL, "View all"),
@@ -249,6 +249,7 @@ class Team(models.Model, Mixins):
             yield {
                 "user_id": membership.user_id,
                 "user_email": membership.user.email,
+                "user_active": membership.user.active,
             }
 
 

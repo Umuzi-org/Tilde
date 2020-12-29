@@ -12,7 +12,7 @@ def _email_generator():
         i += 1
 
 
-def _group_name_generator():
+def _team_name_generator():
     i = 1
     while True:
         yield f"GROUP NAME {i}"
@@ -21,7 +21,7 @@ def _group_name_generator():
 
 _email_iterator = _email_generator()
 
-_group_name_iterator = _group_name_generator()
+_team_name_iterator = _team_name_generator()
 
 
 class UserFactory(DjangoModelFactory):
@@ -40,8 +40,7 @@ class TeamFactory(DjangoModelFactory):
     class Meta:
         model = "core.Team"
 
-    name = factory.lazy_attribute(lambda *args, **kwargs: next(_group_name_iterator))
-    # kind = models.Team.CLASS_ROOM
+    name = factory.lazy_attribute(lambda *args, **kwargs: next(_team_name_iterator))
 
 
 class TeamMembershipFactory(DjangoModelFactory):
@@ -58,5 +57,3 @@ class CurriculumFactory(DjangoModelFactory):
 
     short_name = factory.LazyAttribute(lambda o: o.name[:10])
     name = "hello"
-
-

@@ -282,7 +282,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
+        "django_filters.rest_framework.DjangoFilterBackend",
+        # "filters.OrderingFilter"
         # filters.ObjectPermissionsFilter todo: use this
     ],
     "DEFAULT_RENDERER_CLASSES": (
