@@ -141,8 +141,10 @@ python manage.py create_team "demo team"
 python manage.py add_user_to_team "sheena.oconnell@umuzi.org" "demo team"
 
 
-# add a curriulum
-TODO
+# add a curriulum. This sets up a simple course that demonstrates all card features
+# generally curriculums are not created like this, usually they are stored as markdown files in a seperate repo
+
+python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
 
 # register a user for a course
 # the intro to Tilde course basically demonstrates all the different things Tilde can do from a student's perspective so it's a good way to get to poke around with all functionality

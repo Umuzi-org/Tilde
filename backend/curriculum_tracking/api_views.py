@@ -1,4 +1,3 @@
-# from django.db.models.query import prefetch_related_objects
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
