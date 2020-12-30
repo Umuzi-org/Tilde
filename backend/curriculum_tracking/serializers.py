@@ -145,6 +145,8 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "complete_time",
             "review_request_time",
             "start_time",
+            "can_start",
+            "can_force_start",
         ]
 
 

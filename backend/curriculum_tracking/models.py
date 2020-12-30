@@ -59,6 +59,7 @@ class FlavourMixin:
             if tag not in self.flavours.all():
                 self.flavours.add(tag)
 
+
 class ContentItemProxyMixin:
     @property
     def content_type_nice(self):
@@ -99,6 +100,8 @@ class ContentItemProxyMixin:
     @property
     def topic_needs_review(self):
         return self.content_item.topic_needs_review
+
+
 class TagMixin:
     @property
     def tag_names(self):
@@ -146,7 +149,7 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
-class ContentItem(models.Model, Mixins,FlavourMixin,TagMixin):
+class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
     TOPIC = "T"
@@ -276,12 +279,15 @@ class ContentItem(models.Model, Mixins,FlavourMixin,TagMixin):
     def hard_prerequisite_content_items(self):
         return [o.pre for o in self.pre_ordered_content.filter(hard_requirement=True)]
 
+
 class ContentAvailableFlavour(models.Model):
     tag = models.ForeignKey(taggit.models.Tag, on_delete=models.PROTECT)
     content_item = models.ForeignKey("ContentItem", on_delete=models.CASCADE)
 
 
-class CurriculumContentRequirement(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
+class CurriculumContentRequirement(
+    models.Model, Mixins, FlavourMixin, ContentItemProxyMixin
+):
     content_item = models.ForeignKey(
         ContentItem,
         on_delete=models.CASCADE,
@@ -300,13 +306,16 @@ class CurriculumContentRequirement(models.Model, Mixins, FlavourMixin,ContentIte
     class Meta(object):
         ordering = ["order"]
 
-class ReviewTrust(models.Model, FlavourMixin,ContentItemProxyMixin):
+
+class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
 
 
-class RecruitProject(models.Model, Mixins, FlavourMixin,ReviewableMixin,ContentItemProxyMixin):
+class RecruitProject(
+    models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
+):
     """what a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
@@ -455,9 +464,6 @@ class RecruitProject(models.Model, Mixins, FlavourMixin,ReviewableMixin,ContentI
             ), f"len({project_name}) ={len(project_name)}. Expected 100 "
         return project_name
 
-
-
-
     def cancel_request_review(self):
         self.review_request_time = None
         self.save()
@@ -500,10 +506,6 @@ class RecruitProject(models.Model, Mixins, FlavourMixin,ReviewableMixin,ContentI
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
 
-
-
-
-
     @property
     def latest_review_status(self):
         latest_review = self.latest_review()
@@ -515,7 +517,6 @@ class RecruitProject(models.Model, Mixins, FlavourMixin,ReviewableMixin,ContentI
         latest_review = self.latest_review(trusted=True)
         if latest_review:
             return latest_review.status
-
 
     @property
     def recruit_user_names(self):
@@ -555,7 +556,7 @@ class RecruitProjectReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class TopicProgress(models.Model, Mixins,ContentItemProxyMixin):
+class TopicProgress(models.Model, Mixins, ContentItemProxyMixin):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     due_time = models.DateTimeField(blank=True, null=True)
@@ -572,7 +573,6 @@ class TopicProgress(models.Model, Mixins,ContentItemProxyMixin):
         if timestamp_greater_than != None:
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
-
 
 
 class TopicReview(models.Model, Mixins):
@@ -592,14 +592,14 @@ class TopicReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class WorkshopAttendance(models.Model, Mixins,ContentItemProxyMixin):
+class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin):
     timestamp = models.DateTimeField()
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     attendee_user = models.ForeignKey(User, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
 
 
-class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
+class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
     BLOCKED = "B"
     READY = "R"
     IN_PROGRESS = "IP"
@@ -683,7 +683,6 @@ class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
     # curriculum and what they have done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
-
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
@@ -698,7 +697,6 @@ class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
         if self.requires_cards.filter(~Q(status=self.COMPLETE)).count():
             return self.BLOCKED
         return self.READY
-
 
     @property
     def due_time(self):
@@ -888,10 +886,18 @@ class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
         create_or_update_single_project_card(self.recruit_project)
         self.refresh_from_db()
 
-    def can_start(self):
+    def can_start(self, force=False):
+        """should the "start" button exist on this card?
+        If force = True then assume the user has super access
+        """
+        if force:
+            return [AgileCard.READY, AgileCard.BLOCKED]
         # TODO: this should do useful things...
         # only allow if active cards are minimal
         return self.status == AgileCard.READY
+
+    def can_force_start(self):
+        return self.can_start(force=True)
 
     def _create_topic_progress_if_not_exists(self):
         if self.topic_progress:
@@ -980,8 +986,6 @@ class AgileCard(models.Model, Mixins, FlavourMixin,ContentItemProxyMixin):
         self.status = AgileCard.READY
         self.save()
         attendance.delete()
-
-
 
     @property
     def repository(self):

@@ -51,6 +51,7 @@ class WhoAmISerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "permissions",
+            # "teams",
         ]
 
     preferred_name = serializers.SerializerMethodField("get_preferred_name")
@@ -62,6 +63,7 @@ class WhoAmISerializer(serializers.ModelSerializer):
     is_staff = serializers.SerializerMethodField("get_is_staff")
     is_superuser = serializers.SerializerMethodField("get_is_superuser")
     permissions = serializers.SerializerMethodField("get_permissions")
+    # teams = serializers.SerializerMethodField("get_teams")
     # is_student = serializers.SerializerMethodField("get_is_student")
 
     def get_role(self, instance):
@@ -96,6 +98,9 @@ class WhoAmISerializer(serializers.ModelSerializer):
 
     def get_permissions(self, instance):
         return instance.user.get_permissions()
+
+    # def get_teams(self, instance):
+    #     return instance.user.teams
 
     # def get_is_student(self, instance):
     #     return int(instance.user.is_student)

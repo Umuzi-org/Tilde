@@ -72,7 +72,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TeamSerializer
     filter_backends = [
         DjangoFilterBackend,
-        ObjectPermissionsFilter([t[0] for t in models.Team._meta.permissions]),
+        ObjectPermissionsFilter(models.Team.PERMISSION_VIEW),
     ]
     filterset_fields = ["active"]
 
@@ -89,25 +89,18 @@ class TeamViewSet(viewsets.ModelViewSet):
             .prefetch_related("team_memberships__user")
         )
         return queryset
-        if user.is_staff or user.is_superuser:
-            return queryset
 
-        return queryset.filter(team_memberships__user=user).filter(
-            Q(team_memberships__permission_view=True)
-            | Q(team_memberships__permission_manage=True)
-        )
-
-    @action(
-        detail=True,
-        methods=["get"],
-        permission_classes=[
-            core_permissions.HasObjectPermission(
-                models.Team.PERMISSION_ASSIGN_REVIEWERS
-            )
-        ],
-    )
-    def shuffle_reviewers(self, request, pk=None):
-        return Response("TODO")
+    # @action(
+    #     detail=True,
+    #     methods=["get"],
+    #     permission_classes=[
+    #         core_permissions.HasObjectPermission(
+    #             models.Team.PERMISSION_ASSIGN_REVIEWERS
+    #         )
+    #     ],
+    # )
+    # def shuffle_reviewers(self, request, pk=None):
+    #     return Response("TODO")
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -118,5 +111,5 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer
 
-    def assign_as_reviewer(self, request, pk=None):
-        return Response("TODO")
+    # def assign_as_reviewer(self, request, pk=None):
+    #     return Response("TODO")

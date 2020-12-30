@@ -115,10 +115,8 @@ def authorize_github_callback(request):
 def oauth_one_time_token_auth(request):
     """based on https://developers.google.com/identity/sign-in/web/server-side-flow"""
 
-    print("start")
     serializer = serializers.OAuthOneTimeTokenSerialiser(data=request.data)
     if serializer.is_valid():
-        print("serialiser is valid")
         provider = serializer.data.get("provider")
         if provider == "google":
             return google_oauth_one_time_token_auth(
@@ -131,22 +129,18 @@ def oauth_one_time_token_auth(request):
 
 
 def google_oauth_one_time_token_auth(auth_code):
-    print(f"google_oauth_one_time_token_auth {auth_code}")
 
     email = google_helpers.get_email_from_one_time_code(auth_code)
-    print(email)
 
     token, user_created = core_helpers.get_auth_token_for_email(email)
 
     if token is not None:
-        print("got a token")
         serialiser = core_serializers.WhoAmISerializer(token)
         if user_created:
             return Response(serialiser.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serialiser.data)
     else:
-        print("cant log in with this user")
         serialiser = core_serializers.UserErrorSerialiser(
             data={
                 "message": f"Please log in with your @{core_constants.BUSINESS_EMAIL_DOMAIN} email address if you have one. Otherwise please talk to an administrator to hook you up"

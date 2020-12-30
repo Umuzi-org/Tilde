@@ -1,13 +1,26 @@
 from rest_framework.permissions import BasePermission
 
 
+class DenyAll(BasePermission):
+    def has_permission(self, request, view):
+        return False
+
+
 class IsStaffUser(BasePermission):
     def has_permission(self, request, view):
         user = request.user
         return user.is_staff
 
 
-def HasObjectPermission(permission, get_object=None):
+def ActionIs(action_name):
+    class _ActionIs(BasePermission):
+        def has_permission(self, request, view):
+            return view.action == action_name
+
+    return _ActionIs
+
+
+def HasObjectPermission(permissions, get_object=None, get_objects=None):
     class _HasObjectPermission(BasePermission):
         def has_permission(self, request, view):
 
@@ -15,10 +28,23 @@ def HasObjectPermission(permission, get_object=None):
             if user.is_superuser:
                 return True
 
-            instance = (
-                get_object(self, request, view) if get_object else view.get_object()
-            )
-            return user.has_perm(permission, instance)
+            if type(permissions) is str:
+                all_permissions = [permissions]
+            else:
+                all_permissions = permissions
+
+            if get_objects:
+                instances = get_objects(self, request, view)
+            else:
+                instances = [
+                    get_object(self, request, view) if get_object else view.get_object()
+                ]
+
+            for instance in instances:
+                for permission in all_permissions:
+                    if user.has_perm(permission, instance):
+                        return True
+            return False
 
     return _HasObjectPermission
 
@@ -31,14 +57,19 @@ def clean_user_id(user_id):
     return user_id
 
 
+def get_clean_user_ids_from_filter(request, filter_name):
+    filter_by = dict(request.query_params).get(filter_name, [])
+    if type(filter_by) is not list:
+        filter_by = [filter_by]
+    filter_by = [clean_user_id(user_id) for user_id in filter_by]
+    return filter_by
+
+
 def IsCurrentUserInSpecificFilter(filter_name):
     class IsCurrentUserInFilter(BasePermission):
         def has_permission(self, request, view):
             user = request.user
-            filter_by = dict(request.query_params).get(filter_name, [])
-            if type(filter_by) is not list:
-                filter_by = [filter_by]
-            filter_by = [clean_user_id(user_id) for user_id in filter_by]
+            filter_by = get_clean_user_ids_from_filter(request, filter_name)
             return user.id in filter_by
 
     return IsCurrentUserInFilter

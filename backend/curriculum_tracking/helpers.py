@@ -69,7 +69,7 @@ def get_projects(cohort=None, user=None):
 def generate_project_cards(cohort, user):
     # prune_projects()
     for project in get_projects(cohort, user):
-        print(f"card for {project}")
+        # print(f"card for {project}")
         create_or_update_single_project_card(project)
 
 
@@ -144,7 +144,7 @@ def create_recruit_project_for_submission_type_REPOSITORY(
         social = social_models.SocialProfile.objects.get(user=recruit_user)
 
     except social_models.SocialProfile.DoesNotExist:
-        print(f"{recruit_user.id} {recruit_user}")
+        # logger.error(f"{recruit_user.id} {recruit_user}")
         raise
     github_name = social.github_name
 
@@ -192,9 +192,7 @@ def assert_users_same(card, project):
 def create_or_update_single_project_card(project):
     try:
         card = project.agile_card
-        print("card exists")
     except models.AgileCard.DoesNotExist:
-        print("creating card")
         card = _create_card_from_project(project)
 
     assert card is not None

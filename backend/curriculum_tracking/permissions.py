@@ -116,6 +116,18 @@ class IsFilteredByRepoAttachedToProjectICanSee(BasePermission):
         return user_can_see_repository(repo, user)
 
 
+class CardCanStart(BaseException):
+    def has_permission(self, request, view):
+        card = view.get_object()
+        return card.can_start()
+
+
+class CardCanForceStart(BaseException):
+    def has_permission(self, request, view):
+        card = view.get_object()
+        return card.can_start(force=True)
+
+
 class CardDueTimeIsNotSet(BasePermission):
     def has_permission(self, request, view):
         card = view.get_object()
@@ -146,30 +158,30 @@ class CardBelongsToRequestingUser(BasePermission):
         return False
 
 
-def IsGroupManager(group_id_field):
-    class _IsGroupManager(BasePermission):
-        def has_permission(self, request, view):
+# def IsGroupManager(group_id_field):
+#     class _IsGroupManager(BasePermission):
+#         def has_permission(self, request, view):
 
-            # if len(request.query_params) == 0:
-            #     return True
-            user = request.user
-            print(group_id_field)
-            # filter_by = dict(request.query_params).get(filter_name, [])
+#             # if len(request.query_params) == 0:
+#             #     return True
+#             user = request.user
+#             print(group_id_field)
+#             # filter_by = dict(request.query_params).get(filter_name, [])
 
-            breakpoint()
-            todo
+#             breakpoint()
+#             todo
 
-    return _IsGroupManager
+#     return _IsGroupManager
 
 
-def IsUserManager(user_id_field):
-    class _IsUserManager(BasePermission):
-        def has_permission(self, request, view):
-            user = request.user
-            breakpoint()
-            todo
+# def IsUserManager(user_id_field):
+#     class _IsUserManager(BasePermission):
+#         def has_permission(self, request, view):
+#             user = request.user
+#             breakpoint()
+#             todo
 
-    return _IsUserManager
+#     return _IsUserManager
 
 
 class IsWorkshopAttendee(BasePermission):
