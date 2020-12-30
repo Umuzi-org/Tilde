@@ -154,18 +154,12 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
-  const canStart = ({ card, index }) => {
-    if (card.status !== READY) return false;
-    return index <= maxStartIndex;
-    // # TODO: check number of work in progress issues
-  };
   let props = {
     userId,
     cards: filteredCards,
     board: boardFromCards({ cards: filteredCards }),
 
     handleColumnScroll,
-    canStart,
   };
 
   return <Presentation {...props} />;

@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ board, cards, handleColumnScroll, canStart, userId }) => {
+export default ({ board, cards, handleColumnScroll, userId }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -57,10 +57,6 @@ export default ({ board, cards, handleColumnScroll, canStart, userId }) => {
                           key={cardId}
                           card={cards[cardId]}
                           filterUserId={userId}
-                          startAllowed={canStart({
-                            card: cards[cardId],
-                            index,
-                          })}
                         />
                       );
                     })}

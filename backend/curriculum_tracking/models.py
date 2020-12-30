@@ -891,7 +891,7 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         If force = True then assume the user has super access
         """
         if force:
-            return [AgileCard.READY, AgileCard.BLOCKED]
+            return self.status in [AgileCard.READY, AgileCard.BLOCKED]
         # TODO: this should do useful things...
         # only allow if active cards are minimal
         return self.status == AgileCard.READY

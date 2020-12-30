@@ -20,25 +20,6 @@ import React from "react";
 // }));
 
 export default ({ card, handleSubmit, closeModal, date, time, formErrors }) => {
-  //   const card = {
-  //     id: 1,
-  //     contentItem: 1,
-  //     contentItemUrl:
-  //       "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tdd/simple-calculator/part-1/_index.md",
-  //     status: "R",
-  //     recruitProject: 1,
-  //     assignees: [2],
-  //     reviewers: [],
-  //     assigneeNames: ["sheena.oconnell@gmail.com"],
-  //     reviewerNames: [],
-  //     isHardMilestone: true,
-  //     isSoftMilestone: true,
-  //     title: "something awesome part 1",
-  //     contentType: "workshop",
-  //     storyPoints: 5,
-  //     tags: ["tag1"],
-  //     order: 1,
-  //   };
   if (!card) {
     return <React.Fragment />;
   }

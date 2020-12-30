@@ -11,11 +11,11 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default ({ tags }) => {
+export default ({ tagNames }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      {tags.map((tag) => {
+      {tagNames.map((tag) => {
         return (
           <Chip
             className={classes.chip}

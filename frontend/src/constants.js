@@ -43,6 +43,18 @@ export const REVIEW_STATUS_CHOICES = {
   [EXCELLENT]: "excellent",
 };
 
+export const MANAGE_CARDS = "MANAGE_CARDS";
+export const VIEW_ALL = "VIEW_ALL";
+export const ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS";
+export const REVIEW_CARDS = "REVIEW_CARDS";
+
+export const TEAM_PERMISSIONS = [
+  MANAGE_CARDS,
+  VIEW_ALL,
+  ASSIGN_REVIEWERS,
+  REVIEW_CARDS,
+];
+
 export default {
   AGILE_CARD_STATUS_CHOICES,
   AGILE_COLUMNS,

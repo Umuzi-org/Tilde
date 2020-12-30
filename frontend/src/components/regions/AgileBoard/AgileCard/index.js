@@ -8,81 +8,20 @@ import { addCardReviewOperations } from "../../AddCardReviewModal/redux";
 // import { markSingleCardWorkshopAttendanceOperations } from "../../MarkSingleCardAttendanceModal/redux";
 
 import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
-import {
-  READY,
-  IN_PROGRESS,
-  REVIEW_FEEDBACK,
-  IN_REVIEW,
-  COMPLETE,
-  BLOCKED,
-} from "../../../../constants";
-
-export function showButtons({ card, authUser, startAllowed }) {
-  const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
-  const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
-  const isStaff = authUser.isStaff === 1;
-
-  const showButtonStartProject =
-    card.contentType === "project" &&
-    ((startAllowed && isAssignee) ||
-      (isStaff && [BLOCKED, READY].indexOf(card.status) !== -1));
-
-  const showButtonRequestReview =
-    isAssignee &&
-    [IN_PROGRESS, REVIEW_FEEDBACK].indexOf(card.status) !== -1 &&
-    (card.contentType === "project" || card.topicNeedsReview);
-  const showButtonCancelReviewRequest =
-    isAssignee && card.status === IN_REVIEW && card.contentType === "project";
-
-  const showButtonAddReview =
-    (isReviewer || isStaff) &&
-    (card.contentType === "project" || card.topicNeedsReview) &&
-    [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(card.status) !== -1;
-
-  // topic
-  const showButtonStartTopic =
-    startAllowed && isAssignee && card.contentType === "topic";
-  const showButtonStopTopic =
-    isAssignee && card.contentType === "topic" && card.status === IN_PROGRESS;
-  const showButtonEndTopic = showButtonStopTopic;
-
-  // workshop
-
-  const showButtonNoteWorkshopAttendance =
-    isStaff && card.contentType === "workshop" && card.status === READY;
-  const showButtonCancelWorkshopAttendance =
-    isStaff && card.contentType === "workshop" && card.status === COMPLETE;
-
-  return {
-    showButtonStartProject,
-    showButtonRequestReview,
-    showButtonCancelReviewRequest,
-    showButtonAddReview,
-    showButtonStartTopic,
-    showButtonStopTopic,
-    showButtonEndTopic,
-
-    showButtonNoteWorkshopAttendance,
-    showButtonCancelWorkshopAttendance,
-  };
-}
 
 function AgileCardUnconnected({
   card,
-  //   index,
+  authUser,
   openCardDetailsModal,
   startProject,
   requestReview,
   cancelReviewRequest,
-  //   openWorkshopAttendanceModal,
   startTopic,
   stopTopic,
   finishTopic,
   removeWorkshopAttendance,
   addWorkshopAttendance,
-  authUser,
   openReviewFormModal,
-  startAllowed, // according to the greater scheme of things, should starting work on this be allowed
   filterUserId,
 }) {
   const handleClickOpenCardDetails = () => {
@@ -141,8 +80,6 @@ function AgileCardUnconnected({
     handleStopTopic,
     handleFinishTopic,
     handleRemoveWorkshopAttendance,
-
-    ...showButtons({ startAllowed, card, authUser }),
   };
 
   return <Presentation {...props} />;

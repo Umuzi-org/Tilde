@@ -56,9 +56,9 @@ const CardBasicDetails = ({ card }) => {
   return (
     <React.Fragment>
       <Typography variant="h5">
-        {card.contentType}: {card.title}
+        {card.contentTypeNice}: {card.title}
       </Typography>
-      <TagChips tags={card.tags} />
+      <TagChips tagNames={card.tagNames} />
       <StoryPoints storyPoints={card.storyPoints} />
 
       <Paper className={classes.sectionPaper} variant="outlined">
@@ -75,18 +75,25 @@ const CardBasicDetails = ({ card }) => {
               <TableCell>Due Time</TableCell>
               <TableCell>{card.dueTime}</TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell>Start Time</TableCell>
-              <TableCell>{card.startTime}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Review Request Time</TableCell>
-              <TableCell>{card.reviewRequestTime}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Complete Time </TableCell>
-              <TableCell>{card.completeTime}</TableCell>
-            </TableRow>
+            {card.startTime && (
+              <TableRow>
+                <TableCell>Start Time</TableCell>
+                <TableCell>{card.startTime}</TableCell>
+              </TableRow>
+            )}
+
+            {card.reviewRequestTime && (
+              <TableRow>
+                <TableCell>Review Request Time</TableCell>
+                <TableCell>{card.reviewRequestTime}</TableCell>
+              </TableRow>
+            )}
+            {card.completeTime && (
+              <TableRow>
+                <TableCell>Complete Time </TableCell>
+                <TableCell>{card.completeTime}</TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </Paper>
@@ -110,14 +117,12 @@ export default ({
   linkSubmission,
   formErrors,
 }) => {
-
   const classes = useStyles();
 
   const workshopAttendance = false;
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>
-          
         <Paper className={classes.paper}>
           {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
 

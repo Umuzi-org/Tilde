@@ -126,6 +126,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "is_soft_milestone",
             "title",
             "content_type",
+            "content_type_nice",
             "story_points",
             "tag_names",
             "order",

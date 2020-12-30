@@ -1,18 +1,22 @@
 from . import models
 from rest_framework import viewsets
 from . import serializers
-from rest_framework.decorators import action
 
-from rest_framework.decorators import api_view
+# from rest_framework.decorators import action
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
-from django.db.models import Q
+
+# from django.db.models import Q
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def delete_auth_token(request):
     # TODO: turn this into a class based view and add it to router
     # any logged in user has access
@@ -21,6 +25,7 @@ def delete_auth_token(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def who_am_i(request):
     # TODO: turn this into a class based view
     # anyone can access it. No permission needed
@@ -81,8 +86,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = (  # TODO: only fetch groups where I have view access
+        queryset = (
             models.Team.objects.all()
             .order_by("name")
             .prefetch_related("team_memberships")

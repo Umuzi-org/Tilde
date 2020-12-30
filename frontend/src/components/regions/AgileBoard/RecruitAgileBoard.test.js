@@ -35,7 +35,7 @@ const fetchCardsCallLog = [
           title: "Assertive programming kata",
           contentType: "project",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 25,
         },
         {
@@ -52,7 +52,7 @@ const fetchCardsCallLog = [
           title: "Data Ethics",
           contentType: "workshop",
           storyPoints: 1,
-          tags: ["data-ethics"],
+          tagNames: ["data-ethics"],
           order: 28,
         },
         {
@@ -69,7 +69,7 @@ const fetchCardsCallLog = [
           title: "Test Driven Development",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["tdd"],
+          tagNames: ["tdd"],
           order: 30,
         },
         {
@@ -86,7 +86,7 @@ const fetchCardsCallLog = [
           title: "Evolution of Linux Visualisation",
           contentType: "project",
           storyPoints: 1,
-          tags: ["data-visualisation-datacamp"],
+          tagNames: ["data-visualisation-datacamp"],
           order: 33,
         },
         {
@@ -103,7 +103,7 @@ const fetchCardsCallLog = [
           title: "Data Wrangling",
           contentType: "project",
           storyPoints: 1,
-          tags: ["data-wrangling"],
+          tagNames: ["data-wrangling"],
           order: 39,
         },
         {
@@ -120,7 +120,7 @@ const fetchCardsCallLog = [
           title: "OOP for data science",
           contentType: "project",
           storyPoints: 1,
-          tags: ["oop-data-sci"],
+          tagNames: ["oop-data-sci"],
           order: 45,
         },
         {
@@ -137,7 +137,7 @@ const fetchCardsCallLog = [
           title: "Environmental Variables",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 48,
         },
         {
@@ -154,7 +154,7 @@ const fetchCardsCallLog = [
           title: "Intro to Docker and Docker-compose",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["docker-compose", "postgres"],
+          tagNames: ["docker-compose", "postgres"],
           order: 49,
         },
         {
@@ -171,7 +171,7 @@ const fetchCardsCallLog = [
           title: "SQL",
           contentType: "project",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 50,
         },
         {
@@ -188,7 +188,7 @@ const fetchCardsCallLog = [
           title: "Natural language processing",
           contentType: "project",
           storyPoints: 1,
-          tags: ["nlp"],
+          tagNames: ["nlp"],
           order: 61,
         },
       ],
@@ -219,7 +219,7 @@ const fetchCardsCallLog = [
           title: "Agile & Scrum",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 0,
         },
         {
@@ -236,7 +236,7 @@ const fetchCardsCallLog = [
           title: "Agile and Scrum",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 1,
         },
         {
@@ -253,7 +253,7 @@ const fetchCardsCallLog = [
           title: "How to be a professional",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 2,
         },
         {
@@ -270,7 +270,7 @@ const fetchCardsCallLog = [
           title: "Introduction to Linux",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["linux"],
+          tagNames: ["linux"],
           order: 3,
         },
         {
@@ -287,7 +287,7 @@ const fetchCardsCallLog = [
           title: "Introduction to Bash and the terminal",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["bash"],
+          tagNames: ["bash"],
           order: 4,
         },
         {
@@ -304,7 +304,7 @@ const fetchCardsCallLog = [
           title: "Introduction to Linux: Live demo",
           contentType: "workshop",
           storyPoints: 1,
-          tags: ["todo"],
+          tagNames: ["todo"],
           order: 5,
         },
         {
@@ -321,7 +321,7 @@ const fetchCardsCallLog = [
           title: "Python self-learning",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 7,
         },
         {
@@ -338,7 +338,7 @@ const fetchCardsCallLog = [
           title: "Clean Code for Python",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 8,
         },
         {
@@ -355,7 +355,7 @@ const fetchCardsCallLog = [
           title: "Git Basics",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["todo"],
+          tagNames: ["todo"],
           order: 9,
         },
         {
@@ -372,7 +372,7 @@ const fetchCardsCallLog = [
           title: "Level 1 programming katas",
           contentType: "project",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 11,
         },
         {
@@ -389,7 +389,7 @@ const fetchCardsCallLog = [
           title: "What to Put On A CV",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 12,
         },
         {
@@ -406,7 +406,7 @@ const fetchCardsCallLog = [
           title: "Introduction to web design",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 13,
         },
         {
@@ -423,7 +423,7 @@ const fetchCardsCallLog = [
           title: "Intro to CSS architecture",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 14,
         },
         {
@@ -440,7 +440,7 @@ const fetchCardsCallLog = [
           title: "How to ask for help with your code",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 16,
         },
         {
@@ -457,7 +457,7 @@ const fetchCardsCallLog = [
           title: "Clean Code (language agnostic)",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 17,
         },
         {
@@ -474,7 +474,7 @@ const fetchCardsCallLog = [
           title: "Basic Intro to OOP",
           contentType: "workshop",
           storyPoints: 1,
-          tags: ["todo"],
+          tagNames: ["todo"],
           order: 18,
         },
         {
@@ -491,7 +491,7 @@ const fetchCardsCallLog = [
           title: "Python OOP basics",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["todo", "oop"],
+          tagNames: ["todo", "oop"],
           order: 19,
         },
         {
@@ -508,7 +508,7 @@ const fetchCardsCallLog = [
           title: "Automated Testing in Python",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 20,
         },
         {
@@ -525,7 +525,7 @@ const fetchCardsCallLog = [
           title: "Virtual Environments",
           contentType: "topic",
           storyPoints: 1,
-          tags: ["todo"],
+          tagNames: ["todo"],
           order: 21,
         },
         {
@@ -542,7 +542,7 @@ const fetchCardsCallLog = [
           title: "Survey design",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 22,
         },
         {
@@ -559,7 +559,7 @@ const fetchCardsCallLog = [
           title: "Google forms like a boss",
           contentType: "workshop",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 23,
         },
         {
@@ -576,7 +576,7 @@ const fetchCardsCallLog = [
           title: "Introduction to assertive programming",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 24,
         },
         {
@@ -593,7 +593,7 @@ const fetchCardsCallLog = [
           title: "Unit testing (language agnostic concepts)",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 29,
         },
         {
@@ -610,7 +610,7 @@ const fetchCardsCallLog = [
           title: "Jupyter notebooks best practices",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 34,
         },
         {
@@ -627,7 +627,7 @@ const fetchCardsCallLog = [
           title: "The Tech Landscape Terminology",
           contentType: "topic",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 37,
         },
       ],
@@ -658,7 +658,7 @@ const fetchCardsCallLog = [
           title: "Predict breast cancer",
           contentType: "project",
           storyPoints: 1,
-          tags: ["logistic-regression"],
+          tagNames: ["logistic-regression"],
           order: 0,
         },
         {
@@ -675,7 +675,7 @@ const fetchCardsCallLog = [
           title: "Predict credit card approvals",
           contentType: "project",
           storyPoints: 1,
-          tags: ["datacamp-logistic-regression"],
+          tagNames: ["datacamp-logistic-regression"],
           order: 0,
         },
         {
@@ -692,7 +692,7 @@ const fetchCardsCallLog = [
           title: "Bank Accounts",
           contentType: "project",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 0,
         },
         {
@@ -709,7 +709,7 @@ const fetchCardsCallLog = [
           title: "Getting to know Python",
           contentType: "project",
           storyPoints: 1,
-          tags: ["todo"],
+          tagNames: ["todo"],
           order: 0,
         },
         {
@@ -726,7 +726,7 @@ const fetchCardsCallLog = [
           title: "Beginner Linux challenges",
           contentType: "project",
           storyPoints: 1,
-          tags: ["todo", "bash"],
+          tagNames: ["todo", "bash"],
           order: 6,
         },
         {
@@ -743,7 +743,7 @@ const fetchCardsCallLog = [
           title: "Git Basic Exercises",
           contentType: "project",
           storyPoints: 1,
-          tags: ["git"],
+          tagNames: ["git"],
           order: 10,
         },
         {
@@ -760,7 +760,7 @@ const fetchCardsCallLog = [
           title: "Build your first personal website",
           contentType: "project",
           storyPoints: 1,
-          tags: ["html", "css"],
+          tagNames: ["html", "css"],
           order: 15,
         },
         {
@@ -777,7 +777,7 @@ const fetchCardsCallLog = [
           title: "Data Visualisation Projects",
           contentType: "project",
           storyPoints: 1,
-          tags: [],
+          tagNames: [],
           order: 26,
         },
         {
@@ -794,7 +794,7 @@ const fetchCardsCallLog = [
           title: "simple-calculator part 1",
           contentType: "project",
           storyPoints: 1,
-          tags: ["tdd"],
+          tagNames: ["tdd"],
           order: 31,
         },
         {
@@ -811,7 +811,7 @@ const fetchCardsCallLog = [
           title: "string-calculator",
           contentType: "project",
           storyPoints: 1,
-          tags: ["tdd", "regular-expressions"],
+          tagNames: ["tdd", "regular-expressions"],
           order: 32,
         },
         {
@@ -828,7 +828,7 @@ const fetchCardsCallLog = [
           title: "Financial Services Use in Tanzania",
           contentType: "project",
           storyPoints: 1,
-          tags: ["data-visualisation-mobile-money"],
+          tagNames: ["data-visualisation-mobile-money"],
           order: 35,
         },
         {
@@ -845,7 +845,7 @@ const fetchCardsCallLog = [
           title: "Statistical Thinking",
           contentType: "project",
           storyPoints: 1,
-          tags: ["stats"],
+          tagNames: ["stats"],
           order: 36,
         },
         {
@@ -862,7 +862,7 @@ const fetchCardsCallLog = [
           title: "Cross-validation & Simple Linear Regression",
           contentType: "project",
           storyPoints: 1,
-          tags: ["simple-linear-regression"],
+          tagNames: ["simple-linear-regression"],
           order: 40,
         },
         {
@@ -879,7 +879,7 @@ const fetchCardsCallLog = [
           title: "Multivariate Linear Regression",
           contentType: "project",
           storyPoints: 1,
-          tags: ["multiple-linear-regression"],
+          tagNames: ["multiple-linear-regression"],
           order: 41,
         },
         {
@@ -896,7 +896,7 @@ const fetchCardsCallLog = [
           title: "Plotly Dashboard Assignment",
           contentType: "project",
           storyPoints: 1,
-          tags: ["plotly"],
+          tagNames: ["plotly"],
           order: 46,
         },
         {
@@ -913,7 +913,7 @@ const fetchCardsCallLog = [
           title: "Decision Trees",
           contentType: "project",
           storyPoints: 1,
-          tags: ["decision-trees"],
+          tagNames: ["decision-trees"],
           order: 53,
         },
         {
@@ -930,7 +930,7 @@ const fetchCardsCallLog = [
           title: "K-Means Clustering Assignment",
           contentType: "project",
           storyPoints: 1,
-          tags: ["kmeans"],
+          tagNames: ["kmeans"],
           order: 59,
         },
       ],

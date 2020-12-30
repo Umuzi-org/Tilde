@@ -116,13 +116,13 @@ class IsFilteredByRepoAttachedToProjectICanSee(BasePermission):
         return user_can_see_repository(repo, user)
 
 
-class CardCanStart(BaseException):
+class CardCanStart(BasePermission):
     def has_permission(self, request, view):
         card = view.get_object()
         return card.can_start()
 
 
-class CardCanForceStart(BaseException):
+class CardCanForceStart(BasePermission):
     def has_permission(self, request, view):
         card = view.get_object()
         return card.can_start(force=True)
