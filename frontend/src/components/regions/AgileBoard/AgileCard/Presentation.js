@@ -112,7 +112,7 @@ export default ({
     authUser,
   };
 
-  console.log(agileCardActionProps);
+  //   console.log(agileCardActionProps);
   // TODO: add an icon fir different kinds of content
   return (
     <Card
