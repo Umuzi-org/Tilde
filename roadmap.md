@@ -10,3 +10,13 @@ Basically this is a high-level backlog of what we need to do. When we do backlog
 
 
 
+
+
+## Make it easier to contribute
+- read https://github.com/hyperledger/indy-node/blob/master/docs/source/write-code-guideline.md
+- https://github.com/hyperledger/indy-node/blob/master/docs/source/ci-cd.md
+- https://github.com/hyperledger/indy-node/blob/master/README.md#how-to-start-working-with-the-code
+
+
+
+
