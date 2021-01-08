@@ -327,3 +327,9 @@ LOGGING = {  # TODO: copy this back into template project
         # },
     },
 }
+
+ROCKETCHAT = {
+    "BASE_URL": os.environ.get("ROCKETCHAT_BASE_URL"),
+    # "USER": os.environ.get("ROCKETCHAT_EMAIL"),
+    # "PASS": os.environ.get("ROCKETCHAT_PASSWORD"),
+}
