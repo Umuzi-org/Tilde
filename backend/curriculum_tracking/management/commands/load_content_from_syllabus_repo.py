@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from curriculum_tracking import models
 import os
 from curriculum_tracking import constants
-from curriculum_tracking import helpers
+# from curriculum_tracking import helpers
 import frontmatter
 import re
 import taggit
@@ -25,17 +25,6 @@ HARD = "hard"
 SOFT = "soft"
 
 DB_ID = "_db_id"
-
-
-# def content_type_from_url(url):
-#     if "/projects/" in url:
-#         return models.ContentItem.PROJECT
-#     if "/topics/" in url:
-#         return models.ContentItem.TOPIC
-#     if "/workshops/" in url:
-#         return models.ContentItem.WORKSHOP
-#     raise Exception(f"cant find content type in url: {url}")
-
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
@@ -363,8 +352,6 @@ def load_all_content_items_with_known_ids():
     seen_ids = {}
     content_paths = recurse_get_all_content_index_file_paths()
     for file_path in content_paths:
-        # if "angular-testing-cucumber" not in str(file_path):  # TODO
-        #     continue
         content_item_post = frontmatter.load(file_path)
         if DB_ID not in content_item_post:
             continue
@@ -452,24 +439,14 @@ def remove_missing_content_items_from_db():
             content_item.delete()
 
 
-def load_content_from_tech_dept_repo():
-
-    # repo_base_dir = Helper.repo_base_dir
-
-    # for name in os.listdir(repo_base_dir / "content"):
-    #     path = repo_base_dir / "content" / name
-    #     if not path.is_dir():
-    #         continue
-
-    #     create_or_update_content(
-    #         content_type=models.ContentItem.WORKSHOP,
-    #         root_path=path,
-    #         repo_base_dir=repo_base_dir,
-    #         available_content_flavours=available_content_flavours,
-    #     )
+def load_all_content_items_with_unknown_ids():
 
     for file_path in recurse_get_all_content_index_file_paths():
         assert file_path.name == "_index.md", f"Bad content name: {file_path}"
+
+        content_item_post = frontmatter.load(file_path)
+        if DB_ID in content_item_post:
+            continue
 
         Helper.save_content(
             file_path=file_path,
@@ -581,20 +558,55 @@ def _get_ordered_curriculum_items_from_page(file_stream):
                 yield content_item, hard_requirement, flavours
 
 
-def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):
-    for curriculum in models.Curriculum.objects.all():
-        name = curriculum.short_name.lower().replace(" ", "-")
-        if currculum_name and name != currculum_name:
+def curriculum_file_paths(curriculums_base_dir):
+
+
+def load_all_curriculums_with_known_ids(curriculums_base_dir):
+    seen_ids = {}
+
+    for file_path in curriculum_file_paths(curriculums_base_dir):
+        syllabus_frontmatter = frontmatter.load(file_path)
+        if DB_ID not in syllabus_frontmatter:
+            # this one doesn't have a known id. So skip it
             continue
-        print(f"Processing curriculum: {curriculum}")
-        file_path = curriculums_base_dir / f"{name}.md"
-        set_up_single_curriculum_from_file(curriculum, file_path)
+        db_id = content_item_post[DB_ID]
+
+        assert (
+            db_id not in seen_ids
+        ), f"Same ID on two content items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
+        seen_ids[db_id] = file_path
+        woo
 
 
-def validate_card_creation():
-    """the proof is in the pudding. Can we make cards without any of the internal sanity checks failing"""
-    for curriculum in models.Curriculum.objects.all():
-        ordered_content_items = helpers.get_ordered_content_items(curriculum)
+def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
+    for file_path in curriculum_file_paths(curriculums_base_dir):
+        syllabus_frontmatter = frontmatter.load(file_path)
+        if DB_ID in syllabus_frontmatter:
+            # this one already has an id. Skip it
+            continue
+        woo
+        
+
+def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):
+    if currculum_name:
+        raise NotImplemented
+    breakpoint()
+    load_all_curriculums_with_known_ids(curriculums_base_dir)
+    load_all_curriculums_with_unknown_ids(curriculums_base_dir)
+
+    # for curriculum in models.Curriculum.objects.all():
+    #     name = curriculum.short_name.lower().replace(" ", "-")
+    #     if currculum_name and name != currculum_name:
+    #         continue
+    #     print(f"Processing curriculum: {curriculum}")
+    #     file_path = curriculums_base_dir / f"{name}.md"
+    #     set_up_single_curriculum_from_file(curriculum, file_path)
+
+
+# def validate_card_creation():
+#     """the proof is in the pudding. Can we make cards without any of the internal sanity checks failing"""
+#     for curriculum in models.Curriculum.objects.all():
+#         ordered_content_items = helpers.get_ordered_content_items(curriculum)
 
 
 class Command(BaseCommand):
@@ -605,7 +617,7 @@ class Command(BaseCommand):
         parser.add_argument("currculum_name", type=str, nargs="?")
 
     def handle(self, *args, **options):
-        url_template = "http://syllabus.africacode.net/{url_part}/"
+        url_template = "http://syllabus.africacode.net/{url_part}/"  # TODO: get this from command line instead
         path_to_repo = options.get("path_to_tech_dept_repo", "")
         process_content = options["process_content"]
         process_curriculums = options["process_curriculums"]
@@ -620,7 +632,7 @@ class Command(BaseCommand):
             # first we make sure that if something has an id, it gets saved first
             # this is because we generate the next available id based on what is already in the db. This stops id conflicts
             load_all_content_items_with_known_ids()
-            load_content_from_tech_dept_repo()
+            load_all_content_items_with_unknown_ids()
 
             # now that all the content is loaded up, we check what should be removed
             remove_missing_content_items_from_db()
