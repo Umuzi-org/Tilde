@@ -35,10 +35,10 @@ def HasObjectPermission(permissions, get_object=None, get_objects=None):
 
             if get_objects:
                 instances = get_objects(self, request, view)
+            elif get_object:
+                instances = get_object(self, request, view)
             else:
-                instances = [
-                    get_object(self, request, view) if get_object else view.get_object()
-                ]
+                instances = view.get_object()
 
             for instance in instances:
                 for permission in all_permissions:

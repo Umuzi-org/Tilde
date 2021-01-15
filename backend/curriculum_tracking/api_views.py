@@ -105,6 +105,7 @@ def _get_teams_from_workshop_attendance(self, request, view):
 
 
 class ProjectCardSummaryViewset(viewsets.ModelViewSet):
+
     permission_classes = [
         core_permissions.IsReadOnly,
         permissions.IsAdminUser
@@ -115,7 +116,6 @@ class ProjectCardSummaryViewset(viewsets.ModelViewSet):
             _get_teams_from_user_filter("assignees"),
         ),
     ]
-
     serializer_class = serializers.ProjectCardSummarySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["assignees"]
@@ -126,6 +126,11 @@ class ProjectCardSummaryViewset(viewsets.ModelViewSet):
         .prefetch_related("content_item")
         .prefetch_related("recruit_project")
     )
+
+    # def get_permissions(self):
+    #     breakpoint()
+    #     foo
+    #     return super().get_permissions()
 
 
 class AgileCardViewset(viewsets.ModelViewSet):
