@@ -39,6 +39,11 @@ function CardDetailsModalUnconnected({
       fetchProject({ projectId });
       fetchProjectReviews({ projectId });
     }
+    // if (card && card.recruitProject) {
+    //   console.log("HERE");
+    //   fetchProject({ projectId: card.recruitProject });
+    //   fetchProjectReviews({ projectId: card.recruitProject });
+    // }
     if (topicProgressId) {
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
@@ -87,17 +92,28 @@ function CardDetailsModalUnconnected({
 
   const isStaff = authUser.isStaff === 1;
 
+  const projectCardStatus = project && project.agileCardStatus;
+
   const showAddReviewButton =
     (isReviewer || isStaff) &&
-    [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(
-      project && project.agileCardStatus
-    ) !== -1;
+    [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus) !== -1;
 
   const showUpdateProjectLinkForm =
     isAssignee &&
-    [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(
-      project && project.agileCardStatus
-    ) !== -1;
+    [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
+
+  console.log("=====================");
+  console.log("=====================");
+  console.log({
+    card,
+    recruitProject: card && card.recruitProject,
+    projectId,
+    project,
+    projectCardStatus,
+    isAssignee,
+  });
+  console.log("=====================");
+  console.log("=====================");
 
   const props = {
     project,
@@ -130,9 +146,9 @@ const mapStateToProps = (state) => {
       : null;
 
   const projectId =
-    card && card.contentType === "project" && card.recruitProject;
+    card && card.contentTypeNice === "project" && card.recruitProject;
   const topicProgressId =
-    card && card.contentType === "topic" && card.topicProgress;
+    card && card.contentTypeNice === "topic" && card.topicProgress;
 
   const project =
     !!projectId & (state.Entities.projects !== undefined)

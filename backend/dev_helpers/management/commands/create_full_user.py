@@ -8,8 +8,8 @@ from social_auth.models import SocialProfile
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("email", type=str)
-        parser.add_argument("is_staff", type=bool)
-        parser.add_argument("is_superuser", type=bool)
+        parser.add_argument("is_staff", type=int)
+        parser.add_argument("is_superuser", type=int)
         parser.add_argument(
             "github_name",
             type=str,
@@ -18,17 +18,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        is_staff = bool(options["is_staff"])
+        is_superuser = bool(options["is_superuser"])
+
         user, created = User.objects.get_or_create(
             email=options["email"],
             defaults={
-                "is_staff": options["is_staff"],
-                "is_superuser": options["is_superuser"],
+                "is_staff": is_staff,
+                "is_superuser": is_superuser,
             },
         )
-        if not created:
-            user.is_staff = options["is_staff"]
-            user.is_superuser = options["is_superuser"]
+        if created:
+            print("user created")
+        else:
+            user.is_staff = is_staff
+            user.is_superuser = is_superuser
             user.save()
+            print("updated user")
 
         github_name = options.get("github_name")
         if github_name:

@@ -130,6 +130,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_active(self):
         return self.active
 
+    @property
+    def github_name(self):
+        if self.social_profile:
+            return self.social_profile.github_name
+
 
 class Curriculum(models.Model, Mixins):
     short_name = models.CharField(max_length=20)  # eg:data eng

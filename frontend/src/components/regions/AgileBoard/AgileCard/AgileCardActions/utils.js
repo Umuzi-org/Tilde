@@ -102,9 +102,10 @@ export function showButtons({ card, authUser }) {
     }
     if (permissions[MANAGE_CARDS] && card.status === IN_PROGRESS) {
       showButtonStopTopic = true;
-      showButtonEndTopic = true;
     }
     if (card.topicNeedsReview) {
+      showButtonEndTopic = false;
+
       showButtonAddReview = getShowAddReviewButton({
         card,
         permissions,

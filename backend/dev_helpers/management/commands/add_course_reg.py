@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("email", type=str)
         parser.add_argument("curriculum_name", type=str)
-        parser.add_argument("order", type=int, nargs="?")
+        parser.add_argument("order", type=int)
         # parser.add_argument("curriculum_name", type=str)
 
     def handle(self, *args, **options):

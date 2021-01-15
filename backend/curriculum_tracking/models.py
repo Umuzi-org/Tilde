@@ -37,6 +37,37 @@ class ReviewableMixin:
                 return True
         return False
 
+    def cancel_request_review(self):
+        self.review_request_time = None
+        self.save()
+        self.update_associated_card_status()
+
+    def update_associated_card_status(self):
+        try:
+            card = self.agile_card
+        except AgileCard.DoesNotExist:
+            pass
+        else:
+            assert card is not None
+            if card.status in [AgileCard.BLOCKED, AgileCard.READY]:
+                return
+            if self.__class__ == RecruitProject:
+                card.status = AgileCard.derive_status_from_project(self)
+            elif self.__class__ == TopicProgress:
+                card.status = AgileCard.derive_status_from_topic(self, card)
+            else:
+                raise Exception(f"Not implemented: {self.__class}")
+            card.save()
+
+    def latest_review(self, trusted=None, timestamp_greater_than=None):
+
+        query = self.reviews_queryset()
+        if trusted != None:
+            query = query.filter(trusted=trusted)
+        if timestamp_greater_than != None:
+            query = query.filter(timestamp__gt=timestamp_greater_than)
+        return query.order_by("timestamp").last()
+
 
 class FlavourMixin:
     def flavours_match(self, flavour_strings: List[str]):
@@ -353,6 +384,9 @@ class RecruitProject(
             ["content_item", "repository"],
         ]
 
+    def reviews_queryset(self):
+        return self.project_reviews
+
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
@@ -453,6 +487,9 @@ class RecruitProject(
         first_name = clean_name(user.first_name)
         last_name = clean_name(user.last_name)
 
+        assert first_name, "user has no first name!"
+        assert last_name, "user has no last name!"
+
         project_name = f"{first_name}-{last_name}-{content_item.id}-{slug}-{'-'.join(flavour_names)}"
         if len(project_name) > 100:
 
@@ -463,11 +500,6 @@ class RecruitProject(
                 len(project_name) == 100
             ), f"len({project_name}) ={len(project_name)}. Expected 100 "
         return project_name
-
-    def cancel_request_review(self):
-        self.review_request_time = None
-        self.save()
-        self.update_associated_card_status()
 
     def request_review(self, force_timestamp=None):
         # self.review_request_time = (
@@ -483,40 +515,6 @@ class RecruitProject(
         self.code_review_red_flag_since_last_review_request = 0
         self.save()
         self.update_associated_card_status()
-
-    def update_associated_card_status(self):
-        try:
-            card = self.agile_card
-        except AgileCard.DoesNotExist:
-            pass
-        else:
-            assert card is not None
-            if card.status in [AgileCard.BLOCKED, AgileCard.READY]:
-                return
-            new_status = AgileCard.derive_status_from_project(self)
-            card.status = new_status
-            card.save()
-
-    def latest_review(self, trusted=None, timestamp_greater_than=None):
-
-        query = self.project_reviews
-        if trusted != None:
-            query = query.filter(trusted=trusted)
-        if timestamp_greater_than != None:
-            query = query.filter(timestamp__gt=timestamp_greater_than)
-        return query.order_by("timestamp").last()
-
-    @property
-    def latest_review_status(self):
-        latest_review = self.latest_review()
-        if latest_review:
-            return latest_review.status
-
-    @property
-    def latest_trusted_review_status(self):
-        latest_review = self.latest_review(trusted=True)
-        if latest_review:
-            return latest_review.status
 
     @property
     def recruit_user_names(self):
@@ -556,7 +554,7 @@ class RecruitProjectReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class TopicProgress(models.Model, Mixins, ContentItemProxyMixin):
+class TopicProgress(models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     due_time = models.DateTimeField(blank=True, null=True)
@@ -565,14 +563,8 @@ class TopicProgress(models.Model, Mixins, ContentItemProxyMixin):
     review_request_time = models.DateTimeField(blank=True, null=True)
     flavours = TaggableManager(blank=True)
 
-    def latest_review(self, trusted=None, timestamp_greater_than=None):
-
-        query = self.topic_reviews
-        if trusted != None:
-            query = query.filter(trusted=trusted)
-        if timestamp_greater_than != None:
-            query = query.filter(timestamp__gt=timestamp_greater_than)
-        return query.order_by("timestamp").last()
+    def reviews_queryset(self):
+        return self.topic_reviews
 
 
 class TopicReview(models.Model, Mixins):

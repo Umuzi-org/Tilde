@@ -43,14 +43,16 @@ def authorize_github_start(request):
         random.choices(string.digits + string.ascii_letters, k=15)
     )
 
-    get_parameters = urlencode(
-        {
-            "client_id": os.environ["GITHUB_CLIENT_ID"],
-            # "login": request.user.user_profile.github_name,
-            "scope": "repo",
-            "state": request.session[OAUTH_STATE],
-        }
-    )
+    params = {
+        "client_id": os.environ["GITHUB_CLIENT_ID"],
+        "scope": "repo",
+        "state": request.session[OAUTH_STATE],
+    }
+
+    if request.user.github_name:
+        params["login"] = request.user.github_name
+
+    get_parameters = urlencode(params)
 
     return HttpResponseRedirect(
         "https://github.com/login/oauth/authorize?" + get_parameters
@@ -94,7 +96,6 @@ def authorize_github_callback(request):
         token.save()
 
     # get the username
-
     api = Api(github_token=token.access_token)
     github_name = api.who_am_i()["github_name"]
 

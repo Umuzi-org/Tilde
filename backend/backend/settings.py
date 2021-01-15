@@ -341,3 +341,5 @@ ROCKETCHAT = {
     # "USER": os.environ.get("ROCKETCHAT_EMAIL"),
     # "PASS": os.environ.get("ROCKETCHAT_PASSWORD"),
 }
+
+GITHUB_BOT_USERNAME = "umuzibot" or os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME")

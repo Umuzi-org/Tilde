@@ -269,9 +269,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def request_review(self, request, pk=None):
         card: models.AgileCard = self.get_object()
-        if card.recruit_project == None:
+        if card.recruit_project:
+            card.recruit_project.request_review(force_timestamp=timezone.now())
+        elif card.topic_progress:
+            card.finish_topic()
+        else:
             raise Http404
-        card.recruit_project.request_review(force_timestamp=timezone.now())
         card.refresh_from_db()
         assert (
             card.status == models.AgileCard.IN_REVIEW
@@ -293,9 +296,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
         card = self.get_object()
         if card.status != models.AgileCard.IN_REVIEW:
             raise Http404()
-        card.recruit_project.cancel_request_review()
-        card.status = models.AgileCard.IN_PROGRESS
-        card.save()
+        if card.recruit_project:
+            card.recruit_project.cancel_request_review()
+        elif card.topic_progress:
+            card.topic_progress.cancel_request_review()
+
+        # card.status = models.AgileCard.IN_PROGRESS
+        # card.save()
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(

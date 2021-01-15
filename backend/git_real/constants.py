@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
-import pytz
+from backend.settings import GITHUB_BOT_USERNAME
+
+# TODO: this should all be in settings.py
+# import pytz
 
 ORGANISATION = os.environ.get("GIT_REAL_ORG", "Umuzi-org")
 PROJECT_REVIEWER_TEAM = os.environ.get(
@@ -19,7 +22,7 @@ PERSONAL_GITHUB_NAME = os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME")
 GITHUB_DEFAULT_TIMEZONE = "utc"
 
 
-GITHUB_BOT_USERNAME="umuzibot"
+# GITHUB_BOT_USERNAME = "umuzibot"
 # Note: this needs to be associated with an actual User in the db
 # and has to be logged in.
 # this should really be in settings.py
