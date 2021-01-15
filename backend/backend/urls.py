@@ -90,9 +90,9 @@ router.register(
 )
 
 router.register(
-    r"project_card_summaries",
-    curriculum_tracking_api_views.ProjectCardSummaryViewset,
-    "projectcardsummary",
+    r"card_summaries",
+    curriculum_tracking_api_views.CardSummaryViewset,
+    "cardsummary",
 )
 
 router.register(

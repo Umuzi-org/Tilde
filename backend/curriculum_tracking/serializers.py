@@ -151,7 +151,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProjectCardSummarySerializer(serializers.ModelSerializer):
+class cardsummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AgileCard
         fields = [

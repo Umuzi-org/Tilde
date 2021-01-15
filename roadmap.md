@@ -23,3 +23,4 @@ Basically this is a high-level backlog of what we need to do. When we do backlog
 
 - login page needs to be responsive
 - github auth is weird, couldn't log in as Umuzibot. Doesn't matter too much right now but can cause problems later
+- review button doesn't come up in all the places it should for topics. We need it to work the same as the project stuff

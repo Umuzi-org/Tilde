@@ -229,12 +229,12 @@ export const apiReduxApps = {
 
   FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
-    apiCaller: apiCallers.staff.personallyAssignedProjectCardSummariesPage,
+    apiCaller: apiCallers.staff.personallyAssignedCardSummariesPage,
   }),
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_PROJECT_CARD_SUMMARY,
-    apiCaller: apiCallers.staff.personallyAssignedProjectCardSummaryEntity,
+    apiCaller: apiCallers.staff.personallyAssignedCardSummaryEntity,
   }),
 
   FETCH_SINGLE_AGILE_CARD: createReduxApp({

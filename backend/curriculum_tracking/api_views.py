@@ -104,11 +104,19 @@ def _get_teams_from_workshop_attendance(self, request, view):
     return _get_teams_from_user_ids(user_ids=user_ids)
 
 
-class ProjectCardSummaryViewset(viewsets.ModelViewSet):
+class CardSummaryViewset(viewsets.ModelViewSet):
 
     permission_classes = [
-        core_permissions.IsReadOnly,
         permissions.IsAdminUser
+        | core_permissions.ActionIs("retrieve")
+        & (
+            curriculum_permissions.IsCardAssignee
+            | curriculum_permissions.IsCardReviewer
+            | core_permissions.HasObjectPermission(
+                Team.PERMISSION_VIEW, _get_teams_from_card
+            )
+        )
+        | core_permissions.IsReadOnly
         | core_permissions.IsStaffUser
         | core_permissions.IsCurrentUserInSpecificFilter("assignees")
         | core_permissions.HasObjectPermission(
@@ -116,21 +124,41 @@ class ProjectCardSummaryViewset(viewsets.ModelViewSet):
             _get_teams_from_user_filter("assignees"),
         ),
     ]
-    serializer_class = serializers.ProjectCardSummarySerializer
+    serializer_class = serializers.cardsummarySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees"]
+    filterset_fields = ["assignees", "content_item__content_type"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
-        .filter(content_item__content_type=models.ContentItem.PROJECT)
-        .prefetch_related("content_item")
-        .prefetch_related("recruit_project")
+        # .filter(content_item__content_type=models.ContentItem.PROJECT)
+        .prefetch_related("content_item").prefetch_related("recruit_project")
     )
 
-    # def get_permissions(self):
-    #     breakpoint()
-    #     foo
-    #     return super().get_permissions()
+
+#     def get_permissions(self):
+#         # curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+#         #     | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+#         breakpoint()
+#         foo
+#         o = PermissionClass()
+#         o.has_permission(view=self, request=self.request)
+#         """
+#         curl 'http://127.0.0.1:8000/api/card_summaries/3/' \
+#   -H 'Connection: keep-alive' \
+#   -H 'Pragma: no-cache' \
+#   -H 'Cache-Control: no-cache' \
+#   -H 'Authorization: Token e27297adb4c35d54f5bec3125a92cc48f783899c' \
+#   -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36' \
+#   -H 'Content-Type: application/json' \
+#   -H 'Accept: */*' \
+#   -H 'Origin: http://localhost:3000' \
+#   -H 'Sec-Fetch-Site: cross-site' \
+#   -H 'Sec-Fetch-Mode: cors' \
+#   -H 'Sec-Fetch-Dest: empty' \
+#   -H 'Accept-Language: en-US,en;q=0.9' \
+#   --compressed
+#         """
+#         return super().get_permissions()
 
 
 class AgileCardViewset(viewsets.ModelViewSet):
@@ -594,7 +622,9 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     permission_classes = [
         ActionIs("list")
         & (
-            core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
             | core_permissions.IsCurrentUserInSpecificFilter(
                 "recruit_project__recruit_users"
             )
@@ -609,14 +639,21 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
         )
         | ActionIs("retrieve")
         & (
-            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
-            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
-            | core_permissions.HasObjectPermission(
+            # curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            # | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            core_permissions.HasObjectPermission(
                 Team.PERMISSION_VIEW,
                 _get_teams_from_recruit_project_review,
             )
         )
     ]
+
+    # def get_permissions(self):
+    #     breakpoint()
+    #     foo
+    #     o = PermissionClass()
+    #     o.has_permission(view=self, request=self.request)
+    #     return super().get_permissions()
 
 
 class ContentItemViewset(viewsets.ModelViewSet):

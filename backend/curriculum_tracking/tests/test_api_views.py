@@ -11,8 +11,8 @@ from django.utils import timezone
 from taggit.models import Tag
 
 
-class ProjectCardSummaryViewsetTests(APITestCase, APITestCaseMixin):
-    LIST_URL_NAME = "projectcardsummary-list"
+class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "cardsummary-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     FIELDS_THAT_CAN_BE_FALSEY = [
         "code_review_competent_since_last_review_request",

@@ -56,6 +56,7 @@ async function recruitProjectsPage({ userId, page }) {
 }
 
 async function recruitProjectEntity({ projectId }) {
+  if (!projectId) throw new Error("projectId is empty");
   const url = `${API_BASE_URL}/api/recruit_projects/${projectId}/`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
@@ -68,6 +69,8 @@ async function topicProgressEntity({ topicProgressId }) {
 }
 
 async function recruitProjectReviewsPage({ projectId, page }) {
+  if (!projectId) throw new Error("projectId is empty");
+  if (!page) throw new Error("page is empty");
   const url = `${API_BASE_URL}/api/recruit_project_reviews/?recruit_project=${projectId}&page=${page}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
@@ -79,17 +82,14 @@ async function topicProgressReviewsPage({ topicProgressId, page }) {
   return { response, responseData };
 }
 
-async function personallyAssignedProjectCardSummariesPage({
-  assigneeUserId,
-  page,
-}) {
-  let url = `${API_BASE_URL}/api/project_card_summaries/?page=${page}&assignees=${assigneeUserId}`;
+async function personallyAssignedCardSummariesPage({ assigneeUserId, page }) {
+  let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
-async function personallyAssignedProjectCardSummaryEntity({ cardId }) {
-  let url = `${API_BASE_URL}/api/project_card_summaries/${cardId}`;
+async function personallyAssignedCardSummaryEntity({ cardId }) {
+  let url = `${API_BASE_URL}/api/card_summaries/${cardId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -268,8 +268,8 @@ export default {
     markWorkshopAttendance,
     cancelWorkshopAttendance,
 
-    personallyAssignedProjectCardSummariesPage,
-    personallyAssignedProjectCardSummaryEntity,
+    personallyAssignedCardSummariesPage,
+    personallyAssignedCardSummaryEntity,
     agileCardEntity,
   },
 };
