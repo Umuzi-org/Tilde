@@ -125,6 +125,14 @@ class Curriculum(models.Model, Mixins):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_next_available_id(cls):
+        """get the next available content item id"""
+        from django.db.models import Max
+
+        max_id = cls.objects.aggregate(Max("id"))["id__max"]
+        return (max_id or 0) + 1
+
 
 class EmployerPartner(models.Model, Mixins):
     # depricated

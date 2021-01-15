@@ -202,7 +202,7 @@ class AgileCardViewset(AuthMixin, viewsets.ModelViewSet):
         ],
     )
     def start_project(self, request, pk=None):
-        card = self.get_card_or_error(
+        card: models.AgileCard = self.get_card_or_error(
             # status_or_404=models.AgileCard.READY,
             status_or_404=None,
             type_or_404=models.ContentItem.PROJECT,
@@ -231,7 +231,8 @@ class AgileCardViewset(AuthMixin, viewsets.ModelViewSet):
     )
     def set_project_link(self, request, pk=None):
         card = self.get_card_or_error(
-            status_or_404=None, type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None,
+            type_or_404=models.ContentItem.PROJECT,
         )
         content_item = card.content_item
         assert (

@@ -10,9 +10,9 @@ from curriculum_tracking.models import CourseRegistration, AgileCard
 import datetime
 
 
-from curriculum_tracking.card_generation_helpers import (
-    generate_and_update_all_cards_for_user,
-)
+# from curriculum_tracking.card_generation_helpers import (
+#     generate_and_update_all_cards_for_user,
+# )
 import requests
 
 FIRST_NAME = "Name"
@@ -30,19 +30,32 @@ BOOTCAMP_NAME = "bootcamp_name"
 DS = "ds"
 DE = "de"
 WD = "wd"
+JAVA = "Java"
 
 TILDE_INTRO = 33
-DS_PRE_BOOT = 20
-DS_BOOT = 28
-DE_PRE_BOOT = 36
-DE_BOOT = 35
-WE_PRE_BOOT = 21
-WE_BOOT = 12
+BOOTCAMP_INTRO = 39
+COMMON_TECH_BOOT_REQUIREMENTS = 40
+
+DATA_SCI_BOOT = 28
+DATA_ENG_BOOT = 35
+JAVA_BOOT = 41
+WEB_BOOT = 12
+
+POST_BOOTCAMP_SOFT_SKILLS = 38
+
+PRE_BOOT_COURSES = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
+SPECIFIC_BOOTCAMPS = {
+    JAVA: JAVA_BOOT,
+    DS: DATA_SCI_BOOT,
+    DE: DATA_ENG_BOOT,
+    WD: WEB_BOOT,
+}
+POST_BOOT_COURSES = [POST_BOOTCAMP_SOFT_SKILLS]
 
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1FrDXAjl3NWOdD5urQvpxe-NaUmDXEOo-K0Dp3V3I81g/"
+        url="https://docs.google.com/spreadsheets/d/1dqqz9hqKSxroYsK0GMW0HTfiBJoTxRB-lDlwKj95elI/edit#gid=0"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
@@ -70,6 +83,8 @@ def clean_github_username(name):
     name = name.strip().strip("/")
     if name.startswith("https://"):
         name = name[19:]
+    if name.startswith("http://"):
+        name = name[18:]
     return name
 
 
@@ -79,19 +94,17 @@ def check_github(row):
         print(f"ERROR {row[EMAIL]} {row[GIT]}")
 
 
-def get_group(course,title):
+def get_group(course, title):
 
-    courses = {
-        DS: "Data Sci",
-        DE: "Data Eng",
-        WD: "Web Dev",
-    }
+    courses = {DS: "Data Sci", DE: "Data Eng", WD: "Web Dev", JAVA: "Java"}
     name = f"Boot {courses[course]} {title}"
     # print(name)
     return UserGroup.objects.get_or_create(name=name)[0]
 
 
 def process_row(row):
+    if row[EMAIL] != "m2nzhiey@gmail.com":
+        return
     # print(row)
     email = row[EMAIL].strip()
     assert "gmail" in email, email
@@ -116,17 +129,22 @@ def process_row(row):
         user=user, group=group, permission_student=True
     )
 
-    if course == DS:
-        courses = [TILDE_INTRO, DS_PRE_BOOT, DS_BOOT]
-        set_course_reg(user, courses)
-    elif course == DE:
-        courses = [TILDE_INTRO, DE_PRE_BOOT, DE_BOOT]
-        set_course_reg(user, courses)
-    elif course == WD:
-        courses = [TILDE_INTRO, WE_PRE_BOOT, WE_BOOT]
-        set_course_reg(user, courses)
-    else:
-        waaaat
+    courses = []
+    courses.extend(PRE_BOOT_COURSES)
+    courses.append(SPECIFIC_BOOTCAMPS[course])
+    courses.extend(POST_BOOT_COURSES)
+    # breakpoint()
+    set_course_reg(user, courses)
+    # if course == DS:
+    #     courses = [TILDE_INTRO, DS_PRE_BOOT, DATA_SCI_BOOT]
+    # elif course == DE:
+    #     courses = [TILDE_INTRO, DE_PRE_BOOT, DATA_ENG_BOOT]
+    #     set_course_reg(user, courses)
+    # elif course == WD:
+    #     courses = [TILDE_INTRO, WE_PRE_BOOT, WEB_BOOT]
+    #     set_course_reg(user, courses)
+    # else:
+    #     waaaat
     print(f"{course} {email}")
 
 

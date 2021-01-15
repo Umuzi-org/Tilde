@@ -1,7 +1,9 @@
+from core.models import Curriculum
 from django.core.management.base import BaseCommand
 from curriculum_tracking import models
 import os
 from curriculum_tracking import constants
+
 # from curriculum_tracking import helpers
 import frontmatter
 import re
@@ -25,6 +27,7 @@ HARD = "hard"
 SOFT = "soft"
 
 DB_ID = "_db_id"
+
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
@@ -559,6 +562,23 @@ def _get_ordered_curriculum_items_from_page(file_stream):
 
 
 def curriculum_file_paths(curriculums_base_dir):
+    for child in curriculums_base_dir.iterdir():
+        if child.is_dir():
+            raise Exception(child)
+        name = child.name
+        if name.startswith("_"):
+            continue
+        if not name.endswith(".md"):
+            continue
+        print(child)
+        yield child
+
+
+def get_creation_args_from_curricum_frontmatter(syllabus_frontmatter):
+    return {
+        "name": syllabus_frontmatter["title"],
+        "short_name": syllabus_frontmatter["title"][:20],
+    }
 
 
 def load_all_curriculums_with_known_ids(curriculums_base_dir):
@@ -569,13 +589,19 @@ def load_all_curriculums_with_known_ids(curriculums_base_dir):
         if DB_ID not in syllabus_frontmatter:
             # this one doesn't have a known id. So skip it
             continue
-        db_id = content_item_post[DB_ID]
+        db_id = syllabus_frontmatter[DB_ID]
 
         assert (
             db_id not in seen_ids
         ), f"Same ID on two content items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
         seen_ids[db_id] = file_path
-        woo
+
+        defaults = get_creation_args_from_curricum_frontmatter(syllabus_frontmatter)
+
+        curriculum, _ = Curriculum.get_or_create_or_update(
+            id=db_id, defaults=defaults, overrides=defaults
+        )
+        set_up_single_curriculum_from_file(curriculum, file_path)
 
 
 def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
@@ -584,13 +610,21 @@ def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
         if DB_ID in syllabus_frontmatter:
             # this one already has an id. Skip it
             continue
-        woo
-        
+        defaults = get_creation_args_from_curricum_frontmatter(syllabus_frontmatter)
+
+        curriculum = Curriculum.objects.create(
+            id=Curriculum.get_next_available_id(), **defaults
+        )
+        syllabus_frontmatter[DB_ID] = curriculum.id
+        with open(file_path, "wb") as f:
+            frontmatter.dump(syllabus_frontmatter, f)
+
+        set_up_single_curriculum_from_file(curriculum, file_path)
+
 
 def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):
     if currculum_name:
         raise NotImplemented
-    breakpoint()
     load_all_curriculums_with_known_ids(curriculums_base_dir)
     load_all_curriculums_with_unknown_ids(curriculums_base_dir)
 
