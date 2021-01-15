@@ -4,6 +4,11 @@ How this doc works:
 
 Basically this is a high-level backlog of what we need to do. When we do backlog refinement and prepare for sprints then stuff will get moved over to an actual issue list. This is just for convenience.
 
+## make it easier to work with
+
+- frontend: include topics needing reviews on crd summary page [permissionStudent](http://localhost:3000/groups/1/card_summary)
+- frontend: include open PRs icon on cards
+
 ## Tech dept
 
 - upgrade all api views to use permission filtering

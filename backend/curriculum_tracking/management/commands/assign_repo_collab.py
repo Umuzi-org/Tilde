@@ -1,6 +1,6 @@
 """
-python manage.py assign_repo_collab GROUP_SELF_REVIEW $TEAM_NAME $CONTENT_ITEM_TITLE 
-python manage.py assign_repo_collab GROUP_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
+python manage.py assign_repo_collab TEAM_SELF_REVIEW $TEAM_NAME $CONTENT_ITEM_TITLE 
+python manage.py assign_repo_collab TEAM_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
 python manage.py assign_repo_collab GIT_USER_REPO_ONLY $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
 python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
 """
@@ -15,12 +15,12 @@ import random
 from django.contrib.auth import get_user_model
 from social_auth.models import SocialProfile
 
-from ..helpers import get_group, get_group_project_cards
+from ..helpers import get_team, get_team_cards
 
 User = get_user_model()
 
-GROUP_SELF_REVIEW = "GROUP_SELF_REVIEW"
-GROUP_REVIEW_OTHER = "GROUP_REVIEW_OTHER"
+TEAM_SELF_REVIEW = "TEAM_SELF_REVIEW"
+TEAM_REVIEW_OTHER = "TEAM_REVIEW_OTHER"
 GIT_USER_REPO_ONLY = "GIT_USER_REPO_ONLY"
 GIT_USER_AS_REVIEWER = "GIT_USER_AS_REVIEWER"
 
@@ -49,22 +49,22 @@ def shuffle_project_reviewers(cards, users):
     return zip(cards, users)
 
 
-def group_self_review(group_name, content_item, reviewer=None):
+def team_self_review(team_name, content_item, reviewer=None):
     if reviewer:
         raise Exception(
-            "Unexpected reviewer argument. When shuffling a group then dont supply a reviewer"
+            "Unexpected reviewer argument. When shuffling a team then dont supply a reviewer"
         )
-    group = get_group(group_name)
-    cards = get_group_project_cards(group, content_item)
-    users = group.active_student_users
+    team = get_team(team_name)
+    cards = get_team_cards(team, content_item)
+    users = team.active_student_users
     assign_random_reviewers(cards, users)
 
 
-def group_review_other(group_name, content_item, reviewer):
-    group = get_group(group_name)
-    cards = get_group_project_cards(group, content_item)
-    reviewer_group = get_group(reviewer)
-    reviewer_users = reviewer_group.active_student_users
+def team_review_other(team_name, content_item, reviewer):
+    team = get_team(team_name)
+    cards = get_team_cards(team, content_item)
+    reviewer_team = get_team(reviewer)
+    reviewer_users = reviewer_team.active_student_users
     assign_random_reviewers(cards, reviewer_users)
 
 
@@ -93,10 +93,10 @@ def assign_random_reviewers(cards, users):
             card.save()
 
 
-def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
+def add_reviewer(team, content_item, reviewer, add_as_project_reviewer):
     api = Api(PERSONAL_GITHUB_NAME)
 
-    cards = get_group_project_cards(group, content_item)
+    cards = get_team_cards(team, content_item)
 
     if "@" in reviewer:
         user = User.objects.get(email=reviewer)
@@ -118,21 +118,21 @@ def add_reviewer(group, content_item, reviewer, add_as_project_reviewer):
         # project.agile_card.reviewers =
 
 
-def git_user_as_reviewer(group_name, content_item, reviewer):
-    group = get_group(group_name)
-    add_reviewer(group, content_item, reviewer, add_as_project_reviewer=True)
+def git_user_as_reviewer(team_name, content_item, reviewer):
+    team = get_team(team_name)
+    add_reviewer(team, content_item, reviewer, add_as_project_reviewer=True)
 
 
-def git_user_repo_only(group_name, content_item, reviewer):
-    group = get_group(group_name)
-    add_reviewer(group, content_item, reviewer, add_as_project_reviewer=False)
+def git_user_repo_only(team_name, content_item, reviewer):
+    team = get_team(team_name)
+    add_reviewer(team, content_item, reviewer, add_as_project_reviewer=False)
 
 
 allowed_commands = {
     GIT_USER_AS_REVIEWER: git_user_as_reviewer,
     GIT_USER_REPO_ONLY: git_user_repo_only,
-    GROUP_SELF_REVIEW: group_self_review,
-    GROUP_REVIEW_OTHER: group_review_other,
+    TEAM_SELF_REVIEW: team_self_review,
+    TEAM_REVIEW_OTHER: team_review_other,
 }
 
 
@@ -152,9 +152,7 @@ class Command(BaseCommand):
         content_item_name = options["content_item"]
         reviewer = options["reviewer"]
 
-        content_item = ContentItem.objects.get(
-            title=content_item_name, content_type=ContentItem.PROJECT
-        )
+        content_item = ContentItem.objects.get(title=content_item_name)
 
         allowed_commands[command](
             cohort_name, content_item=content_item, reviewer=reviewer
