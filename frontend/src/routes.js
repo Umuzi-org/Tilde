@@ -3,6 +3,8 @@ import AgileBoard from "./components/regions/AgileBoard";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
 
+import { TEAM_PERMISSIONS } from "./constants";
+
 const exact = true;
 
 export const routes = {
@@ -18,7 +20,16 @@ export const routes = {
       icon: () => "U",
       label: "Users",
     },
-    show: ({ authUser }) => authUser.isStaff,
+    show: ({ authUser }) => {
+      if (authUser.isSuperuser) return true;
+
+      for (let teamId in authUser.permissions.teams) {
+        for (let permission of authUser.permissions.teams[teamId].permissions) {
+          if (TEAM_PERMISSIONS.includes(permission)) return true;
+          throw new Error(`Team permission not implemented: ${permission}`);
+        }
+      }
+    },
   },
 
   board: {

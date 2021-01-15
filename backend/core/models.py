@@ -121,8 +121,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                 klass=teams,
                 with_superuser=False,
             ):
-                team_permissions[team.id] = team_permissions.get(team.id, [])
-                team_permissions[team.id].append((permission, nice))
+                team_permissions[team.id] = team_permissions.get(
+                    team.id, {"id": team.id, "name": team.name, "permissions": []}
+                )
+                # team_permissions.get(team.id, [])
+                team_permissions[team.id]["permissions"].append(permission)
 
         return {"teams": team_permissions}
 

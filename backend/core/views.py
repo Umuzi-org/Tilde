@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
+from guardian.shortcuts import get_objects_for_user
 
 # from django.db.models import Q
 from core import permissions as core_permissions
@@ -117,3 +118,26 @@ class UserViewSet(viewsets.ModelViewSet):
 
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
+
+
+# @api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+# def team_permissions(request):
+#     result = {}
+
+#     for permission, _ in models.Team._meta.permissions:
+#         teams = get_objects_for_user(
+#             user=request.user,
+#             perms=permission,
+#             klass=models.Team.objects.all(),
+#             with_superuser=False,
+#             any_perm=True,
+#         )
+
+#         for team in teams:
+#             result[team.id] = result.get(
+#                 team.id, {"id": team.id, "name": team.name, "permissions": []}
+#             )
+#             result[team.id]["permissions"].append(permission)
+
+#     return Response(result)

@@ -32,19 +32,19 @@ async function authenticateWithOneTimeToken(data) {
     method: "POST",
     data,
   });
-  setAuthToken({ value: responseData["token"], keep:true });
+  setAuthToken({ value: responseData["token"], keep: true });
 
   return { response, responseData };
 }
 
 async function userGroupsPage({ page }) {
-  const url = `${API_BASE_URL}/api/user_groups/?active=true&page=${page}`;
+  const url = `${API_BASE_URL}/api/teams/?active=true&page=${page}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
 async function userGroupsEntity({ groupId }) {
-  const url = `${API_BASE_URL}/api/user_groups/${groupId}`;
+  const url = `${API_BASE_URL}/api/teams/${groupId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }

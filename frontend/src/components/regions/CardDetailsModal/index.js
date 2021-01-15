@@ -39,11 +39,7 @@ function CardDetailsModalUnconnected({
       fetchProject({ projectId });
       fetchProjectReviews({ projectId });
     }
-    // if (card && card.recruitProject) {
-    //   console.log("HERE");
-    //   fetchProject({ projectId: card.recruitProject });
-    //   fetchProjectReviews({ projectId: card.recruitProject });
-    // }
+
     if (topicProgressId) {
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
@@ -101,19 +97,6 @@ function CardDetailsModalUnconnected({
   const showUpdateProjectLinkForm =
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
-
-  console.log("=====================");
-  console.log("=====================");
-  console.log({
-    card,
-    recruitProject: card && card.recruitProject,
-    projectId,
-    project,
-    projectCardStatus,
-    isAssignee,
-  });
-  console.log("=====================");
-  console.log("=====================");
 
   const props = {
     project,
