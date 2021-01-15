@@ -18,34 +18,23 @@ from core.permissions import (
     IsReadOnly,
     IsStaffUser,
     DenyAll,
+    get_teams_from_user_ids,
 )
 from core.models import Team, TeamMembership
 
 User = get_user_model()
 
 
-def _get_teams_from_user_ids(user_ids):
-    yielded = []
-    for user_id in user_ids:
-        memberships = TeamMembership.objects.filter(user_id=user_id).prefetch_related(
-            "team"
-        )
-        for membership in memberships:
-            if membership.team_id not in yielded:
-                yielded.append(membership.team_id)
-                yield membership.team
-
-
 def _get_teams_from_topic_progress(self, request, view):
     project = view.get_object()
     user_ids = [user.id for user in project.recruit_users.all()]
-    return _get_teams_from_user_ids(user_ids)
+    return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_recruit_project(self, request, view):
     project = view.get_object()
     user_ids = [user.id for user in project.recruit_users.all()]
-    return _get_teams_from_user_ids(user_ids)
+    return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_recruit_project_review(self, request, view):
@@ -54,25 +43,25 @@ def _get_teams_from_recruit_project_review(self, request, view):
     user_ids = [user.id for user in project.recruit_users.all()] + [
         project_review.reviewer_user_id
     ]
-    return _get_teams_from_user_ids(user_ids)
+    return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_topic_review(self, request, view):
     review = view.get_object()
     user_ids = [review.topic_progress.user.id, review.reviewer_user.id]
-    return _get_teams_from_user_ids(user_ids)
+    return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_card(self, request, view):
     card = view.get_object()
     user_ids = [user.id for user in card.assignees.all()]
-    return _get_teams_from_user_ids(user_ids)
+    return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_user_filter(filter_name):
     def get_teams_from_user_filter(self, request, view):
         user_ids = core_permissions.get_clean_user_ids_from_filter(request, filter_name)
-        return _get_teams_from_user_ids(user_ids)
+        return get_teams_from_user_ids(user_ids)
 
     return get_teams_from_user_filter
 
@@ -81,7 +70,7 @@ def _get_teams_from_repository_instance(repo):
     projects = repo.recruit_projects.all()
     for project in projects:
         user_ids = [user.id for user in project.recruit_users.all()]
-        for team in _get_teams_from_user_ids(user_ids):
+        for team in get_teams_from_user_ids(user_ids):
             yield team
 
 
@@ -101,7 +90,7 @@ def _get_teams_from_repository_filter(self, request, view):
 def _get_teams_from_workshop_attendance(self, request, view):
     attendance = view.get_object()
     user_ids = [attendance.attendee_user_id]
-    return _get_teams_from_user_ids(user_ids=user_ids)
+    return get_teams_from_user_ids(user_ids=user_ids)
 
 
 class CardSummaryViewset(viewsets.ModelViewSet):
@@ -586,7 +575,9 @@ class TopicReviewViewset(viewsets.ModelViewSet):
     permission_classes = [
         ActionIs("list")
         & (
-            core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            curriculum_permissions.IsCurrentUserInUsersForFilteredTopicProgress
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredTopicProgress
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
             | core_permissions.IsCurrentUserInSpecificFilter("topic_progress__user")
             | core_permissions.HasObjectPermission(
                 Team.PERMISSION_VIEW,

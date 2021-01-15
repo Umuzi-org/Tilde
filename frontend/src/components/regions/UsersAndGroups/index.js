@@ -6,20 +6,22 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
-export function cleanAndFilterUserGroups({userGroups, filterBy}) {
-  let ret = Object.values(userGroups);
+export function cleanAndFilterTeams({ teams, filterBy }) {
+  let ret = Object.values(teams);
   ret.sort((a, b) => (a.name > b.name ? 1 : -1));
-  
+
   if (filterBy) {
-    let terms = filterBy.toLowerCase().split(' ').filter((s)=>s)
+    let terms = filterBy
+      .toLowerCase()
+      .split(" ")
+      .filter((s) => s);
 
     return ret.filter((group) => {
-        let name = group.name.toLowerCase();
-        for (let term of terms){
-            if (name.indexOf(term) === -1)
-                return false
-        }
-        return true
+      let name = group.name.toLowerCase();
+      for (let term of terms) {
+        if (name.indexOf(term) === -1) return false;
+      }
+      return true;
     });
   }
   return ret;
@@ -27,14 +29,18 @@ export function cleanAndFilterUserGroups({userGroups, filterBy}) {
 
 function ignore() {}
 
-function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
+function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
-  for (let group of Object.values(userGroups)) {
+  for (let group of Object.values(teams)) {
     for (let member of group.members) {
       const email = member.userEmail;
 
-      if (filterBy && email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) continue;
+      if (
+        filterBy &&
+        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1
+      )
+        continue;
 
       users[email] = {
         ...users[email],
@@ -43,7 +49,7 @@ function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
       users[email].groups = {
         ...users[email].groups,
         [group.name]: {
-          groupId: group.id,
+          teamId: group.id,
           ...member,
         },
       };
@@ -57,11 +63,11 @@ function cleanAndFilterUsers(userGroups, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
-//   console.log(users)
+  //   console.log(users)
   return users;
 }
 
-function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
+function UsersAndGroupsUnconnected({ fetchteamsPages, teams }) {
   const [
     formState,
     { filterByGroup, filterByUser },
@@ -82,9 +88,12 @@ function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
   };
 
   const props = {
-    userGroups: cleanAndFilterUserGroups({userGroups, filterBy:filterByGroup.value}),
+    teams: cleanAndFilterTeams({
+      teams,
+      filterBy: filterByGroup.value,
+    }),
     users: cleanAndFilterUsers(
-      userGroups,
+      teams,
       filterByUser.value,
       filterUsersByGroupName
     ),
@@ -95,31 +104,31 @@ function UsersAndGroupsUnconnected({ fetchUserGroupsPages, userGroups }) {
   };
 
   React.useEffect(() => {
-    fetchUserGroupsPages({
+    fetchteamsPages({
       dataSequence: [{ page: 1 }, { page: 2 }, { page: 3 }, { page: 4 }],
     });
-  }, [fetchUserGroupsPages]);
+  }, [fetchteamsPages]);
 
   return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
   return {
-    userGroups: state.Entities.userGroups || {},
+    teams: state.Entities.teams || {},
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const fetchUserGroupsPages = ({ dataSequence }) => {
+  const fetchteamsPages = ({ dataSequence }) => {
     dispatch(
-      apiReduxApps.FETCH_USER_GROUPS_PAGE.operations.maybeStartCallSequence({
+      apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
       })
     );
   };
 
   return {
-    fetchUserGroupsPages,
+    fetchteamsPages,
   };
 };
 

@@ -6,7 +6,7 @@ Basically this is a high-level backlog of what we need to do. When we do backlog
 
 ## make it easier to work with
 
-- frontend: include topics needing reviews on crd summary page [permissionStudent](http://localhost:3000/groups/1/card_summary)
+- frontend: include topics needing reviews on crd summary page [permissionStudent](http://localhost:3000/teams/1/card_summary)
 - frontend: include open PRs icon on cards
 
 ## Tech dept

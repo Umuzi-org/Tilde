@@ -1,3 +1,4 @@
+# from rest_framework.decorators import permission_classes
 from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -6,7 +7,30 @@ from rest_framework.authtoken.models import Token
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        fields = ["email", "first_name", "last_name"]
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "preferred_name",
+            "team_memberships",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "github_name",
+            "team_memberships",
+        ]
+
+    team_memberships = serializers.SerializerMethodField("get_team_memberships")
+
+    def get_team_memberships(self, instance):
+        memberships = models.TeamMembership.objects.filter(
+            user=instance
+        ).prefetch_related("team")
+        return {
+            membership.team_id: {"id": membership.team_id, "name": membership.team.name}
+            for membership in memberships
+        }
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

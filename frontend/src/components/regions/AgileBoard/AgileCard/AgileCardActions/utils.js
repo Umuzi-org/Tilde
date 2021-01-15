@@ -34,6 +34,7 @@ function getReviewRequestButtons({ card, permissions, isAssignee }) {
   let showButtonCancelReviewRequest = false;
   if (isAssignee || permissions[MANAGE_CARDS]) {
     if (card.status === IN_PROGRESS) showButtonRequestReview = true;
+    if (card.status === REVIEW_FEEDBACK) showButtonRequestReview = true;
     if (card.status === IN_REVIEW) showButtonCancelReviewRequest = true;
   }
 

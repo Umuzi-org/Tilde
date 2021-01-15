@@ -1,4 +1,17 @@
 from rest_framework.permissions import BasePermission
+from core import models
+
+
+def get_teams_from_user_ids(user_ids):
+    yielded = []
+    for user_id in user_ids:
+        memberships = models.TeamMembership.objects.filter(
+            user_id=user_id
+        ).prefetch_related("team")
+        for membership in memberships:
+            if membership.team_id not in yielded:
+                yielded.append(membership.team_id)
+                yield membership.team
 
 
 class DenyAll(BasePermission):

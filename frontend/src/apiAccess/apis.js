@@ -37,14 +37,20 @@ async function authenticateWithOneTimeToken(data) {
   return { response, responseData };
 }
 
-async function userGroupsPage({ page }) {
+async function teamsPage({ page }) {
   const url = `${API_BASE_URL}/api/teams/?active=true&page=${page}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
-async function userGroupsEntity({ groupId }) {
-  const url = `${API_BASE_URL}/api/teams/${groupId}`;
+async function teamEntity({ teamId }) {
+  const url = `${API_BASE_URL}/api/teams/${teamId}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
+async function userEntity({ userId }) {
+  const url = `${API_BASE_URL}/api/users/${userId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -234,8 +240,9 @@ export default {
     whoAmI,
     logout,
     authenticateWithOneTimeToken,
-    userGroupsPage,
-    userGroupsEntity,
+    teamsPage,
+    teamEntity,
+    userEntity,
   },
 
   recruits: {

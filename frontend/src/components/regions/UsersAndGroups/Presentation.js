@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // hactoberfest: Visual debt. Make this look better: max height of container should fit viewport
 import { Link } from "react-router-dom";
 
-import LinkToUserBoard from "../../widgets/LinkToUserBoard"
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
 import {
   TableRow,
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Presentation({
-  userGroups,
+  teams,
   users,
   filterByGroup,
   filterByUser,
@@ -62,7 +62,7 @@ export default function Presentation({
               </TableRow>
             </TableHead>
             <TableBody>
-              {userGroups.map((group) => {
+              {teams.map((group) => {
                 return (
                   <TableRow
                     key={group.id}
@@ -83,7 +83,7 @@ export default function Presentation({
                     <TableCell>
                       <Link
                         to={routes.groupCardSummary.route.path.replace(
-                          ":groupId",
+                          ":teamId",
                           group.id
                         )}
                       >
@@ -115,17 +115,18 @@ export default function Presentation({
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(users).sort().map((email) => {
-                return (
-                  <TableRow key={email}>
-                    <TableCell>{email}</TableCell>
-                    <TableCell>
-                      <LinkToUserBoard 
-                      userId= {users[email].userId}/>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {Object.keys(users)
+                .sort()
+                .map((email) => {
+                  return (
+                    <TableRow key={email}>
+                      <TableCell>{email}</TableCell>
+                      <TableCell>
+                        <LinkToUserBoard userId={users[email].userId} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

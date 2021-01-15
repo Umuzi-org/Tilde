@@ -1,14 +1,9 @@
 import React, { useEffect } from "react";
 import Presentation from "./Presentation";
-
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { connect } from "react-redux";
-
-import consts, { READY } from "../../../constants";
-
+import consts from "../../../constants";
 import { useParams } from "react-router-dom";
-
-const maxStartIndex = 5;
 
 function boardFromCards({ cards }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
@@ -91,13 +86,15 @@ function AgileBoardUnconnected({
   fetchCardsCallLog,
   authedUserId,
   fetchInitialCards,
+  fetchUser,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
 
   useEffect(() => {
     fetchInitialCards({ userId });
-  }, [fetchInitialCards, userId]);
+    fetchUser({ userId });
+  }, [fetchInitialCards, userId, fetchUser]);
 
   const filteredCards = filterCardsByUserId({
     cards,
@@ -180,6 +177,14 @@ const mapDispatchToProps = (dispatch) => {
         apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.startCallSequence(
           { dataSequence }
         )
+      );
+    },
+
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId },
+        })
       );
     },
 

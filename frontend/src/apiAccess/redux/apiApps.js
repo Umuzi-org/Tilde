@@ -20,11 +20,12 @@ const FETCH_TOPIC_PROGRESS_REVIEWS_PAGE = "FETCH_TOPIC_PROGRESS_REVIEWS_PAGE";
 const FETCH_RECRUIT_PROJECT_REVIEWS_PAGE = "FETCH_RECRUIT_PROJECT_REVIEWS_PAGE";
 const FETCH_SINGLE_RECRUIT_PROJECT = "FETCH_SINGLE_RECRUIT_PROJECT";
 
-const FETCH_SINGLE_USER_GROUP = "FETCH_SINGLE_USER_GROUP";
+const FETCH_SINGLE_TEAM = "FETCH_SINGLE_TEAM";
+const FETCH_SINGLE_USER = "FETCH_SINGLE_USER";
 const FETCH_SINGLE_REPOSITORY = "FETCH_SINGLE_REPOSITORY";
 const FETCH_COMMITS_PAGE = "FETCH_COMMITS_PAGE";
 const FETCH_PULL_REQUESTS_PAGE = "FETCH_PULL_REQUESTS_PAGE";
-const FETCH_USER_GROUPS_PAGE = "FETCH_USER_GROUPS_PAGE";
+const FETCH_TEAMS_PAGE = "FETCH_TEAMS_PAGE";
 
 const CARD_START_PROJECT = "CARD_START_PROJECT";
 const CARD_REQUEST_REVIEW = "CARD_REQUEST_REVIEW";
@@ -51,7 +52,7 @@ export const pagedApiAppTypes = {
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: "projectReviews",
   FETCH_COMMITS_PAGE: "repoCommits",
   FETCH_PULL_REQUESTS_PAGE: "pullRequests",
-  FETCH_USER_GROUPS_PAGE: "userGroups",
+  FETCH_TEAMS_PAGE: "teams",
   FETCH_TOPIC_PROGRESS_REVIEWS_PAGE: "topicReviews",
 };
 
@@ -59,7 +60,7 @@ export const entityApiAppTypes = {
   FETCH_SINGLE_RECRUIT_PROJECT: "projects",
   FETCH_SINGLE_TOPIC_PRGRESS: "topicProgress",
   FETCH_SINGLE_REPOSITORY: "repositories",
-  FETCH_SINGLE_USER_GROUP: "userGroups",
+  FETCH_SINGLE_TEAM: "teams",
   CARD_START_PROJECT: "cards",
   CARD_REQUEST_REVIEW: "cards",
   CARD_CANCEL_REVIEW_REQUEST: "cards",
@@ -73,6 +74,7 @@ export const entityApiAppTypes = {
   CARD_SET_PROJECT_LINK: "cards",
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: "projectSummaryCards",
+  FETCH_SINGLE_USER: "users",
 };
 
 export const apiReduxApps = {
@@ -125,9 +127,9 @@ export const apiReduxApps = {
     apiCaller: apiCallers.recruits.recruitProjectsPage,
   }),
 
-  FETCH_USER_GROUPS_PAGE: createReduxApp({
-    BASE_TYPE: FETCH_USER_GROUPS_PAGE,
-    apiCaller: apiCallers.everyone.userGroupsPage,
+  FETCH_TEAMS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_TEAMS_PAGE,
+    apiCaller: apiCallers.everyone.teamsPage,
   }),
 
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: createReduxApp({
@@ -140,9 +142,14 @@ export const apiReduxApps = {
     apiCaller: apiCallers.recruits.topicProgressReviewsPage,
   }),
 
-  FETCH_SINGLE_USER_GROUP: createReduxApp({
-    BASE_TYPE: FETCH_SINGLE_USER_GROUP,
-    apiCaller: apiCallers.everyone.userGroupsEntity,
+  FETCH_SINGLE_TEAM: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_TEAM,
+    apiCaller: apiCallers.everyone.teamEntity,
+  }),
+
+  FETCH_SINGLE_USER: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_USER,
+    apiCaller: apiCallers.everyone.userEntity,
   }),
 
   FETCH_SINGLE_RECRUIT_PROJECT: createReduxApp({

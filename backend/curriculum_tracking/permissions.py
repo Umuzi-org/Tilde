@@ -36,16 +36,16 @@ class IsCurrentUserInUsersForFilteredTopicProgress(BasePermission):
         return request.user == topic_progress.user
 
 
-# class IsCurrentUserInReviewersForFilteredTopicProgress(BasePermission):
-#     def has_permission(self, request, view):
-#         if request.method != "GET":
-#             return False
-#         if "recruit_project" not in request.GET:
-#             return False
-#         project = models.RecruitProject.objects.get(
-#             pk=int(request.GET["recruit_project"])
-#         )
-#         return request.user in project.reviewer_users.all()
+class IsCurrentUserInReviewersForFilteredTopicProgress(BasePermission):
+    def has_permission(self, request, view):
+        if request.method != "GET":
+            return False
+        if "recruit_project" not in request.GET:
+            return False
+        project = models.RecruitProject.objects.get(
+            pk=int(request.GET["recruit_project"])
+        )
+        return request.user in project.reviewer_users.all()
 
 
 class IsCurrentUserInRecruitsForFilteredProject(BasePermission):

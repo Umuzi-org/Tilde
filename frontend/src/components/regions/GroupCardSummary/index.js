@@ -86,19 +86,19 @@ const getStudentUserDisplayData = ({ userGroup }) => {
 
 const GroupCardSummaryUnconnected = ({
   cards,
-  userGroups,
+  teams,
   fetchSingleUserGroup,
   fetchUserGroupSummaryCards,
 }) => {
-  const { groupId } = useParams();
-  const userGroup = userGroups[groupId];
+  const { teamId } = useParams();
+  const userGroup = teams[teamId];
   useEffect(() => {
     if (userGroup === undefined) {
-      fetchSingleUserGroup({ groupId });
+      fetchSingleUserGroup({ teamId });
     } else {
       fetchUserGroupSummaryCards({ userGroup });
     }
-  }, [userGroup, fetchSingleUserGroup, groupId, fetchUserGroupSummaryCards]);
+  }, [userGroup, fetchSingleUserGroup, teamId, fetchUserGroupSummaryCards]);
 
   const studentUsers = getStudentUserDisplayData({ userGroup });
 
@@ -118,19 +118,19 @@ const GroupCardSummaryUnconnected = ({
 
 const mapStateToProps = (state) => {
   const cards = state.Entities.projectSummaryCards || {};
-  const userGroups = state.Entities.userGroups || {};
+  const teams = state.Entities.teams || {};
 
   return {
     cards,
-    userGroups,
+    teams,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchSingleUserGroup: ({ groupId }) => {
+    fetchSingleUserGroup: ({ teamId }) => {
       dispatch(
-        apiReduxApps.FETCH_SINGLE_USER_GROUP.operations.maybeStart({
-          data: { groupId },
+        apiReduxApps.FETCH_SINGLE_TEAM.operations.maybeStart({
+          data: { teamId },
         })
       );
     },

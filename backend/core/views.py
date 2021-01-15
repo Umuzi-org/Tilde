@@ -108,10 +108,22 @@ class TeamViewSet(viewsets.ModelViewSet):
     #     return Response("TODO")
 
 
+def _get_teams_from_user(self, request, view):
+    user = view.get_object()
+    return core_permissions.get_teams_from_user_ids([user.id])
+
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+
+    permission_classes = [
+        core_permissions.ActionIs("retrieve")
+        & core_permissions.HasObjectPermission(
+            models.Team.PERMISSION_VIEW, _get_teams_from_user
+        )
+    ]
 
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer

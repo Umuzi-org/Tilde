@@ -58,7 +58,7 @@ export const routes = {
   groupCardSummary: {
     route: {
       exact,
-      path: "/groups/:groupId/card_summary",
+      path: "/teams/:teamId/card_summary",
       component: GroupCardSummary,
     },
     show: () => true,
