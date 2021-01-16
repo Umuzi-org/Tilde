@@ -11,8 +11,10 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        membership = factories.TeamMembershipFactory()
-        return membership.team
+        team = factories.TeamFactory()
+        user = factories.UserFactory()
+        user.teams.add(team)
+        return team
 
     def test_only_returns_teams_i_can_see(self):
 
@@ -22,7 +24,7 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         normal_user = factories.UserFactory()
 
         team_1 = factories.TeamFactory()
-        team_2 = factories.TeamFactory()
+        factories.TeamFactory()
 
         self.login(super_user)
 

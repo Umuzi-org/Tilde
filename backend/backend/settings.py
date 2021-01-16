@@ -100,11 +100,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    "core.apps.CoreConfig",
-    "curriculum_tracking.apps.CurriculumTrackingConfig",
-    "git_real.apps.GitRealConfig",
-    "social_auth.apps.SocialAuthConfig",
-    "dev_helpers.apps.DevHelpersConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -121,6 +116,11 @@ INSTALLED_APPS = [
     "django_filters",
     "django_countries",
     "guardian",
+    "core.apps.CoreConfig",
+    "curriculum_tracking.apps.CurriculumTrackingConfig",
+    "git_real.apps.GitRealConfig",
+    "social_auth.apps.SocialAuthConfig",
+    "dev_helpers.apps.DevHelpersConfig",
 ]
 
 SITE_ID = 1  # from allauth docs

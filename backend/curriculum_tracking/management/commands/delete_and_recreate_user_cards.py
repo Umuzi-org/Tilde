@@ -24,9 +24,6 @@ class Command(BaseCommand):
 
             else:
                 team = core_models.Team.objects.get(name=who)
-                for o in core_models.TeamMembership.objects.filter(
-                    team=team
-                ):
-                    user = o.user
+                for user in team.users.all():
                     models.AgileCard.objects.filter(assignees__in=[user]).delete()
                     generate_and_update_all_cards_for_user(user, None)

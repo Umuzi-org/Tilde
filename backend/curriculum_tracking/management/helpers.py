@@ -1,4 +1,4 @@
-from core.models import Team, User, TeamMembership
+from core.models import Team
 
 from curriculum_tracking.models import AgileCard
 
@@ -7,7 +7,7 @@ from curriculum_tracking.models import AgileCard
 #     if "@" in who:
 #         return [User.objects.get(email=who)]
 #     team = Team.objects.get(name=who)
-#     memberships = TeamMembership.objects.filter(team=team, user__active=True)
+#     memberships = x.objects.filter(team=team, user__active=True)
 
 #     return [o.user for o in memberships]
 

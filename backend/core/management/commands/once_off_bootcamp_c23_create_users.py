@@ -5,13 +5,13 @@ from google_helpers.utils import fetch_sheet
 
 INTAKE_NUMBER = 23
 
-from core.models import User, Team, TeamMembership
+from core.models import User, Team
 from social_auth.models import SocialProfile
 from curriculum_tracking.models import CourseRegistration
 import datetime
 
 now = datetime.datetime.now()
-group = Team.objects.get_or_create(name="ds bootcamp sept 20")[0]
+team = Team.objects.get_or_create(name="ds bootcamp sept 20")[0]
 
 
 def get_df():
@@ -52,10 +52,8 @@ def process_row(row):
         user.active = False
     user.save()
 
+    team.user_set.add(user)
 
-    TeamMembership.objects.get_or_create(
-        user=user, group=group
-    )
     CourseRegistration.objects.get_or_create(
         user=user, curriculum_id=33, order=1
     )  # intro to tilde

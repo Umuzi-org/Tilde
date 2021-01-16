@@ -14,6 +14,7 @@ from taggit.models import Tag
 JAVASCRIPT = "JAVASCRIPT"
 PYTHON = "PYTHON"
 
+
 class get_or_create_or_update_card_Test(TestCase):
     defaults = {"is_hard_milestone": True, "is_soft_milestone": False}
 
@@ -188,8 +189,9 @@ class recurse_generate_ordered_content_items_Tests(TestCase):
 
 class create_or_update_content_cards_for_user_Tests(TestCase):
     def setUp(self):
-        self.team_membership = core_factories.TeamMembershipFactory()
-        self.recruit = self.team_membership.user
+        # self.team_membership = core_factories.TeamMembershipFactory()
+        # self.recruit = self.team_membership.user
+        self.recruit = core_factories.UserFactory()
         # self.curriculum = self.team_membership.cohort.cohort_curriculum
         self.content_item = factories.ContentItemFactory()
         self.card = factories.AgileCardFactory(

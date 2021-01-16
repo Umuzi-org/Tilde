@@ -4,10 +4,9 @@ from django.core.management.base import BaseCommand
 from google_helpers.utils import fetch_sheet
 
 
-from core.models import User, Team, TeamMembership
+from core.models import User, Team
 from social_auth.models import SocialProfile
-from curriculum_tracking.models import CourseRegistration, AgileCard
-import datetime
+from curriculum_tracking.models import CourseRegistration
 
 
 # from curriculum_tracking.card_generation_helpers import (
@@ -22,35 +21,31 @@ GIT = "Link to your github profile, eg https://github.com/[YOUR_VERY_OWN_USERNAM
 COURSE = "Course"
 BOOTCAMP_NAME = "bootcamp_name"
 
-# TODO = "todo"
-# group = Team.objects.get_or_create(name=GROUP_NAME)[0]
-# ADDED_TO_TILDE = "added to tilde"
-
 
 DS = "ds"
 DE = "de"
 WD = "wd"
 JAVA = "Java"
 
-TILDE_INTRO = 33
-BOOTCAMP_INTRO = 39
-COMMON_TECH_BOOT_REQUIREMENTS = 40
+# TILDE_INTRO = 33
+# BOOTCAMP_INTRO = 39
+# COMMON_TECH_BOOT_REQUIREMENTS = 40
 
-DATA_SCI_BOOT = 28
-DATA_ENG_BOOT = 35
-JAVA_BOOT = 41
-WEB_BOOT = 12
+# DATA_SCI_BOOT = 28
+# DATA_ENG_BOOT = 35
+# JAVA_BOOT = 41
+# WEB_BOOT = 12
 
-POST_BOOTCAMP_SOFT_SKILLS = 38
+# POST_BOOTCAMP_SOFT_SKILLS = 38
 
-PRE_BOOT_COURSES = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
-SPECIFIC_BOOTCAMPS = {
-    JAVA: JAVA_BOOT,
-    DS: DATA_SCI_BOOT,
-    DE: DATA_ENG_BOOT,
-    WD: WEB_BOOT,
-}
-POST_BOOT_COURSES = [POST_BOOTCAMP_SOFT_SKILLS]
+# PRE_BOOT_COURSES = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
+# SPECIFIC_BOOTCAMPS = {
+#     JAVA: JAVA_BOOT,
+#     DS: DATA_SCI_BOOT,
+#     DE: DATA_ENG_BOOT,
+#     WD: WEB_BOOT,
+# }
+# POST_BOOT_COURSES = [POST_BOOTCAMP_SOFT_SKILLS]
 
 
 def get_df():
@@ -94,7 +89,7 @@ def check_github(row):
         print(f"ERROR {row[EMAIL]} {row[GIT]}")
 
 
-def get_group(course, title):
+def get_team(course, title):
 
     courses = {DS: "Data Sci", DE: "Data Eng", WD: "Web Dev", JAVA: "Java"}
     name = f"Boot {courses[course]} {title}"
@@ -123,11 +118,9 @@ def process_row(row):
     profile.github_name = github
     profile.save()
 
-    group = get_group(course, row[BOOTCAMP_NAME])
+    team = get_team(course, row[BOOTCAMP_NAME])
 
-    TeamMembership.objects.get_or_create(
-        user=user, group=group
-    )
+    user.teams.add(team)
 
     courses = []
     courses.extend(PRE_BOOT_COURSES)

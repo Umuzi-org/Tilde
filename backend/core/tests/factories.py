@@ -43,14 +43,6 @@ class TeamFactory(DjangoModelFactory):
     name = factory.lazy_attribute(lambda *args, **kwargs: next(_team_name_iterator))
 
 
-class TeamMembershipFactory(DjangoModelFactory):
-    class Meta:
-        model = "core.TeamMembership"
-
-    user = factory.SubFactory(UserFactory)
-    team = factory.SubFactory(TeamFactory)
-
-
 class CurriculumFactory(DjangoModelFactory):
     class Meta:
         model = "core.Curriculum"

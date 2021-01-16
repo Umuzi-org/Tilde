@@ -20,7 +20,8 @@ class get_permissions_Tests(TestCase):
         assign_perm(Team.PERMISSION_REVIEW_CARDS, self.user, self.team)
         assign_perm(Team.PERMISSION_MANAGE_CARDS, self.user, self.team)
 
-        result = [t[0] for t in self.user.get_permissions()["teams"][self.team.id]]
+        permissions = self.user.get_permissions()
+        result = [t for t in permissions["teams"][self.team.id]["permissions"]]
         self.assertEqual(
             sorted(result),
             [
@@ -32,7 +33,10 @@ class get_permissions_Tests(TestCase):
     def test_group_team_permissions(self):
         assign_perm(Team.PERMISSION_REVIEW_CARDS, self.group, self.team)
         assign_perm(Team.PERMISSION_MANAGE_CARDS, self.group, self.team)
-        result = [t[0] for t in self.user.get_permissions()["teams"][self.team.id]]
+        # result = [t[0] for t in self.user.get_permissions()["teams"][self.team.id]]
+        permissions = self.user.get_permissions()
+        result = [t for t in permissions["teams"][self.team.id]["permissions"]]
+
         self.assertEqual(
             sorted(result),
             [

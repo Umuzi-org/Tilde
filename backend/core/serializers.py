@@ -18,19 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "github_name",
-            "team_memberships",
         ]
 
     team_memberships = serializers.SerializerMethodField("get_team_memberships")
 
     def get_team_memberships(self, instance):
-        memberships = models.TeamMembership.objects.filter(
-            user=instance
-        ).prefetch_related("team")
-        return {
-            membership.team_id: {"id": membership.team_id, "name": membership.team.name}
-            for membership in memberships
-        }
+
+        return {team.id: {"id": team.id, "name": team.name} for team in instance.teams}
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

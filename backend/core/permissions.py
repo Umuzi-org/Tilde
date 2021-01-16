@@ -5,13 +5,17 @@ from core import models
 def get_teams_from_user_ids(user_ids):
     yielded = []
     for user_id in user_ids:
-        memberships = models.TeamMembership.objects.filter(
-            user_id=user_id
-        ).prefetch_related("team")
-        for membership in memberships:
-            if membership.team_id not in yielded:
-                yielded.append(membership.team_id)
-                yield membership.team
+        try:
+            user = models.User.objects.get(pk=user_id)
+        except models.User.DoesNotExist:
+            # someone is trying to filter by a user that doesn't exist
+            # therefore no teams to be retured
+            continue
+
+        for team in user.teams.all():
+            if team.id not in yielded:
+                yielded.append(team.id)
+                yield team.id
 
 
 class DenyAll(BasePermission):
@@ -36,7 +40,6 @@ def ActionIs(action_name):
 def HasObjectPermission(permissions, get_object=None, get_objects=None):
     class _HasObjectPermission(BasePermission):
         def has_permission(self, request, view):
-
             user = request.user
             if user.is_superuser:
                 return True

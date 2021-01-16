@@ -20,7 +20,7 @@ from core.permissions import (
     DenyAll,
     get_teams_from_user_ids,
 )
-from core.models import Team, TeamMembership
+from core.models import Team
 
 User = get_user_model()
 
@@ -512,6 +512,15 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
     )
 
     def get_permissions(self):
+        # breakpoint()
+
+        # o = core_permissions.HasObjectPermission(
+        #     Team.PERMISSION_VIEW,
+        #     _get_teams_from_user_filter("recruit_users"),
+        # )()
+        # o.has_permission(view=self, request=self.request)
+
+        # wooo
         permission_classes = [IsReadOnly]
         if self.action == "retrieve":
             permission_classes = [

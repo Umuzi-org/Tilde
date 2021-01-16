@@ -4,7 +4,6 @@ from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 
 
-
 class ContentItemOrderPostAdmin(admin.TabularInline):
     model = models.ContentItem.prerequisites.through
     fk_name = "post"
@@ -44,9 +43,11 @@ class CurriculumContentInline(
 class CurriculumAdmin(admin.ModelAdmin):
     inlines = (CurriculumContentInline,)
 
+
 class RecruitProjectReviewInLine(admin.TabularInline):
     model = models.RecruitProjectReview
     extra = 0
+
 
 @admin.register(models.RecruitProject)
 class RecruitProjectAdmin(admin.ModelAdmin):
@@ -87,6 +88,7 @@ class CourseRegistrationAdmin(admin.ModelAdmin):
 
 
 from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
@@ -153,3 +155,7 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(models.WorkshopAttendance)
 admin.site.register(models.TopicProgress)
+
+from django.contrib.auth.models import Group
+
+admin.site.unregister(Group)

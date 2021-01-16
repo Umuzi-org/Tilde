@@ -90,8 +90,8 @@ class TeamViewSet(viewsets.ModelViewSet):
         queryset = (
             models.Team.objects.all()
             .order_by("name")
-            .prefetch_related("team_memberships")
-            .prefetch_related("team_memberships__user")
+            .prefetch_related("user_set")
+            # .prefetch_related("team_memberships__user")
         )
         return queryset
 

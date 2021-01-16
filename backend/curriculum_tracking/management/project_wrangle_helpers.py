@@ -4,7 +4,7 @@ There were a lot of different messes to be cleaned up
 
 from taggit.models import Tag
 import csv
-from core.models import  User, Team, TeamMembership
+from core.models import User, Team
 from curriculum_tracking.models import (
     RecruitProject,
     ContentItem,

@@ -66,11 +66,11 @@ class UserManager(BaseUserManager):
         return user
 
 
-class Group(AuthGroup):
-    class Meta:
-        proxy = True
-        app_label = "core"
-        verbose_name = "Group"
+# class Group(AuthGroup):
+#     class Meta:
+#         proxy = True
+#         app_label = "core"
+#         verbose_name = "Group"
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -92,6 +92,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    @property
+    def teams(self):
+        # this is because we've overridden Django's default group behaviour. We work with teams, not groups
+        return self.groups
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -203,13 +208,64 @@ class UserProfile(models.Model, Mixins):
     )
 
 
+class UserGroup(models.Model, Mixins):
+    """Depricated. REmove after data is migrated!!"""
+
+    sponsor_organisation = models.ForeignKey(
+        Organisation,
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="sponsored_user_groups",
+    )
+    school_organisation = models.ForeignKey(
+        Organisation, blank=True, null=True, on_delete=models.PROTECT
+    )
+
+    name = models.CharField(max_length=50, unique=True)
+    created_date = models.DateField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    users = models.ManyToManyField(
+        User, related_name="user_groups", through="UserGroupMembership"
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            raise Exception("Depricated. Do not create user groups")
+
+
+class UserGroupMembership(models.Model, Mixins):
+    """Depricated. REmove after data is migrated!!"""
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="group_memberships"
+    )
+    group = models.ForeignKey(
+        UserGroup, on_delete=models.CASCADE, related_name="group_memberships"
+    )
+
+    permission_student = models.BooleanField(
+        default=True
+    )  # this user is a student to be managed. They can see their own things
+    permission_view = models.BooleanField(default=False)  # can look at all the things
+    permission_manage = models.BooleanField(default=False)  # can take managment actions
+
+    class Meta:
+        unique_together = ["user", "group"]
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            raise Exception("Depricated. Do not create user group memberships")
+
+
 PERMISSION_MANAGE_CARDS = "MANAGE_CARDS"
 PERMISSION_VIEW_ALL = "VIEW_ALL"
 PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
 PERMISSION_REVIEW_CARDS = "REVIEW_CARDS"
 
 
-class Team(models.Model, Mixins):
+class Team(AuthGroup, Mixins):
 
     PERMISSION_MANAGE_CARDS = PERMISSION_MANAGE_CARDS  # start cards, set due date,
     PERMISSION_VIEW_ALL = PERMISSION_VIEW_ALL  # look at anything
@@ -234,11 +290,8 @@ class Team(models.Model, Mixins):
         Organisation, blank=True, null=True, on_delete=models.PROTECT
     )
 
-    name = models.CharField(max_length=50, unique=True)
     created_date = models.DateField(auto_now_add=True)
     active = models.BooleanField(default=True)
-
-    users = models.ManyToManyField(User, related_name="teams", through="TeamMembership")
 
     class Meta:
         # Team._meta.permissions
@@ -258,28 +311,15 @@ class Team(models.Model, Mixins):
 
     @property
     def active_users(self):
-        l = TeamMembership.objects.filter(team=self, user__active=True)
-        return [o.user for o in l]
+        return self.user_set.filter(active=True)
 
     @property
     def members(self):
         """return a dictionary describing the group members. This is exposed via the api. See serialisers.TeamSerializer"""
-        for membership in self.team_memberships.all():
+        # TODO put this in the TeamSerialiser instead
+        for user in self.user_set.all():
             yield {
-                "user_id": membership.user_id,
-                "user_email": membership.user.email,
-                "user_active": membership.user.active,
+                "user_id": user.id,
+                "user_email": user.email,
+                "user_active": user.active,
             }
-
-
-class TeamMembership(models.Model, Mixins):
-
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="team_memberships"
-    )
-    team = models.ForeignKey(
-        Team, on_delete=models.CASCADE, related_name="team_memberships"
-    )
-
-    class Meta:
-        unique_together = ["user", "team"]
