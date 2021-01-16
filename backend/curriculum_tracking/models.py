@@ -343,6 +343,9 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
 
+    def __str__(self):
+        return f"{self.content_item} {[f.name for f in self.flavours.all()]}"
+
 
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin

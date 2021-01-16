@@ -68,6 +68,12 @@ class AgileCardAdmin(admin.ModelAdmin):
     ordering = ["order"]
 
 
+@admin.register(models.ReviewTrust)
+class ReviewTrustAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "user"]
+    search_fields = ["user__email"]
+
+
 @admin.register(models.RecruitProjectReview)
 class RecruitProjectReviewAdmin(admin.ModelAdmin):
     # list_filter = ["content_item"]
