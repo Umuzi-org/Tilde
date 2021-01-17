@@ -26,13 +26,22 @@ User = get_user_model()
 
 
 def _get_teams_from_topic_progress(self, request, view):
-    project = view.get_object()
-    user_ids = [user.id for user in project.recruit_users.all()]
+    topic_progress = view.get_object()
+    return _get_teams_from_topic_progress_instance(topic_progress)
+
+
+def _get_teams_from_topic_progress_instance(topic_progress):
+    user_ids = [topic_progress.user.id]
+    # user_ids = [user.id for user in project.recruit_users.all()]
     return get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_recruit_project(self, request, view):
     project = view.get_object()
+    return _get_teams_from_recruit_project_instance(project)
+
+
+def _get_teams_from_recruit_project_instance(project):
     user_ids = [user.id for user in project.recruit_users.all()]
     return get_teams_from_user_ids(user_ids)
 
@@ -57,6 +66,34 @@ def _get_teams_from_card(self, request, view):
     user_ids = [user.id for user in card.assignees.all()]
     user_ids += [user.id for user in card.reviewers.all()]
     return get_teams_from_user_ids(user_ids)
+
+
+def _get_teams_from_recruit_project_filter(self, request, view):
+    recruit_project_id = dict(request.query_params).get("recruit_project", [0])
+    if len(recruit_project_id) > 1:
+        raise Exception("Not Implemented")
+    recruit_project_id = recruit_project_id[0]
+    if recruit_project_id == 0:
+        return []
+    try:
+        project = models.RecruitProject.objects.get(pk=recruit_project_id)
+    except models.RecruitProject.DoesNotExist:
+        return []
+    return _get_teams_from_recruit_project_instance(project)
+
+
+def _get_teams_from_topic_progress_filter(self, request, view):
+    topic_progress_id = dict(request.query_params).get("topic_progress", [0])
+    if len(topic_progress_id) > 1:
+        raise Exception("Not Implemented")
+    topic_progress_id = topic_progress_id[0]
+    if topic_progress_id == 0:
+        return []
+    try:
+        topic_progress = models.TopicProgress.objects.get(pk=topic_progress_id)
+    except models.TopicProgress.DoesNotExist:
+        return []
+    return _get_teams_from_topic_progress_instance(topic_progress)
 
 
 def _get_teams_from_user_filter(filter_name):
@@ -611,6 +648,10 @@ class TopicReviewViewset(viewsets.ModelViewSet):
                 permissions=Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_user_filter("reviewer_user"),
             )
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_topic_progress_filter,
+            )
         )
         | ActionIs("retrieve")
         & (
@@ -652,6 +693,10 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_user_filter("reviewer_user"),
+            )
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_filter,
             )
         )
         | ActionIs("retrieve")

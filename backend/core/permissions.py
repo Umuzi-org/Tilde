@@ -99,6 +99,12 @@ class IsReadOnly(BasePermission):
             return True
 
 
+class IsMyUser(BasePermission):
+    def has_permission(self, request, view):
+        instance = view.get_object()
+        return request.user == instance
+
+
 # from rest_framework import  permissions
 
 # permissions.IsAuthenticated
