@@ -93,10 +93,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-    @property
     def teams(self):
         # this is because we've overridden Django's default group behaviour. We work with teams, not groups
-        return self.groups
+        return [o.team for o in self.groups.all().prefetch_related("team")]
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -296,18 +295,24 @@ class Team(AuthGroup, Mixins):
     class Meta:
         # Team._meta.permissions
         permissions = (
-            (PERMISSION_MANAGE_CARDS, "Can move cards"),
-            (PERMISSION_VIEW_ALL, "View all"),
-            # (PERMISSION_ASSIGN_REVIEWERS, "Assign Reviewers"),
+            (
+                PERMISSION_MANAGE_CARDS,
+                "frontend: team manager (can move cards. No reviewing)",
+            ),
+            (PERMISSION_VIEW_ALL, "frontend: view only"),
             (
                 PERMISSION_REVIEW_CARDS,
-                "Review any card (note, this does not imply trusted reviewer)",
+                "frontend: reviewer (can add review any card. note, this does not imply trusted reviewer)",
             ),
-            # TODO: permission Trusted reviewer. This would be so that ACN members can be given rights over their own groups. Gets a little tricky though. This needs thought
+            # TODO: permission Trusted reviewer. This would be so that ACN members can be given rights over their own groups. Gets a little tricky though. This needs thought - we might not want them to be trusted as reviewers on our stuff
         )
 
     def __str__(self):
         return self.name
+
+    @property
+    def users(self):
+        return self.user_set
 
     @property
     def active_users(self):

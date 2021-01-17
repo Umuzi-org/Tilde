@@ -31,6 +31,8 @@ logger = logging.getLogger(__name__)
 class ReviewableMixin:
     def is_trusted_reviewer(self, user):
         """should we take this user's review as the truth?"""
+        if user.is_superuser:
+            return True
         trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
         for trust in trusts:
             if trust.flavours_match(self.flavour_names):

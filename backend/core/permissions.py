@@ -12,10 +12,10 @@ def get_teams_from_user_ids(user_ids):
             # therefore no teams to be retured
             continue
 
-        for team in user.teams.all():
+        for team in user.teams():
             if team.id not in yielded:
                 yielded.append(team.id)
-                yield team.id
+                yield team
 
 
 class DenyAll(BasePermission):
@@ -50,13 +50,15 @@ def HasObjectPermission(permissions, get_object=None, get_objects=None):
                 all_permissions = permissions
 
             if get_objects:
-                instances = get_objects(self, request, view)
+                instances = list(get_objects(self, request, view))
             elif get_object:
-                instances = get_object(self, request, view)
+                instances = [get_object(self, request, view)]
             else:
                 instances = view.get_object()
 
+            # has_permissions = user.get_permissions()
             for instance in instances:
+
                 for permission in all_permissions:
                     if user.has_perm(permission, instance):
                         return True

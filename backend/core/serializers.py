@@ -24,7 +24,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_team_memberships(self, instance):
 
-        return {team.id: {"id": team.id, "name": team.name} for team in instance.teams}
+        return {
+            team.id: {"id": team.id, "name": team.name} for team in instance.teams()
+        }
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

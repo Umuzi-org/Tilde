@@ -14,9 +14,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from core.permissions import (
     ActionIs,
+    IsStaffUser,
     HasObjectPermission,
     IsReadOnly,
-    IsStaffUser,
     DenyAll,
     get_teams_from_user_ids,
 )
@@ -55,6 +55,7 @@ def _get_teams_from_topic_review(self, request, view):
 def _get_teams_from_card(self, request, view):
     card = view.get_object()
     user_ids = [user.id for user in card.assignees.all()]
+    user_ids += [user.id for user in card.reviewers.all()]
     return get_teams_from_user_ids(user_ids)
 
 
@@ -102,15 +103,15 @@ class CardSummaryViewset(viewsets.ModelViewSet):
             curriculum_permissions.IsCardAssignee
             | curriculum_permissions.IsCardReviewer
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW, _get_teams_from_card
+                permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
             )
         )
         | core_permissions.IsReadOnly
         | core_permissions.IsStaffUser
         | core_permissions.IsCurrentUserInSpecificFilter("assignees")
         | core_permissions.HasObjectPermission(
-            Team.PERMISSION_VIEW,
-            _get_teams_from_user_filter("assignees"),
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=_get_teams_from_user_filter("assignees"),
         ),
     ]
     serializer_class = serializers.cardsummarySerializer
@@ -166,8 +167,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
             & (
                 curriculum_permissions.CardBelongsToRequestingUser
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_card,
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_card,
                 )
             )
         )
@@ -177,8 +178,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 core_permissions.IsCurrentUserInSpecificFilter("assignees")
                 | core_permissions.IsCurrentUserInSpecificFilter("reviewers")
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_user_filter("assignees"),
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_user_filter("assignees"),
+                )
+                | core_permissions.HasObjectPermission(
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_user_filter("reviewers"),
                 )
             )
         )
@@ -204,7 +209,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             )
             | IsStaffUser
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS,
+                permissions=Team.PERMISSION_MANAGE_CARDS,
                 get_objects=_get_teams_from_card,
             )
         ],
@@ -240,7 +245,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardReviewer
             | HasObjectPermission(
-                Team.PERMISSION_REVIEW_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_REVIEW_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -285,7 +291,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -310,7 +317,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -338,7 +346,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
             )
             | (
                 HasObjectPermission(
-                    Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                    permissions=Team.PERMISSION_MANAGE_CARDS,
+                    get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
             ),
@@ -359,7 +368,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -394,7 +404,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
             )
             | (
                 HasObjectPermission(
-                    Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                    permissions=Team.PERMISSION_MANAGE_CARDS,
+                    get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
             ),
@@ -416,7 +427,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -435,7 +447,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -454,7 +467,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         serializer_class=serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -480,7 +494,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         serializer_class=serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
-                Team.PERMISSION_MANAGE_CARDS, get_objects=_get_teams_from_card
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
             )
         ],
     )
@@ -527,16 +542,16 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
                 curriculum_permissions.IsProjectAssignee
                 | curriculum_permissions.IsProjectReviewer
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_recruit_project,
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_recruit_project,
                 )
             ]
         elif self.action == "list":
             permission_classes = [
                 core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_user_filter("recruit_users"),
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_user_filter("recruit_users"),
                 )
             ]
         return [permission() for permission in permission_classes]
@@ -554,16 +569,16 @@ class TopicProgressViewset(viewsets.ModelViewSet):
             permission_classes = [
                 curriculum_permissions.IsTopicProgressUser
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_topic_progress,
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_topic_progress,
                 )
             ]
         elif self.action == "list":
             permission_classes = [
                 core_permissions.IsCurrentUserInSpecificFilter("user")
                 | core_permissions.HasObjectPermission(
-                    Team.PERMISSION_VIEW,
-                    _get_teams_from_user_filter("user"),
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_user_filter("user"),
                 )
             ]
 
@@ -589,20 +604,20 @@ class TopicReviewViewset(viewsets.ModelViewSet):
             | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
             | core_permissions.IsCurrentUserInSpecificFilter("topic_progress__user")
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_user_filter("topic_progress__user"),
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("topic_progress__user"),
             )
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_user_filter("reviewer_user"),
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("reviewer_user"),
             )
         )
         | ActionIs("retrieve")
         & (
             curriculum_permissions.IsCurrentUserInUsersForFilteredTopicProgress
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_topic_review,
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_topic_review,
             )
         )
     ]
@@ -629,12 +644,14 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
                 "recruit_project__recruit_users"
             )
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_user_filter("recruit_project__recruit_users"),
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter(
+                    "recruit_project__recruit_users"
+                ),
             )
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_user_filter("reviewer_user"),
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("reviewer_user"),
             )
         )
         | ActionIs("retrieve")
@@ -642,8 +659,8 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
             # curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
             # | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
             core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_recruit_project_review,
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_review,
             )
         )
     ]
@@ -678,8 +695,8 @@ class RepositoryViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW,
-                _get_teams_from_repository,
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_repository,
             )
         )
         | ActionIs("list") & (permissions.IsAdminUser)
@@ -697,7 +714,8 @@ class CommitViewSet(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsFilteredByRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW, _get_teams_from_repository_filter
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_repository_filter,
             )
         )
     ]
@@ -714,7 +732,8 @@ class PullRequestViewSet(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsFilteredByRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW, _get_teams_from_repository_filter
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_repository_filter,
             )
         )
     ]
@@ -741,14 +760,16 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsWorkshopAttendee
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW, _get_teams_from_workshop_attendance
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_workshop_attendance,
             )
         )
         | ActionIs("list")
         & (
             core_permissions.IsCurrentUserInSpecificFilter("attendee_user")
             | core_permissions.HasObjectPermission(
-                Team.PERMISSION_VIEW, _get_teams_from_user_filter("attendee_user")
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("attendee_user"),
             )
         )
     ]

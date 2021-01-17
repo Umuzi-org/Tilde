@@ -10,6 +10,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 import TagChips from "../../widgets/TagChips";
+import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
 
 import Modal from "../../widgets/Modal";
@@ -59,6 +60,7 @@ const CardBasicDetails = ({ card }) => {
         {card.contentTypeNice}: {card.title}
       </Typography>
       <TagChips tagNames={card.tagNames} />
+      <FlavourChips flavourNames={card.flavourNames} />
       <StoryPoints storyPoints={card.storyPoints} />
 
       <Paper className={classes.sectionPaper} variant="outlined">

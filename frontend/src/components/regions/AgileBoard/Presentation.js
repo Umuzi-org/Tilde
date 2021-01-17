@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ board, cards, handleColumnScroll, userId }) => {
+export default ({ board, cards, handleColumnScroll, userId, viewedUser }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -57,6 +57,7 @@ export default ({ board, cards, handleColumnScroll, userId }) => {
                           key={cardId}
                           card={cards[cardId]}
                           filterUserId={userId}
+                          viewedUser={viewedUser}
                         />
                       );
                     })}

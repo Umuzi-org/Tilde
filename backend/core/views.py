@@ -121,7 +121,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [
         core_permissions.ActionIs("retrieve")
         & core_permissions.HasObjectPermission(
-            models.Team.PERMISSION_VIEW, _get_teams_from_user
+            permissions=models.Team.PERMISSION_VIEW, get_objects=_get_teams_from_user
         )
     ]
 

@@ -15,6 +15,7 @@ import { BLOCKED } from "../../../../constants";
 
 import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
+import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
 import AgileCardActions from "./AgileCardActions";
@@ -78,6 +79,7 @@ function ListCardUsers({ userNames, userIds }) {
 export default ({
   card,
   authUser,
+  viewedUser,
   filterUserId,
 
   handleClickAddReview,
@@ -110,6 +112,7 @@ export default ({
     handleRemoveWorkshopAttendance,
     card,
     authUser,
+    viewedUser,
   };
 
   //   console.log(agileCardActionProps);
@@ -164,6 +167,7 @@ export default ({
         )}
 
         <TagChips tagNames={card.tagNames} />
+        <FlavourChips flavourNames={card.flavourNames} />
         <StoryPoints storyPoints={card.storyPoints} />
 
         <Typography variant="subtitle2">Assignees:</Typography>

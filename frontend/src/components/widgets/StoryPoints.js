@@ -1,6 +1,6 @@
 import React from "react";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import Chip from "@material-ui/core/Chip";
+import { Chip, Tooltip } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -15,10 +15,12 @@ const useStyles = makeStyles((theme) => {
 export default ({ storyPoints }) => {
   const classes = useStyles();
   return (
-    <Chip
-      className={classes.chip}
-      icon={<TrendingUpIcon />}
-      label={storyPoints}
-    />
+    <Tooltip title="Story points: is a measure of how much effort this task should take to complete. If one project has storypoints=1 and another one has story points=3 then the second project should take 3 times the effort of the first one">
+      <Chip
+        className={classes.chip}
+        icon={<TrendingUpIcon />}
+        label={storyPoints}
+      />
+    </Tooltip>
   );
 };

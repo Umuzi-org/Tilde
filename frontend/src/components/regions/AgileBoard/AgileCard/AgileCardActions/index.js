@@ -4,6 +4,8 @@ import { showButtons } from "./utils";
 
 export default ({
   authUser,
+  viewedUser,
+
   card,
   handleClickAddReview,
   handleClickOpenCardDetails,
@@ -23,6 +25,7 @@ export default ({
     ...showButtons({
       card,
       authUser,
+      viewedUser,
     }),
     handleClickAddReview,
     handleClickOpenCardDetails,

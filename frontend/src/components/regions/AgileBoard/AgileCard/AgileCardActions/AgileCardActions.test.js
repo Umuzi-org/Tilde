@@ -257,10 +257,12 @@ test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for car
     showButtonStartTopic,
     showButtonStopTopic,
     showButtonEndTopic,
+    showButtonRequestReview,
   } = showButtons({ authUser, card });
   expect(showButtonStartTopic).toBe(false);
   expect(showButtonStopTopic).toBe(true);
   expect(showButtonEndTopic).toBe(true);
+  expect(showButtonRequestReview).toBe(false);
 });
 
 test("showButton returns showButtonEndTopic=false showButtonStopopic=false for card assignee if status is NOT IN_PROGRESS", () => {
@@ -295,10 +297,35 @@ test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for car
     showButtonStartTopic,
     showButtonStopTopic,
     showButtonEndTopic,
+    showButtonRequestReview,
   } = showButtons({ authUser, card });
   expect(showButtonStartTopic).toBe(false);
   expect(showButtonStopTopic).toBe(true);
+  expect(showButtonRequestReview).toBe(false);
   expect(showButtonEndTopic).toBe(true);
+});
+
+test("showButton returns showButtonEndTopic=false showButtonRequestReview=true for card assignee if status is IN_PROGRESS and TOPIC NEEDS REVIEW", () => {
+  const authUser = { userId: 3 };
+  const card = {
+    reviewers: [],
+    assignees: [authUser.userId],
+    contentTypeNice: "topic",
+    status: IN_PROGRESS,
+    topicNeedsReview: true,
+  };
+
+  const {
+    showButtonStartTopic,
+    showButtonStopTopic,
+    showButtonEndTopic,
+    showButtonRequestReview,
+  } = showButtons({ authUser, card });
+
+  expect(showButtonStartTopic).toBe(false);
+  expect(showButtonStopTopic).toBe(true);
+  expect(showButtonRequestReview).toBe(true);
+  expect(showButtonEndTopic).toBe(false);
 });
 
 test("showButton returns showButtonEndTopic=false showButtonStopopic=false for card manager if status is NOT IN_PROGRESS", () => {

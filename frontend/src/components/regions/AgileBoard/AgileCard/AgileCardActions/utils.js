@@ -10,14 +10,29 @@ import {
   REVIEW_CARDS,
 } from "../../../../../constants";
 
-export function getTeamPermissions({ authUser }) {
+export function getTeamPermissions({ authUser, viewedUser }) {
   let result = {};
+
+  for (let permission of TEAM_PERMISSIONS) result[permission] = false;
 
   if (authUser.isSuperuser) {
     for (let permission of TEAM_PERMISSIONS) result[permission] = true;
   } else {
-    for (let permission of TEAM_PERMISSIONS) result[permission] = false;
+    // we look at what teams this user belongs to. If authUser has a permission on one of those teams then they have the permission for the user
+    for (let authedTeamId in authUser.permissions.teams) {
+      //   for (let teamId in viewedUser.teamMemberships) {
+      //     console.log({ authedTeamId, teamId });
+      //   }
+      if (viewedUser.teamMemberships[authedTeamId]) {
+        let heldPermissions =
+          authUser.permissions.teams[authedTeamId].permissions;
+        for (let permission of heldPermissions) {
+          result[permission] = true;
+        }
+      }
+    }
   }
+  console.log(result);
   return result;
 }
 
@@ -44,7 +59,7 @@ function getReviewRequestButtons({ card, permissions, isAssignee }) {
   };
 }
 
-export function showButtons({ card, authUser }) {
+export function showButtons({ card, authUser, viewedUser }) {
   let showButtonStartProject = false;
   let showButtonNoteWorkshopAttendance = false;
   let showButtonCancelWorkshopAttendance = false;
@@ -59,7 +74,7 @@ export function showButtons({ card, authUser }) {
 
   const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
   const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
-  const permissions = getTeamPermissions({ authUser });
+  const permissions = getTeamPermissions({ authUser, viewedUser });
 
   let reviewRequestButtons;
   if (card.contentTypeNice === "project") {
@@ -97,7 +112,10 @@ export function showButtons({ card, authUser }) {
     if (isAssignee && card.canStart) showButtonStartTopic = true;
     if (permissions[MANAGE_CARDS] & card.canForceStart)
       showButtonStartTopic = true;
-    if (isAssignee && card.status === IN_PROGRESS) {
+    if (
+      (permissions[MANAGE_CARDS] || isAssignee) &&
+      card.status === IN_PROGRESS
+    ) {
       showButtonStopTopic = true;
       showButtonEndTopic = true;
     }

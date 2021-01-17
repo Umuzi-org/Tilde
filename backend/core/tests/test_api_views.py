@@ -13,7 +13,7 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
     def verbose_instance_factory(self):
         team = factories.TeamFactory()
         user = factories.UserFactory()
-        user.teams.add(team)
+        team.user_set.add(user)
         return team
 
     def test_only_returns_teams_i_can_see(self):

@@ -1,3 +1,15 @@
+# NOW:
+
+- finish user testing. Then test it again.
+- npm tests pass
+
+- deploy:
+  - migrate db structure
+  - populate Team model based on old UserGroup stuff
+  - get rid of UserGroup model
+  - look at permissions of JTLs, Scrummies, and staff. make sure they make sense
+    CELEBRATE!!
+
 # ROADMAP
 
 How this doc works:

@@ -1,8 +1,7 @@
+from core import permissions
 from django.core.management.base import BaseCommand
 from core.models import User, Team
 from guardian.shortcuts import assign_perm
-
-# from curriculum_tracking.models import Team
 
 
 class Command(BaseCommand):
@@ -14,4 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.get(email=options["email"])
         team = Team.objects.get(name=options["team"])
-        assign_perm(options["permission"], user, team)
+        permission = options["permission"]
+
+        assign_perm(permission, user, team)
+        assert user.has_perm(permission, team)

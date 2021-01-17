@@ -82,6 +82,7 @@ export function getLatestCallNextPageValue({
 
 function AgileBoardUnconnected({
   cards,
+  users,
   fetchCardPages,
   fetchCardsCallLog,
   authedUserId,
@@ -151,10 +152,16 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
+  const viewedUser = users[userId];
+  if (!viewedUser) {
+    return <div>Loading</div>;
+  } // TODO: better loading widgets
+
   let props = {
     userId,
     cards: filteredCards,
     board: boardFromCards({ cards: filteredCards }),
+    viewedUser: users[userId],
 
     handleColumnScroll,
   };
@@ -164,6 +171,7 @@ function AgileBoardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
+    users: state.Entities.users || {},
     cards: state.Entities.cards || {},
     fetchCardsCallLog: state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     authedUserId: state.App.authUser.userId,

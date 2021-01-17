@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import Team, User, TeamMembership
+from core.models import Team, User
 
 
 class Command(BaseCommand):
@@ -11,7 +11,4 @@ class Command(BaseCommand):
         user = User.objects.get(email=options["email"])
         team = Team.objects.get(name=options["team_name"])
 
-        membership, created = TeamMembership.objects.get_or_create(user=user, team=team)
-
-        if created:
-            print("created")
+        user.teams.add(team)

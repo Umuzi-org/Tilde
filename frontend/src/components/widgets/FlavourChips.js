@@ -1,6 +1,6 @@
 import React from "react";
 import { Chip, Tooltip } from "@material-ui/core";
-import LabelIcon from "@material-ui/icons/Label";
+import LabelIcon from "@material-ui/icons/Create";
 
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => {
@@ -11,20 +11,20 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default ({ tagNames }) => {
+export default ({ flavourNames }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      {tagNames.map((tag) => {
+      {flavourNames.map((flavour) => {
         return (
           <Tooltip
-            title={`Completing this card will move you towards your ${tag} goals`}
+            title={`Please use the following tool when completing this card: ${flavour}`}
           >
             <Chip
               className={classes.chip}
               icon={<LabelIcon />}
-              key={tag}
-              label={tag}
+              key={flavour}
+              label={"flavour: " + flavour}
             />
           </Tooltip>
         );
