@@ -131,6 +131,9 @@ def _get_teams_from_workshop_attendance(self, request, view):
     return get_teams_from_user_ids(user_ids=user_ids)
 
 
+from django.db.models import Q
+
+
 class CardSummaryViewset(viewsets.ModelViewSet):
 
     permission_classes = [
@@ -157,8 +160,12 @@ class CardSummaryViewset(viewsets.ModelViewSet):
 
     queryset = (
         models.AgileCard.objects.order_by("order")
-        # .filter(content_item__content_type=models.ContentItem.PROJECT)
-        .prefetch_related("content_item").prefetch_related("recruit_project")
+        .filter(
+            Q(content_item__content_type=models.ContentItem.PROJECT)
+            | Q(content_item__topic_needs_review=True)
+        )
+        .prefetch_related("content_item")
+        .prefetch_related("recruit_project")
     )
 
 

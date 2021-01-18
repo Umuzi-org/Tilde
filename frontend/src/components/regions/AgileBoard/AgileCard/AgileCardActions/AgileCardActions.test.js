@@ -10,7 +10,7 @@ import {
 } from "../../../../../constants";
 
 test("showButtons shows DOESNT show start project on topics", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: true,
@@ -23,7 +23,7 @@ test("showButtons shows DOESNT show start project on topics", () => {
 });
 
 test("showButtons shows start project button to assignee if start is allowed", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: true,
@@ -36,7 +36,7 @@ test("showButtons shows start project button to assignee if start is allowed", (
 });
 
 test("showButtons DOES NOT show start project button to non assignees with no special flags", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: true,
@@ -49,7 +49,7 @@ test("showButtons DOES NOT show start project button to non assignees with no sp
 });
 
 test("showButtons DOES show start project button to superusers", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -62,7 +62,7 @@ test("showButtons DOES show start project button to superusers", () => {
 });
 
 test("showButtons DOES NOT show start project button to superusers if  forceStart is false", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -75,7 +75,7 @@ test("showButtons DOES NOT show start project button to superusers if  forceStar
 });
 
 test("showButtons DOES NOT show start project button to assignee if start is NOT allowed", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -88,7 +88,7 @@ test("showButtons DOES NOT show start project button to assignee if start is NOT
 });
 
 test("showButton returns showButtonNoteWorkshopAttendance=False for people without manage permission", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -107,7 +107,7 @@ test("showButton returns showButtonNoteWorkshopAttendance=False for people witho
 });
 
 test("showButton shows showButtonNoteWorkshopAttendance for people with manage permission if WORKSHOP card is READY", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -126,7 +126,7 @@ test("showButton shows showButtonNoteWorkshopAttendance for people with manage p
 });
 
 test("showButton shows showButton NoteWorkshopAttendance for people with manage permission if WORKSHOP card is BLOCKED", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -145,7 +145,7 @@ test("showButton shows showButton NoteWorkshopAttendance for people with manage 
 });
 
 test("showButton returns showButtonStartTopic=true for card assignee if canStart", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: true,
@@ -165,7 +165,7 @@ test("showButton returns showButtonStartTopic=true for card assignee if canStart
 });
 
 test("showButton returns showButtonStartTopic=false for card assignee if status is NOT canStart", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -185,7 +185,7 @@ test("showButton returns showButtonStartTopic=false for card assignee if status 
 });
 
 test("showButton returns showButtonStartTopic=true for card manager with forceStart ", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -205,7 +205,7 @@ test("showButton returns showButtonStartTopic=true for card manager with forceSt
 });
 
 test("showButton returns showButtonStartTopic=false for card manager without forceStart ", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     canStart: false,
@@ -225,7 +225,7 @@ test("showButton returns showButtonStartTopic=false for card manager without for
 });
 
 test("showButton returns showButtonStartTopic=false for arb user without forceStart ", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     canStart: true,
@@ -245,7 +245,7 @@ test("showButton returns showButtonStartTopic=false for arb user without forceSt
 });
 
 test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for card assignee if status is IN_PROGRESS", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -266,7 +266,7 @@ test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for car
 });
 
 test("showButton returns showButtonEndTopic=false showButtonStopopic=false for card assignee if status is NOT IN_PROGRESS", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -285,7 +285,7 @@ test("showButton returns showButtonEndTopic=false showButtonStopopic=false for c
 });
 
 test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for card manager if status is IN_PROGRESS", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId + 1],
@@ -306,7 +306,7 @@ test("showButton returns showButtonEndTopic=true showButtoStopTopic=true for car
 });
 
 test("showButton returns showButtonEndTopic=false showButtonRequestReview=true for card assignee if status is IN_PROGRESS and TOPIC NEEDS REVIEW", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -329,7 +329,7 @@ test("showButton returns showButtonEndTopic=false showButtonRequestReview=true f
 });
 
 test("showButton returns showButtonEndTopic=false showButtonStopopic=false for card manager if status is NOT IN_PROGRESS", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
 
@@ -348,7 +348,7 @@ test("showButton returns showButtonEndTopic=false showButtonStopopic=false for c
   expect(showButtonEndTopic).toBe(false);
 });
 test("showButton returns showButtonEndTopic=false showButtonStopopic=false for card arbitrary user if status is IN_PROGRESS", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId + 1],
@@ -367,7 +367,7 @@ test("showButton returns showButtonEndTopic=false showButtonStopopic=false for c
 });
 
 test("showButton returns showButtonAddReview=true if user is reviewer and PROJECT card status is IN_REVIEW", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [authUser.userId],
@@ -379,7 +379,7 @@ test("showButton returns showButtonAddReview=true if user is reviewer and PROJEC
 });
 
 test("showButton returns showButtonAddReview=true if user is reviewer and PROJECT card status is COMPLETE", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [authUser.userId],
@@ -391,7 +391,7 @@ test("showButton returns showButtonAddReview=true if user is reviewer and PROJEC
 });
 
 test("showButton returns showButtonAddReview=true if user is reviewer and PROJECT card status is REVIEW_FEEDBACK", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [authUser.userId],
@@ -403,7 +403,7 @@ test("showButton returns showButtonAddReview=true if user is reviewer and PROJEC
 });
 
 test("showButton returns showButtonAddReview=true if user has reviewer permission and PROJECT card status is IN_REVIEW", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     assignees: [],
     reviewers: [],
@@ -415,7 +415,7 @@ test("showButton returns showButtonAddReview=true if user has reviewer permissio
 });
 
 test("showButton returns showButtonAddReview=false if user is not reviewer and PROJECT card status is IN_REVIEW", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [],
@@ -427,7 +427,7 @@ test("showButton returns showButtonAddReview=false if user is not reviewer and P
 });
 
 test("showButton returns showButtonAddReview=true if user is reviewer and TOPIC card status is IN_REVIEW", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [authUser.userId],
@@ -440,7 +440,7 @@ test("showButton returns showButtonAddReview=true if user is reviewer and TOPIC 
 });
 
 test("showButton returns showButtonAddReview=false if user is reviewer and TOPIC card status is IN_REVIEW but NOT topicNeedsReview", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     assignees: [],
     reviewers: [authUser.userId],
@@ -453,7 +453,7 @@ test("showButton returns showButtonAddReview=false if user is reviewer and TOPIC
 });
 
 test("showButton returns showButtonRequestReview=true showButtonCancelReviewRequest=false for Project cards IN_PROGRESS for assignee", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -468,7 +468,7 @@ test("showButton returns showButtonRequestReview=true showButtonCancelReviewRequ
   expect(showButtonCancelReviewRequest).toBe(false);
 });
 test("showButton returns showButtonRequestReview=true showButtonCancelReviewRequest=false for Topic cards IN_PROGRESS for assignee, if needs review", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -485,7 +485,7 @@ test("showButton returns showButtonRequestReview=true showButtonCancelReviewRequ
 });
 
 test("showButton returns showButtonRequestReview=false showButtonCancelReviewRequest=false for Topic cards IN_PROGRESS for assignee, if NOT needs review", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -502,7 +502,7 @@ test("showButton returns showButtonRequestReview=false showButtonCancelReviewReq
 });
 
 test("showButton returns showButtonRequestReview=false showButtonCancelReviewRequest=true for Project cards IN_REVIEW for assignee", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -517,7 +517,7 @@ test("showButton returns showButtonRequestReview=false showButtonCancelReviewReq
   expect(showButtonCancelReviewRequest).toBe(true);
 });
 test("showButton returns showButtonRequestReview=false showButtonCancelReviewRequest=true for Topic cards IN_REVIEW for assignee, if needs review", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -534,7 +534,7 @@ test("showButton returns showButtonRequestReview=false showButtonCancelReviewReq
 });
 
 test("showButton returns showButtonRequestReview=false showButtonCancelReviewRequest=false for Topic cards IN_REVIEW for assignee, if NOT needs review", () => {
-  const authUser = { userId: 3 };
+  const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {
     reviewers: [],
     assignees: [authUser.userId],
@@ -551,7 +551,7 @@ test("showButton returns showButtonRequestReview=false showButtonCancelReviewReq
 });
 
 test("showButton returns showButtonRequestReview=false showButtonCancelReviewRequest=true for Project cards IN_REVIEW for manager", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     assignees: [],
@@ -567,7 +567,7 @@ test("showButton returns showButtonRequestReview=false showButtonCancelReviewReq
 });
 
 test("showButton returns showButtonRequestReview=true showButtonCancelReviewRequest=false for Topic cards IN_PROGRESS for manager, if needs review", () => {
-  const authUser = { userId: 3, isSuperuser: 1 };
+  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
   const card = {
     reviewers: [],
     assignees: [],
