@@ -54,7 +54,6 @@ class get_permissions_Tests(TestCase):
         managed_team = TeamFactory()
 
         manager_team = TeamFactory()
-        # breakpoint()
         manager_group = manager_team.group_ptr
 
         # add a user to the team, it should be in the group

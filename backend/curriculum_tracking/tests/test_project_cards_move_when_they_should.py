@@ -1,4 +1,5 @@
 from django.test import TestCase
+from guardian.shortcuts import assign_perm
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
 from core.tests import factories as core_factories
@@ -9,6 +10,7 @@ from curriculum_tracking.constants import (
 
 from django.utils import timezone
 from datetime import timedelta
+from core.models import Team
 
 
 class RecruitProjectReviewCreationTests(TestCase):
@@ -29,24 +31,51 @@ class RecruitProjectReviewCreationTests(TestCase):
 
         for card in self.cards:
             factories.ReviewTrustFactory(
-                content_item = card.content_item,
+                content_item=card.content_item,
                 user=self.trusted_user,
-                flavours = card.recruit_project.flavour_names
-            ) 
+                flavours=card.recruit_project.flavour_names,
+            )
             assert card.recruit_project.is_trusted_reviewer(self.trusted_user)
 
-
-    def test_review_knows_it_it_is_trusted_or_not(self):
+    def test_review_knows_it_it_is_trusted_or_not_using_trust_obj(self):
         trusted = factories.RecruitProjectReviewFactory(
             reviewer_user=self.trusted_user,
-            recruit_project = self.ip_card.recruit_project
+            recruit_project=self.ip_card.recruit_project,
         )
         untrusted = factories.RecruitProjectReviewFactory(
             reviewer_user=self.untrusted_user,
-            recruit_project = self.ip_card.recruit_project
+            recruit_project=self.ip_card.recruit_project,
         )
         self.assertTrue(trusted.trusted)
         self.assertFalse(untrusted.trusted)
+
+    def test_that_user_given_permission_trusted_reviewer_makes_trusted_review(self):
+        user = core_factories.UserFactory()
+
+        recruit_team = core_factories.TeamFactory()
+        assign_perm(Team.PERMISSION_TRUSTED_REVIEWER, user, recruit_team)
+
+        untrusted = factories.RecruitProjectReviewFactory(
+            reviewer_user=user, recruit_project=self.ip_card.recruit_project
+        )
+        self.assertFalse(untrusted.trusted)
+
+        # now add the recruit to the team and make another review
+
+        recruit_team.user_set.set(self.ip_card.recruit_project.assignees.all())
+
+        trusted = factories.RecruitProjectReviewFactory(
+            reviewer_user=user, recruit_project=self.ip_card.recruit_project
+        )
+        self.assertTrue(trusted.trusted)
+        self.assertFalse(untrusted.trusted)
+
+    def test_that_superuser_always_trusted(self):
+        superuser = core_factories.UserFactory()
+        review = factories.RecruitProjectReviewFactory(
+            reviewer_user=superuser, recruit_project=self.ip_card.recruit_project
+        )
+        self.assertTrue(review.trusted)
 
     def test_adding_trusted_competent_moves_card_to_complete(self):
 

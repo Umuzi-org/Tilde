@@ -310,8 +310,7 @@ class Team(AuthGroup, Mixins):
             (
                 PERMISSION_TRUSTED_REVIEWER,
                 "frontend: TRUSTED reviewer (can review all, can move cards to complete)",
-            )
-            # TODO: permission Trusted reviewer. This would be so that ACN members can be given rights over their own groups. Gets a little tricky though. This needs thought - we might not want them to be trusted as reviewers on our stuff
+            ),
         )
 
     def __str__(self):

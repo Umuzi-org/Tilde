@@ -1,6 +1,6 @@
 from typing import List
 from django.db import models
-from core.models import Curriculum, User
+from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -33,6 +33,12 @@ class ReviewableMixin:
         """should we take this user's review as the truth?"""
         if user.is_superuser:
             return True
+
+        teams = self.get_teams()
+        for team in teams:
+            if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
+                return True
+
         trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
         for trust in trusts:
             if trust.flavours_match(self.flavour_names):
