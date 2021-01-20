@@ -1,3 +1,4 @@
+from django.db.models import manager
 from django.test import TestCase
 from core.tests.factories import TeamFactory, UserFactory
 from guardian.shortcuts import assign_perm
@@ -38,6 +39,35 @@ class get_permissions_Tests(TestCase):
         # result = [t[0] for t in self.user.get_permissions()["teams"][self.team.id]]
         permissions = self.user.get_permissions()
         result = [t for t in permissions["teams"][self.team.id]["permissions"]]
+
+        self.assertEqual(
+            sorted(result),
+            [
+                Team.PERMISSION_MANAGE_CARDS,
+                Team.PERMISSION_REVIEW_CARDS,
+            ],
+        )
+
+    def test_permissions_work_for_auth_groups_and_teams(self):
+        """we use Teams but django still uses a concept called Group, make sure that any way we add permissions syncs up between all the things"""
+
+        managed_team = TeamFactory()
+
+        manager_team = TeamFactory()
+        # breakpoint()
+        manager_group = manager_team.group_ptr
+
+        # add a user to the team, it should be in the group
+        user = UserFactory()
+        manager_team.user_set.add(user)
+        self.assertEqual(list(manager_group.user_set.all()), [user])
+
+        # give a permission to a group and the team should have it
+        assign_perm(Team.PERMISSION_REVIEW_CARDS, manager_group, managed_team)
+        assign_perm(Team.PERMISSION_MANAGE_CARDS, manager_team, managed_team)
+
+        permissions = user.get_permissions()
+        result = [t for t in permissions["teams"][managed_team.id]["permissions"]]
 
         self.assertEqual(
             sorted(result),
