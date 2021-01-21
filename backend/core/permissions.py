@@ -1,21 +1,4 @@
 from rest_framework.permissions import BasePermission
-from core import models
-
-
-def get_teams_from_user_ids(user_ids):
-    yielded = []
-    for user_id in user_ids:
-        try:
-            user = models.User.objects.get(pk=user_id)
-        except models.User.DoesNotExist:
-            # someone is trying to filter by a user that doesn't exist
-            # therefore no teams to be retured
-            continue
-
-        for team in user.teams():
-            if team.id not in yielded:
-                yielded.append(team.id)
-                yield team
 
 
 class DenyAll(BasePermission):

@@ -18,7 +18,6 @@ from core.permissions import (
     HasObjectPermission,
     IsReadOnly,
     DenyAll,
-    get_teams_from_user_ids,
 )
 from core.models import Team
 
@@ -33,17 +32,16 @@ def _get_teams_from_topic_progress(self, request, view):
 def _get_teams_from_topic_progress_instance(topic_progress):
     user_ids = [topic_progress.user.id]
     # user_ids = [user.id for user in project.recruit_users.all()]
-    return get_teams_from_user_ids(user_ids)
+    return Team.get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_recruit_project(self, request, view):
     project = view.get_object()
-    return _get_teams_from_recruit_project_instance(project)
+    return project.get_teams()
+    # return _get_teams_from_recruit_project_instance(project)
 
 
-def _get_teams_from_recruit_project_instance(project):
-    user_ids = [user.id for user in project.recruit_users.all()]
-    return get_teams_from_user_ids(user_ids)
+# def _get_teams_from_recruit_project_instance(project):
 
 
 def _get_teams_from_recruit_project_review(self, request, view):
@@ -52,20 +50,20 @@ def _get_teams_from_recruit_project_review(self, request, view):
     user_ids = [user.id for user in project.recruit_users.all()] + [
         project_review.reviewer_user_id
     ]
-    return get_teams_from_user_ids(user_ids)
+    return Team.get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_topic_review(self, request, view):
     review = view.get_object()
     user_ids = [review.topic_progress.user.id, review.reviewer_user.id]
-    return get_teams_from_user_ids(user_ids)
+    return Team.get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_card(self, request, view):
     card = view.get_object()
     user_ids = [user.id for user in card.assignees.all()]
     user_ids += [user.id for user in card.reviewers.all()]
-    return get_teams_from_user_ids(user_ids)
+    return Team.get_teams_from_user_ids(user_ids)
 
 
 def _get_teams_from_recruit_project_filter(self, request, view):
@@ -99,7 +97,7 @@ def _get_teams_from_topic_progress_filter(self, request, view):
 def _get_teams_from_user_filter(filter_name):
     def get_teams_from_user_filter(self, request, view):
         user_ids = core_permissions.get_clean_user_ids_from_filter(request, filter_name)
-        return get_teams_from_user_ids(user_ids)
+        return Team.get_teams_from_user_ids(user_ids)
 
     return get_teams_from_user_filter
 
@@ -108,7 +106,7 @@ def _get_teams_from_repository_instance(repo):
     projects = repo.recruit_projects.all()
     for project in projects:
         user_ids = [user.id for user in project.recruit_users.all()]
-        for team in get_teams_from_user_ids(user_ids):
+        for team in Team.get_teams_from_user_ids(user_ids):
             yield team
 
 
@@ -133,7 +131,7 @@ def _get_teams_from_repository_filter(self, request, view):
 def _get_teams_from_workshop_attendance(self, request, view):
     attendance = view.get_object()
     user_ids = [attendance.attendee_user_id]
-    return get_teams_from_user_ids(user_ids=user_ids)
+    return Team.get_teams_from_user_ids(user_ids=user_ids)
 
 
 from django.db.models import Q

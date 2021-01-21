@@ -14,6 +14,7 @@ from guardian.shortcuts import get_objects_for_user
 # from django.db.models import Q
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
+from core.models import Team
 
 
 @api_view(["POST"])
@@ -110,7 +111,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 def _get_teams_from_user(self, request, view):
     user = view.get_object()
-    return core_permissions.get_teams_from_user_ids([user.id])
+    return Team.get_teams_from_user_ids([user.id])
 
 
 class UserViewSet(viewsets.ModelViewSet):

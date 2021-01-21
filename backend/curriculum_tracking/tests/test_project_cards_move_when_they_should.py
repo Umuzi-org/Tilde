@@ -62,7 +62,7 @@ class RecruitProjectReviewCreationTests(TestCase):
 
         # now add the recruit to the team and make another review
 
-        recruit_team.user_set.set(self.ip_card.recruit_project.assignees.all())
+        recruit_team.user_set.set(self.ip_card.recruit_project.recruit_users.all())
 
         trusted = factories.RecruitProjectReviewFactory(
             reviewer_user=user, recruit_project=self.ip_card.recruit_project
@@ -71,7 +71,7 @@ class RecruitProjectReviewCreationTests(TestCase):
         self.assertFalse(untrusted.trusted)
 
     def test_that_superuser_always_trusted(self):
-        superuser = core_factories.UserFactory()
+        superuser = core_factories.UserFactory(is_superuser=True)
         review = factories.RecruitProjectReviewFactory(
             reviewer_user=superuser, recruit_project=self.ip_card.recruit_project
         )

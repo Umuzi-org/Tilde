@@ -334,3 +334,19 @@ class Team(AuthGroup, Mixins):
                 "user_email": user.email,
                 "user_active": user.active,
             }
+
+    @classmethod
+    def get_teams_from_user_ids(cls, user_ids):
+        yielded = []
+        for user_id in user_ids:
+            try:
+                user = User.objects.get(pk=user_id)
+            except User.DoesNotExist:
+                # someone is trying to filter by a user that doesn't exist
+                # therefore no teams to be retured
+                continue
+
+            for team in user.teams():
+                if team.id not in yielded:
+                    yielded.append(team.id)
+                    yield team

@@ -395,6 +395,13 @@ class RecruitProject(
             ["content_item", "repository"],
         ]
 
+    def get_teams(self):
+        """return the teams of the users invoved in this project"""
+        user_ids = [user.id for user in self.recruit_users.all()] + [
+            user.id for user in self.reviewer_users.all()
+        ]
+        return Team.get_teams_from_user_ids(user_ids)
+
     def reviews_queryset(self):
         return self.project_reviews
 
@@ -410,7 +417,7 @@ class RecruitProject(
 
     def link_submission_invalid_message(self, link_submission=None):
         link = link_submission or self.link_submission
-        regex = content_item.link_regex or "^https{0,1}://.*"
+        regex = self.content_item.link_regex or "^https{0,1}://.*"
         return f"link {link} does not match pattern: {regex}"
 
     def link_submission_is_valid(self, link_submission=None):
