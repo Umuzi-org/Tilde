@@ -207,57 +207,6 @@ class UserProfile(models.Model, Mixins):
     )
 
 
-class UserGroup(models.Model, Mixins):
-    """Depricated. REmove after data is migrated!!"""
-
-    sponsor_organisation = models.ForeignKey(
-        Organisation,
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        related_name="sponsored_user_groups",
-    )
-    school_organisation = models.ForeignKey(
-        Organisation, blank=True, null=True, on_delete=models.PROTECT
-    )
-
-    name = models.CharField(max_length=50, unique=True)
-    created_date = models.DateField(auto_now_add=True)
-    active = models.BooleanField(default=True)
-
-    users = models.ManyToManyField(
-        User, related_name="user_groups", through="UserGroupMembership"
-    )
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            raise Exception("Depricated. Do not create user groups")
-
-
-class UserGroupMembership(models.Model, Mixins):
-    """Depricated. Remove after data is migrated!!"""
-
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="group_memberships"
-    )
-    group = models.ForeignKey(
-        UserGroup, on_delete=models.CASCADE, related_name="group_memberships"
-    )
-
-    permission_student = models.BooleanField(
-        default=True
-    )  # this user is a student to be managed. They can see their own things
-    permission_view = models.BooleanField(default=False)  # can look at all the things
-    permission_manage = models.BooleanField(default=False)  # can take managment actions
-
-    class Meta:
-        unique_together = ["user", "group"]
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            raise Exception("Depricated. Do not create user group memberships")
-
-
 PERMISSION_MANAGE_CARDS = "MANAGE_CARDS"
 PERMISSION_VIEW_ALL = "VIEW_ALL"
 PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
