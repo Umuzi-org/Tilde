@@ -18,12 +18,12 @@ export default ({ flavourNames }) => {
       {flavourNames.map((flavour) => {
         return (
           <Tooltip
+            key={flavour}
             title={`Please use the following tool when completing this card: ${flavour}`}
           >
             <Chip
               className={classes.chip}
               icon={<LabelIcon />}
-              key={flavour}
               label={"flavour: " + flavour}
             />
           </Tooltip>

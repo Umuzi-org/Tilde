@@ -137,14 +137,14 @@ export default ({
           {card.title}
         </Typography>
 
-        {card.flavourNames.map((flavour) => (
+        {/* {card.flavourNames.map((flavour) => (
           <Chip
             key={flavour}
             className={classes.chip}
             icon={<MoreHorizIcon />}
             label={`flavour: ${flavour}`}
           />
-        ))}
+        ))} */}
 
         {card.dueTime ? (
           <Chip

@@ -18,14 +18,10 @@ export default ({ tagNames }) => {
       {tagNames.map((tag) => {
         return (
           <Tooltip
+            key={tag}
             title={`Completing this card will move you towards your ${tag} goals`}
           >
-            <Chip
-              className={classes.chip}
-              icon={<LabelIcon />}
-              key={tag}
-              label={tag}
-            />
+            <Chip className={classes.chip} icon={<LabelIcon />} label={tag} />
           </Tooltip>
         );
       })}
