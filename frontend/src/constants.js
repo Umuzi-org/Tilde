@@ -47,12 +47,14 @@ export const MANAGE_CARDS = "MANAGE_CARDS";
 export const VIEW_ALL = "VIEW_ALL";
 export const ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS";
 export const REVIEW_CARDS = "REVIEW_CARDS";
+export const TRUSTED_REVIEWER = "TRUSTED_REVIEWER";
 
 export const TEAM_PERMISSIONS = [
   MANAGE_CARDS,
   VIEW_ALL,
   ASSIGN_REVIEWERS,
   REVIEW_CARDS,
+  TRUSTED_REVIEWER,
 ];
 
 export default {
