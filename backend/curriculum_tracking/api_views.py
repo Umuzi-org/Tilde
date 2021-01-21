@@ -121,7 +121,12 @@ def _get_teams_from_repository_filter(self, request, view):
     repo_id = dict(request.query_params).get("repository")
     if not repo_id:
         return ()
-    repo = git_models.Repository.objects.get(pk=repo_id)
+    if type(repo_id) is list:
+        assert len(repo_id) == 1
+        repo = git_models.Repository.objects.get(pk=repo_id[0])
+    else:
+        repo = git_models.Repository.objects.get(pk=repo_id)
+
     return _get_teams_from_repository_instance(repo)
 
 
