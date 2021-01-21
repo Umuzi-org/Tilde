@@ -262,6 +262,7 @@ PERMISSION_MANAGE_CARDS = "MANAGE_CARDS"
 PERMISSION_VIEW_ALL = "VIEW_ALL"
 PERMISSION_ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS"
 PERMISSION_REVIEW_CARDS = "REVIEW_CARDS"
+PERMISSION_TRUSTED_REVIEWER = "TRUSTED_REVIEWER"
 
 
 class Team(AuthGroup, Mixins):
@@ -270,12 +271,14 @@ class Team(AuthGroup, Mixins):
     PERMISSION_VIEW_ALL = PERMISSION_VIEW_ALL  # look at anything
     PERMISSION_ASSIGN_REVIEWERS = PERMISSION_ASSIGN_REVIEWERS
     PERMISSION_REVIEW_CARDS = PERMISSION_REVIEW_CARDS
+    PERMISSION_TRUSTED_REVIEWER = PERMISSION_TRUSTED_REVIEWER
 
     PERMISSION_VIEW = [
         PERMISSION_MANAGE_CARDS,
         PERMISSION_VIEW_ALL,
         PERMISSION_ASSIGN_REVIEWERS,
         PERMISSION_REVIEW_CARDS,
+        PERMISSION_TRUSTED_REVIEWER,
     ]
 
     sponsor_organisation = models.ForeignKey(
@@ -304,6 +307,10 @@ class Team(AuthGroup, Mixins):
                 PERMISSION_REVIEW_CARDS,
                 "frontend: reviewer (can add review any card. note, this does not imply trusted reviewer)",
             ),
+            (
+                PERMISSION_TRUSTED_REVIEWER,
+                "frontend: TRUSTED reviewer (can review all, can move cards to complete)",
+            )
             # TODO: permission Trusted reviewer. This would be so that ACN members can be given rights over their own groups. Gets a little tricky though. This needs thought - we might not want them to be trusted as reviewers on our stuff
         )
 
