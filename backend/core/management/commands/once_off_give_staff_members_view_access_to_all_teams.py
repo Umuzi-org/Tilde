@@ -8,9 +8,11 @@ from guardian.shortcuts import assign_perm, remove_perm
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        teams = list(Team.objects.all())
-        for user in User.objects.all():
+        teams = list(Team.objects.filter(active=True))
+        for user in User.objects.filter(is_staff=True):
+            print(user)
             for team in teams:
-                if user.has_perm(Team.PERMISSION_VIEW_ALL, team):
-                    remove_perm(Team.PERMISSION_VIEW_ALL, user, team)
-                # assign_perm(Team.PERMISSION_VIEW_ALL, user, team)
+                print(team)
+                # if user.has_perm(Team.PERMISSION_VIEW_ALL, team):
+                #     remove_perm(Team.PERMISSION_VIEW_ALL, user, team)
+                assign_perm(Team.PERMISSION_VIEW_ALL, user, team)

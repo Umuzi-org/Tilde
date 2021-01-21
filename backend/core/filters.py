@@ -20,8 +20,8 @@ def ObjectPermissionsFilter(permission):
             user = request.user
             if user.is_superuser:
                 return queryset
-            if user.is_staff:
-                return queryset
+            # if user.is_staff:
+            #     return queryset
 
             # permission = self.perm_format % {
             #     'app_label': queryset.model._meta.app_label,

@@ -34,7 +34,7 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         self.login(staff_user)
 
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(response.data["count"], 0)
 
         for permission, _ in Team._meta.permissions:
             # make sure that users can read what they need to
@@ -63,14 +63,14 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         response = self.client.get(url)
         self.assertEqual(response.data["count"], 0)
 
-    def test_staff_users_see_all_teams(self):
+    def test_staff_users_cant_see_all_teams(self):
         user = factories.UserFactory(is_superuser=False, is_staff=True)
 
-        team = factories.TeamFactory()
+        factories.TeamFactory()
 
         self.login(user)
         url = self.get_list_url()
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 1)
-        returned_id = response.data["results"][0]["id"]
-        self.assertEqual(returned_id, team.id)
+        self.assertEqual(response.data["count"], 0)
+        # returned_id = response.data["results"][0]["id"]
+        # self.assertEqual(returned_id, team.id)
