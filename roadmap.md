@@ -1,6 +1,7 @@
 # NOW:
 
 - deploy:
+  - backup db structure
   - migrate db structure
   - populate Team model based on old UserGroup stuff
   - get rid of UserGroup model

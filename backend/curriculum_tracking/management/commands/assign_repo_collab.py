@@ -1,8 +1,8 @@
 """
-python manage.py assign_repo_collab TEAM_SELF_REVIEW $TEAM_NAME $CONTENT_ITEM_TITLE 
-python manage.py assign_repo_collab TEAM_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
-python manage.py assign_repo_collab GIT_USER_REPO_ONLY $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
-python manage.py assign_repo_collab GIT_USER_AS_REVIEWER $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
+python manage.py assign_repo_collab TEAM_SHUFFLE_REVIEW_SELF $TEAM_NAME $CONTENT_ITEM_TITLE 
+python manage.py assign_repo_collab TEAM_SHUFFLE_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
+python manage.py assign_repo_collab ADD_USER_TO_REPO_ONLY $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
+python manage.py assign_repo_collab ADD_USER_AS_CARD_REVIEWER $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
 """
 
 from django.core.management.base import BaseCommand
@@ -19,10 +19,10 @@ from ..helpers import get_team, get_team_cards
 
 User = get_user_model()
 
-TEAM_SELF_REVIEW = "TEAM_SELF_REVIEW"
-TEAM_REVIEW_OTHER = "TEAM_REVIEW_OTHER"
-GIT_USER_REPO_ONLY = "GIT_USER_REPO_ONLY"
-GIT_USER_AS_REVIEWER = "GIT_USER_AS_REVIEWER"
+TEAM_SHUFFLE_REVIEW_SELF = "TEAM_SHUFFLE_REVIEW_SELF"
+TEAM_SHUFFLE_REVIEW_OTHER = "TEAM_SHUFFLE_REVIEW_OTHER"
+ADD_USER_TO_REPO_ONLY = "ADD_USER_TO_REPO_ONLY"
+ADD_USER_AS_CARD_REVIEWER = "ADD_USER_AS_CARD_REVIEWER"
 
 
 def has_social_profile(user):
@@ -56,7 +56,7 @@ def team_self_review(team_name, content_item, reviewer=None):
         )
     team = get_team(team_name)
     cards = get_team_cards(team, content_item)
-    users = team.active_student_users
+    users = team.active_users
     assign_random_reviewers(cards, users)
 
 
@@ -64,7 +64,7 @@ def team_review_other(team_name, content_item, reviewer):
     team = get_team(team_name)
     cards = get_team_cards(team, content_item)
     reviewer_team = get_team(reviewer)
-    reviewer_users = reviewer_team.active_student_users
+    reviewer_users = reviewer_team.active_users
     assign_random_reviewers(cards, reviewer_users)
 
 
@@ -129,10 +129,10 @@ def git_user_repo_only(team_name, content_item, reviewer):
 
 
 allowed_commands = {
-    GIT_USER_AS_REVIEWER: git_user_as_reviewer,
-    GIT_USER_REPO_ONLY: git_user_repo_only,
-    TEAM_SELF_REVIEW: team_self_review,
-    TEAM_REVIEW_OTHER: team_review_other,
+    ADD_USER_AS_CARD_REVIEWER: git_user_as_reviewer,
+    ADD_USER_TO_REPO_ONLY: git_user_repo_only,
+    TEAM_SHUFFLE_REVIEW_SELF: team_self_review,
+    TEAM_SHUFFLE_REVIEW_OTHER: team_review_other,
 }
 
 

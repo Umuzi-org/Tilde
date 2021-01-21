@@ -235,7 +235,7 @@ class UserGroup(models.Model, Mixins):
 
 
 class UserGroupMembership(models.Model, Mixins):
-    """Depricated. REmove after data is migrated!!"""
+    """Depricated. Remove after data is migrated!!"""
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="group_memberships"
