@@ -77,7 +77,7 @@ def _get_teams_from_recruit_project_filter(self, request, view):
         project = models.RecruitProject.objects.get(pk=recruit_project_id)
     except models.RecruitProject.DoesNotExist:
         return []
-    return _get_teams_from_recruit_project_instance(project)
+    return project.get_teams()
 
 
 def _get_teams_from_topic_progress_filter(self, request, view):
