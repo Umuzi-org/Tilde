@@ -1,18 +1,28 @@
 import React from "react";
 
-import { Paper } from '@material-ui/core';
+import { Paper } from "@material-ui/core";
 
-import LinkToUserBoard from "../../widgets/LinkToUserBoard"
-import LinkToUserStats from "../../widgets/LinkToUserStats"
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+import LinkToUserStats from "../../widgets/LinkToUserStats";
 
-export default ({userId,userBoardSelected,userStatsSelected}) => {
-    return (
+import { makeStyles } from "@material-ui/core/styles";
 
+const useStyles = makeStyles((theme) => ({}));
+
+export default ({ userId, userBoardSelected, userStatsSelected }) => {
+  const classes = useStyles();
+  return (
     <Paper>
-        <LinkToUserBoard userId={userId} selected={userBoardSelected}/>
-        <LinkToUserStats userId={userId} selected={userStatsSelected}/>
+      <LinkToUserBoard
+        className={classes.button}
+        userId={userId}
+        selected={userBoardSelected}
+      />
+      <LinkToUserStats
+        className={classes.button}
+        userId={userId}
+        selected={userStatsSelected}
+      />
     </Paper>
-
-    
-    )
-}
+  );
+};
