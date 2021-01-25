@@ -3,7 +3,7 @@ import React from "react";
 import { Paper } from "@material-ui/core";
 
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-import LinkToUserStats from "../../widgets/LinkToUserStats";
+import LinkToUserActions from "../../widgets/LinkToUserActions";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -18,7 +18,7 @@ export default ({ userId, userBoardSelected, userStatsSelected }) => {
         userId={userId}
         selected={userBoardSelected}
       />
-      <LinkToUserStats
+      <LinkToUserActions
         className={classes.button}
         userId={userId}
         selected={userStatsSelected}

@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
 import AccessAlarms from "@material-ui/icons/AccessAlarms";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
 import CardReviewBadges from "../../../widgets/CardReviewBadges";
 
