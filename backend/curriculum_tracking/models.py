@@ -563,6 +563,8 @@ class RecruitProjectReview(models.Model, Mixins):
         models.BooleanField()
     )  # when this review was created, was the user trusted?
 
+    # correctness
+
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"

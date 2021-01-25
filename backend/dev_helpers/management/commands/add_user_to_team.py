@@ -11,4 +11,4 @@ class Command(BaseCommand):
         user = User.objects.get(email=options["email"])
         team = Team.objects.get(name=options["team_name"])
 
-        user.teams.add(team)
+        team.user_set.add(user)
