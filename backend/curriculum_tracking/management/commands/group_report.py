@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import datetime
-from core.models import Team, TeamMembership
+from core.models import Team
 from curriculum_tracking.models import RecruitProjectReview, AgileCard, ContentItem
 from pathlib import Path
 from django.utils import timezone
@@ -256,15 +256,15 @@ def get_user_report(user, extra=None):
 def get_group_report(group):
     logger.info(f"processing group: {group}")
     ret = [
-        get_user_report(o.user, {"_group": group.name})
-        for o in TeamMembership.objects.filter(
-            group=group, user__active=True
-        )
+        get_user_report(o, {"_group": group.name})
+        for o in group.user_set.filter(active=True)
+        # for o in TeamMembership.objects.filter(group=group, user__active=True)
     ]
 
-    manager_users = TeamMembership.objects.filter(
-        group=group, user__active=True, permission_manage=True
-    )
+    # manager_users = TeamMembership.objects.filter(
+    #     group=group, user__active=True, permission_manage=True
+    # )
+    manager_users = []
 
     if ret == []:
         return ret
