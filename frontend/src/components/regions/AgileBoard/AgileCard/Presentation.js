@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
 import AccessAlarms from "@material-ui/icons/AccessAlarms";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
 import CardReviewBadges from "../../../widgets/CardReviewBadges";
 
@@ -128,12 +127,12 @@ export default ({
     >
       <CardContent>
         <CardReviewBadges card={card} />
-        <Typography>
+        <Typography variant="caption">
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
         <Typography variant="caption">[card id:{card.id}]</Typography>
 
-        <Typography variant="h5" component="h2">
+        <Typography variant="h6" component="h2">
           {card.title}
         </Typography>
 

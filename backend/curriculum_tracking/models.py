@@ -549,6 +549,16 @@ class RecruitProject(
 
 class RecruitProjectReview(models.Model, Mixins):
 
+    INCORRECT = "i"
+    CORRECT = "c"
+    CONTRADICTED = "d"
+
+    REVIEW_VALIDATED_STATUS_CHOICES = [
+        (INCORRECT, "incorrect"),
+        (CORRECT, "correct"),
+        (CONTRADICTED, "contradicted"),
+    ]
+
     status = models.CharField(
         max_length=3,
         choices=REVIEW_STATUS_CHOICES,
@@ -562,6 +572,10 @@ class RecruitProjectReview(models.Model, Mixins):
     trusted = (
         models.BooleanField()
     )  # when this review was created, was the user trusted?
+
+    validated = models.CharField(
+        choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
+    )
 
     def __str__(self):
         # feel free to edit this

@@ -1,0 +1,14 @@
+{
+  "id": 3,
+  "status": "C",
+  "timestamp": "2021-01-30T06:09:23.380Z",
+  "comments": "re you should be using `const`. Please make sure you know the difference and when to use them. \nBy using these things correctly it makes it easier to prevent bugs in complicated code. It also makes the intention of your code more clear. Good code always makes its intention clear. \n\n2. Your indentation is pretty funky. You're using vscode, right? There's a plugin called Prettier. I use it every day. You can set it up so that every time you save your code, all the formatting gets made super consistent. It saves loads of time. Try it out\n\n3. I tried this: \n\n```\n> lettersToMorseCode(\"The quick brown fox jumps over the lazy dog\")\nAssertion failed: [object Object]\n'.... . -.-- / - .... . .-. . - .... . / --.- ..- .. ",
+  "recruitProject": 1,
+  "reviewerUser": 4,
+  "reviewerUserEmail": "sheena@prelude.tech",
+  "title": "Tilde project tutorial: How to submit a link",
+  "reviewedUserEmails": ["sheena.oconnell@gmail.com"],
+  "trusted": true,
+  "validated": null,
+  "agileCard": 5
+}

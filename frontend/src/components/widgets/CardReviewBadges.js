@@ -16,6 +16,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const CompetentIcon = SentimentSatisfiedIcon;
+export const ExcellentIcon = SentimentVerySatisfiedIcon;
+export const NotYetCompetentIcon = SentimentDissatisfiedIcon;
+export const RedFlagIcon = MoodBadIcon;
+
+export const statusIcons = {
+  C: CompetentIcon,
+  E: ExcellentIcon,
+  R: RedFlagIcon,
+  NYC: NotYetCompetentIcon,
+};
+
 export default ({ card }) => {
   const classes = useStyles();
 
@@ -33,7 +45,7 @@ export default ({ card }) => {
             badgeContent={codeReviewCompetentSinceLastReviewRequest}
             color="primary"
           >
-            <SentimentSatisfiedIcon />
+            <CompetentIcon />
           </Badge>
         </Tooltip>
       ) : (
@@ -46,7 +58,7 @@ export default ({ card }) => {
             badgeContent={codeReviewExcellentSinceLastReviewRequest}
             color="primary"
           >
-            <SentimentVerySatisfiedIcon />
+            <ExcellentIcon />
           </Badge>
         </Tooltip>
       ) : (
@@ -59,7 +71,7 @@ export default ({ card }) => {
             badgeContent={codeReviewNyCompetentSinceLastReviewRequest}
             color="error"
           >
-            <SentimentDissatisfiedIcon />
+            <NotYetCompetentIcon />
           </Badge>
         </Tooltip>
       ) : (
@@ -71,7 +83,7 @@ export default ({ card }) => {
             badgeContent={codeReviewRedFlagSinceLastReviewRequest}
             color="error"
           >
-            <MoodBadIcon />
+            <RedFlagIcon />
           </Badge>
         </Tooltip>
       ) : (

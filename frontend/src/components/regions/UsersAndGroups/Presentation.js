@@ -54,7 +54,7 @@ export default function Presentation({
               <TableRow>
                 <TableCell>
                   <TextField
-                    label="User Groups"
+                    label="Teams"
                     variant="outlined"
                     {...filterByGroup}
                   />
@@ -122,7 +122,10 @@ export default function Presentation({
                     <TableRow key={email}>
                       <TableCell>{email}</TableCell>
                       <TableCell>
-                        <LinkToUserBoard userId={users[email].userId} />
+                        <LinkToUserBoard
+                          userId={users[email].userId}
+                          label="Details"
+                        />
                       </TableCell>
                     </TableRow>
                   );

@@ -108,6 +108,7 @@ function CardDetailsModalUnconnected({
     handleClose,
     topicReviews,
     projectReviews,
+
     handleClickAddReview,
     showAddReviewButton,
     showUpdateProjectLinkForm,

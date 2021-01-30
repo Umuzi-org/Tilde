@@ -1,13 +1,12 @@
 import React from "react";
 import { routes } from "../../routes";
-
 import BaseButtonLink from "./BaseButtonLink";
 
-export default ({ userId, selected, label }) => {
+export default ({ userId, selected }) => {
   return (
     <BaseButtonLink
-      to={routes.userBoard.route.path.replace(":userId", userId)}
-      label={label || "Board"}
+      to={routes.userActions.route.path.replace(":userId", userId)}
+      label="Actions"
       selected={selected}
     />
   );

@@ -54,6 +54,14 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
 
 const CardBasicDetails = ({ card }) => {
   const classes = useStyles();
+
+  const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
+  const startTime = card.startTime && new Date(card.startTime).toLocaleString();
+  const reviewRequestTime =
+    card.reviewRequestTime && new Date(card.reviewRequestTime).toLocaleString();
+  const completeTime =
+    card.completeTime && new Date(card.completeTime).toLocaleString();
+
   return (
     <React.Fragment>
       <Typography variant="h5">
@@ -75,25 +83,25 @@ const CardBasicDetails = ({ card }) => {
           <TableBody>
             <TableRow>
               <TableCell>Due Time</TableCell>
-              <TableCell>{card.dueTime}</TableCell>
+              <TableCell>{dueTime}</TableCell>
             </TableRow>
             {card.startTime && (
               <TableRow>
                 <TableCell>Start Time</TableCell>
-                <TableCell>{card.startTime}</TableCell>
+                <TableCell>{startTime}</TableCell>
               </TableRow>
             )}
 
             {card.reviewRequestTime && (
               <TableRow>
                 <TableCell>Review Request Time</TableCell>
-                <TableCell>{card.reviewRequestTime}</TableCell>
+                <TableCell>{reviewRequestTime}</TableCell>
               </TableRow>
             )}
             {card.completeTime && (
               <TableRow>
                 <TableCell>Complete Time </TableCell>
-                <TableCell>{card.completeTime}</TableCell>
+                <TableCell>{completeTime}</TableCell>
               </TableRow>
             )}
           </TableBody>

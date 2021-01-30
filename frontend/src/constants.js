@@ -16,6 +16,16 @@ export const AGILE_CARD_STATUS_CHOICES = {
   [COMPLETE]: "Complete",
 };
 
+export const INCORRECT = "i";
+export const CORRECT = "c";
+export const CONTRADICTED = "d";
+
+export const REVIEW_VALIDATED_STATUS_CHOICES = {
+  [INCORRECT]: "incorrect",
+  [CORRECT]: "correct",
+  [CONTRADICTED]: "contradicted",
+};
+
 export const AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER = [
   // if a user is the reviewer for a card, and the card is in one of these columns, then show it on the board
   IN_PROGRESS,
@@ -62,4 +72,5 @@ export default {
   AGILE_COLUMNS,
   REVIEW_STATUS_CHOICES,
   AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER,
+  REVIEW_VALIDATED_STATUS_CHOICES,
 };

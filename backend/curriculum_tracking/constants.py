@@ -28,4 +28,3 @@ REVIEW_STATUS_CHOICES = [
     (EXCELLENT, "excellent"),
     (RED_FLAG, "red flag"),
 ]
-
