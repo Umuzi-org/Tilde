@@ -64,7 +64,35 @@ class RecruitProjectReviewSerializer(serializers.ModelSerializer):
             "recruit_project",
             "reviewer_user",
             "reviewer_user_email",
+            # the below fields are not used when navigting a user's board.
+            # there should probably be 2 seperate serialisers for the different displays
+            "title",
+            "reviewed_user_emails",
+            "reviewed_user_ids",
+            "trusted",
+            "validated",
+            "agile_card",
         ]
+
+    agile_card = serializers.SerializerMethodField("get_agile_card")
+    title = serializers.SerializerMethodField("get_title")
+    reviewed_user_emails = serializers.SerializerMethodField("get_reviewed_user_emails")
+    reviewed_user_ids = serializers.SerializerMethodField("get_reviewed_user_ids")
+
+    def get_agile_card(self, instance):
+        try:
+            return instance.recruit_project.agile_card.id
+        except models.AgileCard.DoesNotExist:
+            return
+
+    def get_title(self, instance):
+        return instance.recruit_project.content_item.title
+
+    def get_reviewed_user_emails(self, instance):
+        return [o.email for o in instance.recruit_project.recruit_users.all()]
+
+    def get_reviewed_user_ids(self, instance):
+        return [o.id for o in instance.recruit_project.recruit_users.all()]
 
 
 class TopicReviewSerializer(serializers.ModelSerializer):

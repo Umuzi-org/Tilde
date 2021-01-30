@@ -94,8 +94,7 @@ function AgileBoardUnconnected({
 
   useEffect(() => {
     fetchInitialCards({ userId });
-    fetchUser({ userId });
-  }, [fetchInitialCards, userId, fetchUser]);
+  }, [fetchInitialCards, userId]);
 
   const filteredCards = filterCardsByUserId({
     cards,

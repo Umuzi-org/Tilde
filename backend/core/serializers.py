@@ -63,6 +63,7 @@ class WhoAmISerializer(serializers.ModelSerializer):
         fields = [
             "email",
             "token",
+            # "id",
             "user_id",
             "active",
             "first_name",

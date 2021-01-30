@@ -83,7 +83,7 @@ export const routes = {
   userActions: {
     route: {
       exact,
-      path: "/users/:userId/stats",
+      path: "/users/:userId/actions",
       component: UserActions,
     },
   },

@@ -127,12 +127,12 @@ export default ({
     >
       <CardContent>
         <CardReviewBadges card={card} />
-        <Typography>
+        <Typography variant="caption">
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
         <Typography variant="caption">[card id:{card.id}]</Typography>
 
-        <Typography variant="h5" component="h2">
+        <Typography variant="h6" component="h2">
           {card.title}
         </Typography>
 

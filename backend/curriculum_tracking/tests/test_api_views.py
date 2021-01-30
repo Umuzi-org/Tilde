@@ -6,7 +6,7 @@ from . import factories
 from core.tests import factories as core_factories
 from django.utils.timezone import datetime
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem
+from curriculum_tracking.models import ContentItem, RecruitProjectReview
 from django.utils import timezone
 from taggit.models import Tag
 
@@ -277,11 +277,15 @@ class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "recruitprojectreview-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
+
     def verbose_instance_factory(self):
-        return factories.RecruitProjectReviewFactory()
+        return factories.RecruitProjectReviewFactory(
+            trusted=True, validated=RecruitProjectReview.CORRECT
+        )
 
 
-class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
+class RecruitTopicReviewViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "topicreview-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 

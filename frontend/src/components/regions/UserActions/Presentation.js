@@ -1,16 +1,48 @@
-import React from 'react';
+import React from "react";
 
-export default ()=>{
-    return<div>
+import { Typography, Paper, Grid } from "@material-ui/core";
+import ReviewCard from "../../widgets/ReviewCard";
 
-        TODO  
-        {/* github stats
-        reviews done
-        reviews recieved R, NYC, C and E 
-        reviews with disagreements 
-        % cards per status? group by tag? 
+export default ({
+  reviewsDone,
+  reviewsRecieved,
+  handleClickOpenProjectDetails,
+}) => {
+  return (
+    <Grid container>
+      <Grid>
+        <Paper>
+          <Typography variant="h4">Competence Reviews Done</Typography>
+          {reviewsDone.map((review) => (
+            <ReviewCard
+              review={review}
+              key={review.id}
+              handleClickOpenProjectDetails={() =>
+                handleClickOpenProjectDetails({ review })
+              }
+              showReviewer={false}
+              showReviewed={true}
+            />
+          ))}
+        </Paper>
+      </Grid>
+      <Grid>
+        <Paper>
+          <Typography variant="h4">Competence Reviews Recieved</Typography>
 
-        */}
-
-    </div>
-}
+          {reviewsRecieved.map((review) => (
+            <ReviewCard
+              review={review}
+              key={review.id}
+              handleClickOpenProjectDetails={() =>
+                handleClickOpenProjectDetails({ review })
+              }
+              showReviewer={true}
+              showReviewed={false}
+            />
+          ))}
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+};

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: "nowrap",
     "& > *": {
       margin: theme.spacing(1),
-      width: theme.spacing(40),
+      width: theme.spacing(35),
       height: theme.spacing(100),
     },
   },

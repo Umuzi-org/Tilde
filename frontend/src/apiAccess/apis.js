@@ -7,6 +7,17 @@ import {
 import { fetchAndClean } from "./helpers";
 import { API_BASE_URL } from "../config";
 
+function objectToGetQueryString(obj) {
+  var str = "";
+  for (var key in obj) {
+    if (str !== "") {
+      str += "&";
+    }
+    str += key + "=" + encodeURIComponent(obj[key]);
+  }
+  return str;
+}
+
 async function whoAmI() {
   const url = `${API_BASE_URL}/api/who_am_i/`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -50,7 +61,7 @@ async function teamEntity({ teamId }) {
 }
 
 async function userEntity({ userId }) {
-  const url = `${API_BASE_URL}/api/users/${userId}`;
+  const url = `${API_BASE_URL}/api/users/${userId}/`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -74,11 +85,28 @@ async function topicProgressEntity({ topicProgressId }) {
   return { response, responseData };
 }
 
-async function recruitProjectReviewsPage({ projectId, page }) {
-  if (!projectId) throw new Error("projectId is empty");
+async function recruitProjectReviewsPage({
+  projectId,
+  page,
+  reviewerUser,
+  recruitUsers,
+}) {
   if (!page) throw new Error("page is empty");
-  const url = `${API_BASE_URL}/api/recruit_project_reviews/?recruit_project=${projectId}&page=${page}`;
-  const { response, responseData } = await fetchAndClean({ url });
+
+  let params = {
+    page,
+  };
+  if (reviewerUser) params["reviewer_user"] = reviewerUser;
+  if (recruitUsers) params["recruit_project__recruit_users"] = recruitUsers;
+  if (projectId) params["recruit_project"] = projectId;
+  // reviewer_user
+  // recruit_project__recruit_users
+  //   if (!projectId) throw new Error("projectId is empty");
+  const getParams = objectToGetQueryString(params);
+  const url = `${API_BASE_URL}/api/recruit_project_reviews/?${getParams}`;
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
   return { response, responseData };
 }
 

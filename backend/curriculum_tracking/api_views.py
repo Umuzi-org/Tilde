@@ -723,6 +723,7 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     # def get_permissions(self):
     #     breakpoint()
     #     foo
+
     #     o = PermissionClass()
     #     o.has_permission(view=self, request=self.request)
     #     return super().get_permissions()
