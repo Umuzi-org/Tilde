@@ -23,7 +23,8 @@ const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
     <React.Fragment>
       <Paper>
         <Typography variant="h6" className={classes.dateTypography}>
-          <TodayIcon className={classes.calendarIcon} /> {date}
+          <TodayIcon className={classes.calendarIcon} /> {date} [count:{" "}
+          {actions.length}]
         </Typography>
       </Paper>
       {actions.map((action) => {
