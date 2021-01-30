@@ -1,17 +1,17 @@
 import React from "react";
 
-import ReviewCard from "../components/widgets/ReviewCard";
+import ActionReviewedCard from "../components/widgets/ActionReviewedCard";
 import verboseReview from "./fixtures/verboseReview.json";
 
 export default {
-  title: "Tilde/ReviewCard",
-  component: ReviewCard,
+  title: "Tilde/ActionReviewedCard",
+  component: ActionReviewedCard,
   // argTypes: {
   //   backgroundColor: { control: 'color' },
   // },
 };
 
-const Template = (args) => <ReviewCard {...args} />;
+const Template = (args) => <ActionReviewedCard {...args} />;
 
 const review = {
   ...verboseReview,

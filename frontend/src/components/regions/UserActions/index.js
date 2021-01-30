@@ -21,35 +21,55 @@ function UserActionsUnconnected({
     fetchProjectReviewsPages({
       dataSequence: [
         { page: 1, reviewerUser: userId },
-        { page: 1, recruitUsers: [userId] },
+        // { page: 1, recruitUsers: [userId] },
       ],
     });
   }, [fetchProjectReviewsPages, userId]);
 
-  const handleClickOpenProjectDetails = ({ review }) => {
+  const handleClickOpenProjectDetails = ({ cardId }) => {
     // console.log(review.agileCard);
-    openCardDetailsModal({ cardId: review.agileCard });
+    openCardDetailsModal({ cardId });
   };
 
-  let allReviews = Object.values(projectReviews);
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const reviewsDone = Object.values(projectReviews)
+    .filter((review) => review.reviewerUser === userId)
+    .map((review) => {
+      const timestamp = new Date(review.timestamp);
+      const dateStr =
+        days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
+      return {
+        ...review,
+        timestamp,
+        actionType: "Review Done",
+        dateStr,
+      };
+    });
 
-  allReviews = allReviews.map((review) => ({
-    ...review,
-    timestamp: new Date(review.timestamp),
-  }));
+  let actionLog = reviewsDone;
+  actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
-  allReviews.sort((review1, review2) => review1.timestamp - review2.timestamp);
-  const reviewsDone = allReviews.filter(
-    (review) => review.reviewerUser === userId
-  );
+  let orderedDates = [];
 
-  const reviewsRecieved = allReviews.filter(
-    (review) => review.reviewedUserIds.indexOf(authedUserId) !== -1
-  );
+  let actionLogByDate = {};
+  actionLog.forEach((o) => {
+    const date = o.dateStr;
+    if (orderedDates.indexOf(date) === -1) orderedDates.push(date);
+    actionLogByDate[date] = actionLogByDate[date] || [];
+    actionLogByDate[date].push(o);
+  });
 
   const props = {
-    reviewsDone,
-    reviewsRecieved,
+    orderedDates,
+    actionLogByDate,
     handleClickOpenProjectDetails,
   };
   return <Presentation {...props} />;

@@ -2,6 +2,7 @@ import React from "react";
 
 import LaunchIcon from "@material-ui/icons/Launch";
 import ReviewValidationIcons from "./ReviewValidationIcons";
+import ReviewStatus from "./ReviewStatus";
 
 import {
   Typography,
@@ -17,7 +18,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const timestampToLocaleString = (timestamp) => {
   const date = new Date(timestamp);
-  return date.toLocaleString();
+  return date.toLocaleTimeString();
 };
 
 const shorten = (str) => {
@@ -27,6 +28,10 @@ const shorten = (str) => {
 };
 const useStyles = makeStyles((theme) => ({
   grow: { flexGrow: 1 },
+  comments: {
+    background: theme.palette.info.light,
+    padding: theme.spacing(1),
+  },
 }));
 
 export default ({
@@ -43,20 +48,22 @@ export default ({
     <Card variant="outlined">
       <CardContent>
         <Typography>{timestampToLocaleString(review.timestamp)}</Typography>{" "}
-        <Typography>{REVIEW_STATUS_CHOICES[review.status]}</Typography>{" "}
         {/* <StatusIcon /> */}
-        <Typography variant="h5" component="h2">
-          {review.title}
+        <Typography variant="h6" component="h2">
+          Competence Review
         </Typography>
+        <Typography>{review.title}</Typography>
         <Tooltip title={review.comments}>
-          <Typography>{shorten(review.comments)}</Typography>
+          <div className={classes.comments}>
+            <Typography>{shorten(review.comments)}</Typography>
+          </div>
         </Tooltip>
         {showReviewer && (
           <Typography>Reviewer: {review.reviewerUserEmail}</Typography>
         )}
         {showReviewed && (
           <Typography>
-            Reviewed: {review.reviewedUserEmails.join(",")}
+            Assignee: {review.reviewedUserEmails.join(",")}
           </Typography>
         )}
       </CardContent>
@@ -71,6 +78,8 @@ export default ({
           View Project
         </Button>
         <div className={classes.grow} />
+        <ReviewStatus status={review.status} />
+
         <ReviewValidationIcons review={review} />
       </CardActions>
     </Card>

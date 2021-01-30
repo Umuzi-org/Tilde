@@ -8,6 +8,7 @@
   "reviewerUserEmail": "sheena@prelude.tech",
   "title": "Tilde project tutorial: How to submit a link",
   "reviewedUserEmails": ["sheena.oconnell@gmail.com"],
+  "reviewedUserIds": [5],
   "trusted": true,
   "validated": null,
   "agileCard": 5

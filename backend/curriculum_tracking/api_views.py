@@ -136,6 +136,8 @@ def _get_teams_from_workshop_attendance(self, request, view):
 
 from django.db.models import Q
 
+from rest_framework import filters
+
 
 class CardSummaryViewset(viewsets.ModelViewSet):
 
@@ -676,7 +678,7 @@ class TopicReviewViewset(viewsets.ModelViewSet):
 
 class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     serializer_class = serializers.RecruitProjectReviewSerializer
-    queryset = models.RecruitProjectReview.objects.order_by("pk")
+    queryset = models.RecruitProjectReview.objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         "status",
