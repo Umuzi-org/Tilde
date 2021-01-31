@@ -7,11 +7,24 @@ import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
+import { ACTION_NAMES } from "./constants";
+
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 function UserActionsUnconnected({
   authedUserId,
   projectReviews,
+  cardSummaries,
   fetchProjectReviewsPages,
+  fetchCardCompletions,
   openCardDetailsModal,
 }) {
   let urlParams = useParams() || {};
@@ -26,35 +39,51 @@ function UserActionsUnconnected({
     });
   }, [fetchProjectReviewsPages, userId]);
 
+  React.useEffect(() => {
+    fetchCardCompletions({ page: 1, assigneeUserId: userId });
+  }, [fetchCardCompletions, userId]);
+
   const handleClickOpenProjectDetails = ({ cardId }) => {
-    // console.log(review.agileCard);
     openCardDetailsModal({ cardId });
   };
 
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const reviewsDone = Object.values(projectReviews)
-    .filter((review) => review.reviewerUser === userId)
-    .map((review) => {
-      const timestamp = new Date(review.timestamp);
-      const dateStr =
-        days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
+  const getTimeFields = (date) => {
+    if (!date) throw new Error("date is falsy");
+    const timestamp = new Date(date);
+    const dateStr =
+      days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
+
+    return {
+      timestamp,
+      dateStr,
+    };
+  };
+
+  const completedCards = Object.values(cardSummaries)
+    .filter((card) => card.assignees.indexOf(userId) !== -1)
+    .map((card) => {
+      const timeFields = getTimeFields(card.completeTime);
+
       return {
-        ...review,
-        timestamp,
-        actionType: "Review Done",
-        dateStr,
+        ...card,
+        ...timeFields,
+
+        actionType: ACTION_NAMES.CARD_COMPLETED,
       };
     });
 
-  let actionLog = reviewsDone;
+  const reviewsDone = Object.values(projectReviews)
+    .filter((review) => review.reviewerUser === userId)
+    .map((review) => {
+      const timeFields = getTimeFields(review.timestamp);
+      return {
+        ...review,
+        ...timeFields,
+        actionType: ACTION_NAMES.COMPETENCE_REVIEW_DONE,
+      };
+    });
+
+  let actionLog = [...reviewsDone, ...completedCards];
   actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
   let orderedDates = [];
@@ -79,6 +108,7 @@ const mapStateToProps = (state) => {
   return {
     users: state.Entities.users || {},
     projectReviews: state.Entities.projectReviews || {},
+    cardSummaries: state.Entities.projectSummaryCards || {},
     authedUserId: state.App.authUser.userId,
   };
 };
@@ -90,6 +120,14 @@ const mapDispatchToProps = (dispatch) => {
         apiReduxApps.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE.operations.startCallSequence(
           { dataSequence }
         )
+      );
+    },
+
+    fetchCardCompletions: ({ assigneeUserId, page }) => {
+      dispatch(
+        apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
+          data: { assigneeUserId, page },
+        })
       );
     },
 

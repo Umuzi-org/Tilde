@@ -1,6 +1,6 @@
 import React from "react";
 
-import ActionReviewedCard from "../components/widgets/ActionReviewedCard";
+import { ActionReviewedCard } from "../components/widgets/ActionLogCards";
 import verboseReview from "./fixtures/verboseReview.json";
 
 export default {

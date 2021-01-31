@@ -160,8 +160,10 @@ class CardSummaryViewset(viewsets.ModelViewSet):
         ),
     ]
     serializer_class = serializers.cardsummarySerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "content_item__content_type"]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ["assignees", "content_item__content_type", "status"]
+
+    ordering_fields = ["recruit_project__complete_time"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")

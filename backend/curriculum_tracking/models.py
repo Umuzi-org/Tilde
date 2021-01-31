@@ -59,12 +59,23 @@ class ReviewableMixin:
             assert card is not None
             if card.status in [AgileCard.BLOCKED, AgileCard.READY]:
                 return
+            old_status = card.status
             if self.__class__ == RecruitProject:
                 card.status = AgileCard.derive_status_from_project(self)
+                progress_instance = card.recruit_project
+
             elif self.__class__ == TopicProgress:
                 card.status = AgileCard.derive_status_from_topic(self, card)
+                progress_instance = card.topic_progress
+
             else:
                 raise Exception(f"Not implemented: {self.__class}")
+
+            if card.status == AgileCard.COMPLETE and old_status != AgileCard.COMPLETE:
+                progress_instance.complete_time = timezone.now()
+            if card.status != AgileCard.COMPLETE:
+                progress_instance.complete_time = None
+
             card.save()
 
     def latest_review(self, trusted=None, timestamp_greater_than=None):

@@ -45,11 +45,15 @@ const FETCH_SINGLE_AGILE_CARD = "FETCH_SINGLE_AGILE_CARD";
 
 const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS";
 
+const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
+  "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
+
 // if you want to maintain a list of objects returned from some list response, then add that base action type here
 export const pagedApiAppTypes = {
   FETCH_RECRUIT_PROJECTS_PAGE: "projects",
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: "cards",
-  FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: "projectSummaryCards",
+  FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: "projectSummaryCards", // TODO rename to summaryCards
+  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: "projectSummaryCards",
   FETCH_COHORTS_PAGE: "cohorts",
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: "projectReviews",
   //   FETCH_VERBOSE_RECRUIT_PROJECT_REVIEWS_PAGE: "FETCH_VERBOSE_RECRUIT_PROJECT_REVIEWS_PAGE"
@@ -241,6 +245,11 @@ export const apiReduxApps = {
   FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
     apiCaller: apiCallers.staff.personallyAssignedCardSummariesPage,
+  }),
+
+  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    apiCaller: apiCallers.recruits.userActionsCardsCompletedPage,
   }),
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: createReduxApp({

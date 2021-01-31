@@ -116,6 +116,21 @@ async function topicProgressReviewsPage({ topicProgressId, page }) {
   return { response, responseData };
 }
 
+async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
+  let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
+// async function userActionsCardsStarted({
+//     assigneeUserId,
+//     page,
+// }){
+//     let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__start_time&status=C`;
+//   const { response, responseData } = await fetchAndClean({ url });
+//   return { response, responseData };
+// }
+
 async function personallyAssignedCardSummariesPage({ assigneeUserId, page }) {
   let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -264,6 +279,7 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
 }
 
 export default {
+  // TODO: get rid of this. Rather just export the functions individually
   everyone: {
     whoAmI,
     logout,
@@ -296,6 +312,7 @@ export default {
     finishTopic,
 
     setProjectLinkSubmission,
+    userActionsCardsCompletedPage,
   },
   staff: {
     cohortsPage,

@@ -1,9 +1,13 @@
 import React from "react";
 
 import { Typography, Paper, Grid } from "@material-ui/core";
-import ActionReviewedCard from "../../widgets/ActionReviewedCard";
+import {
+  ActionReviewedCard,
+  ActionCardCompleted,
+} from "../../widgets/ActionLogCards";
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
+import { ACTION_NAMES } from "./constants";
 
 const useStyles = makeStyles((theme) => ({
   calendarIcon: {
@@ -28,16 +32,27 @@ const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
         </Typography>
       </Paper>
       {actions.map((action) => {
-        if (action.actionType === "Review Done") {
+        if (action.actionType === ACTION_NAMES.COMPETENCE_REVIEW_DONE) {
           return (
             <ActionReviewedCard
               review={action}
-              key={action.id}
+              key={"review" + action.id}
               handleClickOpenProjectDetails={() =>
                 handleClickOpenProjectDetails({ cardId: action.agileCard })
               }
               showReviewer={false}
               showReviewed={true}
+            />
+          );
+        }
+        if (action.actionType === ACTION_NAMES.CARD_COMPLETED) {
+          return (
+            <ActionCardCompleted
+              card={action}
+              key={"completed" + action.id}
+              handleClickOpenProjectDetails={() =>
+                handleClickOpenProjectDetails({ cardId: action.id })
+              }
             />
           );
         }
