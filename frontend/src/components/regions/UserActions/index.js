@@ -48,7 +48,11 @@ function UserActionsUnconnected({
   };
 
   const getTimeFields = (date) => {
-    if (!date) throw new Error("date is falsy");
+    if (!date) {
+      console.log("date is falsy");
+      return {};
+    }
+
     const timestamp = new Date(date);
     const dateStr =
       days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
@@ -83,7 +87,8 @@ function UserActionsUnconnected({
       };
     });
 
-  let actionLog = [...reviewsDone, ...completedCards];
+  let actionLog = [...reviewsDone, ...completedCards].filter((o) => o.dateStr);
+
   actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
   let orderedDates = [];

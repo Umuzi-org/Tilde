@@ -18,7 +18,7 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
 
   const url = window.location.href;
   const props = {
-    // userId,
+    userId,
     user,
     userBoardSelected: url.endsWith("board"), // these match the urls in routes.js
     UserActionsSelected: url.endsWith("actions"),

@@ -16,9 +16,9 @@ const useStyles = makeStyles((theme) => ({
   button: { marginRight: theme.spacing(1) },
 }));
 
-export default ({ user, userBoardSelected, UserActionsSelected }) => {
+export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
   const classes = useStyles();
-  const userId = user && user.id;
+  //   const userId = user && user.id;
   return (
     <React.Fragment>
       <Toolbar variant="dense" className={classes.toolbar}>
