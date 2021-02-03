@@ -62,11 +62,13 @@ COURSE_ALUMNI_JAVA = "Java Alumni"
 COURSE_WEB = "WD"
 COURSE_DATA_ENG = "DE"
 COURSE_JAVA = "Java"
+COURSE_IT = "IT"
 
 STANDARD_BOOTCAMPS = [
     COURSE_WEB,
     COURSE_DATA_ENG,
     COURSE_JAVA,
+    COURSE_IT,
 ]
 
 SPECIFIC_BOOTCAMPS = {
@@ -76,6 +78,7 @@ SPECIFIC_BOOTCAMPS = {
     COURSE_WEB: "Web development boot camp",
     COURSE_DATA_ENG: "Data Engineering boot camp",
     COURSE_JAVA: "Java boot camp",
+    COURSE_IT: None,
 }
 
 
@@ -150,6 +153,7 @@ def get_team(course, title):
         COURSE_WEB: "web dev",
         COURSE_DATA_ENG: "data eng",
         COURSE_JAVA: "java",
+        COURSE_IT: "it support",
     }
     name = f"Boot {courses[course]} {title}"
     # print(name)
@@ -188,25 +192,14 @@ def process_row(row):
 
     courses.append(SPECIFIC_BOOTCAMPS[course])
     courses.extend(POST_BOOT_COURSES)
-    # breakpoint()
+    courses = [s for s in courses if s]
+
     print(user)
     print(course)
     pprint(courses)
     print()
 
-    # clear_course_reg(user)
     set_course_reg(user, courses)
-    # if course == DS:
-    #     courses = [TILDE_INTRO, DS_PRE_BOOT, DATA_SCI_BOOT]
-    # elif course == DE:
-    #     courses = [TILDE_INTRO, DE_PRE_BOOT, DATA_ENG_BOOT]
-    #     set_course_reg(user, courses)
-    # elif course == WD:
-    #     courses = [TILDE_INTRO, WE_PRE_BOOT, WEB_BOOT]
-    #     set_course_reg(user, courses)
-    # else:
-    #     waaaat
-    # print(f"{course} {email}")
 
 
 class Command(BaseCommand):

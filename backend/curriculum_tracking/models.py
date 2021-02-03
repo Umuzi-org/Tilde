@@ -365,6 +365,29 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
     def __str__(self):
         return f"{self.content_item} {[f.name for f in self.flavours.all()]}"
 
+    def update_previous_reviews(self):
+        if self.content_item.content_type == ContentItem.TOPIC:
+            raise NotImplementedError()
+
+        previous_untrusted_reviews = RecruitProjectReview.objects.filter(
+            reviewer_user=self.user,
+            recruit_project__content_item=self.content_item,
+            trusted=False,
+        )
+
+        previous_untrusted_reviews = [
+            o
+            for o in previous_untrusted_reviews
+            if o.recruit_project.flavours_match([o.name for o in self.flavours.all()])
+        ]
+
+        for review in previous_untrusted_reviews:
+            card = review.recruit_project.agile_card
+            if card.status == AgileCard.IN_REVIEW:
+                review.trusted = True
+                review.save()
+                review.recruit_project.update_associated_card_status()
+
 
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin

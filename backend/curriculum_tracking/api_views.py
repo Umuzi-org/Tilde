@@ -299,11 +299,17 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 permissions=Team.PERMISSION_REVIEW_CARDS,
                 get_objects=_get_teams_from_card,
             )
+            | HasObjectPermission(
+                permissions=Team.PERMISSION_TRUSTED_REVIEWER,
+                get_objects=_get_teams_from_card,
+            )
         ],
     )
     def add_review(self, request, pk=None):
+
         # TODO: Debounce or rate limit
         card = self.get_object()
+        # breakpoint()
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
