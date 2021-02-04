@@ -187,7 +187,7 @@ class start_project_Tests(TestCase):
         self.assertIn(JAVASCRIPT, card_js.recruit_project.repository.full_name)
         self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.ssh_url)
         self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.full_name)
-        
+
     @mock.patch("social_auth.github_api.Api")
     @mock.patch("git_real.helpers.add_collaborator")
     @mock.patch("git_real.helpers.get_repo")
@@ -551,14 +551,11 @@ class Project_set_due_time_Tests(TestCase):
 
 class derive_status_from_project_Tests(TestCase):
     def setUp(self):
-        self.project = factories.RecruitProjectFactory(
-            flavours = [JAVASCRIPT]
-        )
-        
+        self.project = factories.RecruitProjectFactory(flavours=[JAVASCRIPT])
+
         trust = factories.ReviewTrustFactory(
-            content_item = self.project.content_item,
-            flavours = [JAVASCRIPT]
-        ) 
+            content_item=self.project.content_item, flavours=[JAVASCRIPT]
+        )
         self.trusted_user = trust.user
 
     def set_project_start_time(self):
@@ -600,6 +597,8 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_trusted_nyc_before_request_for_review(self):
+        self.set_project_start_time()
+        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
@@ -607,20 +606,17 @@ class derive_status_from_project_Tests(TestCase):
         )
         self.assertTrue(review.trusted)
 
-        self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
-
         self.assertEqual(
             AgileCard.derive_status_from_project(self.project), AgileCard.IN_REVIEW
         )
 
     def test_untrusted_nyc_before_request_for_review(self):
         self.set_project_start_time()
+        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
         )
-        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
 
         self.assertFalse(review.trusted)
 
@@ -629,13 +625,13 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_trusted_competent_after_request_for_review(self):
+        self.set_project_start_time()
+        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=COMPETENT,
             recruit_project=self.project,
             reviewer_user=self.trusted_user,
         )
-        self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
 
         self.assertTrue(review.trusted)
 
@@ -644,11 +640,11 @@ class derive_status_from_project_Tests(TestCase):
         )
 
     def test_untrusted_competent_after_request_for_review(self):
+        self.set_project_start_time()
+        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=COMPETENT, recruit_project=self.project
         )
-        self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
 
         self.assertFalse(review.trusted)
 

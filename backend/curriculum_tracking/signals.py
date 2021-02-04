@@ -72,7 +72,7 @@ from curriculum_tracking.constants import (
 
 @receiver([pre_save], sender=models.RecruitProjectReview)
 def set_trusted_on_create(sender, instance, **kwargs):
-    
+
     if instance.trusted == None:
         instance.trusted = instance.recruit_project.is_trusted_reviewer(
             instance.reviewer_user
@@ -160,7 +160,9 @@ def update_project_review_counts(sender, instance, created, **kwargs):
     """whenever a new review is added to a project then update the appropriate review count"""
     if not created:
         return
+    instance.update_recent_validation_flags_for_project()
     project = instance.recruit_project
+
     if instance.status == NOT_YET_COMPETENT:
         project.code_review_ny_competent_since_last_review_request += 1
     elif instance.status == COMPETENT:

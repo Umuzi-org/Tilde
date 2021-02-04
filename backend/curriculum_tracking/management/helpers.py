@@ -1,15 +1,13 @@
-from core.models import Team
+from core.models import Team, User
 
 from curriculum_tracking.models import AgileCard
 
 
-# def get_users(who):
-#     if "@" in who:
-#         return [User.objects.get(email=who)]
-#     team = Team.objects.get(name=who)
-#     memberships = x.objects.filter(team=team, user__active=True)
-
-#     return [o.user for o in memberships]
+def get_users(who):
+    if "@" in who:
+        return [User.objects.get(email=who)]
+    team = Team.objects.get(name=who)
+    return team.user_set.filter(active=True)
 
 
 # def get_student_users(who):

@@ -226,7 +226,7 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["link_submission"]
 
     def verbose_instance_factory(self):
-        project = factories.RecruitProjectFactory(
+        project = factories.RecruitProjectInRevewColumnFactory(
             content_item=factories.ProjectContentItemFactory(
                 project_submission_type=ContentItem.REPOSITORY,
             )

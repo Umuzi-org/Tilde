@@ -387,6 +387,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
                 review.trusted = True
                 review.save()
                 review.recruit_project.update_associated_card_status()
+                review.update_recent_validation_flags_for_project()
 
 
 class RecruitProject(
@@ -618,6 +619,31 @@ class RecruitProjectReview(models.Model, Mixins):
     @property
     def reviewer_user_email(self):
         return self.reviewer_user.email
+
+    def update_recent_validation_flags_for_project(self):
+        """this review was just added. Look at recent reviews to see if there is agreement or contradiction"""
+        reviews = RecruitProjectReview.objects.filter(
+            recruit_project=self.recruit_project
+        ).filter(timestamp__lt=self.timestamp)
+        since_time = self.recruit_project.review_request_time
+        if since_time:
+            reviews = reviews.filter(timestamp__gte=since_time)
+
+        for review in reviews:
+            review.update_validated_from(self)
+
+    def update_validated_from(self, other):
+        positive = [COMPETENT, EXCELLENT]
+        negative = [NOT_YET_COMPETENT, RED_FLAG]
+        if other.trusted:
+            if self.status in positive and other.status in positive:
+                self.validated = RecruitProjectReview.CORRECT
+            else:
+                self.validated = RecruitProjectReview.INCORRECT
+        else:
+            if self.status in positive and other.status in negative:
+                self.validated = RecruitProjectReview.CONTRADICTED
+        self.save()
 
 
 class TopicProgress(models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin):

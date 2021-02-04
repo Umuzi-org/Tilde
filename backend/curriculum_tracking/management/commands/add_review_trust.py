@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 from curriculum_tracking.models import ContentItem, ReviewTrust
-from core.models import Team, User
+
+# from core.models import Team, User
+from ..helpers import get_users
 
 
 class Command(BaseCommand):
@@ -16,11 +18,7 @@ class Command(BaseCommand):
         flavours = [s for s in options["flavour"].split(",") if s]
         update_previous_reviews = options["update_previous_reviews"]
 
-        if "@" in who:
-            users = [User.objects.get(email=who)]
-        else:
-            team = Team.objects.get(name=who)
-            users = team.user_set.all()
+        users = get_users(who)
 
         content_item = ContentItem.objects.get(title=content_item_title)
         available_flavours = content_item.flavours.all()
