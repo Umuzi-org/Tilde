@@ -81,7 +81,7 @@ class ReviewableMixin:
     def latest_review(self, trusted=None, timestamp_greater_than=None):
 
         query = self.reviews_queryset()
-        if trusted != None:
+        if trusted != None and self.__class__ == RecruitProject:
             query = query.filter(trusted=trusted)
         if timestamp_greater_than != None:
             query = query.filter(timestamp__gt=timestamp_greater_than)

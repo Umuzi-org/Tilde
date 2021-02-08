@@ -10,19 +10,22 @@ from curriculum_tracking.models import (
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        cards = (
+        cards = list(
             AgileCard.objects.filter(status=AgileCard.COMPLETE)
             .filter(content_item__content_type=ContentItem.PROJECT)
             .filter(recruit_project__complete_time__isnull=True)
+        ) + list(
+            AgileCard.objects.filter(status=AgileCard.COMPLETE)
+            .filter(content_item__content_type=ContentItem.TOPIC)
+            .filter(topic_progress__complete_time__isnull=True)
         )
-        total = cards.count()
+        total = len(cards)
         for i, card in enumerate(cards):
-            project = card.recruit_project
-            if not project:
-
-                breakpoint()
+            progress = card.progress_instance
+            if not progress:
+                # breakpoint()
                 continue
-            print(f"{i+1}/{total}")
-            review = project.latest_review(trusted=True)
-            project.complete_time = review.timestamp
-            project.save()
+            print(f"{i+1}/{total}: {card}")
+            review = progress.latest_review(trusted=True)
+            progress.complete_time = review.timestamp
+            progress.save()
