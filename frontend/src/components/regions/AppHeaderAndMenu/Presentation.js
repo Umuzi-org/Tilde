@@ -18,6 +18,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
 
 import CardDetailsModal from "../CardDetailsModal";
@@ -126,20 +127,22 @@ export default function Presentation(props) {
   const menuItems = Object.keys(sliderMenuRoutes).map((routeName) => {
     const Icon = sliderMenuRoutes[routeName].sliderNavigation.icon;
     return (
-      <ListItem
-        key={routeName}
-        component={Link}
-        to={sliderMenuRoutes[routeName].route.path}
-      >
-        <ListItemIcon>
-          <Avatar>
-            <Icon />
-          </Avatar>
-        </ListItemIcon>
-        <ListItemText>
-          {sliderMenuRoutes[routeName].sliderNavigation.label}
-        </ListItemText>
-      </ListItem>
+      <Tooltip title={sliderMenuRoutes[routeName].sliderNavigation.helpText}>
+        <ListItem
+          key={routeName}
+          component={Link}
+          to={sliderMenuRoutes[routeName].route.path}
+        >
+          <ListItemIcon>
+            <Avatar>
+              <Icon />
+            </Avatar>
+          </ListItemIcon>
+          <ListItemText>
+            {sliderMenuRoutes[routeName].sliderNavigation.label}
+          </ListItemText>
+        </ListItem>
+      </Tooltip>
     );
   });
 

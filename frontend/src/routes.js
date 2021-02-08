@@ -21,6 +21,7 @@ export const routes = {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "U",
       label: "Users",
+      helpText: "User and Team navigation",
     },
     show: ({ authUser }) => {
       if (authUser.isSuperuser) return true;
@@ -45,6 +46,7 @@ export const routes = {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
       label: "Board",
+      helpText: "Your personal board",
     },
     show: () => true,
   },
@@ -60,6 +62,7 @@ export const routes = {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "A",
       label: "Actions",
+      helpText: "Your personal action log",
     },
     show: () => true,
   },

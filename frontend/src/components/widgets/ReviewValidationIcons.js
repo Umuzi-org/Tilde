@@ -16,7 +16,7 @@ const ReviewValidatedIcons = {
 };
 
 const reviewValidatedHelptext = {
-  [INCORRECT]: "a trusted user disagrees with this",
+  [INCORRECT]: "a trusted user disagrees with this. It is definately wrong",
   [CORRECT]: "a trusted reviewer agrees with this",
   [CONTRADICTED]: "someone contradicted this review. It might be wrong",
   trusted: "the reviewing user is trusted for this project",
