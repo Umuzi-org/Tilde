@@ -90,6 +90,7 @@ class RecruitProjectReviewCreationTests(TestCase):
         for card in self.cards:
             card.refresh_from_db()
             self.assertEqual(card.status, models.AgileCard.COMPLETE)
+            self.assertIsNotNone(card.recruit_project.complete_time)
 
     def test_adding_untrusted_competent_does_not_move_card(self):
         for card in self.cards:

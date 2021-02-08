@@ -80,7 +80,9 @@ def set_trusted_on_create(sender, instance, **kwargs):
 
 
 @receiver([post_save], sender=models.AgileCard)
-def unblock_cards(sender, instance, created, raw, using, update_fields, **kwargs):
+def unblock_cards_and_update_complete_time(
+    sender, instance, created, raw, using, update_fields, **kwargs
+):
     if instance.status == models.AgileCard.COMPLETE:
         for card in instance.required_by_cards.filter(status=models.AgileCard.BLOCKED):
             still_needs = card.requires_cards.filter(
@@ -89,6 +91,12 @@ def unblock_cards(sender, instance, created, raw, using, update_fields, **kwargs
             if still_needs == 0:
                 card.status = models.AgileCard.READY
                 card.save()
+
+        progress_instance = instance.progress_instance
+        if progress_instance.complete_time == None:
+            review = progress_instance.latest_review(trusted=True)
+            progress_instance.complete_time = review.timestamp
+            progress_instance.save()
 
 
 @receiver([post_save], sender=models.TopicReview)

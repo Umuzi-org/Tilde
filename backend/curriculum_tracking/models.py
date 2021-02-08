@@ -71,10 +71,10 @@ class ReviewableMixin:
             else:
                 raise Exception(f"Not implemented: {self.__class}")
 
-            if card.status == AgileCard.COMPLETE and old_status != AgileCard.COMPLETE:
-                progress_instance.complete_time = timezone.now()
-            if card.status != AgileCard.COMPLETE:
-                progress_instance.complete_time = None
+            # if card.status == AgileCard.COMPLETE and old_status != AgileCard.COMPLETE:
+            #     progress_instance.complete_time = timezone.now()
+            # if card.status != AgileCard.COMPLETE:
+            #     progress_instance.complete_time = None
 
             card.save()
 
@@ -766,6 +766,15 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
     # cards are automatically generated and pruned based on what is in the user's
     # curriculum and what they have done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
+
+    @property
+    def progress_instance(self):
+        if self.recruit_project_id:
+            return self.recruit_project
+        if self.topic_progress_id:
+            return self.topic_progress
+        if self.workshop_attendance_id:
+            return self.workshop_attendance
 
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:

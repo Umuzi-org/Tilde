@@ -17,10 +17,12 @@ class Command(BaseCommand):
         )
         total = cards.count()
         for i, card in enumerate(cards):
-            print(f"{i+1}/{total}")
             project = card.recruit_project
             if not project:
+
+                breakpoint()
                 continue
+            print(f"{i+1}/{total}")
             review = project.latest_review(trusted=True)
             project.complete_time = review.timestamp
             project.save()
