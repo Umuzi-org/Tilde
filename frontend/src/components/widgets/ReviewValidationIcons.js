@@ -1,6 +1,6 @@
 import React from "react";
 
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
@@ -12,13 +12,13 @@ const TrustedIcon = CheckCircleIcon;
 const ReviewValidatedIcons = {
   [INCORRECT]: HighlightOffIcon,
   [CORRECT]: CheckCircleOutlineIcon,
-  [CONTRADICTED]: ErrorOutlineIcon,
+  [CONTRADICTED]: HelpOutlineIcon,
 };
 
 const reviewValidatedHelptext = {
   [INCORRECT]: "a trusted user disagrees with this. It is definately wrong",
-  [CORRECT]: "a trusted reviewer agrees with this",
-  [CONTRADICTED]: "someone contradicted this review. It might be wrong",
+  [CORRECT]: "a trusted reviewer agrees with this. Well done :)",
+  [CONTRADICTED]: "someone disagrees with you. There's a lesson here for you",
   trusted: "the reviewing user is trusted for this project",
 };
 

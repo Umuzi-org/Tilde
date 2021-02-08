@@ -22,14 +22,14 @@ export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
   return (
     <React.Fragment>
       <Toolbar variant="dense" className={classes.toolbar}>
+        {user && <Typography>Viewing: {user.email}</Typography>}
+        <div className={classes.grow} />
         <div className={classes.button}>
           <LinkToUserBoard userId={userId} selected={userBoardSelected} />
         </div>
         <div className={classes.button}>
           <LinkToUserActions userId={userId} selected={UserActionsSelected} />
         </div>
-        <div className={classes.grow} />
-        {user && <Typography>Viewing: {user.email}</Typography>}
       </Toolbar>
     </React.Fragment>
   );
