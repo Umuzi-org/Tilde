@@ -14,4 +14,3 @@ EXPOSE 8000
 
 CMD gunicorn -b :8080 --log-level debug backend.wsgi
 
-# CMD [ "python", "manage.py", "runserver","0.0.0.0:8000" ]

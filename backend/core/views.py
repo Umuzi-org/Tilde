@@ -40,8 +40,8 @@ def who_am_i(request):
 def test_long_running_request(request):
     from long_running_request_actors import test_long_running_request as actor
 
-    actor.send()
-    return Response({"status": "OK"})
+    response = actor.send()
+    return Response({"status": "OK", "data": response.asdict()})
 
 
 @api_view(["GET"])

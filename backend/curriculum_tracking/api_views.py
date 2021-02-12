@@ -851,13 +851,18 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         detail=False,
         methods=["post", "get"],
         serializer_class=serializers.GroupSelfReviewSerialiser,
-        permission_classes=[DenyAll],  # TODO
+        permission_classes=[permissions.IsAdminUser],  # TODO
     )
-    def group_self_review_random(self, request, pk=None):
+    def team_shuffle_review_self(self, request, pk=None):
         """randomise group members and assign them as reviewers to each others cards for a specific project"""
-        if request.method == "GET":
-            return Response()
-        todo
+        if request.method == "get":
+            return Response({"status": "OK"})
+        from long_running_request_actors import team_shuffle_review_self as actor
+
+        response = actor.send(
+            team_id="todo", flavour_names="todo", content_item_id="todo"
+        )
+        return Response({"status": "OK", "data": response.asdict()})
 
     @action(
         detail=False,
@@ -865,7 +870,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         serializer_class=serializers.TeamReviewByOtherSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
-    def group_review_by_other(self, request, pk=None):
+    def team_review_by_other(self, request, pk=None):
         """grab users from another group and randomise them as reviewers for this group"""
         todo
 
