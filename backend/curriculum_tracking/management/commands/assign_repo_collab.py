@@ -14,6 +14,7 @@ from social_auth.github_api import Api
 import random
 from django.contrib.auth import get_user_model
 from social_auth.models import SocialProfile
+import itertools
 
 from ..helpers import get_team, get_team_cards
 
@@ -34,19 +35,35 @@ def has_social_profile(user):
 
 
 def shuffle_project_reviewers(cards, users):
-    print("shuffle")
+    # print("shuffle")
     cards = list(cards)
-    users = [o for o in users if has_social_profile(o) and o.active]
-    random.shuffle(users)
-    while len(users) < len(cards):
-        users.extend(users)
+    filtered_users = [o for o in users if has_social_profile(o) and o.active]
 
-    for (card, user) in zip(cards, users):
-        if (user in card.assignees.all()) or (user in card.reviewers.all()):
-            return shuffle_project_reviewers(cards, users)
-    # we have a winner
-    print("win")
-    return zip(cards, users)
+    user_permutations = list(itertools.permutations(filtered_users))
+
+    # breakpoint()
+    random.shuffle(user_permutations)
+
+    for permutation in user_permutations:
+        permutation = list(permutation)
+        valid = True
+        while len(permutation) < len(cards):
+            permutation.extend(permutation)
+
+        for (card, user) in zip(cards, permutation):
+            if (user in card.assignees.all()) or (user in card.reviewers.all()):
+                valid = False
+                break
+
+        if valid:
+            return zip(cards, permutation)
+
+    raise Exception("No valid permutation")
+
+    #         return shuffle_project_reviewers(cards, users)
+    # # we have a winner
+    # print("win")
+    # return zip(cards, users)
 
 
 def team_self_review(team_name, content_item, reviewer=None):

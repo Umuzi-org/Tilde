@@ -21,12 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
   const classes = useStyles();
-  //   const userId = user && user.id;
   return (
     <React.Fragment>
       <Toolbar variant="dense" className={classes.toolbar}>
         {user && <Typography>{user.email}</Typography>}
-
         {user && user.githubName && (
           <a
             className={classes.gitHubLink}
@@ -39,6 +37,7 @@ export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
             </Tooltip>
           </a>
         )}
+
         <div className={classes.grow} />
         <div className={classes.button}>
           <LinkToUserBoard userId={userId} selected={userBoardSelected} />

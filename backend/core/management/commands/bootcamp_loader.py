@@ -21,31 +21,10 @@ EMAIL = "Gmail Address"
 GIT = "Link to your github profile, eg https://github.com/[YOUR_VERY_OWN_USERNAME]"
 COURSE = "Course"
 BOOTCAMP_NAME = "bootcamp_name"
-
-
-# DS = "ds"
-# DE = "de"
-# WD = "wd"
-# JAVA = "Java"
-
-# TILDE_INTRO = 33
-
-# DATA_SCI_BOOT = 28
-# DATA_ENG_BOOT = 35
-# JAVA_BOOT = 41
-# WEB_BOOT = 12
-
-
-# SPECIFIC_BOOTCAMPS = {
-#     JAVA: JAVA_BOOT,
-#     DS: DATA_SCI_BOOT,
-#     DE: DATA_ENG_BOOT,
-#     WD: WEB_BOOT,
-# }
+SKIP = "BROKEN DATA"
 
 
 BOOTCAMP_INTRO = "Introduction to Bootcamp and Learnership"
-
 
 POST_BOOTCAMP_SOFT_SKILLS = "Post Bootcamp Soft Skills"
 POST_BOOT_COURSES = [POST_BOOTCAMP_SOFT_SKILLS]
@@ -54,15 +33,28 @@ COMMON_TECH_BOOT_REQUIREMENTS = "Common tech bootcamp requirements"
 TILDE_INTRO = "Intro to Tilde for tech bootcamps"
 PRE_BOOT_COURSES_ALUMNI = [TILDE_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
 PRE_BOOT_COURSES_NORMAL = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
+PRE_BOOT_COURSES_EXTERNAL = [TILDE_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
 
 
-COURSE_ALUMNI_WEB = "WD Alumni"
+COURSE_ALUMNI_WEB = "WD Alumni"  # these are values in the sheet
 COURSE_ALUMNI_DATA_ENG = "DE Alumni"
 COURSE_ALUMNI_JAVA = "Java Alumni"
 COURSE_WEB = "WD"
 COURSE_DATA_ENG = "DE"
 COURSE_JAVA = "Java"
 COURSE_IT = "IT"
+COURSE_EXTERNAL_WEB = "WD - Ext"
+
+TEAM_COURSE_NAME_PARTS = {  # these strings end up in the Team names
+    COURSE_ALUMNI_WEB: "alumni web dev",
+    COURSE_ALUMNI_DATA_ENG: "alumni data eng",
+    COURSE_ALUMNI_JAVA: "alumni java",
+    COURSE_WEB: "web dev",
+    COURSE_DATA_ENG: "data eng",
+    COURSE_JAVA: "java",
+    COURSE_IT: "it support",
+    COURSE_EXTERNAL_WEB: "web dev",
+}
 
 STANDARD_BOOTCAMPS = [
     COURSE_WEB,
@@ -79,16 +71,20 @@ SPECIFIC_BOOTCAMPS = {
     COURSE_DATA_ENG: "Data Engineering boot camp",
     COURSE_JAVA: "Java boot camp",
     COURSE_IT: None,
+    COURSE_EXTERNAL_WEB: "Web development boot camp",
 }
 
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1ZYA3NzOJdTKaTfUIBb1nl8y2dMVqVQ4WRoUYFNlmVKQ/edit#gid=0"
+        url="https://docs.google.com/spreadsheets/d/1jeW_TBrrb1eGR6_zcerDybxBTsfk7qo9Ryt0c_01bUE/edit?ts=60239dcf#gid=0"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
     df = df[df[COURSE] != ""]
+    if SKIP in df.columns:
+        df = df[df[SKIP] == ""]
+
     # df = df[df[EMAIL].str.contains("gmail")]
     df.columns = [s.strip() for s in df.columns]
     return df
@@ -124,46 +120,33 @@ def clean_github_username(name):
 
 
 def check_email(row):
-    email = row[EMAIL]
+    email = row[EMAIL].strip()
     if email.endswith("@gmail.com"):
         return True
     if email.endswith("@umuzi.org"):
         return True
-    print(f"ERROR {row[EMAIL]} {row[GIT]}")
+    print(f"INVALID EMAIL ERROR {row[EMAIL]}")
 
     return False
 
 
 def check_github(row):
     github = clean_github_username(row[GIT].strip())
-    if requests.get(f"https://github.com/{github}").status_code == 404:
-        print(f"ERROR {row[EMAIL]} {row[GIT]}")
+    final_url = f"https://github.com/{github}"
+    if requests.get(final_url).status_code == 404:
+        print(f"GITHUB 404 ERROR: {row[EMAIL]} {row[GIT]} => final_url = {final_url}")
         return False
     return True
 
 
 def get_team(course, title):
 
-    # courses = {DS: "Data Sci", DE: "Data Eng", WD: "Web Dev", JAVA: "Java"}
-
-    courses = {
-        COURSE_ALUMNI_WEB: "alumni web dev",
-        COURSE_ALUMNI_DATA_ENG: "alumni data eng",
-        COURSE_ALUMNI_JAVA: "alumni java",
-        COURSE_WEB: "web dev",
-        COURSE_DATA_ENG: "data eng",
-        COURSE_JAVA: "java",
-        COURSE_IT: "it support",
-    }
-    name = f"Boot {courses[course]} {title}"
-    # print(name)
+    name = f"Boot {TEAM_COURSE_NAME_PARTS[course]} {title}"
     return Team.objects.get_or_create(name=name)[0]
 
 
 def process_row(row):
-    # if row[EMAIL] != "m2nzhiey@gmail.com":
-    #     return
-    # print(row)
+
     email = row[EMAIL].strip()
     first_name = row[FIRST_NAME].strip()
     last_name = row[LAST_NAME].strip()
@@ -182,11 +165,14 @@ def process_row(row):
 
     team = get_team(course, row[BOOTCAMP_NAME])
     team.user_set.add(user)
-    # user.teams.add(team)
 
+    # return
     courses = []
     if course in STANDARD_BOOTCAMPS:
         courses.extend(PRE_BOOT_COURSES_NORMAL)
+    elif course == COURSE_EXTERNAL_WEB:
+        courses.extend(PRE_BOOT_COURSES_EXTERNAL)
+
     else:
         courses.extend(PRE_BOOT_COURSES_ALUMNI)
 

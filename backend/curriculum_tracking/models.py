@@ -764,7 +764,7 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
     )
 
     # cards are automatically generated and pruned based on what is in the user's
-    # curriculum and what they have done so far. Sometimes they really shouldn't be pruned.
+    # curriculum and what they h\ave done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
     @property

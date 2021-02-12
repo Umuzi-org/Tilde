@@ -24,6 +24,10 @@ DATE_FORMAT = "%-d-%b-%y"
 # eg. 12-Nov-20
 
 
+accumulated_user_as_reviewer_stats = {}
+accumulated_user_as_assignee_stats = {}
+
+
 def sum_card_weights(cards):
     return sum([card.content_item.story_points for card in cards])
 
@@ -242,8 +246,18 @@ def get_user_report(user, cutoff, extra=None):
     for k, v in (extra or {}).items():
         stats[k] = v
 
-    user_as_reviewer = user_as_reviewer_stats(user, cutoff)
-    user_as_assignee = user_as_assignee_stats(user)
+    accumulated_user_as_reviewer_stats[
+        user.id
+    ] = accumulated_user_as_reviewer_stats.get(
+        user.id, user_as_reviewer_stats(user, cutoff)
+    )
+
+    user_as_reviewer = accumulated_user_as_reviewer_stats[user.id]
+
+    accumulated_user_as_assignee_stats[
+        user.id
+    ] = accumulated_user_as_assignee_stats.get(user.id, user_as_assignee_stats(user))
+    user_as_assignee = accumulated_user_as_assignee_stats[user.id]
     for s in user_as_reviewer:
         stats[f"{AS_REVIEWER} {s}"] = user_as_reviewer[s]
     for s in user_as_assignee:
