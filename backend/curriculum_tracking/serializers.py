@@ -272,7 +272,7 @@ class GroupSelfReviewSerialiser(serializers.Serializer):
     group = TeamField()
 
 
-class GroupReviewByOtherSerialiser(serializers.Serializer):
+class TeamReviewByOtherSerialiser(serializers.Serializer):
     class Meta:
         fields = ["group", "content_item", "reviewer_group", "flavours"]
 
@@ -282,7 +282,7 @@ class GroupReviewByOtherSerialiser(serializers.Serializer):
     reviewer_group = TeamField()
 
 
-class GroupReviewByUserSerialiser(serializers.Serializer):
+class TeamReviewByUserSerialiser(serializers.Serializer):
     class Meta:
         fields = [
             "group",

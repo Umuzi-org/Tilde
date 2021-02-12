@@ -5,7 +5,7 @@ from . import serializers
 # from rest_framework.decorators import action
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
@@ -36,6 +36,16 @@ def who_am_i(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAdminUser])
+def test_long_running_request(request):
+    from long_running_request_actors import test_long_running_request as actor
+
+    actor.send()
+    return Response({"status": "OK"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
 def test_logs(request):
     import logging
 

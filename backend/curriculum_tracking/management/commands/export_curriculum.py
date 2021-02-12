@@ -2,12 +2,10 @@ from core.models import Curriculum
 from curriculum_tracking.models import (
     CurriculumContentRequirement,
     ContentItemOrder,
-    ContentItem,
 )
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 import json
 from django.core.management.base import BaseCommand
-from pprint import pprint
 
 
 class Command(BaseCommand):

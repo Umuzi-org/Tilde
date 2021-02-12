@@ -862,7 +862,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.GroupReviewByOtherSerialiser,
+        serializer_class=serializers.TeamReviewByOtherSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
     def group_review_by_other(self, request, pk=None):
@@ -872,7 +872,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.GroupReviewByUserSerialiser,
+        serializer_class=serializers.TeamReviewByUserSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
     def assign_user_as_reviewer(self, request, pk=None):

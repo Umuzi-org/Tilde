@@ -69,3 +69,4 @@ djangorestframework-guardian==0.3.0
 
 
 
+dramatiq[rabbitmq, watch]
