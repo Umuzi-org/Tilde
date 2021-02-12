@@ -77,11 +77,19 @@ spec:
               value: umuzi-prod:europe-west2:prod
             - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
               value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
-            # - name: GS_BUCKET_NAME
-            #   value:
+  
+            - name: RABBITMQ_USER
+              value: rabbit
+            - name: RABBITMQ_HOST
+              value: tilde-rabbitmq-rabbitmq-discovery
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tilde-rabbitmq-rabbitmq-secret
+                  key: rabbitmq-pass
 
-            # GAE_PROJECT
-            # GAE_SERVICE
           volumeMounts:
             - name: google-oauth-onetime-creds
               mountPath: /secrets/google-oauth-onetime-creds
