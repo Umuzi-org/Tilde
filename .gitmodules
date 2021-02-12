@@ -1,3 +1,0 @@
-[submodule "k8s-deploy/googleCloudPlatformClickToDeploy"]
-	path = k8s-deploy/googleCloudPlatformClickToDeploy
-	url = https://github.com/GoogleCloudPlatform/click-to-deploy.git
