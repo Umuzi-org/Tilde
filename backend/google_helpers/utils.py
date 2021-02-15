@@ -1,4 +1,6 @@
 import logging
+
+# from google.auth import credentials
 import pandas as pd
 from functools import lru_cache
 import re
@@ -15,7 +17,7 @@ def timestamp_to_datetime(timestamp):
 
 def fetch_sheet(sheet: str = None, url: str = None):
     print(f"Fetching sheet: {sheet} {url}")
-    service = authorize()
+    service = gspread_authorize()
     if sheet:
         book = service.open(sheet)
     elif url:
@@ -25,14 +27,12 @@ def fetch_sheet(sheet: str = None, url: str = None):
     return pd.DataFrame(sheet.get_all_records())
 
 
-def authorize():
+def get_credentials():
     import json
     from oauth2client.client import SignedJwtAssertionCredentials
-    import gspread
     import os
 
-    # insert name of  json service account key
-    SCOPE = [
+    SCOPE = [  # is these scopes change then we need to delete the token we've stored
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive",
     ]
@@ -49,10 +49,16 @@ def authorize():
     json_key = json.load(open(SECRETS_FILE))
 
     # Authenticate using the signed key
-    credentials = SignedJwtAssertionCredentials(
+    return SignedJwtAssertionCredentials(
         json_key["client_email"], json_key["private_key"], SCOPE
     )
-    ret = gspread.authorize(credentials)
+
+
+def gspread_authorize():
+    import gspread
+
+    credentials = get_credentials()
+    ret = gspread.gspread_authorize(credentials)
     return ret
 
 
@@ -91,3 +97,45 @@ def clean_project_url_part(df, source_col, dest_col):
     df[dest_col] = df.apply(mapper, axis=1)
     df = df[df[source_col].str.contains("projects/")]
     return df
+
+
+def upload_to_drive(path_to_local_file, g_drive_folder_id):
+    from pathlib import Path
+    from googleapiclient.http import MediaFileUpload
+
+    path_to_local_file = Path(path_to_local_file)
+    assert path_to_local_file.exists()
+
+    name = path_to_local_file.name
+    file_metadata = {"name": name, "parents": [g_drive_folder_id]}
+    if name.endswith(".csv"):
+        mimetype = "text/csv"
+    else:
+        raise Exception(f"mimetype not implemenetd for {name}")
+
+    media = MediaFileUpload(path_to_local_file, mimetype=mimetype, resumable=True)
+    drive_service = get_drive_service()
+
+    drive_service.files().create(
+        body=file_metadata, media_body=media, fields="id"
+    ).execute()
+
+
+def get_drive_service():
+    from googleapiclient.discovery import build
+
+    credentials = get_credentials()
+    return build("drive", "v3", credentials=credentials)
+
+
+def get_sheets_service():
+    from googleapiclient.discovery import build
+
+    credentials = get_credentials()
+    return build("sheets", "v4", credentials=credentials)
+
+
+# def overwrite_google_sheet(path_to_local_file, sheet_id):
+#     service = get_sheets_service()
+#     sheet = service.spreadsheets()
+#     result = sheet.values().clear(spreadsheetId=sheet_id, range="A300dd:Z300")

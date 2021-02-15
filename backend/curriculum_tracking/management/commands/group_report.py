@@ -28,6 +28,14 @@ accumulated_user_as_reviewer_stats = {}
 accumulated_user_as_assignee_stats = {}
 
 
+def upload_to_google_drive(path_to_local_file):
+    from google_helpers.utils import upload_to_drive
+
+    g_drive_folder_id = "1in8J12huyxBs1i1ixnjNUdPvoTBktK5e"
+
+    upload_to_drive(path_to_local_file, g_drive_folder_id)
+
+
 def sum_card_weights(cards):
     return sum([card.content_item.story_points for card in cards])
 
@@ -330,15 +338,18 @@ class Command(BaseCommand):
             "\t"
         )
 
+        path = Path(
+            f"gitignore/group_report_{today.strftime('%a %d %b %Y')}__last_{days}_days.csv"
+        )
         with open(
-            Path(
-                f"gitignore/group_report_{today.strftime('%a %d %b %Y')}__last_{days}_days.csv"
-            ),
+            path,
             "w",
         ) as f:
             writer = csv.writer(f)
             writer.writerow(headings)
             writer.writerows([[d[heading] for heading in headings] for d in all_data])
+
+        upload_to_google_drive(path)
 
         for data in all_data:
             for key in data.keys():

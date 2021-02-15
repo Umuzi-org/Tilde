@@ -870,9 +870,16 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         serializer_class=serializers.TeamReviewByOtherSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
-    def team_review_by_other(self, request, pk=None):
+    def team_shuffle_review_other(self, request, pk=None):
         """grab users from another group and randomise them as reviewers for this group"""
-        todo
+        if request.method == "get":
+            return Response({"status": "OK"})
+        from long_running_request_actors import team_shuffle_review_other as actor
+
+        response = actor.send(
+            team_id="todo", flavour_names="todo", content_item_id="todo"
+        )
+        return Response({"status": "OK", "data": response.asdict()})
 
     @action(
         detail=False,
@@ -880,7 +887,28 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         serializer_class=serializers.TeamReviewByUserSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
-    def assign_user_as_reviewer(self, request, pk=None):
-        todo
+    def bulk_add_user_as_card_reviewer(self, request, pk=None):
+        if request.method == "get":
+            return Response({"status": "OK"})
+        from long_running_request_actors import bulk_add_user_as_card_reviewer as actor
 
-    # TODO: bulk set due dates
+        response = actor.send(
+            team_id="todo", flavour_names="todo", content_item_id="todo"
+        )
+        return Response({"status": "OK", "data": response.asdict()})
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.TeamReviewByUserSerialiser,
+        permission_classes=[DenyAll],  # TODO
+    )
+    def bulk_add_user_to_repo_only(self, request, pk=None):
+        if request.method == "get":
+            return Response({"status": "OK"})
+        from long_running_request_actors import bulk_add_user_to_repo_only as actor
+
+        response = actor.send(
+            team_id="todo", flavour_names="todo", content_item_id="todo"
+        )
+        return Response({"status": "OK", "data": response.asdict()})

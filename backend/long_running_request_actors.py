@@ -44,6 +44,37 @@ def test_long_running_request():
     print(f"Active users: {count}")
 
 
-@dramatiq.actor(time_limit=10 * 60 * 1000)
-def team_shuffle_review_self(team_id, flavour_names, content_item_id):
-    TODO
+@dramatiq.actor(time_limit=10 * minute)
+def team_shuffle_review_self(team_id, content_item_id):
+    from curriculum_tracking.reviewer_allocation_helpers import team_shuffle_review_self
+
+    team = Team.objects.get(pk=team_id)
+    content_item = ContentItem.objects.get(pk=content_item_id)
+    team_shuffle_review_self(team, content_item)
+
+
+@dramatiq.actor(time_limit=10 * minute)
+def team_shuffle_review_other():
+    from curriculum_tracking.reviewer_allocation_helpers import (
+        team_shuffle_review_other,
+    )
+
+    team_shuffle_review_other(reviewed_team, content_item, reviewer_team)
+
+
+@dramatiq.actor(time_limit=10 * minute)
+def bulk_add_user_as_card_reviewer():
+    from curriculum_tracking.reviewer_allocation_helpers import (
+        bulk_add_user_as_card_reviewer,
+    )
+
+    bulk_add_user_as_card_reviewer(team, content_item, reviewer_user)
+
+
+@dramatiq.actor(time_limit=10 * minute)
+def bulk_add_user_to_repo_only():
+    from curriculum_tracking.reviewer_allocation_helpers import (
+        bulk_add_user_to_repo_only,
+    )
+
+    bulk_add_user_to_repo_only(team, content_item, reviewer_user)
