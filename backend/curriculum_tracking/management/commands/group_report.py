@@ -235,7 +235,7 @@ def get_user_report(user, cutoff, extra=None):
     stats = {
         "_email": user.email,
         "_id": user.id,
-        "_snapshot_date": datetime.datetime.now(),
+        "_snapshot_date": timezone.now(),
         "_employer_partner": "",
         "_last_login_time": None,
         "_start_date": None,
@@ -309,7 +309,7 @@ class Command(BaseCommand):
         parser.add_argument("days", type=int, nargs="?")
 
     def handle(self, *args, **options):
-        today = datetime.datetime.now().date()
+        today = timezone.now().date()
         days = options.get("days") or 7
         cutoff = timezone.now() - datetime.timedelta(days=days)
 

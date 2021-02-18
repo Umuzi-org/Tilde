@@ -10,7 +10,7 @@ from git_real.constants import CLONE_DESTINATION
 from django.utils import timezone
 
 
-cutoff_date = timezone.datetime.now() - datetime.timedelta(days=90)
+cutoff_date = timezone.now() - datetime.timedelta(days=90)
 cutoff_date = cutoff_date.astimezone()
 
 

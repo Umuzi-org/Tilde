@@ -1,5 +1,5 @@
+from datetime import timezone
 from . import models
-
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django.db.models import Q
@@ -9,6 +9,7 @@ from curriculum_tracking.constants import (
     RED_FLAG,
     EXCELLENT,
 )
+from django.utils import timezone
 
 # @receiver([m2m_changed], sender=models.AgileCard.assignees.through)
 # def make_sure_project_assignees_match_card(sender, instance, **kwargs):
@@ -95,8 +96,13 @@ def unblock_cards_and_update_complete_time(
         progress_instance = instance.progress_instance
         if progress_instance.complete_time == None:
             review = progress_instance.latest_review(trusted=True)
-            progress_instance.complete_time = review.timestamp
+            if review:
+                progress_instance.complete_time = review.timestamp
+            else:
+                progress_instance.complete_time = timezone.now()
             progress_instance.save()
+
+        assert instance.complete_time != None, instance
 
 
 @receiver([post_save], sender=models.TopicReview)
@@ -159,8 +165,11 @@ def maybe_move_card_because_of_project_review(sender, instance, created, **kwarg
     )
 
     if user_is_trusted:
+        recruit_project = instance.recruit_project
         card.status = models.AgileCard.COMPLETE
         card.save()
+        recruit_project.complete_time = instance.timestamp
+        recruit_project.save()
 
 
 @receiver([post_save], sender=models.RecruitProjectReview)

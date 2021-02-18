@@ -1,7 +1,7 @@
 from factory.django import DjangoModelFactory
 import factory
-from git_real import models
-from datetime import datetime
+from django.utils import timezone
+
 
 from core.tests.factories import UserFactory
 
@@ -30,7 +30,7 @@ class RepositoryFactory(DjangoModelFactory):
         lambda *args, **kwargs: next(_repo_ssh_url_iterator)
     )
     # ssh_url = factory.Faker("url")
-    created_at = datetime.now()
+    created_at = timezone.now()
     private = True
     archived = False
 

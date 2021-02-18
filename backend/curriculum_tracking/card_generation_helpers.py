@@ -20,9 +20,7 @@ _CurriculumContentItemOrdering = namedtuple(
 def _flavour_subset(content_item, specified_flavours):
     """The content item has some available flavours, eg: ts and js and python, the specified flavours is the specific flavour requested by the syllabus. Eg eg if python is requested then that's allowed. Basically we want an intersection"""
 
-    subset = [
-        o for o in specified_flavours if o in content_item.flavours.all()
-    ]
+    subset = [o for o in specified_flavours if o in content_item.flavours.all()]
     return subset
 
 

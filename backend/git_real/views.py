@@ -8,8 +8,8 @@ from .models import Commit
 
 from django.urls import resolve
 import datetime
-User = get_user_model()
 
+User = get_user_model()
 
 
 def index(request):
@@ -45,7 +45,7 @@ def commit_history_graph(request, id=None):
 
     days_past = 14
 
-    cutoff = datetime.datetime.now() - datetime.timedelta(days=days_past)
+    cutoff = timezone.now() - datetime.timedelta(days=days_past)
     if url_name == "cohort_commits":
         cohort = Cohort.objects.get(pk=id)
         users = cohort.get_member_users()
@@ -122,7 +122,7 @@ def commit_history_graph(request, id=None):
 
     figure = px.scatter(df, x="datetime", y="index", hover_data=df.columns, height=800)
 
-    tomorrow = datetime.datetime.now().date() + datetime.timedelta(days=1)
+    tomorrow = timezone.now().date() + datetime.timedelta(days=1)
     all_dates = [
         tomorrow - datetime.timedelta(days=days_past + 1 - i)
         for i in range(days_past + 1)

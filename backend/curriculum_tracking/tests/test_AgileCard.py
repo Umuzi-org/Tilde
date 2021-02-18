@@ -65,7 +65,7 @@ class start_project_Tests(TestCase):
             "owner": {"login": "me"},
             "ssh_url": "https://whatever.git",
             "private": True,
-            "created_at": datetime.now().strftime(GITHUB_DATETIME_FORMAT),
+            "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
             "archived": False,
         }
 
@@ -104,7 +104,7 @@ class start_project_Tests(TestCase):
             "owner": {"login": "me"},
             "ssh_url": "https://whatever.git",
             "private": True,
-            "created_at": datetime.now().strftime(GITHUB_DATETIME_FORMAT),
+            "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
             "archived": False,
         }
 
@@ -163,7 +163,7 @@ class start_project_Tests(TestCase):
                 "owner": {"login": "me"},
                 "ssh_url": f"https://{repo_full_name}.git",
                 "private": True,
-                "created_at": datetime.now().strftime(GITHUB_DATETIME_FORMAT),
+                "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
                 "archived": False,
             }
 
@@ -203,7 +203,7 @@ class start_project_Tests(TestCase):
                 "owner": {"login": "me"},
                 "ssh_url": f"https://{repo_full_name}.git",
                 "private": True,
-                "created_at": datetime.now().strftime(GITHUB_DATETIME_FORMAT),
+                "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
                 "archived": False,
             }
 
@@ -443,7 +443,7 @@ class start_project_Tests(TestCase):
                 "owner": {"login": "me"},
                 "ssh_url": f"https://{repo_full_name}.git",
                 "private": True,
-                "created_at": datetime.now().strftime(GITHUB_DATETIME_FORMAT),
+                "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
                 "archived": False,
             }
 
@@ -598,7 +598,7 @@ class derive_status_from_project_Tests(TestCase):
 
     def test_trusted_nyc_before_request_for_review(self):
         self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
+        self.project.request_review(force_timestamp=timezone.now() + timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
@@ -612,7 +612,7 @@ class derive_status_from_project_Tests(TestCase):
 
     def test_untrusted_nyc_before_request_for_review(self):
         self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() + timedelta(days=10))
+        self.project.request_review(force_timestamp=timezone.now() + timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
@@ -626,7 +626,7 @@ class derive_status_from_project_Tests(TestCase):
 
     def test_trusted_competent_after_request_for_review(self):
         self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
+        self.project.request_review(force_timestamp=timezone.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=COMPETENT,
             recruit_project=self.project,
@@ -641,7 +641,7 @@ class derive_status_from_project_Tests(TestCase):
 
     def test_untrusted_competent_after_request_for_review(self):
         self.set_project_start_time()
-        self.project.request_review(force_timestamp=datetime.now() - timedelta(days=10))
+        self.project.request_review(force_timestamp=timezone.now() - timedelta(days=10))
         review = factories.RecruitProjectReviewFactory(
             status=COMPETENT, recruit_project=self.project
         )
@@ -791,12 +791,12 @@ class WorkshopMovementTests(TestCase):
         self.card.assignees.set([UserFactory()])
 
     def test_attend_workshop(self):
-        self.card.attended_workshop(datetime.now())
+        self.card.attended_workshop(timezone.now())
         self.assertEqual(self.card.status, AgileCard.COMPLETE)
         self.assertIsNotNone(self.card.workshop_attendance)
 
     def test_cancel_workshop_attendance(self):
-        self.card.attended_workshop(datetime.now())
+        self.card.attended_workshop(timezone.now())
         self.card.delete_workshop_attendance()
         self.assertIsNone(self.card.workshop_attendance)
         self.assertEqual(WorkshopAttendance.objects.count(), 0)

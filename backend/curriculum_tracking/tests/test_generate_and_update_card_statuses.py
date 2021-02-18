@@ -92,7 +92,7 @@ class generate_all_content_cards_for_user_Tests(TestCase):
             cards = models.AgileCard.objects.filter(content_item=content)
             self.assertEqual(len(cards), 2)
             # for card in cards:
-                
+
             options = [card.flavour_names for card in cards]
             option_counts = [len(l) for l in options]
             self.assertEqual(option_counts, [1, 1])
@@ -188,7 +188,7 @@ class update_topic_card_progress_Tests(TestCase):
         card.refresh_from_db()
         self.assertEqual(card.status, card.IN_REVIEW)
 
-        progress.complete_time = timezone.datetime.now()
+        progress.complete_time = timezone.now()
         progress.save()
 
         update_topic_card_progress(self.user)
@@ -438,15 +438,15 @@ class update_project_card_progress_Tests(TestCase):
 
         progress = factories.RecruitProjectFactory(
             content_item=content_item,
-            review_request_time=timezone.datetime.now() - timezone.timedelta(days=1),
-            start_time=timezone.datetime.now() - timezone.timedelta(days=2),
+            review_request_time=timezone.now() - timezone.timedelta(days=1),
+            start_time=timezone.now() - timezone.timedelta(days=2),
         )
         progress.recruit_users.add(self.user)
 
         factories.RecruitProjectReviewFactory(
             recruit_project=progress,
             status=NOT_YET_COMPETENT,
-            timestamp=timezone.datetime.now(),
+            timestamp=timezone.now(),
         )
 
         update_project_card_progress(self.user)
@@ -476,7 +476,7 @@ class update_project_card_progress_Tests(TestCase):
         progress = factories.RecruitProjectFactory(
             content_item=content_item,
             review_request_time=None,
-            start_time=timezone.datetime.now() - timezone.timedelta(days=2),
+            start_time=timezone.now() - timezone.timedelta(days=2),
         )
         progress.recruit_users.add(self.user)
         progress.flavours.add(

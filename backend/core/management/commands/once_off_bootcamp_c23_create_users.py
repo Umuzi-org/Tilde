@@ -10,7 +10,7 @@ from social_auth.models import SocialProfile
 from curriculum_tracking.models import CourseRegistration
 import datetime
 
-now = datetime.datetime.now()
+now = timezone.now()
 team = Team.objects.get_or_create(name="ds bootcamp sept 20")[0]
 
 

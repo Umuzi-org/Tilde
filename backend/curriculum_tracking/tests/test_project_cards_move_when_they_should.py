@@ -78,19 +78,35 @@ class RecruitProjectReviewCreationTests(TestCase):
         self.assertTrue(review.trusted)
 
     def test_adding_trusted_competent_moves_card_to_complete(self):
-
         for card in self.cards:
+            card.refresh_from_db()
+
             project = card.recruit_project
-            factories.RecruitProjectReviewFactory(
+
+            review = factories.RecruitProjectReviewFactory(
                 recruit_project=project,
                 reviewer_user=self.trusted_user,
                 status=COMPETENT,
             )
+            self.assertIsNotNone(review.timestamp)
+            self.assertEqual(review.trusted, True)
 
-        for card in self.cards:
+            # for card in self.cards:
             card.refresh_from_db()
+            project.refresh_from_db()
+
+            project = models.RecruitProject.objects.get(pk=project.id)
+            # project = card.recruit_project
+            # print("AFTER SIGNAL")
+
+            # print(f"card.id:   {card.id}")
+            # print(f"card.status:   {card.status}")
+            # print(f"project:   {project}")
+            # print(f"project.id: {project.id}")
+            # print(f"project.complete_time:{project.complete_time}")
+
             self.assertEqual(card.status, models.AgileCard.COMPLETE)
-            self.assertIsNotNone(card.recruit_project.complete_time)
+            self.assertIsNotNone(project.complete_time)
 
     def test_adding_untrusted_competent_does_not_move_card(self):
         for card in self.cards:

@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
 from curriculum_tracking.models import RecruitProjectReview
-from django.utils.timezone import datetime, timedelta
+from django.utils.timezone import timedelta
 import pandas as pd
+from django.utils import timezone
 
 
 def generate_report():
-    today = datetime.now().date()
+    today = timezone.now().date()
 
     headings = ["date", "email", "is_staff", "story_points", "count"]
 
@@ -14,7 +15,7 @@ def generate_report():
     for day in range(7):
         maximum = today - timedelta(days=day)
         minimum = maximum - timedelta(days=1)
-        heading = minimum.strftime("%a %d %b")
+        # heading = minimum.strftime("%a %d %b")
         all_reviews = RecruitProjectReview.objects.filter(
             timestamp__gte=minimum
         ).filter(timestamp__lte=maximum)
@@ -43,7 +44,7 @@ def generate_report():
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        today = datetime.now().date()
+        today = timezone.now().date()
 
         df = generate_report()
         df.to_csv(f"gitignore/code_reviews {today.strftime('%a %d %b %Y')}.csv")

@@ -84,14 +84,15 @@ def save_project_and_update_card(row):
         defaults={
             "owner": repo_full_name.split("/")[0],
             "ssh_url": f"git@github.com:{repo_full_name}.git",
-            "created_at": timezone.datetime.now(),
+            "created_at": timezone.now(),
             "private": False,
             "archived": False,
         },
     )
 
     project = RecruitProject.objects.filter(
-        content_item=content_item, recruit_users__in=[user],
+        content_item=content_item,
+        recruit_users__in=[user],
     ).first()
     if project:
         project.repository = repo
@@ -102,7 +103,8 @@ def save_project_and_update_card(row):
             pass
     else:
         project = RecruitProject.objects.create(
-            content_item=content_item, repository=repo,
+            content_item=content_item,
+            repository=repo,
         )
         project.recruit_users.add(user)
         for flavour in card.flavours.all():
@@ -141,8 +143,12 @@ def get_df():
     df["repo_full_name"] = df.apply(clean_repo_url, axis=1)
 
     # breakpoint()
-    df = df.dropna(subset=["repo_full_name"],)
-    df = df.dropna(subset=["clean_project_url"],)
+    df = df.dropna(
+        subset=["repo_full_name"],
+    )
+    df = df.dropna(
+        subset=["clean_project_url"],
+    )
     df = df.drop_duplicates(
         subset=["clean_project_url", "clean_github_name"], keep="last"
     )
@@ -154,4 +160,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         df = get_df()
         df.apply(save_project_and_update_card, axis=1)
-

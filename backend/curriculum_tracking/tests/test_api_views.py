@@ -27,7 +27,7 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
 
     def verbose_instance_factory(self):
         project = factories.RecruitProjectFactory(
-            due_time=datetime.now(), review_request_time=datetime.now()
+            due_time=timezone.now(), review_request_time=timezone.now()
         )
         card = factories.AgileCardFactory(recruit_project=project)
         card.reviewers.add(core_factories.UserFactory())
@@ -106,8 +106,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         card.assignees.add(recruit)
 
-        due_time_1 = datetime.now() + timedelta(days=7)
-        due_time_2 = datetime.now() + timedelta(days=1)
+        due_time_1 = timezone.now() + timedelta(days=7)
+        due_time_2 = timezone.now() + timedelta(days=1)
 
         url = reverse("agilecard-set-card-due-time", kwargs={"pk": card.id})
 
@@ -223,7 +223,7 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "recruitproject-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
-    FIELDS_THAT_CAN_BE_FALSEY = ["link_submission"]
+    FIELDS_THAT_CAN_BE_FALSEY = ["link_submission", "complete_time"]
 
     def verbose_instance_factory(self):
         project = factories.RecruitProjectInRevewColumnFactory(
@@ -340,7 +340,7 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
             content_item=factories.ContentItemFactory(
                 content_type=ContentItem.WORKSHOP
             ),
-            timestamp=timezone.datetime.now(),
+            timestamp=timezone.now(),
             attendee_user=attendee_user,
         )
 

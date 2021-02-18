@@ -71,11 +71,6 @@ class ReviewableMixin:
             else:
                 raise Exception(f"Not implemented: {self.__class}")
 
-            # if card.status == AgileCard.COMPLETE and old_status != AgileCard.COMPLETE:
-            #     progress_instance.complete_time = timezone.now()
-            # if card.status != AgileCard.COMPLETE:
-            #     progress_instance.complete_time = None
-
             card.save()
 
     def latest_review(self, trusted=None, timestamp_greater_than=None):
@@ -1025,11 +1020,11 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
             self.content_item.content_type == ContentItem.TOPIC
         ), f"{self.content_item.content_type}"
         if self.content_item.topic_needs_review:
-            self.topic_progress.review_request_time = timezone.datetime.now()
+            self.topic_progress.review_request_time = timezone.now()
             self.topic_progress.save()
             self.status = AgileCard.IN_REVIEW
         else:
-            self.topic_progress.complete_time = timezone.datetime.now()
+            self.topic_progress.complete_time = timezone.now()
             self.topic_progress.save()
             self.status = AgileCard.COMPLETE
         self.save()

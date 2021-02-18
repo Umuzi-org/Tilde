@@ -23,9 +23,10 @@ class Command(BaseCommand):
         for i, card in enumerate(cards):
             progress = card.progress_instance
             if not progress:
-                # breakpoint()
                 continue
+
             print(f"{i+1}/{total}: {card}")
+
             review = progress.latest_review(trusted=True)
             progress.complete_time = review.timestamp
             progress.save()

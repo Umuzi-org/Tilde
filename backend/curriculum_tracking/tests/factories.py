@@ -4,7 +4,7 @@ from curriculum_tracking import models
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from core.tests.factories import UserFactory, CurriculumFactory
 from git_real.tests.factories import RepositoryFactory
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.utils import timezone
 
 
@@ -142,8 +142,7 @@ class RecruitProjectFactory(DjangoModelFactory):
         model = "curriculum_tracking.RecruitProject"
 
     content_item = factory.SubFactory(ProjectContentItemFactory)
-    due_time = datetime.now() + timedelta(days=1)
-    complete_time = datetime.now()
+    due_time = timezone.now() + timedelta(days=1)
     repository = factory.SubFactory(RepositoryFactory)
 
     @factory.post_generation
@@ -208,7 +207,7 @@ class TopicReviewFactory(DjangoModelFactory):
         model = "curriculum_tracking.TopicReview"
 
     status = NOT_YET_COMPETENT
-    timestamp = datetime.now()
+    timestamp = timezone.now()
     comments = "something seriously useful"
     topic_progress = factory.SubFactory(TopicProgressFactory)
     reviewer_user = factory.SubFactory(UserFactory)
@@ -300,4 +299,4 @@ class WorkshopAttendanceFactory(DjangoModelFactory):
 
     attendee_user = factory.SubFactory(UserFactory)
     content_item = factory.SubFactory(ProjectContentItemFactory)
-    timestamp = timezone.datetime.now()
+    timestamp = timezone.now()

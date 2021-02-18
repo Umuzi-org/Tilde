@@ -319,7 +319,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
                 models.RecruitProjectReview.objects.create(
                     status=serializer.data["status"],
-                    timestamp=timezone.datetime.now(),
+                    timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     recruit_project=card.recruit_project,
                     reviewer_user=request.user,
@@ -330,7 +330,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
                 models.TopicReview.objects.create(
                     status=serializer.data["status"],
-                    timestamp=timezone.datetime.now(),
+                    timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     topic_progress=card.topic_progress,
                     reviewer_user=request.user,
@@ -534,7 +534,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         card = self.get_card_or_error(
             status_or_404=None, type_or_404=models.ContentItem.WORKSHOP
         )
-        card.attended_workshop(timestamp=timezone.datetime.now())
+        card.attended_workshop(timestamp=timezone.now())
         return Response(serializers.AgileCardSerializer(card).data)
         # serializer = self.get_serializer(data=request.data)
 
