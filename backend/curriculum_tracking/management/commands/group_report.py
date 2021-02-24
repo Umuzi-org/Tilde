@@ -340,8 +340,10 @@ class Command(BaseCommand):
             writer.writerow(headings)
             writer.writerows([[d[heading] for heading in headings] for d in all_data])
 
+        from google_helpers.utils import 
+
         for data in all_data:
             for key in data.keys():
                 if key not in headings:
-                    breakpoint()
+                    # breakpoint()
                     pass

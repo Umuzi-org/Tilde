@@ -77,7 +77,7 @@ SPECIFIC_BOOTCAMPS = {
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1jeW_TBrrb1eGR6_zcerDybxBTsfk7qo9Ryt0c_01bUE/edit?ts=60239dcf#gid=0"
+        url="https://docs.google.com/spreadsheets/d/1jeW_TBrrb1eGR6_zcerDybxBTsfk7qo9Ryt0c_01bUE/edit#gid=0"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])

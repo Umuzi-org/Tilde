@@ -57,6 +57,16 @@ class Api:
             return response.json()
         return response
 
+    def delete(self, url_end, headers=None, json=True):
+        full_url = f"{GITHUB_BASE_URL}/{url_end}"
+        print(full_url)
+
+        response = requests.delete(full_url, headers=self.headers(headers))
+
+        if json:
+            return response.json()
+        return response
+
     def post(self, url_end, data):
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
 
@@ -64,13 +74,13 @@ class Api:
 
         return response.json()
 
-    def request(self, url_end, response404=None, json=True):
+    def request(self, url_end, response404=None, json=True, headers=None):
 
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
 
         print(f"curl {full_url}")
 
-        response = requests.get(full_url, headers=self.headers())
+        response = requests.get(full_url, headers=self.headers(headers))
 
         if (response404 is not None) and response.status_code == 404:
             with open("misspellings.log", "a") as f:

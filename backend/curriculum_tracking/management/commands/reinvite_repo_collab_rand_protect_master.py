@@ -17,9 +17,15 @@ class Command(BaseCommand):
 
             protect_master(api, repo.full_name)
             for user in proj.reviewer_users.all():
-                print(user.social_profile.github_name)
-                add_collaborator(api, repo.full_name, user.social_profile.github_name)
+                if user.active:
+                    print(user.social_profile.github_name)
+                    add_collaborator(
+                        api, repo.full_name, user.social_profile.github_name
+                    )
             for user in proj.recruit_users.all():
-                print(user.social_profile.github_name)
-                add_collaborator(api, repo.full_name, user.social_profile.github_name)
+                if user.active:
+                    print(user.social_profile.github_name)
+                    add_collaborator(
+                        api, repo.full_name, user.social_profile.github_name
+                    )
         print()
