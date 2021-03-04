@@ -89,7 +89,7 @@ def get_df():
     if SKIP in df.columns:
         df = df[df[SKIP] == ""]
 
-    # df = df[df[EMAIL].str.contains("gmail")]
+    df[EMAIL] = df[EMAIL].str.lower()
     df.columns = [s.strip() for s in df.columns]
     return df
 
