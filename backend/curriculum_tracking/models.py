@@ -945,6 +945,7 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         - add assignees as collaborator
         """
         from .helpers import create_or_update_single_project_card
+        from long_running_request_actors import add_collaborator_and_protect_master
 
         assert (
             self.assignees.count() == 1
@@ -957,6 +958,12 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
                 card_flavour_names=self.flavour_names
             )
             assert self.recruit_project.repository
+            # retry it just in case of github having eventual consistency issues
+
+            add_collaborator_and_protect_master.send_with_options(
+                kwargs={"project_id": self.recruit_project.id},
+                delay=10000,  # 10 seconds
+            )
 
         elif self.content_item.project_submission_type == ContentItem.CONTINUE_REPO:
             self.recruit_project.repository = self._get_repo_to_continue_from()
