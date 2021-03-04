@@ -94,6 +94,9 @@ def unblock_cards_and_update_complete_time(
                 card.save()
 
         progress_instance = instance.progress_instance
+        if progress_instance.__class__ == models.WorkshopAttendance:
+            return
+
         if progress_instance.complete_time == None:
             review = progress_instance.latest_review(trusted=True)
             if review:
