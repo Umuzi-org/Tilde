@@ -40,6 +40,7 @@ COURSE_ALUMNI_WEB = "WD Alumni"  # these are values in the sheet
 COURSE_ALUMNI_DATA_ENG = "DE Alumni"
 COURSE_ALUMNI_JAVA = "Java Alumni"
 COURSE_WEB = "WD"
+COURSE_DATA_SCI = "DS"
 COURSE_DATA_ENG = "DE"
 COURSE_JAVA = "Java"
 COURSE_IT = "IT"
@@ -54,11 +55,13 @@ TEAM_COURSE_NAME_PARTS = {  # these strings end up in the Team names
     COURSE_JAVA: "java",
     COURSE_IT: "it support",
     COURSE_EXTERNAL_WEB: "web dev",
+    COURSE_DATA_SCI: "data sci",
 }
 
 STANDARD_BOOTCAMPS = [
     COURSE_WEB,
     COURSE_DATA_ENG,
+    COURSE_DATA_SCI,
     COURSE_JAVA,
     COURSE_IT,
 ]
@@ -69,6 +72,7 @@ SPECIFIC_BOOTCAMPS = {
     COURSE_ALUMNI_JAVA: "Alumni Java Bootcamp",
     COURSE_WEB: "Web development boot camp",
     COURSE_DATA_ENG: "Data Engineering boot camp",
+    COURSE_DATA_SCI: "Data Science boot camp",
     COURSE_JAVA: "Java boot camp",
     COURSE_IT: None,
     COURSE_EXTERNAL_WEB: "Web development boot camp",
@@ -77,7 +81,7 @@ SPECIFIC_BOOTCAMPS = {
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/1jeW_TBrrb1eGR6_zcerDybxBTsfk7qo9Ryt0c_01bUE/edit#gid=0"
+        url="https://docs.google.com/spreadsheets/d/11_Z0avz-Ca2rpA5wsPoHc75ut6tCN8M5tfsOsbKyhhE/edit#gid=0"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
