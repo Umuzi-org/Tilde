@@ -553,7 +553,9 @@ class RecruitProject(
         # self.review_request_time = (
         #     force_timestamp or self.review_request_time or timezone.now()
         # )
-        assert self.start_time, "cannot request a review if the project isn't started"
+        assert (
+            self.start_time
+        ), f"cannot request a review if the project isn't started - {self}"
 
         self.review_request_time = force_timestamp or timezone.now()
 
@@ -1021,7 +1023,10 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
 
     def finish_topic(self):
         """This is called when a recruit says they are finished. There might still be a review stage"""
-        assert self.status in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]
+        assert self.status in [
+            AgileCard.IN_PROGRESS,
+            AgileCard.REVIEW_FEEDBACK,
+        ], f"invalid status: {self.status}"
         assert self.topic_progress != None, f"Topic hasn't been started"
         assert (
             self.content_item.content_type == ContentItem.TOPIC

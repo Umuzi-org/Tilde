@@ -34,8 +34,10 @@ if RABBITMQ_PASSWORD:
 rabbitmq_broker = RabbitmqBroker(**connection)
 dramatiq.set_broker(rabbitmq_broker)
 
+MINUTE = 60 * 1000
 
-@dramatiq.actor(time_limit=60000)
+
+@dramatiq.actor(time_limit=10 * MINUTE)
 def test_long_running_request():
 
     from core.models import User
@@ -44,7 +46,7 @@ def test_long_running_request():
     print(f"Active users: {count}")
 
 
-@dramatiq.actor(time_limit=10 * 60 * 1000)
+@dramatiq.actor(time_limit=10 * MINUTE)
 def team_shuffle_review_self(team_id, flavour_names, content_item_id):
     TODO
 
