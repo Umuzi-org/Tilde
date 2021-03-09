@@ -82,6 +82,30 @@ def user_as_assignee_stats(user):
     complete_projects = project_cards.filter(status=AgileCard.COMPLETE)
     # number_of_complete_project_cards = complete_projects.count()
     # weight_of_complete_project_cards = sum_card_weights(complete_projects)
+
+    oldest_card_in_review_column = cards_in_review_column.order_by(
+        "recruit_project__review_request_time"
+    ).first()
+
+    # latest_card_in_review_column = cards_in_review_column.order_by(
+    #     "recruit_project__review_request_time"
+    # ).last()
+
+    # if oldest_card_in_review_column:
+    #     assert (
+    #         latest_card_in_review_column.review_request_time
+    #         >= oldest_card_in_review_column.review_request_time
+    #     )
+
+    if oldest_card_in_review_column:
+        oldest_card_in_review_column_request_time = (
+            oldest_card_in_review_column.review_request_time.strftime(DATE_FORMAT)
+        )
+        # else:
+        #     last_time_a_project_was_completed = None
+    else:
+        oldest_card_in_review_column_request_time = None
+
     last_completed_project = (
         complete_projects.filter(recruit_project__complete_time__isnull=False)
         .order_by("recruit_project__complete_time")
@@ -144,6 +168,7 @@ def user_as_assignee_stats(user):
         "weight_of_competent_complete_project_cards": sum_card_weights(
             competent_complete_projects
         ),
+        "oldest_card_in_review_column_request_time": oldest_card_in_review_column_request_time,
     }
 
 
@@ -326,7 +351,7 @@ class Command(BaseCommand):
         #     set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
         # )
 
-        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days""".split(
+        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days 	A oldest_card_in_review_column_request_time""".split(
             "\t"
         )
 

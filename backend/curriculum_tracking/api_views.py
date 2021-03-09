@@ -41,9 +41,6 @@ def _get_teams_from_recruit_project(self, request, view):
     # return _get_teams_from_recruit_project_instance(project)
 
 
-# def _get_teams_from_recruit_project_instance(project):
-
-
 def _get_teams_from_recruit_project_review(self, request, view):
     project_review = view.get_object()
     project = project_review.project
