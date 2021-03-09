@@ -41,6 +41,7 @@ class TeamFactory(DjangoModelFactory):
         model = "core.Team"
 
     name = factory.lazy_attribute(lambda *args, **kwargs: next(_team_name_iterator))
+    active = True
 
 
 class CurriculumFactory(DjangoModelFactory):

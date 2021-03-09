@@ -296,6 +296,6 @@ class Team(AuthGroup, Mixins):
                 continue
 
             for team in user.teams():
-                if team.id not in yielded:
+                if team.active and team.id not in yielded:
                     yielded.append(team.id)
                     yield team

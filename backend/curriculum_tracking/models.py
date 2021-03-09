@@ -425,6 +425,18 @@ class RecruitProject(
             ["content_item", "repository"],
         ]
 
+    def get_users_with_permission(self, permissions):
+        from guardian.shortcuts import get_users_with_perms
+
+        teams = self.get_teams()
+        result = []
+        for team in teams:
+            users = get_users_with_perms(obj=team)
+            for user in users:
+                if user not in result:
+                    result.append(user)
+        return result
+
     def get_teams(self):
         """return the teams of the users invoved in this project"""
         user_ids = [user.id for user in self.recruit_users.all()] + [
@@ -956,7 +968,7 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         - add assignees as collaborator
         """
         from .helpers import create_or_update_single_project_card
-        from long_running_request_actors import add_collaborator_and_protect_master
+        from long_running_request_actors import add_collaborators_and_protect_master
 
         assert (
             self.assignees.count() == 1
@@ -971,9 +983,9 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
             assert self.recruit_project.repository
             # retry it just in case of github having eventual consistency issues
 
-            add_collaborator_and_protect_master.send_with_options(
+            add_collaborators_and_protect_master.send_with_options(
                 kwargs={"project_id": self.recruit_project.id},
-                delay=10000,  # 10 seconds
+                delay=15000,  # 15 seconds
             )
 
         elif self.content_item.project_submission_type == ContentItem.CONTINUE_REPO:

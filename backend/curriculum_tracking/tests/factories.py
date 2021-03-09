@@ -146,6 +146,15 @@ class RecruitProjectFactory(DjangoModelFactory):
     repository = factory.SubFactory(RepositoryFactory)
 
     @factory.post_generation
+    def reviewer_users(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.reviewer_users.add(user)
+
+    @factory.post_generation
     def recruit_users(self, create, extracted, **kwargs):
         if not create:
             return

@@ -3,6 +3,7 @@ from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
     RecruitProject,
+    TopicProgress,
     WorkshopAttendance,
     ContentItem,
     TopicReview,
@@ -778,6 +779,29 @@ class TopicMovementTestCase(TestCase):
         )
         self.card.refresh_from_db()
         self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
+
+    def test_that_start_topic_cant_make_duplicates(self):
+        content_item = self.card.content_item
+        content_item.topic_needs_review = True
+        content_item.save()
+
+        get_count = lambda: TopicProgress.objects.filter(
+            content_item=content_item, user=self.card.assignees.first()
+        ).count()
+        topic_progress_count = get_count()
+
+        self.assertEqual(topic_progress_count, 0)
+        self.card.start_topic()
+
+        topic_progress_count = get_count()
+
+        self.assertEqual(topic_progress_count, 1)
+
+        self.card.status = AgileCard.READY
+        self.card.start_topic()
+
+        topic_progress_count = get_count()
+        self.assertEqual(topic_progress_count, 1)
 
 
 class WorkshopMovementTests(TestCase):

@@ -52,20 +52,25 @@ def team_shuffle_review_self(team_id, flavour_names, content_item_id):
 
 
 @dramatiq.actor()
-def add_collaborator_and_protect_master(project_id):
+def add_collaborators_and_protect_master(project_id):
     from social_auth.github_api import Api
     from git_real.constants import GITHUB_BOT_USERNAME
     from git_real.helpers import add_collaborator, protect_master
     from curriculum_tracking.models import RecruitProject
+    from core.models import Team
     from social_auth.github_api import Api
 
     api = Api(GITHUB_BOT_USERNAME)
     project = RecruitProject.objects.get(pk=project_id)
     repo = project.repository
     protect_master(api, repo.full_name)
-    for user in project.reviewer_users.all():
+
+    collaborator_users = list(project.reviewer_users.filter(active=True)) + list(
+        project.recruit_users.filter(active=True)
+    )
+
+    for user in collaborator_users:
         if user.active:
             add_collaborator(api, repo.full_name, user.social_profile.github_name)
-    for user in project.recruit_users.all():
-        if user.active:
-            add_collaborator(api, repo.full_name, user.social_profile.github_name)
+
+    permissioned_users = project.get_users_with_permission(Team.PERMISSION_VIEW)
