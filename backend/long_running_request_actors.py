@@ -65,12 +65,11 @@ def add_collaborators_and_protect_master(project_id):
     repo = project.repository
     protect_master(api, repo.full_name)
 
-    collaborator_users = list(project.reviewer_users.filter(active=True)) + list(
-        project.recruit_users.filter(active=True)
+    collaborator_users = (
+        list(project.reviewer_users.filter(active=True))
+        + list(project.recruit_users.filter(active=True))
+        + project.get_users_with_permission(Team.PERMISSION_VIEW)
     )
 
     for user in collaborator_users:
-        if user.active:
-            add_collaborator(api, repo.full_name, user.social_profile.github_name)
-
-    permissioned_users = project.get_users_with_permission(Team.PERMISSION_VIEW)
+        add_collaborator(api, repo.full_name, user.social_profile.github_name)
