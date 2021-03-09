@@ -643,7 +643,9 @@ class RecruitProjectReview(models.Model, Mixins):
         self.save()
 
 
-class TopicProgress(models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin):
+class TopicProgress(
+    models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin, FlavourMixin
+):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     due_time = models.DateTimeField(blank=True, null=True)
@@ -654,6 +656,13 @@ class TopicProgress(models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin
 
     def reviews_queryset(self):
         return self.topic_reviews
+
+    def __str__(self) -> str:
+        s = f"{self.content_item} - {self.user}"
+        flavours = [o.name for o in self.flavours.all()]
+        if flavours:
+            return f"{s} [{flavours}]"
+        return s
 
 
 class TopicReview(models.Model, Mixins):
@@ -673,7 +682,7 @@ class TopicReview(models.Model, Mixins):
         return self.reviewer_user.email
 
 
-class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin):
+class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin, FlavourMixin):
     timestamp = models.DateTimeField()
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     attendee_user = models.ForeignKey(User, on_delete=models.PROTECT)
