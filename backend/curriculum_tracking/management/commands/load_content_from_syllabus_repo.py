@@ -257,9 +257,7 @@ def _update_tags(meta, content_item):
         content_item.tags.add(tag)
 
 
-def set_flavours(
-    content_item, raw_flavours, available_content_flavours
-):
+def set_flavours(content_item, raw_flavours, available_content_flavours):
     right_hand_side = [i for l in available_content_flavours.values() for i in l]
 
     flavours = []
@@ -395,7 +393,7 @@ def add_all_prereq():
 
     for file_path in recurse_get_all_content_index_file_paths():
         # for content_item in models.ContentItem.objects.all():
-        print(file_path)
+        print(f"processing file at:\n\t{file_path}")
         content_sub_dir = (
             str(file_path).replace(str(Helper.repo_base_dir), "").strip("/")
         )
@@ -403,7 +401,14 @@ def add_all_prereq():
         # file_path = content_item_file_path(repo_base_dir, content_item)
         meta = dict(frontmatter.load(file_path))
         url = Helper.get_full_url_from_partial(content_sub_dir)
-        content_item = models.ContentItem.objects.get(url=url)
+        try:
+            content_item = models.ContentItem.objects.get(url=url)
+        except models.ContentItem.DoesNotExist:
+            print(
+                f"cant find content item with\n\tcontent_sub_dir = {content_sub_dir}\n\turl = {url}"
+            )
+            raise
+
         print(f"{content_item.id} {content_item}")
 
         _manage_prerequisites(meta, content_item)
@@ -541,9 +546,7 @@ def _get_ordered_curriculum_items_from_page(file_stream):
                 assert (
                     len(flavour_names) == 1
                 ), f"flavour_names = {flavour_names}. Either it's None or it isn't!\n\t{params['path']}"
-            flavour_names = [
-                s for s in flavour_names if s != "none"
-            ]
+            flavour_names = [s for s in flavour_names if s != "none"]
 
             if flavour_names:
                 assert (

@@ -36,7 +36,6 @@ def get_ordered_content_items(curriculum):
 
 
 def _recurse_generate_ordered_content_items(content_requirements):
-    # already_yielded_content_items = []
     yielded = []
 
     def _already_yielded(content_item_ordering):
@@ -346,6 +345,7 @@ def create_or_update_content_cards_for_user(user, ordered_content_items, start_o
                 if len(exact_flavour_match) == 1:
                     requires_cards.append(exact_flavour_match[0])
                 elif len(exact_flavour_match) == 0:
+                    breakpoint()
                     print("TODO!!!!!!!!!!")
                     print("FIX!!!!!!!!!!")
                 else:

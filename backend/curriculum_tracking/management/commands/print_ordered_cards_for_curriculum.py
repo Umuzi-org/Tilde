@@ -13,4 +13,4 @@ class Command(BaseCommand):
         curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
 
         for x in get_ordered_content_items(curriculum):
-            print(f"{x.content_item.content_type} - {x.content_item}")
+            print(f"{x.content_item.content_type} - {x.content_item} - {x.flavours}")
