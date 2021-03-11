@@ -293,9 +293,11 @@ def get_user_report(user, cutoff, extra=None):
 
 def get_group_report(group, cutoff):
     logger.info(f"processing group: {group}")
+    users = group.user_set.filter(active=True)
+    # users = [list(users)[0]]  # TODO remove
     ret = [
         get_user_report(user=o, cutoff=cutoff, extra={"_group": group.name})
-        for o in group.user_set.filter(active=True)
+        for o in users
         # for o in TeamMembership.objects.filter(group=group, user__active=True)
     ]
 
@@ -342,16 +344,8 @@ class Command(BaseCommand):
         all_data = []
         for group in groups:
             all_data.extend(get_group_report(group, cutoff))
-            # break
 
-        # headings = []
-        # for data in all_data:
-        #     headings.extend(data.keys())
-        # headings = sorted(
-        #     set(headings), key=lambda s: f"a{s}" if s.startswith("_") else f"b{s}"
-        # )
-
-        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days 	A oldest_card_in_review_column_request_time""".split(
+        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days	A oldest_card_in_review_column_request_time""".split(
             "\t"
         )
 
