@@ -37,8 +37,9 @@ class APITestCaseMixin:
 
         url = self.get_list_url()
         response = self.client.get(url)
-        self.assertIn("count", response.data)
-        self.assertEqual(response.data["count"], 0)
+        # self.assertIn("count", response.data)
+        # self.assertEqual(response.data, [])
+        self.assertEqual(response.data, [])
 
         # make an instance. No attribute should be falsy
         instance = self.verbose_instance_factory()
@@ -47,9 +48,10 @@ class APITestCaseMixin:
 
         response = self.client.get(url)
         self.assertEqual(
-            response.data["count"], self.NUMBER_OF_INSTANCES_CREATED_BY_VERBOSE_FACTORY
+            len(response.data), self.NUMBER_OF_INSTANCES_CREATED_BY_VERBOSE_FACTORY
         )
-        instance = response.data["results"][0]
+        print(response.data)
+        instance = response.data[0]
         assert "id" in instance, "please make sure your serialiser includes an id field"
         for key, value in instance.items():
             if key in self.FIELDS_THAT_CAN_BE_FALSEY:
@@ -67,7 +69,7 @@ class APITestCaseMixin:
 
         url = self.get_list_url()
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 0)
+        self.assertEqual(response.data, [])
 
         data = self.generate_post_create_data()
 
@@ -83,7 +85,7 @@ class APITestCaseMixin:
             self.assertFalse(has_error, response.data)
 
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(len(response.data), 1)
 
     def verbose_instance_factory(self):
         raise NotImplementedError(

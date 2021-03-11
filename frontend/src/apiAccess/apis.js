@@ -7,6 +7,13 @@ import {
 import { fetchAndClean } from "./helpers";
 import { API_BASE_URL } from "../config";
 
+function calculateOffset({ page, limit }) {
+  if (!page) throw new Error("page is empty");
+
+  if (page < 1) throw new Error("page must be >= 1");
+  return limit * (page - 1);
+}
+
 function objectToGetQueryString(obj) {
   var str = "";
   for (var key in obj) {
@@ -49,7 +56,9 @@ async function authenticateWithOneTimeToken(data) {
 }
 
 async function teamsPage({ page }) {
-  const url = `${API_BASE_URL}/api/teams/?active=true&page=${page}`;
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+  const url = `${API_BASE_URL}/api/teams/?active=true&limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -67,7 +76,10 @@ async function userEntity({ userId }) {
 }
 
 async function recruitProjectsPage({ userId, page }) {
-  const url = `${API_BASE_URL}/api/recruit_projects/?recruit_users=${userId}&page=${page}`;
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/recruit_projects/?recruit_users=${userId}&limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -91,10 +103,12 @@ async function recruitProjectReviewsPage({
   reviewerUser,
   recruitUsers,
 }) {
-  if (!page) throw new Error("page is empty");
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
 
   let params = {
-    page,
+    limit,
+    offset,
   };
   if (reviewerUser) params["reviewer_user"] = reviewerUser;
   if (recruitUsers) params["recruit_project__recruit_users"] = recruitUsers;
@@ -111,13 +125,21 @@ async function recruitProjectReviewsPage({
 }
 
 async function topicProgressReviewsPage({ topicProgressId, page }) {
-  const url = `${API_BASE_URL}/api/topic_reviews/?topic_progress=${topicProgressId}&page=${page}`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/topic_reviews/?topic_progress=${topicProgressId}&limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
 async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
-  let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -126,13 +148,17 @@ async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
 //     assigneeUserId,
 //     page,
 // }){
-//     let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__start_time&status=C`;
+//     let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__start_time&status=C`;
 //   const { response, responseData } = await fetchAndClean({ url });
 //   return { response, responseData };
 // }
 
 async function personallyAssignedCardSummariesPage({ assigneeUserId, page }) {
-  let url = `${API_BASE_URL}/api/card_summaries/?page=${page}&assignees=${assigneeUserId}`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -149,7 +175,11 @@ async function personallyAssignedAgileCardsPage({
   page,
   status,
 }) {
-  let url = `${API_BASE_URL}/api/agile_card/?status=${status}&page=${page}`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  let url = `${API_BASE_URL}/api/agile_card/?status=${status}&limit=${limit}&offset=${offset}`;
   if (assigneeUserId) url += `&assignees=${assigneeUserId}`;
   if (reviewerUserId) url += `&reviewers=${reviewerUserId}`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -163,13 +193,21 @@ async function agileCardEntity({ cardId }) {
 }
 
 async function cohortsPage({ page }) {
-  const url = `${API_BASE_URL}/api/cohorts/?active=true&page=${page}`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/cohorts/?active=true&limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
 async function cohortRecruits({ page, cohort }) {
-  const url = `${API_BASE_URL}/api/recruit_cohorts/?page=${page}&cohort=${cohort}`;
+  const limit = 20;
+
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/recruit_cohorts/?limit=${limit}&offset=${offset}&cohort=${cohort}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -180,12 +218,17 @@ async function repositoryEntity({ repositoryId }) {
   return { response, responseData };
 }
 async function repositoryCommitsPage({ repositoryId, page }) {
-  const url = `${API_BASE_URL}/api/commit/?page=${page}&repository=${repositoryId}`;
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/commit/?limit=${limit}&offset=${offset}&repository=${repositoryId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 async function repositoryPullRequestsPage({ repositoryId, page }) {
-  const url = `${API_BASE_URL}/api/pull_request/?page=${page}&repository=${repositoryId}`;
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+  const url = `${API_BASE_URL}/api/pull_request/?limit=${limit}&offset=${offset}&repository=${repositoryId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
