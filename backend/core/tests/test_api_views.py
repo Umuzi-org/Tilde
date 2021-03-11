@@ -29,12 +29,12 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         self.login(super_user)
 
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(len(response.data), 2)
 
         self.login(staff_user)
 
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 0)
+        self.assertEqual(len(response.data), 0)
 
         for permission, _ in Team._meta.permissions:
             # make sure that users can read what they need to
@@ -43,8 +43,8 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
             self.login(user)
 
             response = self.client.get(url)
-            self.assertEqual(response.data["count"], 1)
-            self.assertEqual(response.data["results"][0]["id"], team_1.id)
+            self.assertEqual(len(response.data), 1)
+            self.assertEqual(response.data[0]["id"], team_1.id)
 
             # check that it works for groups as well
             group = Group.objects.create(name=f"{permission} group")
@@ -55,13 +55,13 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
             self.login(user)
 
             response = self.client.get(url)
-            self.assertEqual(response.data["count"], 1)
-            self.assertEqual(response.data["results"][0]["id"], team_1.id)
+            self.assertEqual(len(response.data), 1)
+            self.assertEqual(response.data[0]["id"], team_1.id)
 
         self.login(normal_user)
 
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 0)
+        self.assertEqual(len(response.data), 0)
 
     def test_staff_users_cant_see_all_teams(self):
         user = factories.UserFactory(is_superuser=False, is_staff=True)
@@ -71,6 +71,4 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         self.login(user)
         url = self.get_list_url()
         response = self.client.get(url)
-        self.assertEqual(response.data["count"], 0)
-        # returned_id = response.data["results"][0]["id"]
-        # self.assertEqual(returned_id, team.id)
+        self.assertEqual(len(response.data), 0)
