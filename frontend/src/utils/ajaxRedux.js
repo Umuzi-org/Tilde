@@ -341,3 +341,13 @@ export function createReduxApp({
     sagaWatchers,
   };
 }
+
+/* read through the call log and get the latest call data that matches the provided request parameters */
+export function getLatestMatchingCall({ callLog, requestData }) {
+  return callLog.reverse().find((logEntry) => {
+    for (let key in requestData) {
+      if (logEntry[key] !== requestData[key]) return false;
+    }
+    return true;
+  });
+}

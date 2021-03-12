@@ -4,6 +4,7 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { connect } from "react-redux";
 import consts from "../../../constants";
 import { useParams } from "react-router-dom";
+import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 
 function boardFromCards({ cards }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
@@ -32,28 +33,28 @@ function filterCardsByUserId({ cards, userId }) {
   return filteredCards;
 }
 
-function getLatestMatchingCall({
-  fetchCardsCallLog,
-  status,
-  assigneeUserId,
-  reviewerUserId,
-}) {
-  return fetchCardsCallLog.reverse().find((logEntry) => {
-    if (logEntry.requestData.status !== status) return false;
+// function getLatestMatchingCall({
+//   fetchCardsCallLog,
+//   status,
+//   assigneeUserId,
+//   reviewerUserId,
+// }) {
+//   return fetchCardsCallLog.reverse().find((logEntry) => {
+//     if (logEntry.requestData.status !== status) return false;
 
-    if (
-      (assigneeUserId !== undefined) &
-      (logEntry.requestData.assigneeUserId !== assigneeUserId)
-    )
-      return false;
-    if (
-      (reviewerUserId !== undefined) &
-      (logEntry.requestData.reviewerUserId !== reviewerUserId)
-    )
-      return false;
-    return true;
-  });
-}
+//     if (
+//       (assigneeUserId !== undefined) &
+//       (logEntry.requestData.assigneeUserId !== assigneeUserId)
+//     )
+//       return false;
+//     if (
+//       (reviewerUserId !== undefined) &
+//       (logEntry.requestData.reviewerUserId !== reviewerUserId)
+//     )
+//       return false;
+//     return true;
+//   });
+// }
 
 export function getLatestCallNextPageValue({
   fetchCardsCallLog,
@@ -63,21 +64,29 @@ export function getLatestCallNextPageValue({
 }) {
   const lastCall = getLatestMatchingCall({
     fetchCardsCallLog,
-    status,
-    assigneeUserId,
-    reviewerUserId,
+    requestData: {
+      status,
+      assigneeUserId,
+      reviewerUserId,
+    },
   });
 
   if (lastCall === undefined) return null;
   if (lastCall === null) return null;
   if (lastCall.responseData === null) return null;
-  const nextUrl = lastCall.responseData.next;
-  if (nextUrl) {
-    var url = new URL(nextUrl);
-    const nextPageNumber = url.searchParams.get("page");
-    return parseInt(nextPageNumber);
-  }
-  return null;
+
+  console.log("========================");
+  console.log("========================");
+  console.log(lastCall);
+  console.log("========================");
+  console.log("========================");
+  //   const nextUrl = lastCall.responseData.next;
+  //   if (nextUrl) {
+  //     var url = new URL(nextUrl);
+  //     const nextPageNumber = url.searchParams.get("page");
+  //     return parseInt(nextPageNumber);
+  //   }
+  //   return null;
 }
 
 function AgileBoardUnconnected({
