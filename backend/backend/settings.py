@@ -349,7 +349,7 @@ ROCKETCHAT = {
 
 GITHUB_BOT_USERNAME = "umuzibot" or os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME")
 
-RABBITMQ_USER = os.environ.get("RABBITMQ_USER")
-RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")
-RABBITMQ_PASSWORD = os.environ.get("RABBITMQ_PASSWORD")
+RABBITMQ_USER = os.environ.get("RABBITMQ_USER","rabbituser")
+RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST","localhost")
+RABBITMQ_PASSWORD = os.environ.get("RABBITMQ_PASSWORD","password")
 RABBITMQ_PORT = os.environ.get("RABBITMQ_PORT", "5672")
