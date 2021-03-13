@@ -9,6 +9,12 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
 
+
+// TODO: display loading spinner while fetching page 
+// TODO: scroll down to load more  
+// TODO: look nice 
+
+
 const days = [
   "Sunday",
   "Monday",
