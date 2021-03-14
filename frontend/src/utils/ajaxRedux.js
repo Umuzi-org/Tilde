@@ -344,9 +344,13 @@ export function createReduxApp({
 
 /* read through the call log and get the latest call data that matches the provided request parameters */
 export function getLatestMatchingCall({ callLog, requestData }) {
+  // console.log("calling getLatestMatchingCall")
+  // console.log({ callLog, requestData })
+  
+  if (callLog === undefined) return
   return callLog.reverse().find((logEntry) => {
     for (let key in requestData) {
-      if (logEntry[key] !== requestData[key]) return false;
+      if (logEntry.requestData[key] !== requestData[key]) return false;
     }
     return true;
   });

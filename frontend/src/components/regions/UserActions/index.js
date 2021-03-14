@@ -8,6 +8,7 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
+import { getLatestMatchingCall } from "../../../utils/ajaxRedux"
 
 
 // TODO: display loading spinner while fetching page 
@@ -32,6 +33,9 @@ function UserActionsUnconnected({
   fetchProjectReviewsPages,
   fetchCardCompletions,
   openCardDetailsModal,
+  // call logs
+  FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
+FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -49,10 +53,40 @@ function UserActionsUnconnected({
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
   }, [fetchCardCompletions, userId]);
 
+
+  const latestProjectReviewsCall = getLatestMatchingCall({
+    callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
+    requestData: {reviewerUser:userId}}
+  ) || {loading:true}
+  
+  const lastCompletedCardsPage = getLatestMatchingCall({
+    callLog: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    reviewerUser: {assigneeUserId: userId}
+  }) || {loading:true}
+  
+ 
   const handleClickOpenProjectDetails = ({ cardId }) => {
     openCardDetailsModal({ cardId });
   };
 
+  const anyLoading = latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
+
+
+  const fetchNextPages = () =>{
+    
+    const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
+    fetchProjectReviewsPages({
+      dataSequence: [
+        { page: nextReviewPage, reviewerUser: userId },
+        // { page: 1, recruitUsers: [userId] },
+      ],
+    });
+    
+    const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
+    fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+
+  }
+  
   const getTimeFields = (date) => {
     if (!date) {
       console.log("date is falsy");
@@ -110,6 +144,7 @@ function UserActionsUnconnected({
   const props = {
     orderedDates,
     actionLogByDate,
+    anyLoading,
     handleClickOpenProjectDetails,
   };
   return <Presentation {...props} />;
@@ -121,6 +156,8 @@ const mapStateToProps = (state) => {
     projectReviews: state.Entities.projectReviews || {},
     cardSummaries: state.Entities.projectSummaryCards || {},
     authedUserId: state.App.authUser.userId,
+    FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
+    FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
   };
 };
 

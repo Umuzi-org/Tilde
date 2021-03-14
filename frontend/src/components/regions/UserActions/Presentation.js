@@ -5,9 +5,12 @@ import {
   ActionReviewedCard,
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
+import Loading from "../../widgets/Loading"
+
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
+
 
 const useStyles = makeStyles((theme) => ({
   calendarIcon: {
@@ -66,6 +69,7 @@ export default ({
   orderedDates,
   actionLogByDate,
   handleClickOpenProjectDetails,
+  anyLoading,
 }) => {
   return (
     <Grid container>
@@ -79,6 +83,8 @@ export default ({
               handleClickOpenProjectDetails={handleClickOpenProjectDetails}
             />
           ))}
+
+            {anyLoading && <Loading/>}
         </Paper>
       </Grid>
     </Grid>
