@@ -10,7 +10,6 @@ import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 
-// TODO: scroll down to load more
 // TODO: look nice
 
 const days = [
@@ -69,16 +68,16 @@ function UserActionsUnconnected({
 
   const fetchNextPages = () => {
     if (anyLoading) return;
-    const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
-    fetchProjectReviewsPages({
-      dataSequence: [
-        { page: nextReviewPage, reviewerUser: userId },
-        // { page: 1, recruitUsers: [userId] },
-      ],
-    });
-
-    const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
-    fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+    if (latestProjectReviewsCall.responseData.results.length > 0) {
+      const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
+      fetchProjectReviewsPages({
+        dataSequence: [{ page: nextReviewPage, reviewerUser: userId }],
+      });
+    }
+    if (lastCompletedCardsPage.responseData.results.length > 0) {
+      const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
+      fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+    }
   };
 
   function handleScroll(e) {
@@ -86,7 +85,7 @@ function UserActionsUnconnected({
       e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
 
     if (atBottom) {
-      // fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
+      fetchNextPages();
     }
   }
 
