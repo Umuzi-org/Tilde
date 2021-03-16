@@ -2,6 +2,7 @@ import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import operations from "./redux/operations.js";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
@@ -48,7 +49,10 @@ const mapStateToProps = (state) => {
       : null;
 
   return {
-    latestApiCallStatus: state.CARD_ADD_REVIEW.slice(-1),
+    latestApiCallStatus: getLatestMatchingCall({
+      callLog: state.CARD_ADD_REVIEW,
+      requestData: {},
+    }),
     card,
   };
 };

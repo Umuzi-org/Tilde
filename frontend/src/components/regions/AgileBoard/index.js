@@ -51,6 +51,8 @@ function getAllLatestCalls({
       anyLoading: false,
       lastAssigneeCallPage: 0,
       lastReviewerCallPage: 0,
+      assigneeCallLoading: false,
+      reviewerCallLoading: false,
     };
 
     const lastAssigneeCall =
@@ -64,6 +66,7 @@ function getAllLatestCalls({
 
     current.anyLoading = current.anyLoading || lastAssigneeCall.loading;
     current.lastAssigneeCallPage = lastAssigneeCall.requestData.page;
+    current.assigneeCallLoading = lastAssigneeCall.loading;
 
     if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
       const lastReviewerCall =
@@ -77,6 +80,7 @@ function getAllLatestCalls({
 
       current.anyLoading = current.anyLoading || lastReviewerCall.loading;
       current.lastReviewerCallPage = lastReviewerCall.requestData.page;
+      current.reviewerCallLoading = lastReviewerCall.loading;
     }
 
     result[status] = { ...current };
@@ -90,7 +94,8 @@ function getAllLatestCalls({
 /*
 Given a bunch of info from getAllLatestCalls, return a 
 list of column titles which should contain loading spinners */
-function columnsLoading({ latestCallStates }) {
+function getColumnsLoading({ latestCallStates }) {
+  console.log(latestCallStates);
   const result = Object.keys(consts.AGILE_COLUMNS).filter((columnName) => {
     for (let status of consts.AGILE_COLUMNS[columnName]) {
       if (latestCallStates[status].anyLoading) return true;
@@ -126,7 +131,7 @@ function AgileBoardUnconnected({
     userId,
   });
 
-  function fetchNextColumnPage({ columnLabel }) {
+  function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     // console.log(columnLabel);
     const statuses = consts.AGILE_COLUMNS[columnLabel];
 
@@ -171,14 +176,19 @@ function AgileBoardUnconnected({
   // fetchCardPages({ dataSequence: callSequenceData });
   // }
 
+  const columnsLoading = getColumnsLoading({ latestCallStates });
+
   function handleColumnScroll({ column }) {
+    if (columnsLoading.includes(column.label))
+      return () => console.log("still loading");
+
     function eventHandler(e) {
       const atBottom =
         e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
 
       if (atBottom) {
-        // console.log("At bottom")
-        fetchNextColumnPage({ columnLabel: column.label });
+        // console.log("at bottom");
+        fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
       }
     }
     return eventHandler;
@@ -193,7 +203,7 @@ function AgileBoardUnconnected({
     userId,
     cards: filteredCards,
     board: boardFromCards({ cards: filteredCards }),
-    columnsLoading: columnsLoading({ latestCallStates }),
+    columnsLoading,
     viewedUser: users[userId],
 
     handleColumnScroll,

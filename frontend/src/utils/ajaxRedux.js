@@ -9,7 +9,7 @@ const INITIAL_SINGLE_API_CALL_STATE = {
   successLog: [],
 };
 
-const INITIAL_API_CALL_LOG_STATE = [];
+const INITIAL_API_CALL_LOG_STATE = {};
 
 function equalObjects(o1, o2) {
   if (
@@ -168,32 +168,33 @@ export function createReduxApp({
 
     switch (action.type) {
       case types.START:
-        if (state.length !== callIndex) {
-          if (
-            JSON.stringify(action.data) ===
-            JSON.stringify(state[callIndex].requestData)
-          )
-            //some kind of race condition
-            return [...state];
+        // if (state.length !== callIndex) {
+        //   if (
+        //     JSON.stringify(action.data) ===
+        //     JSON.stringify(state[callIndex].requestData)
+        //   )
+        //     //some kind of race condition
+        //     return { ...state };
 
-          throw new Error(
-            `${BASE_TYPE}: Expected callIndex to be ${state.length}, but got ${callIndex}`
-          );
-        }
+        //   throw new Error(
+        //     `${BASE_TYPE}: Expected callIndex to be ${state.length}, but got ${callIndex}`
+        //   );
+        // }
 
-        return [
-          ...state,
-          {
-            ...INITIAL_SINGLE_API_CALL_STATE,
-            loading: true,
-            requestData: action.data,
-          },
-        ];
+        let startState = { ...state };
+        startState[callIndex] = {
+          ...INITIAL_SINGLE_API_CALL_STATE,
+          loading: true,
+          requestData: action.data,
+          callIndex,
+        };
+        return startState;
+
       // can tehre be race conditions here? I dont know.
       // the error checking should pick it up
 
       case types.SUCCESS:
-        const successState = [...state];
+        const successState = { ...state };
         successState[callIndex] = {
           ...state[callIndex],
           loading: false,
@@ -203,7 +204,7 @@ export function createReduxApp({
         return successState;
 
       case types.ERROR:
-        const errorState = [...state];
+        const errorState = { ...state };
         errorState[callIndex] = {
           ...state[callIndex],
           loading: false,
@@ -212,7 +213,7 @@ export function createReduxApp({
         return errorState;
 
       case types.RESPONSE_ERROR:
-        const responseErrorState = [...state];
+        const responseErrorState = { ...state };
         responseErrorState[callIndex] = {
           ...state[callIndex],
           loading: false,
@@ -269,11 +270,12 @@ export function createReduxApp({
     const { force } = action;
     if (force === undefined) throw new Error("force should be set");
     const callLog = yield select((state) => state[BASE_TYPE]);
-    const callIndex = callLog.length;
+    const callIndex = Object.keys(callLog).length;
 
-    const matchingCall = callLog
-      .reverse()
-      .find((callStatus) => equalObjects(callStatus.requestData, action.data));
+    const matchingCall = getLatestMatchingCall({
+      callLog,
+      requestData: action.data,
+    });
 
     if (force | !matchingCall) {
       yield put(
@@ -290,26 +292,21 @@ export function createReduxApp({
   }
 
   function* addNewStartSequenceSideEffects(action) {
-    // console.log(action);
     const { force } = action;
     if (force === undefined) throw new Error("force should be set");
     const callLog = yield select((state) => state[BASE_TYPE]);
 
-    const callIndex = callLog.length;
+    const callIndex = Object.keys(callLog).length;
     const { dataSequence } = action;
     if (dataSequence === undefined)
       throw new Error("dataSequence should be set");
 
     for (let index in dataSequence) {
       let data = dataSequence[index];
-
-      let matchingCall = callLog
-        .reverse()
-        .find((callStatus) => equalObjects(callStatus.requestData, data));
+      let matchingCall = getLatestMatchingCall({ callLog, requestData: data });
 
       if (force | !matchingCall) {
         const currentCallIndex = callIndex + parseInt(index);
-        // console.log(`starting ${currentCallIndex}`);
         yield put(
           operations._start({
             data,
@@ -353,11 +350,19 @@ export function getLatestMatchingCall({ callLog, requestData }) {
       );
 
   if (callLog === undefined) return;
-  return callLog.reverse().find((logEntry) => {
+  const indices = Object.keys(callLog).sort((a, b) => b - a);
+  const matchingIndex = indices.find((index) => {
+    const logEntry = callLog[index];
     for (let key in requestData) {
       if (logEntry.requestData[key] !== requestData[key]) return false;
     }
-
     return true;
   });
+  return callLog[matchingIndex];
+  // return callLog.reverse().find((logEntry) => {
+  //   for (let key in requestData) {
+  //     if (logEntry.requestData[key] !== requestData[key]) return false;
+  //   }
+  //   return true;
+  // });
 }

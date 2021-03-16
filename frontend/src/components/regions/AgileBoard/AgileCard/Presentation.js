@@ -114,8 +114,7 @@ export default ({
     viewedUser,
   };
 
-  //   console.log(agileCardActionProps);
-  // TODO: add an icon fir different kinds of content
+  // TODO: add an icon for different kinds of content
   return (
     <Card
       className={getCardClassName({
