@@ -68,6 +68,7 @@ function UserActionsUnconnected({
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
   const fetchNextPages = () => {
+    if (anyLoading) return;
     const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
     fetchProjectReviewsPages({
       dataSequence: [
@@ -79,6 +80,15 @@ function UserActionsUnconnected({
     const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
     fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
   };
+
+  function handleScroll(e) {
+    const atBottom =
+      e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
+
+    if (atBottom) {
+      // fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
+    }
+  }
 
   const getTimeFields = (date) => {
     if (!date) {
@@ -139,6 +149,7 @@ function UserActionsUnconnected({
     actionLogByDate,
     anyLoading,
     handleClickOpenProjectDetails,
+    handleScroll,
   };
   return <Presentation {...props} />;
 }

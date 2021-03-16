@@ -5,12 +5,11 @@ import {
   ActionReviewedCard,
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
-import Loading from "../../widgets/Loading"
+import Loading from "../../widgets/Loading";
 
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
-
 
 const useStyles = makeStyles((theme) => ({
   calendarIcon: {
@@ -21,6 +20,11 @@ const useStyles = makeStyles((theme) => ({
     // marginLeft: theme.spacing(2),
     // marginTop: theme.spacing(0),
     // paddingTop: theme.spacing(0),
+  },
+
+  column: {
+    height: "85%", // TODO. Fit viewport
+    overflowY: "scroll",
   },
 }));
 
@@ -69,25 +73,29 @@ export default ({
   orderedDates,
   actionLogByDate,
   handleClickOpenProjectDetails,
+  handleScroll,
   anyLoading,
 }) => {
+  const classes = useStyles();
   return (
-    <Grid container>
-      <Grid>
-        <Paper>
-          {orderedDates.map((date) => (
-            <DayLog
-              date={date}
-              key={date}
-              actions={actionLogByDate[date]}
-              handleClickOpenProjectDetails={handleClickOpenProjectDetails}
-            />
-          ))}
+    <div className={classes.column} onScroll={handleScroll}>
+      <Grid container>
+        <Grid>
+          <Paper>
+            {orderedDates.map((date) => (
+              <DayLog
+                date={date}
+                key={date}
+                actions={actionLogByDate[date]}
+                handleClickOpenProjectDetails={handleClickOpenProjectDetails}
+              />
+            ))}
 
-            {anyLoading && <Loading/>}
-        </Paper>
+            {anyLoading && <Loading />}
+          </Paper>
+        </Grid>
       </Grid>
-    </Grid>
+    </div>
   );
 };
 
