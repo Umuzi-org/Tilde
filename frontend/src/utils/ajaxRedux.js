@@ -11,18 +11,18 @@ const INITIAL_SINGLE_API_CALL_STATE = {
 
 const INITIAL_API_CALL_LOG_STATE = {};
 
-function equalObjects(o1, o2) {
-  if (
-    JSON.stringify(Object.keys(o1).sort()) !==
-    JSON.stringify(Object.keys(o2).sort())
-  )
-    return false;
+// function equalObjects(o1, o2) {
+//   if (
+//     JSON.stringify(Object.keys(o1).sort()) !==
+//     JSON.stringify(Object.keys(o2).sort())
+//   )
+//     return false;
 
-  for (let key in o1) {
-    if (o1[key] !== o2[key]) return false;
-  }
-  return true;
-}
+//   for (let key in o1) {
+//     if (o1[key] !== o2[key]) return false;
+//   }
+//   return true;
+// }
 
 export function createReduxApp({
   BASE_TYPE,

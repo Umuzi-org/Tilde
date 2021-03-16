@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import Loading from "../../widgets/Loading";
 
-// TODO: display loading spinner while fetching page
 // TODO: scroll down to load more
 // TODO: look nice
 
@@ -44,15 +43,19 @@ function getAllLatestCalls({
 }) {
   let result = {};
 
-  const defaultCallLogEntry = { loading: true, requestData: { page: 0 } };
+  const defaultCallLogEntry = {
+    loading: true,
+    requestData: { page: 0 },
+    responseData: { count: -1 },
+  };
 
   for (let status in consts.AGILE_CARD_STATUS_CHOICES) {
     let current = {
       anyLoading: false,
       lastAssigneeCallPage: 0,
       lastReviewerCallPage: 0,
-      assigneeCallLoading: false,
-      reviewerCallLoading: false,
+      assigneeCallResponseCount: -1,
+      reviewerCallResponseCount: -1,
     };
 
     const lastAssigneeCall =
@@ -66,7 +69,10 @@ function getAllLatestCalls({
 
     current.anyLoading = current.anyLoading || lastAssigneeCall.loading;
     current.lastAssigneeCallPage = lastAssigneeCall.requestData.page;
-    current.assigneeCallLoading = lastAssigneeCall.loading;
+    current.assigneeCallResponseCount =
+      lastAssigneeCall.responseData && lastAssigneeCall.responseData.results
+        ? lastAssigneeCall.responseData.results.length
+        : -1;
 
     if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
       const lastReviewerCall =
@@ -80,13 +86,13 @@ function getAllLatestCalls({
 
       current.anyLoading = current.anyLoading || lastReviewerCall.loading;
       current.lastReviewerCallPage = lastReviewerCall.requestData.page;
-      current.reviewerCallLoading = lastReviewerCall.loading;
+      current.reviewerCallResponseCount =
+        lastReviewerCall.responseData && lastReviewerCall.responseData.results
+          ? lastReviewerCall.responseData.results.length
+          : -1;
     }
 
     result[status] = { ...current };
-    // console.log("=========================");
-    // console.log(status);
-    // console.log(current);
   }
   return result;
 }
@@ -95,7 +101,6 @@ function getAllLatestCalls({
 Given a bunch of info from getAllLatestCalls, return a 
 list of column titles which should contain loading spinners */
 function getColumnsLoading({ latestCallStates }) {
-  console.log(latestCallStates);
   const result = Object.keys(consts.AGILE_COLUMNS).filter((columnName) => {
     for (let status of consts.AGILE_COLUMNS[columnName]) {
       if (latestCallStates[status].anyLoading) return true;
@@ -112,7 +117,6 @@ function AgileBoardUnconnected({
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
   authedUserId,
   fetchInitialCards,
-  // fetchUser,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -132,62 +136,46 @@ function AgileBoardUnconnected({
   });
 
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
-    // console.log(columnLabel);
     const statuses = consts.AGILE_COLUMNS[columnLabel];
+    for (let status of statuses) {
+      // we are still fetching the last bunch. Nothing to do
+      if (latestCallStates[status].anyLoading) return;
+    }
 
-    let callSequenceData = [];
+    let dataSequence = [];
 
     for (let status of statuses) {
+      if (latestCallStates[status].assigneeCallResponseCount > 0)
+        dataSequence.push({
+          assigneeUserId: userId,
+          page: latestCallStates[status].lastAssigneeCallPage + 1,
+          status,
+        });
+
       if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
         // we need to also fetch the next review page
+        if (latestCallStates[status].reviewerCallResponseCount > 0)
+          dataSequence.push({
+            reviewerUserId: userId,
+            page: latestCallStates[status].lastReviewerCallPage + 1,
+            status,
+          });
       }
     }
+
+    if (dataSequence.length > 0) fetchCardPages({ dataSequence });
   }
-
-  //   for (let status of statuses) {
-  //     let assignedPageNumber = getLatestCallNextPageValue({
-  //       FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-  //       status,
-  //       assigneeUserId: userId,
-  //     });
-
-  //     if (assignedPageNumber !== null) {
-  //       callSequenceData.push({
-  //         page: assignedPageNumber,
-  //         status,
-  //         assigneeUserId: userId,
-  //       });
-  //     }
-
-  //     let reviewPageNumber = getLatestCallNextPageValue({
-  //       FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-  //       status,
-  //       reviewerUserId: userId,
-  //     });
-  //     if (reviewPageNumber !== null) {
-  //       callSequenceData.push({
-  //         page: reviewPageNumber,
-  //         status,
-  //         reviewerUserId: userId,
-  //       });
-  //     }
-  //   }
-
-  // fetchCardPages({ dataSequence: callSequenceData });
-  // }
 
   const columnsLoading = getColumnsLoading({ latestCallStates });
 
   function handleColumnScroll({ column }) {
-    if (columnsLoading.includes(column.label))
-      return () => console.log("still loading");
+    if (columnsLoading.includes(column.label)) return () => {};
 
     function eventHandler(e) {
       const atBottom =
         e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
 
       if (atBottom) {
-        // console.log("at bottom");
         fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
       }
     }
@@ -226,7 +214,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchCardPages: ({ dataSequence }) => {
       dispatch(
-        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.startCallSequence(
+        apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(
           { dataSequence }
         )
       );
