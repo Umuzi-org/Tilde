@@ -36,20 +36,6 @@ export default ({
   showButtonNoteWorkshopAttendance,
   showButtonCancelWorkshopAttendance,
 }) => {
-  console.log({
-    handleClickAddReview,
-    handleClickOpenCardDetails,
-
-    handleRequestReview,
-    handleStartProject,
-    handleCancelReviewRequest,
-
-    handleClickOpenWorkshopAttendanceForm,
-    handleStartTopic,
-    handleStopTopic,
-    handleFinishTopic,
-    handleRemoveWorkshopAttendance,
-  });
   return (
     <CardActions>
       <Grid container>

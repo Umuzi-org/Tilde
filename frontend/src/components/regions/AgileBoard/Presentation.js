@@ -7,6 +7,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 
 import AgileCard from "./AgileCard";
+import Loading from "../../widgets/Loading";
 
 // import MarkSingleCardAttendanceModal from "../MarkSingleCardAttendanceModal";
 import { Divider } from "@material-ui/core";
@@ -27,7 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ board, cards, handleColumnScroll, userId, viewedUser }) => {
+export default ({
+  board,
+  cards,
+  handleColumnScroll,
+  userId,
+  viewedUser,
+  columnsLoading,
+}) => {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -46,7 +54,6 @@ export default ({ board, cards, handleColumnScroll, userId, viewedUser }) => {
                   <Typography variant="h5" align="center">
                     {column.label}
                   </Typography>
-
                   <div
                     className={classes.column}
                     onScroll={handleColumnScroll({ column })}
@@ -61,6 +68,7 @@ export default ({ board, cards, handleColumnScroll, userId, viewedUser }) => {
                         />
                       );
                     })}
+                    {columnsLoading.includes(column.label) && <Loading />}
                     <Divider />
                   </div>
                 </Paper>

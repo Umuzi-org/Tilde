@@ -5,6 +5,11 @@ import { connect } from "react-redux";
 import consts from "../../../constants";
 import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import Loading from "../../widgets/Loading";
+
+// TODO: display loading spinner while fetching page
+// TODO: scroll down to load more
+// TODO: look nice
 
 function boardFromCards({ cards }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
@@ -33,70 +38,76 @@ function filterCardsByUserId({ cards, userId }) {
   return filteredCards;
 }
 
-// function getLatestMatchingCall({
-//   fetchCardsCallLog,
-//   status,
-//   assigneeUserId,
-//   reviewerUserId,
-// }) {
-//   return fetchCardsCallLog.reverse().find((logEntry) => {
-//     if (logEntry.requestData.status !== status) return false;
-
-//     if (
-//       (assigneeUserId !== undefined) &
-//       (logEntry.requestData.assigneeUserId !== assigneeUserId)
-//     )
-//       return false;
-//     if (
-//       (reviewerUserId !== undefined) &
-//       (logEntry.requestData.reviewerUserId !== reviewerUserId)
-//     )
-//       return false;
-//     return true;
-//   });
-// }
-
-export function getLatestCallNextPageValue({
-  fetchCardsCallLog,
-  status,
-  assigneeUserId,
-  reviewerUserId,
+function getAllLatestCalls({
+  FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+  userId,
 }) {
-  const lastCall = getLatestMatchingCall({
-    fetchCardsCallLog,
-    requestData: {
-      status,
-      assigneeUserId,
-      reviewerUserId,
-    },
+  let result = {};
+
+  const defaultCallLogEntry = { loading: true, requestData: { page: 0 } };
+
+  for (let status in consts.AGILE_CARD_STATUS_CHOICES) {
+    let current = {
+      anyLoading: false,
+      lastAssigneeCallPage: 0,
+      lastReviewerCallPage: 0,
+    };
+
+    const lastAssigneeCall =
+      getLatestMatchingCall({
+        callLog: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+        requestData: {
+          assigneeUserId: userId,
+          status,
+        },
+      }) || defaultCallLogEntry;
+
+    current.anyLoading = current.anyLoading || lastAssigneeCall.loading;
+    current.lastAssigneeCallPage = lastAssigneeCall.requestData.page;
+
+    if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
+      const lastReviewerCall =
+        getLatestMatchingCall({
+          callLog: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+          requestData: {
+            reviewerUserId: userId,
+            status,
+          },
+        }) || defaultCallLogEntry;
+
+      current.anyLoading = current.anyLoading || lastReviewerCall.loading;
+      current.lastReviewerCallPage = lastReviewerCall.requestData.page;
+    }
+
+    result[status] = { ...current };
+    // console.log("=========================");
+    // console.log(status);
+    // console.log(current);
+  }
+  return result;
+}
+
+/*
+Given a bunch of info from getAllLatestCalls, return a 
+list of column titles which should contain loading spinners */
+function columnsLoading({ latestCallStates }) {
+  const result = Object.keys(consts.AGILE_COLUMNS).filter((columnName) => {
+    for (let status of consts.AGILE_COLUMNS[columnName]) {
+      if (latestCallStates[status].anyLoading) return true;
+    }
   });
 
-  if (lastCall === undefined) return null;
-  if (lastCall === null) return null;
-  if (lastCall.responseData === null) return null;
-
-  console.log("========================");
-  console.log("========================");
-  console.log(lastCall);
-  console.log("========================");
-  console.log("========================");
-  //   const nextUrl = lastCall.responseData.next;
-  //   if (nextUrl) {
-  //     var url = new URL(nextUrl);
-  //     const nextPageNumber = url.searchParams.get("page");
-  //     return parseInt(nextPageNumber);
-  //   }
-  //   return null;
+  return result;
 }
 
 function AgileBoardUnconnected({
   cards,
   users,
   fetchCardPages,
-  fetchCardsCallLog,
+  FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
   authedUserId,
   fetchInitialCards,
-  fetchUser,
+  // fetchUser,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -110,42 +121,55 @@ function AgileBoardUnconnected({
     userId,
   });
 
-  function fetchNextColumnPage(columnLabel) {
+  const latestCallStates = getAllLatestCalls({
+    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    userId,
+  });
+
+  function fetchNextColumnPage({ columnLabel }) {
+    // console.log(columnLabel);
     const statuses = consts.AGILE_COLUMNS[columnLabel];
 
     let callSequenceData = [];
 
     for (let status of statuses) {
-      let assignedPageNumber = getLatestCallNextPageValue({
-        fetchCardsCallLog,
-        status,
-        assigneeUserId: userId,
-      });
-
-      if (assignedPageNumber !== null) {
-        callSequenceData.push({
-          page: assignedPageNumber,
-          status,
-          assigneeUserId: userId,
-        });
-      }
-
-      let reviewPageNumber = getLatestCallNextPageValue({
-        fetchCardsCallLog,
-        status,
-        reviewerUserId: userId,
-      });
-      if (reviewPageNumber !== null) {
-        callSequenceData.push({
-          page: reviewPageNumber,
-          status,
-          reviewerUserId: userId,
-        });
+      if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
+        // we need to also fetch the next review page
       }
     }
-
-    fetchCardPages({ dataSequence: callSequenceData });
   }
+
+  //   for (let status of statuses) {
+  //     let assignedPageNumber = getLatestCallNextPageValue({
+  //       FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+  //       status,
+  //       assigneeUserId: userId,
+  //     });
+
+  //     if (assignedPageNumber !== null) {
+  //       callSequenceData.push({
+  //         page: assignedPageNumber,
+  //         status,
+  //         assigneeUserId: userId,
+  //       });
+  //     }
+
+  //     let reviewPageNumber = getLatestCallNextPageValue({
+  //       FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+  //       status,
+  //       reviewerUserId: userId,
+  //     });
+  //     if (reviewPageNumber !== null) {
+  //       callSequenceData.push({
+  //         page: reviewPageNumber,
+  //         status,
+  //         reviewerUserId: userId,
+  //       });
+  //     }
+  //   }
+
+  // fetchCardPages({ dataSequence: callSequenceData });
+  // }
 
   function handleColumnScroll({ column }) {
     function eventHandler(e) {
@@ -153,8 +177,8 @@ function AgileBoardUnconnected({
         e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
 
       if (atBottom) {
-        //   console.log("At bottom")
-        fetchNextColumnPage(column.label);
+        // console.log("At bottom")
+        fetchNextColumnPage({ columnLabel: column.label });
       }
     }
     return eventHandler;
@@ -162,13 +186,14 @@ function AgileBoardUnconnected({
 
   const viewedUser = users[userId];
   if (!viewedUser) {
-    return <div>Loading</div>;
-  } // TODO: better loading widgets
+    return <Loading />;
+  }
 
   let props = {
     userId,
     cards: filteredCards,
     board: boardFromCards({ cards: filteredCards }),
+    columnsLoading: columnsLoading({ latestCallStates }),
     viewedUser: users[userId],
 
     handleColumnScroll,
@@ -181,7 +206,8 @@ const mapStateToProps = (state) => {
   return {
     users: state.Entities.users || {},
     cards: state.Entities.cards || {},
-    fetchCardsCallLog: state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE:
+      state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     authedUserId: state.App.authUser.userId,
   };
 };

@@ -344,14 +344,20 @@ export function createReduxApp({
 
 /* read through the call log and get the latest call data that matches the provided request parameters */
 export function getLatestMatchingCall({ callLog, requestData }) {
-  // console.log("calling getLatestMatchingCall")
-  // console.log({ callLog, requestData })
-  
-  if (callLog === undefined) return
+  for (let key in requestData)
+    if (requestData[key] === undefined)
+      throw new Error(
+        `cannot seach for requests with undefined parameter values. key=${key} requestData = ${JSON.stringify(
+          requestData
+        )}`
+      );
+
+  if (callLog === undefined) return;
   return callLog.reverse().find((logEntry) => {
     for (let key in requestData) {
       if (logEntry.requestData[key] !== requestData[key]) return false;
     }
+
     return true;
   });
 }

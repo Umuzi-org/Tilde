@@ -8,13 +8,10 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
 import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux"
+import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 
-
-// TODO: display loading spinner while fetching page 
-// TODO: scroll down to load more  
-// TODO: look nice 
-
+// TODO: scroll down to load more
+// TODO: look nice
 
 const days = [
   "Sunday",
@@ -35,7 +32,7 @@ function UserActionsUnconnected({
   openCardDetailsModal,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
+  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -53,27 +50,24 @@ FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
   }, [fetchCardCompletions, userId]);
 
-
   const latestProjectReviewsCall = getLatestMatchingCall({
     callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-    requestData: {reviewerUser:userId}}
-  ) || {loading:true}
-  
+    requestData: { reviewerUser: userId },
+  }) || { loading: true };
+
   const lastCompletedCardsPage = getLatestMatchingCall({
     callLog: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-    reviewerUser: {assigneeUserId: userId}
-  }) || {loading:true}
-  
- 
+    reviewerUser: { assigneeUserId: userId },
+  }) || { loading: true };
+
   const handleClickOpenProjectDetails = ({ cardId }) => {
     openCardDetailsModal({ cardId });
   };
 
-  const anyLoading = latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
+  const anyLoading =
+    latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
-
-  const fetchNextPages = () =>{
-    
+  const fetchNextPages = () => {
     const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
     fetchProjectReviewsPages({
       dataSequence: [
@@ -81,15 +75,14 @@ FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
         // { page: 1, recruitUsers: [userId] },
       ],
     });
-    
+
     const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
     fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+  };
 
-  }
-  
   const getTimeFields = (date) => {
     if (!date) {
-      console.log("date is falsy");
+      console.log("date is falsy!!!!!!!!!!!!!");
       return {};
     }
 
@@ -156,8 +149,10 @@ const mapStateToProps = (state) => {
     projectReviews: state.Entities.projectReviews || {},
     cardSummaries: state.Entities.projectSummaryCards || {},
     authedUserId: state.App.authUser.userId,
-    FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-    FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE
+    FETCH_RECRUIT_PROJECT_REVIEWS_PAGE:
+      state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
+    FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
+      state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
   };
 };
 

@@ -127,12 +127,11 @@ export default function Presentation(props) {
   const menuItems = Object.keys(sliderMenuRoutes).map((routeName) => {
     const Icon = sliderMenuRoutes[routeName].sliderNavigation.icon;
     return (
-      <Tooltip title={sliderMenuRoutes[routeName].sliderNavigation.helpText}>
-        <ListItem
-          key={routeName}
-          component={Link}
-          to={sliderMenuRoutes[routeName].route.path}
-        >
+      <Tooltip
+        title={sliderMenuRoutes[routeName].sliderNavigation.helpText}
+        key={routeName}
+      >
+        <ListItem component={Link} to={sliderMenuRoutes[routeName].route.path}>
           <ListItemIcon>
             <Avatar>
               <Icon />
