@@ -11,72 +11,108 @@ import {
 } from "@material-ui/core";
 
 import CellContent from "./CellContent";
-import LinkToUserBoard from "../../widgets/LinkToUserBoard"
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+import Loading from "../../widgets/Loading";
 
 const useStyles = makeStyles((theme) => {
   return {
     cell: {
       width: theme.spacing(30),
     },
+    sticky: {
+      position: "-webkit-sticky",
+      position: "sticky",
+      background: "#fff",
+      left: 0,
+      zIndex: 1,
+    },
+
+    container: {
+      // width: 912 - 200,
+      // height: 976 - 300,
+      // height: `calc(100% - {theme.spacing(20)px})`,
+      overflow: "auto",
+    },
   };
 });
 
-export default ({ userGroup, columns, rows,displayUsers }) => {
+export default ({
+  userGroup,
+  columns,
+  rows,
+  displayUsers,
+  apiCallData,
+  handleScroll,
+}) => {
   const classes = useStyles();
-  
+
   return (
     <React.Fragment>
       <Typography variant="h4">{userGroup.name}</Typography>
 
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            {columns.map((column) => {
-              return (
-                <TableCell key={column.id} className={classes.cell}>
-                  {/* <Typography variant="caption">
+      <div className={classes.container} onScroll={handleScroll}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              {columns.map((column) => {
+                return (
+                  <TableCell key={column.id} className={classes.cell}>
+                    {/* <Typography variant="caption">
                   [order:{column.order}]
                 </Typography> */}
-                  <Typography variant="subtitle1">{column.label}</Typography>
-                  {/* <ViewContentButtonSmall
+                    <Typography variant="subtitle1">{column.label}</Typography>
+                    {/* <ViewContentButtonSmall
                     contentUrl={column.url}
                     contentItemId={column.id}
                   /> */}
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Object.keys(rows)
-            .sort()
-            .map((userId, index) => {
-              const row = rows[userId];
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.keys(displayUsers)
+              .sort()
+              .map((userId, index) => {
+                const row = rows[userId] || {};
 
-              return (
-                <TableRow key={index}>
-                  <TableCell>
-                      <Typography>
-                          
-                          {displayUsers[userId]}
-                          </Typography> 
-                      <LinkToUserBoard userId={userId}/>
+                return (
+                  <TableRow key={index}>
+                    <TableCell className={classes.sticky}>
+                      <Typography>{displayUsers[userId]}</Typography>
+                      <LinkToUserBoard userId={userId} />
                     </TableCell>
-                  {columns.map((column) => {
-                    return (
-                      <TableCell key={column.id} className={classes.cell}>
-                        {/* <SummaryCard card={row[column.id]} /> */}
-                        {/* {row[column.id].status} */}
-                        <CellContent card={row[column.id]} />
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
+
+                    {apiCallData[userId].loading &&
+                      Object.keys(row).length === 0 && (
+                        <TableCell>
+                          <Loading />
+                        </TableCell>
+                      )}
+
+                    {columns.map((column) => {
+                      return (
+                        <TableCell key={column.id} className={classes.cell}>
+                          {/* <SummaryCard card={row[column.id]} /> */}
+                          {/* {row[column.id].status} */}
+                          <CellContent card={row[column.id]} />
+                        </TableCell>
+                      );
+                    })}
+
+                    {apiCallData[userId].loading &&
+                      Object.keys(row).length > 0 && (
+                        <TableCell>
+                          <Loading />
+                        </TableCell>
+                      )}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </div>
     </React.Fragment>
   );
 };

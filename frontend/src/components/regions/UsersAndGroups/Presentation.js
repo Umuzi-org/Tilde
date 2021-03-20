@@ -26,9 +26,9 @@ const useStyles = makeStyles((theme) => ({
   highlightedGroup: {
     backgroundColor: theme.palette.primary.light,
   },
-  container: {
-    maxHeight: 800,
-  },
+  // container: {
+  //   maxHeight: 800,
+  // },
   groupName: {
     cursor: "pointer",
   },
@@ -47,7 +47,7 @@ export default function Presentation({
   //   const usersLabel = filterUsersByGroupName ? "": "Users"
   return (
     <Grid container>
-      <Grid item xs={4} className={classes.grid}>
+      <Grid item xs={6} className={classes.grid}>
         <TableContainer className={classes.container}>
           <Table stickyHeader size="small">
             <TableHead>
@@ -100,7 +100,7 @@ export default function Presentation({
         </TableContainer>
       </Grid>
 
-      <Grid item xs={4} className={classes.grid}>
+      <Grid item xs={6} className={classes.grid}>
         <TableContainer className={classes.container}>
           <Table stickyHeader size="small">
             <TableHead>

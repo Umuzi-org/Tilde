@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import Loading from "../../widgets/Loading";
 
-// TODO: scroll down to load more
 // TODO: look nice
 
 function boardFromCards({ cards }) {
@@ -105,6 +104,7 @@ function getColumnsLoading({ latestCallStates }) {
     for (let status of consts.AGILE_COLUMNS[columnName]) {
       if (latestCallStates[status].anyLoading) return true;
     }
+    return undefined;
   });
 
   return result;
@@ -173,7 +173,7 @@ function AgileBoardUnconnected({
 
     function eventHandler(e) {
       const atBottom =
-        e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight;
+        e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight;
 
       if (atBottom) {
         fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
