@@ -35,6 +35,15 @@ export default ({
   showButtonEndTopic,
   showButtonNoteWorkshopAttendance,
   showButtonCancelWorkshopAttendance,
+
+  loadingStartProject,
+  loadingStartTopic,
+  loadingClickOpenWorkshopAttendanceForm,
+  loadingRequestReview,
+  loadingCancelReviewRequest,
+  loadingStopTopic,
+  loadingFinishTopic,
+  loadingRemoveWorkshopAttendance,
 }) => {
   return (
     <CardActions>
@@ -53,6 +62,7 @@ export default ({
             label="Start Project"
             startIcon={<PlayCircleFilledWhiteIcon />}
             onClick={handleStartProject}
+            loading={loadingStartProject}
           />
         ) : (
           ""
@@ -69,6 +79,7 @@ export default ({
             label="Request Review"
             startIcon={<ArrowForwardRounded />}
             onClick={handleRequestReview}
+            loading={loadingRequestReview}
           />
         ) : (
           ""
@@ -79,6 +90,7 @@ export default ({
             label="Cancel Review Request"
             startIcon={<ArrowBackRoundedIcon />}
             onClick={handleCancelReviewRequest}
+            loading={loadingCancelReviewRequest}
           />
         ) : (
           ""
@@ -99,6 +111,7 @@ export default ({
             label="Start Topic"
             startIcon={<ArrowForwardRounded />}
             onClick={handleStartTopic}
+            loading={loadingStartTopic}
           />
         ) : (
           ""
@@ -109,6 +122,7 @@ export default ({
             label="Cancel"
             startIcon={<ArrowBackRoundedIcon />}
             onClick={handleStopTopic}
+            loading={loadingStopTopic}
           />
         ) : (
           ""
@@ -119,6 +133,7 @@ export default ({
             label="I'm done"
             startIcon={<ArrowForwardRounded />}
             onClick={handleFinishTopic}
+            loading={loadingFinishTopic}
           />
         ) : (
           ""
@@ -129,6 +144,7 @@ export default ({
             label="Mark Attendance"
             startIcon={<ArrowForwardRounded />}
             onClick={handleClickOpenWorkshopAttendanceForm}
+            loading={loadingClickOpenWorkshopAttendanceForm}
           />
         ) : (
           ""
@@ -139,6 +155,7 @@ export default ({
             label="Cancel"
             startIcon={<ArrowBackRoundedIcon />}
             onClick={handleRemoveWorkshopAttendance}
+            loading={loadingRemoveWorkshopAttendance}
           />
         ) : (
           ""

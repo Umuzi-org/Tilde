@@ -1,8 +1,6 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
 import { Typography, Paper, Button, Grid } from "@material-ui/core";
-
-// import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -11,6 +9,7 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Alert from "@material-ui/lab/Alert";
 
 import Help from "../../widgets/Help";
+import CardButton from "../../widgets/CardButton";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
@@ -144,6 +143,7 @@ export default ({
   formErrors,
   closeModal,
   statusChoices,
+  loading,
 }) => {
   const classes = useStyles();
 
@@ -208,13 +208,14 @@ export default ({
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button
+              <CardButton
                 type="submit"
                 variant="outlined"
                 className={classes.rightButton}
-              >
-                Submit your review
-              </Button>
+                loading={loading}
+                label="Submit your review"
+                onClick={handleSubmit}
+              ></CardButton>
             </Grid>
           </Grid>
         </form>

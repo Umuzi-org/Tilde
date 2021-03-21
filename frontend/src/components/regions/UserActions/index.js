@@ -56,7 +56,7 @@ function UserActionsUnconnected({
 
   const lastCompletedCardsPage = getLatestMatchingCall({
     callLog: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-    reviewerUser: { assigneeUserId: userId },
+    requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
   const handleClickOpenProjectDetails = ({ cardId }) => {

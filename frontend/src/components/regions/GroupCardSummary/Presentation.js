@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => {
       width: theme.spacing(30),
     },
     sticky: {
-      position: "-webkit-sticky",
+      // position: "-webkit-sticky",
       position: "sticky",
       background: "#fff",
       left: 0,

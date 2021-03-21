@@ -122,7 +122,7 @@ function AgileBoardUnconnected({
   const userId = parseInt(urlParams.userId || authedUserId || 0);
 
   useEffect(() => {
-    fetchInitialCards({ userId });
+    if (userId !== undefined) fetchInitialCards({ userId });
   }, [fetchInitialCards, userId]);
 
   const filteredCards = filterCardsByUserId({
@@ -130,10 +130,13 @@ function AgileBoardUnconnected({
     userId,
   });
 
-  const latestCallStates = getAllLatestCalls({
-    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-    userId,
-  });
+  const latestCallStates =
+    userId !== undefined
+      ? getAllLatestCalls({
+          FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+          userId,
+        })
+      : {};
 
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];

@@ -5,10 +5,14 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import operations from "./redux/operations.js";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
 
-const AddReviewModalUnconnected = ({ card, closeModal, saveReview }) => {
+const AddReviewModalUnconnected = ({
+  card,
+  closeModal,
+  saveReview,
+  CARD_ADD_REVIEW,
+}) => {
   const [
     formState,
     { status, comments },
@@ -23,10 +27,21 @@ const AddReviewModalUnconnected = ({ card, closeModal, saveReview }) => {
     },
   });
 
+  const cardId = card && card.id;
+
+  const latestCall =
+    cardId !== null
+      ? getLatestMatchingCall({
+          callLog: CARD_ADD_REVIEW,
+          requestData: { cardId },
+        }) || { loading: false }
+      : { loading: false };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (latestCall.loading) return;
     const { status, comments } = dataFromState({ state: formState });
-    saveReview({ status, comments, cardId: card.id });
+    saveReview({ status, comments, cardId });
   };
 
   const props = {
@@ -37,6 +52,7 @@ const AddReviewModalUnconnected = ({ card, closeModal, saveReview }) => {
     formErrors,
     closeModal,
     statusChoices: REVIEW_STATUS_CHOICES,
+    loading: latestCall.loading,
   };
   return <Presentation {...props} />;
 };
@@ -54,6 +70,7 @@ const mapStateToProps = (state) => {
       requestData: {},
     }),
     card,
+    CARD_ADD_REVIEW: state.CARD_ADD_REVIEW,
   };
 };
 

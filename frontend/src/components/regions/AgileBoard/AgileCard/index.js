@@ -2,7 +2,7 @@ import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { cardDetailsModalOperations } from "../../CardDetailsModal/redux";
-
+import { getLatestMatchingCall } from "../../../../utils/ajaxRedux";
 import { addCardReviewOperations } from "../../AddCardReviewModal/redux";
 
 // import { markSingleCardWorkshopAttendanceOperations } from "../../MarkSingleCardAttendanceModal/redux";
@@ -24,46 +24,89 @@ function AgileCardUnconnected({
   addWorkshopAttendance,
   openReviewFormModal,
   filterUserId,
+  CARD_START_PROJECT,
+  CARD_REQUEST_REVIEW,
+  CARD_CANCEL_REVIEW_REQUEST,
+  CARD_START_TOPIC,
+  CARD_STOP_TOPIC,
+  CARD_FINISH_TOPIC,
+  CARD_REMOVE_WORKSHOP_ATTENDANCE,
+  CARD_ADD_WORKSHOP_ATTENDANCE,
 }) {
+  const cardId = card.id;
+
   const handleClickOpenCardDetails = () => {
-    openCardDetailsModal({ cardId: card.id });
+    openCardDetailsModal({ cardId });
   };
 
   const handleClickOpenWorkshopAttendanceForm = () => {
-    // openWorkshopAttendanceModal({ cardId: card.id });
-    addWorkshopAttendance({ cardId: card.id });
+    // openWorkshopAttendanceModal({ cardId });
+    addWorkshopAttendance({ cardId });
   };
 
   const handleStartTopic = () => {
-    startTopic({ cardId: card.id });
+    startTopic({ cardId });
   };
 
   const handleStopTopic = () => {
-    stopTopic({ cardId: card.id });
+    stopTopic({ cardId });
   };
 
   const handleFinishTopic = () => {
-    finishTopic({ cardId: card.id });
+    finishTopic({ cardId });
   };
 
   const handleRemoveWorkshopAttendance = () => {
-    removeWorkshopAttendance({ cardId: card.id });
+    removeWorkshopAttendance({ cardId });
   };
 
   const handleClickAddReview = () => {
-    openReviewFormModal({ cardId: card.id });
+    openReviewFormModal({ cardId });
   };
 
   const handleRequestReview = () => {
-    requestReview({ cardId: card.id });
+    requestReview({ cardId });
   };
 
   const handleStartProject = () => {
-    startProject({ cardId: card.id });
+    startProject({ cardId });
   };
   const handleCancelReviewRequest = () => {
-    cancelReviewRequest({ cardId: card.id });
+    cancelReviewRequest({ cardId });
   };
+
+  const loadingStartProject = (getLatestMatchingCall({
+    callLog: CARD_START_PROJECT,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingStartTopic = (getLatestMatchingCall({
+    callLog: CARD_START_TOPIC,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingRequestReview = (getLatestMatchingCall({
+    callLog: CARD_REQUEST_REVIEW,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingCancelReviewRequest = (getLatestMatchingCall({
+    callLog: CARD_CANCEL_REVIEW_REQUEST,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingStopTopic = (getLatestMatchingCall({
+    callLog: CARD_STOP_TOPIC,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingFinishTopic = (getLatestMatchingCall({
+    callLog: CARD_FINISH_TOPIC,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingRemoveWorkshopAttendance = (getLatestMatchingCall({
+    callLog: CARD_REMOVE_WORKSHOP_ATTENDANCE,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
+  const loadingClickOpenWorkshopAttendanceForm = (getLatestMatchingCall({
+    callLog: CARD_ADD_WORKSHOP_ATTENDANCE,
+    requestData: { cardId },
+  }) || { loading: false })["loading"];
 
   const props = {
     card,
@@ -82,6 +125,14 @@ function AgileCardUnconnected({
     handleStopTopic,
     handleFinishTopic,
     handleRemoveWorkshopAttendance,
+    loadingStartProject,
+    loadingStartTopic,
+    loadingClickOpenWorkshopAttendanceForm,
+    loadingRequestReview,
+    loadingCancelReviewRequest,
+    loadingStopTopic,
+    loadingFinishTopic,
+    loadingRemoveWorkshopAttendance,
   };
 
   return <Presentation {...props} />;
@@ -90,6 +141,14 @@ function AgileCardUnconnected({
 const mapStateToProps = (state) => {
   return {
     authUser: state.App.authUser,
+    CARD_START_PROJECT: state.CARD_START_PROJECT,
+    CARD_REQUEST_REVIEW: state.CARD_REQUEST_REVIEW,
+    CARD_CANCEL_REVIEW_REQUEST: state.CARD_CANCEL_REVIEW_REQUEST,
+    CARD_START_TOPIC: state.CARD_START_TOPIC,
+    CARD_STOP_TOPIC: state.CARD_STOP_TOPIC,
+    CARD_FINISH_TOPIC: state.CARD_FINISH_TOPIC,
+    CARD_REMOVE_WORKSHOP_ATTENDANCE: state.CARD_REMOVE_WORKSHOP_ATTENDANCE,
+    CARD_ADD_WORKSHOP_ATTENDANCE: state.CARD_ADD_WORKSHOP_ATTENDANCE,
   };
 };
 

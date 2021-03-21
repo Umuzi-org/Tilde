@@ -19,6 +19,14 @@ export default ({
   handleStopTopic,
   handleFinishTopic,
   handleRemoveWorkshopAttendance,
+  loadingStartProject,
+  loadingStartTopic,
+  loadingClickOpenWorkshopAttendanceForm,
+  loadingRequestReview,
+  loadingCancelReviewRequest,
+  loadingStopTopic,
+  loadingFinishTopic,
+  loadingRemoveWorkshopAttendance,
 }) => {
   const props = {
     card,
@@ -39,6 +47,15 @@ export default ({
     handleStopTopic,
     handleFinishTopic,
     handleRemoveWorkshopAttendance,
+
+    loadingStartProject,
+    loadingStartTopic,
+    loadingClickOpenWorkshopAttendanceForm,
+    loadingRequestReview,
+    loadingCancelReviewRequest,
+    loadingStopTopic,
+    loadingFinishTopic,
+    loadingRemoveWorkshopAttendance,
   };
   return <Presentation {...props} />;
 };

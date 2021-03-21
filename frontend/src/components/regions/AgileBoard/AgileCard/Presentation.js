@@ -93,6 +93,15 @@ export default ({
   handleStopTopic,
   handleFinishTopic,
   handleRemoveWorkshopAttendance,
+
+  loadingStartProject,
+  loadingStartTopic,
+  loadingClickOpenWorkshopAttendanceForm,
+  loadingRequestReview,
+  loadingCancelReviewRequest,
+  loadingStopTopic,
+  loadingFinishTopic,
+  loadingRemoveWorkshopAttendance,
 }) => {
   const classes = useStyles();
 
@@ -112,6 +121,15 @@ export default ({
     card,
     authUser,
     viewedUser,
+
+    loadingStartProject,
+    loadingStartTopic,
+    loadingClickOpenWorkshopAttendanceForm,
+    loadingRequestReview,
+    loadingCancelReviewRequest,
+    loadingStopTopic,
+    loadingFinishTopic,
+    loadingRemoveWorkshopAttendance,
   };
 
   // TODO: add an icon for different kinds of content
