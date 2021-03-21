@@ -76,7 +76,6 @@ export default ({
               .sort()
               .map((userId, index) => {
                 const row = rows[userId] || {};
-
                 return (
                   <TableRow key={index}>
                     <TableCell className={classes.sticky}>
@@ -94,8 +93,6 @@ export default ({
                     {columns.map((column) => {
                       return (
                         <TableCell key={column.id} className={classes.cell}>
-                          {/* <SummaryCard card={row[column.id]} /> */}
-                          {/* {row[column.id].status} */}
                           <CellContent card={row[column.id]} />
                         </TableCell>
                       );

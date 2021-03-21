@@ -99,8 +99,6 @@ function getApiCallData({
       },
     }) || { loading: true };
   });
-  console.log("+++++++++++++++++++++++++");
-  console.log(ret);
   return ret;
 }
 
@@ -145,13 +143,16 @@ const GroupCardSummaryUnconnected = ({
       if (apiCallData[userId].loading) return;
     }
 
-    // ok, lets get the next page for each person
-    const dataSequence = userGroup.members.map((member) => {
-      return {
-        assigneeUserId: member.userId,
-        page: apiCallData[member.userId].requestData.page + 1,
-      };
-    });
+    let dataSequence = [];
+    for (let userId in apiCallData) {
+      if (apiCallData[userId].responseData.results.length > 0) {
+        dataSequence.push({
+          assigneeUserId: parseInt(userId),
+          page: apiCallData[userId].requestData.page + 1,
+        });
+      }
+    }
+
     fetchUserGroupSummaryCardsByDataSequence({ dataSequence });
   }
   function handleScroll(e) {

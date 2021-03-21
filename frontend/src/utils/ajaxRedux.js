@@ -354,6 +354,12 @@ export function getLatestMatchingCall({ callLog, requestData }) {
   const matchingIndex = indices.find((index) => {
     const logEntry = callLog[index];
     for (let key in requestData) {
+      if (typeof logEntry.requestData[key] !== typeof requestData[key]) {
+        console.error(
+          `comparing request data of different types for key ${key}: ${typeof logEntry
+            .requestData[key]} !== ${typeof requestData[key]}`
+        );
+      }
       if (logEntry.requestData[key] !== requestData[key]) return false;
     }
     return true;
