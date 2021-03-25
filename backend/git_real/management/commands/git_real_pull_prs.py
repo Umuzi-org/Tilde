@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from django.contrib.auth import get_user_model
 
 from social_auth.github_api import Api
 from git_real.constants import PERSONAL_GITHUB_NAME
@@ -8,7 +7,7 @@ from git_real import models
 from git_real.helpers import strp_github_standard_time
 
 
-User = get_user_model()
+from core.models import User
 
 
 def get_user_from_github_name(github_name):
@@ -28,7 +27,9 @@ def scrape_pull_request_reviews(api, pr):
         defaults = {
             "body": review["body"],
             "submitted_at": review.get("submitted_at")
-            and strp_github_standard_time(timestamp=review["submitted_at"],),
+            and strp_github_standard_time(
+                timestamp=review["submitted_at"],
+            ),
             "commit_id": review["commit_id"],
             "state": review["state"],
             "user": get_user_from_github_name(github_user),
@@ -57,13 +58,21 @@ def scrape_repo_prs(api, repo):
             "state": pr["state"],
             "title": pr["title"],
             "body": pr["body"],
-            "created_at": strp_github_standard_time(pr["created_at"],),
+            "created_at": strp_github_standard_time(
+                pr["created_at"],
+            ),
             "updated_at": pr["updated_at"]
-            and strp_github_standard_time(pr["updated_at"],),
+            and strp_github_standard_time(
+                pr["updated_at"],
+            ),
             "closed_at": pr["closed_at"]
-            and strp_github_standard_time(pr["closed_at"],),
+            and strp_github_standard_time(
+                pr["closed_at"],
+            ),
             "merged_at": pr["merged_at"]
-            and strp_github_standard_time(pr["merged_at"],),
+            and strp_github_standard_time(
+                pr["merged_at"],
+            ),
             "author_github_name": github_user,
             "assignees": [d["login"] for d in pr["assignees"]],
             "user": get_user_from_github_name(github_user),
@@ -83,7 +92,9 @@ def scrape_repo_prs(api, repo):
         }
 
         pr_object, pr_created = models.PullRequest.objects.get_or_create(
-            number=pr["number"], repository=repo, defaults=defaults,
+            number=pr["number"],
+            repository=repo,
+            defaults=defaults,
         )
         if not pr_created:
             pr_object.update(**update_pr)

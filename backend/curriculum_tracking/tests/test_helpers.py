@@ -1,9 +1,4 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-
-from curriculum_tracking import models
-from curriculum_tracking import constants
-from curriculum_tracking import helpers
 from curriculum_tracking import card_generation_helpers as gen_helpers
 from curriculum_tracking.tests import factories
 
@@ -11,7 +6,7 @@ JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
 
 
-User = get_user_model()
+from core.models import User
 
 
 # class get_full_url_from_content_link_param_Tests(TestCase):
@@ -112,9 +107,7 @@ class get_ordered_content_items_Tests(TestCase):
     def test_prereq_with_flavours(self):
         """ requirements have flavours and prereq does too, therefore moar cards """
 
-        content_item = factories.ContentItemFactory(
-            flavours=[TYPESCRIPT, JAVASCRIPT]
-        )
+        content_item = factories.ContentItemFactory(flavours=[TYPESCRIPT, JAVASCRIPT])
 
         requirement1 = factories.CurriculumContentRequirementFactory(
             content_item=factories.ContentItemFactory(flavours=[TYPESCRIPT]),

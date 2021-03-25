@@ -1,9 +1,8 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 
 from model_mixins import Mixins
 
-User = get_user_model()
+from core.models import User
 
 
 class SocialProfile(models.Model, Mixins):

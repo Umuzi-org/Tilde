@@ -93,10 +93,7 @@ class CourseRegistrationAdmin(admin.ModelAdmin):
     ordering = ("-registration_date",)
 
 
-from django.contrib.auth import get_user_model
-
-
-User = get_user_model()
+from core.models import User
 
 
 from django.contrib.auth.forms import AdminPasswordChangeForm

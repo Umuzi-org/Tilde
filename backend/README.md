@@ -56,9 +56,8 @@ export CURRICULUM_CLONE_DIR=$HOME/.curriculum_sync
    If you forgot to make your user you might need to set it up via `python manage.py shell`
 
 ```
-from django.contrib.auth import get_user_model
-U = get_user_model()
-u = U.objects.get(email="your.name@umuzi.org")
+from core.models import User
+u = User.objects.get(email="your.name@umuzi.org")
 u.is_superuser = True
 u.is_staff = True
 u.set_password("your password")

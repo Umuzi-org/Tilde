@@ -9,7 +9,8 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
-from guardian.shortcuts import get_objects_for_user
+
+# from guardian.shortcuts import get_objects_for_user
 
 # from django.db.models import Q
 from core import permissions as core_permissions

@@ -9,7 +9,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from . import serializers
 from . import models
-from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from core.permissions import (
@@ -21,7 +20,7 @@ from core.permissions import (
 )
 from core.models import Team
 
-User = get_user_model()
+from core.models import User
 
 
 def _get_teams_from_topic_progress(self, request, view):

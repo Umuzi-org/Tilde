@@ -1,9 +1,7 @@
 from rest_framework.authtoken.models import Token
 import re
 from core.constants import BUSINESS_EMAIL_DOMAIN
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from core.models import User
 
 
 def get_auth_token_for_email(email):

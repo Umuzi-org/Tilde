@@ -13,4 +13,6 @@ class Command(BaseCommand):
         curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
 
         for x in get_ordered_content_items(curriculum):
-            print(f"{x.content_item.content_type} - {x.content_item} - {x.flavours}")
+            print(
+                f"{x.content_item} - flavours {x.flavours} - tags {[str(s) for s in x.content_item.tags.all()]} {x.content_item.url}"
+            )

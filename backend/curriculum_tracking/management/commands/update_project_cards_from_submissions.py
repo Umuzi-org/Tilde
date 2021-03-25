@@ -1,10 +1,10 @@
 """ look at all the ContentItems and create/update cards as needed"""
 from django.core.management.base import BaseCommand
-from curriculum_tracking import models, helpers
+from curriculum_tracking import helpers
 from core import models as core_models
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
+from core.models import User
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -22,4 +22,4 @@ class Command(BaseCommand):
                 user = User.objects.get(email=who)
             else:
                 cohort = core_models.Cohort.get_from_short_name(who)
-        helpers.generate_project_cards(cohort=cohort,user=user)
+        helpers.generate_project_cards(cohort=cohort, user=user)

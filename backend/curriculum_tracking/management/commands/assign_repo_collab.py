@@ -12,13 +12,12 @@ from git_real.constants import PERSONAL_GITHUB_NAME, ORGANISATION
 from git_real.helpers import add_collaborator
 from social_auth.github_api import Api
 import random
-from django.contrib.auth import get_user_model
 from social_auth.models import SocialProfile
 import itertools
 
 from ..helpers import get_team, get_team_cards
 
-User = get_user_model()
+from core.models import User
 
 TEAM_SHUFFLE_REVIEW_SELF = "TEAM_SHUFFLE_REVIEW_SELF"
 TEAM_SHUFFLE_REVIEW_OTHER = "TEAM_SHUFFLE_REVIEW_OTHER"

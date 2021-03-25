@@ -4,19 +4,34 @@ This script gets run after a bunch of people get accepted from a bootcamp. They 
 
 from django.core.management.base import BaseCommand
 import pandas as pd
-from django.contrib.auth import get_user_model
-from core.models import UserGroup
+from core.models import Team
 from ..rocketchat import Rocketchat, GROUP
+from core.models import User
+from google_helpers.utils import fetch_sheet
+from curriculum_tracking.models import Curriculum, CourseRegistration
 
 OLD_EMAIL = "Old Email"
 NEW_EMAIL = "New Email"
 TEAM_NAME = "Team"
+DEPARTMENT = "department"
 
 
-User = get_user_model()
+COURSES_BY_DEPARTMENT = {
+    "web dev": ["Post Bootcamp Soft Skills", "NCIT - JavaScript", "Web Development"],
+    "data eng": ["Post Bootcamp Soft Skills", "NCIT - Python", "Data Engineering"],
+    "java": ["Post Bootcamp Soft Skills", "NCIT - Java", "Java Systems Development"],
+    "it support": [
+        "Intro to Tilde for Tech Bootcamps",
+        "Post Bootcamp Soft Skills",
+        "NCIT - Python",
+        "IT Support and IT automation",
+    ],
+    "data sci": ["Post Bootcamp Soft Skills", "NCIT - Python", "Data Science"],
+}
 
 
 def update_user_email(row):
+
     try:
         user = User.objects.get(email=row[OLD_EMAIL])
     except User.DoesNotExist:
@@ -26,9 +41,38 @@ def update_user_email(row):
     user.save()
 
 
-def add_user_to_group(row):
-    team, _ = UserGroup.objects.get_or_create(name=row[TEAM_NAME])
+def set_up_course_registrations(row):
     user = User.objects.get(email=row[NEW_EMAIL])
+    course_names = COURSES_BY_DEPARTMENT[row[DEPARTMENT]]
+    set_course_reg(user, course_names)
+
+
+def set_course_reg(user, course_names):
+    curriculums = []
+    for name in course_names:
+        print(name)
+        curriculums.append(Curriculum.objects.get(name=name))
+
+    course_ids = [curriculum.id for curriculum in curriculums]
+    existing = CourseRegistration.objects.filter(user=user)
+    for o in existing:
+        if o.curriculum_id not in course_ids:
+            o.delete()
+    for i, curriculum_id in enumerate(course_ids):
+        o, created = CourseRegistration.objects.get_or_create(
+            user=user, curriculum_id=curriculum_id, defaults={"order": i}
+        )
+        if not created:
+            o.order = i
+            o.save()
+
+
+def add_user_to_group(row):
+    team, _ = Team.objects.get_or_create(name=row[TEAM_NAME])
+    user = User.objects.get(email=row[NEW_EMAIL])
+    team.users.add(user)
+
+    team = Team.objects.get(name="Problem Solving Foundation 1")
     team.users.add(user)
 
 
@@ -72,23 +116,26 @@ class Command(BaseCommand):
         rocketchat_user = options["rocketchat_user"]
         rocketchat_pass = options["rocketchat_pass"]
 
-        df = pd.read_csv(path)
+        # df = pd.read_csv(path)
+        df = fetch_sheet(url=path)
 
         # df.apply(update_user_email, axis=1)
+
         # df.apply(add_user_to_group, axis=1)
+        df.apply(set_up_course_registrations, axis=1)
 
-        client = Rocketchat()
-        client.login(rocketchat_user, rocketchat_pass)
-        try:
-            df.apply(
-                create_rocketchat_user_and_add_to_channel(
-                    client, ["ryan", "asanda", "sheena"]
-                ),
-                axis=1,
-            )
-        except:
-            import traceback
+        # client = Rocketchat()
+        # client.login(rocketchat_user, rocketchat_pass)
+        # try:
+        #     df.apply(
+        #         create_rocketchat_user_and_add_to_channel(
+        #             client, ["ryan", "asanda", "sheena"]
+        #         ),
+        #         axis=1,
+        #     )
+        # except:
+        #     import traceback
 
-            print(traceback.format_exc())
-        finally:
-            client.logout()
+        #     print(traceback.format_exc())
+        # finally:
+        #     client.logout()

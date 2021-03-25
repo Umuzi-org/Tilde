@@ -1,12 +1,7 @@
 from django.core.management.base import BaseCommand
-from curriculum_tracking import models, helpers
-from core import models as core_models
-from django.contrib.auth import get_user_model
-from curriculum_tracking.card_generation_helpers import (
-    generate_and_update_all_cards_for_user,
-)
+from curriculum_tracking import models
 
-User = get_user_model()
+from core.models import User
 
 
 class Command(BaseCommand):
@@ -22,4 +17,3 @@ class Command(BaseCommand):
         models.RecruitProject.objects.filter(recruit_users__in=[user]).delete()
         models.TopicProgress.objects.filter(user=user).delete()
         models.WorkshopAttendance.objects.filter(attendee_user=user).delete()
-

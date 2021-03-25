@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from core.forms import TeamForm
 
 from .models import Commit
@@ -9,7 +8,7 @@ from .models import Commit
 from django.urls import resolve
 import datetime
 
-User = get_user_model()
+from core.models import User
 
 
 def index(request):

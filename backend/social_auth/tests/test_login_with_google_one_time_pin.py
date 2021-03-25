@@ -10,9 +10,7 @@ from core.tests.factories import UserFactory
 from unittest import mock
 from rest_framework.authtoken.models import Token
 
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from core.models import User
 
 
 class oauth_one_time_token_auth_TestCase(APITestCase):

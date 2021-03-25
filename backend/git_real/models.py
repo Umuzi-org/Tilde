@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
-from django.contrib.auth import get_user_model
 from model_mixins import Mixins
 
-User = get_user_model()
+from core.models import User
 
 
 class Repository(models.Model, Mixins):

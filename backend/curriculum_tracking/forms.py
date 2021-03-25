@@ -2,9 +2,7 @@ from django import forms
 from core import models as core_models
 from curriculum_tracking import models as curriculum_models
 from social_auth import models as social_models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from core.models import User
 
 
 def get_curriculum_choices():
@@ -33,9 +31,13 @@ def get_user_choices(cohort):
 
 
 class SelectRecruitsAndProjectForm(forms.Form):
-    project = forms.ChoiceField(choices=get_curriculum_choices, required=True,)
+    project = forms.ChoiceField(
+        choices=get_curriculum_choices,
+        required=True,
+    )
     recruits = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(attrs={"checked": ""}), choices=[],
+        widget=forms.CheckboxSelectMultiple(attrs={"checked": ""}),
+        choices=[],
     )
 
     def __init__(self, *args, **kwargs):

@@ -1,6 +1,4 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-
 from core.constants import BUSINESS_EMAIL_DOMAIN
 from core.tests.factories import UserFactory
 from core.helpers import get_auth_token_for_email

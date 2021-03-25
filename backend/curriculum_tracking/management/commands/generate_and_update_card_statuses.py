@@ -1,8 +1,6 @@
 """ look at all the ContentItems and create/update cards as needed"""
 from django.core.management.base import BaseCommand
-from curriculum_tracking import models, helpers
 from core import models as core_models
-from django.contrib.auth import get_user_model
 from django.db.models import Q
 from curriculum_tracking.models import Curriculum
 
@@ -11,7 +9,7 @@ from curriculum_tracking.card_generation_helpers import (
     generate_all_content_cards_for_team,
 )
 
-User = get_user_model()
+from core.models import User
 
 
 class Command(BaseCommand):

@@ -1,10 +1,7 @@
 from core.tests.factories import TeamFactory, UserFactory
 from django.test import TestCase
-from django.contrib.auth import get_user_model
 
 from curriculum_tracking import models
-from curriculum_tracking import constants
-from curriculum_tracking import helpers
 from curriculum_tracking.tests import factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
@@ -13,7 +10,7 @@ JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
 
 
-User = get_user_model()
+from core.models import User
 
 
 class get_users_with_permission_Tests(TestCase):

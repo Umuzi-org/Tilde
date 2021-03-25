@@ -500,7 +500,7 @@ def set_up_single_curriculum_from_file(curriculum, file_path):
                 o.flavours.add(flavour)
             for flavour in o.flavours.all():
                 if flavour.name not in flavours:
-                    o.remove(flavour)
+                    o.flavours.remove(flavour)
 
             expected_ids.append(o.id)
 

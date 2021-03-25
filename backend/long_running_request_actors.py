@@ -15,6 +15,7 @@ PRIORITY_HIGH = 0
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
+#### NB dont import any models until ADTER django.setup is called
 
 
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
@@ -24,6 +25,8 @@ from backend.settings import (
     RABBITMQ_PASSWORD,
     RABBITMQ_PORT,
 )
+
+from social_auth.models import SocialProfile
 
 connection = {}
 if RABBITMQ_PASSWORD:
@@ -72,4 +75,10 @@ def add_collaborators_and_protect_master(project_id):
     )
 
     for user in collaborator_users:
-        add_collaborator(api, repo.full_name, user.social_profile.github_name)
+        try:
+            social_profile = user.social_profile
+        except SocialProfile.DoesNotExist:
+            pass
+        else:
+            if social_profile.github_name:
+                add_collaborator(api, repo.full_name, social_profile.github_name)
