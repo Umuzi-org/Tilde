@@ -43,7 +43,6 @@ class Rocketchat:
             json={"user": user, "password": password},
             headers=self._headers,
         )
-        # breakpoint()
         data = response.json()
         assert data["status"] == "success", json.dumps(data, indent=2, sort_keys=True)
 

@@ -9,6 +9,7 @@ from ..rocketchat import Rocketchat, GROUP
 from core.models import User
 from google_helpers.utils import fetch_sheet
 from curriculum_tracking.models import Curriculum, CourseRegistration
+import os
 
 OLD_EMAIL = "Old Email"
 NEW_EMAIL = "New Email"
@@ -17,16 +18,35 @@ DEPARTMENT = "department"
 
 
 COURSES_BY_DEPARTMENT = {
-    "web dev": ["Post Bootcamp Soft Skills", "NCIT - JavaScript", "Web Development"],
-    "data eng": ["Post Bootcamp Soft Skills", "NCIT - Python", "Data Engineering"],
-    "java": ["Post Bootcamp Soft Skills", "NCIT - Java", "Java Systems Development"],
+    "web dev": [
+        "Web development boot camp",
+        "Post Bootcamp Soft Skills",
+        "NCIT - JavaScript",
+        "Web Development",
+    ],
+    "data eng": [
+        "Data Engineering boot camp",
+        "Post Bootcamp Soft Skills",
+        "NCIT - Python",
+        "Data Engineering",
+    ],
+    "java": [
+        "Java boot camp",
+        "Post Bootcamp Soft Skills",
+        "NCIT - Java",
+        "Java Systems Development",
+    ],
     "it support": [
-        "Intro to Tilde for Tech Bootcamps",
         "Post Bootcamp Soft Skills",
         "NCIT - Python",
         "IT Support and IT automation",
     ],
-    "data sci": ["Post Bootcamp Soft Skills", "NCIT - Python", "Data Science"],
+    "data sci": [
+        "Data Science boot camp",
+        "Post Bootcamp Soft Skills",
+        "NCIT - Python",
+        "Data Science",
+    ],
 }
 
 
@@ -108,34 +128,32 @@ def create_rocketchat_user_and_add_to_channel(client, managment_usernames):
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("path", type=str)
-        parser.add_argument("rocketchat_user", type=str)
-        parser.add_argument("rocketchat_pass", type=str)
 
     def handle(self, *args, **options):
         path = options["path"]
-        rocketchat_user = options["rocketchat_user"]
-        rocketchat_pass = options["rocketchat_pass"]
+        rocketchat_user = os.environ["ROCKETCHAT_USER"]
+        rocketchat_pass = os.environ["ROCKETCHAT_PASS"]
+
+        client = Rocketchat()
+        client.login(rocketchat_user, rocketchat_pass)
 
         # df = pd.read_csv(path)
-        df = fetch_sheet(url=path)
 
         # df.apply(update_user_email, axis=1)
 
         # df.apply(add_user_to_group, axis=1)
-        df.apply(set_up_course_registrations, axis=1)
+        # df.apply(set_up_course_registrations, axis=1)
+        df = fetch_sheet(url=path)
+        try:
+            df.apply(
+                create_rocketchat_user_and_add_to_channel(
+                    client, ["ryan", "asanda", "sheena"]
+                ),
+                axis=1,
+            )
+        except:
+            import traceback
 
-        # client = Rocketchat()
-        # client.login(rocketchat_user, rocketchat_pass)
-        # try:
-        #     df.apply(
-        #         create_rocketchat_user_and_add_to_channel(
-        #             client, ["ryan", "asanda", "sheena"]
-        #         ),
-        #         axis=1,
-        #     )
-        # except:
-        #     import traceback
-
-        #     print(traceback.format_exc())
-        # finally:
-        #     client.logout()
+            print(traceback.format_exc())
+        finally:
+            client.logout()
