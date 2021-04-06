@@ -81,7 +81,7 @@ SPECIFIC_BOOTCAMPS = {
 
 def get_df():
     df = fetch_sheet(
-        url="https://docs.google.com/spreadsheets/d/11_Z0avz-Ca2rpA5wsPoHc75ut6tCN8M5tfsOsbKyhhE/edit#gid=0"
+        url="https://docs.google.com/spreadsheets/d/1EXLgiLTxx1-1Ba-IZMdyaJe_HdP6kLsyfNHBZoHP46M/edit#gid=0"
     )
     df = df.dropna(subset=[EMAIL])
     df = df.dropna(subset=[COURSE])
@@ -195,6 +195,6 @@ def process_row(row):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         df = get_df()
-        # df.apply(check_github, axis=1)
+        df.apply(check_github, axis=1)
         # df.apply(check_email, axis=1)
         df.apply(process_row, axis=1)
