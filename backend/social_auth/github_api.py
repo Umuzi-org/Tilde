@@ -67,10 +67,10 @@ class Api:
             return response.json()
         return response
 
-    def post(self, url_end, data):
+    def post(self, url_end, data, headers=None):
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
 
-        response = requests.post(full_url, headers=self.headers(), json=data)
+        response = requests.post(full_url, headers=self.headers(headers), json=data)
 
         return response.json()
 

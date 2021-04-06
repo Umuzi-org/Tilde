@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from curriculum_tracking import models,
+from curriculum_tracking import models
 from core import models as core_models
 from curriculum_tracking.card_generation_helpers import (
     generate_and_update_all_cards_for_user,

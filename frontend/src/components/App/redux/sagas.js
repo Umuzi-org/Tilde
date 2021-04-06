@@ -6,7 +6,7 @@ function* authUserResponseSideEffects(action) {
   yield put(operations.setAuthUser({ data: action.data }));
   yield put(
     apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
-      data: { userId: action.data.userId },
+      data: { userId: parseInt(action.data.userId) },
     })
   );
 }

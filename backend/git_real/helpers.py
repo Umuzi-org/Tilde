@@ -162,3 +162,19 @@ def fetch_and_save_repo(github_auth_login, repo_full_name, user=None):
     o = save_repo(repo_dict, user=user)
     assert o != None
     return o
+
+
+# def create_webhooks(api):
+#     api.post(
+#         f"repos/{owner}/{repo}/hooks",
+#         headers={"accept": "application/vnd.github.v3+json"},
+#         data={
+#             'config': {
+#                 'url' :
+#                 'content_type' : 'json',
+#                 'events': [
+#                     # https://docs.github.com/en/developers/webhooks-and-events/github-event-types
+#                     'PullRequestEvent','PullRequestReviewCommentEvent','PushEvent']
+#             }
+#         },
+#     )

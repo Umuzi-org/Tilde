@@ -107,7 +107,9 @@ def scrape_repo_prs(api, repo):
 
 def scrape_pull_requests_from_github():
     api = Api(PERSONAL_GITHUB_NAME)
-    for repo in models.Repository.objects.filter(archived=False):
+    for repo in models.Repository.objects.filter(
+        recruit_projects__recruit_users__active__in=[True]
+    ):
         scrape_repo_prs(api, repo)
 
 

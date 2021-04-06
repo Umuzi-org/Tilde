@@ -5,6 +5,7 @@ import Badge from "@material-ui/core/Badge";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
+import CallMergeIcon from "@material-ui/icons/CallMerge";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -36,6 +37,7 @@ export default ({ card }) => {
     codeReviewExcellentSinceLastReviewRequest,
     codeReviewNyCompetentSinceLastReviewRequest,
     codeReviewRedFlagSinceLastReviewRequest,
+    openPrCount,
   } = card;
   return (
     <div className={classes.root}>
@@ -84,6 +86,16 @@ export default ({ card }) => {
             color="error"
           >
             <RedFlagIcon />
+          </Badge>
+        </Tooltip>
+      ) : (
+        <React.Fragment />
+      )}
+
+      {openPrCount ? (
+        <Tooltip title="Number of open pull requests on this card">
+          <Badge badgeContent={openPrCount} color="primary">
+            <CallMergeIcon />
           </Badge>
         </Tooltip>
       ) : (

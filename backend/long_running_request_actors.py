@@ -55,7 +55,7 @@ def team_shuffle_review_self(team_id, flavour_names, content_item_id):
 
 
 @dramatiq.actor()
-def add_collaborators_and_protect_master(project_id):
+def add_collaborators_and_protect_master(project_id, api=None):
     from social_auth.github_api import Api
     from git_real.constants import GITHUB_BOT_USERNAME
     from git_real.helpers import add_collaborator, protect_master
@@ -63,7 +63,7 @@ def add_collaborators_and_protect_master(project_id):
     from core.models import Team
     from social_auth.github_api import Api
 
-    api = Api(GITHUB_BOT_USERNAME)
+    api = api or Api(GITHUB_BOT_USERNAME)
     project = RecruitProject.objects.get(pk=project_id)
     repo = project.repository
     protect_master(api, repo.full_name)
@@ -75,6 +75,8 @@ def add_collaborators_and_protect_master(project_id):
     )
 
     for user in collaborator_users:
+        if not user.active:
+            continue
         try:
             social_profile = user.social_profile
         except SocialProfile.DoesNotExist:

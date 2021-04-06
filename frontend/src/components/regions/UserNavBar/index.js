@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchUser: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
-          data: { userId },
+          data: { userId: parseInt(userId) },
         })
       );
     },

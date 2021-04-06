@@ -56,7 +56,7 @@ async function authenticateWithOneTimeToken(data) {
 }
 
 async function teamsPage({ page }) {
-  const limit = 20;
+  const limit = 10;
   const offset = calculateOffset({ page, limit });
   const url = `${API_BASE_URL}/api/teams/?active=true&limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });

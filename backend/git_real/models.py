@@ -43,7 +43,12 @@ class Commit(models.Model, Mixins):
 
 
 class PullRequest(models.Model, Mixins):
-    repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
+    OPEN = "open"
+    CLOSED = "closed"
+
+    repository = models.ForeignKey(
+        Repository, on_delete=models.CASCADE, related_name="pull_requests"
+    )
 
     author_github_name = models.CharField(max_length=100)
     state = models.CharField(max_length=6)

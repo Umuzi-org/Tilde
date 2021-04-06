@@ -168,9 +168,7 @@ class Command(BaseCommand):
         content_item_name = options["content_item"]
         reviewer = options["reviewer"]
 
-        content_item = ContentItem.objects.get(
-            title=content_item_name, content_type=ContentItem.PROJECT
-        )
+        content_item = ContentItem.objects.get(title=content_item_name)
 
         allowed_commands[command](
             cohort_name, content_item=content_item, reviewer=reviewer

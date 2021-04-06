@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
 import AccessAlarms from "@material-ui/icons/AccessAlarms";
 
-import CardReviewBadges from "../../../widgets/CardReviewBadges";
+import CardBadges from "../../../widgets/CardBadges";
 
 import { BLOCKED } from "../../../../constants";
 
@@ -143,7 +143,7 @@ export default ({
       variant="outlined"
     >
       <CardContent>
-        <CardReviewBadges card={card} />
+        <CardBadges card={card} />
         <Typography variant="caption">
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>

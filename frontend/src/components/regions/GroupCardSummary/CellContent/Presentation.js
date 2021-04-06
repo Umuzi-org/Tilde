@@ -10,7 +10,7 @@ import {
   TableCell,
   IconButton,
 } from "@material-ui/core";
-import CardReviewBadges from "../../../widgets/CardReviewBadges";
+import CardBadges from "../../../widgets/CardBadges";
 // import CardButton from "../../../widgets/CardButton";
 import MoreIcon from "@material-ui/icons/More";
 
@@ -113,7 +113,7 @@ export default ({ card, handleClickOpenCardDetails }) => {
                 </Paper>
               </TableCell>
               <TableCell>
-                <CardReviewBadges card={card} />
+                <CardBadges card={card} />
               </TableCell>
             </TableRow>
           </TableBody>

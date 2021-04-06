@@ -364,16 +364,11 @@ export function getLatestMatchingCall({ callLog, requestData }) {
             key
           ]}\n\ttypeof requestData[${key}] = ${typeof requestData[key]}`
         );
+        // throw new Error("no");
       }
       if (logEntry.requestData[key] !== requestData[key]) return false;
     }
     return true;
   });
   return callLog[matchingIndex];
-  // return callLog.reverse().find((logEntry) => {
-  //   for (let key in requestData) {
-  //     if (logEntry.requestData[key] !== requestData[key]) return false;
-  //   }
-  //   return true;
-  // });
 }

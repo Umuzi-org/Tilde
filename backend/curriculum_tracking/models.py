@@ -1109,6 +1109,14 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         attendance.delete()
 
     @property
+    def open_pr_count(self):
+        repo = self.repository
+        if repo:
+            # breakpoint()
+            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
+        return 0
+
+    @property
     def repository(self):
         return self.recruit_project.repository
 
