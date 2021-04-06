@@ -15,6 +15,7 @@ OLD_EMAIL = "Old Email"
 NEW_EMAIL = "New Email"
 TEAM_NAME = "Team"
 DEPARTMENT = "department"
+BROKEN = "broken"
 
 
 COURSES_BY_DEPARTMENT = {
@@ -22,23 +23,40 @@ COURSES_BY_DEPARTMENT = {
         "Web development boot camp",
         "Post Bootcamp Soft Skills",
         "NCIT - JavaScript",
-        "Web Development",
+        "Web Development - part 1",
+        "Web Development - part 2",
+    ],
+    "web dev alumni": [
+        "Alumni Web developement Bootcamp",
+        "Post Bootcamp Soft Skills",
+        "Web Development - part 2",
     ],
     "data eng": [
         "Data Engineering boot camp",
         "Post Bootcamp Soft Skills",
         "NCIT - Python",
-        "Data Engineering",
+        "Data Engineering - part 1",
+        "Data Engineering - part 2",
+    ],
+    "data eng alumni": [
+        "Alumni Data Engineering Bootcamp",
+        "Post Bootcamp Soft Skills",
+        "Data Engineering - part 2",
     ],
     "java": [
         "Java boot camp",
         "Post Bootcamp Soft Skills",
         "NCIT - Java",
-        "Java Systems Development",
+        "Java Systems Development - part 1",
+        "Java Systems Development - part 2",
+    ],
+    "java alumni": [
+        "Alumni Java Bootcamp",
+        "Post Bootcamp Soft Skills",
+        "Java Systems Development - part 2",
     ],
     "it support": [
         "Post Bootcamp Soft Skills",
-        "NCIT - Python",
         "IT Support and IT automation",
     ],
     "data sci": [
@@ -51,7 +69,7 @@ COURSES_BY_DEPARTMENT = {
 
 
 def update_user_email(row):
-
+    print(row)
     try:
         user = User.objects.get(email=row[OLD_EMAIL])
     except User.DoesNotExist:
@@ -62,6 +80,8 @@ def update_user_email(row):
 
 
 def set_up_course_registrations(row):
+    print(row)
+
     user = User.objects.get(email=row[NEW_EMAIL])
     course_names = COURSES_BY_DEPARTMENT[row[DEPARTMENT]]
     set_course_reg(user, course_names)
@@ -70,7 +90,7 @@ def set_up_course_registrations(row):
 def set_course_reg(user, course_names):
     curriculums = []
     for name in course_names:
-        print(name)
+        # print(name)
         curriculums.append(Curriculum.objects.get(name=name))
 
     course_ids = [curriculum.id for curriculum in curriculums]
@@ -134,26 +154,26 @@ class Command(BaseCommand):
         rocketchat_user = os.environ["ROCKETCHAT_USER"]
         rocketchat_pass = os.environ["ROCKETCHAT_PASS"]
 
-        client = Rocketchat()
-        client.login(rocketchat_user, rocketchat_pass)
-
+        df = fetch_sheet(url=path)
+        df = df[df[BROKEN] != 1]
         # df = pd.read_csv(path)
 
         # df.apply(update_user_email, axis=1)
 
         # df.apply(add_user_to_group, axis=1)
-        # df.apply(set_up_course_registrations, axis=1)
-        df = fetch_sheet(url=path)
-        try:
-            df.apply(
-                create_rocketchat_user_and_add_to_channel(
-                    client, ["ryan", "asanda", "sheena"]
-                ),
-                axis=1,
-            )
-        except:
-            import traceback
+        df.apply(set_up_course_registrations, axis=1)
+        # client = Rocketchat()
+        # client.login(rocketchat_user, rocketchat_pass)
+        # try:
+        #     df.apply(
+        #         create_rocketchat_user_and_add_to_channel(
+        #             client, ["ryan", "asanda", "sheena"]
+        #         ),
+        #         axis=1,
+        #     )
+        # except:
+        #     import traceback
 
-            print(traceback.format_exc())
-        finally:
-            client.logout()
+        #     print(traceback.format_exc())
+        # finally:
+        #     client.logout()
