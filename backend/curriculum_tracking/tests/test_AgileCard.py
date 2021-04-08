@@ -30,7 +30,6 @@ JAVASCRIPT = "js"
 class start_project_Tests(TestCase):
     def setUp(self):
         bot = SocialProfileFactory(github_name=GITHUB_BOT_USERNAME)
-
         GithubOAuthTokenFactory(user=bot.user)
 
     def assert_users_same(self, card, project):
@@ -42,7 +41,6 @@ class start_project_Tests(TestCase):
         self.assertEqual(card_assignees, project_assignees)
         self.assertEqual(card_reviewers, project_reviewers)
 
-    # @mock.patch("social_auth.github_api.Api")
     @mock.patch("git_real.helpers.get_repo")
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_start_project_creates_project_if_not_exists(self, get_repo, *_):
@@ -81,13 +79,8 @@ class start_project_Tests(TestCase):
         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
         self.assertIsNotNone(project.start_time)
 
-    # @mock.patch("social_auth.github_api.Api")
-    # @mock.patch("git_real.helpers.add_collaborator")
-    # @mock.patch("git_real.helpers.get_repo")
     @mock.patch.object(RecruitProject, "setup_repository")
-    def test_start_project_works_even_if_project_instance_exists(
-        self, *_  # get_repo, add_collaborator, Api
-    ):
+    def test_start_project_works_even_if_project_instance_exists(self, *_):
         card = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=None,
@@ -95,15 +88,6 @@ class start_project_Tests(TestCase):
         )
         card.assignees.add(SocialProfileFactory().user)
         self.assertIsNone(card.recruit_project)
-
-        # get_repo.return_value = {
-        #     "full_name": "me/kiff",
-        #     "owner": {"login": "me"},
-        #     "ssh_url": "https://whatever.git",
-        #     "private": True,
-        #     "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
-        #     "archived": False,
-        # }
 
         card.set_due_time(timezone.now())
         self.assertEqual(card.status, AgileCard.READY)
@@ -151,38 +135,16 @@ class start_project_Tests(TestCase):
 
         self.assertIsNone(card_js.recruit_project)
 
-        # def get_repo_mock(
-        #     github_auth_login="", repo_full_name="", api=None, response404=None
-        # ):
-        #     return {
-        #         "full_name": f"me/{repo_full_name}",
-        #         "owner": {"login": "me"},
-        #         "ssh_url": f"https://{repo_full_name}.git",
-        #         "private": True,
-        #         "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
-        #         "archived": False,
-        #     }
-
-        # get_repo.side_effect = get_repo_mock
-
         card_ts.start_project()
         card_js.start_project()
 
         self.assertNotEqual(card_ts.recruit_project, card_js.recruit_project)
-        # self.assertNotEqual(
-        #     card_ts.recruit_project.repository, card_js.recruit_project.repository
-        # )
 
         ts_project_flavours = [o.name for o in card_ts.recruit_project.flavours.all()]
         self.assertEqual(ts_project_flavours, [TYPESCRIPT])
 
         js_project_flavours = [o.name for o in card_js.recruit_project.flavours.all()]
         self.assertEqual(js_project_flavours, [JAVASCRIPT])
-
-        # self.assertIn(JAVASCRIPT, card_js.recruit_project.repository.ssh_url)
-        # self.assertIn(JAVASCRIPT, card_js.recruit_project.repository.full_name)
-        # self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.ssh_url)
-        # self.assertIn(TYPESCRIPT, card_ts.recruit_project.repository.full_name)
 
     @mock.patch("social_auth.github_api.Api")
     @mock.patch("git_real.helpers.add_collaborator")
@@ -376,78 +338,6 @@ class start_project_Tests(TestCase):
         self.assertEqual(
             card_ts.recruit_project.content_item, card_js.recruit_project.content_item
         )
-
-    # @mock.patch("git_real.helpers.get_repo")
-    # @mock.patch("git_real.helpers.add_collaborator")
-    # def test_that_if_project_progress_instance_exists_then_collaborators_added_to_repo_REPOSITORY(
-    #     self, add_collaborator, get_repo
-    # ):
-    #     def get_repo_mock(
-    #         github_auth_login, repo_full_name, api=None, response404=None
-    #     ):
-    #         return {
-    #             "full_name": f"me/{repo_full_name}",
-    #             "owner": {"login": "me"},
-    #             "ssh_url": f"https://{repo_full_name}.git",
-    #             "private": True,
-    #             "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
-    #             "archived": False,
-    #         }
-
-    #     get_repo.side_effect = get_repo_mock
-
-    #     assignee = SocialProfileFactory().user
-    #     reviewer = SocialProfileFactory().user
-
-    #     card = factories.AgileCardFactory(
-    #         content_item=factories.ContentItemFactory(
-    #             content_type=ContentItem.PROJECT,
-    #             project_submission_type=ContentItem.REPOSITORY,
-    #         ),
-    #         status=AgileCard.READY,
-    #         recruit_project=None,
-    #     )
-    #     card.assignees.set([assignee])
-    #     card.reviewers.set([reviewer])
-
-    #     card.start_project()
-
-    #     card.refresh_from_db()
-    #     project = card.recruit_project
-
-    #     self.assert_users_same(card, project)
-
-    #     self.assertTrue(create_repo.called)
-    #     github_collaborator_names = [t[0][-1] for t in add_collaborator.call_args_list]
-
-    #     self.assertTrue(
-    #         assignee.social_profile.github_name in github_collaborator_names
-    #     )
-    #     self.assertTrue(
-    #         reviewer.social_profile.github_name in github_collaborator_names
-    #     )
-
-    # @mock.patch("social_auth.github_api.Api")
-    # @mock.patch("git_real.helpers.add_collaborator")
-    # @mock.patch.object(RecruitProject, "setup_repository")
-    # def test_that_if_project_progress_instance_exists_then_collaborators_added_to_repo_CONTINUE_REPO(
-    #     self, add_collaborator, *_
-    # ):
-
-    #     assignee = SocialProfileFactory().user
-    #     reviewer = SocialProfileFactory().user
-    #     card = self.create_continue_repo_card([], [], assignee, reviewer)
-
-    #     card.start_project()
-
-    #     github_collaborator_names = [t[0][-1] for t in add_collaborator.call_args_list]
-
-    #     self.assertTrue(
-    #         assignee.social_profile.github_name in github_collaborator_names
-    #     )
-    #     self.assertTrue(
-    #         reviewer.social_profile.github_name in github_collaborator_names
-    #     )
 
 
 class Project_set_due_time_Tests(TestCase):
@@ -658,9 +548,6 @@ class TopicMovementTestCase(TestCase):
         self.assertEqual(self.card.topic_progress.content_item, self.card.content_item)
         self.assertIsNone(self.card.topic_progress.complete_time)
         self.assertIsNotNone(self.card.topic_progress.start_time)
-
-    # def test_stop_topic_doesnt_delete_instance_just_clears_start_time(self):
-    #     self.card.start_topic()
 
     def test_add_COMPETENT_review(self):
 
