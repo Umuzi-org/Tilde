@@ -4,10 +4,7 @@ from curriculum_tracking.models import AgileCard
 
 
 def get_users(who):
-    if "@" in who:
-        return [User.objects.get(email=who)]
-    team = Team.objects.get(name=who)
-    return team.user_set.filter(active=True)
+    return User.get_users_from_identifier(who)
 
 
 # def get_student_users(who):

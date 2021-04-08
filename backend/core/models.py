@@ -93,6 +93,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    @classmethod
+    def get_users_from_identifier(cls, who: str):
+        """pass in an email address or a team name"""
+        if "@" in who:
+            return [cls.objects.get(email=who)]
+        team = Team.objects.get(name=who)
+        return team.user_set.filter(active=True)
+
     def teams(self):
         # this is because we've overridden Django's default group behaviour. We work with teams, not groups
         return [o.team for o in self.groups.all().prefetch_related("team")]

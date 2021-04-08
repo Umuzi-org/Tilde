@@ -127,9 +127,10 @@ def add_reviewer(team, content_item, reviewer, add_as_project_reviewer):
             add_collaborator(api, card.repository.full_name, github_name)
         card.save()
         if add_as_project_reviewer:
-            card.reviewers.add(user)
-            if card.recruit_project:
-                card.recruit_project.reviewer_users.add(user)
+            if user not in card.assignees.all():
+                card.reviewers.add(user)
+                if card.recruit_project:
+                    card.recruit_project.reviewer_users.add(user)
         card.save()
         # project.agile_card.reviewers =
 

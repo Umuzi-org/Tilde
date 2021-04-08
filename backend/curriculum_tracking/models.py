@@ -376,6 +376,12 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
             if o.recruit_project.flavours_match([o.name for o in self.flavours.all()])
         ]
 
+        previous_untrusted_reviews = [
+            o
+            for o in previous_untrusted_reviews
+            if o.recruit_project.review_request_time < o.timestamp
+        ]
+
         for review in previous_untrusted_reviews:
             card = review.recruit_project.agile_card
             if card.status == AgileCard.IN_REVIEW:
@@ -383,6 +389,53 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
                 review.save()
                 review.recruit_project.update_associated_card_status()
                 review.update_recent_validation_flags_for_project()
+
+    @classmethod
+    def add_specific_trust_instances(
+        cls,
+        who: str,
+        content_item_title: str,
+        flavours: List[str],
+        update_previous_reviews: bool = False,
+    ):
+        """
+        Create ReviewTrust instances for users. This function will not add duplicates.
+
+        :param who: email address or team name. The users included here will each have a matching trust instance by the end
+        :param content_item_title: nuf sed
+        :param flavours: this needs to EXACTLY match the flavours on a card or associated reviews will not be trusted
+        :param update_previous_reviews: if True then reviews that match these criteria are revisitted and marked as competent. Cards might move as a result
+        """
+        users = User.get_users_from_identifier(who)
+        content_item = ContentItem.objects.get(title=content_item_title)
+        available_flavours = content_item.flavours.all()
+        available_flavour_names = [o.name for o in available_flavours]
+        for flavour_name in flavours:
+            assert (
+                flavour_name in available_flavour_names
+            ), f"{flavour_name} not allowed. choose from {available_flavour_names}"
+        final_flavours = [o for o in available_flavours if o.name in flavours]
+
+        trust_instances = []
+
+        for user in users:
+            trusts = cls.objects.filter(content_item=content_item, user=user)
+            found = False
+            for trust in trusts:
+                if trust.flavours_match(flavours):
+                    found = True
+                    trust_instances.append(trust)
+                    break
+            if not found:
+                # we make one
+                trust = cls.objects.create(content_item=content_item, user=user)
+                for flavour in final_flavours:
+                    trust.flavours.add(flavour)
+                trust_instances.append(trust)
+
+        if update_previous_reviews:
+            for trust in trust_instances:
+                trust.update_previous_reviews()
 
 
 class RecruitProject(
