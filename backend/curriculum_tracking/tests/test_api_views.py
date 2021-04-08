@@ -23,6 +23,7 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         "complete_time",
         "review_request_time",
         "start_time",
+        "open_pr_count",
     ]
 
     def verbose_instance_factory(self):
@@ -75,6 +76,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "tag_names",
         "can_start",
         "can_force_start",
+        "open_pr_count",
     ]
 
     def verbose_instance_factory(self):

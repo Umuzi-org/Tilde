@@ -473,10 +473,11 @@ class RecruitProject(
 
     flavours = TaggableManager(blank=True)
 
-    class Meta:
-        unique_together = [
-            ["content_item", "repository"],
-        ]
+    # class Meta:   # TODO: this is a dangerous thing to comment out
+    # but when altering csard flavours things can get a bit strange
+    #     unique_together = [
+    #         ["content_item", "repository"],
+    #     ]
 
     def get_users_with_permission(self, permissions):
         from guardian.shortcuts import get_users_with_perms
@@ -579,6 +580,8 @@ class RecruitProject(
         repo = git_helpers.save_repo(
             repo_dict
         )  # note thet the repo itself doesn't "belong" to anyone
+
+        logger.info(list(repo.recruit_projects.all()))
 
         self.repository = repo
         self.invite_github_collaborators_to_repo()
