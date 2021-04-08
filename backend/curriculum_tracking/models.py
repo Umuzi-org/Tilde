@@ -523,22 +523,30 @@ class RecruitProject(
 
     def invite_github_collaborators_to_repo(self):
         from social_auth.github_api import Api
+        from social_auth.models import SocialProfile
         from git_real.helpers import add_collaborator
 
-        users = list(self.recruit_users.all()) + list(self.reviewer_users.all())
-        assert len(users) >= 1, "This repo has no collaborators to add"
         api = Api(GITHUB_BOT_USERNAME)
-        for user in users:
-            add_collaborator(
-                api, self.repository.full_name, user.social_profile.github_name
-            )
 
-    def create_repo_and_assign_collaborators(self, card_flavour_names):
+        collaborator_users = (
+            list(self.reviewer_users.filter(active=True))
+            + list(self.recruit_users.filter(active=True))
+            + self.get_users_with_permission(Team.PERMISSION_VIEW)
+        )
+        repo = self.repository
 
-        from git_real.constants import GITHUB_BOT_USERNAME, ORGANISATION
+        for user in collaborator_users:
+            if not user.active:
+                continue
+            try:
+                social_profile = user.social_profile
+            except SocialProfile.DoesNotExist:
+                pass
+            else:
+                if social_profile.github_name:
+                    add_collaborator(api, repo.full_name, social_profile.github_name)
 
-        github_auth_login = GITHUB_BOT_USERNAME
-
+    def get_recruit_user_github_name(self):
         assert (
             self.recruit_users.count() == 1
         ), f"There should be 1 assignee. No more and no less: {self.assignees.all()}"
@@ -551,10 +559,24 @@ class RecruitProject(
             raise
         github_name = social.github_name
         assert github_name, f"{recruit_user.id} {recruit_user} has no github name"
+        return github_name
+
+    def setup_repository(self, add_collaborators=True):
+        from git_real.constants import GITHUB_BOT_USERNAME, ORGANISATION
+
+        github_auth_login = GITHUB_BOT_USERNAME
+
+        github_name = self.get_recruit_user_github_name()
+        assert (
+            self.recruit_users.count() == 1
+        ), f"There should be 1 assignee. No more and no less: {self.assignees.all()}"
+        recruit_user = self.recruit_users.first()
+
+        assert self.flavour_names == self.agile_card.flavour_names
 
         repo_name = self._generate_repo_name_for_project(
             user=recruit_user,
-            flavour_names=card_flavour_names,
+            flavour_names=self.flavour_names,
             content_item=self.content_item,
         )
 
@@ -566,26 +588,24 @@ class RecruitProject(
             ]
         )
 
-        git_helpers.create_repo_and_assign_contributer(
-            github_auth_login,
-            repo_full_name,
-            github_user_name=github_name,
-            readme_text=readme_text,
+        from git_real.helpers import create_org_repo, upload_readme, protect_master
+        from social_auth.github_api import Api
+
+        api = Api(github_auth_login)
+
+        repo = create_org_repo(
+            api=api, repo_full_name=repo_full_name, exists_ok=True, private=True
         )
+        assert (
+            repo != None
+        ), f"repo not created for project: {self.id} {self.content_item.title} {self.flavour_strings} {self.recruit_users}"
 
-        repo_dict = git_helpers.get_repo(
-            github_auth_login=github_auth_login, repo_full_name=repo_full_name
-        )
-
-        repo = git_helpers.save_repo(
-            repo_dict
-        )  # note thet the repo itself doesn't "belong" to anyone
-
-        logger.info(list(repo.recruit_projects.all()))
-
+        upload_readme(api=api, repo_full_name=repo_full_name, readme_text=readme_text)
+        protect_master(api, repo_full_name)
         self.repository = repo
-        self.invite_github_collaborators_to_repo()
         self.save()
+        if add_collaborators:
+            self.invite_github_collaborators_to_repo()
 
     def __str__(self):
         users = ", ".join([str(o) for o in self.recruit_users.all()])
@@ -1020,11 +1040,13 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
     def start_project(self):
         """the user has chosen to start a project. That means:
         - create the project (if not exists)
-        - create the repo (ditto)
-        - add assignees as collaborator
+        - set up the repo if needed
         """
         from .helpers import create_or_update_single_project_card
-        from long_running_request_actors import add_collaborators_and_protect_master
+        from long_running_request_actors import (
+            recruit_project_setup_repository,
+            recruit_project_invite_github_collaborators_to_repo,
+        )
 
         assert (
             self.assignees.count() == 1
@@ -1033,20 +1055,25 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         self._create_project_progress_if_not_exists()
 
         if self.content_item.project_submission_type == ContentItem.REPOSITORY:
-            self.recruit_project.create_repo_and_assign_collaborators(
-                card_flavour_names=self.flavour_names
-            )
-            assert self.recruit_project.repository
+            # self.recruit_project.create_repo_and_assign_collaborators(
+            #     card_flavour_names=self.flavour_names
+            # )
+            self.recruit_project.setup_repository(add_collaborators=False)
+            # assert self.recruit_project.repository
             # retry it just in case of github having eventual consistency issues
-
-            add_collaborators_and_protect_master.send_with_options(
+            recruit_project_invite_github_collaborators_to_repo.send_with_options(
                 kwargs={"project_id": self.recruit_project.id},
-                delay=15000,  # 15 seconds
+            )
+            recruit_project_setup_repository.send_with_options(
+                kwargs={"project_id": self.recruit_project.id},
+                delay=30000,  # 30 seconds
             )
 
         elif self.content_item.project_submission_type == ContentItem.CONTINUE_REPO:
             self.recruit_project.repository = self._get_repo_to_continue_from()
-            self.recruit_project.invite_github_collaborators_to_repo()
+            recruit_project_invite_github_collaborators_to_repo.send_with_options(
+                kwargs={"project_id": self.recruit_project.id},
+            )
 
         elif self.content_item.project_submission_type == ContentItem.LINK:
             pass  # nothing to do

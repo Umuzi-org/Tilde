@@ -87,6 +87,10 @@ class Api:
                 f.write(url_end)  # TODO: refactor. put this somewhere else
                 f.write("\n")
             return response404
+        if response.status_code == 404:
+            from django.http import Http404
+
+            raise Http404()
         assert (
             response.status_code == 200
         ), f"{response.status_code} {response.text} {response.reason}"

@@ -100,7 +100,7 @@ def scrape_repo_prs(api, repo):
             pr_object.update(**update_pr)
 
         # scrape_pr_comments(api, pr_object)
-        # TODO: write ETL for pull request comments (#159)
+        # scrape_pr_commits()
 
         scrape_pull_request_reviews(api, pr_object)
 

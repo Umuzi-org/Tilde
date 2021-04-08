@@ -96,87 +96,42 @@ def generate_repo_name_for_project(user, project, flavour_names):
     return project_name
 
 
-def _get_or_create_flavoured_project(project_content_item, repo, flavour_names):
+# def _get_or_create_flavoured_project(project_content_item, repo, flavour_names):
 
-    recruit_projects = models.RecruitProject.objects.filter(
-        content_item=project_content_item,
-        repository=repo,
-    )
-    for project in recruit_projects:
-        if project.flavours_match(flavour_names):
-            return project
-    project = models.RecruitProject.objects.create(
-        content_item=project_content_item, repository=repo
-    )
+#     recruit_projects = models.RecruitProject.objects.filter(
+#         content_item=project_content_item,
+#         repository=repo,
+#     )
+#     for project in recruit_projects:
+#         if project.flavours_match(flavour_names):
+#             return project
+#     project = models.RecruitProject.objects.create(
+#         content_item=project_content_item, repository=repo
+#     )
 
-    project.set_flavours(flavour_names)
-    return project
-
-
-def save_newly_created_project_repo_to_db(
-    github_auth_login, recruit_user, project_content_item, repo_full_name, flavour_names
-):
-    repo_dict = git_helpers.get_repo(
-        github_auth_login=github_auth_login, repo_full_name=repo_full_name
-    )
-
-    repo = git_helpers.save_repo(
-        repo_dict
-    )  # note thet the repo itself doesn't "belong" to anyone
-
-    recruit_project = _get_or_create_flavoured_project(
-        project_content_item, repo, flavour_names
-    )
-
-    if recruit_user not in [o.id for o in recruit_project.recruit_users.all()]:
-        recruit_project.recruit_users.add(recruit_user)
-        recruit_project.save()
-    return recruit_project
+#     project.set_flavours(flavour_names)
+#     return project
 
 
-def create_recruit_project_for_submission_type_REPOSITORY(
-    github_auth_login, recruit_user, project_content_item, flavour_names
-):
-    from social_auth import models as social_models
-    from git_real.constants import ORGANISATION
+# def save_newly_created_project_repo_to_db(
+#     github_auth_login, recruit_user, project_content_item, repo_full_name, flavour_names
+# ):
+#     repo_dict = git_helpers.get_repo(
+#         github_auth_login=github_auth_login, repo_full_name=repo_full_name
+#     )
 
-    try:
-        social = social_models.SocialProfile.objects.get(user=recruit_user)
+#     repo = git_helpers.save_repo(
+#         repo_dict
+#     )  # note thet the repo itself doesn't "belong" to anyone
 
-    except social_models.SocialProfile.DoesNotExist:
-        # logger.error(f"{recruit_user.id} {recruit_user}")
-        raise
-    github_name = social.github_name
+#     recruit_project = _get_or_create_flavoured_project(
+#         project_content_item, repo, flavour_names
+#     )
 
-    repo_name = generate_repo_name_for_project(
-        recruit_user, project_content_item, flavour_names
-    )
-
-    repo_full_name = f"{ORGANISATION}/{repo_name}"
-    readme_text = "\n".join(
-        [
-            f"{project_content_item.title} ({project_content_item.id})",
-            f"For raw project instructions see: {project_content_item.url}",
-        ]
-    )
-
-    git_helpers.create_repo_and_assign_contributer(
-        github_auth_login,
-        repo_full_name,
-        github_user_name=github_name,
-        readme_text=readme_text,
-    )
-
-    project = save_newly_created_project_repo_to_db(
-        github_auth_login=github_auth_login,
-        recruit_user=recruit_user,
-        project_content_item=project_content_item,
-        repo_full_name=repo_full_name,
-        flavour_names=flavour_names,
-    )
-
-    assert project
-    return project
+#     if recruit_user not in [o.id for o in recruit_project.recruit_users.all()]:
+#         recruit_project.recruit_users.add(recruit_user)
+#         recruit_project.save()
+#     return recruit_project
 
 
 def assert_users_same(card, project):

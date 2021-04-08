@@ -10,6 +10,9 @@ class Command(BaseCommand):
         parser.add_argument("email", type=str)
         parser.add_argument("is_staff", type=int)
         parser.add_argument("is_superuser", type=int)
+        parser.add_argument("first_name", type=str)
+        parser.add_argument("last_name", type=str)
+
         parser.add_argument(
             "github_name",
             type=str,
@@ -33,6 +36,8 @@ class Command(BaseCommand):
         else:
             user.is_staff = is_staff
             user.is_superuser = is_superuser
+            user.first_name = options["first_name"]
+            user.last_name = options["last_name"]
             user.save()
             print("updated user")
 

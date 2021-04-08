@@ -2,8 +2,8 @@ import base64
 from social_auth.github_api import Api
 from git_real import models
 from git_real.constants import GITHUB_DATETIME_FORMAT, GITHUB_DEFAULT_TIMEZONE
-from pprint import pprint
 from timezone_helpers import timestamp_str_to_tz_aware_datetime
+from django.http import Http404
 
 
 def strp_github_standard_time(timestamp: str):
@@ -15,15 +15,23 @@ def strp_github_standard_time(timestamp: str):
 
 
 def upload_readme(api, repo_full_name, readme_text):
-    response = api.put(
-        f"repos/{repo_full_name}/contents/README.md",
-        {
-            "message": "Added README.md",
-            "content": base64.b64encode(readme_text.encode("utf-8")).decode("utf-8"),
-        },
-    )
-    if "errors" in response:
-        raise Exception(response)
+    readme_path = f"repos/{repo_full_name}/contents/README.md"
+    try:
+        response = api.request(readme_path, json=False)
+    except Http404:
+        # it doesn't exist. Create it
+        response = api.put(
+            readme_path,
+            {
+                "message": "Added README.md",
+                "content": base64.b64encode(readme_text.encode("utf-8")).decode(
+                    "utf-8"
+                ),
+            },
+            json=False,
+        )
+
+    assert str(response.status_code).startswith("2"), f"{response}\n {response.json()}"
 
 
 def create_org_repo(api, repo_full_name, private=True, exists_ok=False, **post_kwargs):
@@ -46,6 +54,8 @@ def create_org_repo(api, repo_full_name, private=True, exists_ok=False, **post_k
             print(args)
             print("================")
             raise Exception(result)
+
+    return fetch_and_save_repo(repo_full_name=repo_full_name, api=api)
 
 
 def _protection_settings(restrictions_users=None, restrictions_teams=None):
@@ -80,14 +90,9 @@ def protect_master(api, repo_full_name):
         raise Exception(response)
 
 
-def get_repo(github_auth_login, repo_full_name, api=None, response404=None):
+def get_repo(repo_full_name, github_auth_login="", api=None, response404=None):
     api = api or Api(github_auth_login)
     return api.request(f"repos/{repo_full_name}", response404=response404)
-
-
-# def get_collaborators(github_auth_login, repo_full_name, api=None, response404=None):
-#     api = api or Api(github_auth_login)
-#     return api.request(f"repos/{repo_full_name}/collaborators", response404=response404)
 
 
 def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
@@ -113,22 +118,21 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
     #     raise Exception(f"Adding collaborator: {github_user_name} unsuccessful.")
 
 
-def create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api):
-    api = api or Api(github_auth_login)
+# def create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api):
+#     api = api or Api(github_auth_login)
 
-    create_org_repo(api, repo_full_name, exists_ok=True, private=True)
-    upload_readme(api, repo_full_name, readme_text)
-    protect_master(api, repo_full_name)
+#     create_org_repo(api, repo_full_name, exists_ok=True, private=True)
+#     # upload_readme(api, repo_full_name, readme_text)
+#     protect_master(api, repo_full_name)
 
 
-def create_repo_and_assign_contributer(
-    github_auth_login, repo_full_name, github_user_name, readme_text, api=None
-):
-    # breakpoint()
-    create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api)
-    add_collaborator(
-        api, repo_full_name, github_user_name, github_auth_login=github_auth_login
-    )
+# def create_repo_and_assign_contributer(
+#     github_auth_login, repo_full_name, github_user_name, readme_text, api=None
+# ):
+#     create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api)
+#     add_collaborator(
+#         api, repo_full_name, github_user_name, github_auth_login=github_auth_login
+#     )
 
 
 def save_repo(repo: dict, user=None):
@@ -155,11 +159,11 @@ def save_repo(repo: dict, user=None):
     return obj
 
 
-def fetch_and_save_repo(github_auth_login, repo_full_name, user=None):
-    repo_dict = get_repo(github_auth_login, repo_full_name, response404=404)
+def fetch_and_save_repo(api, repo_full_name):
+    repo_dict = get_repo(api=api, repo_full_name=repo_full_name, response404=404)
     if repo_dict == 404:
         return
-    o = save_repo(repo_dict, user=user)
+    o = save_repo(repo_dict)
     assert o != None
     return o
 
