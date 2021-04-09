@@ -118,23 +118,6 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
     #     raise Exception(f"Adding collaborator: {github_user_name} unsuccessful.")
 
 
-# def create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api):
-#     api = api or Api(github_auth_login)
-
-#     create_org_repo(api, repo_full_name, exists_ok=True, private=True)
-#     # upload_readme(api, repo_full_name, readme_text)
-#     protect_master(api, repo_full_name)
-
-
-# def create_repo_and_assign_contributer(
-#     github_auth_login, repo_full_name, github_user_name, readme_text, api=None
-# ):
-#     create_repo(github_auth_login, repo_full_name, github_user_name, readme_text, api)
-#     add_collaborator(
-#         api, repo_full_name, github_user_name, github_auth_login=github_auth_login
-#     )
-
-
 def save_repo(repo: dict, user=None):
     print(f"saving: {repo['full_name']}")
 

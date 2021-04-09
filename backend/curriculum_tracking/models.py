@@ -598,7 +598,7 @@ class RecruitProject(
         )
         assert (
             repo != None
-        ), f"repo not created for project: {self.id} {self.content_item.title} {self.flavour_strings} {self.recruit_users}"
+        ), f"repo not created for project: {self.id} {self.content_item.title} {self.flavour_names} {self.recruit_users}"
 
         upload_readme(api=api, repo_full_name=repo_full_name, readme_text=readme_text)
         protect_master(api, repo_full_name)
