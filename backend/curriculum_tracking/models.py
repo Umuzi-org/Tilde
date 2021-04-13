@@ -524,26 +524,37 @@ class RecruitProject(
     def invite_github_collaborators_to_repo(self):
         from social_auth.github_api import Api
         from social_auth.models import SocialProfile
-        from git_real.helpers import add_collaborator
+        from git_real.helpers import add_collaborator, list_collaborators
 
         api = Api(GITHUB_BOT_USERNAME)
+        repo = self.repository
+        existing_collaborators = list_collaborators(api, repo.full_name)
 
         collaborator_users = (
             list(self.reviewer_users.filter(active=True))
             + list(self.recruit_users.filter(active=True))
             + self.get_users_with_permission(Team.PERMISSION_VIEW)
         )
-        repo = self.repository
 
         for user in collaborator_users:
+            logger.debug(f"adding user {user} to repo...")
             if not user.active:
+                logger.debug("user not active. Skipping")
                 continue
             try:
                 social_profile = user.social_profile
+
             except SocialProfile.DoesNotExist:
+                logger.debug("user has no social profile. Skipping")
                 pass
             else:
-                if social_profile.github_name:
+                github_name = social_profile.github_name
+                if not github_name:
+                    logger.debug("user has no github name. Skipping")
+                elif github_name in existing_collaborators:
+                    logger.debug("user is already a collaborator. Skipping")
+                else:
+                    logger.debug(f"adding github user {social_profile.github_name}")
                     add_collaborator(api, repo.full_name, social_profile.github_name)
 
     def get_recruit_user_github_name(self):
