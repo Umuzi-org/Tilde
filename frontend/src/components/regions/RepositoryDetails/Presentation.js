@@ -40,39 +40,39 @@ function TabPanel(props) {
   );
 }
 
-const CommitsTable = ({ commits }) => {
-  const classes = useStyles();
-  return (
-    <TableContainer className={classes.container}>
-      <Table stickyHeader aria-label="sticky table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Datetime</TableCell>
-            <TableCell>Branch</TableCell>
-            <TableCell>Author Email</TableCell>
-            <TableCell>Author Github</TableCell>
-            <TableCell>Message</TableCell>
-            <TableCell>Hash</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {commits.map((commit) => {
-            return (
-              <TableRow key={commit.id}>
-                <TableCell>{commit.datetime}</TableCell>
-                <TableCell>{commit.branch}</TableCell>
-                <TableCell>{commit.authorEmail}</TableCell>
-                <TableCell>{commit.authorGithubName}</TableCell>
-                <TableCell>{commit.message}</TableCell>
-                <TableCell>{commit.commitHash}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
+// const CommitsTable = ({ commits }) => {
+//   const classes = useStyles();
+//   return (
+//     <TableContainer className={classes.container}>
+//       <Table stickyHeader aria-label="sticky table">
+//         <TableHead>
+//           <TableRow>
+//             <TableCell>Datetime</TableCell>
+//             <TableCell>Branch</TableCell>
+//             <TableCell>Author Email</TableCell>
+//             <TableCell>Author Github</TableCell>
+//             <TableCell>Message</TableCell>
+//             <TableCell>Hash</TableCell>
+//           </TableRow>
+//         </TableHead>
+//         <TableBody>
+//           {commits.map((commit) => {
+//             return (
+//               <TableRow key={commit.id}>
+//                 <TableCell>{commit.datetime}</TableCell>
+//                 <TableCell>{commit.branch}</TableCell>
+//                 <TableCell>{commit.authorEmail}</TableCell>
+//                 <TableCell>{commit.authorGithubName}</TableCell>
+//                 <TableCell>{commit.message}</TableCell>
+//                 <TableCell>{commit.commitHash}</TableCell>
+//               </TableRow>
+//             );
+//           })}
+//         </TableBody>
+//       </Table>
+//     </TableContainer>
+//   );
+// };
 
 const PullRequestsTable = ({ pullRequests, repository }) => {
   const classes = useStyles();
@@ -81,15 +81,13 @@ const PullRequestsTable = ({ pullRequests, repository }) => {
       <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <TableCell>title</TableCell>
-            <TableCell>state</TableCell>
-            <TableCell>Author</TableCell>
-            <TableCell>Assignees</TableCell>
+            <TableCell>Title</TableCell>
+            <TableCell>State</TableCell>
             <TableCell>Body</TableCell>
-            <TableCell>updatedAt</TableCell>
-            <TableCell>closedAt</TableCell>
-            <TableCell>mergedAt</TableCell>
-            <TableCell>createdAt</TableCell>
+            <TableCell>Updated at</TableCell>
+            <TableCell>Closed at</TableCell>
+            <TableCell>Merged at</TableCell>
+            <TableCell>Created at</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -104,8 +102,8 @@ const PullRequestsTable = ({ pullRequests, repository }) => {
                   </a>
                 </TableCell>
                 <TableCell>{pr.state}</TableCell>
-                <TableCell>{pr.authorGithubName}</TableCell>
-                <TableCell>{pr.assignees}</TableCell>
+                {/* <TableCell>{pr.authorGithubName}</TableCell>
+                <TableCell>{pr.assignees}</TableCell> */}
                 <TableCell>{pr.body}</TableCell>
                 <TableCell>{pr.updatedAt}</TableCell>
                 <TableCell>{pr.closedAt}</TableCell>
@@ -122,7 +120,7 @@ const PullRequestsTable = ({ pullRequests, repository }) => {
 
 export default ({
   repository,
-  currentCommits,
+  // currentCommits,
   currentPullRequests,
   tabValue,
   handleChangeTab,
@@ -140,7 +138,7 @@ export default ({
             aria-label="disabled tabs example"
           >
             <Tab label="Details" />
-            <Tab label="Commits" />
+            {/* <Tab label="Commits" /> */}
             <Tab label="Pull Requests" />
           </Tabs>
           <TabPanel value={tabValue} index={0}>
@@ -162,10 +160,10 @@ export default ({
             <Typography>{repository.sshUrl}</Typography>
           </TabPanel>
 
-          <TabPanel value={tabValue} index={1}>
+          {/* <TabPanel value={tabValue} index={1}>
             <CommitsTable commits={currentCommits} />
-          </TabPanel>
-          <TabPanel value={tabValue} index={2}>
+          </TabPanel> */}
+          <TabPanel value={tabValue} index={1}>
             <PullRequestsTable
               pullRequests={currentPullRequests}
               repository={repository}

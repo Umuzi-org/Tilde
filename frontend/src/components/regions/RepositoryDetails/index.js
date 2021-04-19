@@ -3,6 +3,13 @@ import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import Presentation from "./Presentation";
 
+function toLocaleString(dateTimeString) {
+  if (dateTimeString) {
+    const timestamp = new Date(dateTimeString);
+    return timestamp.toLocaleString();
+  } else return null;
+}
+
 function RepositoryDetailsUnconnected({
   repositoryId,
   repositories,
@@ -15,7 +22,7 @@ function RepositoryDetailsUnconnected({
   React.useEffect(() => {
     if (repositoryId) {
       fetchRepository({ repositoryId });
-      fetchCommits({ repositoryId });
+      // fetchCommits({ repositoryId });
       fetchPullRequests({ repositoryId });
     }
   }, [repositoryId, fetchRepository, fetchCommits, fetchPullRequests]);
@@ -29,9 +36,17 @@ function RepositoryDetailsUnconnected({
   const currentCommits = Object.values(commits).filter(
     (commit) => commit.repository === repositoryId
   );
-  const currentPullRequests = Object.values(pullRequests).filter(
-    (pr) => pr.repository === repositoryId
-  );
+  const currentPullRequests = Object.values(pullRequests)
+    .filter((pr) => pr.repository === repositoryId)
+    .map((pr) => {
+      return {
+        ...pr,
+        updatedAt: toLocaleString(pr.updatedAt),
+        closedAt: toLocaleString(pr.closedAt),
+        mergedAt: toLocaleString(pr.mergedAt),
+        createdAt: toLocaleString(pr.createdAt),
+      };
+    });
 
   const props = {
     repository,
