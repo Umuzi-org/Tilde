@@ -59,11 +59,61 @@ class PullRequest(models.Model, Mixins):
     closed_at = models.DateTimeField(blank=True, null=True)
     merged_at = models.DateTimeField(blank=True, null=True)
     number = models.PositiveSmallIntegerField()
-    assignees = ArrayField(models.CharField(max_length=100), default=list)
+    # assignees = ArrayField(models.CharField(max_length=100), default=list)
 
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     # TODO Denormalise (#157)
+    class Meta:
+        unique_together = [["repository", "number"]]
+
+    @classmethod
+    def create_or_update_from_github_api_data(
+        cls, repo_full_name, pull_request_data, repo_missing_ok=False
+    ):
+        from git_real.helpers import strp_github_standard_time
+
+        get_repo = lambda: Repository.objects.get(full_name=repo_full_name)
+
+        if repo_missing_ok:
+            try:
+                repo = get_repo()
+            except Repository.DoesNotExist:
+                return
+        else:
+            repo = get_repo()
+
+        # pr = request_body["pull_request"]
+        number = pull_request_data["number"]
+
+        defaults = {
+            "state": pull_request_data["state"],
+            "title": pull_request_data["title"],
+            "body": pull_request_data["body"],
+            "created_at": strp_github_standard_time(
+                pull_request_data["created_at"],
+            ),
+            "updated_at": pull_request_data["updated_at"]
+            and strp_github_standard_time(
+                pull_request_data["updated_at"],
+            ),
+            "closed_at": pull_request_data["closed_at"]
+            and strp_github_standard_time(
+                pull_request_data["closed_at"],
+            ),
+            "merged_at": pull_request_data["merged_at"]
+            and strp_github_standard_time(
+                pull_request_data["merged_at"],
+            ),
+        }
+        #     "author_github_name": github_user,
+        #     "assignees": [d["login"] for d in pr["assignees"]],
+        #     "user": get_user_from_github_name(github_user),
+        # }
+        pull_request, _ = cls.get_or_create_or_update(
+            repository=repo, number=number, defaults=defaults, overrides=defaults
+        )
+        return pull_request
 
 
 class PullRequestReview(models.Model, Mixins):

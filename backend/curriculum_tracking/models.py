@@ -487,7 +487,7 @@ class RecruitProject(
         for team in teams:
             users = get_users_with_perms(obj=team)
             for user in users:
-                if user not in result:
+                if user.active and user not in result:
                     result.append(user)
         return result
 
@@ -530,32 +530,38 @@ class RecruitProject(
         repo = self.repository
         existing_collaborators = list_collaborators(api, repo.full_name)
 
-        collaborator_users = (
-            list(self.reviewer_users.filter(active=True))
-            + list(self.recruit_users.filter(active=True))
-            + self.get_users_with_permission(Team.PERMISSION_VIEW)
-        )
+        collaborator_users = {
+            "reviewer users": list(self.reviewer_users.filter(active=True)),
+            "assigned users": list(self.recruit_users.filter(active=True)),
+            "users with view permission": self.get_users_with_permission(
+                Team.PERMISSION_VIEW
+            ),
+        }
 
-        for user in collaborator_users:
-            logger.debug(f"adding user {user} to repo...")
-            if not user.active:
-                logger.debug("user not active. Skipping")
-                continue
-            try:
-                social_profile = user.social_profile
+        for list_name, users in collaborator_users.items():
+            logger.info(f"Adding github collaborators from list: {list_name}")
+            for user in users:
+                logger.info(f"adding user {user} to repo...")
+                if not user.active:
+                    logger.info("user not active. Skipping")
+                    continue
+                try:
+                    social_profile = user.social_profile
 
-            except SocialProfile.DoesNotExist:
-                logger.debug("user has no social profile. Skipping")
-                pass
-            else:
-                github_name = social_profile.github_name
-                if not github_name:
-                    logger.debug("user has no github name. Skipping")
-                elif github_name in existing_collaborators:
-                    logger.debug("user is already a collaborator. Skipping")
+                except SocialProfile.DoesNotExist:
+                    logger.info("user has no social profile. Skipping")
+                    pass
                 else:
-                    logger.debug(f"adding github user {social_profile.github_name}")
-                    add_collaborator(api, repo.full_name, social_profile.github_name)
+                    github_name = social_profile.github_name
+                    if not github_name:
+                        logger.info("user has no github name. Skipping")
+                    elif github_name in existing_collaborators:
+                        logger.info("user is already a collaborator. Skipping")
+                    else:
+                        logger.info(f"adding github user {social_profile.github_name}")
+                        add_collaborator(
+                            api, repo.full_name, social_profile.github_name
+                        )
 
     def get_recruit_user_github_name(self):
         assert (
@@ -572,8 +578,42 @@ class RecruitProject(
         assert github_name, f"{recruit_user.id} {recruit_user} has no github name"
         return github_name
 
+    def _get_or_create_repo(self, api):
+        from git_real.constants import ORGANISATION
+        from git_real.helpers import create_org_repo
+
+        if self.content_item.project_submission_type == ContentItem.REPOSITORY:
+            assert (
+                self.recruit_users.count() == 1
+            ), f"Expected only one user, got: {self.recruit_users.all()}"
+            recruit_user = self.recruit_users.first()
+            repo_name = self._generate_repo_name_for_project(
+                user=recruit_user,
+                flavour_names=self.flavour_names,
+                content_item=self.content_item,
+            )
+
+            repo_full_name = f"{ORGANISATION}/{repo_name}"
+
+            repo = create_org_repo(
+                api=api, repo_full_name=repo_full_name, exists_ok=True, private=True
+            )
+            return repo
+        if self.content_item.project_submission_type == ContentItem.CONTINUE_REPO:
+            return self.agile_card._get_repo_to_continue_from()
+
+        raise Exception(
+            f"Cannot get or create a repo for content with submission_type {self.content_item.submission_type}"
+        )
+
     def setup_repository(self, add_collaborators=True):
         from git_real.constants import GITHUB_BOT_USERNAME, ORGANISATION
+        from git_real.helpers import (
+            create_org_repo,
+            upload_readme,
+            protect_master,
+        )
+        from social_auth.github_api import Api
 
         github_auth_login = GITHUB_BOT_USERNAME
 
@@ -585,13 +625,6 @@ class RecruitProject(
 
         assert self.flavour_names == self.agile_card.flavour_names
 
-        repo_name = self._generate_repo_name_for_project(
-            user=recruit_user,
-            flavour_names=self.flavour_names,
-            content_item=self.content_item,
-        )
-
-        repo_full_name = f"{ORGANISATION}/{repo_name}"
         readme_text = "\n".join(
             [
                 f"{self.content_item.title} ({self.content_item.id})",
@@ -599,20 +632,16 @@ class RecruitProject(
             ]
         )
 
-        from git_real.helpers import create_org_repo, upload_readme, protect_master
-        from social_auth.github_api import Api
-
         api = Api(github_auth_login)
 
-        repo = create_org_repo(
-            api=api, repo_full_name=repo_full_name, exists_ok=True, private=True
-        )
+        repo = self._get_or_create_repo(api)
+
         assert (
             repo != None
         ), f"repo not created for project: {self.id} {self.content_item.title} {self.flavour_names} {self.recruit_users}"
 
-        upload_readme(api=api, repo_full_name=repo_full_name, readme_text=readme_text)
-        protect_master(api, repo_full_name)
+        upload_readme(api=api, repo_full_name=repo.full_name, readme_text=readme_text)
+        protect_master(api, repo.full_name)
         self.repository = repo
         self.save()
         if add_collaborators:

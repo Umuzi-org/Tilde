@@ -124,7 +124,10 @@ def add_reviewer(team, content_item, reviewer, add_as_project_reviewer):
     for card in cards:
 
         if card.recruit_project and card.repository:
-            add_collaborator(api, card.repository.full_name, github_name)
+            if card.repository.full_name.startswith(ORGANISATION):
+                # print(card.repository.full_name)
+                # breakpoint()
+                add_collaborator(api, card.repository.full_name, github_name)
         card.save()
         if add_as_project_reviewer:
             if user not in card.assignees.all():

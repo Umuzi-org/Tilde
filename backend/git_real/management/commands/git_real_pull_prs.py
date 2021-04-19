@@ -53,51 +53,54 @@ def scrape_repo_prs(api, repo):
     for pr in pull_requests:
         if pr == 404:
             continue
-        github_user = pr["user"]["login"]
-        defaults = {
-            "state": pr["state"],
-            "title": pr["title"],
-            "body": pr["body"],
-            "created_at": strp_github_standard_time(
-                pr["created_at"],
-            ),
-            "updated_at": pr["updated_at"]
-            and strp_github_standard_time(
-                pr["updated_at"],
-            ),
-            "closed_at": pr["closed_at"]
-            and strp_github_standard_time(
-                pr["closed_at"],
-            ),
-            "merged_at": pr["merged_at"]
-            and strp_github_standard_time(
-                pr["merged_at"],
-            ),
-            "author_github_name": github_user,
-            "assignees": [d["login"] for d in pr["assignees"]],
-            "user": get_user_from_github_name(github_user),
-        }
-        update_pr = {
-            k: defaults[k]
-            for k in [
-                "state",
-                "title",
-                "body",
-                "updated_at",
-                "closed_at",
-                "merged_at",
-                "assignees",
-                "user",
-            ]
-        }
-
-        pr_object, pr_created = models.PullRequest.objects.get_or_create(
-            number=pr["number"],
-            repository=repo,
-            defaults=defaults,
+        pr_object = models.PullRequest.create_or_update_from_github_api_data(
+            repo_full_name=repo.full_name, pull_request_data=pr
         )
-        if not pr_created:
-            pr_object.update(**update_pr)
+        # github_user = pr["user"]["login"]
+        # defaults = {
+        #     "state": pr["state"],
+        #     "title": pr["title"],
+        #     "body": pr["body"],
+        #     "created_at": strp_github_standard_time(
+        #         pr["created_at"],
+        #     ),
+        #     "updated_at": pr["updated_at"]
+        #     and strp_github_standard_time(
+        #         pr["updated_at"],
+        #     ),
+        #     "closed_at": pr["closed_at"]
+        #     and strp_github_standard_time(
+        #         pr["closed_at"],
+        #     ),
+        #     "merged_at": pr["merged_at"]
+        #     and strp_github_standard_time(
+        #         pr["merged_at"],
+        #     ),
+        #     "author_github_name": github_user,
+        #     "assignees": [d["login"] for d in pr["assignees"]],
+        #     "user": get_user_from_github_name(github_user),
+        # }
+        # update_pr = {
+        #     k: defaults[k]
+        #     for k in [
+        #         "state",
+        #         "title",
+        #         "body",
+        #         "updated_at",
+        #         "closed_at",
+        #         "merged_at",
+        #         "assignees",
+        #         "user",
+        #     ]
+        # }
+
+        # pr_object, pr_created = models.PullRequest.objects.get_or_create(
+        #     number=pr["number"],
+        #     repository=repo,
+        #     defaults=defaults,
+        # )
+        # if not pr_created:
+        #     pr_object.update(**update_pr)
 
         # scrape_pr_comments(api, pr_object)
         # scrape_pr_commits()

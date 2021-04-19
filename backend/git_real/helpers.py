@@ -7,11 +7,13 @@ from django.http import Http404
 
 
 def strp_github_standard_time(timestamp: str):
-    return timestamp_str_to_tz_aware_datetime(
-        timestamp=timestamp,
-        dt_format=GITHUB_DATETIME_FORMAT,
-        zone_name=GITHUB_DEFAULT_TIMEZONE,
-    )
+    if timestamp:
+        return timestamp_str_to_tz_aware_datetime(
+            timestamp=timestamp,
+            dt_format=GITHUB_DATETIME_FORMAT,
+            zone_name=GITHUB_DEFAULT_TIMEZONE,
+        )
+    return None
 
 
 def upload_readme(api, repo_full_name, readme_text):
@@ -95,17 +97,31 @@ def get_repo(repo_full_name, github_auth_login="", api=None, response404=None):
     return api.request(f"repos/{repo_full_name}", response404=response404)
 
 
+def list_collaborators(api, repo_full_name):
+    """queries gihub for a list of collaborator names associated with this repo"""
+
+    response = api.request(
+        f"repos/{repo_full_name}/collaborators",
+        json=True,
+    )
+    return [d["login"] for d in response]
+
+
 def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
     api = api or Api(github_auth_login)
 
+    # print(list_collaborators(api, repo_full_name))
+
     response = api.put(
         f"repos/{repo_full_name}/collaborators/{github_user_name}",
-        {"permission": "push"},
+        # {"permission": "push"},
+        headers={"accept": "application/vnd.github.v3+json"},
         json=False,
+        data={},
     )
+    # breakpoint()
 
     if response.status_code == 404:
-        return  # TODO
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
 
     if response.status_code not in [201, 204]:
@@ -151,17 +167,24 @@ def fetch_and_save_repo(api, repo_full_name):
     return o
 
 
-# def create_webhooks(api):
-#     api.post(
-#         f"repos/{owner}/{repo}/hooks",
+# def create_required_webhooks(api, repo_full_name, webhook_url):
+
+#     response = api.post(
+#         f"repos/{repo_full_name}/hooks",
 #         headers={"accept": "application/vnd.github.v3+json"},
 #         data={
-#             'config': {
-#                 'url' :
-#                 'content_type' : 'json',
-#                 'events': [
+#             "config": {
+#                 "url": webhook_url,
+#                 "content_type": "json",
+#                 "events": [
 #                     # https://docs.github.com/en/developers/webhooks-and-events/github-event-types
-#                     'PullRequestEvent','PullRequestReviewCommentEvent','PushEvent']
+#                     "PullRequestEvent",
+#                     "PullRequestReviewCommentEvent",
+#                     "PushEvent",
+#                 ],
 #             }
 #         },
+#         json=False,
 #     )
+#     breakpoint()
+#     pass

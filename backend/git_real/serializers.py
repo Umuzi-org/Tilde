@@ -1,5 +1,3 @@
-
-
 from . import models
 from rest_framework import serializers
 
@@ -9,18 +7,19 @@ class RepositorySerializer(serializers.ModelSerializer):
         model = models.Repository
         fields = [
             "id",
-            'owner',
-            'full_name',
-            'ssh_url',
-            'created_at',
-            'private',
-            'archived',
-            'user',
+            "owner",
+            "full_name",
+            "ssh_url",
+            "created_at",
+            "private",
+            "archived",
+            "user",
         ]
+
 
 class CommitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Commit 
+        model = models.Commit
         fields = [
             "id",
             "repository",
@@ -31,11 +30,12 @@ class CommitSerializer(serializers.ModelSerializer):
             "branch",
             "datetime",
             "user",
-        ] 
+        ]
+
 
 class PullRequestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.PullRequest 
+        model = models.PullRequest
         fields = [
             "id",
             "repository",
@@ -48,13 +48,14 @@ class PullRequestSerializer(serializers.ModelSerializer):
             "closed_at",
             "merged_at",
             "number",
-            "assignees",
-            "user",
-        ] 
+            # "assignees",
+            # "user",
+        ]
+
 
 class PullRequestReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.PullRequestReview 
+        model = models.PullRequestReview
         fields = [
             "id",
             "author_github_name",
@@ -65,4 +66,4 @@ class PullRequestReviewSerializer(serializers.ModelSerializer):
             "state",
             "number",
             "user",
-        ] 
+        ]
