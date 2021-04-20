@@ -352,7 +352,7 @@ RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST", "localhost")
 RABBITMQ_PASSWORD = os.environ.get("RABBITMQ_PASSWORD", "password")
 RABBITMQ_PORT = os.environ.get("RABBITMQ_PORT", "5672")
 
-GIT_REAL_BOT_USERNAME = os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME", "umuzibot")
+GIT_REAL_BOT_USERNAME = os.environ.get("GIT_REAL_BOT_USERNAME", "umuzibot")
 GIT_REAL_WEBHOOK_SECRET = os.environ.get("GIT_REAL_WEBHOOK_SECRET")
 if not GIT_REAL_WEBHOOK_SECRET:
     print("warning: GIT_REAL_WEBHOOK_SECRET not set!")
