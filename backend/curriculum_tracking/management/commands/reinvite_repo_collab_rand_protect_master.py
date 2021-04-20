@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from git_real.constants import GITHUB_BOT_USERNAME, ORGANISATION
+from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
 
 # from git_real.helpers import add_collaborator, protect_master
 from curriculum_tracking.models import RecruitProject
@@ -10,7 +10,7 @@ from long_running_request_actors import add_collaborators_and_protect_master
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        api = Api(GITHUB_BOT_USERNAME)
+        api = Api(GIT_REAL_BOT_USERNAME)
         for project in RecruitProject.objects.filter(
             repository__owner=ORGANISATION, recruit_users__active__in=[True]
         ):

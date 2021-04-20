@@ -3,7 +3,7 @@ from google_helpers.utils import fetch_sheet
 from curriculum_tracking.models import AgileCard
 from core.models import User
 from git_real.helpers import fetch_and_save_repo
-from git_real.constants import GITHUB_BOT_USERNAME
+from git_real.constants import GIT_REAL_BOT_USERNAME
 
 
 REPO_COL = "Repo url incorrect. It should be ... (fill in the full repo url: https://github.com/[stuff].git)"
@@ -39,7 +39,7 @@ def process_row(row):
         print("Error: user not assigned to card")
 
     repo = fetch_and_save_repo(
-        github_auth_login=GITHUB_BOT_USERNAME,
+        github_auth_login=GIT_REAL_BOT_USERNAME,
         repo_full_name=get_repo_full_name(row[REPO_COL]),
     )
     project = card.recruit_project

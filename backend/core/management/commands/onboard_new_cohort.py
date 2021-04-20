@@ -80,7 +80,7 @@ def update_user_email(row):
 
 
 def set_up_course_registrations(row):
-    print(row)
+    # print(row)
 
     user = User.objects.get(email=row[NEW_EMAIL])
     course_names = COURSES_BY_DEPARTMENT[row[DEPARTMENT]]
@@ -145,36 +145,40 @@ def create_rocketchat_user_and_add_to_channel(client, managment_usernames):
     return _create_rocketchat_user_and_add_to_channel
 
 
+def setup_rocketchat_users(df):
+    rocketchat_user = os.environ["ROCKETCHAT_USER"]
+    rocketchat_pass = os.environ["ROCKETCHAT_PASS"]
+    client = Rocketchat()
+    client.login(rocketchat_user, rocketchat_pass)
+    try:
+        df.apply(
+            create_rocketchat_user_and_add_to_channel(
+                client, ["ryan", "asanda", "sheena"]
+            ),
+            axis=1,
+        )
+    except:
+        import traceback
+
+        print(traceback.format_exc())
+    finally:
+        client.logout()
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("path", type=str)
 
     def handle(self, *args, **options):
         path = options["path"]
-        rocketchat_user = os.environ["ROCKETCHAT_USER"]
-        rocketchat_pass = os.environ["ROCKETCHAT_PASS"]
 
         df = fetch_sheet(url=path)
         df = df[df[BROKEN] != 1]
         df = df[df[BROKEN] != "1"]
         # df = pd.read_csv(path)
 
-        df.apply(update_user_email, axis=1)
+        # df.apply(update_user_email, axis=1)
 
-        df.apply(add_user_to_group, axis=1)
-        df.apply(set_up_course_registrations, axis=1)
-        # client = Rocketchat()
-        # client.login(rocketchat_user, rocketchat_pass)
-        # try:
-        #     df.apply(
-        #         create_rocketchat_user_and_add_to_channel(
-        #             client, ["ryan", "asanda", "sheena"]
-        #         ),
-        #         axis=1,
-        #     )
-        # except:
-        #     import traceback
-
-        #     print(traceback.format_exc())
-        # finally:
-        #     client.logout()
+        # df.apply(add_user_to_group, axis=1)
+        # df.apply(set_up_course_registrations, axis=1)
+        setup_rocketchat_users(df)

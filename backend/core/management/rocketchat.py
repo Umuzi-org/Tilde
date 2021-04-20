@@ -70,6 +70,8 @@ class Rocketchat:
                 "username": username,
                 "email": email,
                 "password": password,
+                "verified": True,
+                "active": True,
             },
         )
         data = response.json()

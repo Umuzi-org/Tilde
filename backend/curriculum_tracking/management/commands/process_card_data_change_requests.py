@@ -3,7 +3,7 @@ from google_helpers.utils import fetch_sheet
 from django.core.management.base import BaseCommand
 
 from git_real import helpers as git_helpers
-from git_real.constants import GITHUB_BOT_USERNAME
+from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 
 CARD_ID = "Card Id (integer)"
@@ -30,7 +30,7 @@ def process_row(row):
     repo_full_name = found.groups()[0]
     try:
         repo_dict = git_helpers.get_repo(
-            github_auth_login=GITHUB_BOT_USERNAME, repo_full_name=repo_full_name
+            github_auth_login=GIT_REAL_BOT_USERNAME, repo_full_name=repo_full_name
         )
     except AssertionError:
         print(f"bad url: {repo_url}")

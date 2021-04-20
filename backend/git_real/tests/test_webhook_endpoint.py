@@ -10,6 +10,9 @@ from git_real.models import PullRequest
 from git_real.helpers import strp_github_standard_time
 from .factories import RepositoryFactory
 
+import mock
+from git_real.permissions import IsWebhookSignatureOk
+
 
 def get_asset(name):
     path = Path(__file__).parent / "assets" / f"{name}.json"
@@ -27,11 +30,13 @@ def get_body_and_headers(asset_name):
 
 
 class TestPullRequestOpened(APITestCase):
-    def test_that_opening_a_pr_creates_if_not_exists(self, asset_name):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_that_opening_a_pr_creates_if_not_exists(self, has_permission):
+        has_permission.return_value = True
 
         self.assertEqual(PullRequest.objects.all().count(), 0)
 
-        body, headers = get_body_and_headers(asset_name)
+        body, headers = get_body_and_headers("pull_request_opened")
         url = reverse(views.github_webhook)
 
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])

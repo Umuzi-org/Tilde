@@ -50,7 +50,7 @@ class APITestCaseMixin:
         self.assertEqual(
             len(response.data), self.NUMBER_OF_INSTANCES_CREATED_BY_VERBOSE_FACTORY
         )
-        print(response.data)
+        # print(response.data)
         instance = response.data[0]
         assert "id" in instance, "please make sure your serialiser includes an id field"
         for key, value in instance.items():

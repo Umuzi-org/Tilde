@@ -20,6 +20,14 @@ def ActionIs(action_name):
     return _ActionIs
 
 
+def RequestMethodIs(method_name):
+    class _RequestMethodIs(BasePermission):
+        def has_permission(self, request, view):
+            return request.method == method_name
+
+    return _RequestMethodIs
+
+
 def HasObjectPermission(permissions, get_object=None, get_objects=None):
     class _HasObjectPermission(BasePermission):
         def has_permission(self, request, view):

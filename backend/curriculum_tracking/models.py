@@ -20,7 +20,7 @@ from .constants import (
     REVIEW_STATUS_CHOICES,
 )
 
-from git_real.constants import GITHUB_BOT_USERNAME
+from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 
 import logging
@@ -526,7 +526,7 @@ class RecruitProject(
         from social_auth.models import SocialProfile
         from git_real.helpers import add_collaborator, list_collaborators
 
-        api = Api(GITHUB_BOT_USERNAME)
+        api = Api(GIT_REAL_BOT_USERNAME)
         repo = self.repository
         existing_collaborators = list_collaborators(api, repo.full_name)
 
@@ -607,7 +607,7 @@ class RecruitProject(
         )
 
     def setup_repository(self, add_collaborators=True):
-        from git_real.constants import GITHUB_BOT_USERNAME, ORGANISATION
+        from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
         from git_real.helpers import (
             create_org_repo,
             upload_readme,
@@ -615,7 +615,7 @@ class RecruitProject(
         )
         from social_auth.github_api import Api
 
-        github_auth_login = GITHUB_BOT_USERNAME
+        github_auth_login = GIT_REAL_BOT_USERNAME
 
         github_name = self.get_recruit_user_github_name()
         assert (

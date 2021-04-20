@@ -13,7 +13,7 @@ from core.tests.factories import UserFactory
 from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
 from django.utils.timezone import datetime
 from datetime import timedelta
-from git_real.constants import GITHUB_BOT_USERNAME, GITHUB_DATETIME_FORMAT
+from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT
 
 from curriculum_tracking.constants import (
     RED_FLAG,
@@ -29,7 +29,7 @@ JAVASCRIPT = "js"
 
 class start_project_Tests(TestCase):
     def setUp(self):
-        bot = SocialProfileFactory(github_name=GITHUB_BOT_USERNAME)
+        bot = SocialProfileFactory(github_name=GIT_REAL_BOT_USERNAME)
         GithubOAuthTokenFactory(user=bot.user)
 
     def assert_users_same(self, card, project):

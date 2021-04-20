@@ -1,48 +1,26 @@
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect
-# from django.urls import reverse
-# from core.forms import TeamForm
-
-# from .models import Commit
-
-# from django.urls import resolve
-# import datetime
-
-# from core.models import User
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
-import json
-import hmac
-from hashlib import sha256
-from git_real.models import Repository, PullRequest
+from git_real.models import PullRequest
+from backend.settings import GIT_REAL_WEBHOOK_SECRET
+from core.permissions import RequestMethodIs
+from .permissions import IsWebhookSignatureOk
 
 
 @api_view(["POST", "GET"])
-@permission_classes([])
+@permission_classes([RequestMethodIs("GET") | IsWebhookSignatureOk])
 def github_webhook(request):
     """this is where requests grom Github arrives.
     based on https://docs.github.com/en/developers/webhooks-and-events/creating-webhooks"""
-    print(request.headers)
+    assert (
+        GIT_REAL_WEBHOOK_SECRET
+    ), f"GIT_REAL_WEBHOOK_SECRET environmental variable is not set"
     if request.method == "POST":
-
-        # with open("gitignore/webhook_dump", "a") as f:
-        #     f.write("===============")
-        #     f.write(json.dumps(dict(request.headers), indent=2, sort_keys=True))
-        #     f.write(json.dumps(request.data, indent=2, sort_keys=True))
 
         event = request.headers.get("X-Github-Event") or request.data.get(
             "headers", {}
         ).get("X-Github-Event")
         assert event, f"no event listed. headers = {request.headers}"
         if event == "pull_request":
-
-            # action = request.data["action"]
-            # if action == "closed":
-            #     todo
-            # if action == "reopened":
-            #     todo
-            # if action == "opened":
-            #     open_pull_request(body)
             request.data["repository"]["full_name"]
 
             PullRequest.create_or_update_from_github_api_data(
@@ -50,7 +28,6 @@ def github_webhook(request):
                 pull_request_data=request.data["pull_request"],
                 repo_missing_ok=True,
             )
-
         # elif event == "pull_request_review":
         #     todo
         # elif event == "pull_request_review_comment":
