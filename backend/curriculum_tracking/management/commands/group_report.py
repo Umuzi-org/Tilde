@@ -1,3 +1,4 @@
+from git_real.models import PullRequest, PullRequestReview
 from django.core.management.base import BaseCommand
 import datetime
 from core.models import Team
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 AS_REVIEWER = "R"
 AS_ASSIGNEE = "A"
+GITHUB_STATS = "Git"
 
 
 DATE_FORMAT = "%-d-%b-%y"
@@ -26,10 +28,39 @@ DATE_FORMAT = "%-d-%b-%y"
 
 accumulated_user_as_reviewer_stats = {}
 accumulated_user_as_assignee_stats = {}
+accumulated_user_github_stats = {}
 
 
 def sum_card_weights(cards):
     return sum([card.content_item.story_points for card in cards])
+
+
+def user_github_stats(user, cutoff):
+
+    pr_reviews_last_7_days = PullRequestReview.objects.filter(
+        user=user, submitted_at__gte=cutoff
+    )
+
+    user_prs = PullRequest.objects.filter(
+        repository__recruit_projects__recruit_users__in=[user]
+    )
+    open_prs = user_prs.filter(state="open")
+    prs_merges_last_7_days = user_prs.filter(state="merged", merged_at__gte=cutoff)
+
+    ordered_prs = user_prs.order_by("updated_at")
+    most_recent_pr = ordered_prs.first()
+    oldest_pr = ordered_prs.last()
+
+    if most_recent_pr:
+        assert most_recent_pr.updated_time >= oldest_pr.updated_time
+    return {
+        "pr_reviews_last_7_days": pr_reviews_last_7_days.count(),
+        "number_of_open_prs": open_prs.count(),
+        "prs_merges_last_7_days": prs_merges_last_7_days.count(),
+        # "oldest_pr_update_time"
+        "most_recent_pr_update_time": most_recent_pr
+        and most_recent_pr.updated_at.strftime(DATE_FORMAT),
+    }
 
 
 def user_as_assignee_stats(user):
@@ -283,10 +314,19 @@ def get_user_report(user, cutoff, extra=None):
         user.id
     ] = accumulated_user_as_assignee_stats.get(user.id, user_as_assignee_stats(user))
     user_as_assignee = accumulated_user_as_assignee_stats[user.id]
+
+    accumulated_user_github_stats[user.id] = accumulated_user_github_stats.get(
+        user.id, user_github_stats(user, cutoff)
+    )
+    user_github = accumulated_user_github_stats[user.id]
+
     for s in user_as_reviewer:
         stats[f"{AS_REVIEWER} {s}"] = user_as_reviewer[s]
     for s in user_as_assignee:
         stats[f"{AS_ASSIGNEE} {s}"] = user_as_assignee[s]
+
+    for s in user_github:
+        stats[f"{GITHUB_STATS} {s}"] = user_github[s]
 
     return stats
 
