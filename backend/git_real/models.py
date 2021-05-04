@@ -1,9 +1,7 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
-
 from model_mixins import Mixins
-
 from core.models import User
+from git_real.helpers import strp_github_standard_time
 
 
 class Repository(models.Model, Mixins):
@@ -68,22 +66,9 @@ class PullRequest(models.Model, Mixins):
         unique_together = [["repository", "number"]]
 
     @classmethod
-    def create_or_update_from_github_api_data(
-        cls, repo_full_name, pull_request_data, repo_missing_ok=False
-    ):
-        from git_real.helpers import strp_github_standard_time
+    def create_or_update_from_github_api_data(cls, repo, pull_request_data):
 
-        get_repo = lambda: Repository.objects.get(full_name=repo_full_name)
-
-        if repo_missing_ok:
-            try:
-                repo = get_repo()
-            except Repository.DoesNotExist:
-                return
-        else:
-            repo = get_repo()
-
-        # pr = request_body["pull_request"]
+        assert repo != None, "repo is missing"
         number = pull_request_data["number"]
 
         defaults = {
@@ -117,16 +102,41 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
+    html_url = models.CharField(max_length=255)
+    pull_request = models.ForeignKey(PullRequest, on_delete=models.CASCADE)
     author_github_name = models.CharField(max_length=100)
 
-    pull_request = models.ForeignKey(PullRequest, on_delete=models.CASCADE)
     submitted_at = models.DateTimeField(null=True, blank=True)
     body = models.TextField()
     commit_id = models.CharField(max_length=40)
     state = models.CharField(max_length=17)
 
-    number = models.PositiveIntegerField()
-
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     # TODO Denormalise (#157)
+
+    @classmethod
+    def create_or_update_from_github_api_data(cls, pull_request, review_data):
+        assert pull_request != None, "repo is missing"
+
+        github_name = review_data["user"]["login"]
+        defaults = {
+            "body": review_data["body"],
+            "commit_id": review_data["commit_id"],
+            "state": review_data["state"],
+            "submitted_at": review_data["submitted_at"]
+            and strp_github_standard_time(review_data["submitted_at"]),
+            "pull_request": pull_request,
+            "author_github_name": github_name,
+            "user": User.objects.filter(
+                social_profile__github_name=github_name
+            ).first(),
+        }
+
+        review, _ = cls.get_or_create_or_update(
+            html_url=review_data["html_url"], defaults=defaults, overrides=defaults
+        )
+        return review
+
+
+# dict_keys([' 'author_association', , ', 'html_url', 'id', 'node_id', '', 'state', 'submitted_at', 'user'])
