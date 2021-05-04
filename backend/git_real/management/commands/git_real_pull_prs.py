@@ -1,10 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 
 from social_auth.github_api import Api
 from git_real.constants import PERSONAL_GITHUB_NAME
 from git_real import models
-from git_real.helpers import strp_github_standard_time
+
+# from git_real.helpers import strp_github_standard_time
 
 
 from core.models import User
@@ -22,28 +23,31 @@ def scrape_pull_request_reviews(api, pr):
         f"repos/{pr.repository.full_name}/pulls/{pr.number}/reviews"
     )
     for review in reviews:
-
-        github_user = review["user"]["login"]
-        defaults = {
-            "body": review["body"],
-            "submitted_at": review.get("submitted_at")
-            and strp_github_standard_time(
-                timestamp=review["submitted_at"],
-            ),
-            "commit_id": review["commit_id"],
-            "state": review["state"],
-            "user": get_user_from_github_name(github_user),
-        }
-        review_obj, created = models.PullRequestReview.objects.get_or_create(
-            pull_request=pr,
-            number=review["id"],
-            author_github_name=github_user,
-            # submitted_at=submitted_at,
-            defaults=defaults,
+        models.PullRequestReview.create_or_update_from_github_api_data(
+            pull_request=pr, review_data=review
         )
-        if not created:
-            review_obj.update(**defaults)
-            review_obj.save()
+
+        # github_user = review["user"]["login"]
+        # defaults = {
+        #     "body": review["body"],
+        #     "submitted_at": review.get("submitted_at")
+        #     and strp_github_standard_time(
+        #         timestamp=review["submitted_at"],
+        #     ),
+        #     "commit_id": review["commit_id"],
+        #     "state": review["state"],
+        #     "user": get_user_from_github_name(github_user),
+        # }
+        # review_obj, created = models.PullRequestReview.objects.get_or_create(
+        #     pull_request=pr,
+        #     number=review["id"],
+        #     author_github_name=github_user,
+        #     # submitted_at=submitted_at,
+        #     defaults=defaults,
+        # )
+        # if not created:
+        #     review_obj.update(**defaults)
+        #     review_obj.save()
 
 
 def scrape_repo_prs(api, repo):
@@ -54,7 +58,7 @@ def scrape_repo_prs(api, repo):
         if pr == 404:
             continue
         pr_object = models.PullRequest.create_or_update_from_github_api_data(
-            repo_full_name=repo.full_name, pull_request_data=pr
+            pull_request_data=pr, repo=repo
         )
         # github_user = pr["user"]["login"]
         # defaults = {
