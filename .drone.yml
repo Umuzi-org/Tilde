@@ -6,7 +6,7 @@ pipeline:
       TILDE_SQL_HOST: postgres
       TILDE_SQL_PORT: 5432
     commands:
-      - sleep 15
+      # - sleep 15
       - cd backend
       - pip install --upgrade pip
       - pip install -r requirements.txt
@@ -33,6 +33,6 @@ services:
     environment:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=test_db
+      # - POSTGRES_DB=db
     # ports:
     #   - "6543:5432"
