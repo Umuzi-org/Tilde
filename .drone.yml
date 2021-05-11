@@ -5,13 +5,14 @@ pipeline:
     environment:
       TILDE_SQL_HOST: postgres
       TILDE_SQL_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
     commands:
       # - sleep 15
       - cd backend
       - pip install --upgrade pip
       - pip install -r requirements.txt
       # - python manage.py migrate
-      - python manage.py test
+      - python manage.py test --failfast
 
   frontend-unit-tests:
     group: test
@@ -33,6 +34,12 @@ services:
     environment:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=password
-      # - POSTGRES_DB=db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbituser
+      - RABBITMQ_DEFAULT_PASS=password
     # ports:
-    #   - "6543:5432"
+    #   - "15672:15672"
+    #   - "5672:5672"
