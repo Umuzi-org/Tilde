@@ -1,6 +1,9 @@
 pipeline:
   backend-unit-tests:
+    group: test
     image: python:3.7
+    environment:
+      TILDE_SQL_HOST: postgres
     commands:
       - cd backend
       - pip install --upgrade pip
@@ -9,11 +12,18 @@ pipeline:
       - python manage.py test
 
   frontend-unit-tests:
+    group: test
     image: node:12
     commands:
       - cd frontend
       - npm install
       - npm test
+
+  # frontend-deploy-prod:
+  #   image: node:12
+  #   commands:
+  #     - cd frontend
+  #     - ./deploy_prod.sh
 
 services:
   postgres:
