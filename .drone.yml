@@ -1,12 +1,5 @@
 pipeline:
-  frontend:
-    image: node:12
-    commands:
-      - cd frontend
-      - npm install
-      - npm test
-
-  backend:
+  backend-unit-tests:
     image: python:3.7
     commands:
       - cd backend
@@ -15,6 +8,13 @@ pipeline:
       # - python manage.py migrate
       - python manage.py test
 
+  frontend-unit-tests:
+    image: node:12
+    commands:
+      - cd frontend
+      - npm install
+      - npm test
+
 services:
   postgres:
     image: postgres:9.6
@@ -22,3 +22,5 @@ services:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=test_db
+    ports:
+      - "6543:5432"
