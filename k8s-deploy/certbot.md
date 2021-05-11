@@ -78,7 +78,18 @@ rm privkey.pem
 rm fullchain.pem
 ```
 
+Once that is done, reapply the ingress:
+
+```
+kubectl delete -f tilde-prod-Ingress.yaml
+kubectl apply -f tilde-prod-Ingress.yaml
+```
+
+It may take 5-10 minutes for the ingress to wake up. You can check the health of things with the following commands:
+
+```
 kubectl describe ingress tilde-prod-ingress
 
 curl http://backend.tilde.umuzi.org
 curl -v https://backend.tilde.umuzi.org
+```
