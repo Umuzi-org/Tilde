@@ -28,14 +28,16 @@ class Command(BaseCommand):
                     {
                         "course name": curriculum.name,
                         "title": content_item.title,
-                        "flavours": ", ".join([o.name for o in x.flavours]),
+                        "flavours": [o.name for o in x.flavours],
+                        "flavours_str": str(sorted([o.name for o in x.flavours])),
                         "tags": ", ".join(content_item.tag_names),
                         "url": content_item.url,
                     }
                 )
 
         df = pd.DataFrame(rows)
-        df = df.drop_duplicates(subset=["url", "flavours"], keep="first")
+        df = df.drop_duplicates(subset=["url", "flavours_str"], keep="first")
+        df = df[["course name", "title", "flavours", "tags", "url"]]
         df.to_csv(f"gitignore/{options['file_name']}_curriculums.csv")
 
 

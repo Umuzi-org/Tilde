@@ -124,7 +124,7 @@ class PullRequestReview(models.Model, Mixins):
             "body": review_data["body"],
             "commit_id": review_data["commit_id"],
             "state": review_data["state"],
-            "submitted_at": review_data["submitted_at"]
+            "submitted_at": review_data.get("submitted_at")
             and strp_github_standard_time(review_data["submitted_at"]),
             "pull_request": pull_request,
             "author_github_name": github_name,

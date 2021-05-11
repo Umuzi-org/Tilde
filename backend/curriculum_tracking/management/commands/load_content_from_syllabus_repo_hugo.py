@@ -4,7 +4,6 @@ from curriculum_tracking import models
 import os
 from curriculum_tracking import constants
 
-# from curriculum_tracking import helpers
 import frontmatter
 import re
 import taggit
@@ -14,19 +13,8 @@ from pathlib import Path
 import yaml
 from curriculum_tracking import helpers
 
-
 # these constants are keys in the hugo page frontmatter
-TITLE = "title"
-READY = "ready"
 STORY_POINTS = "story_points"
-TAGS = "tags"
-TODO = "todo"
-
-PREREQUISITES = "prerequisites"
-HARD = "hard"
-SOFT = "soft"
-
-DB_ID = "_db_id"
 
 
 class Helper:
@@ -432,6 +420,7 @@ def remove_missing_content_items_from_db():
 
     for content_item in models.ContentItem.objects.all():
         # file_path = content_item_file_path(repo_base_dir, content_item)
+        TODO: check base url
         if content_item.id not in Helper.content_items_seen_by_id and user_prompt(
             f"Delete {content_item}"
         ):

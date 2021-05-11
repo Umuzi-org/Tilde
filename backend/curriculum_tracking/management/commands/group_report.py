@@ -37,27 +37,28 @@ def sum_card_weights(cards):
 
 def user_github_stats(user, cutoff):
 
-    pr_reviews_last_7_days = PullRequestReview.objects.filter(
-        user=user, submitted_at__gte=cutoff
-    )
+    pr_reviews_total = PullRequestReview.objects.filter(user=user)
+    pr_reviews_last_7_days = pr_reviews_total.filter(submitted_at__gte=cutoff)
 
     user_prs = PullRequest.objects.filter(
         repository__recruit_projects__recruit_users__in=[user]
     )
     open_prs = user_prs.filter(state="open")
-    prs_merges_last_7_days = user_prs.filter(state="merged", merged_at__gte=cutoff)
+    prs_merged_total = user_prs.filter(state="merged")
+    prs_merged_last_7_days = prs_merged_total.filter(merged_at__gte=cutoff)
 
     ordered_prs = user_prs.order_by("updated_at")
-    most_recent_pr = ordered_prs.first()
-    oldest_pr = ordered_prs.last()
+    most_recent_pr = ordered_prs.last()
+    oldest_pr = ordered_prs.first()
 
     if most_recent_pr:
-        assert most_recent_pr.updated_time >= oldest_pr.updated_time
+        assert most_recent_pr.updated_at >= oldest_pr.updated_at
     return {
-        "pr_reviews_last_7_days": pr_reviews_last_7_days.count(),
         "number_of_open_prs": open_prs.count(),
-        "prs_merges_last_7_days": prs_merges_last_7_days.count(),
-        # "oldest_pr_update_time"
+        "pr_reviews_last_7_days": pr_reviews_last_7_days.count(),
+        "prs_merged_last_7_days": prs_merged_last_7_days.count(),
+        "pr_reviews_total": pr_reviews_total.count(),
+        "prs_merged_total": prs_merged_total.count(),
         "most_recent_pr_update_time": most_recent_pr
         and most_recent_pr.updated_at.strftime(DATE_FORMAT),
     }
@@ -338,12 +339,8 @@ def get_group_report(group, cutoff):
     ret = [
         get_user_report(user=o, cutoff=cutoff, extra={"_group": group.name})
         for o in users
-        # for o in TeamMembership.objects.filter(group=group, user__active=True)
     ]
 
-    # manager_users = TeamMembership.objects.filter(
-    #     group=group, user__active=True, permission_manage=True
-    # )
     manager_users = []
 
     if ret == []:
@@ -353,12 +350,6 @@ def get_group_report(group, cutoff):
         f"{AS_ASSIGNEE} number_of_complete_cards",
         f"{AS_ASSIGNEE} weight_of_complete_cards",
     ]
-
-    # for key, value in ret[0].items():
-    #     if key.startswith("_"):
-    #         continue
-    #     if type(value) in [int, float]:
-    #         numeric_values[key] = []
 
     for key in numeric_values:
         values = [d[key] for d in ret]
@@ -384,10 +375,56 @@ class Command(BaseCommand):
         all_data = []
         for group in groups:
             all_data.extend(get_group_report(group, cutoff))
+            # break  # todo
 
-        headings = """_email	_group_managers	_group	_employer_partner	_end_date	_id	_last_login_time	_percentage_of_time_spent	_snapshot_date	_start_date	A last_time_a_project_was_completed	A number_of_blocked_cards	A number_of_cards_in_review_column	A number_of_competent_complete_project_cards	A number_of_complete_cards	A number_of_excellent_complete_project_cards	A number_of_in_progress_cards	A number_of_ready_cards	A number_of_review_feedback_cards	A oldest_review_feedback_card	A weight_of_blocked_cards	A weight_of_cards_in_review_column	A weight_of_competent_complete_project_cards	A weight_of_complete_cards	A weight_of_complete_cards grp ave	A weight_of_complete_cards grp tot	A weight_of_excellent_complete_project_cards	A weight_of_in_progress_cards	A weight_of_ready_cards	A weight_of_review_feedback_cards	R number_of_cards_in_review_as_reviewer	R number_of_cards_reviewed_in_last_7_days	R number_of_cards_reviewed_incorrectly_in_last_7_days	R number_of_reviews_done_in_last_7_days	R oldest_card_awaiting_review	R weight_of_cards_in_review_as_reviewer	R weight_of_cards_reviewed_in_last_7_days	R weight_of_cards_reviewed_incorrectly_in_last_7_days	R weight_of_reviews_done_in_last_7_days	A oldest_card_in_review_column_request_time""".split(
-            "\t"
-        )
+        headings = [
+            "_email",
+            "_group_managers",
+            "_group",
+            "_employer_partner",
+            "_end_date",
+            "_id",
+            "_last_login_time",
+            "_percentage_of_time_spent",
+            "_snapshot_date",
+            "_start_date",
+            "A last_time_a_project_was_completed",
+            "A number_of_blocked_cards",
+            "A number_of_cards_in_review_column",
+            "A number_of_competent_complete_project_cards",
+            "A number_of_complete_cards",
+            "A number_of_excellent_complete_project_cards",
+            "A number_of_in_progress_cards",
+            "A number_of_ready_cards",
+            "A number_of_review_feedback_cards",
+            "A oldest_review_feedback_card",
+            "A weight_of_blocked_cards",
+            "A weight_of_cards_in_review_column",
+            "A weight_of_competent_complete_project_cards",
+            "A weight_of_complete_cards",
+            "A weight_of_complete_cards grp ave",
+            "A weight_of_complete_cards grp tot",
+            "A weight_of_excellent_complete_project_cards",
+            "A weight_of_in_progress_cards",
+            "A weight_of_ready_cards",
+            "A weight_of_review_feedback_cards",
+            "R number_of_cards_in_review_as_reviewer",
+            "R number_of_cards_reviewed_in_last_7_days",
+            "R number_of_cards_reviewed_incorrectly_in_last_7_days",
+            "R number_of_reviews_done_in_last_7_days",
+            "R oldest_card_awaiting_review",
+            "R weight_of_cards_in_review_as_reviewer",
+            "R weight_of_cards_reviewed_in_last_7_days",
+            "R weight_of_cards_reviewed_incorrectly_in_last_7_days",
+            "R weight_of_reviews_done_in_last_7_days",
+            "A oldest_card_in_review_column_request_time",
+            "Git number_of_open_prs",
+            "Git pr_reviews_last_7_days",
+            "Git prs_merged_last_7_days",
+            "Git pr_reviews_total",
+            "Git prs_merged_total",
+            "Git most_recent_pr_update_time",
+        ]
 
         with open(
             Path(
@@ -404,5 +441,5 @@ class Command(BaseCommand):
         for data in all_data:
             for key in data.keys():
                 if key not in headings:
-                    # breakpoint()
-                    pass
+                    print(f"Warning: '{key}' not in headings")
+            break
