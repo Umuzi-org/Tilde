@@ -22,23 +22,23 @@ pipeline:
       - npm install
       - npm test
 
-  frontend-deploy-staging:
-    group: deploy-staging
-    # image: node:12
-    image: google/cloud-sdk:latest
-    secrets:
-      - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
-        target: REACT_APP_GOOGLE_CLIENT_ID
-    environment:
-      - REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
-      - REACT_APP_FEATURE_AUTHENTICATION: 1
-      - REACT_APP_FEATURE_BACKEND_API_ON: 1
-    commands:
-      - yes | apt install nodejs
-      - cd frontend
-      - npm install
-      - npm run build
-      - gcloud app deploy --appyaml app-staging.yaml
+  # frontend-deploy-staging:
+  #   group: deploy-staging
+  #   # image: node:12
+  #   image: google/cloud-sdk:latest
+  #   secrets:
+  #     - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
+  #       target: REACT_APP_GOOGLE_CLIENT_ID
+  #   environment:
+  #     - REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
+  #     - REACT_APP_FEATURE_AUTHENTICATION: 1
+  #     - REACT_APP_FEATURE_BACKEND_API_ON: 1
+  #   commands:
+  #     - yes | apt install nodejs
+  #     - cd frontend
+  #     - npm install
+  #     - npm run build
+  #     - gcloud app deploy --appyaml app-staging.yaml
 
 services:
   postgres:
