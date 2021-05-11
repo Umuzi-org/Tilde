@@ -1,5 +1,5 @@
 runtime: nodejs12
-service: tilde-front
+service: tilde-front-staging
 env: standard
 
 handlers:

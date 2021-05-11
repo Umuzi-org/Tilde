@@ -34,8 +34,7 @@ pipeline:
       - REACT_APP_FEATURE_AUTHENTICATION: 1
       - REACT_APP_FEATURE_BACKEND_API_ON: 1
     commands:
-      - apt-get install snap
-      - snap install node --classic
+      - yes | apt install nodejs
       - cd frontend
       - npm install
       - npm run build
