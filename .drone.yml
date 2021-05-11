@@ -5,6 +5,7 @@ pipeline:
     environment:
       TILDE_SQL_HOST: postgres
     commands:
+      - sleep 15
       - cd backend
       - pip install --upgrade pip
       - pip install -r requirements.txt
