@@ -4,6 +4,7 @@ pipeline:
     image: python:3.7
     environment:
       TILDE_SQL_HOST: postgres
+      TILDE_SQL_PORT: 5432
     commands:
       - sleep 15
       - cd backend
@@ -33,5 +34,5 @@ services:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=test_db
-    ports:
-      - "6543:5432"
+    # ports:
+    #   - "6543:5432"
