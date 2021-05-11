@@ -8,11 +8,10 @@ pipeline:
       RABBITMQ_HOST: rabbitmq
       GIT_REAL_WEBHOOK_SECRET: super-secret
     commands:
-      # - sleep 15
       - cd backend
       - pip install --upgrade pip
       - pip install -r requirements.txt
-      # - python manage.py migrate
+      - python manage.py makemigrations
       - python manage.py test --failfast
 
   frontend-unit-tests:
@@ -23,11 +22,24 @@ pipeline:
       - npm install
       - npm test
 
-  # frontend-deploy-prod:
-  #   image: node:12
-  #   commands:
-  #     - cd frontend
-  #     - ./deploy_prod.sh
+  frontend-deploy-staging:
+    group: deploy-staging
+    # image: node:12
+    image: google/cloud-sdk:latest
+    secrets:
+      - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
+        target: REACT_APP_GOOGLE_CLIENT_ID
+    environment:
+      - REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
+      - REACT_APP_FEATURE_AUTHENTICATION: 1
+      - REACT_APP_FEATURE_BACKEND_API_ON: 1
+    commands:
+      - apt-get install snap
+      - snap install node --classic
+      - cd frontend
+      - npm install
+      - npm run build
+      - gcloud app deploy --appyaml app-staging.yaml
 
 services:
   postgres:
@@ -41,6 +53,3 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbituser
       - RABBITMQ_DEFAULT_PASS=password
-    # ports:
-    #   - "15672:15672"
-    #   - "5672:5672"
