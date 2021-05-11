@@ -6,7 +6,7 @@ pipeline:
       TILDE_SQL_HOST: postgres
       TILDE_SQL_PORT: 5432
       RABBITMQ_HOST: rabbitmq
-      GIT_REAL_WEBHOOK_SECRET: super-secret
+      GIT_REAL_WEBHOOK_SECRET: supersecret
     commands:
       - cd backend
       - pip install --upgrade pip
