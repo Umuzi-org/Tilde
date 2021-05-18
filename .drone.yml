@@ -4,7 +4,8 @@ name: default
 
 steps:
   - name: frontend-deploy-staging
-    image: google/cloud-sdk
+    image: docker:dind
+    # image: google/cloud-sdk
     volumes:
       - name: secret_keys
         path: /.secrets
