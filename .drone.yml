@@ -1,9 +1,4 @@
 pipeline:
-  # volumes:
-  #   - name: secret_keys
-  #     host:
-  #       path: "/.secrets"
-
   ######################################################
   # UNIT TESTS
   # everything gets tested
@@ -100,3 +95,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbituser
       - RABBITMQ_DEFAULT_PASS=password
+
+volumes:
+  - name: secret_keys
+    host:
+      path: "/.secrets"
