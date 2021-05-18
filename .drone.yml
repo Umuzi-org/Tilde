@@ -40,20 +40,11 @@ pipeline:
       REACT_APP_FEATURE_AUTHENTICATION: 1
       REACT_APP_FEATURE_BACKEND_API_ON: 1
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
+    volumes:
+      - name: secrets
+        path: /.secrets
 
     commands:
-      # - echo "================================="
-      # - mkdir /root/.key
-      # - echo $$GCLOUD_KEY
-      # - echo $$GCLOUD_KEY | base64 --decode > /root/.key/gcloud-service-key.json
-      # - echo "{" > /root/.key/gcloud-service-key.json
-      # - echo "}" >> /root/.key/gcloud-service-key.json
-      # - cat /root/.key/gcloud-service-key.json
-      - yes | apt install nodejs npm
-      # - node drone-setup-keys.js
-      # - chmod 0600 /root/.key/gcloud-service-key.json
-      # - node -e "x=require('/root/.key/gcloud-service-key.json'); console.log(x);"
-      # - echo "================================="
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/.secrets/gcloud-service-key.json
       - cd frontend
       - yes | apt install nodejs npm
@@ -104,3 +95,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbituser
       - RABBITMQ_DEFAULT_PASS=password
+
+volumes:
+  - name: secrets
+    host:
+      path: /.secrets
