@@ -52,7 +52,7 @@ pipeline:
       # - echo $$GCLOUD_KEY | base64 --decode > /root/.key/gcloud-service-key.json
       # - echo "{" > /root/.key/gcloud-service-key.json
       # - echo "}" >> /root/.key/gcloud-service-key.json
-      - cat /root/.key/gcloud-service-key.json
+      # - cat /root/.key/gcloud-service-key.json
       - yes | apt install nodejs npm
       - node drone-setup-keys.js
       - chmod 0600 /root/.key/gcloud-service-key.json
