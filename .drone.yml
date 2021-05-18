@@ -30,6 +30,8 @@ steps:
       # - nvm install $${NODE_VERSION}
       # - nvm alias default $${NODE_VERSION}
       # - nvm use default
+      - yes | apt install tree
+      - tree /root/.nvm
       - cd frontend
       - npm install
       - npm run build
