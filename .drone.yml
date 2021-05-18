@@ -35,13 +35,15 @@ pipeline:
     secrets:
       - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
         target: REACT_APP_GOOGLE_CLIENT_ID
-      - source: GCLOUD_KEY
-        target: GCLOUD_KEY
+      # - source: GCLOUD_KEY
+      #   target: GCLOUD_KEY
     environment:
       REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
       REACT_APP_FEATURE_AUTHENTICATION: 1
       REACT_APP_FEATURE_BACKEND_API_ON: 1
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
+      GCLOUD_KEY:
+        from_secret: GCLOUD_KEY
     commands:
       - echo "================================="
       - mkdir /root/.key
@@ -49,11 +51,11 @@ pipeline:
       - echo $$GCLOUD_KEY | base64 --decode > /root/.key/gcloud-service-key.json
       - chmod 0600 /root/.key/gcloud-service-key.json
       - cat /root/.key/gcloud-service-key.json
-      - yes | apt install nodejs npm
       - node -e "x=require('/root/.key/gcloud-service-key.json'); console.log(x);"
       - echo "================================="
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/root/.key/gcloud-service-key.json
       - cd frontend
+      - yes | apt install nodejs npm
       - npm install
       - npm run build
       - gcloud app deploy --appyaml app-staging.yaml
