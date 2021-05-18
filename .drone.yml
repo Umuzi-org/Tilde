@@ -40,9 +40,7 @@ pipeline:
       REACT_APP_FEATURE_AUTHENTICATION: 1
       REACT_APP_FEATURE_BACKEND_API_ON: 1
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
-    volumes:
-      - name: secrets
-        path: "/.secrets"
+
     commands:
       - ls /.secrets
       - ls ./
@@ -52,7 +50,8 @@ pipeline:
       - npm install
       - npm run build
       - gcloud app deploy --appyaml app-staging.yaml
-
+    volumes:
+      - "/.secrets:/.secrets"
     when:
       branches: [develop, hotfix/*]
 
