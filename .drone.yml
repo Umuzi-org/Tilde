@@ -46,6 +46,7 @@ pipeline:
       - echo "================================="
       - mkdir /root/.key
       - echo $$GCLOUD_KEY > /root/.key/gcloud-service-key.json
+      - echo $$GCLOUD_KEY
       - chmod 0600 /root/.key/gcloud-service-key.json
       - cat /root/.key/gcloud-service-key.json
       - echo "================================="
