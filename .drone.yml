@@ -1,4 +1,9 @@
 pipeline:
+  # volumes:
+  #   - name: secret_keys
+  #     host:
+  #       path: "/.secrets"
+
   ######################################################
   # UNIT TESTS
   # everything gets tested
@@ -32,6 +37,8 @@ pipeline:
 
   frontend-deploy-staging:
     image: google/cloud-sdk
+    volumes:
+      - /.secrets:/.secrets
     secrets:
       - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
         target: REACT_APP_GOOGLE_CLIENT_ID
@@ -50,8 +57,6 @@ pipeline:
       - npm install
       - npm run build
       - gcloud app deploy --appyaml app-staging.yaml
-    volumes:
-      - "/.secrets:/.secrets"
     when:
       branches: [develop, hotfix/*]
 
@@ -95,8 +100,3 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbituser
       - RABBITMQ_DEFAULT_PASS=password
-
-volumes:
-  - name: secrets
-    host:
-      path: "/.secrets"
