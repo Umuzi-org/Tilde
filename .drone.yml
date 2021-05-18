@@ -48,6 +48,7 @@ pipeline:
 
     commands:
       - ls /.secrets
+      - ls ./
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/.secrets/gcloud-service-key.json
       - cd frontend
       - yes | apt install nodejs npm
