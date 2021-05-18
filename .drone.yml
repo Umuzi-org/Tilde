@@ -52,8 +52,8 @@ frontend-deploy-staging:
     - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=gcloud-service-key.json --project=umuzi-prod
     - gcloud app deploy --appyaml app-staging.yaml
 
-  when:
-    branches: [develop, hotfix/*]
+  # when:
+  #   branches: [develop, hotfix/*]
 
 ######################################################
 # DEPLOY TO PROD
