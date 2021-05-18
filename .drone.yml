@@ -25,6 +25,7 @@ steps:
       # - yes | apt install nodejs npm
       - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
       - cat /root/.bashrc
+      - bash /root/.bashrc
       - nvm install node
       - npm install
       - npm run build
