@@ -8,10 +8,10 @@ steps:
     volumes:
       - name: secret_keys
         path: /secrets
-      - name: secret_keys2
-        path: /secret_keys2
-      - name: dockersock
-        path: /var/run/docker.sock
+      # - name: secret_keys2
+      #   path: /secret_keys2
+      # - name: dockersock
+      #   path: /var/run/docker.sock
     secrets:
       - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
         target: REACT_APP_GOOGLE_CLIENT_ID
@@ -24,7 +24,6 @@ steps:
     commands:
       - docker ps -a
       - ls /secrets
-      - ls /secret_keys2
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
       - yes | apt install nodejs npm
       - npm install
@@ -34,14 +33,14 @@ steps:
       branches: [develop, hotfix/*]
 
 volumes:
+  # - name: secret_keys
+  #   host:
+  #     path: /home/sheena/drone-ci-setup/composition/.secrets
+
   - name: secret_keys
     host:
-      path: /home/sheena/drone-ci-setup/composition/.secrets
+      path: /home/sheena/.secrets
 
-  - name: secret_keys2
-    host:
-      path: ./.secrets
-
-  - name: dockersock
-    host:
-      path: /var/run/docker.sock
+  # - name: dockersock
+  #   host:
+  #     path: /var/run/docker.sock
