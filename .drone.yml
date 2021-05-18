@@ -30,7 +30,7 @@ pipeline:
 # DEPLOY TO STAGING
 # only for develop and hotfix branches
 
-frontend-deploy-staging:
+frontend-deploy-to-staging:
   group: deploy-staging
   image: google/cloud-sdk
   secrets:
