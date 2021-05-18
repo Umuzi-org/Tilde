@@ -25,11 +25,12 @@ steps:
       # - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
       # - yes | apt install nodejs npm
       - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-      - cat /root/.bashrc
-      - bash /root/.nvm/nvm.sh
-      - nvm install $${NODE_VERSION}
-      - nvm alias default $${NODE_VERSION}
-      - nvm use default
+      # - cat /root/.bashrc
+      # - bash /root/.nvm/nvm.sh
+      # - nvm install $${NODE_VERSION}
+      # - nvm alias default $${NODE_VERSION}
+      # - nvm use default
+      - cd frontend
       - npm install
       - npm run build
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
