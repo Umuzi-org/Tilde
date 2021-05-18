@@ -22,7 +22,7 @@ steps:
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
 
     commands:
-      - docker ps -a
+      # - docker ps -a
       - ls /secrets
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
       - yes | apt install nodejs npm
