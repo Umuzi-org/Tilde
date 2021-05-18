@@ -200,8 +200,8 @@ class Command(BaseCommand):
         df = df[df[BROKEN] != "1"]
         # df = pd.read_csv(path)
 
-        # df.apply(update_user_email, axis=1)
+        df.apply(update_user_email, axis=1)
 
-        # df.apply(add_user_to_group, axis=1)
-        # df.apply(set_up_course_registrations, axis=1)
+        df.apply(add_user_to_group, axis=1)
+        df.apply(set_up_course_registrations, axis=1)
         setup_rocketchat_users(df)
