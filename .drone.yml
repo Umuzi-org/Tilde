@@ -26,34 +26,36 @@ pipeline:
   #     - npm install
   #     - npm test
 
-###########################################################
-# DEPLOY TO STAGING
-# only for develop and hotfix branches
+  ###########################################################
+  # DEPLOY TO STAGING
+  # only for develop and hotfix branches
 
-frontend-deploy-to-staging:
-  group: deploy-staging
-  image: google/cloud-sdk
-  secrets:
-    - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
-      target: REACT_APP_GOOGLE_CLIENT_ID
-    - source: GCLOUD_KEY
-      target: GCLOUD_KEY
-  environment:
-    REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
-    REACT_APP_FEATURE_AUTHENTICATION: 1
-    REACT_APP_FEATURE_BACKEND_API_ON: 1
-    GCLOUD_SERVICE_ACCOUNT_NAME: drone-io-deploy@umuzi-prod.iam.gserviceaccount.com
-  commands:
-    - yes | apt install nodejs npm
-    - cd frontend
-    - npm install
-    - npm run build
-    - echo $${GCLOUD_KEY} gcloud-service-key.json
-    - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=gcloud-service-key.json --project=umuzi-prod
-    - gcloud app deploy --appyaml app-staging.yaml
+  frontend-deploy-staging:
+    image: google/cloud-sdk
+    secrets:
+      - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
+        target: REACT_APP_GOOGLE_CLIENT_ID
+      - source: GCLOUD_KEY
+        target: GCLOUD_KEY
+    environment:
+      REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
+      REACT_APP_FEATURE_AUTHENTICATION: 1
+      REACT_APP_FEATURE_BACKEND_API_ON: 1
+      GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
+    commands:
+      - echo "================================="
+      - echo $$GCLOUD_KEY
+      - echo $${GCLOUD_KEY} gcloud-service-key.json
+      - echo "================================="
+      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=gcloud-service-key.json --project=umuzi-prod
+      - yes | apt install nodejs npm
+      - cd frontend
+      - npm install
+      - npm run build
+      - gcloud app deploy --appyaml app-staging.yaml
 
-  # when:
-  #   branches: [develop, hotfix/*]
+    when:
+      branches: [develop, hotfix/*]
 
 ######################################################
 # DEPLOY TO PROD
