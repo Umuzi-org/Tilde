@@ -40,10 +40,9 @@ pipeline:
       REACT_APP_FEATURE_AUTHENTICATION: 1
       REACT_APP_FEATURE_BACKEND_API_ON: 1
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
-    volumes:
-      - name: secrets
-        path: "/.secrets"
-    #   - /.secrets:/.secrets
+    # volumes:
+    #   - name: secrets
+    #     path: /.secrets
 
     commands:
       - ls /.secrets
@@ -101,4 +100,5 @@ services:
 
 volumes:
   - name: secrets
-    path: "/.secrets"
+    host:
+      path: "/.secrets"
