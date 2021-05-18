@@ -18,6 +18,7 @@ steps:
       REACT_APP_FEATURE_BACKEND_API_ON: 1
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
       NVM_DIR: "/root/.nvm"
+      NODE_VERSION: 14.17.0
     commands:
       # - ls /secrets
       # - apt install -U curl bash ca-certificates openssl ncurses coreutils python2 make gcc g++ libgcc linux-headers grep util-linux binutils findutils
@@ -26,7 +27,9 @@ steps:
       - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
       - cat /root/.bashrc
       - bash /root/.nvm/nvm.sh
-      - nvm install node
+      - nvm install $${NODE_VERSION}
+      - nvm alias default $${NODE_VERSION}
+      - nvm use default
       - npm install
       - npm run build
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
