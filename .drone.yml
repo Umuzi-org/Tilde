@@ -49,10 +49,10 @@ pipeline:
       - echo $$GCLOUD_KEY
       - chmod 0600 /root/.key/gcloud-service-key.json
       - cat /root/.key/gcloud-service-key.json
+      - yes | apt install nodejs npm
       - node -e "x=require('/home/sheena/workspace/.secrets/tilde/drone-service-account-key.json'); console.log(x);"
       - echo "================================="
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/root/.key/gcloud-service-key.json
-      - yes | apt install nodejs npm
       - cd frontend
       - npm install
       - npm run build
