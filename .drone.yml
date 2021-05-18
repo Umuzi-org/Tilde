@@ -4,14 +4,10 @@ name: default
 
 steps:
   - name: frontend-deploy-staging
-    # image: docker:dind
     image: google/cloud-sdk
     volumes:
       - name: secret_keys
         path: /secrets
-      - name: also_secret_keys
-        path: /secrets2
-
       - name: dockersock
         path: /var/run/docker.sock
     secrets:
@@ -26,8 +22,6 @@ steps:
     commands:
       - docker ps -a
       - ls /secrets
-      - ls /secrets2
-      - ls ./
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/gcloud-service-key.json
       - cd frontend
       - yes | apt install nodejs npm
@@ -39,10 +33,6 @@ steps:
 
 volumes:
   - name: secret_keys
-    host:
-      path: /.secrets
-
-  - name: also_secret_keys
     host:
       path: /home/sheena/drone-ci-setup/composition/.secrets
   - name: dockersock
