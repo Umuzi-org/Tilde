@@ -7,7 +7,7 @@ steps:
     image: google/cloud-sdk
     volumes:
       - name: secret_keys
-        path: ./secrets
+        path: /.secrets
     secrets:
       - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
         target: REACT_APP_GOOGLE_CLIENT_ID
