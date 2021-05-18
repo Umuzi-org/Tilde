@@ -26,7 +26,7 @@ steps:
       # - yes | apt install nodejs npm
       - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
       # - cat /root/.bashrc
-      - bash -c "/root/.nvm/nvm.sh which $${NODE_VERSION}"
+      - bash -c "bash /root/.nvm/nvm.sh which $${NODE_VERSION}"
       # - nvm install $${NODE_VERSION}
       # - nvm alias default $${NODE_VERSION}
       # - nvm use default
