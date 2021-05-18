@@ -40,7 +40,7 @@ volumes:
 
   - name: secret_keys2
     host:
-      path: .secrets
+      path: ./.secrets
 
   - name: dockersock
     host:
