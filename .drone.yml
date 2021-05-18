@@ -44,10 +44,15 @@ pipeline:
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
     commands:
       - echo "================================="
-      - echo $$GCLOUD_KEY
-      - echo $${GCLOUD_KEY} gcloud-service-key.json
+      - mkdir /root/.key
+      # - echo "$SSH_KEY" > /root/.key/gcloud-service-key.json
+      - echo $$GCLOUD_KEY > /root/.key/gcloud-service-key.json
+      - chmod 0600 /root/.key/gcloud-service-key.json
+      - echo $$GCLOUD_SERVICE_ACCOUNT_NAME
+      - echo $$GCLOUD_SERVICE_ACCOUNT_NAME > /root/.key/test
+      - cat /root/.key/test
       - echo "================================="
-      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=gcloud-service-key.json --project=umuzi-prod
+      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/root/.key/gcloud-service-key.json
       - yes | apt install nodejs npm
       - cd frontend
       - npm install
