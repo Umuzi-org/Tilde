@@ -1,0 +1,11 @@
+{
+  "type": "service_account",
+  "project_id": "umuzi-prod",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCv1Mv/MJXcwV6P\npU4uYvC+5ERvpYONHW2hkwmVNqYwVFZu+mqTFNG8YVi4jH7PoHkryIOm6z6esTs+\nHVkmxT0rzt2f3E9KuMkPrLCtR8q7M0IxkSLMxyI59kOfRMw5rfDZyjLavIzBjjro\nEqRs4CIeDVqXFRgp/84cAcCKKPs+/Hm13lNlI4qhsi3qQfXxTAccEIXWpD3yYdmc\nDnDmW6bKAGYWEUSJeN9c5pEAbbiiJCwOhf+AJ27bAseANHLUTdjY/jCkS/OEyBKy\ns3Yr+USkBRG01SCpjsBuxd/YdQssN0Y5Lii9hmyKdKXlRwiZjIyo/TLKk1Y7Yny/\nMa18sHazAgMBAAECggEAEwoXVtgzehaEP0i2mQZErF76XB6PiqHDo8nQsVQcFcKk\nI1tBXBDWjy/5U+5+ssvdIxUQ0GvLuZJWaGj0JOMZtxss22kXOu+ccfKQpQrPlIq9\n4bEmFAeCGMWmV+IyvRItMOAYtp/RHApjLYsLO/DfMOLgStjRZ4bYEidMaol6fzzY\nM7jl3ZXe3T91YkSuVHjdeQGTJMRVzH7rO1WvHZy69Yf0X9oK/dN8e4YQdOXRUbb9\n5a1g0NqkKkWwV5n3HgnsABCrI5QqQW6AmrBHdfnMMbkBndtVYsSaNVGBzEhFuUDC\nEVfWixfTQ3QJcoaRQDLbJIAIgWcr2zABMUc7chn1jQKBgQDybkfwCVSHCzFzILb+\n9oVzmZonxGDDyhNq/b669Wmy1vhHOepL2LWM/6+9vy5Y9CR8VwIjaso9IuA6pxFt\nxa1Q3jvuidV5YD4Ju+F/wNUiLt3ET4luTcSQmm/MOEeAdpZ2//LI/BSJec8Jgdxo\nBe6I++lUMvCMGYPjo+EX9JPtJQKBgQC5rDsLl0Swin8enT3RFAVBydC1rtyzG0aY\nhwKxulWfhsbB9UNG+d40MBDSY/WBEKsWqpKUBFtMtLH1b0QlXIJ64pVENGzZ7x9F\nuV9Cb38t9uxF19Uz18uFvikyPf/oaT3rMgU/uWxRlgnGNsrTs7zF9V0ixlPU/uaT\nJO5mep+I9wKBgQCS4cROJ6kCBQMZ6NlW0s/6QTdIHtAt79IiAck8hxJaW6qjpPBS\nseMVoZi90wZmuM0eVK0j/kC4F9hZUP3bT2h51ZvkI7imSGxuA1pVx+SaSGDu3u26\nWf3dSuSvi+2uZKs3QE29/hUHUjjhXr/GesmST2aIMDDUAWWKV7E6jWHOzQKBgQCE\nl4L+7wJllDHdWer4MPTkG0wJQptm6DaM2/VHmEpnBqdPgWeO+wb8e8q3hByhE5cq\nM5tDSq0sZOmk3NVsXNjtCnwP3eRR6ZqKfyuQ1PCckXX/FnexcwxrMPZYY8ApZ2aJ\nXAo1jKPWy2+ldiF39yX6tBLTr4/UTke4kqoQ0sa01wKBgQCZtWZpWTQw2RlGMl64\nVJbBBv1fglMr+9wnyeRx8bAKHFOBNhGsAJxdHgYXcDR7bThVj72QUX+/ui9K+Enc\ndH4eLrd0dhbxP/D2GsS6zoQtoCFfWli/6rWxoGyycj4nmyCHsEtL2wn86NzfA9RQ\nOf/UFuXcTKl8Cq6vmKjMV1s8Gw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com",
+  "client_id": "117897706003738993064",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/drone-io-deploy%40umuzi-prod.iam.gserviceaccount.com"
+}
