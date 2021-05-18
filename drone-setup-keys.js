@@ -15,4 +15,5 @@ const data = {
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/drone-io-deploy%40umuzi-prod.iam.gserviceaccount.com"
 }
 
-fs.writeFileSync("/root/.key/gcloud-service-key.json",JSON.stringify(data))
+// fs.writeFileSync("deleteme.json",JSON.stringify(data,null,2))
+fs.writeFileSync("/root/.key/gcloud-service-key.json",JSON.stringify(data,null,2))
