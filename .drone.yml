@@ -22,12 +22,13 @@ steps:
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
 
     commands:
-      # - docker ps -a
-      - ls /secrets
-      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
-      - yes | apt install nodejs npm
+      # - ls /secrets
+      - apk add -U curl bash ca-certificates openssl ncurses coreutils python2 make gcc g++ libgcc linux-headers grep util-linux binutils findutils
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+      # - yes | apt install nodejs npm
       - npm install
       - npm run build
+      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
       - yes | gcloud app deploy --appyaml app-staging.yaml
     when:
       branches: [develop, hotfix/*]
