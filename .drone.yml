@@ -1,43 +1,82 @@
 pipeline:
-  # backend-unit-tests:
-  #   group: test
-  #   image: python:3.7
-  #   environment:
-  #     TILDE_SQL_HOST: postgres
-  #     TILDE_SQL_PORT: 5432
-  #     RABBITMQ_HOST: rabbitmq
-  #     GIT_REAL_WEBHOOK_SECRET: supersecret
-  #   commands:
-  #     - cd backend
-  #     - pip install --upgrade pip
-  #     - pip install -r requirements.txt
-  #     # - python manage.py makemigrations
-  #     - python manage.py test --failfast
+  ######################################################
+  # UNIT TESTS
+  # everything gets tested
 
-  # frontend-unit-tests:
-  #   group: test
-  #   image: node:12
-  #   commands:
-  #     - cd frontend
-  #     - npm install
-  #     - npm test
-
-  frontend-deploy-staging:
-    group: deploy-staging
-    image: google/cloud-sdk:latest
-    #   secrets:
-    #     - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
-    #       target: REACT_APP_GOOGLE_CLIENT_ID
+  backend-unit-tests:
+    group: test
+    image: python:3.7
     environment:
-      REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
-      REACT_APP_FEATURE_AUTHENTICATION: 1
-      REACT_APP_FEATURE_BACKEND_API_ON: 1
+      TILDE_SQL_HOST: postgres
+      TILDE_SQL_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+      GIT_REAL_WEBHOOK_SECRET: supersecret
     commands:
-      - yes | apt install nodejs
+      - cd backend
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+      - python manage.py makemigrations
+      - python manage.py test --failfast
+
+  frontend-unit-tests:
+    group: test
+    image: node:12
+    commands:
       - cd frontend
       - npm install
-      - npm run build
-      # - gcloud app deploy --appyaml app-staging.yaml
+      - npm test
+
+###########################################################
+# DEPLOY TO STAGING
+# only for develop and hotfix branches
+
+frontend-deploy-staging:
+  group: deploy-staging
+  image: google/cloud-sdk
+  secrets:
+    - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
+      target: REACT_APP_GOOGLE_CLIENT_ID
+  environment:
+    REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
+    REACT_APP_FEATURE_AUTHENTICATION: 1
+    REACT_APP_FEATURE_BACKEND_API_ON: 1
+  commands:
+    - yes | apt install nodejs npm
+    - cd frontend
+    - npm install
+    - npm run build
+    - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=/path/key.json --project=umuzi-prod
+    - gcloud app deploy --appyaml app-staging.yaml
+
+  when:
+    branches: [develop, hotfix/*]
+
+######################################################
+# DEPLOY TO PROD
+# only for master branch
+
+# frontend-deploy-prod:
+#   group: deploy-prod
+#   image: google/cloud-sdk
+#     secrets:
+#       - source: REACT_APP_GOOGLE_CLIENT_ID_PROD
+#         target: REACT_APP_GOOGLE_CLIENT_ID
+#   environment:
+#     REACT_APP_API_BASE_URL: "https://backend.tilde.umuzi.org"
+#     REACT_APP_FEATURE_AUTHENTICATION: 1
+#     REACT_APP_FEATURE_BACKEND_API_ON: 1
+#   commands:
+#     - yes | apt install nodejs npm
+#     - cd frontend
+#     - npm install
+#     - npm run build
+#     - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME}  --key-file=/path/key.json --project=umuzi-prod
+#     - gcloud app deploy --appyaml app-prod.yaml
+#   when:
+#     event: deployment
+#     environment: production
+
+###########################################################
 
 services:
   postgres:
@@ -45,6 +84,7 @@ services:
     environment:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
 
   rabbitmq:
     image: rabbitmq:3-management
