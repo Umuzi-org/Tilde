@@ -8,6 +8,8 @@ steps:
     volumes:
       - name: secret_keys
         path: /.secrets
+      - name: dockersock
+        path: /var/run/docker.sock
     secrets:
       - source: REACT_APP_GOOGLE_CLIENT_ID_STAGING
         target: REACT_APP_GOOGLE_CLIENT_ID
@@ -18,6 +20,7 @@ steps:
       GCLOUD_SERVICE_ACCOUNT_NAME: "drone-io-deploy@umuzi-prod.iam.gserviceaccount.com"
 
     commands:
+      - docker ps -a
       - ls /.secrets
       - ls ./
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/.secrets/gcloud-service-key.json
@@ -33,3 +36,7 @@ volumes:
   - name: secret_keys
     host:
       path: "/.secrets"
+
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
