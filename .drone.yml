@@ -33,8 +33,8 @@ steps:
       # - yes | apt install tree
       # - tree /root/.nvm
       - cd frontend
-      - bash -c "npm install"
-      - bash -c "npm run build"
+      - bash -c "source ~/.bashrc; npm install && npm run build"
+      # - bash -c "npm run build"
       - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
       - yes | gcloud app deploy --appyaml app-staging.yaml
     when:
