@@ -8,6 +8,8 @@ steps:
     volumes:
       - name: secret_keys
         path: /secrets
+      - name: secret_keys2
+        path: /secret_keys2
       - name: dockersock
         path: /var/run/docker.sock
     secrets:
@@ -22,12 +24,12 @@ steps:
     commands:
       - docker ps -a
       - ls /secrets
-      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/gcloud-service-key.json
-      - cd frontend
+      - ls /secret_keys2
+      - gcloud auth activate-service-account $${GCLOUD_SERVICE_ACCOUNT_NAME} --key-file=/secrets/drone-service-account-key.json
       - yes | apt install nodejs npm
       - npm install
       - npm run build
-      - gcloud app deploy --appyaml app-staging.yaml
+      - yes | gcloud app deploy --appyaml app-staging.yaml
     when:
       branches: [develop, hotfix/*]
 
@@ -35,6 +37,11 @@ volumes:
   - name: secret_keys
     host:
       path: /home/sheena/drone-ci-setup/composition/.secrets
+
+  - name: secret_keys2
+    host:
+      path: .secrets
+
   - name: dockersock
     host:
       path: /var/run/docker.sock
