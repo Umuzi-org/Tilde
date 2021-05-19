@@ -6,7 +6,6 @@ from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
 from model_mixins import Mixins
 from django.db.models import Q
-from .validators import validate_content_item_url
 from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
@@ -230,7 +229,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         blank=True,
         null=True,
         unique=True,
-        validators=[validate_content_item_url],
     )
 
     story_points = models.SmallIntegerField(

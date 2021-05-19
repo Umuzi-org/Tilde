@@ -1,5 +1,6 @@
 # from core.models import Curriculum
 from django.core.management.base import BaseCommand
+import frontmatter
 
 # from curriculum_tracking import models
 # import os
@@ -25,7 +26,10 @@ from django.core.management.base import BaseCommand
 # HARD = "hard"
 # SOFT = "soft"
 
-# DB_ID = "_db_id"
+DB_ID = "_db_id"
+CONTENT_TYPE = "content_type"
+
+COURSE = "course"
 
 
 # class Helper:
@@ -348,7 +352,7 @@ from django.core.management.base import BaseCommand
 #                 yield child
 
 
-# def load_all_content_items_with_known_ids():
+# def save_all_content_items_with_known_ids():
 #     seen_ids = {}
 #     content_paths = recurse_get_all_content_index_file_paths()
 #     for file_path in content_paths:
@@ -652,6 +656,68 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("path", type=str)
 
+    def __unpack_flavours(self,flavours):
+        self.flavours = flavours
+
+    def recurse_get_all_content_index_file_paths(self,root_path=None):
+
+        root_path = root_path or self.content_location
+        assert root_path.is_dir(), root_path
+        for child in root_path.iterdir():
+            if child.is_dir():
+                for path in self.recurse_get_all_content_index_file_paths(child):
+                    yield path
+            else:
+                stem = child.stem
+                if stem in ["_index","index"]:
+                    yield child
+
+    def save_content(self):
+        
+
+    def save_all_content_items_with_known_ids(self):
+        
+        content_paths = self.recurse_get_all_content_index_file_paths()
+        for file_path in content_paths:
+            content_item_post = frontmatter.load(file_path)
+            if DB_ID not in content_item_post:
+                continue
+
+            db_id = content_item_post[DB_ID]
+
+            if content_item_post[CONTENT_TYPE] == COURSE: 
+                seen_ids = self.seen_course_ids 
+                content_type = "course"
+                
+            else:
+                seen_ids = self.seen_content_ids 
+                content_type = "content"
+
+            assert (
+                db_id not in seen_ids
+            ), f"Same ID on two {content_type} items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
+            self.seen_ids[db_id] = file_path
+
+            if content_item_post[CONTENT_TYPE] != COURSE: 
+                self.save_content(
+                    file_path=file_path,
+                )
+
+    def save_all_content_items_with_unknown_ids(self):
+
+        content_paths = self.recurse_get_all_content_index_file_paths()
+        for file_path in content_paths:
+            content_item_post = frontmatter.load(file_path)
+            if DB_ID in content_item_post:
+                continue
+
+            if content_item_post[CONTENT_TYPE] == COURSE: 
+                continue 
+
+            self.save_content(
+                    file_path=file_path,
+                )
+
     def setup(self, path):
         self.path = Path(path)
         settings_path = self.path / ".tilde.yaml"
@@ -660,19 +726,21 @@ class Command(BaseCommand):
         self.content_location = self.path / settings["content_location"]
         self.base_url = settings["base_url"]
         self.flavours = self.__unpack_flavours(settings["flavours"])
+        self.seen_content_ids = {}
+        self.seen_course_ids = {}
 
     def handle(self, *args, **options):
         self.setup(options.get("path"))
 
-        self.load_all_content_items_with_known_ids()
-        self.load_all_content_items_with_unknown_ids()
-        self.remove_missing_content_items_from_db()
+        self.save_all_content_items_with_known_ids()
+        self.save_all_content_items_with_unknown_ids()
 
         print("Processing prerequisites....")
         self.add_all_prerequisites()
 
-        print("Processing Curriculums....")
-        self.set_up_curriculums_from_tech_dept_repo()
+        print("Processing Courses....")
+        self.set_up_courses()
 
+        self.remove_missing_content_items_from_db()
 
 # # TODO: BUG: optional syllabus content requirements are skipped over
