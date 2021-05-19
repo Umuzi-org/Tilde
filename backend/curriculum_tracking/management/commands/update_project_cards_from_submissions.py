@@ -5,6 +5,7 @@ from core import models as core_models
 
 from core.models import User
 
+assert False, "Depricated"
 
 class Command(BaseCommand):
     def add_arguments(self, parser):

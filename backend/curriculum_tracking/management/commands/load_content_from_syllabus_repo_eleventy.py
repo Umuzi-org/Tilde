@@ -583,7 +583,6 @@ COURSE = "course"
 # def get_creation_args_from_curricum_frontmatter(syllabus_frontmatter):
 #     return {
 #         "name": syllabus_frontmatter["title"],
-#         "short_name": syllabus_frontmatter["title"][:20],
 #     }
 
 
@@ -635,7 +634,7 @@ COURSE = "course"
 #     load_all_curriculums_with_unknown_ids(curriculums_base_dir)
 
 #     # for curriculum in models.Curriculum.objects.all():
-#     #     name = curriculum.short_name.lower().replace(" ", "-")
+#     #     name = curriculum.name.lower().replace(" ", "-")
 #     #     if currculum_name and name != currculum_name:
 #     #         continue
 #     #     print(f"Processing curriculum: {curriculum}")

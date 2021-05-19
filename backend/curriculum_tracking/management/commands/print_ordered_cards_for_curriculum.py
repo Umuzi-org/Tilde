@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         name = options["curriculum"]
-        curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
+        curriculum = Curriculum.objects.get(name=name)
 
         for x in get_ordered_content_items(curriculum):
             print(

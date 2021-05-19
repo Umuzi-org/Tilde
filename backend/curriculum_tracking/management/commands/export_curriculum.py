@@ -18,7 +18,7 @@ class Command(BaseCommand):
         if curriculum_arg.isdigit():
             curriculum = Curriculum.objects.get(pk=int(curriculum_arg))
         else:
-            curriculum = Curriculum.objects.get(short_name=curriculum_arg)
+            curriculum = Curriculum.objects.get(name=curriculum_arg)
         d = get_export_dict(curriculum)
 
         with open(options["save_path"], "w") as f:
@@ -33,7 +33,6 @@ def get_export_dict(curriculum):
 
     export = {
         "curriculum": {
-            "short_name": curriculum.short_name,
             "name": curriculum.name,
         },
         "curriculum_content_requirements": [

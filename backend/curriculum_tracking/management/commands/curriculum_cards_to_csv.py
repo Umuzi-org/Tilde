@@ -17,7 +17,7 @@ class Command(BaseCommand):
         curriculum_names = options["curriculums"]
         for name in curriculum_names:
             print(f'curriculum name = "{name}"')
-            curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
+            curriculum = Curriculum.objects.get(name=name)
 
             for x in get_ordered_content_items(curriculum):
                 content_item = x.content_item

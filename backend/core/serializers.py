@@ -40,7 +40,6 @@ class CurriculumSerializer(serializers.ModelSerializer):
         model = models.Curriculum
         fields = [
             "id",
-            "short_name",
             "name",
         ]
 

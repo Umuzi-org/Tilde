@@ -569,7 +569,6 @@ def curriculum_file_paths(curriculums_base_dir):
 def get_creation_args_from_curricum_frontmatter(syllabus_frontmatter):
     return {
         "name": syllabus_frontmatter["title"],
-        "short_name": syllabus_frontmatter["title"][:20],
     }
 
 
@@ -619,20 +618,6 @@ def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name)
         raise NotImplemented
     load_all_curriculums_with_known_ids(curriculums_base_dir)
     load_all_curriculums_with_unknown_ids(curriculums_base_dir)
-
-    # for curriculum in models.Curriculum.objects.all():
-    #     name = curriculum.short_name.lower().replace(" ", "-")
-    #     if currculum_name and name != currculum_name:
-    #         continue
-    #     print(f"Processing curriculum: {curriculum}")
-    #     file_path = curriculums_base_dir / f"{name}.md"
-    #     set_up_single_curriculum_from_file(curriculum, file_path)
-
-
-# def validate_card_creation():
-#     """the proof is in the pudding. Can we make cards without any of the internal sanity checks failing"""
-#     for curriculum in models.Curriculum.objects.all():
-#         ordered_content_items = helpers.get_ordered_content_items(curriculum)
 
 
 class Command(BaseCommand):

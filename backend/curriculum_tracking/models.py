@@ -169,7 +169,7 @@ class CourseRegistration(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return f"{self.user.email} - {self.curriculum.short_name}"
+        return f"{self.user.email} - {self.curriculum.name}"
 
 
 class ContentItemOrder(models.Model, Mixins):
