@@ -118,8 +118,8 @@ class Command(BaseCommand):
                 # ).delete()
 
     def update_prerequisites(self, content_item, prerequisites):
-        hard_prerequisites = prerequisites.get(HARD, [])
-        soft_prerequisites = prerequisites.get(SOFT, [])
+        hard_prerequisites = prerequisites.get(HARD, []) or []
+        soft_prerequisites = prerequisites.get(SOFT, []) or []
 
         hard_prereq_content_items = [
             self.get_or_save_content(
@@ -178,7 +178,11 @@ class Command(BaseCommand):
         return f"{self.base_url.strip('/')}/{url_end}/"
 
     def get_file_path_from_content_link(self, content_link):
+        if content_link.startswith("http://") or content_link.startswith("https://"):
+            return
+
         directory_path = self.path / content_link
+
         matching_paths = [
             s for s in directory_path.iterdir() if s.stem in ["index", "_index"]
         ]
@@ -203,7 +207,7 @@ class Command(BaseCommand):
         if raw_link and (
             raw_link.startswith("https://") or raw_link.startswith("http://")
         ):
-            return models.ContentItem.get(url=raw_link)
+            return models.ContentItem.objects.get(url=raw_link)
 
         print(f"processing {raw_link or file_path}")
 
