@@ -16,6 +16,18 @@ from curriculum_tracking import helpers
 # these constants are keys in the hugo page frontmatter
 STORY_POINTS = "story_points"
 
+TITLE = "title"
+READY = "ready"
+STORY_POINTS = "story_points"
+TAGS = "tags"
+TODO = "todo"
+
+PREREQUISITES = "prerequisites"
+HARD = "hard"
+SOFT = "soft"
+
+DB_ID = "_db_id"
+
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
