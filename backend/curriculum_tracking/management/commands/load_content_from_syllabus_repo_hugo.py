@@ -215,8 +215,8 @@ def _manage_prerequisites(meta: Dict, content_item):
     all_prerequisites = meta.get(PREREQUISITES, {})
     if not all_prerequisites:
         return
-    hard_prerequisites: List[str] = all_prerequisites.get(HARD, [])
-    soft_prerequisites: List[str] = all_prerequisites.get(SOFT, [])
+    hard_prerequisites: List[str] = all_prerequisites.get(HARD, []) or []
+    soft_prerequisites: List[str] = all_prerequisites.get(SOFT, []) or []
 
     mentioned = [
         _add_prerequisite(content_item, prerequisite, True)
@@ -429,10 +429,10 @@ def user_prompt(question: str) -> bool:
 
 def remove_missing_content_items_from_db():
     """if there is a content item in the database that doesnt exist in the content repo then delete it"""
-
+    return
     for content_item in models.ContentItem.objects.all():
         # file_path = content_item_file_path(repo_base_dir, content_item)
-        TODO: check base url
+        # TODO: check base url
         if content_item.id not in Helper.content_items_seen_by_id and user_prompt(
             f"Delete {content_item}"
         ):
@@ -658,7 +658,7 @@ class Command(BaseCommand):
             load_all_content_items_with_unknown_ids()
 
             # now that all the content is loaded up, we check what should be removed
-            remove_missing_content_items_from_db()
+            # remove_missing_content_items_from_db()
 
             # now all the content is right. Link things up
             add_all_prereq()
