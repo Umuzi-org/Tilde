@@ -6,6 +6,7 @@ import taggit
 from curriculum_tracking import models
 from pathlib import Path
 import yaml
+from core.models import Curriculum
 
 DB_ID = "_db_id"
 CONTENT_TYPE = "content_type"
@@ -314,8 +315,53 @@ class Command(BaseCommand):
 
             self.get_or_save_content(file_path=file_path, raw_link=None)
 
-    # def add_all_prerequisites(self):
-    #     for file_path in recurse_get_all_content_index_file_paths():
+    def save_all_curriculums_with_known_ids(self):
+        content_paths = self.recurse_get_all_content_index_file_paths()
+        seen = {}
+        for file_path in content_paths:
+            front = frontmatter.load(file_path)
+            if DB_ID not in front:
+                continue
+
+            if front[CONTENT_TYPE] != COURSE:
+                continue
+
+            db_id = front[DB_ID]
+            assert db_id not in seen
+            seen[db_id] = file_path
+
+            curriculum = Curriculum.objects.get(id=db_id)
+            curriculum.url = self.get_page_url(file_path)
+            curriculum.name = front["title"]
+            curriculum.save()
+
+            self.set_up_single_curriculum_from_file(curriculum, file_path)
+
+    def save_all_curriculums_with_unknown_ids(self):
+        content_paths = self.recurse_get_all_content_index_file_paths()
+        for file_path in content_paths:
+            front = frontmatter.load(file_path)
+            if DB_ID in front:
+                continue
+
+            if front[CONTENT_TYPE] != COURSE:
+                continue
+
+            defaults = {"name": front["title"], "url": self.get_page_url(file_path)}
+
+            curriculum = Curriculum.objects.create(
+                id=Curriculum.get_next_available_id(), **defaults
+            )
+
+            front[DB_ID] = curriculum.id
+            with open(file_path, "wb") as f:
+                frontmatter.dump(front, f)
+
+            self.set_up_single_curriculum_from_file(curriculum, file_path)
+
+    def set_up_courses(self):
+        self.save_all_curriculums_with_known_ids()
+        self.save_all_curriculums_with_unknown_ids()
 
     def handle(self, *args, **options):
         self.setup(options.get("path"))
