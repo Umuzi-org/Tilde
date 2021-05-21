@@ -64,6 +64,11 @@ def user_github_stats(user, cutoff):
     }
 
 
+def card_names(cards):
+    return ",".join([
+        f"{card.content_item.title} {card.flavour_names}" for card in cards
+    ])
+
 def user_as_assignee_stats(user):
     cards_in_review_column = AgileCard.objects.filter(
         status=AgileCard.IN_REVIEW
@@ -80,6 +85,10 @@ def user_as_assignee_stats(user):
     )
 
     complete_cards = AgileCard.objects.filter(status=AgileCard.COMPLETE).filter(
+        assignees__in=[user]
+    )
+
+    incomplete_cards = AgileCard.objects.filter(~Q(status=AgileCard.COMPLETE)).filter(
         assignees__in=[user]
     )
     ready_cards = AgileCard.objects.filter(status=AgileCard.READY).filter(
@@ -201,6 +210,8 @@ def user_as_assignee_stats(user):
             competent_complete_projects
         ),
         "oldest_card_in_review_column_request_time": oldest_card_in_review_column_request_time,
+        "complete_card_names": card_names(complete_cards),
+        "incomplete_card_names" : card_names(incomplete_cards)
     }
 
 
@@ -355,8 +366,8 @@ def get_group_report(group, cutoff):
         values = [d[key] for d in ret]
 
         for d in ret:
-            d[f"{key} grp tot"] = sum(values)
-            d[f"{key} grp ave"] = sum(values) / len(values)
+            # d[f"{key} grp tot"] = sum(values)
+            # d[f"{key} grp ave"] = sum(values) / len(values)
             d["_group_managers"] = ",".join([o.user.email for o in manager_users])
 
     return ret
@@ -377,54 +388,55 @@ class Command(BaseCommand):
             all_data.extend(get_group_report(group, cutoff))
             # break  # todo
 
-        headings = [
-            "_email",
-            "_group_managers",
-            "_group",
-            "_employer_partner",
-            "_end_date",
-            "_id",
-            "_last_login_time",
-            "_percentage_of_time_spent",
-            "_snapshot_date",
-            "_start_date",
-            "A last_time_a_project_was_completed",
-            "A number_of_blocked_cards",
-            "A number_of_cards_in_review_column",
-            "A number_of_competent_complete_project_cards",
-            "A number_of_complete_cards",
-            "A number_of_excellent_complete_project_cards",
-            "A number_of_in_progress_cards",
-            "A number_of_ready_cards",
-            "A number_of_review_feedback_cards",
-            "A oldest_review_feedback_card",
-            "A weight_of_blocked_cards",
-            "A weight_of_cards_in_review_column",
-            "A weight_of_competent_complete_project_cards",
-            "A weight_of_complete_cards",
-            "A weight_of_complete_cards grp ave",
-            "A weight_of_complete_cards grp tot",
-            "A weight_of_excellent_complete_project_cards",
-            "A weight_of_in_progress_cards",
-            "A weight_of_ready_cards",
-            "A weight_of_review_feedback_cards",
-            "R number_of_cards_in_review_as_reviewer",
-            "R number_of_cards_reviewed_in_last_7_days",
-            "R number_of_cards_reviewed_incorrectly_in_last_7_days",
-            "R number_of_reviews_done_in_last_7_days",
-            "R oldest_card_awaiting_review",
-            "R weight_of_cards_in_review_as_reviewer",
-            "R weight_of_cards_reviewed_in_last_7_days",
-            "R weight_of_cards_reviewed_incorrectly_in_last_7_days",
-            "R weight_of_reviews_done_in_last_7_days",
-            "A oldest_card_in_review_column_request_time",
-            "Git number_of_open_prs",
-            "Git pr_reviews_last_7_days",
-            "Git prs_merged_last_7_days",
-            "Git pr_reviews_total",
-            "Git prs_merged_total",
-            "Git most_recent_pr_update_time",
-        ]
+        headings = list(all_data[0].keys())
+        # headings = [
+        #     "_email",
+        #     "_group_managers",
+        #     "_group",
+        #     "_employer_partner",
+        #     "_end_date",
+        #     "_id",
+        #     "_last_login_time",
+        #     "_percentage_of_time_spent",
+        #     "_snapshot_date",
+        #     "_start_date",
+        #     "A last_time_a_project_was_completed",
+        #     "A number_of_blocked_cards",
+        #     "A number_of_cards_in_review_column",
+        #     "A number_of_competent_complete_project_cards",
+        #     "A number_of_complete_cards",
+        #     "A number_of_excellent_complete_project_cards",
+        #     "A number_of_in_progress_cards",
+        #     "A number_of_ready_cards",
+        #     "A number_of_review_feedback_cards",
+        #     "A oldest_review_feedback_card",
+        #     "A weight_of_blocked_cards",
+        #     "A weight_of_cards_in_review_column",
+        #     "A weight_of_competent_complete_project_cards",
+        #     "A weight_of_complete_cards",
+        #     "A weight_of_complete_cards grp ave",
+        #     "A weight_of_complete_cards grp tot",
+        #     "A weight_of_excellent_complete_project_cards",
+        #     "A weight_of_in_progress_cards",
+        #     "A weight_of_ready_cards",
+        #     "A weight_of_review_feedback_cards",
+        #     "R number_of_cards_in_review_as_reviewer",
+        #     "R number_of_cards_reviewed_in_last_7_days",
+        #     "R number_of_cards_reviewed_incorrectly_in_last_7_days",
+        #     "R number_of_reviews_done_in_last_7_days",
+        #     "R oldest_card_awaiting_review",
+        #     "R weight_of_cards_in_review_as_reviewer",
+        #     "R weight_of_cards_reviewed_in_last_7_days",
+        #     "R weight_of_cards_reviewed_incorrectly_in_last_7_days",
+        #     "R weight_of_reviews_done_in_last_7_days",
+        #     "A oldest_card_in_review_column_request_time",
+        #     "Git number_of_open_prs",
+        #     "Git pr_reviews_last_7_days",
+        #     "Git prs_merged_last_7_days",
+        #     "Git pr_reviews_total",
+        #     "Git prs_merged_total",
+        #     "Git most_recent_pr_update_time",
+        # ]
 
         with open(
             Path(
