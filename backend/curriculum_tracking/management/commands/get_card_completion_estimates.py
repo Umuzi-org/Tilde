@@ -44,8 +44,6 @@ def calculate_card_duration(row):
 def clean_flavour_names(key):
     def _clean_flavour_names(row):
         names = json.loads(row[key].replace("'", '"'))
-        # if len(names) > 1:
-        #     breakpoint()
         names.sort()
         return ", ".join(names)
 

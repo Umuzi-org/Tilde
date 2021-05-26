@@ -16,6 +16,18 @@ from curriculum_tracking import helpers
 # these constants are keys in the hugo page frontmatter
 STORY_POINTS = "story_points"
 
+TITLE = "title"
+READY = "ready"
+STORY_POINTS = "story_points"
+TAGS = "tags"
+TODO = "todo"
+
+PREREQUISITES = "prerequisites"
+HARD = "hard"
+SOFT = "soft"
+
+DB_ID = "_db_id"
+
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
@@ -203,8 +215,8 @@ def _manage_prerequisites(meta: Dict, content_item):
     all_prerequisites = meta.get(PREREQUISITES, {})
     if not all_prerequisites:
         return
-    hard_prerequisites: List[str] = all_prerequisites.get(HARD, [])
-    soft_prerequisites: List[str] = all_prerequisites.get(SOFT, [])
+    hard_prerequisites: List[str] = all_prerequisites.get(HARD, []) or []
+    soft_prerequisites: List[str] = all_prerequisites.get(SOFT, []) or []
 
     mentioned = [
         _add_prerequisite(content_item, prerequisite, True)
@@ -417,10 +429,10 @@ def user_prompt(question: str) -> bool:
 
 def remove_missing_content_items_from_db():
     """if there is a content item in the database that doesnt exist in the content repo then delete it"""
-
+    return
     for content_item in models.ContentItem.objects.all():
         # file_path = content_item_file_path(repo_base_dir, content_item)
-        TODO: check base url
+        # TODO: check base url
         if content_item.id not in Helper.content_items_seen_by_id and user_prompt(
             f"Delete {content_item}"
         ):
@@ -569,7 +581,6 @@ def curriculum_file_paths(curriculums_base_dir):
 def get_creation_args_from_curricum_frontmatter(syllabus_frontmatter):
     return {
         "name": syllabus_frontmatter["title"],
-        "short_name": syllabus_frontmatter["title"][:20],
     }
 
 
@@ -620,20 +631,6 @@ def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name)
     load_all_curriculums_with_known_ids(curriculums_base_dir)
     load_all_curriculums_with_unknown_ids(curriculums_base_dir)
 
-    # for curriculum in models.Curriculum.objects.all():
-    #     name = curriculum.short_name.lower().replace(" ", "-")
-    #     if currculum_name and name != currculum_name:
-    #         continue
-    #     print(f"Processing curriculum: {curriculum}")
-    #     file_path = curriculums_base_dir / f"{name}.md"
-    #     set_up_single_curriculum_from_file(curriculum, file_path)
-
-
-# def validate_card_creation():
-#     """the proof is in the pudding. Can we make cards without any of the internal sanity checks failing"""
-#     for curriculum in models.Curriculum.objects.all():
-#         ordered_content_items = helpers.get_ordered_content_items(curriculum)
-
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -661,7 +658,7 @@ class Command(BaseCommand):
             load_all_content_items_with_unknown_ids()
 
             # now that all the content is loaded up, we check what should be removed
-            remove_missing_content_items_from_db()
+            # remove_missing_content_items_from_db()
 
             # now all the content is right. Link things up
             add_all_prereq()

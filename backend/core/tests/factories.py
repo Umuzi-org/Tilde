@@ -48,5 +48,4 @@ class CurriculumFactory(DjangoModelFactory):
     class Meta:
         model = "core.Curriculum"
 
-    short_name = factory.LazyAttribute(lambda o: o.name[:10])
     name = "hello"

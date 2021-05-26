@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
     def get_db_data(self):
         return {
-            o.id: {"name": o.name, "short_name": o.short_name}
+            o.id: {"name": o.name}
             for o in Curriculum.objects.all()
         }
 

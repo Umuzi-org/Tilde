@@ -26,7 +26,7 @@ class Command(BaseCommand):
         CourseRegistration.objects.filter(user=user).delete()
 
         name = options["curriculum"]
-        curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
+        curriculum = Curriculum.objects.get(name=name)
 
         CourseRegistration.objects.create(user=user, curriculum=curriculum)
 

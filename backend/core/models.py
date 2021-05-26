@@ -152,8 +152,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Curriculum(models.Model, Mixins):
-    short_name = models.CharField(max_length=20)  # eg:data eng
     name = models.CharField(max_length=40)  # eg: data engineering
+    url = models.URLField(
+        max_length=2083,
+        blank=True,
+        null=True,
+        unique=True,
+    )
 
     def __str__(self):
         return self.name

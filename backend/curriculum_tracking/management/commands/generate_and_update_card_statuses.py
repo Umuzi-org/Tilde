@@ -23,7 +23,7 @@ class Command(BaseCommand):
 
         name = options["curriculum"]
         if name:
-            curriculum = Curriculum.objects.get(Q(short_name=name) | Q(name=name))
+            curriculum = Curriculum.objects.get(name=name)
         else:
             curriculum = None
 
