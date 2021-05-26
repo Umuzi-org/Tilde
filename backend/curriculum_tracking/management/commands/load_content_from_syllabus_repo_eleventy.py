@@ -2,7 +2,7 @@
 from django.core.management.base import BaseCommand
 import frontmatter
 import taggit
-
+import re
 from curriculum_tracking import models
 from pathlib import Path
 import yaml
@@ -53,13 +53,6 @@ class Command(BaseCommand):
                 flavours.append(flavour)
             else:
                 flavours.extend(self.flavours[flavour])
-        # if (
-        #     content_item.content_type == content_item.PROJECT
-        #     and content_item.project_submission_type != content_item.NO_SUBMIT
-        # ):
-        #     assert (
-        #         flavours
-        #     ), f"no available flavours specified. Be explicit. Perhaps you forgot to say flavours: ['none']\n\t{content_item.url}"
 
         if "none" in flavours:
             assert (
@@ -95,16 +88,6 @@ class Command(BaseCommand):
         ), f"Flavours dont match: Expected {flavours} but got {final}"
 
     def update_tags(self, meta, content_item):
-        # todo_tag, _ = taggit.models.Tag.objects.get_or_create(name=TODO)
-        # ready = meta.get("ready", False)
-        # if ready:
-        #     assert ready == True, f"{ready} {type(ready)}"
-        #     content_item.tags.remove(todo_tag)
-        # else:
-        #     content_item.tags.add(todo_tag)
-        # if meta.get(TODO):
-        #     content_item.tags.add(todo_tag)
-
         tags = []
         for tag_str in meta.get(TAGS, []):
             tag, _ = taggit.models.Tag.objects.get_or_create(name=tag_str.lower())
@@ -114,9 +97,6 @@ class Command(BaseCommand):
         for tag in list(content_item.tags.all()):
             if tag not in tags:
                 content_item.tags.remove(tag)
-                # models.ContentAvailableFlavour.objects.get(
-                #     tag=tag, content_item=content_item
-                # ).delete()
 
     def update_prerequisites(self, content_item, prerequisites):
         hard_prerequisites = prerequisites.get(HARD, []) or []
@@ -315,6 +295,60 @@ class Command(BaseCommand):
 
             self.get_or_save_content(file_path=file_path, raw_link=None)
 
+    def _get_ordered_curriculum_items_from_page(self, file_stream):
+        seen = []
+
+        for line in file_stream:
+            matches = re.findall("{%\s*contentLink (.*)%}", line)
+            for match in matches:
+                args = [
+                    s
+                    for s in [s.strip() for s in match.split('"')]
+                    if s and s != "collections"
+                ]
+                path = args[0]
+                if len(args) == 2:
+                    flavours = sorted(
+                        [
+                            s
+                            for s in [s.strip() for s in args[1].split(",")]
+                            if s != "none"
+                        ]
+                    )
+                else:
+                    flavours = []
+
+                url = self.get_page_url(self.get_file_path_from_content_link(path))
+                try:
+                    content_item = models.ContentItem.objects.get(url=url)
+                except models.ContentItem.DoesNotExist:
+                    raise Exception(f"cannot find contentitem with url = {url}")
+
+                signature = f"{content_item.id}{flavours}"
+                if signature not in seen:
+                    seen.append(signature)
+                    yield content_item, flavours
+
+    def set_up_single_curriculum_from_file(self, curriculum, file_path):
+        expected_ids = []
+
+        with open(file_path, "r") as f:
+            for index, (content_item, flavours) in enumerate(
+                self._get_ordered_curriculum_items_from_page(f)
+            ):
+                override = {"hard_requirement": 1, "order": index + 1}
+
+                o, _ = models.CurriculumContentRequirement.get_or_create_or_update(
+                    content_item=content_item,
+                    curriculum=curriculum,
+                    defaults=override,
+                    overrides=override,
+                )
+
+                o.set_flavours(flavours)
+
+                expected_ids.append(o.id)
+
     def save_all_curriculums_with_known_ids(self):
         content_paths = self.recurse_get_all_content_index_file_paths()
         seen = {}
@@ -369,13 +403,5 @@ class Command(BaseCommand):
         self.save_all_content_items_with_known_ids()
         self.save_all_content_items_with_unknown_ids()
 
-        # print("Processing prerequisites....")
-        # self.add_all_prerequisites()
-
         print("Processing Courses....")
         self.set_up_courses()
-
-        self.remove_missing_content_items_from_db()
-
-
-# # TODO: BUG: optional syllabus content requirements are skipped over
