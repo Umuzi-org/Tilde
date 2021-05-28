@@ -21,8 +21,6 @@ PERSONAL_GITHUB_NAME = os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME")
 # https://developer.github.com/v3/#timezones
 GITHUB_DEFAULT_TIMEZONE = "utc"
 # GIT_REAL_BOT_USERNAME = "umuzibot"
-
-# GIT_REAL_BOT_USERNAME = "umuzibot"
 # Note: this needs to be associated with an actual User in the db
 # and has to be logged in.
 # this should really be in settings.py

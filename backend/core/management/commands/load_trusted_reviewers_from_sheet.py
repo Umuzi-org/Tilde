@@ -7,11 +7,15 @@ from google_helpers.utils import fetch_sheet
 def process_row(row):
     if bool(int(row["broken"] or 0)):
         return
+    print(row.to_dict())
+
+    # if "FreeCodeCamp" in row["content_item_title"]:
+    #     breakpoint()
 
     ReviewTrust.add_specific_trust_instances(
         who=row["who"],
         content_item_title=row["content_item_title"],
-        flavours=row["flavour"].split(","),
+        flavours=[s for s in [s.strip() for s in row["flavour"].split(",")] if s],
         update_previous_reviews=bool(int(row["update_previous_reviews"])),
     )
 

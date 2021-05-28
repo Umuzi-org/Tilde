@@ -1,6 +1,8 @@
 import logging
 import pandas as pd
-from functools import lru_cache
+import gspread
+
+# from functools import lru_cache
 import re
 from timezone_helpers import timestamp_str_to_tz_aware_datetime
 from google_helpers.constants import TIMESTAMP_FORMAT, TIMEZONE_NAME
@@ -15,7 +17,7 @@ def timestamp_to_datetime(timestamp):
 
 def fetch_sheet(sheet: str = None, url: str = None):
     print(f"Fetching sheet: {sheet} {url}")
-    service = authorize()
+    service = get_gspread_service()
     if sheet:
         book = service.open(sheet)
     elif url:
@@ -25,13 +27,11 @@ def fetch_sheet(sheet: str = None, url: str = None):
     return pd.DataFrame(sheet.get_all_records())
 
 
-def authorize():
+def authorize_creds():
     import json
     from oauth2client.client import SignedJwtAssertionCredentials
-    import gspread
     import os
 
-    # insert name of  json service account key
     SCOPE = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive",
@@ -52,6 +52,11 @@ def authorize():
     credentials = SignedJwtAssertionCredentials(
         json_key["client_email"], json_key["private_key"], SCOPE
     )
+    return credentials
+
+
+def get_gspread_service():
+    credentials = authorize_creds()
     ret = gspread.authorize(credentials)
     return ret
 

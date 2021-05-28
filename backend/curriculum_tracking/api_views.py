@@ -20,8 +20,6 @@ from core.permissions import (
 )
 from core.models import Team
 
-from core.models import User
-
 
 def _get_teams_from_topic_progress(self, request, view):
     topic_progress = view.get_object()
@@ -302,10 +300,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ],
     )
     def add_review(self, request, pk=None):
-
-        # TODO: Debounce or rate limit
         card = self.get_object()
-        # breakpoint()
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

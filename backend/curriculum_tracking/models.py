@@ -10,7 +10,6 @@ from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
 from social_auth import models as social_models
-from git_real import helpers as git_helpers
 from .constants import (
     NOT_YET_COMPETENT,
     COMPETENT,
@@ -21,7 +20,6 @@ from .constants import (
 
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -58,14 +56,14 @@ class ReviewableMixin:
             assert card is not None
             if card.status in [AgileCard.BLOCKED, AgileCard.READY]:
                 return
-            old_status = card.status
+            # old_status = card.status
             if self.__class__ == RecruitProject:
                 card.status = AgileCard.derive_status_from_project(self)
-                progress_instance = card.recruit_project
+                # progress_instance = card.recruit_project
 
             elif self.__class__ == TopicProgress:
                 card.status = AgileCard.derive_status_from_topic(self, card)
-                progress_instance = card.topic_progress
+                # progress_instance = card.topic_progress
 
             else:
                 raise Exception(f"Not implemented: {self.__class}")
