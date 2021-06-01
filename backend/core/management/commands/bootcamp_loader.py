@@ -78,6 +78,13 @@ SPECIFIC_BOOTCAMPS = {
     COURSE_EXTERNAL_WEB: "Web development boot camp",
 }
 
+SPECIFIC_BOOTCAMP_QUICK_WINS = {
+    COURSE_WEB: "Web development boot camp - quick wins",
+    COURSE_DATA_ENG: "Data Engineering boot camp - quick wins",
+    COURSE_DATA_SCI: "Data Science boot camp - quick wins",
+    COURSE_JAVA: "Java boot camp - quick wins",
+}
+
 
 def get_df():
     df = fetch_sheet(

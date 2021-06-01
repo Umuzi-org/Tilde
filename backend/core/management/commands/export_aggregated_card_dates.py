@@ -1,11 +1,9 @@
 from django.core.management.base import BaseCommand
-from core.models import User, Team
+from core.models import Team
 from curriculum_tracking.models import AgileCard
-from pathlib import Path
 from django.utils import timezone
-import csv
-import pandas as pd 
-import json
+import pandas as pd
+
 
 def calculate_card_duration(row):
     start_time = row["card.start_time"]
@@ -15,6 +13,7 @@ def calculate_card_duration(row):
     delta = complete_time - start_time
     return delta.seconds
 
+
 def clean_flavour_names(key):
     def _clean_flavour_names(row):
         names = row[key]
@@ -23,17 +22,16 @@ def clean_flavour_names(key):
 
     return _clean_flavour_names
 
+
 class Command(BaseCommand):
-
-
     def handle(self, *args, **options):
 
         data = []
-        for team in Team.objects.all():
-        # for team in Team.objects.filter(name="Cohort 22 web dev"):
+        for team in Team.objects.filter(active=True):
+            # for team in Team.objects.filter(name="Cohort 22 web dev"):
             print(f"processing team: {team.name}")
             for card in AgileCard.objects.filter(assignees__in=team.user_set.all()):
-                
+
                 data.append(
                     {
                         "team.name": team.name,
@@ -46,29 +44,43 @@ class Command(BaseCommand):
                     }
                 )
 
-             
-
         df = pd.DataFrame(data)
 
-        df["card.complete_time"] = pd.to_datetime(df["card.complete_time"], infer_datetime_format=True)
+        df["card.complete_time"] = pd.to_datetime(
+            df["card.complete_time"], infer_datetime_format=True
+        )
         df["card.start_time"] = pd.to_datetime(
-                df["card.start_time"], infer_datetime_format=True
-            )
+            df["card.start_time"], infer_datetime_format=True
+        )
         df["duration"] = df.apply(calculate_card_duration, axis=1)
         df = df[df["duration"] != 0]
         df["card.flavour_names"] = df.apply(
-                clean_flavour_names("card.flavour_names"), axis=1
-            )
+            clean_flavour_names("card.flavour_names"), axis=1
+        )
 
-        grouped = df.groupby(["card.flavour_names", "card.content_item.id", "card.content_item.title","team.name"],as_index=False)
-
+        grouped = df.groupby(
+            [
+                "card.flavour_names",
+                "card.content_item.id",
+                "card.content_item.title",
+                "team.name",
+            ],
+            as_index=False,
+        )
 
         data = {
-
-            "card.flavour_name": pd.DataFrame(grouped).reset_index().apply(lambda row: row[0][0], axis=1),
-            "card.content_item.id": pd.DataFrame(grouped).reset_index().apply(lambda row: row[0][1], axis=1),
-            "card.content_item.title": pd.DataFrame(grouped).reset_index().apply(lambda row: row[0][2], axis=1),
-            "team.name": pd.DataFrame(grouped).reset_index().apply(lambda row: row[0][3], axis=1),
+            "card.flavour_name": pd.DataFrame(grouped)
+            .reset_index()
+            .apply(lambda row: row[0][0], axis=1),
+            "card.content_item.id": pd.DataFrame(grouped)
+            .reset_index()
+            .apply(lambda row: row[0][1], axis=1),
+            "card.content_item.title": pd.DataFrame(grouped)
+            .reset_index()
+            .apply(lambda row: row[0][2], axis=1),
+            "team.name": pd.DataFrame(grouped)
+            .reset_index()
+            .apply(lambda row: row[0][3], axis=1),
             "mean": grouped["duration"].mean()["duration"],
             "max": grouped["duration"].max()["duration"],
             "min": grouped["duration"].min()["duration"],
@@ -81,7 +93,10 @@ class Command(BaseCommand):
         df = pd.concat(data, axis=1)
 
         today = timezone.now().date()
-        df.to_csv(f"gitignore/aggreggated_card_export_{today.strftime('%a %d %b %Y')}.csv",index=False)
+        df.to_csv(
+            f"gitignore/aggreggated_card_export_{today.strftime('%a %d %b %Y')}.csv",
+            index=False,
+        )
 
         # headings = data[0].keys()
 
@@ -92,7 +107,3 @@ class Command(BaseCommand):
         #     writer = csv.writer(f)
         #     writer.writerow(headings)
         #     writer.writerows([[d[heading] for heading in headings] for d in data])
-
-
-
-
