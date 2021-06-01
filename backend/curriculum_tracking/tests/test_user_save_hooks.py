@@ -1,9 +1,6 @@
 from django.test import TestCase
-
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory
-
-# from curriculum_tracking.models import AgileCard, ContentItem, RecruitProjectReview
 
 
 class TestDeactivateUSerClearsReviewerDuties(TestCase):
@@ -19,11 +16,15 @@ class TestDeactivateUSerClearsReviewerDuties(TestCase):
             card.reviewers.add(user)
             card.save()
 
+        # simply saving the user should have no effect
+        user.save()
+
         for card in cards:
             project = card.recruit_project
             self.assertIn(user, card.reviewers.all())
             self.assertIn(user, project.reviewer_users.all())
 
+        # but if we deactivate the user then they are removed from all the things
         user.active = False
         user.save()
 

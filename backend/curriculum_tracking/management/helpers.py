@@ -1,6 +1,9 @@
 from core.models import Team, User
 
 from curriculum_tracking.models import AgileCard
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_users(who):
@@ -12,7 +15,11 @@ def get_users(who):
 
 
 def get_team(team_name):
-    return Team.objects.get(name=team_name)
+    try:
+        return Team.objects.get(name=team_name)
+    except Team.DoesNotExist:
+        logger.error(f"Failed to get Team with name='{team_name}'")
+        raise
 
 
 def get_team_cards(team, content_item):

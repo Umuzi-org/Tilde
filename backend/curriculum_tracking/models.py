@@ -1276,3 +1276,21 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
                 self.recruit_project.code_review_ny_competent_since_last_review_request
             )
         return 0
+
+    def add_collaborator(self, user, add_as_project_reviewer):
+        from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
+        from git_real.helpers import add_collaborator
+        from social_auth.github_api import Api
+
+        if self.recruit_project and self.repository:
+            if self.repository.full_name.startswith(ORGANISATION):
+                github_name = user.social_profile.github_name
+                api = Api(GIT_REAL_BOT_USERNAME)
+                add_collaborator(api, self.repository.full_name, github_name)
+        self.save()
+        if add_as_project_reviewer:
+            if user not in self.assignees.all():
+                self.reviewers.add(user)
+                if self.recruit_project:
+                    self.recruit_project.reviewer_users.add(user)
+        self.save()

@@ -245,10 +245,22 @@ class AgileCardFactory(DjangoModelFactory):
         else ContentItemFactory()
     )
     order = 1
+    # assignees = factory.LazyAttribute(
+    #     lambda o: o.recruit_project.recruit_users.all() if o.recruit_project else []
+    # )
 
     @factory.post_generation
     def flavours(self, *args, **kwargs):
         FlavourMixin.flavours(self, *args, **kwargs)
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        manager = cls._get_manager(model_class)
+
+        instance = manager.create(*args, **kwargs)
+        if instance.recruit_project:
+            instance.assignees.set(instance.recruit_project.recruit_users.all())
+        return instance
 
     # @factory.post_generation
     # def assignees(self, create, extracted, **kwargs):
