@@ -108,6 +108,16 @@ def unblock_cards_and_update_complete_time(
         assert instance.complete_time != None, instance
 
 
+@receiver([post_save], sender=models.User)
+def if_user_not_Active_remove_reviewer_duties(sender, instance, created, **kwargs):
+    if instance.active:
+        return
+    for o in models.AgileCard.objects.filter(reviewers__in=[instance]):
+        o.reviewers.remove(instance)
+    for o in models.RecruitProject.objects.filter(reviewer_users__in=[instance]):
+        o.reviewer_users.remove(instance)
+
+
 @receiver([post_save], sender=models.TopicReview)
 def maybe_move_card_because_of_topic_review(sender, instance, created, **kwargs):
     if not created:
