@@ -1,11 +1,12 @@
 from django.utils import timezone
 from curriculum_tracking.models import AgileCard, ContentItem
 from curriculum_tracking.management.commands.auto_assign_reviewers import (
+    EXCLUDE_TEAMS,
     REQUIRED_REVIEWERS_PER_CARD,
     get_cards_needing_reviewers,
     get_possible_reviewers,
 )
-from core.tests.factories import UserFactory
+from core.tests.factories import TeamFactory, UserFactory
 from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
@@ -58,8 +59,44 @@ class get_cards_needing_reviewers_Tests(TestCase):
         result = get_cards_needing_reviewers()
         self.assertEqual(list(result), [])
 
+    def test_exclude_teams(self):
+        if not EXCLUDE_TEAMS:
+            return
+
+        team = TeamFactory(name=EXCLUDE_TEAMS[0])
+        team.user_set.add(self.project_cards_needing_review[0].assignees.first())
+
+        result = get_cards_needing_reviewers()
+        self.assertEqual(
+            sorted([o.id for o in result]),
+            sorted([o.id for o in self.project_cards_needing_review][1:]),
+        )
+
 
 class get_possible_reviewers_Tests(TestCase):
+    def test_that_only_competent_people_get_returned(self):
+        if not EXCLUDE_TEAMS:
+            return
+        competent_project = RecruitProjectFactory(
+            complete_time=timezone.now(), flavours=[JAVASCRIPT]
+        )
+
+        content_item = competent_project.content_item
+
+        card = AgileCardFactory(
+            recruit_project=RecruitProjectFactory(
+                complete_time=None,
+                flavours=[JAVASCRIPT],
+                content_item=content_item,
+            ),
+            status=AgileCard.IN_PROGRESS,
+        )
+
+        team = TeamFactory(name=EXCLUDE_TEAMS[0])
+        team.user_set.add(competent_project.recruit_users.first())
+        result = list(get_possible_reviewers(card))
+        self.assertEqual(result, [])
+
     def test_that_only_competent_people_get_returned(self):
 
         competent_project = RecruitProjectFactory(
@@ -77,9 +114,16 @@ class get_possible_reviewers_Tests(TestCase):
 
         card = AgileCardFactory(
             recruit_project=RecruitProjectFactory(
-                complete_time=None, flavours=[JAVASCRIPT], content_item=content_item
-            )
+                complete_time=None,
+                flavours=[JAVASCRIPT],
+                content_item=content_item,
+            ),
+            status=AgileCard.IN_PROGRESS,
         )
+
+        assert card.flavours_match(
+            card.recruit_project.flavour_names
+        ), f"{card.flavour_names} != {card.recruit_project.flavour_names}"
         result = list(get_possible_reviewers(card))
         self.assertEqual(result, [competent_project.recruit_users.first()])
 
@@ -118,18 +162,20 @@ class get_possible_reviewers_Tests(TestCase):
             reviews_to_add = 5 - n
             for i in range(reviews_to_add):
                 nyc_card = AgileCardFactory(
+                    status=AgileCard.IN_PROGRESS,
                     recruit_project=RecruitProjectFactory(
                         complete_time=None, flavours=[], content_item=content_item
-                    )
+                    ),
                 )
                 project_user = project.recruit_users.first()
                 nyc_card.reviewers.add(project_user)
                 nyc_card.recruit_project.reviewer_users.add(project_user)
 
         card = AgileCardFactory(
+            status=AgileCard.IN_PROGRESS,
             recruit_project=RecruitProjectFactory(
                 complete_time=None, flavours=[], content_item=content_item
-            )
+            ),
         )
         expected_result = [
             project.recruit_users.first() for project in competent_projects[::-1]
@@ -146,9 +192,10 @@ class get_possible_reviewers_Tests(TestCase):
         for i in range(5):
 
             nyc_card = AgileCardFactory(
+                status=AgileCard.IN_PROGRESS,
                 recruit_project=RecruitProjectFactory(
                     complete_time=None, flavours=[], content_item=content_item
-                )
+                ),
             )
             nyc_card.reviewers.add(project_user)
             nyc_card.recruit_project.reviewer_users.add(project_user)

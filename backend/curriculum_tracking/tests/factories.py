@@ -248,6 +248,10 @@ class AgileCardFactory(DjangoModelFactory):
     # assignees = factory.LazyAttribute(
     #     lambda o: o.recruit_project.recruit_users.all() if o.recruit_project else []
     # )
+    # @factory.post_generation
+    # def assignees(self, *args, **kwargs):
+    #     xxx
+    #     FlavourMixin.flavours(self, *args, **kwargs)
 
     @factory.post_generation
     def flavours(self, *args, **kwargs):
@@ -260,32 +264,37 @@ class AgileCardFactory(DjangoModelFactory):
         instance = manager.create(*args, **kwargs)
         if instance.recruit_project:
             instance.assignees.set(instance.recruit_project.recruit_users.all())
+            flavour_names = (
+                instance.flavour_names + instance.recruit_project.flavour_names
+            )
+            instance.set_flavours(flavour_names)
+            instance.recruit_project.set_flavours(flavour_names)
         return instance
 
-    # @factory.post_generation
-    # def assignees(self, create, extracted, **kwargs):
-    #     if not create:
-    #         return
+    @factory.post_generation
+    def assignees(self, create, extracted, **kwargs):
+        if not create:
+            return
 
-    #     if extracted:
-    #         print(f"extracted = {extracted}")
-    #         for user in extracted:
-    #             self.assignees.add(user)
-    #     else:
-    #         for user in self.recruit_project.recruit_users.all():
-    #             print("here")
-    #             self.assignees.add(user)
+        if extracted:
+            # print(f"extracted = {extracted}")
+            for user in extracted:
+                self.assignees.add(user)
+        elif self.recruit_project:
+            for user in self.recruit_project.recruit_users.all():
+                # print("here")
+                self.assignees.add(user)
 
-    # @factory.post_generation
-    # def reviewers(self, create, extracted, **kwargs):
-    #     if not create:
-    #         return
+    @factory.post_generation
+    def reviewers(self, create, extracted, **kwargs):
+        if not create:
+            return
 
-    #     if extracted:
-    #         for user in extracted:
-    #             self.reviewers.add(user)
-    #     else:
-    #         self.reviewers.add(UserFactory())
+        if extracted:
+            for user in extracted:
+                self.reviewers.add(user)
+        else:
+            self.reviewers.add(UserFactory())
 
 
 class CurriculumContentRequirementFactory(DjangoModelFactory):

@@ -1,11 +1,27 @@
 from typing import Iterable
+
+from django.db.models.deletion import SET_DEFAULT
 from core.models import User
 from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
 from django.core.management.base import BaseCommand
-from django.db.models import Count, OuterRef
+from django.db.models import Count
+from django.db.models import Q
 
-REQUIRED_REVIEWERS_PER_CARD = 2
+REQUIRED_REVIEWERS_PER_CARD = 3
 SKIP_CARD_TAGS = ["ncit"]
+
+EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't have this mixed in with the code
+    "Tech seniors",
+    "Staff Data Sci",
+    "Staff Scrum masters",
+    "Staff Web Dev",
+    "Tech Junior Staff",
+    "TechQuest Staff",
+    "Boot web dev TechQuest1 10 Feb 2021",
+    "Boot web dev TechQuest2 10 Feb 2021",
+    "TechQuest Staff",
+    "TechQuest web dev 1",
+]
 
 
 def get_cards_needing_reviewers() -> Iterable[AgileCard]:
@@ -18,9 +34,15 @@ def get_cards_needing_reviewers() -> Iterable[AgileCard]:
 
     for card in (
         AgileCard.objects.filter(assignees__active__in=[True])
+        .exclude(assignees__groups__name__in=EXCLUDE_TEAMS)
         .annotate(reviewer_count=Count("reviewers"))
         .filter(content_item__content_type=ContentItem.PROJECT)
         .filter(reviewer_count__lt=REQUIRED_REVIEWERS_PER_CARD)
+        .filter(
+            Q(status=AgileCard.IN_PROGRESS)
+            | Q(status=AgileCard.IN_REVIEW)
+            | Q(status=AgileCard.REVIEW_FEEDBACK)
+        )
     ):
         yield card
 
@@ -43,18 +65,18 @@ def get_possible_reviewers(card):
     count the number of cards with the same content_item and flavours where a user is the reviewer. Order = count ascending
     """
 
-    project = card.recruit_project
-
     projects: RecruitProject = RecruitProject.objects.filter(
-        content_item=project.content_item
+        content_item=card.content_item
     ).filter(recruit_users__active__in=[True])
-    projects = filter_by_flavour_match(projects, project.flavours.all())
+    projects = filter_by_flavour_match(projects, card.flavours.all())
 
     complete_projects = projects.filter(complete_time__isnull=False)
 
-    competent_users = User.objects.filter(
-        recruit_projects__in=complete_projects
-    ).exclude(projects_to_review__in=[project])
+    competent_users = (
+        User.objects.filter(recruit_projects__in=complete_projects)
+        .exclude(agile_cards_to_review__in=[card])
+        .exclude(groups__name__in=EXCLUDE_TEAMS)
+    )
 
     competent_users = competent_users.annotate(duty_count=Count("projects_to_review"))
     competent_users = competent_users.order_by("duty_count")
@@ -69,11 +91,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for card in get_cards_needing_reviewers():
+        cards = list(get_cards_needing_reviewers())
+        total = len(cards)
+        for n, card in enumerate(cards):
             number_of_reviewers_to_add = (
-                card.reviewers.count() - REQUIRED_REVIEWERS_PER_CARD
+                REQUIRED_REVIEWERS_PER_CARD - card.reviewers.count()
+            )
+            assert number_of_reviewers_to_add > 0
+            print(
+                f"card {n+1}/{total}\n\t[{card.id}] {card} {card.flavour_names} - {card.assignees.first().email}\n\tneeds {number_of_reviewers_to_add} reviewer(s)"
             )
             possible_reviewers = get_possible_reviewers(card)
-            for user in possible_reviewers[:number_of_reviewers_to_add]:
-                print(f"Add collaborator:\n\tcard = {card}\n\tnew reviewer = {user}")
-                # card.add_collaborator(user=user, add_as_project_reviewer=True)
+            for i, user in enumerate(possible_reviewers):
+                if card.reviewers.count() >= number_of_reviewers_to_add:
+                    break
+
+                print(f"Add collaborator {i+1}: \n\tnew reviewer = {user}\n")
+                card.add_collaborator(user=user, add_as_project_reviewer=True)

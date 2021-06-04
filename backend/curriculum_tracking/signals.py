@@ -10,6 +10,7 @@ from curriculum_tracking.constants import (
     EXCELLENT,
 )
 from django.utils import timezone
+from django.db.models import Count
 
 # @receiver([m2m_changed], sender=models.AgileCard.assignees.through)
 # def make_sure_project_assignees_match_card(sender, instance, **kwargs):
@@ -109,13 +110,29 @@ def unblock_cards_and_update_complete_time(
 
 
 @receiver([post_save], sender=models.User)
-def if_user_not_Active_remove_reviewer_duties(sender, instance, created, **kwargs):
+def if_user_not_active_remove_reviewer_duties(sender, instance, created, **kwargs):
     if instance.active:
         return
+
     for o in models.AgileCard.objects.filter(reviewers__in=[instance]):
         o.reviewers.remove(instance)
     for o in models.RecruitProject.objects.filter(reviewer_users__in=[instance]):
         o.reviewer_users.remove(instance)
+
+    for o in (
+        models.AgileCard.objects.filter(assignees__in=[instance])
+        .annotate(reviewer_count=Count("reviewers"))
+        .filter(reviewer_count__gt=0)
+    ):
+        o.reviewers.set([])
+
+    # breakpoint()
+    for o in (
+        models.RecruitProject.objects.filter(recruit_users__in=[instance])
+        .annotate(reviewer_count=Count("reviewer_users"))
+        .filter(reviewer_count__gt=0)
+    ):
+        o.reviewer_users.set([])
 
 
 @receiver([post_save], sender=models.TopicReview)
