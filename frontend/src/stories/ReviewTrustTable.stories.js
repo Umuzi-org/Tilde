@@ -6,7 +6,7 @@ export default {
     component: ReviewTrustTable
 }
 
-export const Primary = () => <ReviewTrustTable variant='primary'>Hello World</ReviewTrustTable>
+export const Primary = () => <ReviewTrustTable></ReviewTrustTable>
 
 
 

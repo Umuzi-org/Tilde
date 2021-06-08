@@ -1,12 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function Presentation(props) {
-    const { variant = 'primary', children, ...rest } = props;
+const ReviewTrustTable = ({ title, flavours }) => {
     return (
-        <div>
-            Hello world
-        </div>
+        <table className='table'>
+            <tr>
+                <th className='titleColumn'>Title</th>
+                <th className='flavoursColumn'>Flavours</th>
+            </tr>
+            <tr>
+                <td>{title}</td>
+                <td>{flavours}</td>
+            </tr>
+        </table>
     )
 }
 
-export default Presentation;
+ReviewTrustTable.propTypes = {
+    title: PropTypes.string,
+    flavours: PropTypes.array
+}
+
+export default ReviewTrustTable;
