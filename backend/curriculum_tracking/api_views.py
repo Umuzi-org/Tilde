@@ -875,3 +875,19 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         todo
 
     # TODO: bulk set due dates
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[PERMISSION_MANAGE_CARDS],
+    )
+    def set_bulk_due_date(self, team, content_item_id, flavors):
+        ''' In progress
+        For the given team
+        - check if the flavors match for the given content_item_id
+          AgileCard inherits from FlavourMixin so use flavours_match for this
+        - use set_due_time() method from AgileCard class to set due date
+        '''
+        # for the content_item_id of this team:
+        if flavours_match(self.flavors):
+            AgileCard.set_due_time(time)
+        pass
