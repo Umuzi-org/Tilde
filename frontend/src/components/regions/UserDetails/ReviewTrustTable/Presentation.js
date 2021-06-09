@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ReviewTrustTable = ({ title, flavours }) => {
+const ReviewTrustTable = (props) => {
+
+    const { title, flavours } = props;
+
+    
     return (
         <table className='table'>
             <tr>
@@ -10,7 +14,11 @@ const ReviewTrustTable = ({ title, flavours }) => {
             </tr>
             <tr>
                 <td>{title}</td>
-                <td>{flavours}</td>
+                <td>
+                    <ul>
+                        {flavours.split(",").map((flavour) => <li>{flavour}</li>)}
+                    </ul>
+                </td>
             </tr>
         </table>
     )
@@ -18,7 +26,7 @@ const ReviewTrustTable = ({ title, flavours }) => {
 
 ReviewTrustTable.propTypes = {
     title: PropTypes.string,
-    flavours: PropTypes.array
+    flavours: PropTypes.string
 }
 
 export default ReviewTrustTable;

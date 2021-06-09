@@ -6,7 +6,7 @@ export default {
     component: ReviewTrustTable
 }
 
-export const Primary = () => <ReviewTrustTable></ReviewTrustTable>
+export const Primary = () => <ReviewTrustTable title="String Calculator" flavours="JavaScript, Regex"></ReviewTrustTable>
 
 
 
