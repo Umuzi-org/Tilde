@@ -53,7 +53,9 @@ const ReviewTrustTable = (props) => {
                                 </TableCell>
                             </TableRow>
                         )) :
-                        <TableRow></TableRow> 
+                        <TableRow>
+                            <TableCell colSpan="2">Nothing to display</TableCell>
+                        </TableRow> 
                 }
             </TableBody>
         </Table>
