@@ -6,7 +6,15 @@ export default {
     component: ReviewTrustTable
 }
 
-export const Primary = () => <ReviewTrustTable title="String Calculator" flavours="JavaScript, Regex"></ReviewTrustTable>
-
-
-
+const trustInstances = [
+    {
+        content_item_title: "Title 1",
+        flavours: ["javascript","react"] 
+    }, 
+    {
+        content_item_title: "Title 2",
+        flavours: ["python","pytest"] 
+    }, 
+]
+    
+export const Primary = () => <ReviewTrustTable trustInstances={trustInstances}/>

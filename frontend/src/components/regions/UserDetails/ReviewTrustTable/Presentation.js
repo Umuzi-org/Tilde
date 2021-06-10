@@ -20,9 +20,13 @@ const useStyles = makeStyles({
     },
 });
 
+let haveTrustInstances = (arr) => {
+    return arr.length > 0;
+}
+
 const ReviewTrustTable = (props) => {
 
-    const { title, flavours } = props;
+    const { trustInstances } = props;
     const classes = useStyles();
 
     return (
@@ -41,20 +45,27 @@ const ReviewTrustTable = (props) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                <TableRow>
-                    <TableCell>{title}</TableCell>
-                    <TableCell>{flavours.split(",").map((flavourChip) => (
-                        <Chip className={classes.flavourChip} label={flavourChip} />
-                    ))}</TableCell>
-                </TableRow>
+                {   
+                    haveTrustInstances(trustInstances) ? 
+                        trustInstances.map((trustInstance) => (
+                            <TableRow>
+                                <TableCell>{trustInstance.content_item_title}</TableCell>
+                                <TableCell>
+                                    {trustInstance.flavours.map((flavourChip) => (
+                                        <Chip className={classes.flavourChip} label={flavourChip} />
+                                    ))}
+                                </TableCell>
+                            </TableRow>
+                        )) :
+                        <TableRow></TableRow> 
+                }
             </TableBody>
         </Table>
     )
 }
 
 ReviewTrustTable.propTypes = {
-    title: PropTypes.string,
-    flavours: PropTypes.string
+    trustInstances: PropTypes.array
 }
 
 export default ReviewTrustTable;
