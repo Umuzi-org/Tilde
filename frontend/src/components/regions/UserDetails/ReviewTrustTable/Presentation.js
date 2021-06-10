@@ -20,10 +20,6 @@ const useStyles = makeStyles({
     },
 });
 
-let haveTrustInstances = (arr) => {
-    return arr.length > 0;
-}
-
 const ReviewTrustTable = (props) => {
 
     const { trustInstances } = props;
@@ -46,7 +42,7 @@ const ReviewTrustTable = (props) => {
             </TableHead>
             <TableBody>
                 {   
-                    haveTrustInstances(trustInstances) ? 
+                    trustInstances.length > 0 ? 
                         trustInstances.map((trustInstance) => (
                             <TableRow>
                                 <TableCell>{trustInstance.content_item_title}</TableCell>
