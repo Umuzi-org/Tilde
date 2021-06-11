@@ -43,18 +43,22 @@ const PermissionsTable = (props) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {
-                    Object.keys(permissionInstances.teams).map((key, value) => (
+                {   
+                    'teams' in permissionInstances  ?
+                        Object.keys(permissionInstances.teams).map((key, value) => (
+                            <TableRow>
+                                <TableCell>{permissionInstances.teams[key].name}</TableCell>
+                                <TableCell>{permissionInstances.teams[key].active ? 'True' : 'False'}</TableCell>
+                                <TableCell>
+                                    {permissionInstances.teams[key].permissions.map((permissionsChip) => (
+                                        <Chip className={classes.permissionsChip} label={permissionsChip} />
+                                    ))}
+                                </TableCell>
+                            </TableRow>
+                        )) :
                         <TableRow>
-                            <TableCell>{permissionInstances.teams[key].name}</TableCell>
-                            <TableCell>{permissionInstances.teams[key].active ? 'True' : 'False'}</TableCell>
-                            <TableCell>
-                                {permissionInstances.teams[key].permissions.map((permissionsChip) => (
-                                    <Chip className={classes.permissionsChip} label={permissionsChip} />
-                                ))}
-                            </TableCell>
+                            <TableCell colSpan='3'>Nothing to display</TableCell>
                         </TableRow>
-                    ))
                 }
             </TableBody>
         </Table>
