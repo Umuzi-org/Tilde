@@ -51,7 +51,7 @@ const PermissionsTable = (props) => {
                                 <TableCell>{permissionInstances[key].active ? 'True' : 'False'}</TableCell>
                                 <TableCell>
                                     {permissionInstances[key].permissions.map((permissionsChip) => (
-                                        <Chip key={key} className={classes.permissionsChip} label={permissionsChip} />
+                                        <Chip key={permissionInstances[key].permissions.indexOf(permissionsChip)} className={classes.permissionsChip} label={permissionsChip} />
                                     ))}
                                 </TableCell>
                             </TableRow>
