@@ -244,4 +244,4 @@ const permissionInstances = {
             'name': 'Boot web dev 3 May 2021',
             'permissions': ['TRUSTED_REVIEWER']}}}
     
-export const Primary = () => <PermissionsTable permissionInstances={permissionInstances}/>
+export const Primary = () => <PermissionsTable permissionInstances={permissionInstances.teams}/>
