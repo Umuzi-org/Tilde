@@ -841,23 +841,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.GroupSelfReviewSerialiser,
-        permission_classes=[permissions.IsAdminUser],  # TODO
-    )
-    def team_shuffle_review_self(self, request, pk=None):
-        """randomise group members and assign them as reviewers to each others cards for a specific project"""
-        if request.method == "get":
-            return Response({"status": "OK"})
-        from long_running_request_actors import team_shuffle_review_self as actor
-
-        response = actor.send(
-            team_id="todo", flavour_names="todo", content_item_id="todo"
-        )
-        return Response({"status": "OK", "data": response.asdict()})
-
-    @action(
-        detail=False,
-        methods=["post", "get"],
         serializer_class=serializers.TeamReviewByOtherSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
@@ -875,3 +858,19 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         todo
 
     # TODO: bulk set due dates
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def auto_assign_reviewers(self, request, pk=None):
+        """automatically assign qualified reviewers to cards"""
+        if request.method == "GET":
+            return Response({"status": "OK"})
+        else:
+            from long_running_request_actors import auto_assign_reviewers as actor
+
+            response = actor.send()
+            return Response({"status": "OK", "data": response.asdict()})

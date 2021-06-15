@@ -131,3 +131,8 @@ class UserErrorSerialiser(serializers.Serializer):
         fields = ["message"]
 
     message = serializers.CharField()
+
+
+class UserStatsSerializer(serializers.Serializer):
+    class Meta:
+        fields = []

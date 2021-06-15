@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "rest_framework",
     "rest_framework.authtoken",
+    "dj_rest_auth",
     "adminsortable2",
     "taggit",
     "django_extensions",

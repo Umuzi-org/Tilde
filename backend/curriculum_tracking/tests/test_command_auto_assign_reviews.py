@@ -1,6 +1,6 @@
 from django.utils import timezone
 from curriculum_tracking.models import AgileCard, ContentItem
-from curriculum_tracking.management.commands.auto_assign_reviewers import (
+from curriculum_tracking.management.auto_assign_reviewers import (
     EXCLUDE_TEAMS,
     REQUIRED_REVIEWERS_PER_CARD,
     get_cards_needing_reviewers,

@@ -1,5 +1,6 @@
 from . import models
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from . import serializers
 
 # from rest_framework.decorators import action
@@ -146,6 +147,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
+
+    @action(
+        detail=True,
+        methods=["get"],
+        serializer_class=serializers.UserStatsSerializer,
+        permission_classes=core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_user
+        ),
+    )
+    def stats(self, request, pk=None):
+        breakpoint()
+        woo
 
 
 # @api_view(["GET"])
