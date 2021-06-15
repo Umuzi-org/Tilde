@@ -8,12 +8,12 @@ It was designed by devs for devs. The idea is that people should learn to code i
 
 This is for our learners/students (we call them recruits):
 
-- https://umuzi-org.github.io/tech-department/syllabuses/intro-to-tilde-for-students/
+- https://umuzi-org.github.io/tech-department/syllabuses/tilde-intro-student/
 - https://www.youtube.com/playlist?list=PLqU7nTtS-XlkQg6qDxvskKzITPU3YmMQB
   The syllabus in the top link gets converted into a bunch of cards that show up on the student's board
 
 And this is for our staff (we call them staff):
-https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_
+- [https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_](https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_)
 
 ## Community
 
