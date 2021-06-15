@@ -51,8 +51,8 @@ class start_project_Tests(TestCase):
             content_item=factories.ProjectContentItemFactory(
                 project_submission_type=ContentItem.REPOSITORY
             ),
+            assignees=[SocialProfileFactory().user],
         )
-        card.assignees.add(SocialProfileFactory().user)
 
         self.assertIsNone(card.recruit_project)
 
@@ -85,8 +85,8 @@ class start_project_Tests(TestCase):
             status=AgileCard.READY,
             recruit_project=None,
             content_item=factories.ProjectContentItemFactory(),
+            assignees=[SocialProfileFactory().user],
         )
-        card.assignees.add(SocialProfileFactory().user)
         self.assertIsNone(card.recruit_project)
 
         card.set_due_time(timezone.now())
@@ -122,16 +122,16 @@ class start_project_Tests(TestCase):
             recruit_project=None,
             content_item=content_item,
             flavours=[TYPESCRIPT],
+            assignees=[SocialProfileFactory().user],
         )
-        card_ts.assignees.add(SocialProfileFactory().user)
 
         card_js = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=None,
             content_item=content_item,
             flavours=[JAVASCRIPT],
+            assignees=[SocialProfileFactory().user],
         )
-        card_js.assignees.add(SocialProfileFactory().user)
 
         self.assertIsNone(card_js.recruit_project)
 

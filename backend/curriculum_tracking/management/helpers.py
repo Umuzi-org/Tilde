@@ -1,6 +1,6 @@
 from core.models import Team, User
 
-from curriculum_tracking.models import AgileCard
+from curriculum_tracking.models import AgileCard, RecruitProject
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,3 +36,15 @@ def get_user_cards(users, content_item):
             cards.add(proj)
 
     return cards
+
+
+def user_is_competent_for_card_project(card: AgileCard, user: User):
+    projects = (
+        RecruitProject.objects.filter(content_item=card.content_item)
+        .filter(recruit_users__in=[user])
+        .filter(complete_time__isnull=False)
+    )
+    matching_projects = [o for o in projects if o.flavours_match(card.flavour_names)]
+    if len(matching_projects) > 0:
+        return True
+    return False

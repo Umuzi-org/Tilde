@@ -64,6 +64,6 @@ class PullRequestReviewSerializer(serializers.ModelSerializer):
             "body",
             "commit_id",
             "state",
-            "number",
+            # "number",
             "user",
         ]

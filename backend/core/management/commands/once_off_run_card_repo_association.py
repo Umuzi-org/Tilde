@@ -45,8 +45,6 @@ def process_row(row):
     project = card.recruit_project
     project.repository = repo
     project.save()
-    # breakpoint()
-    # pass
 
 
 class Command(BaseCommand):

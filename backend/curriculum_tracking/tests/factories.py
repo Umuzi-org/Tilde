@@ -284,6 +284,12 @@ class AgileCardFactory(DjangoModelFactory):
             for user in self.recruit_project.recruit_users.all():
                 # print("here")
                 self.assignees.add(user)
+        elif self.topic_progress:
+            todo
+        elif self.workshop_attendance:
+            todo
+        else:
+            self.assignees.set([UserFactory()])
 
     @factory.post_generation
     def reviewers(self, create, extracted, **kwargs):

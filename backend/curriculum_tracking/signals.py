@@ -126,7 +126,6 @@ def if_user_not_active_remove_reviewer_duties(sender, instance, created, **kwarg
     ):
         o.reviewers.set([])
 
-    # breakpoint()
     for o in (
         models.RecruitProject.objects.filter(recruit_users__in=[instance])
         .annotate(reviewer_count=Count("reviewer_users"))

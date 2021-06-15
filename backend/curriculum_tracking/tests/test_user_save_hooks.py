@@ -55,9 +55,6 @@ class TestDeactivateUSerClearsReviewerDuties(TestCase):
 
         # but if we deactivate the user then nobody needs to review them
         user.active = False
-        print("=======================")
-        print("=======================")
-
         user.save()
 
         for card in cards:

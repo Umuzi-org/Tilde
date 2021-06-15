@@ -5,7 +5,6 @@ from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
 from model_mixins import Mixins
-from django.db.models import Q
 from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
@@ -418,6 +417,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
             trusts = cls.objects.filter(content_item=content_item, user=user)
             found = False
             for trust in trusts:
+
                 if trust.flavours_match(flavours):
                     found = True
                     trust_instances.append(trust)
@@ -813,7 +813,9 @@ class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin, FlavourMix
     flavours = TaggableManager(blank=True)
 
 
-class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
+class AgileCard(
+    models.Model, Mixins, FlavourMixin, ContentItemProxyMixin, ReviewableMixin
+):
     BLOCKED = "B"
     READY = "R"
     IN_PROGRESS = "IP"
@@ -920,6 +922,13 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         if self.requires_cards.filter(~Q(status=self.COMPLETE)).count():
             return self.BLOCKED
         return self.READY
+
+    def get_teams(self):
+        """return the teams of the users invoved in this project"""
+        user_ids = [user.id for user in self.assignees.all()] + [
+            user.id for user in self.reviewers.all()
+        ]
+        return Team.get_teams_from_user_ids(user_ids)
 
     @property
     def due_time(self):

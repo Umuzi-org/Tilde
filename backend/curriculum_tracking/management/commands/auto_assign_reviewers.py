@@ -1,11 +1,10 @@
 from typing import Iterable
-
-from django.db.models.deletion import SET_DEFAULT
 from core.models import User
 from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.db.models import Q
+from curriculum_tracking.management.helpers import user_is_competent_for_card_project
 
 REQUIRED_REVIEWERS_PER_CARD = 3
 SKIP_CARD_TAGS = ["ncit"]
@@ -21,6 +20,9 @@ EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't h
     "Boot web dev TechQuest2 10 Feb 2021",
     "TechQuest Staff",
     "TechQuest web dev 1",
+    "Boot data eng 7 June 2021",
+    "Boot data sci 7 June 2021",
+    "Boot web dev 7 June 2021",
 ]
 
 
@@ -35,6 +37,7 @@ def get_cards_needing_reviewers() -> Iterable[AgileCard]:
     for card in (
         AgileCard.objects.filter(assignees__active__in=[True])
         .exclude(assignees__groups__name__in=EXCLUDE_TEAMS)
+        .exclude(content_item__tags__name__in=SKIP_CARD_TAGS)
         .annotate(reviewer_count=Count("reviewers"))
         .filter(content_item__content_type=ContentItem.PROJECT)
         .filter(reviewer_count__lt=REQUIRED_REVIEWERS_PER_CARD)
@@ -81,7 +84,7 @@ def get_possible_reviewers(card):
     competent_users = competent_users.annotate(duty_count=Count("projects_to_review"))
     competent_users = competent_users.order_by("duty_count")
     for user in competent_users:
-        # print(f"{user} - {user.projects_to_review.count()}")
+        assert user_is_competent_for_card_project(card, user)
         yield user
 
 
@@ -103,8 +106,10 @@ class Command(BaseCommand):
             )
             possible_reviewers = get_possible_reviewers(card)
             for i, user in enumerate(possible_reviewers):
-                if card.reviewers.count() >= number_of_reviewers_to_add:
+                if card.reviewers.count() >= REQUIRED_REVIEWERS_PER_CARD:
+                    print("there are now enough")
                     break
 
                 print(f"Add collaborator {i+1}: \n\tnew reviewer = {user}\n")
                 card.add_collaborator(user=user, add_as_project_reviewer=True)
+            print(f"card now has {card.reviewers.count()} reviewers\n")

@@ -441,11 +441,10 @@ class update_project_card_progress_Tests(TestCase):
         card = factories.AgileCardFactory(
             content_item=content_item, recruit_project=None
         )
-        # card.assignees.add(self.user)
         user = card.assignees.first()
 
         self.assertIsNone(card.recruit_project)
-        # breakpoint()
+        assert user is not None
         update_project_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.READY)
