@@ -17,8 +17,6 @@ EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't h
     "TechQuest Staff",
     "Boot web dev TechQuest1 10 Feb 2021",
     "Boot web dev TechQuest2 10 Feb 2021",
-    "TechQuest Staff",
-    "TechQuest web dev 1",
     "Boot data eng 7 June 2021",
     "Boot data sci 7 June 2021",
     "Boot web dev 7 June 2021",

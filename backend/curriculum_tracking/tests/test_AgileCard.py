@@ -1,3 +1,5 @@
+from git_real.models import PullRequest
+import git_real
 import mock
 from django.test import TestCase
 from curriculum_tracking.models import (
@@ -11,9 +13,9 @@ from curriculum_tracking.models import (
 from . import factories
 from core.tests.factories import UserFactory
 from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
-from django.utils.timezone import datetime
 from datetime import timedelta
 from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT
+from git_real.tests import factories as git_real_factories
 
 from curriculum_tracking.constants import (
     RED_FLAG,
@@ -25,6 +27,33 @@ from django.utils import timezone
 
 TYPESCRIPT = "ts"
 JAVASCRIPT = "js"
+
+
+class oldest_open_pr_updated_time_Tests(TestCase):
+    def setUp(self):
+        self.card = factories.AgileCardFactory()
+        self.card.recruit_project.repository = git_real_factories.RepositoryFactory()
+        self.card.save()
+        self.repository = self.card.recruit_project.repository
+
+    def test_no_prs(self):
+        self.assertIsNone(self.card.oldest_open_pr_updated_time)
+
+    def test_has_prs(self):
+        today = timezone.now()
+        yesterday = today - timezone.timedelta(days=1)
+
+        pr_yesterday = git_real_factories.PullRequestFactory(
+            repository=self.repository, updated_at=yesterday
+        )
+        self.assertEqual(self.card.oldest_open_pr_updated_time, yesterday)
+        git_real_factories.PullRequestFactory(
+            repository=self.repository, updated_at=today
+        )
+        self.assertEqual(self.card.oldest_open_pr_updated_time, yesterday)
+        pr_yesterday.state = PullRequest.CLOSED
+        pr_yesterday.save()
+        self.assertEqual(self.card.oldest_open_pr_updated_time, today)
 
 
 class start_project_Tests(TestCase):

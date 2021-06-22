@@ -134,7 +134,9 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
 
     if response.status_code not in [201, 204]:
-        raise Exception(response.content)
+        raise Exception(
+            f"bad response code {response.status_code} \n\tcontent: '{response.content}'"
+        )
 
 
 def save_repo(repo: dict, user=None):

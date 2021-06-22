@@ -202,8 +202,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["assignees", "reviewers", "status"]
 
-    queryset = models.AgileCard.objects.order_by("order").prefetch_related(
-        "recruit_project"
+    queryset = (
+        models.AgileCard.objects.order_by("order")
+        .prefetch_related("recruit_project")
+        .prefetch_related("recruit_project__repository__pull_requests")
     )
 
     permission_classes = [
@@ -587,7 +589,8 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
         permission_classes = [IsReadOnly]
         if self.action == "retrieve":
             permission_classes = [
-                curriculum_permissions.IsProjectAssignee
+                permissions.IsAdminUser
+                | curriculum_permissions.IsProjectAssignee
                 | curriculum_permissions.IsProjectReviewer
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
@@ -596,7 +599,8 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
             ]
         elif self.action == "list":
             permission_classes = [
-                core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
+                permissions.IsAdminUser
+                | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
                     get_objects=_get_teams_from_user_filter("recruit_users"),

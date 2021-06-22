@@ -132,7 +132,8 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = [
-        core_permissions.ActionIs("retrieve")
+        IsAdminUser
+        | core_permissions.ActionIs("retrieve")
         & (
             core_permissions.IsMyUser
             | core_permissions.HasObjectPermission(
@@ -148,17 +149,17 @@ class UserViewSet(viewsets.ModelViewSet):
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
 
-    @action(
-        detail=True,
-        methods=["get"],
-        serializer_class=serializers.UserStatsSerializer,
-        permission_classes=core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_user
-        ),
-    )
-    def stats(self, request, pk=None):
-        breakpoint()
-        woo
+    # @action(
+    #     detail=True,
+    #     methods=["get"],
+    #     serializer_class=serializers.UserStatsSerializer,
+    #     permission_classes=core_permissions.HasObjectPermission(
+    #         permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_user
+    #     ),
+    # )
+    # def stats(self, request, pk=None):
+    #     breakpoint()
+    #     woo
 
 
 # @api_view(["GET"])

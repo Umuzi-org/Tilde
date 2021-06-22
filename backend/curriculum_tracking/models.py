@@ -1240,9 +1240,21 @@ class AgileCard(
     def open_pr_count(self):
         repo = self.repository
         if repo:
-            # breakpoint()
             return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
         return 0
+
+    @property
+    def oldest_open_pr_updated_time(self):
+
+        repo = self.repository
+        if repo:
+            pr = (
+                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
+                .order_by("updated_at")
+                .first()
+            )
+            if pr:
+                return pr.updated_at
 
     @property
     def repository(self):

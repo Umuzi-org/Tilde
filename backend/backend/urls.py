@@ -21,9 +21,9 @@ from core import views as core_views
 from curriculum_tracking import api_views as curriculum_tracking_api_views
 
 
-from rest_framework.schemas import get_schema_view
+# from rest_framework.schemas import get_schema_view
 
-schema_view = get_schema_view(title="Tilde")
+# schema_view = get_schema_view(title="Tilde")
 
 
 router = routers.DefaultRouter()
@@ -139,7 +139,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/", include("core.urls")),
     path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
-    path("api/schema", schema_view),
+    # path("api/schema", schema_view),
     path("git_real/", include("git_real.urls")),
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
