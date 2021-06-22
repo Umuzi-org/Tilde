@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme) => {
 });
 
 const getCardClassName = ({ classes, card, filterUserId }) => {
-  console.log(card);
   const isReviewer = card.reviewers.indexOf(filterUserId) !== -1;
 
   if (isReviewer) return classes.reviewCard;
