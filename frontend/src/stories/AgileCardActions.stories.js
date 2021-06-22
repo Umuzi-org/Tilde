@@ -1,7 +1,6 @@
 import React from "react";
 import AgileCardActions from "../components/regions/AgileBoard/AgileCard/AgileCardActions/Presentation";
 import card from "../stories/fixtures/agileCard.json";
-import user from "../stories/fixtures/user.json";
 
 export default {
     title: "Tilde/AgileCardActions",
@@ -9,7 +8,7 @@ export default {
 }
 
 const Template = (args) => <AgileCardActions {...args} />;
-export const AgileCardAction = Template.bind({});
-AgileCardAction.args = {
+export const Primary = Template.bind({});
+Primary.args = {
     card,
 };
