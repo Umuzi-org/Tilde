@@ -1,0 +1,33 @@
+{
+    "id": 295,
+    "email": "babalwa.mbolekwa@umuzi.org",
+    "firstName": "Babalwa",
+    "lastName": "Mbolekwa",
+    "preferredName": null,
+    "teamMemberships": {
+        "28": {
+            "id": 28,
+            "name": "Cohort 22 web dev"
+        },
+        "44": {
+            "id": 44,
+            "name": "Non Staff JTL"
+        },
+        "83": {
+            "id": 83,
+            "name": "Cohort 22 web dev (bootcamp)"
+        },
+        "103": {
+            "id": 103,
+            "name": "Cohort 22 + 24 web dev"
+        },
+        "112": {
+            "id": 112,
+            "name": "Problem Solving Foundation 1"
+        }
+    },
+    "isActive": true,
+    "isStaff": false,
+    "isSuperuser": false,
+    "githubName": "Babalwa01"
+}
