@@ -1,26 +1,50 @@
 import React from "react";
-import Card from "../components/regions/AgileBoard/AgileCard/Presentation"; //List
-import AgileCardActions from "../components/regions/AgileBoard/AgileCard/AgileCardActions/Presentation"; //ListItem
+import AgileCard from "../components/regions/AgileBoard/AgileCard/Presentation"; 
 
-import { AgileCardAction } from "../stories/AgileCardActions.stories";
-
-import card from "./fixtures/agileCard.json";
+import agileCard from "./fixtures/agileCard.json";
 import user from "./fixtures/user.json";
+import authUser from "./fixtures/authUser.json";
 
 export default {
     title: "Tilde/AgileCard",
-    component: Card
+    component: AgileCard
 }
 
-const Template = ({ items, ...args }) => (
-    <Card>
-      {items.map((item) => (
-        <AgileCardActions {...item} />
-      ))}
-    </Card>
-);
+const Template = ({ items, ...args }) => {
+
+    const props = {
+      card: agileCard,
+      authUser: authUser,
+      viewedUser: user,
+      filterUserId: user.id,
+
+      handleClickAddReview: () => {},
+      handleClickOpenCardDetails: () => {},
+
+      handleRequestReview: () => {},
+      handleStartProject: () => {},
+      handleCancelReviewRequest: () => {},
+
+      handleClickOpenWorkshopAttendanceForm: () => {},
+      handleStartTopic: () => {},
+      handleStopTopic: () => {},
+      handleFinishTopic: () => {},
+      handleRemoveWorkshopAttendance: () => {},
+
+      loadingStartProject: false,
+      loadingStartTopic: false,
+      loadingClickOpenWorkshopAttendanceForm: false,
+      loadingRequestReview: false,
+      loadingCancelReviewRequest: false,
+      loadingStopTopic: false,
+      loadingFinishTopic: false,
+      loadingRemoveWorkshopAttendance: false,
+    }
+
+    return  <AgileCard {...props} />
+};
   
 export const Primary = Template.bind({});
 Primary.args = { 
-    items: [AgileCardAction.args]
+    
 };
