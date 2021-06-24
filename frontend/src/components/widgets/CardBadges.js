@@ -7,7 +7,7 @@ import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import CallMergeIcon from "@material-ui/icons/CallMerge";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
-import Tooltip from "@material-ui/core/Tooltip";
+import { Chip, Tooltip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +38,18 @@ export default ({ card }) => {
     codeReviewNyCompetentSinceLastReviewRequest,
     codeReviewRedFlagSinceLastReviewRequest,
     openPrCount,
+    oldestOpenPrUpdatedTime,
   } = card;
+
+  let ageOfOpenPR = () => {
+    let date2 = new Date();
+    let date1 = new Date(oldestOpenPrUpdatedTime);
+    let numberOfDays = Math.floor((Math.abs(date2-date1)) / (1000 * 60 * 60 * 24));
+
+    if(numberOfDays == 0 || numberOfDays == 1) {return `${numberOfDays} day ago`}
+    else {return `${numberOfDays} days ago`}
+  }
+
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -93,9 +104,13 @@ export default ({ card }) => {
       )}
 
       {openPrCount ? (
-        <Tooltip title="Number of open pull requests on this card">
+        <Tooltip title="Number of open pull requests on this card and their age">
           <Badge badgeContent={openPrCount} color="primary">
-            <CallMergeIcon />
+            <Chip
+              avatar={<CallMergeIcon />}
+              className={classes.chip}
+              label={ageOfOpenPR()}
+            />
           </Badge>
         </Tooltip>
       ) : (
