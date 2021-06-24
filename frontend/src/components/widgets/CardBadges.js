@@ -46,10 +46,10 @@ export default ({ card }) => {
   } = card;
 
   let ageOfOpenPR = () => {
-    let age;
+    let age = "";
     let date = new Date(oldestOpenPrUpdatedTime);
     const timeAgo = new TimeAgo('en-US');
-    oldestOpenPrUpdatedTime === null ? age = "" : age = timeAgo.format(date - 24 * 60 * 60 * 1000);
+    age = timeAgo.format(date - 24 * 60 * 60 * 1000);
     return age;
   }
 
@@ -108,12 +108,16 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
-          <Badge badgeContent={openPrCount} color="primary">
-            <Chip
+          <Badge badgeContent={openPrCount} color="primary"> 
+            {oldestOpenPrUpdatedTime === null ? (
+              <CallMergeIcon />
+            ) : (
+              <Chip
               avatar={<CallMergeIcon />}
               className={classes.chip}
               label={ageOfOpenPR()}
             />
+            )}
           </Badge>
         </Tooltip>
       ) : (
