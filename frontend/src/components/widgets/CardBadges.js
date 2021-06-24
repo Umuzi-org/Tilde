@@ -9,6 +9,10 @@ import CallMergeIcon from "@material-ui/icons/CallMerge";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
 import { Chip, Tooltip } from "@material-ui/core";
 
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addDefaultLocale(en);
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -42,12 +46,11 @@ export default ({ card }) => {
   } = card;
 
   let ageOfOpenPR = () => {
-    let date2 = new Date();
-    let date1 = new Date(oldestOpenPrUpdatedTime);
-    let numberOfDays = Math.floor((Math.abs(date2-date1)) / (1000 * 60 * 60 * 24));
-
-    if(numberOfDays == 0 || numberOfDays == 1) {return `${numberOfDays} day ago`}
-    else {return `${numberOfDays} days ago`}
+    let age;
+    let date = new Date(oldestOpenPrUpdatedTime);
+    const timeAgo = new TimeAgo('en-US');
+    oldestOpenPrUpdatedTime === null ? age = "" : age = timeAgo.format(date - 24 * 60 * 60 * 1000);
+    return age;
   }
 
   return (
