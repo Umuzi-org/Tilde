@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^7.1.2",
     "date-fns": "^2.14.0",
     "gray-matter": "^4.0.2",
+    "javascript-time-ago": "^2.3.7",
     "plotly.js": "^1.58.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
