@@ -1,7 +1,13 @@
 import React from "react";
 import AgileCard from "../components/regions/AgileBoard/AgileCard/Presentation"; 
 
-import agileCard from "./fixtures/agileCard.json";
+import assigneeCard from "./fixtures/AgileCards/assigneeCard.json";
+import reviewerCard from "./fixtures/AgileCards/reviewerCard.json";
+import openPrCard from "./fixtures/AgileCards/openPrCard.json";
+import reviewEmojiesCard from "./fixtures/AgileCards/reviewEmojisCard.json";
+import topicCard from "./fixtures/AgileCards/topicCard.json";
+import blockedCard from "./fixtures/AgileCards/blockedCard.json"
+
 import user from "./fixtures/user.json";
 import authUser from "./fixtures/authUser.json";
 
@@ -10,41 +16,62 @@ export default {
     component: AgileCard
 }
 
-const Template = ({ items, ...args }) => {
+const Template = args => <AgileCard {...args} />
 
-    const props = {
-      card: agileCard,
-      authUser: authUser,
-      viewedUser: user,
-      filterUserId: user.id,
+export const Assignee = Template.bind({});
+Assignee.args = {
+  card: assigneeCard,
+  authUser: authUser,
+  viewedUser: user,
+  filterUserId: user.id,
 
-      handleClickAddReview: () => {},
-      handleClickOpenCardDetails: () => {},
+  handleClickAddReview: () => {},
+  handleClickOpenCardDetails: () => {},
+  handleRequestReview: () => {},
+  handleStartProject: () => {},
+  handleCancelReviewRequest: () => {},
+  handleClickOpenWorkshopAttendanceForm: () => {},
+  handleStartTopic: () => {},
+  handleStopTopic: () => {},
+  handleFinishTopic: () => {},
+  handleRemoveWorkshopAttendance: () => {},
 
-      handleRequestReview: () => {},
-      handleStartProject: () => {},
-      handleCancelReviewRequest: () => {},
+  loadingStartProject: false,
+  loadingStartTopic: false,
+  loadingClickOpenWorkshopAttendanceForm: false,
+  loadingRequestReview: false,
+  loadingCancelReviewRequest: false,
+  loadingStopTopic: false,
+  loadingFinishTopic: false,
+  loadingRemoveWorkshopAttendance: false,
+}
 
-      handleClickOpenWorkshopAttendanceForm: () => {},
-      handleStartTopic: () => {},
-      handleStopTopic: () => {},
-      handleFinishTopic: () => {},
-      handleRemoveWorkshopAttendance: () => {},
+export const Reviewer = Template.bind({});
+Reviewer.args = {
+  ...Assignee.args,
+  card: reviewerCard,
+}
 
-      loadingStartProject: false,
-      loadingStartTopic: false,
-      loadingClickOpenWorkshopAttendanceForm: false,
-      loadingRequestReview: false,
-      loadingCancelReviewRequest: false,
-      loadingStopTopic: false,
-      loadingFinishTopic: false,
-      loadingRemoveWorkshopAttendance: false,
-    }
+export const OpenPullRequest = Template.bind({});
+OpenPullRequest.args = {
+  ...Assignee.args,
+  card: openPrCard,
+}
 
-    return  <AgileCard {...props} />
-};
-  
-export const Primary = Template.bind({});
-Primary.args = { 
-    
-};
+export const ReviewEmojies = Template.bind({});
+ReviewEmojies.args = {
+  ...Assignee.args,
+  card: reviewEmojiesCard,
+}
+
+export const TopicCard = Template.bind({});
+TopicCard.args = {
+  ...Assignee.args,
+  card: topicCard,
+}
+
+export const BlockedCard = Template.bind({});
+BlockedCard.args = {
+  ...Assignee.args,
+  card: blockedCard,
+}
