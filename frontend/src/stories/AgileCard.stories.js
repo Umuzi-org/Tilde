@@ -6,14 +6,15 @@ import reviewerCard from "./fixtures/AgileCards/reviewerCard.json";
 import openPrCard from "./fixtures/AgileCards/openPrCard.json";
 import reviewEmojiesCard from "./fixtures/AgileCards/reviewEmojisCard.json";
 import topicCard from "./fixtures/AgileCards/topicCard.json";
-import blockedCard from "./fixtures/AgileCards/blockedCard.json"
+import inReviewCard from "./fixtures/AgileCards/inReviewCard.json";
+import blockedCard from "./fixtures/AgileCards/blockedCard.json";
 
 import user from "./fixtures/user.json";
 import authUser from "./fixtures/authUser.json";
 
 export default {
     title: "Tilde/AgileCard",
-    component: AgileCard
+    component: AgileCard,
 }
 
 const Template = args => <AgileCard {...args} />
@@ -64,14 +65,32 @@ ReviewEmojies.args = {
   card: reviewEmojiesCard,
 }
 
-export const TopicCard = Template.bind({});
-TopicCard.args = {
+export const StatusBlocked = Template.bind({});
+StatusBlocked.args = {
+  ...Assignee.args,
+  card: blockedCard,
+}
+
+export const StatusReady = Template.bind({});
+StatusReady.args = {
   ...Assignee.args,
   card: topicCard,
 }
 
-export const BlockedCard = Template.bind({});
-BlockedCard.args = {
+export const StatusInProgress = Template.bind({});
+StatusInProgress.args = {
   ...Assignee.args,
-  card: blockedCard,
+  card: openPrCard,
+}
+
+export const StatusInReview = Template.bind({});
+StatusInReview.args = {
+  ...Assignee.args,
+  card: inReviewCard,
+}
+
+export const StatusFeedback = Template.bind({});
+StatusFeedback.args = {
+  ...Assignee.args,
+  card: reviewEmojiesCard,
 }
