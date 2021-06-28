@@ -9,9 +9,7 @@ import CallMergeIcon from "@material-ui/icons/CallMerge";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
 import { Chip, Tooltip } from "@material-ui/core";
 
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
-TimeAgo.addDefaultLocale(en);
+import { getAgeString } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,14 +42,6 @@ export default ({ card }) => {
     openPrCount,
     oldestOpenPrUpdatedTime,
   } = card;
-
-  let ageOfOpenPR = () => {
-    let age = "";
-    let date = new Date(oldestOpenPrUpdatedTime);
-    const timeAgo = new TimeAgo('en-US');
-    age = timeAgo.format(date - 24 * 60 * 60 * 1000);
-    return age;
-  }
 
   return (
     <div className={classes.root}>
@@ -115,7 +105,7 @@ export default ({ card }) => {
               <Chip
               avatar={<CallMergeIcon />}
               className={classes.chip}
-              label={ageOfOpenPR()}
+              label={getAgeString(oldestOpenPrUpdatedTime)}
             />
             )}
           </Badge>
