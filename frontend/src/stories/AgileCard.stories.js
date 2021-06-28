@@ -8,6 +8,7 @@ import reviewEmojiesCard from "./fixtures/AgileCards/reviewEmojisCard.json";
 import topicCard from "./fixtures/AgileCards/topicCard.json";
 import inReviewCard from "./fixtures/AgileCards/inReviewCard.json";
 import blockedCard from "./fixtures/AgileCards/blockedCard.json";
+import dueTimeCard from "./fixtures/AgileCards/dueTimeCard.json"
 
 import user from "./fixtures/user.json";
 import authUser from "./fixtures/authUser.json";
@@ -93,4 +94,10 @@ export const StatusFeedback = Template.bind({});
 StatusFeedback.args = {
   ...Assignee.args,
   card: reviewEmojiesCard,
+}
+
+export const DueTime = Template.bind({});
+DueTime.args = {
+  ...Assignee.args,
+  card: dueTimeCard,
 }
