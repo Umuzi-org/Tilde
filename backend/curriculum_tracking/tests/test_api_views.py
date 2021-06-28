@@ -1,3 +1,4 @@
+from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory
@@ -76,7 +77,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "tag_names",
         "can_start",
         "can_force_start",
-        "open_pr_count",
+        # "open_pr_count",
     ]
 
     def verbose_instance_factory(self):
@@ -84,8 +85,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(recruit_project=project)
         card.reviewers.add(core_factories.UserFactory())
         card.assignees.add(core_factories.UserFactory())
-
         card.flavours.add(Tag.objects.create(name="asdsasa"))
+        PullRequestFactory(repository=project.repository)
 
         return card
 

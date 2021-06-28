@@ -88,7 +88,6 @@ class Command(BaseCommand):
             "std": grouped["duration"].std()["duration"],
             "count": grouped["duration"].count()["duration"],
         }
-        breakpoint()
 
         df = pd.concat(data, axis=1)
 

@@ -110,7 +110,6 @@ def assign_random_reviewers(cards, users):
 
 
 def add_reviewer(team, content_item, reviewer, add_as_project_reviewer):
-    api = Api(PERSONAL_GITHUB_NAME)
 
     cards = get_team_cards(team, content_item)
 
@@ -119,23 +118,10 @@ def add_reviewer(team, content_item, reviewer, add_as_project_reviewer):
     else:
         user = User.objects.get(social_profile__github_name=reviewer)
 
-    github_name = user.social_profile.github_name
-
     for card in cards:
-
-        if card.recruit_project and card.repository:
-            if card.repository.full_name.startswith(ORGANISATION):
-                # print(card.repository.full_name)
-                # breakpoint()
-                add_collaborator(api, card.repository.full_name, github_name)
-        card.save()
-        if add_as_project_reviewer:
-            if user not in card.assignees.all():
-                card.reviewers.add(user)
-                if card.recruit_project:
-                    card.recruit_project.reviewer_users.add(user)
-        card.save()
-        # project.agile_card.reviewers =
+        card.add_collaborator(
+            user=user, add_as_project_reviewer=add_as_project_reviewer
+        )
 
 
 def git_user_as_reviewer(team_name, content_item, reviewer):

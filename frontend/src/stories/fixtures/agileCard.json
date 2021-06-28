@@ -1,0 +1,64 @@
+{
+    "id": 54746,
+    "contentItem": 230,
+    "contentItemUrl": "http://syllabus.africacode.net/projects/basic-unit-test-mocks-kata/",
+    "status": "IP",
+    "recruitProject": 5247,
+    "assignees": [
+        228
+    ],
+    "reviewers": [
+        296,
+        295,
+        449,
+        451,
+        417,
+        424
+    ],
+    "assigneeNames": [
+        "andy.nkumane@umuzi.org"
+    ],
+    "reviewerNames": [
+        "sylvester.magwaza@umuzi.org",
+        "babalwa.mbolekwa@umuzi.org",
+        "ngoako.ramokgopa@umuzi.org",
+        "kgaolo.malatji@umuzi.org",
+        "lionel.raseemela@umuzi.org",
+        "thulane.makofane@umuzi.org"
+    ],
+    "isHardMilestone": false,
+    "isSoftMilestone": true,
+    "title": "Email random inspirational quote",
+    "contentType": "P",
+    "contentTypeNice": "project",
+    "storyPoints": 8,
+    "tagNames": [
+        "tdd",
+        "mocks",
+        "environmental variables",
+        "smtp"
+    ],
+    "order": 90,
+    "codeReviewCompetentSinceLastReviewRequest": 0,
+    "codeReviewExcellentSinceLastReviewRequest": 0,
+    "codeReviewRedFlagSinceLastReviewRequest": 0,
+    "codeReviewNyCompetentSinceLastReviewRequest": 0,
+    "requiresCards": [
+        54717,
+        54742
+    ],
+    "requiredByCards": [],
+    "flavourNames": [
+        "python"
+    ],
+    "projectSubmissionTypeNice": "repo",
+    "topicNeedsReview": false,
+    "topicProgress": null,
+    "dueTime": null,
+    "completeTime": null,
+    "reviewRequestTime": null,
+    "startTime": "2021-03-31T09:30:38.732950Z",
+    "canStart": false,
+    "canForceStart": false,
+    "openPrCount": 0
+}

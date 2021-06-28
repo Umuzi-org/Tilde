@@ -202,8 +202,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["assignees", "reviewers", "status"]
 
-    queryset = models.AgileCard.objects.order_by("order").prefetch_related(
-        "recruit_project"
+    queryset = (
+        models.AgileCard.objects.order_by("order")
+        .prefetch_related("recruit_project")
+        .prefetch_related("recruit_project__repository__pull_requests")
     )
 
     permission_classes = [
@@ -587,7 +589,8 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
         permission_classes = [IsReadOnly]
         if self.action == "retrieve":
             permission_classes = [
-                curriculum_permissions.IsProjectAssignee
+                permissions.IsAdminUser
+                | curriculum_permissions.IsProjectAssignee
                 | curriculum_permissions.IsProjectReviewer
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
@@ -596,7 +599,8 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
             ]
         elif self.action == "list":
             permission_classes = [
-                core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
+                permissions.IsAdminUser
+                | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
                     get_objects=_get_teams_from_user_filter("recruit_users"),
@@ -841,23 +845,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.GroupSelfReviewSerialiser,
-        permission_classes=[permissions.IsAdminUser],  # TODO
-    )
-    def team_shuffle_review_self(self, request, pk=None):
-        """randomise group members and assign them as reviewers to each others cards for a specific project"""
-        if request.method == "get":
-            return Response({"status": "OK"})
-        from long_running_request_actors import team_shuffle_review_self as actor
-
-        response = actor.send(
-            team_id="todo", flavour_names="todo", content_item_id="todo"
-        )
-        return Response({"status": "OK", "data": response.asdict()})
-
-    @action(
-        detail=False,
-        methods=["post", "get"],
         serializer_class=serializers.TeamReviewByOtherSerialiser,
         permission_classes=[DenyAll],  # TODO
     )
@@ -875,19 +862,19 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         todo
 
     # TODO: bulk set due dates
+
     @action(
         detail=False,
-        methods=["post"],
-        permission_classes=[PERMISSION_MANAGE_CARDS],
+        methods=["post", "get"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[permissions.IsAdminUser],
     )
-    def set_bulk_due_date(self, team, content_item_id, flavors):
-        ''' In progress
-        For the given team
-        - check if the flavors match for the given content_item_id
-          AgileCard inherits from FlavourMixin so use flavours_match for this
-        - use set_due_time() method from AgileCard class to set due date
-        '''
-        # for the content_item_id of this team:
-        if flavours_match(self.flavors):
-            AgileCard.set_due_time(time)
-        pass
+    def auto_assign_reviewers(self, request, pk=None):
+        """automatically assign qualified reviewers to cards"""
+        if request.method == "GET":
+            return Response({"status": "OK"})
+        else:
+            from long_running_request_actors import auto_assign_reviewers as actor
+
+            response = actor.send()
+            return Response({"status": "OK", "data": response.asdict()})

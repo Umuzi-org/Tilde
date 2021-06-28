@@ -1,1 +1,0 @@
-- seperate review api into 2: one verbose, and one for cards
