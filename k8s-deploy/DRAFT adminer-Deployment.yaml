@@ -1,0 +1,56 @@
+# apiVersion: extensions/v1beta1
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: tilde-adminer
+  labels:
+    app: tilde-adminer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tilde-adminer
+  template:
+    metadata:
+      labels:
+        app: tilde-adminer
+    spec:
+      containers:
+        # [START proxy_container]
+        - image: gcr.io/cloudsql-docker/gce-proxy:1.16
+          name: cloudsql-proxy
+          command:
+            [
+              "/cloud_sql_proxy",
+              "--dir=/cloudsql",
+              "-instances=umuzi-prod:europe-west2:prod=tcp:5432",
+              "-credential_file=/secrets/cloudsql/credentials.json",
+            ]
+          volumeMounts:
+            - name: cloudsql-oauth-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+        # [END proxy_container]
+        - image: adminer:latest
+          name: adminer
+
+      # [START volumes]
+      volumes:
+        # - name: google-oauth-onetime-creds
+        #   secret:
+        #     secretName: google-oauth-onetime-creds
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        # - name: ssl-certs
+        #   hostPath:
+        #     path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+
+      # [END volumes]

@@ -44,7 +44,7 @@ def user_github_stats(user, cutoff):
         repository__recruit_projects__recruit_users__in=[user]
     )
     open_prs = user_prs.filter(state="open")
-    prs_merged_total = user_prs.filter(state="merged")
+    prs_merged_total = user_prs.filter(state="closed").filter(merged_at__isnull=False)
     prs_merged_last_7_days = prs_merged_total.filter(merged_at__gte=cutoff)
 
     ordered_prs = user_prs.order_by("updated_at")
@@ -65,9 +65,10 @@ def user_github_stats(user, cutoff):
 
 
 def card_names(cards):
-    return ",".join([
-        f"{card.content_item.title} {card.flavour_names}" for card in cards
-    ])
+    return ",".join(
+        [f"{card.content_item.title} {card.flavour_names}" for card in cards]
+    )
+
 
 def user_as_assignee_stats(user):
     cards_in_review_column = AgileCard.objects.filter(
@@ -211,7 +212,7 @@ def user_as_assignee_stats(user):
         ),
         "oldest_card_in_review_column_request_time": oldest_card_in_review_column_request_time,
         "complete_card_names": card_names(complete_cards),
-        "incomplete_card_names" : card_names(incomplete_cards)
+        "incomplete_card_names": card_names(incomplete_cards),
     }
 
 

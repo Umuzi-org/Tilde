@@ -5,7 +5,6 @@ from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
 from model_mixins import Mixins
-from django.db.models import Q
 from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
@@ -418,6 +417,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
             trusts = cls.objects.filter(content_item=content_item, user=user)
             found = False
             for trust in trusts:
+
                 if trust.flavours_match(flavours):
                     found = True
                     trust_instances.append(trust)
@@ -813,7 +813,9 @@ class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin, FlavourMix
     flavours = TaggableManager(blank=True)
 
 
-class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
+class AgileCard(
+    models.Model, Mixins, FlavourMixin, ContentItemProxyMixin, ReviewableMixin
+):
     BLOCKED = "B"
     READY = "R"
     IN_PROGRESS = "IP"
@@ -920,6 +922,13 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
         if self.requires_cards.filter(~Q(status=self.COMPLETE)).count():
             return self.BLOCKED
         return self.READY
+
+    def get_teams(self):
+        """return the teams of the users invoved in this project"""
+        user_ids = [user.id for user in self.assignees.all()] + [
+            user.id for user in self.reviewers.all()
+        ]
+        return Team.get_teams_from_user_ids(user_ids)
 
     @property
     def due_time(self):
@@ -1231,9 +1240,21 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
     def open_pr_count(self):
         repo = self.repository
         if repo:
-            # breakpoint()
             return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
         return 0
+
+    @property
+    def oldest_open_pr_updated_time(self):
+
+        repo = self.repository
+        if repo:
+            pr = (
+                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
+                .order_by("updated_at")
+                .first()
+            )
+            if pr:
+                return pr.updated_at
 
     @property
     def repository(self):
@@ -1276,3 +1297,21 @@ class AgileCard(models.Model, Mixins, FlavourMixin, ContentItemProxyMixin):
                 self.recruit_project.code_review_ny_competent_since_last_review_request
             )
         return 0
+
+    def add_collaborator(self, user, add_as_project_reviewer):
+        from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
+        from git_real.helpers import add_collaborator
+        from social_auth.github_api import Api
+
+        if self.recruit_project and self.repository:
+            if self.repository.full_name.startswith(ORGANISATION):
+                github_name = user.social_profile.github_name
+                api = Api(GIT_REAL_BOT_USERNAME)
+                add_collaborator(api, self.repository.full_name, github_name)
+        self.save()
+        if add_as_project_reviewer:
+            if user not in self.assignees.all():
+                self.reviewers.add(user)
+                if self.recruit_project:
+                    self.recruit_project.reviewer_users.add(user)
+        self.save()

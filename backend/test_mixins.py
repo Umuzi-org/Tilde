@@ -23,6 +23,9 @@ class APITestCaseMixin:
     def get_list_url(self):
         return reverse(self.LIST_URL_NAME)
 
+    def get_instance_url(self, pk):
+        return f"{self.get_list_url}/{pk}"
+
     def login(self, user):
         token, _ = Token.objects.get_or_create(user=user)
         self.client.credentials()

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
@@ -153,8 +152,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def github_name(self):
-        if self.social_profile:
+        from social_auth.models import SocialProfile
+
+        try:
             return self.social_profile.github_name
+        except SocialProfile.DoesNotExist:
+            return None
 
 
 class Curriculum(models.Model, Mixins):

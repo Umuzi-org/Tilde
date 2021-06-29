@@ -72,3 +72,34 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
+
+
+# class TestUserViewSet(APITestCase, APITestCaseMixin):
+#     LIST_URL_NAME = "user-list"
+#     SUPPRESS_TEST_POST_TO_CREATE = True
+
+#     def verbose_instance_factory(self):
+#         # team = factories.TeamFactory()
+#         user = factories.UserFactory()
+#         # team.user_set.add(user)
+#         return user
+
+# def test_action_stats(self): TODO
+#     user = factories.UserFactory()
+
+#     url = self.get_instance_url(pk=user.id)
+#     response = self.client.get(url)
+#     data = response.data
+
+#     # assigned to these cards
+#     data['as_assignee_number_of_in_progress_cards']
+#     data['as_assignee_number_of_review_feedback_cards']
+#     data['as_assignee_number_of_review_cards']
+#     data['as_assignee_number_of_complete_cards']
+#     data['as_assignee_number_of_ready_cards']
+#     data['as_assignee_number_of_blocked_cards']
+#     data['as_assignee_oldest_card_awaiting_review']
+#     data['number_of_reviews_done_in_last_7_days']
+#     data['number_of_cards_reviewed_in_last_7_days']
+#     data['as_reviewer_oldest_card_awaiting_review']
+#     data['as_assignee_number_of_open_prs']

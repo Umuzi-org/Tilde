@@ -142,7 +142,6 @@ def get_df():
     df["clean_project_url"] = df.apply(clean_project_url, axis=1)
     df["repo_full_name"] = df.apply(clean_repo_url, axis=1)
 
-    # breakpoint()
     df = df.dropna(
         subset=["repo_full_name"],
     )

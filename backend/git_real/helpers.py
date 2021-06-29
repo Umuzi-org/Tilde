@@ -107,10 +107,20 @@ def list_collaborators(api, repo_full_name):
     return [d["login"] for d in response]
 
 
+def remove_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
+    api = api or Api(github_auth_login)
+    response = api.delete(
+        f"repos/{repo_full_name}/collaborators/{github_user_name}",
+        headers={"Accept": "application/vnd.github.v3+json"},
+        json=False,
+    )
+    assert (
+        response.status_code == 204
+    ), f"bad response code {response.status_code} {response.text}"
+
+
 def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
     api = api or Api(github_auth_login)
-
-    # print(list_collaborators(api, repo_full_name))
 
     response = api.put(
         f"repos/{repo_full_name}/collaborators/{github_user_name}",
@@ -119,19 +129,14 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
         json=False,
         data={},
     )
-    # breakpoint()
 
     if response.status_code == 404:
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
 
     if response.status_code not in [201, 204]:
-        raise Exception(response.content)
-
-    # collaborators = get_collaborators(github_auth_login, repo_full_name, api=api)
-
-    # if github_user_name not in collaborators:
-    # EXCEPTION is always raised because collaborators is a list of dictionaries and github_user_name is a stringz
-    #     raise Exception(f"Adding collaborator: {github_user_name} unsuccessful.")
+        raise Exception(
+            f"bad response code {response.status_code} \n\tcontent: '{response.content}'"
+        )
 
 
 def save_repo(repo: dict, user=None):
@@ -165,26 +170,3 @@ def fetch_and_save_repo(api, repo_full_name):
     o = save_repo(repo_dict)
     assert o != None
     return o
-
-
-# def create_required_webhooks(api, repo_full_name, webhook_url):
-
-#     response = api.post(
-#         f"repos/{repo_full_name}/hooks",
-#         headers={"accept": "application/vnd.github.v3+json"},
-#         data={
-#             "config": {
-#                 "url": webhook_url,
-#                 "content_type": "json",
-#                 "events": [
-#                     # https://docs.github.com/en/developers/webhooks-and-events/github-event-types
-#                     "PullRequestEvent",
-#                     "PullRequestReviewCommentEvent",
-#                     "PushEvent",
-#                 ],
-#             }
-#         },
-#         json=False,
-#     )
-#     breakpoint()
-#     pass

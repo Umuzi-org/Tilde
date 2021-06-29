@@ -25,8 +25,8 @@ gspread==3.1.0
 oauth2client==1.5.2
 pyOpenSSL==19.0.0
 
-google-api-python-client 
-google-auth-httplib2 
+google-api-python-client
+google-auth-httplib2
 google-auth-oauthlib
 
 plotly==4.6.0
@@ -48,6 +48,8 @@ factory-boy
 
 appdirs==1.4.4
 djangorestframework==3.12.2
+dj-rest-auth==2.1.7
+
 toml==0.10.2
 pathspec==0.8.1
 pytz==2020.4

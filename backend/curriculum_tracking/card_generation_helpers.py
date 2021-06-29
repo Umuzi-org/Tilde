@@ -225,6 +225,7 @@ def update_workshop_card_progress(user):
 
 
 def update_project_card_progress(user):
+    assert user is not None, "no user provided"
 
     card_queryset = models.AgileCard.objects.filter(
         assignees__in=[user], content_item__content_type=models.ContentItem.PROJECT

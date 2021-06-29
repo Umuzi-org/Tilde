@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from git_real.models import Repository, PullRequest, PullRequestReview
-from backend.settings import GIT_REAL_WEBHOOK_SECRET
+
+# from backend.settings import GIT_REAL_WEBHOOK_SECRET
 from core.permissions import RequestMethodIs
 from .permissions import IsWebhookSignatureOk
 
@@ -9,11 +10,8 @@ from .permissions import IsWebhookSignatureOk
 @api_view(["POST", "GET"])
 @permission_classes([RequestMethodIs("GET") | IsWebhookSignatureOk])
 def github_webhook(request):
-    """this is where requests grom Github arrives.
+    """this is where requests from Github arrives.
     based on https://docs.github.com/en/developers/webhooks-and-events/creating-webhooks"""
-    assert (
-        GIT_REAL_WEBHOOK_SECRET
-    ), f"GIT_REAL_WEBHOOK_SECRET environmental variable is not set"
 
     if request.method == "POST":
 

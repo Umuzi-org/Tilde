@@ -75,9 +75,22 @@ class Command(BaseCommand):
                     "This link is not accessable. Please make sure it points to something that exists. The file needs to be publically accessable so that it can be reviewed. Try opening your own link in an incognito window, it should work",
                 )
                 return
+        has_extension = len(metadata["name"].split(".")) > 1
+        if not has_extension:
+            self.add_review(
+                card,
+                NOT_YET_COMPETENT,
+                "Something has gone wrong - your file was meant to have a .docx extension, but it doesn't. Are you sure you submitted the right file type?",
+            )
+            return
         extension = metadata["name"].split(".")[-1]
         if extension not in ["docx"]:
-            breakpoint()
+            self.add_review(
+                card,
+                NOT_YET_COMPETENT,
+                "Something has gone wrong - your file was meant to have a .docx extension, but it doesn't. Are you sure you submitted the right file type?",
+            )
+            return
 
         filename = f"{user.last_name} {user.first_name} [{user.id}] {card.content_item.title} {TODAY}.{extension}"
         request = service.files().get_media(fileId=file_id)

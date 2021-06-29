@@ -21,6 +21,7 @@ class IsWebhookSignatureOk(BasePermission):
         ).hexdigest()
         correct = recieved_digest == "sha1=" + digest
         if not correct:
-            breakpoint()
+            return False
+            # breakpoint()
 
         return correct

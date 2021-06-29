@@ -158,7 +158,6 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "story_points",
             "tag_names",
             "order",
-            # "repository",
             "code_review_competent_since_last_review_request",
             "code_review_excellent_since_last_review_request",
             "code_review_red_flag_since_last_review_request",
@@ -177,6 +176,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "can_start",
             "can_force_start",
             "open_pr_count",
+            "oldest_open_pr_updated_time",
         ]
 
 

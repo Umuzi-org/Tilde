@@ -149,8 +149,8 @@ class generate_all_content_cards_for_user_Tests(TestCase):
 
 
 class update_topic_card_progress_Tests(TestCase):
-    def setUp(self):
-        self.user = core_factories.UserFactory()
+    # def setUp(self):
+    #     self.user = core_factories.UserFactory()
 
     def test_no_flavours(self):
 
@@ -159,39 +159,40 @@ class update_topic_card_progress_Tests(TestCase):
         )
 
         card = factories.AgileCardFactory(content_item=content_item)
-        card.assignees.add(self.user)
+        user = card.assignees.first()
+        # card.assignees.add(self.user)
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.READY)
 
         progress = models.TopicProgress(
-            content_item=content_item, user=self.user, due_time=timezone.now()
+            content_item=content_item, user=user, due_time=timezone.now()
         )
         progress.save()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.READY)
 
         progress.start_time = timezone.now()
         progress.save()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.IN_PROGRESS)
 
         progress.review_request_time = timezone.now()
         progress.save()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.IN_REVIEW)
 
         progress.complete_time = timezone.now()
         progress.save()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.COMPLETE)
 
@@ -204,29 +205,31 @@ class update_topic_card_progress_Tests(TestCase):
         card_ts = factories.AgileCardFactory(
             content_item=content_item, flavours=[TYPESCRIPT]
         )
-        card_ts.assignees.add(self.user)
+        user = card_ts.assignees.first()
+
+        # card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
-            content_item=content_item, flavours=[JAVASCRIPT]
+            content_item=content_item, flavours=[JAVASCRIPT], assignees=[user]
         )
-        card_js.assignees.add(self.user)
+        assert card_js.assignees.first() == user
 
         progress = models.TopicProgress(
-            content_item=content_item, user=self.user, start_time=timezone.now()
+            content_item=content_item, user=user, start_time=timezone.now()
         )
         progress.save()
         progress.flavours.add(
             taggit.models.Tag.objects.get_or_create(name=TYPESCRIPT)[0]
         )
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card_ts.refresh_from_db()
         card_js.refresh_from_db()
 
         self.assertEqual(card_js.status, card_ts.READY)
         self.assertEqual(card_ts.status, card_ts.IN_PROGRESS)
 
-    def test_error_gets_raised_if_card_has_flavours_but_progress_doesnt(self):
+    def test_error_gets_raised_if_card_has_flavours_but_progress_does_not(self):
         content_item = factories.ContentItemFactory(
             content_type=models.ContentItem.TOPIC,
             flavours=[JAVASCRIPT, TYPESCRIPT],
@@ -235,13 +238,14 @@ class update_topic_card_progress_Tests(TestCase):
         card_ts = factories.AgileCardFactory(
             content_item=content_item, flavours=[TYPESCRIPT]
         )
-        card_ts.assignees.add(self.user)
+        # card_ts.assignees.add(self.user)
+        user = card_ts.assignees.first()
 
-        progress = models.TopicProgress(content_item=content_item, user=self.user)
+        progress = models.TopicProgress(content_item=content_item, user=user)
         progress.save()
 
         with self.assertRaises(FlavourProgressMismatchError):
-            update_topic_card_progress(self.user)
+            update_topic_card_progress(user)
 
     def test_unstarted_topic_with_due_time_ready_to_ip(self):
         tomorrow = timezone.now() + timedelta(days=1)
@@ -250,15 +254,16 @@ class update_topic_card_progress_Tests(TestCase):
         )
 
         card = factories.AgileCardFactory(content_item=content_item)
-        card.assignees.add(self.user)
+        # card.assignees.add(self.user)
+        user = card.assignees.first()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.READY)
 
         card.set_due_time(tomorrow)
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.READY)
 
@@ -266,7 +271,7 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_PROGRESS)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_PROGRESS)
 
@@ -276,7 +281,7 @@ class update_topic_card_progress_Tests(TestCase):
         self.assertEqual(card.topic_progress.due_time, tomorrow)
         self.assertEqual(card.status, models.AgileCard.READY)
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.READY)
 
@@ -285,7 +290,7 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.COMPLETE)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.COMPLETE)
 
@@ -295,9 +300,10 @@ class update_topic_card_progress_Tests(TestCase):
         )
 
         card = factories.AgileCardFactory(content_item=content_item)
-        card.assignees.add(self.user)
+        # card.assignees.add(self.user)
+        user = card.assignees.first()
 
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
 
         self.assertEqual(card.status, models.AgileCard.READY)
@@ -307,7 +313,7 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
 
@@ -317,7 +323,7 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.REVIEW_FEEDBACK)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.REVIEW_FEEDBACK)
 
@@ -325,7 +331,7 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
 
@@ -335,14 +341,14 @@ class update_topic_card_progress_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.COMPLETE)
-        update_topic_card_progress(self.user)
+        update_topic_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.COMPLETE)
 
 
 class update_workshop_card_progress_Tests(TestCase):
-    def setUp(self):
-        self.user = core_factories.UserFactory()
+    # def setUp(self):
+    #     self.user = core_factories.UserFactory()
 
     def test_no_flavours(self):
 
@@ -351,18 +357,19 @@ class update_workshop_card_progress_Tests(TestCase):
         )
 
         card = factories.AgileCardFactory(content_item=content_item)
-        card.assignees.add(self.user)
+        # card.assignees.add(self.user)
+        user = card.assignees.first()
 
-        update_workshop_card_progress(self.user)
+        update_workshop_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.READY)
 
         progress = factories.WorkshopAttendanceFactory(
-            content_item=content_item, attendee_user=self.user
+            content_item=content_item, attendee_user=user
         )
         progress.save()
 
-        update_workshop_card_progress(self.user)
+        update_workshop_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.COMPLETE)
 
@@ -375,22 +382,26 @@ class update_workshop_card_progress_Tests(TestCase):
         card_ts = factories.AgileCardFactory(
             content_item=content_item, flavours=[TYPESCRIPT]
         )
-        card_ts.assignees.add(self.user)
+        user = card_ts.assignees.first()
+
+        # card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
-            content_item=content_item, flavours=[JAVASCRIPT]
+            content_item=content_item, flavours=[JAVASCRIPT], assignees=[user]
         )
-        card_js.assignees.add(self.user)
+        assert user == card_js.assignees.first()
+
+        # card_js.assignees.add(self.user)
 
         progress = factories.WorkshopAttendanceFactory(
-            content_item=content_item, attendee_user=self.user
+            content_item=content_item, attendee_user=user
         )
         progress.save()
         progress.flavours.add(
             taggit.models.Tag.objects.get_or_create(name=TYPESCRIPT)[0]
         )
 
-        update_workshop_card_progress(self.user)
+        update_workshop_card_progress(user)
         card_ts.refresh_from_db()
         card_js.refresh_from_db()
 
@@ -406,20 +417,22 @@ class update_workshop_card_progress_Tests(TestCase):
         card_ts = factories.AgileCardFactory(
             content_item=content_item, flavours=[TYPESCRIPT]
         )
-        card_ts.assignees.add(self.user)
+        user = card_ts.assignees.first()
+
+        # card_ts.assignees.add(self.user)
 
         progress = factories.WorkshopAttendanceFactory(
-            content_item=content_item, attendee_user=self.user
+            content_item=content_item, attendee_user=user
         )
         progress.save()
 
         with self.assertRaises(FlavourProgressMismatchError):
-            update_workshop_card_progress(self.user)
+            update_workshop_card_progress(user)
 
 
 class update_project_card_progress_Tests(TestCase):
-    def setUp(self):
-        self.user = core_factories.UserFactory()
+    # def setUp(self):
+    #     self.user = core_factories.UserFactory()
 
     def test_no_flavours(self):
 
@@ -428,11 +441,11 @@ class update_project_card_progress_Tests(TestCase):
         card = factories.AgileCardFactory(
             content_item=content_item, recruit_project=None
         )
-        card.assignees.add(self.user)
+        user = card.assignees.first()
 
         self.assertIsNone(card.recruit_project)
-
-        update_project_card_progress(self.user)
+        assert user is not None
+        update_project_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, card.READY)
 
@@ -441,7 +454,7 @@ class update_project_card_progress_Tests(TestCase):
             review_request_time=timezone.now() - timezone.timedelta(days=1),
             start_time=timezone.now() - timezone.timedelta(days=2),
         )
-        progress.recruit_users.add(self.user)
+        progress.recruit_users.add(user)
 
         factories.RecruitProjectReviewFactory(
             recruit_project=progress,
@@ -449,7 +462,7 @@ class update_project_card_progress_Tests(TestCase):
             timestamp=timezone.now(),
         )
 
-        update_project_card_progress(self.user)
+        update_project_card_progress(user)
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.REVIEW_FEEDBACK)
 
@@ -464,26 +477,30 @@ class update_project_card_progress_Tests(TestCase):
             flavours=[TYPESCRIPT],
             recruit_project=None,
         )
-        card_ts.assignees.add(self.user)
+        user = card_ts.assignees.first()
+
+        # card_ts.assignees.add(self.user)
 
         card_js = factories.AgileCardFactory(
             content_item=content_item,
             flavours=[JAVASCRIPT],
             recruit_project=None,
+            assignees=[user],
         )
-        card_js.assignees.add(self.user)
+        # card_js.assignees.add(self.user)
+        assert user == card_js.assignees.first()
 
         progress = factories.RecruitProjectFactory(
             content_item=content_item,
             review_request_time=None,
             start_time=timezone.now() - timezone.timedelta(days=2),
         )
-        progress.recruit_users.add(self.user)
+        progress.recruit_users.add(user)
         progress.flavours.add(
             taggit.models.Tag.objects.get_or_create(name=TYPESCRIPT)[0]
         )
 
-        update_project_card_progress(self.user)
+        update_project_card_progress(user)
         card_ts.refresh_from_db()
         card_js.refresh_from_db()
 

@@ -191,7 +191,7 @@ class create_or_update_content_cards_for_user_Tests(TestCase):
     def setUp(self):
         # self.team_membership = core_factories.TeamMembershipFactory()
         # self.recruit = self.team_membership.user
-        self.recruit = core_factories.UserFactory()
+        # self.recruit = core_factories.UserFactory()
         # self.curriculum = self.team_membership.cohort.cohort_curriculum
         self.content_item = factories.ContentItemFactory()
         self.card = factories.AgileCardFactory(
@@ -199,7 +199,8 @@ class create_or_update_content_cards_for_user_Tests(TestCase):
             # assignees=[self.recruit],
             content_item=self.content_item,
         )
-        self.card.assignees.add(self.recruit)
+        # self.card.assignees.add(self.recruit)
+        self.recruit = self.card.assignees.first()
 
     def test_can_block_cards_that_were_ready(self):
 

@@ -49,11 +49,6 @@ def test_long_running_request():
     print(f"Active users: {count}")
 
 
-@dramatiq.actor(time_limit=10 * MINUTE)
-def team_shuffle_review_self(team_id, flavour_names, content_item_id):
-    TODO
-
-
 @dramatiq.actor()
 def recruit_project_setup_repository(project_id):
     from curriculum_tracking.models import RecruitProject
@@ -68,3 +63,12 @@ def recruit_project_invite_github_collaborators_to_repo(project_id):
 
     project = RecruitProject.objects.get(pk=project_id)
     project.invite_github_collaborators_to_repo()
+
+
+@dramatiq.actor()
+def auto_assign_reviewers():
+    from curriculum_tracking.management.auto_assign_reviewers import (
+        auto_assign_reviewers as work,
+    )
+
+    work()
