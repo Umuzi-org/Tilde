@@ -850,7 +850,9 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     )
     def team_review_by_other(self, request, pk=None):
         """grab users from another group and randomise them as reviewers for this group"""
-        todo
+        serialiser = get_Serialiser(data=request.post)
+        if serialiser.is_valid:
+            serialiser.reviewer_group
 
     @action(
         detail=False,

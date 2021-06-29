@@ -41,6 +41,7 @@ class Command(BaseCommand):
                         "card.flavour_names": card.flavour_names,
                         "card.content_item.title": card.content_item.title,
                         "card.content_item.id": card.content_item.id,
+                        "card.content_item.content_type": card.content_item.content_type,
                     }
                 )
 
@@ -63,6 +64,7 @@ class Command(BaseCommand):
                 "card.flavour_names",
                 "card.content_item.id",
                 "card.content_item.title",
+                "card.content_item.content_type",
                 "team.name",
             ],
             as_index=False,
@@ -78,9 +80,12 @@ class Command(BaseCommand):
             "card.content_item.title": pd.DataFrame(grouped)
             .reset_index()
             .apply(lambda row: row[0][2], axis=1),
-            "team.name": pd.DataFrame(grouped)
+            "card.content_item.content_type": pd.DataFrame(grouped)
             .reset_index()
             .apply(lambda row: row[0][3], axis=1),
+            "team.name": pd.DataFrame(grouped)
+            .reset_index()
+            .apply(lambda row: row[0][4], axis=1),
             "mean": grouped["duration"].mean()["duration"],
             "max": grouped["duration"].max()["duration"],
             "min": grouped["duration"].min()["duration"],

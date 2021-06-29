@@ -20,6 +20,7 @@ from .constants import (
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
+from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
 
 logger = logging.getLogger(__name__)
 
@@ -374,7 +375,8 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
         previous_untrusted_reviews = [
             o
             for o in previous_untrusted_reviews
-            if o.recruit_project.review_request_time < o.timestamp
+            if o.recruit_project.review_request_time
+            and o.recruit_project.review_request_time < o.timestamp
         ]
 
         for review in previous_untrusted_reviews:
@@ -439,7 +441,9 @@ class RecruitProject(
 ):
     """what a recruit has done with a specific ContentItem"""
 
-    content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
+    content_item = models.ForeignKey(
+        ContentItem, on_delete=models.PROTECT, related_name="projects"
+    )
     complete_time = models.DateTimeField(null=True, blank=True)
     review_request_time = models.DateTimeField(null=True, blank=True)
     start_time = models.DateTimeField(null=True, blank=True)
@@ -736,6 +740,55 @@ class RecruitProjectReview(models.Model, Mixins):
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
+
+    def get_validated_streak(self, projects_visited=None):
+        """how many reviews on the same project have been marked as valid in a row. This is a recursive function.
+        if self.validated != CORRECT
+            return 0
+        else
+            return previous_matching_review.get_validated_streak() +1
+        """
+        if self.validated != RecruitProjectReview.CORRECT:
+            return 0
+        if self.reviewer_user.email == CURRICULUM_TRACKING_REVIEW_BOT_EMAIL:
+            return 0
+        # blacklist code. This needs to be removed once we have enough
+        # trusted members
+        assignee = self.recruit_project.recruit_users.first()
+        for team in assignee.teams():
+            if "techquest" in team.name.lower():
+                return 0
+
+        projects_visited = projects_visited or []
+        projects_visited.append(self.recruit_project)
+        last_matching_review = self._get_previous_review_in_streak(
+            projects_visited=projects_visited
+        )
+        if last_matching_review:
+            return 1 + last_matching_review.get_validated_streak(
+                projects_visited=projects_visited
+            )
+
+        return 1
+
+    def _get_previous_review_in_streak(self, projects_visited):
+        content_item = self.recruit_project.content_item
+        flavours = self.recruit_project.flavour_names
+
+        reviews = (
+            RecruitProjectReview.objects.filter(
+                recruit_project__content_item=content_item
+            )
+            .filter(id__lt=self.id)
+            .filter(reviewer_user=self.reviewer_user)
+            .order_by("-id")
+        )
+
+        for review in reviews:
+            if review.recruit_project in projects_visited:
+                continue
+            if review.recruit_project.flavours_match(flavours):
+                return review
 
     @property
     def reviewer_user_email(self):

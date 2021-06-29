@@ -14,13 +14,17 @@ import json
 import re
 from pathlib import Path
 
+from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+
 DESTINATION = Path("gitignore/ncit_downloads")
 TODAY = timezone.now().date().strftime("%a %d %b %Y")
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        self.bot_user, _ = User.objects.get_or_create(email="reviewbot@noreply.org")
+        self.bot_user, _ = User.objects.get_or_create(
+            email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+        )
         ncit_tag = Tag.objects.get(name="ncit")
         all_cards = AgileCard.objects.filter(content_item__tags__in=[ncit_tag]).filter(
             content_item__content_type=ContentItem.PROJECT
