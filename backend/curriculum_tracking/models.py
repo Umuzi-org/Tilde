@@ -380,7 +380,10 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
         ]
 
         for review in previous_untrusted_reviews:
-            card = review.recruit_project.agile_card
+            try:
+                card = review.recruit_project.agile_card
+            except AgileCard.DoesNotExist:
+                continue
             if card.status == AgileCard.IN_REVIEW:
                 review.trusted = True
                 review.save()
