@@ -1,22 +1,49 @@
 import { getAgeString } from "../../../widgets/utils";
 
-test("getAgeString function returns correct open pr age string in weeks", () => {
+test("getAgeString function returns correct age string when PR was opened 1 month ago", () => {
+    const date = new Date();
     const card = {
-        oldestOpenPrUpdatedTime: "2021-06-14T09:58:28Z"
+        oldestOpenPrUpdatedTime: date.setDate(date.getDate() - 31)
+    };
+    expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("1 month ago");
+});
+
+test("getAgeString function returns correct age string when PR was opened 2 weeks ago", () => {
+    const date = new Date();
+    const card = {
+        oldestOpenPrUpdatedTime: date.setDate(date.getDate() - 14)
     };
     expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("2 weeks ago");
 });
 
-test("getAgeString function returns correct open pr age string in days", () => {
+test("getAgeString function returns correct age string when PR was opened 2 days ago", () => {
+    const date = new Date();
     const card = {
-        oldestOpenPrUpdatedTime: "2021-06-27T09:45:28Z"
+        oldestOpenPrUpdatedTime: date.setDate(date.getDate() - 2)
     };
     expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("2 days ago");
 });
 
-test("getAgeString function returns correct open pr age string in hours", () => {
+test("getAgeString function returns correct age string when PR was opened 5 hours ago", () => {
+    const date = new Date();
     const card = {
-        oldestOpenPrUpdatedTime: "2021-06-29T07:49:28Z"
+        oldestOpenPrUpdatedTime: date.setHours(date.getHours() - 5)
     };
-    expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("2 hours ago");
+    expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("5 hours ago");
+});
+
+test("getAgeString function returns correct age string when PR was opened 30 minutes ago", () => {
+    const date = new Date();
+    const card = {
+        oldestOpenPrUpdatedTime: date.setMinutes(date.getMinutes() - 30)
+    };
+    expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("30 minutes ago");
+});
+
+test("getAgeString function returns correct age string when PR was opened less then a minute ago", () => {
+    const date = new Date();
+    const card = {
+        oldestOpenPrUpdatedTime: date.setSeconds(date.getSeconds() - 15)
+    };
+    expect(getAgeString(card.oldestOpenPrUpdatedTime)).toBe("just now");
 });
