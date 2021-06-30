@@ -862,6 +862,33 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         todo
 
     # TODO: bulk set due dates
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.SetDueTimeSerializer, # Doesn't have right fields.
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def set_bulk_due_date(self, request, pk=None):
+        ''' WIP
+        Operations:
+        - Find Agile cards that are projects and have correct content_item_id.
+        - Filter for matching flavours, then set due time.
+
+        Endpoint:
+        - Need team, content_item_id, flavours, due_time
+        - Serializer with requered fields?
+        '''
+        def get_cards():
+            for card in (
+                models.AgileCard.objects.filter(assignees__active_in=[True])
+                .filter(content_item__content_type=ContentItem.PROJECT)
+                # filter for flavour.id ?
+            ):
+                yield card
+        for card in list(get_cards()):
+            if card.flavours_match(flavours):
+                card.set_due_time(due_time)
+
 
     @action(
         detail=False,
