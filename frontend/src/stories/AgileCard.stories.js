@@ -1,6 +1,7 @@
 import React from "react";
 import AgileCard from "../components/regions/AgileBoard/AgileCard/Presentation"; 
 
+import agileCard from "./fixtures/agileCard.json";
 import assigneeCard from "./fixtures/AgileCards/assigneeCard.json";
 import reviewerCard from "./fixtures/AgileCards/reviewerCard.json";
 import openPrCard from "./fixtures/AgileCards/openPrCard.json";
@@ -20,9 +21,9 @@ export default {
 
 const Template = args => <AgileCard {...args} />
 
-export const Assignee = Template.bind({});
-Assignee.args = {
-  card: assigneeCard,
+export const Primary = Template.bind({});
+Primary.args = {
+  card: agileCard,
   authUser: authUser,
   viewedUser: user,
   filterUserId: user.id,
@@ -48,56 +49,62 @@ Assignee.args = {
   loadingRemoveWorkshopAttendance: false,
 }
 
-export const Reviewer = Template.bind({});
-Reviewer.args = {
-  ...Assignee.args,
+export const AssigneeBlue = Template.bind({});
+AssigneeBlue.args = {
+  ...Primary.args,
+  card: assigneeCard,
+}
+
+export const ReviewerOrange = Template.bind({});
+ReviewerOrange.args = {
+  ...Primary.args,
   card: reviewerCard,
 }
 
 export const OpenPullRequest = Template.bind({});
 OpenPullRequest.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: openPrCard,
 }
 
 export const ReviewEmojies = Template.bind({});
 ReviewEmojies.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: reviewEmojiesCard,
 }
 
 export const StatusBlocked = Template.bind({});
 StatusBlocked.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: blockedCard,
 }
 
 export const StatusReady = Template.bind({});
 StatusReady.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: topicCard,
 }
 
 export const StatusInProgress = Template.bind({});
 StatusInProgress.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: openPrCard,
 }
 
 export const StatusInReview = Template.bind({});
 StatusInReview.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: inReviewCard,
 }
 
 export const StatusFeedback = Template.bind({});
 StatusFeedback.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: reviewEmojiesCard,
 }
 
 export const DueTime = Template.bind({});
 DueTime.args = {
-  ...Assignee.args,
+  ...Primary.args,
   card: dueTimeCard,
 }
