@@ -873,6 +873,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
         Operations:
         - Find Agile cards that are projects and have correct content_item_id.
         - Filter for matching flavours, then set due time.
+        - Need to do this for each team.
 
         Endpoint:
         - Need team, content_item_id, flavours, due_time
