@@ -7,7 +7,9 @@ import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import CallMergeIcon from "@material-ui/icons/CallMerge";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
-import Tooltip from "@material-ui/core/Tooltip";
+import { Chip, Tooltip } from "@material-ui/core";
+
+import { getAgeString } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +40,9 @@ export default ({ card }) => {
     codeReviewNyCompetentSinceLastReviewRequest,
     codeReviewRedFlagSinceLastReviewRequest,
     openPrCount,
+    oldestOpenPrUpdatedTime,
   } = card;
+
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -93,9 +97,17 @@ export default ({ card }) => {
       )}
 
       {openPrCount ? (
-        <Tooltip title="Number of open pull requests on this card">
-          <Badge badgeContent={openPrCount} color="primary">
-            <CallMergeIcon />
+        <Tooltip title="Number of open pull requests on this card and their age">
+          <Badge badgeContent={openPrCount} color="primary"> 
+            {oldestOpenPrUpdatedTime === null ? (
+              <CallMergeIcon />
+            ) : (
+              <Chip
+              avatar={<CallMergeIcon />}
+              className={classes.chip}
+              label={getAgeString(oldestOpenPrUpdatedTime)}
+            />
+            )}
           </Badge>
         </Tooltip>
       ) : (
