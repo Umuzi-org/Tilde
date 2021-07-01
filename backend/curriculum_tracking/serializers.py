@@ -322,3 +322,8 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "content_item",
             "attendee_user",
         ]
+
+class SetBulkDueDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProject
+        fields = ["group", "content_item", "flavours", "due_time"]

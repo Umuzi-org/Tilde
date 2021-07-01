@@ -865,7 +865,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.SetDueTimeSerializer, # Doesn't have right fields.
+        serializer_class=serializers.SetBulkDueDateSerializer, # Doesn't have right fields.
         permission_classes=[permissions.IsAdminUser],
     )
     def set_bulk_due_date(self, request, pk=None):
