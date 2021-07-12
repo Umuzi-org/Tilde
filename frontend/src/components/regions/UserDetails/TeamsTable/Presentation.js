@@ -7,7 +7,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 const columns = [
-    { id: 'id', label: 'ID', minWidth: 60 },
     { id: 'teams', label: 'Team', minWidth: 100 },
 ];
 
@@ -35,14 +34,13 @@ const TeamsTable = (props) => {
                     Object.keys(teams).length > 0 ?
                         Object.values(teams).map((team) => (
                             <TableRow key={Object.values(teams).indexOf(team)}>
-                                <TableCell>{Object.values(teams).indexOf(team) + 1}</TableCell>
                                 <TableCell>
                                     {team.name}
                                 </TableCell>
                             </TableRow>
                         )) :
                         <TableRow>
-                            <TableCell colSpan='2'>Nothing to display</TableCell>
+                            <TableCell>Nothing to display</TableCell>
                         </TableRow>
                 }
             </TableBody>
