@@ -8,7 +8,7 @@ from core.models import Team
 from ..rocketchat import Rocketchat, GROUP
 from core.models import User
 from google_helpers.utils import fetch_sheet
-from curriculum_tracking.models import Curriculum, CourseRegistration
+from curriculum_tracking.models import ContentItem, Curriculum, CourseRegistration
 import os
 
 OLD_EMAIL = "Old Email"
@@ -91,8 +91,48 @@ COURSES_BY_DEPARTMENT = {
 }
 
 
+comment_intro = """Don't take this personally, I'm just a robot.
+I'm marking your code as Not Yet Competent because our standards are actually pretty high.
+
+You gave us code that was good enough to get you through bootcamp, we can see you have the aptitude for this stuff. But for now on you will need to be writing professional level code.
+
+That means your code must be sparkley and clean, neat and tidy, well named and well formatted. One day when you are working on a team of rock star professional developers they'll all think you are a friggin ninja because your code will be the most beautiful code they've seen.
+
+Please go through everything and make sure that:
+
+- there are no global variables used in functions
+- all variable names make sense
+- all names are consistent with the style of your language
+- you don't have any comments that just rewrite the code in English
+"""
+python_comments = f"""{comment_intro}
+Since you are working in Python:
+
+- Make sure you use the `black` formatter to make your code nice and pretty. You can install it and then set up vscode so it auto-formats your code every time you hit save
+- use python naming conventions:
+    - this_is_how_variables_are_named
+    - functions_as_well
+    - dontDoThis
+    - definitely_Dont_Do_This
+    - ClassesAreNamedLikeThis
+
+"""
+js_comments = f"""{comment_intro}
+Since you are working in Javascript:
+
+- Make sure you use the `eslint` to make your code nice and pretty. You can install Prettier in vscode and set it up to auto-format your code every time you hit save.
+- use Javascript naming conventions:
+    - thisIsHowVariablesAreNamed
+    - functionsToo
+    - dont_do_this
+    - definitely_Dont_Do_This
+    - ClassesAreNamedLikeThis
+
+"""
+
+
 def update_user_email(row):
-    print(row)
+    print(f"{row[OLD_EMAIL]} => {row[NEW_EMAIL]}")
     try:
         user = User.objects.get(email=row[OLD_EMAIL])
     except User.DoesNotExist:
@@ -100,6 +140,7 @@ def update_user_email(row):
 
     user.email = row[NEW_EMAIL]
     user.save()
+    print()
 
 
 def set_up_course_registrations(row):
@@ -188,6 +229,56 @@ def setup_rocketchat_users(df):
         client.logout()
 
 
+def re_review_cards(row):
+    # user = User.objects.get(email=row[NEW_EMAIL])
+    from curriculum_tracking.models import AgileCard, RecruitProjectReview
+    from django.db.models import Q
+    from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+    from django.utils import timezone
+
+    from curriculum_tracking.constants import NOT_YET_COMPETENT
+
+    cards = (
+        AgileCard.objects.filter(assignees__email__in=[row[NEW_EMAIL]])
+        .filter(
+            Q(content_item__project_submission_type=ContentItem.REPOSITORY)
+            | Q(content_item__project_submission_type=ContentItem.CONTINUE_REPO)
+            | Q(content_item__project_submission_type=ContentItem.LINK)
+        )
+        .filter(status=AgileCard.COMPLETE)
+    )
+
+    bot, _ = User.objects.get_or_create(email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL)
+
+    for card in cards:
+        # print(card)
+        if "Tilde project tutorial" in card.content_item.title:
+            continue
+        flavours = card.flavour_names
+        if "markdown" in flavours:
+            continue
+        if flavours == []:
+            continue
+        elif "python" in flavours:
+            comments = python_comments
+        elif "javascript" in flavours:
+            comments = js_comments
+        else:
+            raise Exception(f"Can't handle: {flavours}")
+        RecruitProjectReview.objects.create(
+            status=NOT_YET_COMPETENT,
+            timestamp=timezone.now(),
+            comments=comments,
+            recruit_project=card.recruit_project,
+            reviewer_user=bot,
+        )
+
+        card.refresh_from_db()
+        if card.status == AgileCard.COMPLETE:
+            breakpoint()
+            pass
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("path", type=str)
@@ -196,12 +287,17 @@ class Command(BaseCommand):
         path = options["path"]
 
         df = fetch_sheet(url=path)
+        df[OLD_EMAIL] = df[OLD_EMAIL].str.strip()
+        df[NEW_EMAIL] = df[NEW_EMAIL].str.strip()
+        df = df.dropna(subset=[OLD_EMAIL])
         df = df[df[BROKEN] != 1]
         df = df[df[BROKEN] != "1"]
+        df = df[df[OLD_EMAIL] != ""]
         # df = pd.read_csv(path)
 
         df.apply(update_user_email, axis=1)
-
         df.apply(add_user_to_group, axis=1)
         df.apply(set_up_course_registrations, axis=1)
         setup_rocketchat_users(df)
+
+        df.apply(re_review_cards, axis=1)
