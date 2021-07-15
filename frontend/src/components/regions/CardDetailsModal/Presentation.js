@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Grid,
   Paper,
   Table,
   TableBody,
@@ -64,49 +65,57 @@ const CardBasicDetails = ({ card }) => {
 
   return (
     <React.Fragment>
-      <Typography variant="h5">
-        {card.contentTypeNice}: {card.title}
-      </Typography>
-      <TagChips tagNames={card.tagNames} />
-      <FlavourChips flavourNames={card.flavourNames} />
-      <StoryPoints storyPoints={card.storyPoints} />
+      <Grid container>
+        <Grid item xs={12} sm={12} md={12}>
+          <Typography variant="h5">
+            {card.contentTypeNice}: {card.title}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12}>
+          <TagChips tagNames={card.tagNames} />
+          <FlavourChips flavourNames={card.flavourNames} />
+          <StoryPoints storyPoints={card.storyPoints} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12}>
+          <Paper className={classes.sectionPaper} variant="outlined">
+            <Typography variant="subtitle2">Assignees:</Typography>
+            <UsersTable userNames={card.assigneeNames} userIds={card.assignees} />
+            <Typography variant="subtitle2">Reviewers:</Typography>
+            <UsersTable userNames={card.reviewerNames} userIds={card.reviewers} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12}>
+          <Paper className={classes.sectionPaper} variant="outlined">
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Due Time</TableCell>
+                  <TableCell>{dueTime}</TableCell>
+                </TableRow>
+                {card.startTime && (
+                  <TableRow>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>{startTime}</TableCell>
+                  </TableRow>
+                )}
 
-      <Paper className={classes.sectionPaper} variant="outlined">
-        <Typography variant="subtitle2">Assignees:</Typography>
-        <UsersTable userNames={card.assigneeNames} userIds={card.assignees} />
-        <Typography variant="subtitle2">Reviewers:</Typography>
-        <UsersTable userNames={card.reviewerNames} userIds={card.reviewers} />
-      </Paper>
-
-      <Paper className={classes.sectionPaper} variant="outlined">
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>Due Time</TableCell>
-              <TableCell>{dueTime}</TableCell>
-            </TableRow>
-            {card.startTime && (
-              <TableRow>
-                <TableCell>Start Time</TableCell>
-                <TableCell>{startTime}</TableCell>
-              </TableRow>
-            )}
-
-            {card.reviewRequestTime && (
-              <TableRow>
-                <TableCell>Review Request Time</TableCell>
-                <TableCell>{reviewRequestTime}</TableCell>
-              </TableRow>
-            )}
-            {card.completeTime && (
-              <TableRow>
-                <TableCell>Complete Time </TableCell>
-                <TableCell>{completeTime}</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Paper>
+                {card.reviewRequestTime && (
+                  <TableRow>
+                    <TableCell>Review Request Time</TableCell>
+                    <TableCell>{reviewRequestTime}</TableCell>
+                  </TableRow>
+                )}
+                {card.completeTime && (
+                  <TableRow>
+                    <TableCell>Complete Time </TableCell>
+                    <TableCell>{completeTime}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Grid>  
+      </Grid> 
     </React.Fragment>
   );
 };
