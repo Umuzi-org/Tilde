@@ -5,6 +5,10 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+
 import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
 import AccessAlarms from "@material-ui/icons/AccessAlarms";
 
@@ -152,6 +156,29 @@ export default ({
         <Typography variant="h6" component="h2">
           {card.title}
         </Typography>
+        
+       {/* Form for setting due date - start */}
+        <Grid container sm={12}>
+          <Grid item container>
+            <form className={classes.container} noValidate>
+              <TextField item
+                id="date"
+                label="Due Date"
+                type="date"
+                defaultValue=""
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <Grid item container>
+                <Button variant="outlined">Save</Button>
+                <Button variant="outlined">Cancel</Button>
+              </Grid>
+            </form>
+          </Grid>
+        </Grid>
+       {/* Form for setting due date - end */}
 
         {/* {card.flavourNames.map((flavour) => (
           <Chip
