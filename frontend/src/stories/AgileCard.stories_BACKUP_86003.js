@@ -1,6 +1,7 @@
 import React from "react";
 import AgileCard from "../components/regions/AgileBoard/AgileCard/Presentation"; 
 
+<<<<<<< HEAD
 import assigneeCard from "./fixtures/AgileCards/assigneeCard.json";
 import reviewerCard from "./fixtures/AgileCards/reviewerCard.json";
 import openPrCard from "./fixtures/AgileCards/openPrCard.json";
@@ -10,11 +11,15 @@ import inReviewCard from "./fixtures/AgileCards/inReviewCard.json";
 import blockedCard from "./fixtures/AgileCards/blockedCard.json";
 import dueTimeCard from "./fixtures/AgileCards/dueTimeCard.json"
 
+=======
+import agileCard from "./fixtures/agileCard.json";
+>>>>>>> develop
 import user from "./fixtures/user.json";
 import authUser from "./fixtures/authUser.json";
 
 export default {
     title: "Tilde/AgileCard",
+<<<<<<< HEAD
     component: AgileCard,
 }
 
@@ -101,3 +106,46 @@ DueTime.args = {
   ...Assignee.args,
   card: dueTimeCard,
 }
+=======
+    component: AgileCard
+}
+
+const Template = ({ items, ...args }) => {
+
+    const props = {
+      card: agileCard,
+      authUser: authUser,
+      viewedUser: user,
+      filterUserId: user.id,
+
+      handleClickAddReview: () => {},
+      handleClickOpenCardDetails: () => {},
+
+      handleRequestReview: () => {},
+      handleStartProject: () => {},
+      handleCancelReviewRequest: () => {},
+
+      handleClickOpenWorkshopAttendanceForm: () => {},
+      handleStartTopic: () => {},
+      handleStopTopic: () => {},
+      handleFinishTopic: () => {},
+      handleRemoveWorkshopAttendance: () => {},
+
+      loadingStartProject: false,
+      loadingStartTopic: false,
+      loadingClickOpenWorkshopAttendanceForm: false,
+      loadingRequestReview: false,
+      loadingCancelReviewRequest: false,
+      loadingStopTopic: false,
+      loadingFinishTopic: false,
+      loadingRemoveWorkshopAttendance: false,
+    }
+
+    return  <AgileCard {...props} />
+};
+  
+export const Primary = Template.bind({});
+Primary.args = { 
+    
+};
+>>>>>>> develop
