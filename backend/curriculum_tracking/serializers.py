@@ -327,3 +327,6 @@ class SetBulkDueDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProject
         fields = ["group", "content_item", "flavours", "due_time"]
+
+    flavours = serializers.CharField(help_text="comma seperated list of flavours")
+    group = TeamField()
