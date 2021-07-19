@@ -40,6 +40,19 @@ const useStyles = makeStyles((theme) => {
     backgroundColor: theme.palette.grey[200],
   };
 
+  // due date form styling - start
+  const dueDateButton = {
+    height: 30,
+    marginTop: theme.spacing(0.4),
+    marginRight: theme.spacing(0.4),
+  }
+
+  const dueDateFormMainContainer = {
+    marginTop: theme.spacing(0.8),
+    marginBottom: theme.spacing(0.8),
+  }
+  // due date form styling - end
+
   return {
     card,
     goalCard,
@@ -61,6 +74,11 @@ const useStyles = makeStyles((theme) => {
     chip: {
       margin: theme.spacing(0.3),
     },
+
+    // due date form styling - start
+    dueDateFormMainContainer,
+    dueDateButton,
+    // due date form styling - end
   };
 });
 
@@ -158,12 +176,12 @@ export default ({
         </Typography>
         
        {/* Form for setting due date - start */}
-        <Grid container sm={12}>
+        <Grid className={classes.dueDateFormMainContainer} container sm={12}>
           <Grid item container>
             <form className={classes.container} noValidate>
               <TextField item
                 id="date"
-                label="Due Date"
+                label="Due Date:"
                 type="date"
                 defaultValue=""
                 className={classes.textField}
@@ -172,8 +190,8 @@ export default ({
                 }}
               />
               <Grid item container>
-                <Button variant="outlined">Save</Button>
-                <Button variant="outlined">Cancel</Button>
+                <Button className={classes.dueDateButton} variant="outlined">Save</Button>
+                <Button className={classes.dueDateButton} variant="outlined">Cancel</Button>
               </Grid>
             </form>
           </Grid>
