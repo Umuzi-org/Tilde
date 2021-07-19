@@ -105,3 +105,13 @@ python manage.py load_content_from_tech_dept_repo
 python manage.py pull_recruit_project_submissions
 python manage.py pull_recruit_project_reviews
 ```
+
+## accessing the apis from the command line
+
+```
+curl -X POST --header "Content-Type: application/json" http://backend.tilde.umuzi.org/api/dj-rest-auth/login/ --data '{"password":"YOUR PASSWORD","email":"YOUR EMAIL"}'
+
+{"key":"YOUR_KEY"}
+
+curl --header "authorization: Token {YOUR_KEY}" --header "Content-Type: application/json" https://backend.tilde.umuzi.org/api/agile_card/?status=IR&limit=20&offset=0&assignees=293
+```

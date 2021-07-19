@@ -1,3 +1,4 @@
+from os import truncate
 from typing import Iterable
 from core.models import User
 from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
@@ -15,12 +16,12 @@ EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't h
     "Staff Web Dev",
     "Tech Junior Staff",
     "TechQuest Staff",
-    # "Boot web dev TechQuest1 10 Feb 2021",
-    # "Boot web dev TechQuest2 10 Feb 2021",
-    "Boot data eng 7 June 2021",
-    "Boot data sci 7 June 2021",
-    "Boot web dev 7 June 2021",
+    "Demo team",
+    "Boot",
+    "tech alumni",
 ]
+
+STAFF_ONLY = []  # TODO
 
 
 def get_cards_needing_reviewers() -> Iterable[AgileCard]:
@@ -31,9 +32,22 @@ def get_cards_needing_reviewers() -> Iterable[AgileCard]:
     - they don't have enough reviewers added
     """
 
+    def card_team_check(card):
+        for user in card.assignees.all():
+            for team in user.teams():
+                if not team.active:
+                    continue
+                for name in EXCLUDE_TEAMS:
+                    if name in team.name:
+                        # print(f"team = {team.name}")
+                        # print("noop")
+                        return
+        # print("card ok")
+        return True
+
     for card in (
         AgileCard.objects.filter(assignees__active__in=[True])
-        .exclude(assignees__groups__name__in=EXCLUDE_TEAMS)
+        # .exclude(assignees__groups__name__in=EXCLUDE_TEAMS)
         .exclude(content_item__tags__name__in=SKIP_CARD_TAGS)
         .annotate(reviewer_count=Count("reviewers"))
         .filter(content_item__content_type=ContentItem.PROJECT)
@@ -44,7 +58,8 @@ def get_cards_needing_reviewers() -> Iterable[AgileCard]:
             | Q(status=AgileCard.REVIEW_FEEDBACK)
         )
     ):
-        yield card
+        if card_team_check(card):
+            yield card
 
 
 def filter_by_flavour_match(query, flavours):

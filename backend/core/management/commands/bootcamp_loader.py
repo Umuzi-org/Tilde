@@ -181,6 +181,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         df = get_df(url=options["sheet_url"])
-        # df.apply(check_github, axis=1)
-        # df.apply(check_email, axis=1)
+        df.apply(check_github, axis=1)
+        print("GITHUB OK")
+        df.apply(check_email, axis=1)
+        print("Emails ok")
         df.apply(process_row, axis=1)

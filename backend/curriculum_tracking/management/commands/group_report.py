@@ -163,10 +163,11 @@ def user_as_assignee_stats(user):
         last_time_a_project_was_completed = None
 
     complete_projects_with_status = [
-        (o, o.recruit_project.latest_review(trusted=True).status)
+        (o, (review := o.recruit_project.latest_review(trusted=True)) and review.status)
         for o in complete_projects
         if o.recruit_project
     ]
+
     excellent_complete_projects = [
         project
         for (project, status) in complete_projects_with_status

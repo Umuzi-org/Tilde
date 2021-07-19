@@ -31,7 +31,5 @@ class TeamAdmin(GuardedModelAdmin):
 
 
 admin.site.register(models.UserProfile)
-
-
 admin.site.site_header = "Tilde Administration"
 admin.site.enable_nav_sidebar = False
