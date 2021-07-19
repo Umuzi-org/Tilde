@@ -1,4 +1,3 @@
-from os import truncate
 from typing import Iterable
 from core.models import User
 from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
@@ -6,20 +5,30 @@ from django.db.models import Count
 from django.db.models import Q
 from curriculum_tracking.management.helpers import user_is_competent_for_card_project
 
-REQUIRED_REVIEWERS_PER_CARD = 3
-SKIP_CARD_TAGS = ["ncit"]
 
-EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't have this mixed in with the code
-    "Tech seniors",
-    "Staff Data Sci",
-    "Staff Scrum masters",
-    "Staff Web Dev",
-    "Tech Junior Staff",
-    "TechQuest Staff",
-    "Demo team",
-    "Boot",
-    "tech alumni",
-]
+from config.models import NameSpace
+
+config_namespace = NameSpace.objects.get(name="managment_actions/auto_assign_reviewers")
+
+
+REQUIRED_REVIEWERS_PER_CARD = config_namespace.get_value(
+    "REQUIRED_REVIEWERS_PER_CARD"
+)  # 3
+SKIP_CARD_TAGS = config_namespace.get_value("SKIP_CARD_TAGS")  # ["ncit"]
+EXCLUDE_TEAMS = config_namespace.get_value("EXCLUDE_TEAMS")  # ["ncit"]
+
+
+# EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't have this mixed in with the code
+#     "Tech seniors",
+#     "Staff Data Sci",
+#     "Staff Scrum masters",
+#     "Staff Web Dev",
+#     "Tech Junior Staff",
+#     "TechQuest Staff",
+#     "Demo team",
+#     "Boot",
+#     "tech alumni",
+# ]
 
 STAFF_ONLY = []  # TODO
 

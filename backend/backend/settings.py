@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     "git_real.apps.GitRealConfig",
     "social_auth.apps.SocialAuthConfig",
     "dev_helpers.apps.DevHelpersConfig",
+    "config.apps.ConfigConfig",
 ]
 
 SITE_ID = 1  # from allauth docs
