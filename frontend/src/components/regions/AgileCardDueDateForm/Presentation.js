@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles({
 
     dueDateButton: {
-        height: "1.5rem",
+        height: "1.6rem",
         marginTop: "0.3rem",
         marginRight: "0.3rem",
     },
@@ -16,29 +16,40 @@ const useStyles = makeStyles({
 
 const AgileCardDueDateForm = (props) => {
 
-    const { dueDateInstance } = props;
+    const { dueTime } = props;
     const classes = useStyles();
 
     return (
-        <Grid container sm={12}>
-          <Grid item container>
+        <Grid container sm={12} justifyContent="center">
             <form className={classes.container} noValidate>
-              <TextField item
-                id="date"
-                label="Due Date:"
-                type="date"
-                defaultValue=""
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <Grid item container>
+            {   
+              !dueTime ?
+                  <TextField item
+                    id="null-datetime-local"
+                    label="Due Date:"
+                    type="datetime-local" 
+                    defaultValue=""
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  /> :
+                  <TextField item
+                    id="datetime-local"
+                    label="Due Date:"
+                    type="datetime-local"
+                    defaultValue={dueTime.split('').slice(0, 16).join('')}
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+            }
+              <Grid item container sm={12}>
                 <Button className={classes.dueDateButton} variant="outlined">Save</Button>
                 <Button className={classes.dueDateButton} variant="outlined">Cancel</Button>
               </Grid>
-            </form>
-          </Grid>
+            </form> 
         </Grid>
     )
 }
