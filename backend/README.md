@@ -3,17 +3,39 @@
 make a python3.9 virtual env
 
 ```
-# if you want to make use of graphvis to get
-sudo apt install graphvis graphvis-dev
-pip install -r dev_requirements.txt
-
-# always do this
 pip install -r requirements.txt
 ```
 
+## useful management commands
+
+In order to do most things you will need to run the development database.
+In a separate terminal:
+
+```
+cd ../database/localhost
+docker-compose up
+```
+
+Now you can do the following:
+
+- `python manage.py migrate` this creates all the database models
+- `python manage.py shell` this drops into a python shell. You can now interact with the database via the various models.
+- `python manage.py runserver` launch the development server
+- `python manage.py test` run the tests
+
+## setting up some test data
+
+TODO
 ## Getting a picture of the model relationships
 
 There are a lot of tables here. And a picture is worth a thousand words.
+
+First some setup:
+
+```
+sudo apt install graphvis graphvis-dev
+pip install -r dev_requirements.txt
+```
 
 ```
 mkdir gitignore
@@ -22,16 +44,15 @@ python manage.py graph_models -a -g -o gitignore/all_models.png
 # or you can draw the models for a specific app
 
 python manage.py graph_models -g -o gitignore/core_models.png core
-python manage.py graph_models -g -o gitignore/attendance_models.png attendance
 python manage.py graph_models -g -o gitignore/curriculum_tracking_models.png curriculum_tracking
 python manage.py graph_models -g -o gitignore/git_real_models.png git_real
 python manage.py graph_models -g -o gitignore/social_auth_models.png social_auth
 ```
 
 You can also see how multiple apps relate to one another:
-
+```
 python manage.py graph_models -g -o gitignore/core_and_curriculum_tracking_models.png curriculum_tracking core
-
+```
 # EVERYTHING BELOW THIS LINE NEEDS TLC
 
 ## Environmental variables
@@ -84,34 +105,4 @@ Once repos are pulled then you can do the rest in any order
 python manage.py git_real_pull_repos
 python manage.py git_real_pull_commits
 python manage.py git_real_pull_prs
-```
-
-### Attendance
-
-These can happen in any order
-
-```
-python manage.py pull_morning_attendance
-python manage.py pull_afternoon_attendance
-python manage.py pull_evening_attendance
-```
-
-### Recruit projects
-
-These can happen in any order, but it is best if the repos have been pulled first
-
-```
-python manage.py load_content_from_tech_dept_repo
-python manage.py pull_recruit_project_submissions
-python manage.py pull_recruit_project_reviews
-```
-
-## accessing the apis from the command line
-
-```
-curl -X POST --header "Content-Type: application/json" http://backend.tilde.umuzi.org/api/dj-rest-auth/login/ --data '{"password":"YOUR PASSWORD","email":"YOUR EMAIL"}'
-
-{"key":"YOUR_KEY"}
-
-curl --header "authorization: Token {YOUR_KEY}" --header "Content-Type: application/json" https://backend.tilde.umuzi.org/api/agile_card/?status=IR&limit=20&offset=0&assignees=293
 ```
