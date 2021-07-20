@@ -17,7 +17,7 @@ phonenumbers==8.10.5
 GoogleAppEngineCloudStorageClient==1.9.15.0
 django-google-cloud-storage==0.0.2
 google-cloud-storage==1.14.0
-Pillow==6.2.1
+Pillow
 
 pandas==1.2.3
 
@@ -29,7 +29,7 @@ google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 
-plotly==4.6.0
+# plotly==4.6.0
 
 django-admin-ordering==0.11.0
 django-admin-sortable2==0.7.7

@@ -1,8 +1,7 @@
 from django.utils import timezone
 from curriculum_tracking.models import AgileCard, ContentItem
 from curriculum_tracking.management.auto_assign_reviewers import (
-    EXCLUDE_TEAMS,
-    REQUIRED_REVIEWERS_PER_CARD,
+    get_config,
     get_cards_needing_reviewers,
     get_possible_reviewers,
 )
@@ -15,12 +14,47 @@ from curriculum_tracking.tests.factories import (
 from django.test import TestCase
 from typing import List
 
+from config.models import NameSpace, Value
+
 JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
 
 
+def setup_config():
+    ns = NameSpace.objects.create(
+        name="management_actions/auto_assign_reviewers",
+    )
+    Value.objects.create(
+        namespace=ns,
+        name="REQUIRED_REVIEWERS_PER_CARD",
+        value=3,
+        datatype=Value.INTEGER,
+        repeated=False,
+    )
+
+    Value.objects.create(
+        namespace=ns,
+        name="SKIP_CARD_TAGS",
+        value="ncit",
+        datatype=Value.STRING,
+        repeated=True,
+    )
+    Value.objects.create(
+        namespace=ns,
+        name="EXCLUDE_TEAMS",
+        value="Demo team\nTech Junior Staff\nTech seniors",
+        datatype=Value.STRING,
+        repeated=True,
+    )
+
+
 class get_cards_needing_reviewers_Tests(TestCase):
     def setUp(self):
+
+        setup_config()
+
+        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
+
         AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
             recruit_project=None,
@@ -60,8 +94,9 @@ class get_cards_needing_reviewers_Tests(TestCase):
         self.assertEqual(list(result), [])
 
     def test_exclude_teams(self):
-        if not EXCLUDE_TEAMS:
-            return
+        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
+        # if not EXCLUDE_TEAMS:
+        #     a
 
         team = TeamFactory(name=EXCLUDE_TEAMS[0])
         team.user_set.add(self.project_cards_needing_review[0].assignees.first())
@@ -74,9 +109,14 @@ class get_cards_needing_reviewers_Tests(TestCase):
 
 
 class get_possible_reviewers_Tests(TestCase):
+    def setUp(self):
+
+        setup_config()
+
     def test_that_only_competent_people_get_returned(self):
-        if not EXCLUDE_TEAMS:
-            return
+        # if not EXCLUDE_TEAMS:
+        #     return
+        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[JAVASCRIPT]
         )

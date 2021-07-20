@@ -1,6 +1,6 @@
 ## Installation
 
-make a python3.7 virtual env (not yet tested with 3.8)
+make a python3.9 virtual env
 
 ```
 # if you want to make use of graphvis to get

@@ -8,14 +8,19 @@ from curriculum_tracking.management.helpers import user_is_competent_for_card_pr
 
 from config.models import NameSpace
 
-config_namespace = NameSpace.objects.get(name="managment_actions/auto_assign_reviewers")
 
+def get_config():
+    config_namespace = NameSpace.objects.get(
+        name="management_actions/auto_assign_reviewers",
+    )
 
-REQUIRED_REVIEWERS_PER_CARD = config_namespace.get_value(
-    "REQUIRED_REVIEWERS_PER_CARD"
-)  # 3
-SKIP_CARD_TAGS = config_namespace.get_value("SKIP_CARD_TAGS")  # ["ncit"]
-EXCLUDE_TEAMS = config_namespace.get_value("EXCLUDE_TEAMS")  # ["ncit"]
+    REQUIRED_REVIEWERS_PER_CARD = config_namespace.get_value(
+        "REQUIRED_REVIEWERS_PER_CARD"
+    )  # 3
+    SKIP_CARD_TAGS = config_namespace.get_value("SKIP_CARD_TAGS")  # ["ncit"]
+    EXCLUDE_TEAMS = config_namespace.get_value("EXCLUDE_TEAMS")  # ["ncit"]
+
+    return REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS
 
 
 # EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't have this mixed in with the code
@@ -40,6 +45,7 @@ def get_cards_needing_reviewers() -> Iterable[AgileCard]:
     - they belong to active users
     - they don't have enough reviewers added
     """
+    REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
 
     def card_team_check(card):
         for user in card.assignees.all():
@@ -88,7 +94,7 @@ def get_possible_reviewers(card):
 
     count the number of cards with the same content_item and flavours where a user is the reviewer. Order = count ascending
     """
-
+    REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
     projects: RecruitProject = RecruitProject.objects.filter(
         content_item=card.content_item
     ).filter(recruit_users__active__in=[True])
@@ -110,7 +116,7 @@ def get_possible_reviewers(card):
 
 
 def auto_assign_reviewers():
-
+    REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
     cards = list(get_cards_needing_reviewers())
     total = len(cards)
     for n, card in enumerate(cards):
