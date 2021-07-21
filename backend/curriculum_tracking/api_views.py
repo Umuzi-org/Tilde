@@ -19,6 +19,7 @@ from core.permissions import (
     DenyAll,
 )
 from core.models import Team
+import curriculum_tracking.activity_log_entry_creators as log_creators
 
 
 def _get_teams_from_topic_progress(self, request, view):
