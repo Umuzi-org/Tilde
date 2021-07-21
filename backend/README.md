@@ -112,8 +112,10 @@ The github profile that you have created will need to be able to create repos an
 Make use of the following environmental variables to change that stuff:
 
 ```
-GIT_REAL_ORG="the name of the organisation as registered on Github.com"
-GIT_REAL_BOT_USERNAME="the name of the user that will be sending out repo invites and that sort of thing"
+export GITHUB_CLIENT_ID=??? Needed for login with github to work
+export GITHUB_CLIENT_SECRET=??? Needed for login with github to
+export GIT_REAL_ORG="the name of the organisation as registered on Github.com"
+export GIT_REAL_BOT_USERNAME="the name of the user that will be sending out repo invites and that sort of thing"
 ```
 
 Then create a user on Tilde through the management scripts. Give the user your GIT_REAL_BOT_USERNAME as the github username.
@@ -135,7 +137,7 @@ There are a few environmental vars that are very hella useful in a development e
 If your system is set up the same as mine you would edit `~/.Virtualenvs/tilde3.9/bin/activate`. But you might keep your venvs somewhere else.
 
 ```
-export REACT_APP_GOOGLE_CLIENT_ID=??? #used for the login with google function on the frontend
+export REACT_APP_GOOGLE_CLIENT_ID=??? # used for the login with google function on the frontend
 export GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE=??? # needed for login with google
 
 export REACT_APP_FEATURE_AUTHENTICATION=1 # todo: check if we still use this
@@ -144,4 +146,3 @@ export REACT_APP_FEATURE_BACKEND_API_ON=1 # todo: check if we still use this
 export GITHUB_CLIENT_ID=??? Needed for login with github to work
 export GITHUB_CLIENT_SECRET=??? Needed for login with github to
 ```
-
