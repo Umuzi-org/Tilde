@@ -19,13 +19,36 @@ docker-compose up
 Now you can do the following:
 
 - `python manage.py migrate` this creates all the database models
+- `python manage.py test` run the tests
 - `python manage.py shell` this drops into a python shell. You can now interact with the database via the various models.
 - `python manage.py runserver` launch the development server
-- `python manage.py test` run the tests
 
-## setting up some test data
+## Interacting with the Django guis
 
-TODO
+Note that if the database isn't running or the tables haven't been set up yet, this isn't going to work!
+
+To create a superuser:
+
+```
+python manage.py createsuperuser
+```
+The superuser can log into the admin panel and browse the apis frontend.
+
+Now if you run the development server (`python manage.py runserver`), you'll be able to log in with your superuser and poke around:
+
+- http://127.0.0.1:8000/admin
+- http://127.0.0.1:8000/api
+
+##  creating data to play with
+
+You can create some curriculums in the database like this:
+
+```
+python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
+python manage.py import_curriculum dev_helpers/data/data-eng-part-1.json
+```
+
+
 ## Getting a picture of the model relationships
 
 There are a lot of tables here. And a picture is worth a thousand words.

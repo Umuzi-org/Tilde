@@ -1,0 +1,920 @@
+{
+  "content_item_orders": [
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/python/module-2-control-statements/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/python/module-1-basic-concepts/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/python/module-3-functions-and-modules/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/python/module-2-control-statements/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/python/module-4-exceptions-and-files/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/python/module-3-functions-and-modules/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/python/module-5-more-types/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/python/module-4-exceptions-and-files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/clean-code/python/",
+      "pre": "http://syllabus.africacode.net/topics/clean-code/general/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/katas/level-2/",
+      "pre": "http://syllabus.africacode.net/projects/katas/level-1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/language-agnostic/intro-to-hackerrank/",
+      "pre": "http://syllabus.africacode.net/language-agnostic/problem-solving-technique/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/morse-code/",
+      "pre": "http://syllabus.africacode.net/topics/intro-to-asserive-programming/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/test-driven-development/",
+      "pre": "http://syllabus.africacode.net/topics/unit-testing/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/",
+      "pre": "http://syllabus.africacode.net/projects/morse-code/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/",
+      "pre": "http://syllabus.africacode.net/topics/test-driven-development/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "pre": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "pre": "http://syllabus.africacode.net/language-agnostic/validate-id-number/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/oop/animals/part1/",
+      "pre": "http://syllabus.africacode.net/projects/oop/person/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/oop/animals/part2/",
+      "pre": "http://syllabus.africacode.net/projects/oop/animals/part1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/oop/animals/part2/",
+      "pre": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/linux/os-environmental-variables/",
+      "pre": "http://syllabus.africacode.net/topics/linux/intro-to-bash/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/docker/intro-to-docker/",
+      "pre": "http://syllabus.africacode.net/topics/linux/os-environmental-variables/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/sql/2-filtering-functions-subqueries/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/sql/1-basic-concepts/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/sql/3-join-table-operations/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/sql/2-filtering-functions-subqueries/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/solo-learn/sql/4-challenges/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/sql/3-join-table-operations/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/sql/shop-project/",
+      "pre": "http://syllabus.africacode.net/docker/intro-to-docker/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/sql/shop-project/",
+      "pre": "http://syllabus.africacode.net/topics/solo-learn/sql/4-challenges/"
+    }
+  ],
+  "content_items": [
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "solo-learn-python-module-1-basic-concepts",
+      "story_points": 1,
+      "tags": [
+        "python"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - Python - Module 1 - Basic Concepts",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/python/module-1-basic-concepts/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "solo-learn-python-module-2-control-statements",
+      "story_points": 1,
+      "tags": [
+        "python"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - Python - Module 2 - Control Statements",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/python/module-2-control-statements/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "solo-learn-python-module-3-functions-modules",
+      "story_points": 1,
+      "tags": [
+        "python"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - Python - Module 3 - Functions & Modules",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/python/module-3-functions-and-modules/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "solo-learn-python-module-4-exceptions-and-files",
+      "story_points": 1,
+      "tags": [
+        "python"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - Python - Module 4 - Exceptions and Files",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/python/module-4-exceptions-and-files/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "solo-learn-python-module-5-more-types",
+      "story_points": 1,
+      "tags": [
+        "python"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - Python - Module 5 - More Types",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/python/module-5-more-types/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "agile-scrum",
+      "story_points": 1,
+      "tags": [
+        "agile",
+        "scrum"
+      ],
+      "template_repo": null,
+      "title": "Agile & Scrum",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/agile/agile-scrum/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "general-clean-code-guidelines",
+      "story_points": 1,
+      "tags": [
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "General Clean Code Guidelines",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/clean-code/general/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "clean-code-for-python",
+      "story_points": 1,
+      "tags": [
+        "python",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Clean Code for Python",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/clean-code/python/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "how-to-ask-for-help-with-your-code",
+      "story_points": 1,
+      "tags": [
+        "communication",
+        "soft-skills"
+      ],
+      "template_repo": null,
+      "title": "How to ask for help with your code",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/how-to-ask-for-help-with-your-code/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "big-picture-of-web-dev",
+      "story_points": 1,
+      "tags": [
+        "todo",
+        "internet"
+      ],
+      "template_repo": null,
+      "title": "Big Picture of Web Dev",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/big-picture-web-dev/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "level-1-programming-katas",
+      "story_points": 3,
+      "tags": [
+        "algrithms",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Level 1 coding challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/katas/level-1/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": "http://syllabus.africacode.net/projects/katas/level-1/",
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "link_regex": null,
+      "project_submission_type": "C",
+      "slug": "level-2-coding-challenges",
+      "story_points": 3,
+      "tags": [
+        "algrithms",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Level 2 coding challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/katas/level-2/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "problem-decomposition",
+      "story_points": 1,
+      "tags": [
+        "problem solving"
+      ],
+      "template_repo": null,
+      "title": "Problem decomposition",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/language-agnostic/problem-solving-technique/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "get-started-with-hackerrank",
+      "story_points": 1,
+      "tags": [
+        "data structures",
+        "algorithms",
+        "problem solving"
+      ],
+      "template_repo": null,
+      "title": "Get started with Hackerrank",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/language-agnostic/intro-to-hackerrank/"
+    },
+    {
+      "content_type": "W",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "clean-code-language-agnostic",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Clean Code (language agnostic)",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/workshops/general-coding-best-practices/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "automated-testing-in-python",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Automated Testing in Python",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/python-specific/automated-testing-with-pytest/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "introduction-to-assertive-programming",
+      "story_points": 1,
+      "tags": [
+        "defensive-programming"
+      ],
+      "template_repo": null,
+      "title": "Introduction to assertive programming",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/intro-to-asserive-programming/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "assertive-programming-kata",
+      "story_points": 3,
+      "tags": [
+        "data structures",
+        "problem solving",
+        "defensive programming"
+      ],
+      "template_repo": null,
+      "title": "Morse code",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/morse-code/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "unit-testing-language-agnostic-concepts",
+      "story_points": 1,
+      "tags": [
+        "unit testing"
+      ],
+      "template_repo": null,
+      "title": "Unit testing (language agnostic concepts)",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/unit-testing/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "test-driven-development",
+      "story_points": 1,
+      "tags": [
+        "tdd"
+      ],
+      "template_repo": null,
+      "title": "Test Driven Development",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/test-driven-development/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "simple-calculator-part-1",
+      "story_points": 2,
+      "tags": [
+        "tdd"
+      ],
+      "template_repo": null,
+      "title": "simple-calculator part 1",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "validate-a-south-african-id-number",
+      "story_points": 1,
+      "tags": [
+        "tdd",
+        "problem-solving",
+        "validation"
+      ],
+      "template_repo": null,
+      "title": "Validate a South African ID number",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/language-agnostic/validate-id-number/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "password-checker",
+      "story_points": 3,
+      "tags": [
+        "tdd",
+        "error-checking"
+      ],
+      "template_repo": null,
+      "title": "password-checker",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "intro-oopobject-oriented-programming-for-python",
+      "story_points": 1,
+      "tags": [
+        "oop"
+      ],
+      "template_repo": null,
+      "title": "Intro OOP(Object-oriented Programming) for Python",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/python-specific/oop-for-python/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "virtual-environments",
+      "story_points": 1,
+      "tags": [],
+      "template_repo": null,
+      "title": "Virtual Environments",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/python-specific/virtual-envs/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "person",
+      "story_points": 2,
+      "tags": [
+        "oop"
+      ],
+      "template_repo": null,
+      "title": "Person",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/oop/person/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "animals-part-1-oop-basics",
+      "story_points": 3,
+      "tags": [
+        "oop"
+      ],
+      "template_repo": null,
+      "title": "Animals Part 1. OOP basics",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/oop/animals/part1/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": "http://syllabus.africacode.net/projects/oop/animals/part1/",
+      "flavours": [
+        "javascript",
+        "python",
+        "java",
+        "kotlin",
+        "swift",
+        "typescript",
+        "bash"
+      ],
+      "link_regex": null,
+      "project_submission_type": "C",
+      "slug": "animals-part-2-adding-tests",
+      "story_points": 3,
+      "tags": [
+        "oop",
+        "unit-testing"
+      ],
+      "template_repo": null,
+      "title": "Animals Part 2. Adding Tests",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/oop/animals/part2/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "python"
+      ],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "interacting-with-files",
+      "story_points": 1,
+      "tags": [
+        "todo",
+        "fileio"
+      ],
+      "template_repo": null,
+      "title": "interacting with files",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/python-specific/file-io/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "introduction-to-bash-and-the-terminal",
+      "story_points": 1,
+      "tags": [
+        "linux",
+        "bash"
+      ],
+      "template_repo": null,
+      "title": "Introduction to Bash and the terminal",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/linux/intro-to-bash/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "environmental-variables",
+      "story_points": 1,
+      "tags": [
+        "bash",
+        "environmental variables"
+      ],
+      "template_repo": null,
+      "title": "Environmental Variables",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/linux/os-environmental-variables/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "intro-to-docker-and-docker-compose",
+      "story_points": 1,
+      "tags": [
+        "docker-compose",
+        "postgres"
+      ],
+      "template_repo": null,
+      "title": "Intro to Docker and Docker-compose",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/docker/intro-to-docker/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "contentitem",
+      "story_points": 1,
+      "tags": [
+        "sql"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - SQL - Module 1 - Basic Concepts",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/sql/1-basic-concepts/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "contentitem",
+      "story_points": 1,
+      "tags": [
+        "sql"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - SQL - Module 2 - Filtering, Functions, Subqueries",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/sql/2-filtering-functions-subqueries/"
+    },
+    {
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "contentitem",
+      "story_points": 1,
+      "tags": [
+        "sql"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - SQL - Module 3 - JOIN, Table Operations",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/sql/3-join-table-operations/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "L",
+      "slug": "contentitem",
+      "story_points": 1,
+      "tags": [
+        "sql"
+      ],
+      "template_repo": null,
+      "title": "Solo Learn - SQL - Module 4 - Challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/solo-learn/sql/4-challenges/"
+    },
+    {
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_regex": null,
+      "project_submission_type": "R",
+      "slug": "sql",
+      "story_points": 3,
+      "tags": [
+        "sql"
+      ],
+      "template_repo": null,
+      "title": "Shop Database using sql",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/sql/shop-project/"
+    }
+  ],
+  "curriculum": {
+    "name": "Data Engineering - part 1"
+  },
+  "curriculum_content_requirements": [
+    {
+      "content_item": "http://syllabus.africacode.net/topics/solo-learn/python/module-5-more-types/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 1
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/agile/agile-scrum/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 2
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/clean-code/python/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 3
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/how-to-ask-for-help-with-your-code/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 4
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/big-picture-web-dev/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 5
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/katas/level-2/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 6
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/language-agnostic/intro-to-hackerrank/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 7
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/workshops/general-coding-best-practices/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 8
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/python-specific/automated-testing-with-pytest/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 9
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 10
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/python-specific/oop-for-python/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 11
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/python-specific/virtual-envs/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 12
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/oop/animals/part2/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 13
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/python-specific/file-io/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 14
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/language-agnostic/validate-id-number/",
+      "flavours": [
+        "python"
+      ],
+      "hard_requirement": false,
+      "order": 15
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/sql/shop-project/",
+      "flavours": [],
+      "hard_requirement": false,
+      "order": 16
+    }
+  ]
+}
