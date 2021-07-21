@@ -16,42 +16,30 @@ const useStyles = makeStyles({
 
 const AgileCardDueDateForm = (props) => {
 
-    const { dueTime } = props;
-    const classes = useStyles();
+  const { dueTime } = props;
+  const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
+  const classes = useStyles();
 
-    return (
-        <Grid container sm={12} justifyContent="center">
-            <form className={classes.container} noValidate>
-            {   
-              !dueTime ?
-                  <TextField item
-                    id="null-datetime-local"
-                    label="Due Date:"
-                    type="datetime-local" 
-                    defaultValue=""
-                    className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  /> :
-                  <TextField item
-                    id="datetime-local"
-                    label="Due Date:"
-                    type="datetime-local"
-                    defaultValue={dueTime.split('').slice(0, 16).join('')}
-                    className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-            }
-              <Grid item container sm={12}>
-                <Button className={classes.dueDateButton} variant="outlined">Save</Button>
-                <Button className={classes.dueDateButton} variant="outlined">Cancel</Button>
-              </Grid>
-            </form> 
+  return (
+    <Grid container sm={12} justifyContent="center">
+      <form className={classes.container} noValidate>
+        <TextField item
+          id="datetime-local"
+          label="Due Date:"
+          type="datetime-local"
+          defaultValue={defaultValue}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <Grid item container sm={12}>
+          <Button className={classes.dueDateButton} variant="outlined">Save</Button>
+          <Button className={classes.dueDateButton} variant="outlined">Cancel</Button>
         </Grid>
-    )
+      </form> 
+    </Grid>
+  )
 }
 
 export default AgileCardDueDateForm;
