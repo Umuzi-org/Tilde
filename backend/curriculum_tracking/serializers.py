@@ -205,6 +205,7 @@ class cardsummarySerializer(serializers.ModelSerializer):
             "code_review_red_flag_since_last_review_request",
             "code_review_ny_competent_since_last_review_request",
             "open_pr_count",
+            "oldest_open_pr_updated_time",
         ]
 
 
