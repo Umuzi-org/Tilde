@@ -54,7 +54,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card }) => {
+const CardBasicDetails = ({ card, user }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -88,9 +88,13 @@ const CardBasicDetails = ({ card }) => {
               <TableCell>
                 {dueTime}
               </TableCell>
-              <TableCell>
-                <Button variant="outlined">Set Date</Button>
-              </TableCell>
+              {
+                user.email === card.assigneeNames[0] && !card.dueTime ? (
+                  <TableCell>
+                    <Button variant="outlined">Set Date</Button>
+                  </TableCell>
+                ) : ""
+              }
             </TableRow>
             {card.startTime && (
               <TableRow>
@@ -120,6 +124,7 @@ const CardBasicDetails = ({ card }) => {
 
 export default ({
   card,
+  user,
   cardId,
   topicProgress,
   //   workshopAttendance,
@@ -141,7 +146,7 @@ export default ({
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
+          {card ? <CardBasicDetails card={card} user={user} /> : <div>Loading...</div>}
 
           {project ? (
             <ProjectDetails
