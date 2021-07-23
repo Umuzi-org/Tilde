@@ -19,7 +19,7 @@ export const Primary = Template.bind({});
 Primary.args = {
   cardId: 1,
   card: repoProjectCard,
-  user: authUser,
+  authUser: authUser,
   reviews: [reviewObject],
   reviewIds: [1],
 };
