@@ -63,7 +63,7 @@ const CardBasicDetails = ({ card, authUser }) => {
     card.reviewRequestTime && new Date(card.reviewRequestTime).toLocaleString();
   const completeTime =
     card.completeTime && new Date(card.completeTime).toLocaleString();
-
+  
   return (
     <React.Fragment>
       <Typography variant="h5">
@@ -89,7 +89,10 @@ const CardBasicDetails = ({ card, authUser }) => {
                 {dueTime}
               </TableCell>
               {
-                authUser.email === card.assigneeNames[0] && !dueTime ? (
+                authUser.email === card.assigneeNames[0] && !dueTime && 
+                Object.keys(authUser.permissions.teams)
+                .map((key) => authUser.permissions.teams[key].permissions[0])
+                .includes("MANAGE_CARDS") ? (
                   <TableCell>
                     <Button variant="outlined">Set Date</Button>
                   </TableCell>
