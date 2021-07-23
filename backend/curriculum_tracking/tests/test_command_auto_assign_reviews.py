@@ -31,7 +31,6 @@ def setup_config():
         datatype=Value.INTEGER,
         repeated=False,
     )
-
     Value.objects.create(
         namespace=ns,
         name="SKIP_CARD_TAGS",

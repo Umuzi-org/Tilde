@@ -14,6 +14,9 @@ class NameSpace(
         instance = Value.objects.get(name=name, namespace=self)
         return instance.get()
 
+    def __str__(self):
+        return self.name
+
 
 class Value(
     models.Model,
@@ -31,6 +34,9 @@ class Value(
     value = models.TextField()
     datatype = models.CharField(max_length=1, choices=DATATYPE_CHOICES)
     repeated = models.BooleanField()
+
+    def __str__(self):
+        return f"{self.namespace}: {self.name} = {self.get()}"
 
     def get(self):
         value = self.value.strip()

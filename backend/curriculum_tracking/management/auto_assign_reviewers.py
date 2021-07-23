@@ -24,15 +24,15 @@ def get_config():
 
 
 # EXCLUDE_TEAMS = [  # TODO: put this in the database or something. We shouldn't have this mixed in with the code
-#     "Tech seniors",
-#     "Staff Data Sci",
-#     "Staff Scrum masters",
-#     "Staff Web Dev",
-#     "Tech Junior Staff",
-#     "TechQuest Staff",
-#     "Demo team",
-#     "Boot",
-#     "tech alumni",
+# Tech seniors
+# Staff Data Sci
+# Staff Scrum masters
+# Staff Web Dev
+# Tech Junior Staff
+# TechQuest Staff
+# Demo team
+# Boot
+# tech alumni
 # ]
 
 STAFF_ONLY = []  # TODO
