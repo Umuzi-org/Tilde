@@ -323,10 +323,12 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "attendee_user",
         ]
 
-class SetBulkDueDateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.RecruitProject
-        fields = ["group", "content_item", "flavours", "due_time"]
 
+class SetBulkDueDateSerializer(serializers.Serializer):
+    class Meta:
+        fields = ["team", "flavours", "content_item", "due_time"]
+
+    team = TeamField()
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
-    group = TeamField()
+    content_item = ProjectContentItemField()
+    due_time = serializers.DateTimeField()
