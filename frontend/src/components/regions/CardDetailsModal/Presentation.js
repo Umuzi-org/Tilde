@@ -6,6 +6,7 @@ import {
   TableRow,
   TableCell,
   Typography,
+  Button
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -18,6 +19,7 @@ import Modal from "../../widgets/Modal";
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
+import { canSetDueTime } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -52,7 +54,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card }) => {
+const CardBasicDetails = ({ card, authUser }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -83,7 +85,9 @@ const CardBasicDetails = ({ card }) => {
           <TableBody>
             <TableRow>
               <TableCell>Due Time</TableCell>
-              <TableCell>{dueTime}</TableCell>
+              <TableCell>
+                {dueTime} {canSetDueTime({card, authUser}) && (<Button variant="outlined">Set Time</Button>)}
+              </TableCell>
             </TableRow>
             {card.startTime && (
               <TableRow>
@@ -113,6 +117,7 @@ const CardBasicDetails = ({ card }) => {
 
 export default ({
   card,
+  authUser,
   cardId,
   topicProgress,
   //   workshopAttendance,
@@ -134,7 +139,7 @@ export default ({
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
+          {card ? <CardBasicDetails card={card} authUser={authUser} /> : <div>Loading...</div>}
 
           {project ? (
             <ProjectDetails
