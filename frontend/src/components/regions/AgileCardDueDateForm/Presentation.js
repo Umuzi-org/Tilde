@@ -7,8 +7,7 @@ import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles({
 
-    dueDateButton: {
-        height: "1.6rem",
+    dueTimeButton: {
         marginTop: "0.3rem",
         marginRight: "0.3rem",
     },
@@ -21,24 +20,21 @@ const AgileCardDueDateForm = (props) => {
   const classes = useStyles();
 
   return (
-    <Grid container sm={12} justifyContent="center">
-      <form className={classes.container} noValidate>
-        <TextField item
+      <form novalidate>
+        <TextField
           id="datetime-local"
           label="Due Date:"
           type="datetime-local"
           defaultValue={defaultValue}
-          className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
         />
-        <Grid item container sm={12}>
-          <Button className={classes.dueDateButton} variant="outlined">Save</Button>
-          <Button className={classes.dueDateButton} variant="outlined">Cancel</Button>
+        <Grid container>
+          <Button className={classes.dueTimeButton} variant="outlined">Save</Button>
+          <Button className={classes.dueTimeButton} variant="outlined">Cancel</Button>
         </Grid>
       </form> 
-    </Grid>
   )
 }
 
