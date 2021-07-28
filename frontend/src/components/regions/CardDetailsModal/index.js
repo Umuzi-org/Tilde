@@ -102,6 +102,7 @@ function CardDetailsModalUnconnected({
     project,
     projectId,
     cardId,
+    authUser,
     card,
     topicProgressId,
     topicProgress,
