@@ -80,12 +80,6 @@ function CardDetailsModalUnconnected({
     openReviewFormModal({ cardId: project.agileCard });
   };
 
-  // due time button event - start
-  const handleClickSetDueTime = () => {
-    showAgileCardDueDateForm();
-  }
-  // due time button event - end
-
   const isReviewer =
     ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
 
@@ -115,9 +109,6 @@ function CardDetailsModalUnconnected({
     handleClose,
     topicReviews,
     projectReviews,
-    // due time button event - start
-    handleClickSetDueTime,
-    // due time button event - end
     handleClickAddReview,
     showAddReviewButton,
     showUpdateProjectLinkForm,
@@ -242,12 +233,6 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-
-    // due time button event - start
-    showAgileCardDueDateForm: ({}) => {
-      dispatch();
-    },
-    // due time button event - end
 
     openReviewFormModal: ({ cardId }) => {
       dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
