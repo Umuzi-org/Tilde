@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 
 import CardDetailsModal from "../CardDetailsModal";
 import AddCardReviewModal from "../AddCardReviewModal";
+import DueTimeFormModal from "../DueTimeFormModal";
 
 import Avatar from "@material-ui/core/Avatar";
 
@@ -157,6 +158,7 @@ export default function Presentation(props) {
       <CssBaseline />
       <CardDetailsModal />
       <AddCardReviewModal />
+      <DueTimeFormModal />
       {/* <MarkSingleCardAttendanceModal /> */}
 
       <AppBar
