@@ -20,7 +20,7 @@ import Modal from "../../widgets/Modal";
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
-import { canSetDueTime } from "./utils"; 
+import { canSetDueTime } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
