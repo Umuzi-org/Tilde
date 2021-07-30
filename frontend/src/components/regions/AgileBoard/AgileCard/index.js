@@ -75,12 +75,6 @@ function AgileCardUnconnected({
     cancelReviewRequest({ cardId });
   };
 
-  // due time button event - start
-  const handleClickSetDueTime = () => {
-    showAgileCardDueDateForm();
-  }
-  // due time button event - end
-
   const loadingStartProject = (getLatestMatchingCall({
     callLog: CARD_START_PROJECT,
     requestData: { cardId },
@@ -118,9 +112,6 @@ function AgileCardUnconnected({
     card,
     handleClickOpenCardDetails,
     handleClickAddReview,
-    // due time button event - start
-    handleClickSetDueTime,
-    // due time button event - end
 
     authUser,
     viewedUser,
@@ -242,12 +233,6 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-
-    // due time button event - start
-    showAgileCardDueDateForm: ({}) => {
-      dispatch();
-    },
-    // due time button event - end
   };
 };
 

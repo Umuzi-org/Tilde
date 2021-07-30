@@ -5,6 +5,7 @@ import googleLogin from "./../utils/googleLogin";
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
 import CardDetailsModal from "../components/regions/CardDetailsModal/redux";
+import DueTimeFormModal from "../components/regions/DueTimeFormModal/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
@@ -34,6 +35,7 @@ export const store = createStore(
     MarkSingleCardAttendanceModal,
     Entities,
     ...apiReduxReducers,
+    DueTimeFormModal,
   }),
   applyMiddleware(logger, sagaMiddleware)
 );
