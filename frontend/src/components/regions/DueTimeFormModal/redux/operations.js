@@ -3,7 +3,7 @@ import Creators from "./actions.js";
 export default {
     ...Creators,
     openDueTimeFormModal: ({ cardId }) =>
-    Creators.setDueTimeFormModalOpen({ cardId }),
+        Creators.setDueTimeFormModalOpen({ cardId }),
     closeDueTimeFormModal: () =>
-    Creators.setDueTimeFormModalOpen({ cardId: null }),
+        Creators.setDueTimeFormModalOpen({ cardId: null }),
 };
