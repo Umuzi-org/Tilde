@@ -8,4 +8,4 @@ export default {
     component: DueTimeFormModal
 }
 
-export const Primary = () => <DueTimeFormModal dueTime={agileCard.dueTime}/>
+export const Primary = () => <DueTimeFormModal card={agileCard} />

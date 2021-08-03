@@ -36,7 +36,6 @@ export const store = createStore(
     MarkSingleCardAttendanceModal,
     Entities,
     ...apiReduxReducers,
-    DueTimeFormModal,
   }),
   applyMiddleware(logger, sagaMiddleware)
 );
