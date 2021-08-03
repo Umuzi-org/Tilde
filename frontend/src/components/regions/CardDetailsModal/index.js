@@ -5,7 +5,11 @@ import operations from "./redux/operations";
 
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
+<<<<<<< HEAD
 import { dueTimeFormModalOperations } from "../DueTimeFormModal/redux";
+=======
+import { dueTimeFormModalOperations } from "../../DueTimeFormModal/redux";
+>>>>>>> 944638d135b6abdd6292c36cff81f242b7892e55
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
@@ -83,7 +87,11 @@ function CardDetailsModalUnconnected({
   };
 
   const handleClickSetDueTime = () => {
+<<<<<<< HEAD
     openDueTimeFormModal({ cardId: project.agileCard });
+=======
+    openDueTimeFormModal({ cardId });
+>>>>>>> 944638d135b6abdd6292c36cff81f242b7892e55
   }
 
   const isReviewer =
