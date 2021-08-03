@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     },
 });
 
-const DueTimeForm = (props) => {
+const DueTimeFormModal = (props) => {
 
   const { dueTime } = props;
   const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
@@ -38,4 +38,4 @@ const DueTimeForm = (props) => {
   )
 }
 
-export default DueTimeForm;
+export default DueTimeFormModal;

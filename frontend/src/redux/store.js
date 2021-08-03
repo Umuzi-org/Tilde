@@ -32,10 +32,10 @@ export const store = createStore(
     googleLogin,
     CardDetailsModal,
     AddCardReviewModal,
+    DueTimeFormModal,
     MarkSingleCardAttendanceModal,
     Entities,
     ...apiReduxReducers,
-    DueTimeFormModal,
   }),
   applyMiddleware(logger, sagaMiddleware)
 );
