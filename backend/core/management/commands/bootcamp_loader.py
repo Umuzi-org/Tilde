@@ -4,7 +4,8 @@ from core.models import Curriculum, User, Team
 from social_auth.models import SocialProfile
 from curriculum_tracking.models import CourseRegistration
 import requests
-from pprint import pprint
+
+# from pprint import pprint
 
 FIRST_NAME = "Name"
 LAST_NAME = "Surname"
