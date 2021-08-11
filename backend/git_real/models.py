@@ -3,6 +3,8 @@ from model_mixins import Mixins
 from core.models import User
 from git_real.helpers import strp_github_standard_time
 
+from django.core.exceptions import MultipleObjectsReturned
+
 
 class Repository(models.Model, Mixins):
     owner = models.CharField(max_length=50)
@@ -74,7 +76,7 @@ class PullRequest(models.Model, Mixins):
         defaults = {
             "state": pull_request_data["state"],
             "title": pull_request_data["title"],
-            "body": pull_request_data["body"],
+            "body": pull_request_data["body"] or " ",
             "created_at": strp_github_standard_time(
                 pull_request_data["created_at"],
             ),
@@ -133,9 +135,21 @@ class PullRequestReview(models.Model, Mixins):
             ).first(),
         }
 
-        review, _ = cls.get_or_create_or_update(
-            html_url=review_data["html_url"], defaults=defaults, overrides=defaults
-        )
+        try:
+            review, _ = cls.get_or_create_or_update(
+                html_url=review_data["html_url"], defaults=defaults, overrides=defaults
+            )
+        except MultipleObjectsReturned:
+            reviews = list(cls.objects.filter(html_url=review_data["html_url"]))
+            for o in reviews[:-1]:
+                o.delete()
+            review = reviews[-1]
+            review.update(**defaults)
+            review.save()
+        # review, _ = cls.get_or_create_or_update(
+        #     html_url=review_data["html_url"], defaults=defaults, overrides=defaults
+        # )
+
         return review
 
 

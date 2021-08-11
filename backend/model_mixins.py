@@ -8,7 +8,7 @@ class Mixins:
 
     @classmethod
     def get_or_create_or_update(cls, defaults=None, overrides=None, **getkwargs):
-        assert "default" not in getkwargs, "did you mean 'deafults'"
+        assert "default" not in getkwargs, "did you mean 'defaults'"
         assert "override" not in getkwargs, "did you mean 'overrides'"
         default_copy = copy.copy(defaults or {})
         default_copy.update(overrides or {})

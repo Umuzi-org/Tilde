@@ -112,10 +112,22 @@ def scrape_repo_prs(api, repo):
         scrape_pull_request_reviews(api, pr_object)
 
 
+from django.db.models import Q
+from curriculum_tracking.models import AgileCard
+
+
 def scrape_pull_requests_from_github():
     api = Api(PERSONAL_GITHUB_NAME)
-    for repo in models.Repository.objects.filter(
-        recruit_projects__recruit_users__active__in=[True]
+    for repo in (
+        models.Repository.objects.filter(
+            recruit_projects__recruit_users__active__in=[True],
+        )
+        .filter(
+            Q(recruit_projects__agile_card__status=AgileCard.IN_PROGRESS)
+            | Q(recruit_projects__agile_card__status=AgileCard.IN_REVIEW)
+            | Q(recruit_projects__agile_card__status=AgileCard.REVIEW_FEEDBACK)
+        )
+        .order_by("-recruit_projects__start_time")
     ):
         scrape_repo_prs(api, repo)
 
