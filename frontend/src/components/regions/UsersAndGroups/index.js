@@ -111,6 +111,7 @@ function UsersAndGroupsUnconnected({ fetchteamsPages, teams }) {
         { page: 3 },
         { page: 4 },
         { page: 5 },
+        { page: 6 },
       ],
     });
   }, [fetchteamsPages]);
