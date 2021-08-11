@@ -53,7 +53,7 @@ class PullRequest(models.Model, Mixins):
     author_github_name = models.CharField(max_length=100)
     state = models.CharField(max_length=6)
     title = models.CharField(max_length=200)
-    body = models.TextField()
+    body = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
@@ -104,12 +104,12 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
-    html_url = models.CharField(max_length=255)
+    html_url = models.CharField(max_length=255, unique=True)
     pull_request = models.ForeignKey(PullRequest, on_delete=models.CASCADE)
     author_github_name = models.CharField(max_length=100)
 
     submitted_at = models.DateTimeField(null=True, blank=True)
-    body = models.TextField()
+    body = models.TextField(null=True, blank=True)
     commit_id = models.CharField(max_length=40)
     state = models.CharField(max_length=17)
 
