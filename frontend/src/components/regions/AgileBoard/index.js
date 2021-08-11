@@ -7,8 +7,6 @@ import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import Loading from "../../widgets/Loading";
 
-// TODO: look nice
-
 function boardFromCards({ cards }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
     return {
@@ -97,7 +95,7 @@ function getAllLatestCalls({
 }
 
 /*
-Given a bunch of info from getAllLatestCalls, return a 
+Given a bunch of info from getAllLatestCalls, return a
 list of column titles which should contain loading spinners */
 function getColumnsLoading({ latestCallStates }) {
   const result = Object.keys(consts.AGILE_COLUMNS).filter((columnName) => {
@@ -251,7 +249,19 @@ const mapDispatchToProps = (dispatch) => {
         }
       );
 
-      const dataSequence = [dataSequence1, dataSequence2].flat();
+      const dataSequence3 = [
+        // TODO: these items should not be necessary. See issue #145
+        { page: 2, assigneeUserId: userId, status: consts.READY },
+        { page: 2, assigneeUserId: userId, status: consts.BLOCKED },
+      ];
+
+      console.log("-------------");
+      console.log("-------------");
+      console.log(dataSequence3);
+      console.log("-------------");
+      console.log("-------------");
+
+      const dataSequence = [dataSequence1, dataSequence2, dataSequence3].flat();
 
       dispatch(
         apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(
