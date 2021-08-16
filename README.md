@@ -15,6 +15,12 @@ This is for our learners/students (we call them recruits):
 And this is for our staff (we call them staff):
 - [https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_](https://www.youtube.com/playlist?list=PLqU7nTtS-XlnztOgNcuV_LSpRyc0qeS8_)
 
+
+## Tech stack
+
+![Tech stack](./tech-stack.png?raw=true "Tech stack")
+
+
 ## Community
 
 Join the conversation on [Discord](https://discord.gg/JHayHBG).
@@ -58,7 +64,6 @@ Please take a look at our development milestones.
 
 For now, focus on this one:
 
-https://github.com/Umuzi-org/Tilde/milestone/1
 
 ## How to Contribute
 

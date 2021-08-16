@@ -1,3 +1,8 @@
+"""
+eg:
+python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
+python manage.py import_curriculum dev_helpers/data/data-eng-part-1.json
+"""
 from core.models import Curriculum
 from curriculum_tracking.models import (
     CurriculumContentRequirement,
