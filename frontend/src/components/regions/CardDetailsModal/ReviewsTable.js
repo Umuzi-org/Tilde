@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import MUIDataTable, { TableFilterList } from "mui-datatables";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import { CardBadges } from "../../widgets/CardBadges";
+import MUIDataTable from "mui-datatables";
 import Chip from "@material-ui/core/Chip";
-import TagFacesIcon from "@material-ui/icons/TagFaces";
-import { makeStyles } from "@material-ui/core/styles";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const ReviewsTable = () => {
-  const [responsive, setResponsive] = useState("vertical");
-  const [tableBodyHeight, setTableBodyHeight] = useState("100%");
-  const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
+  const [responsive] = useState("vertical");
+  const [tableBodyHeight] = useState("100%");
+  const [tableBodyMaxHeight] = useState("");
 
   const timestamp = Date.now();
 
@@ -118,7 +110,7 @@ const ReviewsTable = () => {
         minute: "2-digit",
         second: "2-digit",
       }).format(timestamp),
-      status: <Chip variant="outlined" size="small" label="Competent" />,
+      status: <Chip variant="outlined" size="small" label="Not Yet Competent" />,
       reviewer: "babalwa.mbolekwa@umuzi.org",
       comments: "Good work",
     },
@@ -131,7 +123,7 @@ const ReviewsTable = () => {
         minute: "2-digit",
         second: "2-digit",
       }).format(timestamp),
-      status: <Chip variant="outlined" size="small" label="Competent" />,
+      status: <Chip variant="outlined" size="small" label="Red Flag" />,
       reviewer: "kaleem.mohammad@umuzi.org",
       comments: "What is this",
     },
