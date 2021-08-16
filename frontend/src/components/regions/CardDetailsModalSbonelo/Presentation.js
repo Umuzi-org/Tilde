@@ -48,8 +48,17 @@ const ReviewsTable = () => {
   ];
 
   const options = {
-    filter: true,
+    elevation: 6,
+    filter: false,
     filterType: "dropdown",
+    search: false,
+    viewColumns: false,
+    selectTableRows: "none",
+    download: false,
+    confirmFilters: false,
+    print: false,
+    selectableRows: false,
+    customToolbarSelect: () => {},
     responsive,
     tableBodyHeight,
     tableBodyMaxHeight,
@@ -130,8 +139,8 @@ const ReviewsTable = () => {
       />
     </React.Fragment>
   );
-}
+};
 
-export default ReviewsTable
+export default ReviewsTable;
 
 // ReactDOM.render(<App />, document.getElementById("root"));
