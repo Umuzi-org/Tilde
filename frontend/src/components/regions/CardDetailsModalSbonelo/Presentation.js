@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-// import ReactDOM from "react-dom";
-import MUIDataTable, {TableFilterList} from "mui-datatables";
+import MUIDataTable, { TableFilterList } from "mui-datatables";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -8,8 +7,9 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { CardBadges } from "../../widgets/CardBadges";
 import Chip from "@material-ui/core/Chip";
-import TagFacesIcon from '@material-ui/icons/TagFaces';
-import { makeStyles } from '@material-ui/core/styles';
+import TagFacesIcon from "@material-ui/icons/TagFaces";
+import { makeStyles } from "@material-ui/core/styles";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const ReviewsTable = () => {
   const [responsive, setResponsive] = useState("vertical");
@@ -51,6 +51,17 @@ const ReviewsTable = () => {
         sort: false,
       },
     },
+    {
+      name: "badge",
+      options: {
+        filter: true,
+        sort: false,
+        empty: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (<CheckCircleIcon />)
+        },
+      },
+    },
   ];
 
   const options = {
@@ -65,7 +76,6 @@ const ReviewsTable = () => {
     print: false,
     selectableRows: false,
     customToolbarSelect: () => {},
-    // checkboxSelection,
     responsive,
     tableBodyHeight,
     tableBodyMaxHeight,
@@ -73,27 +83,55 @@ const ReviewsTable = () => {
 
   const data = [
     {
-      timestamp: new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
-      status: "Excellent",
+      timestamp: new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(timestamp),
+      status: <Chip variant="outlined" size="small" label="Excellent" />,
       reviewer: "sheena.oconnel@umuzi.org",
       comments:
         "This has to be lOnHgf Aadf ADFH ADJKADFH ADF DAJKADFH JHADFADF JKHA KHADF KJH AJK FFHADFHJADFH KADFHJKHFJA HA DADFAKJF KJAHADFJADFH KADFHJKADFHADJKH ADFKHADF HH ADFK ADHKjhsjkHhKHkjhLHjkHHjkjklh ajksh h as jasghj hasg gh gjklh",
     },
     {
-      timestamp: new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
-      status: "Competent",
+      timestamp: new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(timestamp),
+      status: <Chip variant="outlined" size="small" label="Competent" />,
       reviewer: "sbonelo.mkhize@umuzi.org",
       comments: "Nicely done",
     },
     {
-      timestamp: new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
-      status: "Not Yet Competent",
+      timestamp: new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(timestamp),
+      status: <Chip variant="outlined" size="small" label="Competent" />,
       reviewer: "babalwa.mbolekwa@umuzi.org",
       comments: "Good work",
     },
     {
-      timestamp: new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
-      status: "Red Flag",
+      timestamp: new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(timestamp),
+      status: <Chip variant="outlined" size="small" label="Competent" />,
       reviewer: "kaleem.mohammad@umuzi.org",
       comments: "What is this",
     },
