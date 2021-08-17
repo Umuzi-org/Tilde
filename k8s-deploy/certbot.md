@@ -46,12 +46,12 @@ certbot renew --manual-auth-hook ./null.sh
 
 We are using a dns based challenge, go add the txt record to the dns, and be quick about it
 
-Go to the G cloud DNS console and edit the `_acme-challenge.tilde.umuzi.org` TXT record. Get the value from certbot.out.
+Go to the **Google cloud DNS** console and edit the `_acme-challenge.tilde.umuzi.org` TXT record. Get the value from certbot.out.
 
 
 Then delete and recreate the tls secrets:
 ```
-kubectl delete secret tilde-domain-ssl      
+kubectl delete secret tilde-domain-ssl
 ```
 You may need to delete and recreate the ingress
 
