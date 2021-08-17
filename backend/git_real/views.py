@@ -1,8 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from git_real.models import Repository, PullRequest, PullRequestReview
-
-# from backend.settings import GIT_REAL_WEBHOOK_SECRET
+from git_real.models import Push, Repository, PullRequest, PullRequestReview
 from core.permissions import RequestMethodIs
 from .permissions import IsWebhookSignatureOk
 
@@ -20,12 +18,13 @@ def github_webhook(request):
         ).get("X-Github-Event")
         assert event, f"no event listed. headers = {request.headers}"
 
-        if event in ["pull_request", "pull_request_review"]:
+        if event in ["pull_request", "pull_request_review", "push"]:
             repo_full_name = request.data["repository"]["full_name"]
             try:
                 repo = Repository.objects.get(full_name=repo_full_name)
             except Repository.DoesNotExist:
                 return
+        if event in ["pull_request", "pull_request_review"]:
 
             pr = PullRequest.create_or_update_from_github_api_data(
                 repo=repo,
@@ -38,12 +37,10 @@ def github_webhook(request):
                     pull_request=pr, review_data=request.data["review"]
                 )
 
-        # elif event == "pull_request_review_comment":
-        #     todo
         elif event == "push":
-            todo
-        # else:
-        #     raise Exception(f"unhandled event type: {event}")
+            Push.create_or_update_from_github_api_data(
+                repo=repo, request_body=request.data
+            )
 
         return Response({})
 

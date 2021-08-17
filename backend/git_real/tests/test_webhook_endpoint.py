@@ -3,13 +3,19 @@ from pathlib import Path
 import json
 from django.urls import reverse
 from git_real import views
-from git_real.models import PullRequest, PullRequestReview
-from git_real.helpers import strp_github_standard_time
+from git_real.models import PullRequest, PullRequestReview, Push
+from git_real.helpers import (
+    strp_github_standard_time,
+    github_timestamp_int_to_tz_aware_datetime,
+)
 from .factories import RepositoryFactory
 from social_auth.tests.factories import SocialProfileFactory
 import mock
 from git_real.permissions import IsWebhookSignatureOk
 from django.utils import timezone
+import dateutil.parser
+
+# from timezone_helpers import timestamp_zoned_str_to_tz_aware_datetime
 
 
 def get_asset(name):
@@ -172,3 +178,54 @@ class TestPullRequestReview(APITestCase):
         self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(PullRequest.objects.all().count(), 1)
         self.assertEqual(PullRequestReview.objects.all().count(), 1)
+
+
+class PushEventTests(APITestCase):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_that_push_event_saves(self, has_permission):
+        has_permission.return_value = True
+        url = reverse(views.github_webhook)
+
+        body, headers = get_body_and_headers("push")
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+
+        head_commit = body["head_commit"]
+        author_github_name = head_commit["author"]["username"]
+        committer_github_name = head_commit["committer"]["username"]
+        message = head_commit["message"]
+        head_commit_url = head_commit["url"]
+        # commit_timestamp = timestamp_zoned_str_to_tz_aware_datetime(
+        #     head_commit["timestamp"]
+        # )
+
+        commit_timestamp = dateutil.parser.isoparse(head_commit["timestamp"])
+
+        pusher_username = body["pusher"]["name"]
+        repository = body["repository"]
+        ref = body["ref"]
+
+        # repo_full_name = repository["full_name"]
+        pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
+            int(repository["pushed_at"])
+        )
+
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        self.assertEqual(Push.objects.count(), 1)
+        push = Push.objects.first()
+
+        self.assertEqual(push.author_github_name, author_github_name)
+        self.assertEqual(push.committer_github_name, committer_github_name)
+        self.assertEqual(push.message, message)
+        self.assertEqual(push.head_commit_url, head_commit_url)
+        self.assertEqual(push.pusher_username, pusher_username)
+        self.assertEqual(push.pushed_at_time, pushed_at_time)
+        self.assertEqual(push.ref, ref)
+        self.assertEqual(push.repository, repo)
+        self.assertEqual(push.commit_timestamp, commit_timestamp)
+        # self.assertEqual(push.commit_timestamp.isoformat(), commit_timestamp.isoformat())
+        # BUG: if you uncomment the above line then you'll see that the stored timestamps aren't keeping the timezonne info. Please fix here and in all other places where we are getting info from gihub
+
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        self.assertEqual(Push.objects.count(), 1)

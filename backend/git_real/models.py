@@ -1,7 +1,11 @@
 from django.db import models
 from model_mixins import Mixins
 from core.models import User
-from git_real.helpers import strp_github_standard_time
+from git_real.helpers import (
+    strp_github_standard_time,
+    github_timestamp_int_to_tz_aware_datetime,
+)
+
 
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -154,3 +158,46 @@ class PullRequestReview(models.Model, Mixins):
 
 
 # dict_keys([' 'author_association', , ', 'html_url', 'id', 'node_id', '', 'state', 'submitted_at', 'user'])
+
+
+class Push(models.Model, Mixins):
+    repository = models.ForeignKey(
+        Repository, on_delete=models.CASCADE, related_name="pushes"
+    )
+    author_github_name = models.CharField(max_length=100)
+    committer_github_name = models.CharField(max_length=100)
+    pusher_username = models.CharField(max_length=100)
+    message = models.TextField(blank=True, null=True)
+    head_commit_url = models.CharField(max_length=255)
+    commit_timestamp = models.DateTimeField()
+    pushed_at_time = models.DateTimeField()
+    ref = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = [["ref", "head_commit_url"]]
+
+    @classmethod
+    def create_or_update_from_github_api_data(cls, repo, request_body):
+
+        head_commit = request_body["head_commit"]
+        head_commit_url = head_commit["url"]
+        ref = request_body["ref"]
+        defaults = {
+            "commit_timestamp": head_commit["timestamp"],
+            "author_github_name": head_commit["author"]["username"],
+            "committer_github_name": head_commit["committer"]["username"],
+            "message": head_commit["message"],
+            "pusher_username": request_body["pusher"]["name"],
+            "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
+                int(request_body["repository"]["pushed_at"])
+            ),
+        }
+
+        instance, _ = cls.get_or_create_or_update(
+            repository=repo,
+            head_commit_url=head_commit_url,
+            ref=ref,
+            defaults=defaults,
+            overrides=defaults,
+        )
+        return instance
