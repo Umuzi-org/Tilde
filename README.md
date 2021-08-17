@@ -20,6 +20,7 @@ And this is for our staff (we call them staff):
 
 ![Tech stack](./tech-stack.png?raw=true "Tech stack")
 
+We use JS, not Typescript
 
 ## Community
 

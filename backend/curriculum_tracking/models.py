@@ -536,8 +536,8 @@ class RecruitProject(
         collaborator_users = {
             "reviewer users": list(self.reviewer_users.filter(active=True)),
             "assigned users": list(self.recruit_users.filter(active=True)),
-            "users with view permission": self.get_users_with_permission(
-                Team.PERMISSION_VIEW
+            "users with explicit permission": self.get_users_with_permission(
+                Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD
             ),
         }
 

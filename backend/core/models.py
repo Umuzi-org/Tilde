@@ -249,7 +249,14 @@ class Team(AuthGroup, Mixins):
         PERMISSION_VIEW_ALL,
         PERMISSION_ASSIGN_REVIEWERS,
         PERMISSION_REVIEW_CARDS,
-        PERMISSION_TRUSTED_REVIEWER,
+        PERMISSION_TRUSTED_REVIEWER,  # Just because they are trusted, it doesn't mean they have view permission
+    ]
+
+    PERMISSION_REPO_COLLABORATER_AUTO_ADD = [
+        PERMISSION_MANAGE_CARDS,
+        PERMISSION_VIEW_ALL,
+        PERMISSION_ASSIGN_REVIEWERS,
+        PERMISSION_REVIEW_CARDS,
     ]
 
     sponsor_organisation = models.ForeignKey(
