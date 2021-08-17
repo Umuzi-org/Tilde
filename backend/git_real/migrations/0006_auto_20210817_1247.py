@@ -8,41 +8,56 @@ import model_mixins
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('git_real', '0005_auto_20210504_0759'),
+        ("git_real", "0005_auto_20210504_0759"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pullrequest',
-            name='body',
+            model_name="pullrequest",
+            name="body",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='pullrequestreview',
-            name='body',
+            model_name="pullrequestreview",
+            name="body",
             field=models.TextField(blank=True, null=True),
         ),
-        migrations.AlterField(
-            model_name='pullrequestreview',
-            name='html_url',
-            field=models.CharField(max_length=255, unique=True),
-        ),
+        # migrations.AlterField(
+        #     model_name='pullrequestreview',
+        #     name='html_url',
+        #     field=models.CharField(max_length=255, unique=True),
+        # ),
         migrations.CreateModel(
-            name='Push',
+            name="Push",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('author_github_name', models.CharField(max_length=100)),
-                ('committer_github_name', models.CharField(max_length=100)),
-                ('pusher_username', models.CharField(max_length=100)),
-                ('message', models.TextField(blank=True, null=True)),
-                ('head_commit_url', models.CharField(max_length=255)),
-                ('commit_timestamp', models.DateTimeField()),
-                ('pushed_at_time', models.DateTimeField()),
-                ('ref', models.CharField(max_length=255)),
-                ('repository', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pushes', to='git_real.repository')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("author_github_name", models.CharField(max_length=100)),
+                ("committer_github_name", models.CharField(max_length=100)),
+                ("pusher_username", models.CharField(max_length=100)),
+                ("message", models.TextField(blank=True, null=True)),
+                ("head_commit_url", models.CharField(max_length=255)),
+                ("commit_timestamp", models.DateTimeField()),
+                ("pushed_at_time", models.DateTimeField()),
+                ("ref", models.CharField(max_length=255)),
+                (
+                    "repository",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pushes",
+                        to="git_real.repository",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('ref', 'head_commit_url')},
+                "unique_together": {("ref", "head_commit_url")},
             },
             bases=(models.Model, model_mixins.Mixins),
         ),
