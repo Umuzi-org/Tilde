@@ -22,11 +22,11 @@ class Migration(migrations.Migration):
             name="body",
             field=models.TextField(blank=True, null=True),
         ),
-        # migrations.AlterField(
-        #     model_name='pullrequestreview',
-        #     name='html_url',
-        #     field=models.CharField(max_length=255, unique=True),
-        # ),
+        migrations.AlterField(
+            model_name="pullrequestreview",
+            name="html_url",
+            field=models.CharField(max_length=255, unique=True),
+        ),
         migrations.CreateModel(
             name="Push",
             fields=[
