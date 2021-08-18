@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 from core.tests.factories import TeamFactory, UserFactory
 from django.test import TestCase
 from curriculum_tracking.models import ReviewTrust, RecruitProjectReview
@@ -9,6 +11,84 @@ from curriculum_tracking.tests.factories import (
 from backend.settings import (
     CURRICULUM_TRACKING_TRUST_STREAK_LENGTH,
 )
+from curriculum_tracking.constants import COMPETENT
+
+
+class is_first_review_after_request_Tests(TestCase):
+    def test_all(self):
+
+        time_1 = timezone.now() - datetime.timedelta(days=1)
+        time_2 = time_1 + datetime.timedelta(hours=1)
+        time_3 = time_1 + datetime.timedelta(hours=2)
+        time_4 = time_1 + datetime.timedelta(hours=3)
+
+        project = RecruitProjectFactory()
+        project.review_request_time = time_2
+        review_1 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_1
+        )
+        review_1.timestamp = time_1
+        review_1.save()
+        review_2 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_3
+        )
+        review_2.timestamp = time_3
+        review_2.save()
+        review_3 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_4
+        )
+        review_3.timestamp = time_4
+        review_3.save()
+
+        # assert review_1.timestamp == time_1, review_1.timestamp
+        # assert project.review_request_time == time_2
+        # assert review_2.timestamp == time_3
+        # assert review_3.timestamp == time_4
+        # assert time_1 < time_2
+        # assert time_2 < time_3
+        # assert time_3 < time_4
+
+        self.assertFalse(review_1.is_first_review_after_request())
+        self.assertTrue(review_2.is_first_review_after_request())
+        self.assertFalse(review_3.is_first_review_after_request())
+
+
+class update_recent_validation_flags_for_project_Tests(TestCase):
+    def test_updates_only_fist_one(self):
+        time_1 = timezone.now() - datetime.timedelta(days=1)
+        time_2 = time_1 + datetime.timedelta(hours=1)
+        time_3 = time_1 + datetime.timedelta(hours=2)
+        time_4 = time_1 + datetime.timedelta(hours=3)
+
+        project = RecruitProjectFactory()
+        project.review_request_time = time_1
+
+        review_1 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_1, status=COMPETENT
+        )
+        review_1.timestamp = time_2
+        review_1.save()
+        review_2 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_3, status=COMPETENT
+        )
+        review_2.timestamp = time_3
+        review_2.save()
+        review_3 = RecruitProjectReviewFactory(
+            recruit_project=project, timestamp=time_4, status=COMPETENT
+        )
+        review_3.timestamp = time_4
+        review_3.trusted = True
+        review_3.save()
+
+        review_3.update_recent_validation_flags_for_project()
+
+        review_1.refresh_from_db()
+        review_2.refresh_from_db()
+        review_3.refresh_from_db()
+
+        self.assertEqual(review_1.validated, RecruitProjectReview.CORRECT)
+        self.assertEqual(review_2.validated, None)
+        self.assertEqual(review_3.validated, None)
 
 
 class propagate_trust_signal_Tests(TestCase):
@@ -226,3 +306,24 @@ class get_validated_streak_Tests(TestCase):
 
         self.assertEqual(review_js_1.get_validated_streak(), 1)
         self.assertEqual(review_js_2.get_validated_streak(), 1)
+
+    # def test_only_counts_the_first_positive_review(self):
+    #     timestamp_2 = timezone.now()
+    #     timestamp_1 = timestamp_2 - datetime.timedelta(minutes=1)
+
+    #     review_js_1 = RecruitProjectReviewFactory(
+    #         reviewer_user=self.user_1,
+    #         recruit_project=self.project_js_1,
+    #         validated=RecruitProjectReview.CORRECT,
+    #         timestamp=timestamp_1,
+    #     )
+
+    #     review_js_2 = RecruitProjectReviewFactory(
+    #         reviewer_user=self.user_1,
+    #         recruit_project=self.project_js_1,
+    #         validated=RecruitProjectReview.CORRECT,
+    #         timestamp=timestamp_2,
+    #     )
+
+    #     self.assertEqual(review_js_1.get_validated_streak(), 1)
+    #     self.assertEqual(review_js_2.get_validated_streak(), 0)

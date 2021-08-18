@@ -814,13 +814,25 @@ class RecruitProjectReview(models.Model, Mixins):
         negative = [NOT_YET_COMPETENT, RED_FLAG]
         if other.trusted:
             if self.status in positive and other.status in positive:
-                self.validated = RecruitProjectReview.CORRECT
+                if self.is_first_review_after_request():
+                    self.validated = RecruitProjectReview.CORRECT
             else:
                 self.validated = RecruitProjectReview.INCORRECT
         else:
             if self.status in positive and other.status in negative:
                 self.validated = RecruitProjectReview.CONTRADICTED
         self.save()
+
+    def is_first_review_after_request(self):
+        request_time = self.recruit_project.review_request_time
+        if not request_time:
+            return False
+        if request_time > self.timestamp:
+            return False
+        first_review = (RecruitProjectReview.objects.filter(timestamp__gte=request_time).order_by("timestamp").first()
+        )
+
+        return self == first_review
 
 
 class TopicProgress(

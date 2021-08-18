@@ -245,14 +245,16 @@ class Team(AuthGroup, Mixins):
     PERMISSION_TRUSTED_REVIEWER = PERMISSION_TRUSTED_REVIEWER
 
     PERMISSION_VIEW = [
+        # anyone with these permissions get to navigate to a specific team on the frontend and see the status of all the cards.
         PERMISSION_MANAGE_CARDS,
         PERMISSION_VIEW_ALL,
         PERMISSION_ASSIGN_REVIEWERS,
         PERMISSION_REVIEW_CARDS,
-        PERMISSION_TRUSTED_REVIEWER,  # Just because they are trusted, it doesn't mean they have view permission
+        PERMISSION_TRUSTED_REVIEWER,
     ]
 
     PERMISSION_REPO_COLLABORATER_AUTO_ADD = [
+        # when a repo is created then folks with these permissions get added to the repo as collaborators
         PERMISSION_MANAGE_CARDS,
         PERMISSION_VIEW_ALL,
         PERMISSION_ASSIGN_REVIEWERS,
