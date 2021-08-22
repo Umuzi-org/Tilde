@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import ReviewCard from "./Reviews";
+import ReviewCard from "./ReviewsSbonelo";
 
 const useStyles = makeStyles({
   root: {
