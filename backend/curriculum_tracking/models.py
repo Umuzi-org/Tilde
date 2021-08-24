@@ -442,6 +442,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
 ):
+
     """what a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(
@@ -910,6 +911,7 @@ class AgileCard(
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     workshop_attendance = models.OneToOneField(
         WorkshopAttendance,
@@ -945,6 +947,12 @@ class AgileCard(
     reviewers = models.ManyToManyField(
         User,
         related_name="agile_cards_to_review",
+        blank=True,
+    )
+
+    ids_of_most_recent_reviewers = models.ManyToManyField(
+        User,
+        related_name="ids_of_most_recent_reviewers",
         blank=True,
     )
 
@@ -1383,3 +1391,15 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
+
+    def finding_latest_reviewer_ids(self):
+        if self.recruit_project.review_request_time:
+            assert self.status == AgileCard.IN_REVIEW
+            reviewer_ids = self.recruit_project.reviewer_users.all()
+            """Everytime a person reviews the status will be changed, so look for any status
+            changes after a review request and give the ids of those who changed the status"""
+
+    @property
+    def retrieve_latest_reviewer_ids(self):
+        if self.recruit_project.review_request_time:
+            return self.recruit_project.reviewer_users.all()
