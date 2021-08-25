@@ -180,10 +180,10 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "ids_of_most_recent_reviewers",
         ]
 
-    reviewed_user_ids_most_recent = serializers.SerializerMethodField("get_reviewed_user_ids_most_recent")
+    ids_of_most_recent_reviewers = serializers.SerializerMethodField("get_reviewed_user_ids_most_recent")
 
     def get_reviewed_user_ids_most_recent(self, instance):
-        return [o.id for o in instance.recruit_project.recruit_users.all()]
+        return [o.id for o in instance.most_recent_reviewers.all()]
 
 
 class cardsummarySerializer(serializers.ModelSerializer):
