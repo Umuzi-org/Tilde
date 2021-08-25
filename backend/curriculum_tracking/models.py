@@ -1393,11 +1393,17 @@ class AgileCard(
         self.save()
 
     def finding_latest_reviewer_ids(self):
-        if self.recruit_project.review_request_time:
-            assert self.status == AgileCard.IN_REVIEW
-            self.most_recent_reviewers = self.recruit_project.reviewer_users.all()
-            """Everytime a person reviews the status will be changed, so look for any status
-            changes after a review request and give the ids of those who changed the status"""
+        """Everytime a person reviews the status will be changed, so look for any status
+        changes after a review request and give the ids of those who changed the status"""
+        latest_review_request = self.recruit_project.review_request_time
+
+        reviews_since_latest_review_request = RecruitProjectReview.objects.filter(
+            recruit_project=self.recruit_project
+        ).filter(timestamp__lt=self.recruit_project.review_request_time)
+
+        if latest_review_request:
+            reviews_since_latest_review_request = reviews_since_latest_review_request.filter(
+                timestamp__gte=latest_review_request)
 
     @property
     def retrieve_latest_reviewer_ids(self):
