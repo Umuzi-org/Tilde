@@ -950,8 +950,8 @@ class AgileCard(
         blank=True,
     )
 
-    ids_of_most_recent_reviewers = models.ManyToManyField(
-        User,
+    most_recent_reviewers = models.ManyToManyField(
+        RecruitProject,
         related_name="ids_of_most_recent_reviewers",
         blank=True,
     )
@@ -1395,11 +1395,11 @@ class AgileCard(
     def finding_latest_reviewer_ids(self):
         if self.recruit_project.review_request_time:
             assert self.status == AgileCard.IN_REVIEW
-            reviewer_ids = self.recruit_project.reviewer_users.all()
+            self.most_recent_reviewers = self.recruit_project.reviewer_users.all()
             """Everytime a person reviews the status will be changed, so look for any status
             changes after a review request and give the ids of those who changed the status"""
 
     @property
     def retrieve_latest_reviewer_ids(self):
         if self.recruit_project.review_request_time:
-            return self.recruit_project.reviewer_users.all()
+            return self.most_recent_reviewers.all()
