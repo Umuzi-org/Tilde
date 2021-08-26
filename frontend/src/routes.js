@@ -3,6 +3,7 @@ import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
+import Dashboard from "./components/regions/Dashboard";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
@@ -106,5 +107,21 @@ export const routes = {
       path: "/people/:id",
       component: UserProfile,
     },
+  },
+
+  userDashboard: {
+    route: {
+      exact,
+      path: "/users/:userId/dashboard",
+      component: Dashboard,
+    },
+  },
+
+  dashboard: {
+      route: {
+        exact,
+        path: "/dashboard",
+        component: Dashboard,
+      },
   },
 };
