@@ -123,5 +123,12 @@ export const routes = {
         path: "/dashboard",
         component: Dashboard,
       },
+      sliderNavigation: {
+        //these get used to draw buttons in the left hand side slider/hamburger menu
+        icon: () => "D",
+        label: "Dashboard",
+        helpText: "Your personal dashboard",
+      },
+      show: () => true,
   },
 };
