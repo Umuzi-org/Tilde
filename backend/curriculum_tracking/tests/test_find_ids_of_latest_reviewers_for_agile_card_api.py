@@ -64,6 +64,8 @@ class OldestOpenPrUpdatedTimeTests(TestCase):
 
         print('\n')
         self.assertEqual(AgileCard.derive_status_from_project(self.project), AgileCard.IN_PROGRESS)
+
+        # Creating the 1st of three reviews
         review = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,

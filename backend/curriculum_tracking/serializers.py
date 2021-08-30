@@ -183,7 +183,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
     ids_of_most_recent_reviewers = serializers.SerializerMethodField("get_reviewed_user_ids_most_recent")
 
     def get_reviewed_user_ids_most_recent(self, instance):
-        return [o.id for o in instance.most_recent_reviewers.all()]
+        return models.AgileCard.finding_latest_reviewer_ids(instance)
 
 
 class cardsummarySerializer(serializers.ModelSerializer):
