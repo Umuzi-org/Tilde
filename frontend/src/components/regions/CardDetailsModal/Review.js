@@ -42,7 +42,7 @@ const Review = ({ review }) => {
         }
       />
       <CardContent>
-        <Typography paragraph variant="p">
+        <Typography paragraph>
           <Markdown source={review.comments}></Markdown>
         </Typography>
       </CardContent>
