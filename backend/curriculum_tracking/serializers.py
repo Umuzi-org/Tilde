@@ -177,13 +177,13 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "can_force_start",
             "open_pr_count",
             "oldest_open_pr_updated_time",
-            "ids_of_most_recent_reviewers",
+            "users_of_most_recent_reviewers",
         ]
 
-    ids_of_most_recent_reviewers = serializers.SerializerMethodField("get_reviewed_user_ids_most_recent")
+    users_of_most_recent_reviewers = serializers.SerializerMethodField("get_reviewed_users_most_recent")
 
-    def get_reviewed_user_ids_most_recent(self, instance):
-        return models.AgileCard.finding_latest_reviewer_ids(instance)
+    def get_reviewed_users_most_recent(self, instance):
+        return models.AgileCard.finding_latest_reviewer_users(instance)
 
 
 class cardsummarySerializer(serializers.ModelSerializer):

@@ -953,12 +953,6 @@ class AgileCard(
         blank=True,
     )
 
-    most_recent_reviewers = models.ManyToManyField(
-        RecruitProject,
-        related_name="ids_of_most_recent_reviewers",
-        blank=True,
-    )
-
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
 
     is_hard_milestone = (
@@ -1395,15 +1389,30 @@ class AgileCard(
                     self.recruit_project.reviewer_users.add(user)
         self.save()
 
-    def finding_latest_reviewer_ids(self):
+    def finding_latest_reviewer_users(self):
         """Everytime a person reviews the status will be changed, so look for any status
-        changes after a review-request and give the ids of those who changed the status"""
-        latest_review_request = self.recruit_project.review_request_time
+        changes after a review-request and give the ids of those reviewers"""
+
+        reviewer_user_since_latest_review_request = []
+        review_requests_made = []
+
+        # Making sure to only get reviewers since the latest request for a review
+        if self.status in [
+            AgileCard.REVIEW_FEEDBACK,
+            AgileCard.IN_REVIEW,
+        ]:
+            review_requests_made.append(self.topic_progress.review_request_time)
+        else:
+            review_requests_made = []
 
         reviews_since_latest_review_request = RecruitProjectReview.objects.filter(
-            recruit_project=self.recruit_project
-        ).filter(timestamp__lt=self.recruit_project.latest_review_request)
+            recruit_project=AgileCard.recruit_project
+        ).filter(timestamp__lt=self.topic_progress.review_request_time)
 
-        if latest_review_request:
-            return [reviews_since_latest_review_request]
-        return 'No one has reviewed this project since the latest review request.'
+        if len(review_requests_made) == 0:
+            reviewer_ids_since_latest_review_request = []
+            return 0
+        else:
+            for review in reviews_since_latest_review_request:
+                reviewer_user_since_latest_review_request.append(review.reviewer_user)
+            return reviewer_user_since_latest_review_request[::1]
