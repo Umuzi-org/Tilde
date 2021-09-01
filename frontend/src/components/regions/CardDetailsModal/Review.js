@@ -57,7 +57,7 @@ const Review = ({ review }) => {
         </IconButton>
         <IconButton>
           <ReviewValidationIcons review={review} />
-        </IconButton>s
+        </IconButton>
       </CardActions>
     </Card>
   );
