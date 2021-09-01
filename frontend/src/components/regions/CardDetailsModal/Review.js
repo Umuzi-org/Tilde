@@ -15,11 +15,16 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     transition: "transform 0.15s ease-in-out",
     "&:hover": { transform: "scale3d(1.0, 1.0, 1)" },
-    // padding: 3,
   },
   time: {
     fontSize: 11,
   },
+  cardContent: {
+    padding: 0,
+    "&:last-child": {
+      paddingBottom: 0
+    }
+  }
 }));
 
 const Review = ({ review }) => {
@@ -41,7 +46,7 @@ const Review = ({ review }) => {
           </Typography>
         }
       />
-      <CardContent>
+      <CardContent className={classes.CardContent}>
         <Typography paragraph>
           <Markdown source={review.comments}></Markdown>
         </Typography>
@@ -52,7 +57,7 @@ const Review = ({ review }) => {
         </IconButton>
         <IconButton>
           <ReviewValidationIcons review={review} />
-        </IconButton>
+        </IconButton>s
       </CardActions>
     </Card>
   );
