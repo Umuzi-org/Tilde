@@ -91,7 +91,7 @@ function UserActionsUnconnected({
 
   const getTimeFields = (date) => {
     if (!date) {
-      console.log("date is falsy!!!!!!!!!!!!!");
+      console.warn("date is falsy!!!!!!!!!!!!!");
       return {};
     }
 

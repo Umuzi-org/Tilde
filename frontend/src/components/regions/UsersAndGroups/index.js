@@ -63,7 +63,6 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
-  //   console.log(users)
   return users;
 }
 
