@@ -3,7 +3,7 @@ import Review  from "../components/regions/CardDetailsModal/Review";
 import review from "./fixtures/review.json";
 
 export default {
-    title: "Tilde/CardDetailsModal/SingleReview",
+    title: "Tilde/CardDetailsModal/Review",
     component: Review,
 }
 
