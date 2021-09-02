@@ -28,8 +28,6 @@ import Avatar from "@material-ui/core/Avatar";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => {
-  // console.log("xxxxxxxxxxxxxxxx");
-  // console.log(theme.mixins.toolbar);
   return {
     root: {
       display: "flex",

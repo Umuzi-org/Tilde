@@ -221,14 +221,6 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    fetchUser: ({ userId }) => {
-      dispatch(
-        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
-          data: { userId: parseInt(userId) },
-        })
-      );
-    },
-
     fetchInitialCards: ({ userId }) => {
       const dataSequence1 = Object.keys(consts.AGILE_CARD_STATUS_CHOICES).map(
         (status) => {
@@ -254,12 +246,6 @@ const mapDispatchToProps = (dispatch) => {
         { page: 2, assigneeUserId: userId, status: consts.READY },
         { page: 2, assigneeUserId: userId, status: consts.BLOCKED },
       ];
-
-      console.log("-------------");
-      console.log("-------------");
-      console.log(dataSequence3);
-      console.log("-------------");
-      console.log("-------------");
 
       const dataSequence = [dataSequence1, dataSequence2, dataSequence3].flat();
 
