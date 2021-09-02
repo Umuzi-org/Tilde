@@ -47,14 +47,12 @@ const Review = ({ review }) => {
         }
       />
       <CardContent className={classes.CardContent}>
-        <Typography paragraph>
+        <Typography variant="body1">
           <Markdown source={review.comments}></Markdown>
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton>
           <ReviewStatus status={review.status} />
-        </IconButton>
         <IconButton>
           <ReviewValidationIcons review={review} />
         </IconButton>
