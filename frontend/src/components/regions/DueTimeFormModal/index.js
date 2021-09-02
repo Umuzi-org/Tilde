@@ -3,7 +3,7 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import operations from "./redux/operations";
 
-export const DueTimeFormModalUnconnected = ({ cardId, card, closeModal }) => {
+export const DueTimeFormModalUnconnected = ({ card, closeModal }) => {
     return (
         <Presentation card={card} closeModal={closeModal} />
     )

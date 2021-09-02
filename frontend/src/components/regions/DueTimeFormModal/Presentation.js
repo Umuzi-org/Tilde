@@ -18,7 +18,8 @@ const useStyles = makeStyles({
 
 const DueTimeFormModal = ({ card, closeModal }) => {
 
-  const {dueTime} = card || {};
+  const {dueTime} = "";
+  // dueTime is either an empty string or something like this: "2021-06-14T09:58:28Z"
   const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
   const classes = useStyles();
 
@@ -28,7 +29,7 @@ const DueTimeFormModal = ({ card, closeModal }) => {
         <form novalidate>
           <TextField
             id="datetime-local"
-            label="Due Date:"
+            label="Due Date"
             type="datetime-local"
             defaultValue={defaultValue}
             InputLabelProps={{

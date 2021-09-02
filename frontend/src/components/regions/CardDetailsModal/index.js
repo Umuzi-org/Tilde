@@ -83,7 +83,7 @@ function CardDetailsModalUnconnected({
   };
 
   const handleClickSetDueTime = () => {
-    openDueTimeFormModal({ cardId: project.agileCard });
+    openDueTimeFormModal({ cardId });
   }
 
   const isReviewer =
