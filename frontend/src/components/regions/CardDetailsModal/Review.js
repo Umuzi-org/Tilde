@@ -13,19 +13,32 @@ import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "100%",
-    transition: "transform 0.15s ease-in-out",
-    "&:hover": { transform: "scale3d(1.0, 1.0, 1)" },
   },
-  time: {
+  timeFont: {
     fontSize: 11,
   },
-  cardContent: {
-    padding: 0,
+  cardFont: {
+    fontSize: "100%",
+  },
+  cardHeader: {
+    paddingBottom: 0,
     "&:last-child": {
       paddingBottom: 0,
-      paddingTop: 0
-    }
-  }
+    },
+  },
+  cardContent: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    // "&:last-child": {
+    //   paddingTop: 0,
+    // }
+  },
+  footer: {
+    paddingTop: 0,
+    "&:last-child": {
+      paddingTop: 0,
+    },
+  },
 }));
 
 const Review = ({ review }) => {
@@ -34,35 +47,34 @@ const Review = ({ review }) => {
   const timestamp = new Date(review.timestamp);
 
   return (
-  <Card className={classes.root}>
+    <Card className={classes.root} variant="outlined">
       <CardHeader
         title={
-          <Typography className={classes.time}>
+          <Typography className={classes.timeFont}>
             {timestamp.toLocaleString()}
           </Typography>
         }
         subheader={
-          <Typography variant="subtitle2">
+          <Typography className={classes.cardFont}>
             {review.reviewerUserEmail}
           </Typography>
         }
+        className={classes.cardHeader}
       />
-      <CardActions disableSpacing>
-      </CardActions>
-      <CardContent className={classes.CardContent}>
-        <Typography paragraph>
+      <CardActions></CardActions>
+      <CardContent className={classes.cardContent}>
+        <Typography className={classes.cardFont}>
           <Markdown source={review.comments}></Markdown>
         </Typography>
       </CardContent>
       <IconButton>
-          <ReviewStatus status={review.status} />
-        </IconButton>
-        <IconButton>
-          <ReviewValidationIcons review={review} />
-        </IconButton>
-      
+        <ReviewStatus status={review.status} />
+      </IconButton>
+      <IconButton>
+        <ReviewValidationIcons review={review} />
+      </IconButton>
     </Card>
-    )
+  );
 };
 
 export default Review;
