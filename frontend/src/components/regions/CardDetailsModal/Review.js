@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     padding: 0,
     "&:last-child": {
-      paddingBottom: 0
+      paddingBottom: 0,
+      paddingTop: 0
     }
   }
 }));
@@ -33,32 +34,35 @@ const Review = ({ review }) => {
   const timestamp = new Date(review.timestamp);
 
   return (
-    <Card className={classes.root}>
+  <Card className={classes.root}>
       <CardHeader
         title={
-          <Typography variant="subtitle2">
-            {review.reviewerUserEmail}
-          </Typography>
-        }
-        subheader={
           <Typography className={classes.time}>
             {timestamp.toLocaleString()}
           </Typography>
         }
+        subheader={
+          <Typography variant="subtitle2">
+            {review.reviewerUserEmail}
+          </Typography>
+        }
       />
+      <CardActions disableSpacing>
+      </CardActions>
       <CardContent className={classes.CardContent}>
-        <Typography variant="body1">
+        <Typography paragraph>
           <Markdown source={review.comments}></Markdown>
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      <IconButton>
           <ReviewStatus status={review.status} />
+        </IconButton>
         <IconButton>
           <ReviewValidationIcons review={review} />
         </IconButton>
-      </CardActions>
+      
     </Card>
-  );
+    )
 };
 
 export default Review;

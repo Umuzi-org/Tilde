@@ -14,6 +14,7 @@ import Markdown from "react-markdown";
 
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
+import Review from "../CardDetailsModal/Review";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,19 +48,7 @@ export default ({ reviewIds, reviews }) => {
           {reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((review) => {
             const timestamp = new Date(review.timestamp);
             return (
-              <TableRow key={review.id}>
-                <TableCell>{timestamp.toLocaleString()}</TableCell>
-                <TableCell>
-                  <ReviewStatus status={review.status} />
-                </TableCell>
-                <TableCell>{review.reviewerUserEmail}</TableCell>
-                <TableCell className={classes.commentColumn}>
-                  <Markdown source={review.comments}></Markdown>
-                </TableCell>
-                <TableCell>
-                  <ReviewValidationIcons review={review} />
-                </TableCell>
-              </TableRow>
+              <Review review={review} />
             );
           })}
         </React.Fragment>
@@ -82,20 +71,7 @@ export default ({ reviewIds, reviews }) => {
   return (
     <Paper className={classes.sectionPaper} variant="outlined">
       <Typography variant="h6">Reviews</Typography>
-      <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell>timestamp</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>reviewer</TableCell>
-              <TableCell>Comments</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{body}</TableBody>
-        </Table>
-      </TableContainer>
+      {body}
     </Paper>
   );
 };
