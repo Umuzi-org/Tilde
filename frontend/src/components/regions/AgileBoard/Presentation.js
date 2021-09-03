@@ -17,11 +17,14 @@ const useStyles = makeStyles((theme) => ({
     display: "nowrap",
     "& > *": {
       margin: theme.spacing(1),
+      width: theme.spacing(35),
+      height: theme.spacing(100),
+      // height: `calc(100% - ${0}px)`,
     },
-    width: "100%",
   },
 
   column: {
+    height: "100%",
     overflowY: "scroll",
   },
 }));
@@ -78,3 +81,4 @@ export default ({
     </React.Fragment>
   );
 };
+
