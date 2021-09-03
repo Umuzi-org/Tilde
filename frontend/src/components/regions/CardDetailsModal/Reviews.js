@@ -1,12 +1,9 @@
 import React from "react";
-import {
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Markdown from "react-markdown";
 
-import CircularProgress from "../../widgets/Loading"
+import CircularProgress from "../../widgets/Loading";
 
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
@@ -41,25 +38,19 @@ export default ({ reviewIds, reviews }) => {
     if (reviews.length) {
       body = (
         <React.Fragment>
-          {reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((review) => {
-            const timestamp = new Date(review.timestamp);
-            return (
-              <Review review={review} />
-            );
-          })}
+          {reviews
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .map((review) => {
+              const timestamp = new Date(review.timestamp);
+              return <Review review={review} />;
+            })}
         </React.Fragment>
       );
     } else {
-      body = (
-        <CircularProgress />
-      );
+      body = <CircularProgress />;
     }
   } else {
-    body = (
-      <Typography paragraph>
-        {"No reviews yet"}
-      </Typography>
-    );
+    body = <Typography paragraph>{"No reviews yet"}</Typography>;
   }
 
   return (
@@ -69,4 +60,3 @@ export default ({ reviewIds, reviews }) => {
     </Paper>
   );
 };
-
