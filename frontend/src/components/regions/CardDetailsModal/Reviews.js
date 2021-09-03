@@ -1,12 +1,9 @@
 import React from "react";
 import { Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Markdown from "react-markdown";
 
 import CircularProgress from "../../widgets/Loading";
 
-import ReviewStatus from "../../widgets/ReviewStatus";
-import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 import Review from "../CardDetailsModal/Review";
 
 const useStyles = makeStyles((theme) => ({
