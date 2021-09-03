@@ -17,13 +17,11 @@ const useStyles = makeStyles((theme) => ({
     display: "nowrap",
     "& > *": {
       margin: theme.spacing(1),
-      width: theme.spacing(35),
-      height: "79vh"
     },
+    width: "100%",
   },
 
   column: {
-    height: "93%",
     overflowY: "scroll",
   },
 }));
