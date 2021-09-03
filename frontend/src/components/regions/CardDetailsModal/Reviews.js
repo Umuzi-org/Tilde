@@ -1,16 +1,12 @@
 import React from "react";
 import {
   Paper,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Markdown from "react-markdown";
+
+import CircularProgress from "../../widgets/Loading"
 
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
@@ -55,16 +51,14 @@ export default ({ reviewIds, reviews }) => {
       );
     } else {
       body = (
-        <TableRow>
-          <TableCell colSpan="4">Loading...</TableCell>
-        </TableRow>
+        <CircularProgress />
       );
     }
   } else {
     body = (
-      <TableRow>
-        <TableCell colSpan="4">No reviews yet</TableCell>
-      </TableRow>
+      <Typography paragraph>
+        {"No reviews yet"}
+      </Typography>
     );
   }
 
