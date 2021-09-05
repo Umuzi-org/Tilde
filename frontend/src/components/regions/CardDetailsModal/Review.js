@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -9,6 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
+import ShowMoreText from "react-show-more-text";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
 const Review = ({ review }) => {
   const classes = useStyles();
 
+  const [expand, setExpand] = useState(false);
+  const onClick = () => setExpand(!expand);
+
   const timestamp = new Date(review.timestamp);
 
   return (
@@ -61,10 +67,19 @@ const Review = ({ review }) => {
         }
         className={classes.cardHeader}
       />
-      <CardActions></CardActions>
       <CardContent className={classes.cardContent}>
-        <Typography className={classes.cardFont}>
-          <Markdown source={review.comments}></Markdown>
+        <Typography className={classes.cardFont}> 
+          <ShowMoreText
+            lines={1}
+            more={<ExpandMore />}
+            less={<ExpandLess />}
+            onClick={onClick}
+            expanded={expand}
+            width={100}
+            truncatedEndingComponent={`${review.comments.slice(0, review.comments.indexOf("\n"))} ... read more`}
+            >
+            {<Markdown children={review.comments} />}
+          </ShowMoreText>
         </Typography>
       </CardContent>
       <IconButton>

@@ -38,7 +38,6 @@ export default ({ reviewIds, reviews }) => {
           {reviews
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
             .map((review) => {
-              const timestamp = new Date(review.timestamp);
               return <Review review={review} />;
             })}
         </React.Fragment>
