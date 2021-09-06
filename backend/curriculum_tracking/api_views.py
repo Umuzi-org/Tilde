@@ -1,5 +1,3 @@
-from typing import Union
-
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -138,14 +136,22 @@ from rest_framework import filters
 class CardSummaryViewset(viewsets.ModelViewSet):
 
     permission_classes = [
-        Union[permissions.IsAdminUser, core_permissions.ActionIs(
-            "retrieve"), curriculum_permissions.IsCardAssignee, curriculum_permissions.IsCardReviewer, core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
-        ), core_permissions.IsReadOnly, core_permissions.IsStaffUser, core_permissions.IsCurrentUserInSpecificFilter(
-            "assignees"), core_permissions.HasObjectPermission(
+        permissions.IsAdminUser
+        | core_permissions.ActionIs("retrieve")
+        & (
+            curriculum_permissions.IsCardAssignee
+            | curriculum_permissions.IsCardReviewer
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
+            )
+        )
+        | core_permissions.IsReadOnly
+        | core_permissions.IsStaffUser
+        | core_permissions.IsCurrentUserInSpecificFilter("assignees")
+        | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
             get_objects=_get_teams_from_user_filter("assignees"),
-        )],
+        ),
     ]
     serializer_class = serializers.cardsummarySerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -198,7 +204,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
     queryset = (
         models.AgileCard.objects.order_by("order")
-
         .prefetch_related("recruit_project")
         .prefetch_related("recruit_project__repository__pull_requests")
     )
@@ -584,11 +589,13 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
         permission_classes = [IsReadOnly]
         if self.action == "retrieve":
             permission_classes = [
-                Union[
-                    permissions.IsAdminUser, curriculum_permissions.IsProjectAssignee, curriculum_permissions.IsProjectReviewer, core_permissions.HasObjectPermission(
-                        permissions=Team.PERMISSION_VIEW,
-                        get_objects=_get_teams_from_recruit_project,
-                    )]
+                permissions.IsAdminUser
+                | curriculum_permissions.IsProjectAssignee
+                | curriculum_permissions.IsProjectReviewer
+                | core_permissions.HasObjectPermission(
+                    permissions=Team.PERMISSION_VIEW,
+                    get_objects=_get_teams_from_recruit_project,
+                )
             ]
         elif self.action == "list":
             permission_classes = [
