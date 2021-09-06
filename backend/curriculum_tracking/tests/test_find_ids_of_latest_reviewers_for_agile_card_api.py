@@ -31,8 +31,6 @@ class OldestOpenPrUpdatedTimeTests(TestCase):
         self.project.save()
         self.assertEqual(AgileCard.derive_status_from_project(self.project), AgileCard.IN_PROGRESS)
 
-        """The review done on time_one should be excluded since it was done before the project owner
-        requested for the project to be reviewed."""
         request_review_time = self.project.start_time + timedelta(1)
         self.project.request_review(force_timestamp=request_review_time)
         time_one = self.project.start_time - timedelta(days=6)
@@ -44,31 +42,33 @@ class OldestOpenPrUpdatedTimeTests(TestCase):
         self.review_1 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
-            timestamp=time_one
         )
+        self.review_1.timestamp = time_one
+        self.review_1.save()
 
         self.review_2 = factories.RecruitProjectReviewFactory(
             status=COMPETENT,
             recruit_project=self.project,
-            timestamp=time_two
         )
+        self.review_2.timestamp = time_two
+        self.review_2.save()
 
         self.review_3 = factories.RecruitProjectReviewFactory(
             status=EXCELLENT,
             recruit_project=self.project,
-            timestamp=time_three
         )
+        self.review_3.timestamp = time_three
+        self.review_3.save()
 
         self.review_4 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project,
-            timestamp=time_four
         )
+        self.review_4.timestamp = time_four
+        self.review_4.save()
 
-        self.project.save()
         result = self.card.get_users_that_reviewed_since_last_review_request()
 
-        # Only three of the reviews should have been added as part of the result
+        # Only three of the four reviews should have been added as part of the result
         self.assertNotEqual(len(result), 4)
-        print(result)
 
