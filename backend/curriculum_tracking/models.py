@@ -1389,30 +1389,26 @@ class AgileCard(
                     self.recruit_project.reviewer_users.add(user)
         self.save()
 
-    def finding_latest_reviewer_users(self):
-        """Everytime a person reviews the status will be changed, so look for any status
-        changes after a review-request and give the ids of those reviewers"""
+    def get_users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
 
-        reviewer_user_since_latest_review_request = []
-        review_requests_made = []
+        if self.content_item.content_type == ContentItem.PROJECT:
+            ReviewClass = RecruitProjectReview
 
-        # Making sure to only get reviewers since the latest request for a review
-        if self.status in [
-            AgileCard.REVIEW_FEEDBACK,
-            AgileCard.IN_REVIEW,
-        ]:
-            review_requests_made.append(self.topic_progress.review_request_time)
-        else:
-            review_requests_made = []
+        elif self.content_item.content_type == ContentItem.TOPIC:
+            ReviewClass = TopicReview
 
-        reviews_since_latest_review_request = RecruitProjectReview.objects.filter(
-            recruit_project=AgileCard.recruit_project
-        ).filter(timestamp__lt=self.topic_progress.review_request_time)
+        reviews = ReviewClass.objects.filter(
+            timestamp__gte=self.review_request_time
+        )
+        #"""
+        list_of_reviewer_ids = []
 
-        if len(review_requests_made) == 0:
-            reviewer_ids_since_latest_review_request = []
-            return 0
-        else:
-            for review in reviews_since_latest_review_request:
-                reviewer_user_since_latest_review_request.append(review.reviewer_user)
-            return reviewer_user_since_latest_review_request[::1]
+        for review in reviews:
+            list_of_reviewer_ids.append(review.reviewer_user_id)
+        return list_of_reviewer_ids
+        #"""
+
+        #return [review.reviewer_user_id for review in ReviewClass]
+
