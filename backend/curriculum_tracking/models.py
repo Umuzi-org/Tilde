@@ -1399,13 +1399,6 @@ class AgileCard(
         reviews = ReviewClass.objects.filter(
             timestamp__gte=self.review_request_time
         )
-        #"""
-        list_of_reviewer_ids = []
 
-        for review in reviews:
-            list_of_reviewer_ids.append(review.reviewer_user_id)
-        return list_of_reviewer_ids
-        #"""
-
-        #return [review.reviewer_user_id for review in ReviewClass]
+        return list(map(lambda review: review.reviewer_user_id, reviews))
 
