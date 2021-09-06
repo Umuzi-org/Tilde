@@ -1,11 +1,6 @@
 from django.test import TestCase
-from curriculum_tracking.tests.factories import RecruitProjectFactory
-from curriculum_tracking.models import (
-    AgileCard,
-    ContentItem,
-)
+from curriculum_tracking.models import AgileCard
 from . import factories
-from core.tests.factories import UserFactory
 from datetime import timedelta
 
 from curriculum_tracking.constants import (
@@ -21,55 +16,59 @@ class OldestOpenPrUpdatedTimeTests(TestCase):
 
     def setUp(self):
         self.card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(
-                content_type=ContentItem.PROJECT,
-                project_submission_type=ContentItem.LINK,
-            ),
             status=AgileCard.IN_PROGRESS,
         )
 
-        self.project = RecruitProjectFactory(content_item=self.card.content_item)
-        self.user = UserFactory()
+        self.project = self.card.recruit_project
+        self.user = self.card.assignees.first()
         self.card.assignees.set([self.user])
         self.assertIsNotNone(self.card.recruit_project)
         self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.project.content_item, self.card.content_item)
-        self._reviewer_ids_since_latest_review_request = []
-        self.project.review_requests_made = []
 
-    def finding_latest_reviewer_ids(self):
-        self.project.start_time = timezone.now() - timedelta(days=15)
+    def test_finding_latest_reviewer_ids(self):
+        self.project.start_time = timezone.now() - timedelta(days=5)
         self.project.save()
         self.assertEqual(AgileCard.derive_status_from_project(self.project), AgileCard.IN_PROGRESS)
 
-        # Owner of the project requests for it to be reviewed
-        self.project.request_review(force_timestamp=timezone.now() - timedelta(days=10))
-        self.project.review_requests_made.append(self.project.review_request_time)
+        """The review done on time_one should be excluded since it was done before the project owner
+        requested for the project to be reviewed."""
+        request_review_time = self.project.start_time + timedelta(1)
+        self.project.request_review(force_timestamp=request_review_time)
+        time_one = self.project.start_time - timedelta(days=6)
+        time_two = self.project.start_time + timedelta(days=4)
+        time_three = self.project.start_time + timedelta(days=3)
+        time_four = self.project.start_time + timedelta(days=2)
 
-        # Three reviews are made
-        review_1 = factories.RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT, recruit_project=self.project
+        # Four reviews are made at different times
+        self.review_1 = factories.RecruitProjectReviewFactory(
+            status=NOT_YET_COMPETENT,
+            recruit_project=self.project,
+            timestamp=time_one
         )
 
-        review_2 = factories.RecruitProjectReviewFactory(
-            status=COMPETENT, recruit_project=self.project
+        self.review_2 = factories.RecruitProjectReviewFactory(
+            status=COMPETENT,
+            recruit_project=self.project,
+            timestamp=time_two
         )
 
-        review_3 = factories.RecruitProjectReviewFactory(
-            status=EXCELLENT, recruit_project=self.project
+        self.review_3 = factories.RecruitProjectReviewFactory(
+            status=EXCELLENT,
+            recruit_project=self.project,
+            timestamp=time_three
         )
 
-        if len(self.project.review_requests_made) == 0:
-            return 'No review requests made and therefore no reviews submitted'
-        else:
-            self._reviewer_ids_since_latest_review_request.append(review_1.reviewer_user)
-            self._reviewer_ids_since_latest_review_request.append(review_2.reviewer_user)
-            self._reviewer_ids_since_latest_review_request.append(review_3.reviewer_user)
+        self.review_4 = factories.RecruitProjectReviewFactory(
+            status=NOT_YET_COMPETENT,
+            recruit_project=self.project,
+            timestamp=time_four
+        )
 
-    @property
-    def showing_latest_reviewer_ids(self):
-        return self._reviewer_ids_since_latest_review_request[::1]
+        self.project.save()
+        result = self.card.get_users_that_reviewed_since_last_review_request()
 
-    def test_to_find_all_recent_reviewer_users_since_latest_review_request(self):
-        self.finding_latest_reviewer_ids()
-        print(self.showing_latest_reviewer_ids)
+        # Only three of the reviews should have been added as part of the result
+        self.assertNotEqual(len(result), 4)
+        print(result)
+
