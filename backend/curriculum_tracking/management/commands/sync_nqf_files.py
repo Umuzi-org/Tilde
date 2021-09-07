@@ -35,12 +35,17 @@ class Command(BaseCommand):
             url = card.recruit_project.link_submission
             if url:
                 if url.startswith("https://drive.google.com/"):
-                    self.sync_card_link(card)
+                    self.sync_card_drive_link(card)
+                elif url.startswith("https://docs.google.com/"):
+                    self.sync_card_drive_link(card)
                 else:
+                    # print(f"skipping: {url}")
+                    # continue
+
                     self.add_review(
                         card,
                         NOT_YET_COMPETENT,
-                        "Please follow the submission instructions exactly: Upload the document to google drive and submit a link. Do not submit other kinds of links. The url should start with https://drive.google.com/",
+                        "Please follow the submission instructions exactly: Upload the document to google drive and submit a link",
                     )
             else:
                 self.add_review(
@@ -49,7 +54,17 @@ class Command(BaseCommand):
                     "Please submit a link to your work before asking for a review. Make sure your work is publically accessable so it can be reviewed",
                 )
 
-    def sync_card_link(self, card):
+    # def sync_card_docs_link(self, card):
+    #     user: User = card.assignees.first()
+    #     link = card.recruit_project.link_submission
+    #     print(f"processing link:\n\t{link}")
+
+    #     credentials = authorize_creds()
+    #     service = build("drive", "v3", credentials=credentials)
+    #     breakpoint()
+    #     pass
+
+    def sync_card_drive_link(self, card):
         user: User = card.assignees.first()
         link = card.recruit_project.link_submission
         print(f"processing link:\n\t{link}")
@@ -57,14 +72,16 @@ class Command(BaseCommand):
         credentials = authorize_creds()
         service = build("drive", "v3", credentials=credentials)
 
-        found = re.search("https://drive.google.com/file/d/(.*)/", link)
+        found = re.search("https://drive.google.com/file/d/(.*)/", link) or re.search(
+            "https://docs.google.com/document/d/(.*)/", link
+        )
         if found:
             file_id = found.groups()[0]
         else:
             self.add_review(
                 card,
                 RED_FLAG,
-                "This link is not valid. Please link to a specific file in your google drive. The link should look like this: https://drive.google.com/file/d/SOME_WEIRD_STUFF/...",
+                "This link is not valid. Please link to a specific file in your google drive. The link should look like this: https://docs.google.com/file/d/SOME_WEIRD_STUFF/...",
             )
             return
 
@@ -115,7 +132,6 @@ class Command(BaseCommand):
         )
 
         if not has_review:
-            # breakpoint()
             self.add_review(
                 card,
                 COMPETENT,
