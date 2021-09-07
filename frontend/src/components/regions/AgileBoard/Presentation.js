@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  paper: {
+    height: "calc(100vh - 9rem)",
+  },
+
   column: {
     height: "100%",
     overflowY: "scroll",
@@ -51,7 +55,7 @@ export default ({
                 className={classes.grid}
                 key={column.label}
               >
-                <Paper elevation={3}>
+                <Paper elevation={3} className={classes.paper}>
                   <Typography variant="h5" align="center">
                     {column.label}
                   </Typography>
