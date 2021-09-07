@@ -16,9 +16,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     maxHeight: "100%",
   },
-  reviewHeading:{
-    marginLeft: "1.5%"
-  },
 }));
 
 export default ({ reviewIds, reviews }) => {
@@ -46,7 +43,7 @@ export default ({ reviewIds, reviews }) => {
 
   return (
     <Paper className={classes.sectionPaper} >
-      <Typography className={classes.reviewHeading} variant="h6">Reviews</Typography>
+      <Typography variant="h6">Reviews</Typography>
       {body}
     </Paper>
   );
