@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   timeFont: {
     fontSize: 11,
   },
+  reviewerFont: {
+    fontSize: "100%",
+    fontWeight: "bold"
+  },
   cardFont: {
     fontSize: "100%",
   },
@@ -32,9 +36,6 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     paddingTop: 0,
     paddingBottom: 0,
-    // "&:last-child": {
-    //   paddingTop: 0,
-    // }
   },
   footer: {
     paddingTop: 0,
@@ -61,7 +62,7 @@ const Review = ({ review }) => {
           </Typography>
         }
         subheader={
-          <Typography className={classes.cardFont}>
+          <Typography className={classes.reviewerFont}>
             {review.reviewerUserEmail}
           </Typography>
         }
@@ -75,8 +76,8 @@ const Review = ({ review }) => {
             less={<ExpandLess />}
             onClick={onClick}
             expanded={expand}
-            width={100}
-            truncatedEndingComponent={`${review.comments.slice(0, review.comments.indexOf("\n"))} ... read more`}
+            width={0}
+            truncatedEndingComponent={"..."}
             >
             {<Markdown children={review.comments} />}
           </ShowMoreText>

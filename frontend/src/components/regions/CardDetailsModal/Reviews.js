@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Typography } from "@material-ui/core";
+import { Paper, Typography, List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import CircularProgress from "../../widgets/Loading";
@@ -10,21 +10,14 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1, 2, 1),
   },
-
-  commentColumn: {
-    minWidth: 300,
-    maxWidth: 300,
-  },
-
-  tableContainer: {
-    maxHeight: 200,
-  },
-
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),
     maxWidth: "100%",
     maxHeight: "100%",
+  },
+  reviewHeading:{
+    marginLeft: "1.5%"
   },
 }));
 
@@ -35,11 +28,13 @@ export default ({ reviewIds, reviews }) => {
     if (reviews.length) {
       body = (
         <React.Fragment>
-          {reviews
-            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-            .map((review) => {
-              return <Review review={review} />;
-            })}
+          <List style={{ maxHeight: 200, overflow: "auto" }}>
+            {reviews
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+              .map((review) => {
+                return <Review review={review} />;
+              })}
+          </List>
         </React.Fragment>
       );
     } else {
@@ -50,8 +45,8 @@ export default ({ reviewIds, reviews }) => {
   }
 
   return (
-    <Paper className={classes.sectionPaper} variant="outlined">
-      <Typography variant="h6">Reviews</Typography>
+    <Paper className={classes.sectionPaper} >
+      <Typography className={classes.reviewHeading} variant="h6">Reviews</Typography>
       {body}
     </Paper>
   );
