@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   column: {
-    height: "100%",
+    height: "calc(100% - 3rem)",
     overflowY: "scroll",
   },
 }));
