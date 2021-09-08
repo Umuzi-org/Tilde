@@ -34,6 +34,7 @@ Please go through everything and make sure that:
 - all names are consistent with the style of your language
 - you don't have any comments that just rewrite the code in English
 """
+
 python_comments = f"""{comment_intro}
 Since you are working in Python:
 
@@ -46,6 +47,7 @@ Since you are working in Python:
     - ClassesAreNamedLikeThis
 
 """
+
 js_comments = f"""{comment_intro}
 Since you are working in Javascript:
 
