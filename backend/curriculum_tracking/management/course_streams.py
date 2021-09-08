@@ -1,4 +1,10 @@
 COURSES_BY_STREAM = {
+    "bridge web dev": [
+        xxx
+        "Web development boot camp",
+        "Post Bootcamp Soft Skills",
+    ],
+    "bridge data sci": [],
     "web dev": [
         "Web development boot camp",
         "Post Bootcamp Soft Skills",
