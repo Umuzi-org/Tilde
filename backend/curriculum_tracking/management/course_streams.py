@@ -1,10 +1,22 @@
 COURSES_BY_STREAM = {
     "bridge web dev": [
-        xxx
+        "Web dev bridging course",
+        "Web development boot camp - quick wins",
         "Web development boot camp",
         "Post Bootcamp Soft Skills",
     ],
-    "bridge data sci": [],
+    "bridge data sci": [
+        "Data science bridging course",
+        "Data Science boot camp - quick wins",
+        "Data Science boot camp",
+        "Post Bootcamp Soft Skills",
+    ],
+    "bridge data eng": [
+        "Data Engineering boot camp - quick wins",
+        "Data Engineering boot camp",
+        "Data engineering bridging course",
+        "Post Bootcamp Soft Skills",
+    ],
     "web dev": [
         "Web development boot camp",
         "Post Bootcamp Soft Skills",
@@ -19,7 +31,7 @@ COURSES_BY_STREAM = {
         "Web Development - part 2",
     ],
     "web dev alumni": [
-        "Alumni Web developement Bootcamp",
+        "Alumni Web development Bootcamp",
         "Post Bootcamp Soft Skills",
         "Web Development - part 2",
     ],
