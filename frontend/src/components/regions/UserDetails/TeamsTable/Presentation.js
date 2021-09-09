@@ -29,21 +29,23 @@ const TeamsTable = (props) => {
                     ))}
                 </TableRow>
             </TableHead>
-            <TableBody>
-                {   
-                    Object.keys(teams).length > 0 ?
-                        Object.values(teams).map((team) => (
-                            <TableRow key={Object.values(teams).indexOf(team)}>
-                                <TableCell>
-                                    {team.name}
-                                </TableCell>
+            {
+                <TableBody>
+                    {   
+                        teams ?
+                            Object.values(teams).map((team) => (
+                                <TableRow key={Object.values(teams).indexOf(team)}>
+                                    <TableCell>
+                                        {team.name}
+                                    </TableCell>
+                                </TableRow>
+                            )) :
+                            <TableRow>
+                                <TableCell>Nothing to display</TableCell>
                             </TableRow>
-                        )) :
-                        <TableRow>
-                            <TableCell>Nothing to display</TableCell>
-                        </TableRow>
-                }
-            </TableBody>
+                    }
+                </TableBody>
+            }
         </Table>
     )
 }
