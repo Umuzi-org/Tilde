@@ -601,6 +601,8 @@ def load_all_curriculums_with_known_ids(curriculums_base_dir):
 
         defaults = get_creation_args_from_curricum_frontmatter(syllabus_frontmatter)
 
+        print("======================")
+        print(defaults)
         curriculum, _ = Curriculum.get_or_create_or_update(
             id=db_id, defaults=defaults, overrides=defaults
         )

@@ -14,7 +14,7 @@ COURSES_BY_STREAM = {
     "bridge data eng": [
         "Data Engineering boot camp - quick wins",
         "Data Engineering boot camp",
-        "Data engineering bridging course",
+        "Data eng bridging course",
         "Post Bootcamp Soft Skills",
     ],
     "web dev": [
@@ -81,7 +81,7 @@ COURSES_BY_STREAM = {
         "NCIT - Python",
         "Data Science",
     ],
-    "data sci  provisionally accepted": [
+    "data sci provisionally accepted": [
         "Data Science boot camp",
         "Post Bootcamp Soft Skills",
         "Data Science",
