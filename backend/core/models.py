@@ -161,7 +161,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Curriculum(models.Model, Mixins):
-    name = models.CharField(max_length=40)  # eg: data engineering
+    name = models.CharField(max_length=100)  # eg: data engineering
     url = models.URLField(
         max_length=2083,
         blank=True,

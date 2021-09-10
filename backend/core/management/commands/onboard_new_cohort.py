@@ -11,7 +11,7 @@ from google_helpers.utils import fetch_sheet
 from curriculum_tracking.models import ContentItem, Curriculum, CourseRegistration
 import os
 
-from ..course_streams import COURSES_BY_STREAM
+from curriculum_tracking.management.course_streams import COURSES_BY_STREAM
 
 OLD_EMAIL = "Old Email"
 NEW_EMAIL = "New Email"
@@ -63,7 +63,7 @@ Since you are working in Javascript:
 
 
 def update_user_email(row):
-    print(f"{row[OLD_EMAIL]} => {row[NEW_EMAIL]}")
+    print(f"'{row[OLD_EMAIL]}' => '{row[NEW_EMAIL]}'")
     try:
         user = User.objects.get(email=row[OLD_EMAIL])
     except User.DoesNotExist:
@@ -84,8 +84,9 @@ def set_up_course_registrations(row):
 
 def set_course_reg(user, course_names):
     curriculums = []
+    print(user)
     for name in course_names:
-        # print(name)
+        print(name)
         curriculums.append(Curriculum.objects.get(name=name))
 
     course_ids = [curriculum.id for curriculum in curriculums]
@@ -118,8 +119,8 @@ def create_rocketchat_user_and_add_to_channel(client, managment_usernames):
     ]
 
     def _create_rocketchat_user_and_add_to_channel(row):
-
         username = row[NEW_EMAIL].split("@")[0]
+        print(username)
         name = " ".join([s.capitalize() for s in username.split(".")])
         channel_name = row[TEAM_NAME].replace(" ", "-").lower()
 
@@ -161,13 +162,14 @@ def setup_rocketchat_users(df):
 
 
 def re_review_cards(row):
-    # user = User.objects.get(email=row[NEW_EMAIL])
     from curriculum_tracking.models import AgileCard, RecruitProjectReview
     from django.db.models import Q
     from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
     from django.utils import timezone
 
     from curriculum_tracking.constants import NOT_YET_COMPETENT
+
+    print(row[NEW_EMAIL])
 
     cards = (
         AgileCard.objects.filter(assignees__email__in=[row[NEW_EMAIL]])
@@ -226,9 +228,13 @@ class Command(BaseCommand):
         df = df[df[OLD_EMAIL] != ""]
         # df = pd.read_csv(path)
 
+        print("updating emails")
         df.apply(update_user_email, axis=1)
+        print("setting up teams")
         df.apply(add_user_to_group, axis=1)
+        print("setting up course registrations")
         df.apply(set_up_course_registrations, axis=1)
-        setup_rocketchat_users(df)
-
+        print("re-reviewing cards")
         df.apply(re_review_cards, axis=1)
+        print("setting up rocketchat users")
+        setup_rocketchat_users(df)
