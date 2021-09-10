@@ -1383,3 +1383,105 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
+
+
+class UserStatsPerWeek(models.Model, Mixins, ContentItemProxyMixin, ReviewableMixin, FlavourMixin):
+
+    #user = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    cards_in_completed_column = models.ManyToManyField(
+        AgileCard, related_name='number_of_completed_cards_to_date'
+    )
+
+    cards_in_review_column = models.ManyToManyField(
+        AgileCard, related_name='number_of_cards_in_review_currently'
+    )
+
+    cards_in_review_feedback_column = models.ManyToManyField(
+        AgileCard, related_name='review_feedback_currently'
+    )
+
+    cards_in_progress_column = models.ManyToManyField(
+        AgileCard, related_name='number_of_cards_in_review_feedback_currently'
+    )
+
+    total_number_of_tilde_reviews = models.ManyToManyField(
+        RecruitProjectReview, related_name='number_of_tilde_reviews_since_always', default=list
+    )
+
+    #total_number_of_pr_reviews = models.ManyToManyField()
+
+    tilde_reviews_done_last_7_days = models.ManyToManyField(
+        RecruitProjectReview, related_name='number_of_tilde_reviews_done_last_7_days'
+    )
+
+    #pr_reviews_done_last_7_days = models.ManyToManyField()
+
+    cards_completed_last_7_days = models.ManyToManyField(
+        AgileCard, related_name='tilde_cards_completed_last_7_days'
+    )
+
+    cards_started_last_7_days = models.ManyToManyField(
+        AgileCard, related_name='tilde_cards_started_last_7_days'
+    )
+
+"""
+    def _get_previous_review_in_streak(self, projects_visited):
+        content_item = self.recruit_project.content_item
+        flavours = self.recruit_project.flavour_names
+
+        reviews = (
+            RecruitProjectReview.objects.filter(
+                recruit_project__content_item=content_item
+            )
+            .filter(id__lt=self.id)
+            .filter(reviewer_user=self.reviewer_user)
+            .order_by("-id")
+        )
+
+        for review in reviews:
+            if review.recruit_project in projects_visited:
+                continue
+            if review.recruit_project.flavours_match(flavours):
+                return review
+
+    @property
+    def reviewer_user_email(self):
+        return self.reviewer_user.email
+
+    def update_recent_validation_flags_for_project(self):
+        reviews = RecruitProjectReview.objects.filter(
+            recruit_project=self.recruit_project
+        ).filter(timestamp__lt=self.timestamp)
+        since_time = self.recruit_project.review_request_time
+        if since_time:
+            reviews = reviews.filter(timestamp__gte=since_time)
+
+        for review in reviews:
+            review.update_validated_from(self)
+
+    def update_validated_from(self, other):
+        positive = [COMPETENT, EXCELLENT]
+        negative = [NOT_YET_COMPETENT, RED_FLAG]
+        if other.trusted:
+            if self.status in positive and other.status in positive:
+                if self.is_first_review_after_request():
+                    self.validated = RecruitProjectReview.CORRECT
+            else:
+                self.validated = RecruitProjectReview.INCORRECT
+        else:
+            if self.status in positive and other.status in negative:
+                self.validated = RecruitProjectReview.CONTRADICTED
+        self.save()
+
+    def is_first_review_after_request(self):
+        request_time = self.recruit_project.review_request_time
+        if not request_time:
+            return False
+        if request_time > self.timestamp:
+            return False
+        first_review = (RecruitProjectReview.objects.filter(timestamp__gte=request_time).order_by("timestamp").first()
+        )
+
+        return self == first_review
+"""

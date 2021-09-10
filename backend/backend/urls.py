@@ -119,6 +119,11 @@ router.register(
     "workshopattendance",
 )
 
+router.register(
+    r"user_stats_7_days",
+    curriculum_tracking_api_views.UserStatsPerWeekViewset,
+    "workshopattendance",
+)
 
 # router.register(
 #     r"agile_card_add_review",
