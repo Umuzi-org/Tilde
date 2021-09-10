@@ -914,7 +914,6 @@ class AgileCard(
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     flavours = TaggableManager(blank=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
     workshop_attendance = models.OneToOneField(
         WorkshopAttendance,
@@ -1403,5 +1402,5 @@ class AgileCard(
             timestamp__gte=self.review_request_time
         )
 
-        return list(map(lambda review: review.reviewer_user_id, reviews))
+        return [review.reviewer_user_id for review in reviews]
 
