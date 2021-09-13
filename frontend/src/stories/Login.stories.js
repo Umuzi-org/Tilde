@@ -1,9 +1,9 @@
 import React from "react"
-import Login from "../components/regions/Login/Presentation"
+import LoginForm from "../components/regions/Login/LoginForm"
 
 export default {
   title: "Tilde/Login",
-  component: Login
+  component: LoginForm
 }
 
-export const Primary = () => <Login />%
+export const Primary = () => <LoginForm />
