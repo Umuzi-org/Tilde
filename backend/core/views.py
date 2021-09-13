@@ -148,10 +148,16 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['get'],
-        serializer_class=serializers.UserStatsSerializer
+        #serializer_class=serializers.UserStatsSerializer
+        serializer_class=serializers.UserStatsPerWeekSerializer
     )
     def stats(self, request, pk=None):
-        pass
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            card = self.get_object()
+            return Response(serializers.UserStatsPerWeekSerializer(card).data)
+        else:
+            return Response(serializer.errors, status='BAD_REQUEST')
 
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
