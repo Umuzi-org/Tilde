@@ -1389,10 +1389,22 @@ class UserStatsPerWeek(models.Model, Mixins, ContentItemProxyMixin, ReviewableMi
 
     #user = models.ForeignKey(User, on_delete=models.PROTECT)
 
-    cards_in_completed_column = models.ManyToManyField(
-        AgileCard, related_name='number_of_completed_cards_to_date'
-    )
+    cards_in_completed_column = models.PositiveIntegerField
 
+    #cards_in_completed_column = models.ForeignKey(
+        #AgileCard, on_delete=models.PROTECT
+    #)
+
+    @property
+    def get_cards_in_completed_column(self):
+        if ContentItem.PROJECT and self.recruit_project.status == 'COMPLETE':
+            self.cards_in_completed_column = self.recruit_project.agile_card.count()
+            return self.cards_in_completed_column
+        else:
+            self.cards_in_completed_column = 10
+            return self.cards_in_completed_column
+
+"""
     cards_in_review_column = models.ManyToManyField(
         AgileCard, related_name='number_of_cards_in_review_currently'
     )
@@ -1425,7 +1437,7 @@ class UserStatsPerWeek(models.Model, Mixins, ContentItemProxyMixin, ReviewableMi
         AgileCard, related_name='tilde_cards_started_last_7_days'
     )
 
-"""
+
     def _get_previous_review_in_streak(self, projects_visited):
         content_item = self.recruit_project.content_item
         flavours = self.recruit_project.flavour_names
