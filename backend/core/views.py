@@ -145,6 +145,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer
+    @action(
+        detail=True,
+        methods=['get'],
+        serializer_class=serializers.UserStatsSerializer
+    )
+    def stats(self, request, pk=None):
+        pass
 
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
