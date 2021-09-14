@@ -159,6 +159,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         except SocialProfile.DoesNotExist:
             return None
 
+    #def user_cards_in_completed_column(self, instance):
+        #cards = models.ForeignKey(PageContainer, on_delete=models.CASCADE)
+
 
 class Curriculum(models.Model, Mixins):
     name = models.CharField(max_length=40)  # eg: data engineering

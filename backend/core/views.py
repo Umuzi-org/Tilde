@@ -1,3 +1,4 @@
+import curriculum_tracking.models
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -17,6 +18,13 @@ from rest_framework import permissions as drf_permissions
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
+from curriculum_tracking.models import (
+AgileCard,
+RecruitProject,
+RecruitProjectReview,
+TopicProgress,
+TopicReview
+)
 
 
 @api_view(["POST"])
@@ -145,16 +153,17 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer
+
     @action(
         detail=True,
         methods=['get'],
-        #serializer_class=serializers.UserStatsSerializer
         serializer_class=serializers.UserStatsPerWeekSerializer
     )
     def stats(self, request, pk=None):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            card = self.get_object()
+            #card = self.get_object()
+            card: AgileCard = self.get_object()
             return Response(serializers.UserStatsPerWeekSerializer(card).data)
         else:
             return Response(serializer.errors, status='BAD_REQUEST')

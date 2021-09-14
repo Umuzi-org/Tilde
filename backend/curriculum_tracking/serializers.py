@@ -323,29 +323,3 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "content_item",
             "attendee_user",
         ]
-
-
-class UserStatsPerWeekSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.UserStatsPerWeek
-        fields = [
-            "id",
-            #"user",
-            "cards_in_completed_column",
-            #"cards_in_review_column",
-            #"cards_in_review_feedback_column",
-            #"cards_in_progress_column",
-            #"total_number_of_tilde_reviews",
-            #"total_number_of_pr_reviews",
-            #"tilde_reviews_done_last_7_days",
-            #"pr_reviews_done_last_7_days",
-            #"cards_completed_last_7_days",
-            #"cards_started_last_7_days"
-        ]
-
-    #cards_in_completed_column = serializers.SerializerMethodField("cards_in_completed_column")
-
-    #def get_cards_in_completed_column(self, instance):
-        #return instance.get_cards_in_completed_column()
-        #if instance.recruit_project.agile_card.status == AgileCardSerializer.Meta.model.COMPLETE:
-            #return instance.recruit_project.agile_card.count()

@@ -156,9 +156,11 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
             #"cards_started_last_7_days"
         ]
 
-    #cards_in_completed_column = serializers.SerializerMethodField("cards_in_completed_column")
+    cards_in_completed_column = serializers.SerializerMethodField("get_cards_in_completed_column")
 
-    #def get_cards_in_completed_column(self, instance):
-        #return instance.get_cards_in_completed_column()
-        #if instance.recruit_project.agile_card.status == AgileCardSerializer.Meta.model.COMPLETE:
+    def get_cards_in_completed_column(self, instance):
+        #return instance.get_short_name()
+        #if instance.recruit_project.agile_card.status == AgileCard.COMPLETE:
             #return instance.recruit_project.agile_card.count()
+        #return instance.user.last_name
+        return instance.get_short_name()
