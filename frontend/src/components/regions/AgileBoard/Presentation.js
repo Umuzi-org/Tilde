@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   paper: {
-    height: "calc(100vh - 9rem)",
+    height: "calc(100vh - 6rem)",
   },
 
   column: {
