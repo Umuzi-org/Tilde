@@ -9,10 +9,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 # import re
 
 # from rest_framework.generics import RetrieveAPIView
+import curriculum_tracking
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
-
 from django.contrib.auth.models import PermissionsMixin
 
 
@@ -159,8 +159,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         except SocialProfile.DoesNotExist:
             return None
 
-    #def user_cards_in_completed_column(self, instance):
-        #cards = models.ForeignKey(PageContainer, on_delete=models.CASCADE)
+    def user_cards_in_completed_column(self):
+        #return cards.reviewer_user_email
+        cards_completed = curriculum_tracking.models.RecruitProjectReview.objects.all()
+        return cards_completed
 
 
 class Curriculum(models.Model, Mixins):

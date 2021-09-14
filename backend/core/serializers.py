@@ -163,4 +163,4 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         #if instance.recruit_project.agile_card.status == AgileCard.COMPLETE:
             #return instance.recruit_project.agile_card.count()
         #return instance.user.last_name
-        return instance.get_short_name()
+        return instance.user_cards_in_completed_column()
