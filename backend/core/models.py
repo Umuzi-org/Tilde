@@ -14,6 +14,14 @@ from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.models import PermissionsMixin
+from curriculum_tracking.constants import (
+    NOT_YET_COMPETENT,
+    COMPETENT,
+    RED_FLAG,
+    EXCELLENT,
+    REVIEW_STATUS_CHOICES,
+)
+from django.core import serializers
 
 
 class UserManager(BaseUserManager):
@@ -160,9 +168,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     def user_cards_in_completed_column(self):
-        #return cards.reviewer_user_email
-        cards_completed = curriculum_tracking.models.RecruitProjectReview.objects.all()
-        return cards_completed
+        cards_in_completed_column_amount = serializers.serialize('json',
+        curriculum_tracking.models.AgileCard.objects.filter(
+            status="C"
+        ))
+        return cards_in_completed_column_amount
 
 
 class Curriculum(models.Model, Mixins):

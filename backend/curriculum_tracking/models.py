@@ -1383,6 +1383,3 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
-
-    def _cards_in_completed_column(self):
-        return self.recruit_project.agile_card.count()

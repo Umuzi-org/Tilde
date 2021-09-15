@@ -159,8 +159,4 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     cards_in_completed_column = serializers.SerializerMethodField("get_cards_in_completed_column")
 
     def get_cards_in_completed_column(self, instance):
-        #return instance.get_short_name()
-        #if instance.recruit_project.agile_card.status == AgileCard.COMPLETE:
-            #return instance.recruit_project.agile_card.count()
-        #return instance.user.last_name
         return instance.user_cards_in_completed_column()
