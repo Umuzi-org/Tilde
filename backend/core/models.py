@@ -170,10 +170,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def user_cards_in_completed_column(self):
         cards_in_completed_column_amount = serializers.serialize('json',
         curriculum_tracking.models.AgileCard.objects.filter(
-            status="C",
+            status=curriculum_tracking.models.AgileCard.REVIEW_FEEDBACK,
             assignees=self.id
         ))
-        return cards_in_completed_column_amount
+
+        if cards_in_completed_column_amount is None:
+            return 0
+        else:
+            return 1
+
+        #return cards_in_completed_column_amount
 
 
 class Curriculum(models.Model, Mixins):
