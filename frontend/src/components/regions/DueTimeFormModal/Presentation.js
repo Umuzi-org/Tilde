@@ -14,6 +14,10 @@ const useStyles = makeStyles({
         marginTop: "0.3rem",
         marginRight: "0.3rem",
     },
+
+    paper: {
+      padding: "1rem"
+    }
 });
 
 const DueTimeFormModal = ({ card, closeModal }) => {
@@ -25,7 +29,7 @@ const DueTimeFormModal = ({ card, closeModal }) => {
 
   return (
     <Modal open={!!card} onClose={closeModal}>
-      <Paper>
+      <Paper className={classes.paper}>
         <form novalidate>
           <TextField
             id="datetime-local"
