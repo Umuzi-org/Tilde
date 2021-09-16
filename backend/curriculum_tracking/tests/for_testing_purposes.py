@@ -1,25 +1,21 @@
-from django.test import TestCase
 from curriculum_tracking.tests.factories import (
-    RecruitProjectFactory,
     ContentItemFactory,
     AgileCardFactory,
     RecruitProjectReviewFactory,
 )
-from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
-from curriculum_tracking.models import (
-    AgileCard,
-    ContentItem,
-)
-from core.tests import factories
-from core.tests.factories import UserFactory
-from datetime import timedelta
-
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
     COMPETENT,
     EXCELLENT,
 )
+from curriculum_tracking.models import (
+    AgileCard,
+    ContentItem,
+)
+from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
+from datetime import timedelta
 from django.utils import timezone
+from django.test import TestCase
 
 
 class CreatingDataForTesting:
