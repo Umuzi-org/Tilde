@@ -11,6 +11,7 @@ from curriculum_tracking.constants import (
 from curriculum_tracking.models import (
     AgileCard,
     ContentItem,
+    RecruitProject,
 )
 from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
 from datetime import timedelta
@@ -19,6 +20,10 @@ from django.test import TestCase
 
 
 class CreatingDataForTesting:
+
+    RecruitProject.objects.all().delete()
+    AgileCard.objects.all().delete()
+    ContentItem.objects.all().delete()
 
     # One card with 4 reviews to follow
     card_1 = AgileCardFactory(
