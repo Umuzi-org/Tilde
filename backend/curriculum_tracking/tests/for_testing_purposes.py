@@ -21,10 +21,6 @@ from django.test import TestCase
 
 class CreatingDataForTesting:
 
-    RecruitProject.objects.all().delete()
-    AgileCard.objects.all().delete()
-    ContentItem.objects.all().delete()
-
     # One card with 4 reviews to follow
     card_1 = AgileCardFactory(
         status=AgileCard.IN_PROGRESS,
@@ -83,7 +79,7 @@ class CreatingDataForTesting:
         project_submission_type=ContentItem.REPOSITORY,
     )
 
-    card_2 = ContentItemFactory(
+    card_2 = AgileCardFactory(
         content_item=content_item,
         status=AgileCard.IN_PROGRESS,
         recruit_project=None,
