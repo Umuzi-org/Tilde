@@ -168,18 +168,25 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     def user_cards_in_completed_column(self):
-        cards_in_completed_column_amount = serializers.serialize('json',
-        curriculum_tracking.models.AgileCard.objects.filter(
+        cards_in_completed_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
+            status=curriculum_tracking.models.AgileCard.COMPLETE,
+            assignees=self.id
+        )
+        return len([card.id for card in cards_in_completed_column_amount])
+
+    def user_cards_in_review_column(self):
+        cards_in_review_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
+            status=curriculum_tracking.models.AgileCard.IN_REVIEW,
+            assignees=self.id
+        )
+        return len([card.id for card in cards_in_review_column_amount])
+
+    def user_cards_in_review_feedback_column(self):
+        cards_in_review_feedback_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.REVIEW_FEEDBACK,
             assignees=self.id
-        ))
-
-        if cards_in_completed_column_amount is None:
-            return 0
-        else:
-            return 1
-
-        #return cards_in_completed_column_amount
+        )
+        return len([card.id for card in cards_in_review_feedback_column_amount])
 
 
 class Curriculum(models.Model, Mixins):
