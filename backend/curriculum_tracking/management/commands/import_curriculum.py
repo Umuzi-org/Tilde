@@ -57,6 +57,8 @@ def create_content_items(data):
             topic_needs_review=content["topic_needs_review"],
             url=content["url"],
         )
+        for tag in content["tags"]:
+            content_items.tags.add(tag)
 
 
 def create_content_item_orders(data):
