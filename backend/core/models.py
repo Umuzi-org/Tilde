@@ -22,6 +22,7 @@ from curriculum_tracking.constants import (
     REVIEW_STATUS_CHOICES,
 )
 from django.core import serializers
+from datetime import datetime, timedelta
 
 
 class UserManager(BaseUserManager):
@@ -168,6 +169,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     @property
+    def user_email(self):
+        return self.get_short_name()
+
+    @property
     def user_cards_in_completed_column(self):
         cards_in_completed_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.COMPLETE,
@@ -198,6 +203,23 @@ class User(AbstractBaseUser, PermissionsMixin):
             assignees=self.id
         )
         return len([card.id for card in cards_in_progress_column])
+
+    @property
+    def user_cards_completed_in_past_seven_days(self):
+        cards_completed_past_seven_days = curriculum_tracking.models.AgileCard.objects.filter(
+            status=curriculum_tracking.models.AgileCard.COMPLETE,
+            assignees=self.id,
+            recruit_project__complete_time__gte=datetime.now() - timedelta(days=7)
+        )
+        return len([card.id for card in cards_completed_past_seven_days])
+
+    @property
+    def user_cards_started_in_past_seven_days(self):
+        cards_started_past_seven_days = curriculum_tracking.models.AgileCard.objects.filter(
+            assignees=self.id,
+            recruit_project__start_time__gte=datetime.now() - timedelta(days=7)
+        )
+        return len([card.id for card in cards_started_past_seven_days])
 
 
 class Curriculum(models.Model, Mixins):
