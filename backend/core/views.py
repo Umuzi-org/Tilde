@@ -163,7 +163,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             card = self.get_object()
-            #card: AgileCard = self.get_object()
             return Response(serializers.UserStatsPerWeekSerializer(card).data)
         else:
             return Response(serializer.errors, status='BAD_REQUEST')

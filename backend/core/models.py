@@ -167,6 +167,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         except SocialProfile.DoesNotExist:
             return None
 
+    @property
     def user_cards_in_completed_column(self):
         cards_in_completed_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.COMPLETE,
@@ -174,6 +175,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
         return len([card.id for card in cards_in_completed_column_amount])
 
+    @property
     def user_cards_in_review_column(self):
         cards_in_review_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.IN_REVIEW,
@@ -181,12 +183,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
         return len([card.id for card in cards_in_review_column_amount])
 
+    @property
     def user_cards_in_review_feedback_column(self):
         cards_in_review_feedback_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.REVIEW_FEEDBACK,
             assignees=self.id
         )
         return len([card.id for card in cards_in_review_feedback_column_amount])
+
+    @property
+    def user_cards_in_progress_column(self):
+        cards_in_progress_column = curriculum_tracking.models.AgileCard.objects.filter(
+            status=curriculum_tracking.models.AgileCard.IN_PROGRESS,
+            assignees=self.id
+        )
+        return len([card.id for card in cards_in_progress_column])
 
 
 class Curriculum(models.Model, Mixins):

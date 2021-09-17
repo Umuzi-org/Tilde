@@ -143,11 +143,11 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         model = models.User
         fields = [
             "id",
-            #"user",
+            #"user_email",
             "cards_in_completed_column",
             "cards_in_review_column",
             "cards_in_review_feedback_column",
-            #"cards_in_progress_column",
+            "cards_in_progress_column",
             #"total_number_of_tilde_reviews",
             #"total_number_of_pr_reviews",
             #"tilde_reviews_done_last_7_days",
@@ -159,12 +159,16 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     cards_in_completed_column = serializers.SerializerMethodField("get_cards_in_completed_column")
     cards_in_review_column = serializers.SerializerMethodField("get_cards_in_review_column")
     cards_in_review_feedback_column = serializers.SerializerMethodField("get_cards_in_review_feedback_column")
+    cards_in_progress_column = serializers.SerializerMethodField("get_cards_in_progress_column")
 
     def get_cards_in_completed_column(self, instance):
-        return instance.user_cards_in_completed_column()
+        return instance.user_cards_in_completed_column
 
     def get_cards_in_review_column(self, instance):
-        return instance.user_cards_in_review_column()
+        return instance.user_cards_in_review_column
 
     def get_cards_in_review_feedback_column(self, instance):
-        return instance.user_cards_in_review_feedback_column()
+        return instance.user_cards_in_review_feedback_column
+
+    def get_cards_in_progress_column(self, instance):
+        return instance.user_cards_in_progress_column
