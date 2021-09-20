@@ -10,6 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # from rest_framework.generics import RetrieveAPIView
 import curriculum_tracking
+import git_real.models
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
@@ -252,6 +253,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             return len([reviewer.id for reviewer in tilde_topic_reviews_done_in_past_seven_days])
         else:
             return len([reviewer.id for reviewer in tilde_project_reviews_done_in_past_seven_days])
+
+    @property
+    def total_pr_reviews_done_to_date(self):
+        pr_project_reviews_done_to_date = git_real.models.PullRequestReview.objects.filter(
+            commit_id=self.id
+        )
+
+        return len([reviewer.id for reviewer in pr_project_reviews_done_to_date])
 
 
 
