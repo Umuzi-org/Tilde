@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
       width: theme.spacing(35),
-      height: theme.spacing(100),
+      // height: theme.spacing(100),
       // height: `calc(100% - ${0}px)`,
+      // height: "calc(100vh - 20rem)",
     },
   },
 
@@ -85,4 +86,3 @@ export default ({
     </React.Fragment>
   );
 };
-
