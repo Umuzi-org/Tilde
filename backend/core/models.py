@@ -236,6 +236,25 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return len([reviewer.id for reviewer in tilde_project_reviews_done_to_date])
 
+    @property
+    def tilde_reviews_done_in_past_seven_days(self):
+        tilde_project_reviews_done_in_past_seven_days = curriculum_tracking.models.RecruitProjectReview.objects.filter(
+            reviewer_user_id=self.id,
+            timestamp__gte=datetime.now() - timedelta(days=7)
+        ).all()
+
+        tilde_topic_reviews_done_in_past_seven_days = curriculum_tracking.models.TopicReview.objects.filter(
+            reviewer_user_id=self.id,
+            timestamp__gte=datetime.now() - timedelta(days=7)
+        ).all()
+
+        if tilde_project_reviews_done_in_past_seven_days == None:
+            return len([reviewer.id for reviewer in tilde_topic_reviews_done_in_past_seven_days])
+        else:
+            return len([reviewer.id for reviewer in tilde_project_reviews_done_in_past_seven_days])
+
+
+
 
 class Curriculum(models.Model, Mixins):
     name = models.CharField(max_length=40)  # eg: data engineering
