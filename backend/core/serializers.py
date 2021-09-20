@@ -154,7 +154,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
             "tilde_reviews_done_last_7_days",
             "total_number_of_pr_reviews",
             "pr_reviews_done_last_7_days",
-
         ]
 
     cards_in_completed_column = serializers.SerializerMethodField("get_cards_in_completed_column")

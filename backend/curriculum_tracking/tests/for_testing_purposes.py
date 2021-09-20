@@ -1,5 +1,4 @@
 import unittest
-
 from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     AgileCardFactory,
@@ -21,13 +20,13 @@ from django.utils import timezone
 from django.test import TestCase
 from . import factories
 from git_real.tests import factories as git_real_factories
-from git_real.models import PullRequest
+from git_real.models import PullRequestReview
 
 
-class CreatingDataForTesting(unittest.TestCase):
+class CreatingDataForTesting(TestCase):
 
     def test_creating_cards(self):
-        """
+
         # One card with 4 reviews to follow on it
         self.card_1 = AgileCardFactory(
             status=AgileCard.IN_PROGRESS,
@@ -165,7 +164,6 @@ class CreatingDataForTesting(unittest.TestCase):
         self.assignee_ = SocialProfileFactory().user
         self.card_9.assignees.set([self.assignee_])
         self.card_10.assignees.set([self.assignee_])
-        """
 
 
         # Create four cards and open a PR on each of them
@@ -173,6 +171,7 @@ class CreatingDataForTesting(unittest.TestCase):
         yesterday = today - timezone.timedelta(days=1)
         day_before_yesterday = today - timezone.timedelta(days=2)
         two_days_before_yesterday = today - timezone.timedelta(days=3)
+        two_weeks_ago = today - timezone.timedelta(days=14)
 
 
         self.repo_card_one = factories.AgileCardFactory(
@@ -220,3 +219,53 @@ class CreatingDataForTesting(unittest.TestCase):
         self.pr_two_days_before_yesterday.save()
         self.pr_day_before_yesterday.save()
 
+
+        # Now creating reviews on the PR's
+
+        pr_review_for_pr_today = PullRequestReview.objects.create(
+            html_url="https://github.com/Umuzi-org/PullRequest-Review(1)",
+            pull_request_id=self.pr_today.id,
+            author_github_name="DeadManWalking",
+            submitted_at=today,
+            body="A horse walks into a bar, the barman says 'Why the long face?'",
+            commit_id=self.repo_card_one.assignees.first().id,
+            state="closed",
+            user_id=self.repo_card_one.assignees.first().id
+        )
+        pr_review_for_pr_today.save()
+
+        pr_review_for_pr_yesterday = PullRequestReview.objects.create(
+            html_url="https://github.com/Umuzi-org/PullRequest-Review(2)",
+            pull_request_id=self.pr_yesterday.id,
+            author_github_name="DeadManWalking",
+            submitted_at=yesterday,
+            body="A horse walks into a bar, the barman says 'Why the long face?'",
+            commit_id=self.repo_card_one.assignees.first().id,
+            state="closed",
+            user_id=self.repo_card_one.assignees.first().id
+        )
+        pr_review_for_pr_yesterday.save()
+
+        pr_review_two_weeks_ago = PullRequestReview.objects.create(
+            html_url="https://github.com/Umuzi-org/PullRequest-Review(3)",
+            pull_request_id=self.pr_today.id,
+            author_github_name="DeadManWalking",
+            submitted_at=two_weeks_ago,
+            body="This review happened a long time ago.",
+            commit_id=self.repo_card_one.assignees.first().id,
+            state="closed",
+            user_id=self.repo_card_one.assignees.first().id
+        )
+        pr_review_two_weeks_ago.save()
+
+        pr_review_two_days_before_yesterday = PullRequestReview.objects.create(
+            html_url="https://github.com/Umuzi-org/PullRequest-Review(4)",
+            pull_request_id=self.pr_two_days_before_yesterday.id,
+            author_github_name="DeadManWalking",
+            submitted_at=two_days_before_yesterday,
+            body="This review happened no more than two days ago",
+            commit_id=self.repo_card_one.assignees.first().id,
+            state="closed",
+            user_id=self.repo_card_one.assignees.first().id
+        )
+        pr_review_two_days_before_yesterday.save()

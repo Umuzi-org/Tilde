@@ -259,7 +259,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         pr_reviews_done_to_date = git_real.models.PullRequestReview.objects.filter(
             commit_id=self.id
         )
-
         return len([reviewer.id for reviewer in pr_reviews_done_to_date])
 
     @property

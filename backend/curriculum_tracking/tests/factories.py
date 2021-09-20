@@ -1,5 +1,7 @@
 from factory.django import DjangoModelFactory
 import factory
+
+import git_real.models
 from curriculum_tracking import models
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from core.tests.factories import UserFactory, CurriculumFactory
