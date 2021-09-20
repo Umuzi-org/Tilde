@@ -12,20 +12,20 @@ from curriculum_tracking.constants import (
 from curriculum_tracking.models import (
     AgileCard,
     ContentItem,
-    RecruitProject,
 )
-from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
+from social_auth.tests.factories import SocialProfileFactory
 from datetime import timedelta
 from django.utils import timezone
 from django.test import TestCase
 from . import factories
 from git_real.tests import factories as git_real_factories
 from git_real.models import PullRequestReview
+from core.models import User
 
 
-class CreatingDataForTesting(TestCase):
+class TestingForTheStatsAPI(TestCase):
 
-    def test_creating_cards(self):
+    def test_creating_cards_and_testing_functionality_of_stats_api(self):
 
         # One card with 4 reviews to follow on it
         self.card_1 = AgileCardFactory(
@@ -142,6 +142,8 @@ class CreatingDataForTesting(TestCase):
         self.card_7.assignees.set([self.assignee_])
         self.card_8.assignees.set([self.assignee_])
 
+        self.assertIsNotNone(User.user_cards_in_completed_column)
+        self.assertIsNotNone(User.user_cards_completed_in_past_seven_days)
 
         # Two cards in the IN_REVIEW column
         self.content_item_3 = ContentItemFactory(
@@ -165,6 +167,9 @@ class CreatingDataForTesting(TestCase):
         self.card_9.assignees.set([self.assignee_])
         self.card_10.assignees.set([self.assignee_])
 
+        self.assertIsNotNone(User.user_cards_in_review_column)
+        self.assertIsNotNone(User.user_cards_in_progress_column)
+        self.assertIsNotNone(User.user_cards_in_review_feedback_column)
 
         # Create four cards and open a PR on each of them
         today = timezone.now()
@@ -172,7 +177,6 @@ class CreatingDataForTesting(TestCase):
         day_before_yesterday = today - timezone.timedelta(days=2)
         two_days_before_yesterday = today - timezone.timedelta(days=3)
         two_weeks_ago = today - timezone.timedelta(days=14)
-
 
         self.repo_card_one = factories.AgileCardFactory(
             status=AgileCard.IN_PROGRESS
@@ -269,3 +273,6 @@ class CreatingDataForTesting(TestCase):
             user_id=self.repo_card_one.assignees.first().id
         )
         pr_review_two_days_before_yesterday.save()
+
+        self.assertIsNotNone(User.pr_reviews_done_in_past_seven_days)
+        self.assertIsNotNone(User.total_pr_reviews_done_to_date)
