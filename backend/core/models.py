@@ -221,6 +221,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
         return len([card.id for card in cards_started_past_seven_days])
 
+    @property
+    def total_tilde_reviews_done_to_date(self):
+        tilde_project_reviews_done_to_date = curriculum_tracking.models.RecruitProjectReview.objects.filter(
+            reviewer_user_id=self.id
+        ).all()
+
+        tilde_topic_reviews_done_to_date = curriculum_tracking.models.TopicReview.objects.filter(
+            reviewer_user_id=self.id
+        ).all()
+
+        if tilde_project_reviews_done_to_date == None:
+            return len([reviewer.id for reviewer in tilde_topic_reviews_done_to_date])
+        else:
+            return len([reviewer.id for reviewer in tilde_project_reviews_done_to_date])
+
 
 class Curriculum(models.Model, Mixins):
     name = models.CharField(max_length=40)  # eg: data engineering

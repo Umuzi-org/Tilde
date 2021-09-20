@@ -150,7 +150,7 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
             "cards_in_progress_column",
             "cards_completed_last_7_days",
             "cards_started_last_7_days",
-            #"total_number_of_tilde_reviews",
+            "total_number_of_tilde_reviews",
             #"total_number_of_pr_reviews",
             #"tilde_reviews_done_last_7_days",
             #"pr_reviews_done_last_7_days",
@@ -163,6 +163,7 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     cards_in_progress_column = serializers.SerializerMethodField("get_cards_in_progress_column")
     cards_completed_last_7_days = serializers.SerializerMethodField("get_cards_completed_last_7_days")
     cards_started_last_7_days = serializers.SerializerMethodField("get_cards_started_last_7_days")
+    total_number_of_tilde_reviews = serializers.SerializerMethodField("get_total_number_of_tilde_reviews")
 
     def get_cards_in_completed_column(self, instance):
         return instance.user_cards_in_completed_column
@@ -181,3 +182,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
 
     def get_cards_started_last_7_days(self, instance):
         return instance.user_cards_started_in_past_seven_days
+
+    def get_total_number_of_tilde_reviews(self, instance):
+        return instance.total_tilde_reviews_done_to_date
