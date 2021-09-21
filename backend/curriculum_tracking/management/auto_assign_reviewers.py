@@ -180,6 +180,7 @@ def auto_assign_reviewers_based_on_permission(
             for u in reviewer_users
             if team in get_objects_for_user(u, permission, Team, with_superuser=False)
         ]
+        reviewer_users = [o for o in reviewer_users if o.github_name]
         if not reviewer_users:
             print(f"No users with permission {permission} for team {team}")
             continue
