@@ -768,4 +768,3 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # returning the wrong stuff and therefore it is not working as it should.
         assert len(self.card.get_users_that_reviewed_since_last_review_request()) > 0
         assert len(self.card_2.get_users_that_reviewed_since_last_review_request()) == 0
-
