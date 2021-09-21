@@ -1,34 +1,15 @@
 import React from "react";
-import {
-  Paper,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-} from "@material-ui/core";
+import { Paper, Typography, List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Markdown from "react-markdown";
 
-import ReviewStatus from "../../widgets/ReviewStatus";
-import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
+import CircularProgress from "../../widgets/Loading";
+
+import Review from "../CardDetailsModal/Review";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1, 2, 1),
   },
-
-  commentColumn: {
-    minWidth: 300,
-    maxWidth: 300,
-  },
-
-  tableContainer: {
-    maxHeight: 200,
-  },
-
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -44,58 +25,26 @@ export default ({ reviewIds, reviews }) => {
     if (reviews.length) {
       body = (
         <React.Fragment>
-          {reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((review) => {
-            const timestamp = new Date(review.timestamp);
-            return (
-              <TableRow key={review.id}>
-                <TableCell>{timestamp.toLocaleString()}</TableCell>
-                <TableCell>
-                  <ReviewStatus status={review.status} />
-                </TableCell>
-                <TableCell>{review.reviewerUserEmail}</TableCell>
-                <TableCell className={classes.commentColumn}>
-                  <Markdown source={review.comments}></Markdown>
-                </TableCell>
-                <TableCell>
-                  <ReviewValidationIcons review={review} />
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          <List style={{ maxHeight: 200, overflow: "auto" }}>
+            {reviews
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+              .map((review) => {
+                return <Review review={review} />;
+              })}
+          </List>
         </React.Fragment>
       );
     } else {
-      body = (
-        <TableRow>
-          <TableCell colSpan="4">Loading...</TableCell>
-        </TableRow>
-      );
+      body = <CircularProgress />;
     }
   } else {
-    body = (
-      <TableRow>
-        <TableCell colSpan="4">No reviews yet</TableCell>
-      </TableRow>
-    );
+    body = <Typography paragraph>{"No reviews yet"}</Typography>;
   }
 
   return (
-    <Paper className={classes.sectionPaper} variant="outlined">
+    <Paper className={classes.sectionPaper} >
       <Typography variant="h6">Reviews</Typography>
-      <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Timestamp</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>reviewer</TableCell>
-              <TableCell>Comments</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{body}</TableBody>
-        </Table>
-      </TableContainer>
+      {body}
     </Paper>
   );
 };

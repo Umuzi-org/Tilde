@@ -94,7 +94,8 @@ const useStyles = makeStyles((theme) => {
       height: `calc(100% - ${
         theme.mixins.toolbar.minHeight
       }px - ${theme.spacing(1)}px)`,
-      overflow: "auto",
+      overflow: "hidden",
+      // overflow: "auto",
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(4),
     },
