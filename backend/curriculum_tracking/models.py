@@ -1390,12 +1390,16 @@ class AgileCard(
             return []
 
         if self.content_item.content_type == ContentItem.PROJECT:
-            ReviewClass = RecruitProjectReview
+            reviews = RecruitProjectReview.objects.filter(
+                recruit_project=self.recruit_project
+            )
 
         elif self.content_item.content_type == ContentItem.TOPIC:
-            ReviewClass = TopicReview
+            reviews = TopicReview.objects.filter(
+                topic_progress=self.topic_progress
+            )
 
-        reviews = ReviewClass.objects.filter(
+        reviews = reviews.filter(
             timestamp__gte=self.review_request_time
         )
 

@@ -697,20 +697,32 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
             status=AgileCard.IN_PROGRESS,
         )
 
+        self.card_2 = factories.AgileCardFactory(
+            status=AgileCard.IN_PROGRESS,
+        )
+
         self.project = self.card.recruit_project
+        self.project_2 = self.card_2.recruit_project
         self.user = self.card.assignees.first()
         self.assertIsNotNone(self.card.assignees)
+        self.assertIsNotNone(self.card_2.assignees)
         self.assertIsNotNone(self.card.recruit_project)
+        self.assertIsNotNone(self.card_2.recruit_project)
         self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.project.content_item, self.card.content_item)
+        self.assertEqual(self.project_2.content_item, self.card_2.content_item)
 
     def test_finding_latest_reviewer_ids(self):
         self.project.start_time = timezone.now() - timedelta(days=5)
+        self.project_2.start_time = timezone.now() - timedelta(days=5)
         self.project.save()
+        self.project_2.save()
         self.assertEqual(AgileCard.derive_status_from_project(self.project), AgileCard.IN_PROGRESS)
+        self.assertEqual(AgileCard.derive_status_from_project(self.project_2), AgileCard.IN_PROGRESS)
 
-        request_review_time = self.project.start_time + timedelta(1)
-        self.project.request_review(force_timestamp=request_review_time)
+        self.request_review_time = self.project.start_time + timedelta(1)
+        self.project.request_review(force_timestamp=self.request_review_time)
         time_one = self.project.start_time - timedelta(days=6)
         time_two = self.project.start_time + timedelta(days=4)
         time_three = self.project.start_time + timedelta(days=3)
@@ -751,3 +763,9 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
 
         # Only three of the four reviews should have been added as part of the result
         self.assertEqual(sorted(result), sorted(ids_which_can_be_returned))
+
+        # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
+        # returning the wrong stuff and therefore it is not working as it should.
+        assert len(self.card.get_users_that_reviewed_since_last_review_request()) > 0
+        assert len(self.card_2.get_users_that_reviewed_since_last_review_request()) == 0
+
