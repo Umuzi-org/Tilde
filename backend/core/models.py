@@ -174,32 +174,32 @@ class User(AbstractBaseUser, PermissionsMixin):
         cards_in_completed_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.COMPLETE,
             assignees=self.id
-        )
-        return len([card.id for card in cards_in_completed_column_amount])
+        ).count()
+        return cards_in_completed_column_amount
 
     @property
     def user_cards_in_review_column(self):
         cards_in_review_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.IN_REVIEW,
             assignees=self.id
-        )
-        return len([card.id for card in cards_in_review_column_amount])
+        ).count()
+        return cards_in_review_column_amount
 
     @property
     def user_cards_in_review_feedback_column(self):
         cards_in_review_feedback_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.REVIEW_FEEDBACK,
             assignees=self.id
-        )
-        return len([card.id for card in cards_in_review_feedback_column_amount])
+        ).count()
+        return cards_in_review_feedback_column_amount
 
     @property
     def user_cards_in_progress_column(self):
         cards_in_progress_column = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.IN_PROGRESS,
             assignees=self.id
-        )
-        return len([card.id for card in cards_in_progress_column])
+        ).count()
+        return cards_in_progress_column
 
     @property
     def user_cards_completed_in_past_seven_days(self):
@@ -207,63 +207,63 @@ class User(AbstractBaseUser, PermissionsMixin):
             status=curriculum_tracking.models.AgileCard.COMPLETE,
             assignees=self.id,
             recruit_project__complete_time__gte=datetime.now() - timedelta(days=7)
-        )
-        return len([card.id for card in cards_completed_past_seven_days])
+        ).count()
+        return cards_completed_past_seven_days
 
     @property
     def user_cards_started_in_past_seven_days(self):
         cards_started_past_seven_days = curriculum_tracking.models.AgileCard.objects.filter(
             assignees=self.id,
             recruit_project__start_time__gte=datetime.now() - timedelta(days=7)
-        )
-        return len([card.id for card in cards_started_past_seven_days])
+        ).count()
+        return cards_started_past_seven_days
 
     @property
     def total_tilde_reviews_done_to_date(self):
         tilde_project_reviews_done_to_date = curriculum_tracking.models.RecruitProjectReview.objects.filter(
             reviewer_user_id=self.id
-        ).all()
+        ).all().count()
 
         tilde_topic_reviews_done_to_date = curriculum_tracking.models.TopicReview.objects.filter(
             reviewer_user_id=self.id
-        ).all()
+        ).all().count()
 
         if tilde_project_reviews_done_to_date == None:
-            return len([reviewer.id for reviewer in tilde_topic_reviews_done_to_date])
+            return tilde_topic_reviews_done_to_date
         else:
-            return len([reviewer.id for reviewer in tilde_project_reviews_done_to_date])
+            return tilde_project_reviews_done_to_date
 
     @property
     def tilde_reviews_done_in_past_seven_days(self):
         tilde_project_reviews_done_in_past_seven_days = curriculum_tracking.models.RecruitProjectReview.objects.filter(
             reviewer_user_id=self.id,
             timestamp__gte=datetime.now() - timedelta(days=7)
-        ).all()
+        ).all().count()
 
         tilde_topic_reviews_done_in_past_seven_days = curriculum_tracking.models.TopicReview.objects.filter(
             reviewer_user_id=self.id,
             timestamp__gte=datetime.now() - timedelta(days=7)
-        ).all()
+        ).all().count()
 
         if tilde_project_reviews_done_in_past_seven_days == None:
-            return len([reviewer.id for reviewer in tilde_topic_reviews_done_in_past_seven_days])
+            return tilde_topic_reviews_done_in_past_seven_days
         else:
-            return len([reviewer.id for reviewer in tilde_project_reviews_done_in_past_seven_days])
+            return tilde_project_reviews_done_in_past_seven_days
 
     @property
     def total_pr_reviews_done_to_date(self):
         pr_reviews_done_to_date = git_real.models.PullRequestReview.objects.filter(
             commit_id=self.id
-        )
-        return len([reviewer.id for reviewer in pr_reviews_done_to_date])
+        ).count()
+        return pr_reviews_done_to_date
 
     @property
     def pr_reviews_done_in_past_seven_days(self):
         pr_reviews_done_past_seven_days = git_real.models.PullRequestReview.objects.filter(
             commit_id=self.id,
             submitted_at__gte=datetime.now() - timedelta(days=7)
-        )
-        return len([reviewer.id for reviewer in pr_reviews_done_past_seven_days])
+        ).count()
+        return pr_reviews_done_past_seven_days
 
 
 class Curriculum(models.Model, Mixins):
