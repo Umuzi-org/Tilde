@@ -1,4 +1,5 @@
-import curriculum_tracking.models
+import backend.settings
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -157,13 +158,13 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['get'],
-        serializer_class=serializers.UserStatsPerWeekSerializer
+        serializer_class=UserStatsPerWeekSerializer
     )
     def stats(self, request, pk=None):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             card = self.get_object()
-            return Response(serializers.UserStatsPerWeekSerializer(card).data)
+            return Response(UserStatsPerWeekSerializer(card).data)
         else:
             return Response(serializer.errors, status='BAD_REQUEST')
 

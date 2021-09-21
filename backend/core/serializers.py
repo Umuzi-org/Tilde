@@ -137,13 +137,12 @@ class UserStatsSerializer(serializers.Serializer):
     class Meta:
         fields = []
 
-
+"""
 class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
         fields = [
             "id",
-            "user_email",
             "cards_in_completed_column",
             "cards_in_review_column",
             "cards_in_review_feedback_column",
@@ -196,3 +195,4 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
 
     def get_pr_reviews_done_last_7_days(self, instance):
         return instance.pr_reviews_done_in_past_seven_days
+"""

@@ -170,10 +170,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     @property
-    def user_email(self):
-        return self.get_short_name()
-
-    @property
     def user_cards_in_completed_column(self):
         cards_in_completed_column_amount = curriculum_tracking.models.AgileCard.objects.filter(
             status=curriculum_tracking.models.AgileCard.COMPLETE,
