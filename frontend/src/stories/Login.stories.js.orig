@@ -1,5 +1,5 @@
 import React from "react"
-import LoginForm from "../components/regions/Login/Presentation"
+import LoginForm from "../components/regions/Login/LoginForm"
 
 export default {
   title: "Tilde/Login",
