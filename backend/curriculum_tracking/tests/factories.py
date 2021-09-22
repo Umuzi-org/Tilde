@@ -190,7 +190,9 @@ class RecruitProjectReviewFactory(DjangoModelFactory):
         model = "curriculum_tracking.RecruitProjectReview"
 
     status = NOT_YET_COMPETENT
-    timestamp = factory.lazy_attribute(lambda o: timezone.now())
+    timestamp = factory.lazy_attribute(
+        lambda o: timezone.now()
+    )  # TODO: sheena timestamp not being used properly in factory
     comments = "something seriously useful"
     recruit_project = factory.SubFactory(RecruitProjectInRevewColumnFactory)
     reviewer_user = factory.SubFactory(UserFactory)
