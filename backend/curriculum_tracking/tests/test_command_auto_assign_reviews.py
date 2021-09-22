@@ -1,9 +1,9 @@
 from django.utils import timezone
 from curriculum_tracking.models import AgileCard, ContentItem
 from curriculum_tracking.management.auto_assign_reviewers import (
-    get_config,
-    get_cards_needing_regular_reviewers,
+    get_cards_needing_competent_reviewers,
     get_possible_competent_reviewers,
+    CONFIGURATION_NAMESPACE,
 )
 from core.tests.factories import TeamFactory, UserFactory
 from curriculum_tracking.tests.factories import (
@@ -26,33 +26,32 @@ def setup_config():
     )
     Value.objects.create(
         namespace=ns,
-        name="REQUIRED_REVIEWERS_PER_CARD",
+        name="REQUIRED_COMPETENT_REVIEWERS_PER_CARD",
         value=3,
         datatype=Value.INTEGER,
         repeated=False,
     )
     Value.objects.create(
         namespace=ns,
-        name="SKIP_CARD_TAGS",
+        name="SKIP_CARD_TAGS_ALL_STEPS",
         value="ncit",
         datatype=Value.STRING,
         repeated=True,
     )
     Value.objects.create(
         namespace=ns,
-        name="EXCLUDE_TEAMS",
+        name="EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP",
         value="Demo team\nTech Junior Staff\nTech seniors",
         datatype=Value.STRING,
         repeated=True,
     )
 
 
-class get_cards_needing_regular_reviewers_Tests(TestCase):
+class get_cards_needing_competent_reviewers_Tests(TestCase):
     def setUp(self):
 
         setup_config()
-
-        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
+        config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
         AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
@@ -60,7 +59,8 @@ class get_cards_needing_regular_reviewers_Tests(TestCase):
         )
 
         project_cards: List(AgileCard) = [
-            AgileCardFactory() for i in range(REQUIRED_REVIEWERS_PER_CARD + 2)
+            AgileCardFactory()
+            for i in range(config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD + 2)
         ]
 
         for n, card in enumerate(project_cards):
@@ -71,13 +71,13 @@ class get_cards_needing_regular_reviewers_Tests(TestCase):
         self.project_cards_needing_review = [
             o
             for o in project_cards
-            if o.reviewers.count() < REQUIRED_REVIEWERS_PER_CARD
+            if o.reviewers.count() < config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD
         ]
         self.assertGreater(len(self.project_cards_needing_review), 0)
 
     def test_counts_work(self):
 
-        result = get_cards_needing_regular_reviewers()
+        result = get_cards_needing_competent_reviewers()
         self.assertEqual(
             sorted([o.id for o in result]),
             sorted([o.id for o in self.project_cards_needing_review]),
@@ -89,18 +89,17 @@ class get_cards_needing_regular_reviewers_Tests(TestCase):
             user.active = False
             user.save()
 
-        result = get_cards_needing_regular_reviewers()
+        result = get_cards_needing_competent_reviewers()
         self.assertEqual(list(result), [])
 
     def test_exclude_teams(self):
-        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
-        # if not EXCLUDE_TEAMS:
-        #     a
 
-        team = TeamFactory(name=EXCLUDE_TEAMS[0])
+        config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
+
+        team = TeamFactory(name=config.EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP[0])
         team.user_set.add(self.project_cards_needing_review[0].assignees.first())
 
-        result = get_cards_needing_regular_reviewers()
+        result = get_cards_needing_competent_reviewers()
         self.assertEqual(
             sorted([o.id for o in result]),
             sorted([o.id for o in self.project_cards_needing_review][1:]),
@@ -109,13 +108,10 @@ class get_cards_needing_regular_reviewers_Tests(TestCase):
 
 class get_possible_competent_reviewers_Tests(TestCase):
     def setUp(self):
-
         setup_config()
 
     def test_that_only_competent_people_get_returned(self):
-        # if not EXCLUDE_TEAMS:
-        #     return
-        REQUIRED_REVIEWERS_PER_CARD, SKIP_CARD_TAGS, EXCLUDE_TEAMS = get_config()
+        config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[JAVASCRIPT]
         )
@@ -131,7 +127,7 @@ class get_possible_competent_reviewers_Tests(TestCase):
             status=AgileCard.IN_PROGRESS,
         )
 
-        team = TeamFactory(name=EXCLUDE_TEAMS[0])
+        team = TeamFactory(name=config.EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP[0])
         team.user_set.add(competent_project.recruit_users.first())
         result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [])
