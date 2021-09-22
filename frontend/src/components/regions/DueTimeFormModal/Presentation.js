@@ -22,8 +22,11 @@ const useStyles = makeStyles({
 
 const DueTimeFormModal = ({ card, closeModal }) => {
 
-  const {dueTime} = "";
-  // dueTime is either an empty string or something like this: "2021-06-14T09:58:28Z"
+  // const dueTime = card.dueTime;
+  const dueTime = "";
+  /* dueTime is either an empty string or something like this: "2021-06-14T09:58:28Z".
+     If dueTime has a value, then we strip out the seconds, 
+     hence dueTime.split('').slice(0, 16).join('') is used */
   const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
   const classes = useStyles();
 

@@ -10,3 +10,20 @@ export const getAgeString = (dateString) => {
       Docs link: https://www.npmjs.com/package/javascript-time-ago */
   return timeAgo.format(date);
 };
+
+export const canSetDueTime = (card, authUser) => {
+
+  if(!card.dueTime && authUser.email === card.assigneeNames[0]) {
+    return true;
+  } 
+
+  if(!card.dueTime && authUser.email === card.assigneeNames[0] && Object.keys(authUser.permissions.teams).map((key) => authUser.permissions.teams[key].permissions[0]).length !== 0) {
+    return true;
+  }
+
+  if(!card.dueTime && authUser.email !== card.assigneeNames[0] && Object.keys(authUser.permissions.teams).map((key) => authUser.permissions.teams[key].permissions[0]).includes("MANAGE_CARDS")) {
+    return true;
+  }
+
+  return false;
+}
