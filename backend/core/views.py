@@ -19,13 +19,6 @@ from rest_framework import permissions as drf_permissions
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
-from curriculum_tracking.models import (
-AgileCard,
-RecruitProject,
-RecruitProjectReview,
-TopicProgress,
-TopicReview
-)
 
 
 @api_view(["POST"])

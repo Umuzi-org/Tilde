@@ -354,7 +354,14 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     pr_reviews_done_last_7_days = serializers.SerializerMethodField("get_pr_reviews_done_last_7_days")
 
     def get_cards_in_completed_column(self, instance):
-        return instance.user_cards_in_completed_column
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_in_completed_column_amount = AgileCard.objects.filter(
+            status=AgileCard.COMPLETE,
+            assignees=instance.id
+        ).count()
+
+        return self.cards_in_completed_column_amount
 
     def get_cards_in_review_column(self, instance):
         return instance.user_cards_in_review_column
