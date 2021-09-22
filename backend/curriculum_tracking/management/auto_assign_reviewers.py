@@ -8,6 +8,7 @@ from django.db.models import Count, F
 from django.db.models import Q
 from curriculum_tracking.management.helpers import user_is_competent_for_card_project
 from config.models import NameSpace
+from guardian.shortcuts import get_users_with_perms, get_objects_for_user
 
 CONFIGURATION_NAMESPACE = "management_actions/auto_assign_reviewers"
 
@@ -167,22 +168,40 @@ def auto_assign_competent_reviewers():
     cards = list(get_cards_needing_competent_reviewers())
     total = len(cards)
     for n, card in enumerate(cards):
-        number_of_reviewers_to_add = (
-            config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD - card.reviewers.count()
+        add_reviewers_to_card_until_enough(
+            card,
+            config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD,
+            reviewer_users=get_possible_competent_reviewers(card),
         )
-        assert number_of_reviewers_to_add > 0
-        print(
-            f"card {n+1}/{total}\n\t[{card.id}] {card} {card.flavour_names} - {card.assignees.first().email}\n\tneeds {number_of_reviewers_to_add} reviewer(s)"
-        )
-        possible_reviewers = get_possible_competent_reviewers(card)
-        for i, user in enumerate(possible_reviewers):
-            if card.reviewers.count() >= config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD:
-                print("there are now enough")
-                break
+        # possible_reviewers = get_possible_competent_reviewers(card)
+        # number_of_reviewers_to_add = (
+        #     config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD - card.reviewers.count()
+        # )
+        # assert number_of_reviewers_to_add > 0
+        # print(
+        #     f"card {n+1}/{total}\n\t[{card.id}] {card} {card.flavour_names} - {card.assignees.first().email}\n\tneeds {number_of_reviewers_to_add} reviewer(s)"
+        # )
+        # for i, user in enumerate(possible_reviewers):
+        #     if card.reviewers.count() >= config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD:
+        #         print("there are now enough")
+        #         break
 
-            print(f"Add collaborator {i+1}: \n\tnew reviewer = {user}\n")
-            card.add_collaborator(user=user, add_as_project_reviewer=True)
-        print(f"card now has {card.reviewers.count()} reviewers\n")
+        #     print(f"Add collaborator {i+1}: \n\tnew reviewer = {user}\n")
+        #     card.add_collaborator(user=user, add_as_project_reviewer=True)
+        # print(f"card now has {card.reviewers.count()} reviewers\n")
+
+
+def add_reviewers_to_card_until_enough(
+    card, total_matching_reviewers_needed, reviewer_users
+):
+    current_reviewers = list(card.reviewers.all())
+    matching_reviewers = [u for u in current_reviewers if u in reviewer_users]
+    reviewers_needed = total_matching_reviewers_needed - len(matching_reviewers)
+    if reviewers_needed > 0:
+        reviewer_users.sort(key=get_user_current_review_duty_count)
+        for new_reviewer in reviewer_users[:reviewers_needed]:
+            print(f"{card}:\n\t{new_reviewer}\n")
+            card.add_collaborator(user=new_reviewer, add_as_project_reviewer=True)
 
 
 def get_user_current_review_duty_count(user):
@@ -191,33 +210,50 @@ def get_user_current_review_duty_count(user):
     ).count()
 
 
-def auto_assign_reviewers_based_on_trusted_team_permission(
-    required_card_status, required_positive_reviews=0
-):
-    from guardian.shortcuts import get_users_with_perms, get_objects_for_user
+def get_reviewer_users_by_permission(team, permission):
+    user_permissions = get_users_with_perms(
+        team, attach_perms=True, with_superusers=False
+    )
+    reviewer_users = [u for u in user_permissions if permission in user_permissions[u]]
+    reviewer_users = [
+        u
+        for u in reviewer_users
+        if team in get_objects_for_user(u, permission, Team, with_superuser=False)
+    ]
+    return reviewer_users
+
+
+def get_cards_needing_trusted_reviewer_allocation(team):
+    config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
+    return (
+        AgileCard.objects.filter(assignees__active__in=[True])
+        # .filter(assignees__teams__in=[team])
+        .filter(content_item__content_type=ContentItem.PROJECT)
+        .annotate(
+            positive_reviews=F(
+                "recruit_project__code_review_competent_since_last_review_request",
+            )
+            + F("recruit_project__code_review_excellent_since_last_review_request")
+        )
+        .filter(
+            positive_reviews__gte=config.TRUSTED_REVIEWER_ADD_POSITIVE_REVIEW_THRESHOLD
+        )
+        .exclude(content_item__tags__name__in=config.SKIP_CARD_TAGS_ALL_STEPS)
+        .filter(assignees__in=team.active_users)
+        .filter(status=AgileCard.IN_REVIEW)
+    )
+
+
+def auto_assign_reviewers_based_on_trusted_team_permission():
 
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
     for team in Team.objects.filter(active=True):
-        # for team in [Team.objects.get(pk=162)]:
-        print(f"\nTeam: {team.name}")
-        user_permissions = get_users_with_perms(
-            team, attach_perms=True, with_superusers=False
+        print(f"\nTeam: {team.id} {team.name}")
+        reviewer_users = get_reviewer_users_by_permission(
+            team=team, permission=Team.PERMISSION_TRUSTED_REVIEWER
         )
-        reviewer_users = [
-            u
-            for u in user_permissions
-            if Team.PERMISSION_TRUSTED_REVIEWER in user_permissions[u]
-        ]
-        reviewer_users = [
-            u
-            for u in reviewer_users
-            if team
-            in get_objects_for_user(
-                u, Team.PERMISSION_TRUSTED_REVIEWER, Team, with_superuser=False
-            )
-        ]
-        reviewer_users = [o for o in reviewer_users if o.github_name]
+
         if not reviewer_users:
             print(
                 f"No users with permission {Team.PERMISSION_TRUSTED_REVIEWER} for team {team}"
@@ -225,44 +261,26 @@ def auto_assign_reviewers_based_on_trusted_team_permission(
             continue
         print(f"users with permission: {reviewer_users}")
 
-        cards = (
-            AgileCard.objects.filter(assignees__active__in=[True])
-            # .filter(assignees__teams__in=[team])
-            .filter(content_item__content_type=ContentItem.PROJECT)
-            .annotate(
-                positive_reviews=F(
-                    "recruit_project__code_review_competent_since_last_review_request",
-                )
-                + F("recruit_project__code_review_excellent_since_last_review_request")
-                # output_field=IntegerField(),
-            )
-            .filter(positive_reviews__gte=required_positive_reviews)
-            .exclude(content_item__tags__name__in=config.SKIP_CARD_TAGS_ALL_STEPS)
-            .filter(assignees__in=team.active_users)
-        )
-
-        if required_card_status:
-            cards = cards.filter(status=required_card_status)
-        else:
-            cards = cards.filter(
-                Q(status=AgileCard.IN_PROGRESS)
-                | Q(status=AgileCard.IN_REVIEW)
-                | Q(status=AgileCard.REVIEW_FEEDBACK)
-            )
+        cards = get_cards_needing_trusted_reviewer_allocation(team)
 
         for card in cards:
+
+            add_reviewers_to_card_until_enough(
+                card=card,
+                total_matching_reviewers_needed=config.REQUIRED_TRUSTED_PERMISSIONED_REVIEWERS_PER_CARD,
+                reviewer_users=reviewer_users,
+            )
+
             current_reviewers = list(card.reviewers.all())
             matching_reviewers = [u for u in current_reviewers if u in reviewer_users]
-            reviewers_needed = config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD - len(
-                matching_reviewers
+            reviewers_needed = (
+                config.REQUIRED_TRUSTED_PERMISSIONED_REVIEWERS_PER_CARD
+                - len(matching_reviewers)
             )
             if reviewers_needed > 0:
                 reviewer_users.sort(key=get_user_current_review_duty_count)
                 for new_reviewer in reviewer_users[:reviewers_needed]:
-
-                    # print(card)
                     print(f"{card}:\n\t{new_reviewer}\n")
-                    # breakpoint()
                     card.add_collaborator(
                         user=new_reviewer, add_as_project_reviewer=True
                     )
@@ -271,7 +289,4 @@ def auto_assign_reviewers_based_on_trusted_team_permission(
 def auto_assign_reviewers():
     auto_assign_competent_reviewers()
     # auto_assign_reviewers_based_on_trusted_team_permission(permission = Team.PERMISSION_REVIEW_CARDS)
-    auto_assign_reviewers_based_on_trusted_team_permission(
-        required_card_status=AgileCard.IN_REVIEW,
-        required_positive_reviews=3,
-    )
+    auto_assign_reviewers_based_on_trusted_team_permission()

@@ -1,8 +1,10 @@
 from django.utils import timezone
+from guardian.shortcuts import assign_perm
 from curriculum_tracking.models import AgileCard, ContentItem
 from curriculum_tracking.management.auto_assign_reviewers import (
     get_cards_needing_competent_reviewers,
     get_possible_competent_reviewers,
+    get_reviewer_users_by_permission,
     CONFIGURATION_NAMESPACE,
 )
 from core.tests.factories import TeamFactory, UserFactory
@@ -15,6 +17,7 @@ from django.test import TestCase
 from typing import List
 
 from config.models import NameSpace, Value
+from core.models import PERMISSION_REVIEW_CARDS, PERMISSION_TRUSTED_REVIEWER
 
 JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
@@ -24,6 +27,7 @@ def setup_config():
     ns = NameSpace.objects.create(
         name="management_actions/auto_assign_reviewers",
     )
+    # step 1: competnet reviewers
     Value.objects.create(
         namespace=ns,
         name="REQUIRED_COMPETENT_REVIEWERS_PER_CARD",
@@ -45,6 +49,55 @@ def setup_config():
         datatype=Value.STRING,
         repeated=True,
     )
+
+    # step 2: review permission
+    # EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS
+    # REQUIRED_REVIEWER_PERMISSIONED_REVIEWERS_PER_CARD
+
+    # # step 3: trusted reviewer permission
+    # TRUSTED_REVIEWER_ADD_POSITIVE_REVIEW_THRESHOLD
+    # TRUSTED_REVIEW_WAIT_TIME
+    # REQUIRED_TRUSTED_PERMISSIONED_REVIEWERS_PER_CARD
+
+
+class get_reviewer_users_by_permission_Tests(TestCase):
+    def test_only_returns_explicitly_permissioned_users(self):
+        team_managed = TeamFactory()
+
+        PERMISSION_ONE = PERMISSION_REVIEW_CARDS
+        team_with_permission_one = TeamFactory()
+        user_one_1 = UserFactory()
+        team_with_permission_one.user_set.add(user_one_1)
+        user_one_2 = UserFactory()
+        assign_perm(PERMISSION_ONE, team_with_permission_one, team_managed)
+        assign_perm(PERMISSION_ONE, user_one_2, team_managed)
+
+        PERMISSION_TWO = PERMISSION_TRUSTED_REVIEWER
+        team_with_permission_two = TeamFactory()
+        user_two_1 = UserFactory()
+        team_with_permission_two.user_set.add(user_two_1)
+        user_two_2 = UserFactory()
+        assign_perm(PERMISSION_TWO, team_with_permission_two, team_managed)
+        assign_perm(PERMISSION_TWO, user_two_2, team_managed)
+
+        user_super = UserFactory(is_superuser=True, is_staff=True)
+        UserFactory()
+
+        result_one = get_reviewer_users_by_permission(team_managed, PERMISSION_ONE)
+        result_two = get_reviewer_users_by_permission(team_managed, PERMISSION_TWO)
+
+        self.assertEqual(
+            sorted(result_one, key=lambda o: o.id),
+            sorted([user_one_1, user_one_2], key=lambda o: o.id),
+        )
+        self.assertEqual(
+            sorted(result_two, key=lambda o: o.id),
+            sorted([user_two_1, user_two_2], key=lambda o: o.id),
+        )
+
+        assign_perm(PERMISSION_TWO, user_super, team_managed)
+        result_two = get_reviewer_users_by_permission(team_managed, PERMISSION_TWO)
+        self.assertIn(user_super, result_two)
 
 
 class get_cards_needing_competent_reviewers_Tests(TestCase):
