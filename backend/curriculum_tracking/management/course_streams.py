@@ -31,7 +31,7 @@ COURSES_BY_STREAM = {
         "Web Development - part 2",
     ],
     "web dev alumni": [
-        "Alumni Web development Bootcamp",
+        "Alumni Web developement Bootcamp",
         "Post Bootcamp Soft Skills",
         "Web Development - part 2",
     ],
