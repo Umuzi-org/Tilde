@@ -2,8 +2,8 @@ from django.utils import timezone
 from curriculum_tracking.models import AgileCard, ContentItem
 from curriculum_tracking.management.auto_assign_reviewers import (
     get_config,
-    get_cards_needing_reviewers,
-    get_possible_reviewers,
+    get_cards_needing_regular_reviewers,
+    get_possible_competent_reviewers,
 )
 from core.tests.factories import TeamFactory, UserFactory
 from curriculum_tracking.tests.factories import (
@@ -47,7 +47,7 @@ def setup_config():
     )
 
 
-class get_cards_needing_reviewers_Tests(TestCase):
+class get_cards_needing_regular_reviewers_Tests(TestCase):
     def setUp(self):
 
         setup_config()
@@ -77,7 +77,7 @@ class get_cards_needing_reviewers_Tests(TestCase):
 
     def test_counts_work(self):
 
-        result = get_cards_needing_reviewers()
+        result = get_cards_needing_regular_reviewers()
         self.assertEqual(
             sorted([o.id for o in result]),
             sorted([o.id for o in self.project_cards_needing_review]),
@@ -89,7 +89,7 @@ class get_cards_needing_reviewers_Tests(TestCase):
             user.active = False
             user.save()
 
-        result = get_cards_needing_reviewers()
+        result = get_cards_needing_regular_reviewers()
         self.assertEqual(list(result), [])
 
     def test_exclude_teams(self):
@@ -100,14 +100,14 @@ class get_cards_needing_reviewers_Tests(TestCase):
         team = TeamFactory(name=EXCLUDE_TEAMS[0])
         team.user_set.add(self.project_cards_needing_review[0].assignees.first())
 
-        result = get_cards_needing_reviewers()
+        result = get_cards_needing_regular_reviewers()
         self.assertEqual(
             sorted([o.id for o in result]),
             sorted([o.id for o in self.project_cards_needing_review][1:]),
         )
 
 
-class get_possible_reviewers_Tests(TestCase):
+class get_possible_competent_reviewers_Tests(TestCase):
     def setUp(self):
 
         setup_config()
@@ -133,7 +133,7 @@ class get_possible_reviewers_Tests(TestCase):
 
         team = TeamFactory(name=EXCLUDE_TEAMS[0])
         team.user_set.add(competent_project.recruit_users.first())
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [])
 
     def test_that_only_competent_people_get_returned(self):
@@ -163,7 +163,7 @@ class get_possible_reviewers_Tests(TestCase):
         assert card.flavours_match(
             card.recruit_project.flavour_names
         ), f"{card.flavour_names} != {card.recruit_project.flavour_names}"
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [competent_project.recruit_users.first()])
 
     def test_that_it_works_with_flavourless_projects(self):
@@ -185,7 +185,7 @@ class get_possible_reviewers_Tests(TestCase):
                 complete_time=None, flavours=[], content_item=content_item
             )
         )
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [competent_project.recruit_users.first()])
 
     def test_that_reviewers_returned_in_order(self):
@@ -220,7 +220,7 @@ class get_possible_reviewers_Tests(TestCase):
             project.recruit_users.first() for project in competent_projects[::-1]
         ]
         assert expected_result
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(
             result,
             expected_result,
@@ -240,7 +240,7 @@ class get_possible_reviewers_Tests(TestCase):
             nyc_card.recruit_project.reviewer_users.add(project_user)
 
         expected_result = expected_result[1:] + [expected_result[0]]
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(
             result,
             expected_result,
@@ -252,7 +252,7 @@ class get_possible_reviewers_Tests(TestCase):
         card.recruit_project.reviewer_users.add(expected_result[0])
         card.reviewers.add(expected_result[-1])
         card.recruit_project.reviewer_users.add(expected_result[-1])
-        result = list(get_possible_reviewers(card))
+        result = list(get_possible_competent_reviewers(card))
         self.assertEqual(
             result,
             expected_result[1:-1],
