@@ -1,6 +1,8 @@
-from logging import StringTemplateStyle
+# from logging import StringTemplateStyle
+# from typing import NamedTuple
 from django.db import models
 from model_mixins import Mixins
+from collections import namedtuple
 
 
 class NameSpace(
@@ -16,6 +18,20 @@ class NameSpace(
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_config(Klass, namespace: str):
+        """all the configuration in this namespace as a namedtuple"""
+        instance = Klass.objects.get(name=namespace)
+        values = Value.objects.filter(namespace=instance)
+        name_value_pairs = [(value.name, value.get()) for value in values]
+
+        ConfigOptions = namedtuple(
+            f"ConfigOptions",
+            " ".join([name for name, _ in name_value_pairs]),
+        )
+        args = [value for _, value in name_value_pairs]
+        return ConfigOptions(*args)
 
 
 class Value(
