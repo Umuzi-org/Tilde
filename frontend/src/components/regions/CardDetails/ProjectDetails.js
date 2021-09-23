@@ -95,8 +95,6 @@ export default ({
 
   return (
     <React.Fragment>
-      <Reviews reviewIds={project.projectReviews} reviews={reviews} />
-
       {project.repository ? (
         <Paper className={classes.sectionPaper} variant="outlined">
           <RepositoryDetails repositoryId={project.repository} />
@@ -116,6 +114,8 @@ export default ({
       ) : (
         <React.Fragment />
       )}
+
+      <Reviews reviewIds={project.projectReviews} reviews={reviews} />
 
       <ViewContentButton
         contentItemId={project.contentItem}
