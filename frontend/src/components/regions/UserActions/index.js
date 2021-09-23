@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 
-import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 
@@ -28,7 +27,6 @@ function UserActionsUnconnected({
   cardSummaries,
   fetchProjectReviewsPages,
   fetchCardCompletions,
-  openCardDetailsModal,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
@@ -58,10 +56,6 @@ function UserActionsUnconnected({
     callLog: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
-
-  const handleClickOpenProjectDetails = ({ cardId }) => {
-    openCardDetailsModal({ cardId });
-  };
 
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
@@ -147,7 +141,6 @@ function UserActionsUnconnected({
     orderedDates,
     actionLogByDate,
     anyLoading,
-    handleClickOpenProjectDetails,
     handleScroll,
   };
   return <Presentation {...props} />;
@@ -190,10 +183,6 @@ const mapDispatchToProps = (dispatch) => {
           data: { userId: parseInt(userId) },
         })
       );
-    },
-
-    openCardDetailsModal: ({ cardId }) => {
-      dispatch(cardDetailsModalOperations.openCardDetailsModal({ cardId }));
     },
   };
 };

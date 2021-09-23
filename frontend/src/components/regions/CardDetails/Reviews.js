@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import CircularProgress from "../../widgets/Loading";
 
-import Review from "../CardDetailsModal/Review";
+import Review from "./Review";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,7 +29,7 @@ export default ({ reviewIds, reviews }) => {
             {reviews
               .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
               .map((review) => {
-                return <Review review={review} />;
+                return <Review review={review} key={review.id} />;
               })}
           </List>
         </React.Fragment>
@@ -42,7 +42,7 @@ export default ({ reviewIds, reviews }) => {
   }
 
   return (
-    <Paper className={classes.sectionPaper} >
+    <Paper className={classes.sectionPaper}>
       <Typography variant="h6">Reviews</Typography>
       {body}
     </Paper>

@@ -21,7 +21,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
 
-import CardDetailsModal from "../CardDetailsModal";
 import AddCardReviewModal from "../AddCardReviewModal";
 
 import Avatar from "@material-ui/core/Avatar";
@@ -92,8 +91,7 @@ const useStyles = makeStyles((theme) => {
       height: `calc(100% - ${
         theme.mixins.toolbar.minHeight
       }px - ${theme.spacing(1)}px)`,
-      overflow: "hidden",
-      // overflow: "auto",
+      overflow: "auto",
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(4),
     },
@@ -154,7 +152,6 @@ export default function Presentation(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <CardDetailsModal />
       <AddCardReviewModal />
       {/* <MarkSingleCardAttendanceModal /> */}
 
