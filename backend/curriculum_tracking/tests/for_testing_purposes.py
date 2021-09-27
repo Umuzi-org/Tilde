@@ -21,6 +21,7 @@ from . import factories
 from git_real.tests import factories as git_real_factories
 from git_real.models import PullRequestReview
 from core.models import User
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 
 
 class TestingForTheStatsAPI(TestCase):
@@ -47,7 +48,6 @@ class TestingForTheStatsAPI(TestCase):
         time_two = self.project_1.start_time + timedelta(days=4)
         time_three = self.project_1.start_time + timedelta(days=3)
         time_four = self.project_1.start_time + timedelta(days=2)
-
 
         # Four reviews are made at different times
         self.review_1 = RecruitProjectReviewFactory(
@@ -79,71 +79,34 @@ class TestingForTheStatsAPI(TestCase):
         self.review_4.timestamp = time_four
         self.review_4.save()
 
-
-        # Three cards in the IN_PROGRESS column
+        # One card in the IN_PROGRESS column
         self.content_item = ContentItemFactory(
-            content_type=ContentItem.PROJECT,
+            content_type=ContentItem.REPOSITORY,
             project_submission_type=ContentItem.REPOSITORY,
         )
-
-        self.card_2 = AgileCardFactory(
+        self.card_5 = AgileCardFactory(
             content_item=self.content_item,
-            status=AgileCard.IN_PROGRESS,
-            recruit_project=None,
+            status=AgileCard.IN_PROGRESS
         )
-
-        self.card_3 = AgileCardFactory(
-            content_item=self.content_item,
-            status=AgileCard.IN_PROGRESS,
-            recruit_project=None,
-        )
-
-        self.card_4 = AgileCardFactory(
-            content_item=self.content_item,
-            status=AgileCard.IN_PROGRESS,
-            recruit_project=None,
-        )
-
         self.assignee = SocialProfileFactory().user
-        self.card_2.assignees.set([self.assignee])
-        self.card_3.assignees.set([self.assignee])
-        self.card_4.assignees.set([self.assignee])
+        self.card_5.assignees.set([self.assignee])
 
-
-        # Four cards in the COMPLETE column
+        # One card in the COMPLETE column
         self.content_item_2 = ContentItemFactory(
             content_type=ContentItem.TOPIC,
             project_submission_type=ContentItem.REPOSITORY,
         )
-
-        self.card_5 = AgileCardFactory(
-            content_item=self.content_item_2,
-            status=AgileCard.COMPLETE,
-        )
-
         self.card_6 = AgileCardFactory(
             content_item=self.content_item_2,
             status=AgileCard.COMPLETE,
         )
+        self.assignee__ = SocialProfileFactory().user
+        self.card_6.assignees.set([self.assignee__])
 
-        self.card_7 = AgileCardFactory(
-            content_item=self.content_item_2,
-            status=AgileCard.COMPLETE,
-        )
-
-        self.card_8 = AgileCardFactory(
-            content_item=self.content_item_2,
-            status=AgileCard.COMPLETE,
-        )
-
-        self.assignee_ = SocialProfileFactory().user
-        self.card_5.assignees.set([self.assignee_])
-        self.card_6.assignees.set([self.assignee_])
-        self.card_7.assignees.set([self.assignee_])
-        self.card_8.assignees.set([self.assignee_])
-
-        self.assertIsNotNone(User.user_cards_in_completed_column)
-        self.assertIsNotNone(User.user_cards_completed_in_past_seven_days)
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_in_completed_column(UserStatsPerWeekSerializer, self.assignee__))
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_completed_last_7_days(UserStatsPerWeekSerializer, self.assignee__))
+        assert UserStatsPerWeekSerializer.get_cards_in_completed_column(UserStatsPerWeekSerializer, self.assignee__) == 1
+        assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(UserStatsPerWeekSerializer, self.assignee__) == 1
 
         # Two cards in the IN_REVIEW column
         self.content_item_3 = ContentItemFactory(
@@ -151,26 +114,32 @@ class TestingForTheStatsAPI(TestCase):
             project_submission_type=ContentItem.REPOSITORY,
         )
 
-        self.card_9 = AgileCardFactory(
+        self.card_7 = AgileCardFactory(
             content_item=self.content_item_3,
             status=AgileCard.IN_REVIEW,
             recruit_project=None,
         )
 
-        self.card_10 = AgileCardFactory(
+        self.card_8 = AgileCardFactory(
             content_item=self.content_item_3,
             status=AgileCard.IN_REVIEW,
             recruit_project=None,
         )
 
         self.assignee_ = SocialProfileFactory().user
-        self.card_9.assignees.set([self.assignee_])
-        self.card_10.assignees.set([self.assignee_])
+        self.card_7.assignees.set([self.assignee_])
+        self.card_8.assignees.set([self.assignee_])
 
-        self.assertIsNotNone(User.user_cards_in_review_column)
-        self.assertIsNotNone(User.user_cards_in_progress_column)
-        self.assertIsNotNone(User.user_cards_in_review_feedback_column)
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_in_review_column(UserStatsPerWeekSerializer, self.assignee_))
+        assert UserStatsPerWeekSerializer.get_cards_in_review_column(UserStatsPerWeekSerializer, self.assignee_) == 2
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, self.assignee_))
+        assert UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, self.assignee_) == 0
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, self.assignee))
+        assert UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, self.assignee) == 1
+        self.assertIsNotNone(UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(UserStatsPerWeekSerializer, self.user))
+        assert UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(UserStatsPerWeekSerializer, self.user) == 1
 
+        """
         # Create four cards and open a PR on each of them
         today = timezone.now()
         yesterday = today - timezone.timedelta(days=1)
@@ -202,20 +171,21 @@ class TestingForTheStatsAPI(TestCase):
         self.repo_card_four.recruit_project.repository = git_real_factories.RepositoryFactory()
         self.repo_card_four.save()
 
+
         self.pr_yesterday = git_real_factories.PullRequestFactory(
             repository=self.repo_card_one.recruit_project.repository, updated_at=yesterday
         )
 
         self.pr_today = git_real_factories.PullRequestFactory(
-            repository=self.repo_card_two.recruit_project.repository, updated_at=today
+            repository=self.repo_card_one.recruit_project.repository, updated_at=today
         )
 
         self.pr_day_before_yesterday = git_real_factories.PullRequestFactory(
-            repository=self.repo_card_three.recruit_project.repository, updated_at=day_before_yesterday
+            repository=self.repo_card_one.recruit_project.repository, updated_at=day_before_yesterday
         )
 
         self.pr_two_days_before_yesterday = git_real_factories.PullRequestFactory(
-            repository=self.repo_card_four.recruit_project.repository, updated_at=two_days_before_yesterday
+            repository=self.repo_card_one.recruit_project.repository, updated_at=two_days_before_yesterday
         )
 
         self.pr_yesterday.save()
@@ -276,3 +246,4 @@ class TestingForTheStatsAPI(TestCase):
 
         self.assertIsNotNone(User.pr_reviews_done_in_past_seven_days)
         self.assertIsNotNone(User.total_pr_reviews_done_to_date)
+        """
