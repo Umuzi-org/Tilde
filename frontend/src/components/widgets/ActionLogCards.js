@@ -2,6 +2,7 @@ import React from "react";
 import LaunchIcon from "@material-ui/icons/Launch";
 import ReviewValidationIcons from "./ReviewValidationIcons";
 import ReviewStatus from "./ReviewStatus";
+import { routes } from "../../routes";
 
 import {
   Typography,
@@ -50,18 +51,20 @@ const BaseActionCard = ({ action, children, footer }) => {
 
 export const ActionCardCompleted = ({
   card,
-  handleClickOpenProjectDetails,
+  // handleClickOpenProjectDetails,
 }) => {
   const footer = (
-    <Button
-      variant="outlined"
-      color="default"
-      size="small"
-      startIcon={<LaunchIcon />}
-      onClick={handleClickOpenProjectDetails}
-    >
-      View Project
-    </Button>
+    <a href={routes.cardDetails.route.path.replace(":cardId", card.id)}>
+      <Button
+        variant="outlined"
+        color="default"
+        size="small"
+        startIcon={<LaunchIcon />}
+        // onClick={handleClickOpenProjectDetails}
+      >
+        View Project
+      </Button>
+    </a>
   );
 
   return <BaseActionCard action={card} footer={footer}></BaseActionCard>;
@@ -69,7 +72,7 @@ export const ActionCardCompleted = ({
 
 export const ActionReviewedCard = ({
   review,
-  handleClickOpenProjectDetails,
+  // handleClickOpenProjectDetails,
   showReviewer,
   showReviewed,
 }) => {
@@ -77,15 +80,22 @@ export const ActionReviewedCard = ({
 
   const footer = (
     <React.Fragment>
-      <Button
-        variant="outlined"
-        color="default"
-        size="small"
-        startIcon={<LaunchIcon />}
-        onClick={handleClickOpenProjectDetails}
+      <a
+        href={routes.cardDetails.route.path.replace(
+          ":cardId",
+          review.agileCard
+        )}
       >
-        View Project
-      </Button>
+        <Button
+          variant="outlined"
+          color="default"
+          size="small"
+          startIcon={<LaunchIcon />}
+          // onClick={handleClickOpenProjectDetails}
+        >
+          View Project
+        </Button>
+      </a>
       <div className={classes.grow} />
       <ReviewStatus status={review.status} />
 
