@@ -43,7 +43,8 @@ export default () => {
       <Alert severity="info" className={classes.alert}>
         Your new password must be different from previous used passwords
       </Alert>
-      <TextField label="Password" variant="outlined" type="password" required />
+      <TextField label="Current password" variant="outlined" type="password" required />
+      <TextField label="New password" variant="outlined" type="password" required />
       <TextField
         label="Confirm Password"
         variant="outlined"
