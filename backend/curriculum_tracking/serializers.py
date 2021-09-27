@@ -2,6 +2,7 @@ from . import models
 from rest_framework import serializers
 from django.db.models import Q
 from core import models as core_models
+from datetime import datetime, timedelta
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -364,28 +365,105 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         return self.cards_in_completed_column_amount
 
     def get_cards_in_review_column(self, instance):
-        return instance.user_cards_in_review_column
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_in_review_column_amount = AgileCard.objects.filter(
+            status=AgileCard.IN_REVIEW,
+            assignees=instance.id
+        ).count()
+
+        return self.cards_in_review_column_amount
 
     def get_cards_in_review_feedback_column(self, instance):
-        return instance.user_cards_in_review_feedback_column
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_in_review_feedback_column_amount = AgileCard.objects.filter(
+            status=AgileCard.REVIEW_FEEDBACK,
+            assignees=instance.id
+        ).count()
+
+        return self.cards_in_review_feedback_column_amount
 
     def get_cards_in_progress_column(self, instance):
-        return instance.user_cards_in_progress_column
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_in_progress_column = AgileCard.objects.filter(
+            status=AgileCard.IN_PROGRESS,
+            assignees=instance.id
+        ).count()
+
+        return self.cards_in_progress_column
 
     def get_cards_completed_last_7_days(self, instance):
-        return instance.user_cards_completed_in_past_seven_days
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_completed_past_seven_days = AgileCard.objects.filter(
+            status=AgileCard.COMPLETE,
+            assignees=instance.id,
+            recruit_project__complete_time__gte=datetime.now() - timedelta(days=7)
+        ).count()
+
+        return self.cards_completed_past_seven_days
 
     def get_cards_started_last_7_days(self, instance):
-        return instance.user_cards_started_in_past_seven_days
+        from curriculum_tracking.models import AgileCard
+
+        self.cards_started_past_seven_days = AgileCard.objects.filter(
+            assignees=instance.id,
+            recruit_project__start_time__gte=datetime.now() - timedelta(days=7)
+        ).count()
+
+        return self.cards_started_past_seven_days
 
     def get_total_number_of_tilde_reviews(self, instance):
-        return instance.total_tilde_reviews_done_to_date
+        from curriculum_tracking.models import RecruitProjectReview, TopicReview
+
+        self.tilde_project_reviews_done_to_date = RecruitProjectReview.objects.filter(
+            reviewer_user_id=instance.id
+        ).all().count()
+
+        self.tilde_topic_reviews_done_to_date = TopicReview.objects.filter(
+            reviewer_user_id=instance.id
+        ).all().count()
+
+        if self.tilde_project_reviews_done_to_date == None:
+            return self.tilde_topic_reviews_done_to_date
+        else:
+            return self.tilde_project_reviews_done_to_date
 
     def get_tilde_reviews_done_last_7_days(self, instance):
-        return instance.tilde_reviews_done_in_past_seven_days
+        from curriculum_tracking.models import RecruitProjectReview, TopicReview
+
+        self.tilde_project_reviews_done_in_past_seven_days = RecruitProjectReview.objects.filter(
+            reviewer_user_id=instance.id,
+            timestamp__gte=datetime.now() - timedelta(days=7)
+        ).all().count()
+
+        self.tilde_topic_reviews_done_in_past_seven_days = TopicReview.objects.filter(
+            reviewer_user_id=instance.id,
+            timestamp__gte=datetime.now() - timedelta(days=7)
+        ).all().count()
+
+        if self.tilde_project_reviews_done_in_past_seven_days == None:
+            return self.tilde_topic_reviews_done_in_past_seven_days
+        else:
+            return self.tilde_project_reviews_done_in_past_seven_days
 
     def get_total_number_of_pr_reviews(self, instance):
-        return instance.total_pr_reviews_done_to_date
+        from git_real.models import PullRequestReview
+
+        self.pr_reviews_done_to_date = PullRequestReview.objects.filter(
+            commit_id=instance.id
+        ).count()
+
+        return self.pr_reviews_done_to_date
 
     def get_pr_reviews_done_last_7_days(self, instance):
-        return instance.pr_reviews_done_in_past_seven_days
+        from git_real.models import PullRequestReview
+
+        self.pr_reviews_done_past_seven_days = PullRequestReview.objects.filter(
+            commit_id=instance.id,
+            submitted_at__gte=datetime.now() - timedelta(days=7)
+        ).count()
+
+        return self.pr_reviews_done_past_seven_days
