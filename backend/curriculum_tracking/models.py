@@ -31,7 +31,7 @@ class ReviewableMixin:
         if user.is_superuser:
             return True
 
-        teams = self.get_teams()
+        teams = self.get_teams(assignees_only=True)
         for team in teams:
             if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
                 return True
@@ -494,11 +494,11 @@ class RecruitProject(
                     result.append(user)
         return result
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.recruit_users.all()] + [
-            user.id for user in self.reviewer_users.all()
-        ]
+        user_ids = [user.id for user in self.recruit_users.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewer_users.all()])
         return Team.get_teams_from_user_ids(user_ids)
 
     def reviews_queryset(self):
@@ -829,7 +829,10 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         if request_time > self.timestamp:
             return False
-        first_review = (RecruitProjectReview.objects.filter(timestamp__gte=request_time).order_by("timestamp").first()
+        first_review = (
+            RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .order_by("timestamp")
+            .first()
         )
 
         return self == first_review
@@ -991,11 +994,11 @@ class AgileCard(
             return self.BLOCKED
         return self.READY
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.assignees.all()] + [
-            user.id for user in self.reviewers.all()
-        ]
+        user_ids = [user.id for user in self.assignees.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewers.all()])
         return Team.get_teams_from_user_ids(user_ids)
 
     @property
