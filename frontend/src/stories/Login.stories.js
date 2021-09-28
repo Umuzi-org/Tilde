@@ -1,9 +1,14 @@
-import React from "react"
-import LoginForm from "../components/regions/Login/Presentation"
+import React from "react";
+import LoginForm from "../components/regions/Login/Presentation";
 
 export default {
   title: "Tilde/Login",
-  component: LoginForm
-}
+  component: LoginForm,
+};
 
-export const Primary = () => <LoginForm />
+export const Primary = (args) => <LoginForm {...args} />;
+Primary.args = {
+  loading: false,
+  error: "",
+  handleLoginWithGoogle: () => {},
+}
