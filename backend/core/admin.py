@@ -12,6 +12,7 @@ class UserSetInline(admin.TabularInline):
 class TeamAdmin(GuardedModelAdmin):
     list_display = ["name", "active"]
     list_filter = ["active"]
+    search_fields = ["name"]
     fieldsets = (
         (
             None,
