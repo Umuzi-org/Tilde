@@ -28,9 +28,17 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: "275px",
   },
-  button: {
-    marginRight: "none",
+  buttonDiv: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    margin: "0px",
   },
+  button: {
+    width: "300px ",
+    margin: "0px"
+  },
+
 }));
 
 export default () => {
@@ -49,17 +57,18 @@ export default () => {
 
       <TextField label="Email" variant="outlined" type="email" required />
 
-      <div>
+      <div className={classes.buttonDiv}>
         <Button
           className={classes.button}
           type="submit"
           variant="contained"
           color="primary"
         >
-          Back
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
           Reset password
+        </Button>
+  
+        <Button className={classes.button} type="submit" variant="contained" color="primary">
+          Back home
         </Button>
       </div>
     </form>
