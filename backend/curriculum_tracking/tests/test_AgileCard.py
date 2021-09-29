@@ -721,7 +721,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.assertEqual(AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS)
         self.assertEqual(AgileCard.derive_status_from_project(self.project_2), AgileCard.IN_PROGRESS)
 
-        # Setting a request for review and creating four different review times (No reviews done yet)
+        # Setting a request for review and creating four different review times (No reviews done yet) for project_1
         self.request_review_time = self.project_1.start_time + timedelta(1)
         self.project_1.request_review(force_timestamp=self.request_review_time)
         self.time_one = self.project_1.start_time - timedelta(days=6)
@@ -732,62 +732,60 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
     def test_get_users_that_reviewed_since_last_review_request_for_project(self):
 
         # Four reviews are made with the four review times above (No reviews done on project_2)
-        self.review_1 = factories.RecruitProjectReviewFactory(
+        review_1 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_1,
             timestamp=self.time_one
         )
-        self.review_1.timestamp = self.time_one
-        self.review_1.save()
+        review_1.timestamp = self.time_one
+        review_1.save()
 
-        self.review_2 = factories.RecruitProjectReviewFactory(
+        review_2 = factories.RecruitProjectReviewFactory(
             status=COMPETENT,
             recruit_project=self.project_1,
         )
-        self.review_2.timestamp = self.time_two
-        self.review_2.save()
+        review_2.timestamp = self.time_two
+        review_2.save()
 
-        self.review_3 = factories.RecruitProjectReviewFactory(
+        review_3 = factories.RecruitProjectReviewFactory(
             status=EXCELLENT,
             recruit_project=self.project_1,
         )
-        self.review_3.timestamp = self.time_three
-        self.review_3.save()
+        review_3.timestamp = self.time_three
+        review_3.save()
 
-        self.review_4 = factories.RecruitProjectReviewFactory(
+        review_4 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_1,
         )
-        self.review_4.timestamp = self.time_four
-        self.review_4.save()
+        review_4.timestamp = self.time_four
+        review_4.save()
 
-        self.result = self.card_1.get_users_that_reviewed_since_last_review_request()
-        ids_which_can_be_returned = [self.review_2.reviewer_user.id, self.review_3.reviewer_user.id, self.review_4.reviewer_user.id]
+        result = self.card_1.get_users_that_reviewed_since_last_review_request()
+        ids_which_can_be_returned = [review_2.reviewer_user.id, review_3.reviewer_user.id, review_4.reviewer_user.id]
 
         # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
         # returning the wrong stuff and therefore it is not working as it should.
-        self.assertEqual(sorted(self.result), sorted(ids_which_can_be_returned))
+        self.assertEqual(sorted(result), sorted(ids_which_can_be_returned))
         assert len(self.card_1.get_users_that_reviewed_since_last_review_request()) > 0
 
     def test_get_users_that_reviewed_since_last_review_request_for_project_2(self):
 
         # Create a review request on card_2 of project_2
-        self.request_review_time_2 = self.project_2.start_time + timedelta(1)
-        self.project_2.request_review(force_timestamp=self.request_review_time_2)
-        self.time_1 = self.project_2.start_time - timedelta(days=10)
-        self.time_2 = self.project_2.start_time + timedelta(days=20)
+        request_review_time_2 = self.project_2.start_time + timedelta(1)
+        self.project_2.request_review(force_timestamp=request_review_time_2)
+        time_1 = self.project_2.start_time - timedelta(days=10)
 
         # Create a review on card_2, the review will be before the latest request for a review
-        self.review_1_card_2 = factories.RecruitProjectReviewFactory(
+        review_1_card_2 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_2,
-            timestamp=self.time_1
+            timestamp=time_1
         )
-        self.review_1_card_2.timestamp = self.time_1
-        self.review_1_card_2.save()
+        review_1_card_2.timestamp = time_1
+        review_1_card_2.save()
 
         # Review done on project_2, card_2 were done before the latest request for a review, therefore,
         # get_users_that_reviewed_since_last_review_request() should return no user id's
-        self.project_2_return_results = self.card_2.get_users_that_reviewed_since_last_review_request()
-        print(self.project_2_return_results)
-        assert len(self.project_2_return_results) == 0
+        project_2_return_results = self.card_2.get_users_that_reviewed_since_last_review_request()
+        assert len(project_2_return_results) == 0
