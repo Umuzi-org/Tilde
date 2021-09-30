@@ -1,4 +1,3 @@
-import backend.settings
 from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from . import models
 from rest_framework import viewsets
