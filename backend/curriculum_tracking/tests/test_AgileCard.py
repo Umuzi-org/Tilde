@@ -802,8 +802,8 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
             reviewer_user=factories.UserFactory(),
         )
 
-        # The next line has to be done because RecruitProjectFactory does not create an attribute recruit_project, so
-        # I manually create a 'recruit_project' attribute for project_1 and project_two
+        # The next line has to be done because RecruitProjectFactory does not create an attribute 'recruit_project', so
+        # I manually create a 'recruit_project' attribute for project_one and project_two
         project_one.recruit_project = review_on_project_one.recruit_project
         project_two.recruit_project = project_two
 
