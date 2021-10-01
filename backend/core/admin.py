@@ -7,6 +7,11 @@ class UserSetInline(admin.TabularInline):
     model = models.User.groups.through
     raw_id_fields = ("user",)
 
+#@admin.ModelAdmin.actions(description='Not doing much right now')
+#def make_inactive(modeladmin, request, queryset):
+    #queryset.update(active=False)
+def make_inactive(request, queryset):
+    queryset.update(active=False)
 
 @admin.register(models.Team)
 class TeamAdmin(GuardedModelAdmin):
@@ -26,8 +31,8 @@ class TeamAdmin(GuardedModelAdmin):
             },
         ),
     )
-
     inlines = [UserSetInline]
+    actions = [make_inactive]
 
 
 admin.site.register(models.UserProfile)
