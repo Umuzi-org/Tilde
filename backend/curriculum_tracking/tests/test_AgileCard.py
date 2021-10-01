@@ -720,7 +720,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.assertEqual(AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS)
         self.assertEqual(AgileCard.derive_status_from_project(self.project_2), AgileCard.IN_PROGRESS)
 
-        # Setting a request for review and creating four different review times (No reviews done yet) for project_1
+        # Setting a request for review and creating four different review times (No reviews done yet)
         self.request_review_time = self.project_1.start_time + timedelta(1)
         self.project_1.request_review(force_timestamp=self.request_review_time)
         self.time_one = self.project_1.start_time - timedelta(days=6)
@@ -728,7 +728,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.time_three = self.project_1.start_time + timedelta(days=3)
         self.time_four = self.project_1.start_time + timedelta(days=2)
 
-    def test_get_users_that_reviewed_since_last_review_request_for_project(self):
+    def test_functionality_of_users_that_reviewed_since_last_review_request_for_project_1(self):
 
         # Four reviews are made with the four review times above (No reviews done on project_2)
         review_1 = factories.RecruitProjectReviewFactory(
@@ -768,7 +768,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.assertEqual(sorted(project_1_return_results), sorted(ids_which_can_be_returned))
         assert len(self.card_1.get_users_that_reviewed_since_last_review_request()) > 0
 
-    def test_get_users_that_reviewed_since_last_review_request_for_project_2(self):
+    def test_functionality_of_users_that_reviewed_since_last_review_request_for_project_2(self):
 
         # Create a review request on card_2 of project_2
         request_review_time_2 = self.project_2.start_time + timedelta(1)
@@ -789,12 +789,13 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         project_2_return_results = self.card_2.get_users_that_reviewed_since_last_review_request()
         assert len(project_2_return_results) == 0
 
-    def test_that_project_1_and_project_2_do_not_return_the_same_reviewer_users(self):
+    def test_two_different_projects_return_different_results_for_users_that_reviewed_since_last_review_request(self):
 
+        # Creating two new projects
         project_one = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
         project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
 
-        # Requesting a review on project_1 and on project_two, but only reviewing on project_1
+        # Requesting a review on project_1 and on project_two, but only performing a review on project_1
         project_one.review_request_time = timezone.now()
         project_two.review_request_time = timezone.now()
         review_on_project_one = factories.RecruitProjectReviewFactory(
@@ -802,9 +803,9 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
             reviewer_user=factories.UserFactory(),
         )
 
-        # The next line has to be done because RecruitProjectFactory does not create an attribute 'recruit_project', so
-        # I manually create a 'recruit_project' attribute for project_one and project_two
-        project_one.recruit_project = review_on_project_one.recruit_project
+        # The next two lines had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
+        # so I manually created a 'recruit_project' attribute for project_one and for project_two
+        project_one.recruit_project = project_one
         project_two.recruit_project = project_two
 
         assert AgileCard.get_users_that_reviewed_since_last_review_request(project_one) == [
