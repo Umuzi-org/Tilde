@@ -1,5 +1,4 @@
 from git_real.models import PullRequest
-import git_real
 import mock
 from django.test import TestCase
 from curriculum_tracking.models import (
@@ -713,7 +712,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.assertEqual(self.project_1.content_item, self.card_1.content_item)
         self.assertEqual(self.project_2.content_item, self.card_2.content_item)
 
-        # Starting the projects (project & project_2) and asserting that they are in status IN_PROGRESS
+        # Starting the projects (project_1 & project_2) and asserting that they are in status IN_PROGRESS
         self.project_1.start_time = timezone.now() - timedelta(days=5)
         self.project_2.start_time = timezone.now() - timedelta(days=5)
         self.project_1.save()
@@ -761,12 +760,12 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         review_4.timestamp = self.time_four
         review_4.save()
 
-        result = self.card_1.get_users_that_reviewed_since_last_review_request()
+        project_1_return_results = self.card_1.get_users_that_reviewed_since_last_review_request()
         ids_which_can_be_returned = [review_2.reviewer_user.id, review_3.reviewer_user.id, review_4.reviewer_user.id]
 
         # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
         # returning the wrong stuff and therefore it is not working as it should.
-        self.assertEqual(sorted(result), sorted(ids_which_can_be_returned))
+        self.assertEqual(sorted(project_1_return_results), sorted(ids_which_can_be_returned))
         assert len(self.card_1.get_users_that_reviewed_since_last_review_request()) > 0
 
     def test_get_users_that_reviewed_since_last_review_request_for_project_2(self):
@@ -774,18 +773,41 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # Create a review request on card_2 of project_2
         request_review_time_2 = self.project_2.start_time + timedelta(1)
         self.project_2.request_review(force_timestamp=request_review_time_2)
-        time_1 = self.project_2.start_time - timedelta(days=10)
+        time_of_review = self.project_2.start_time - timedelta(days=10)
 
         # Create a review on card_2, the review will be before the latest request for a review
         review_1_card_2 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_2,
-            timestamp=time_1
+            timestamp=time_of_review
         )
-        review_1_card_2.timestamp = time_1
+        review_1_card_2.timestamp = time_of_review
         review_1_card_2.save()
 
         # Review done on project_2, card_2 were done before the latest request for a review, therefore,
         # get_users_that_reviewed_since_last_review_request() should return no user id's
         project_2_return_results = self.card_2.get_users_that_reviewed_since_last_review_request()
         assert len(project_2_return_results) == 0
+
+    def test_that_project_1_and_project_2_do_not_return_the_same_reviewer_users(self):
+
+        project_one = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
+        project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
+
+        # Requesting a review on project_1 and on project_two, but only reviewing on project_1
+        project_one.review_request_time = timezone.now()
+        project_two.review_request_time = timezone.now()
+        review_on_project_one = factories.RecruitProjectReviewFactory(
+            recruit_project=project_one,
+            reviewer_user=factories.UserFactory(),
+        )
+
+        # The next line has to be done because RecruitProjectFactory does not create an attribute recruit_project, so
+        # I manually create a 'recruit_project' attribute for project_1 and project_two
+        project_one.recruit_project = review_on_project_one.recruit_project
+        project_two.recruit_project = project_two
+
+        assert AgileCard.get_users_that_reviewed_since_last_review_request(project_one) == [
+            review_on_project_one.reviewer_user.id
+        ]
+        assert AgileCard.get_users_that_reviewed_since_last_review_request(project_two) == []
