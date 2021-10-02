@@ -64,6 +64,7 @@ const CardBasicDetails = ({ card, authUser, handleClickSetDueTime }) => {
     card.reviewRequestTime && new Date(card.reviewRequestTime).toLocaleString();
   const completeTime =
     card.completeTime && new Date(card.completeTime).toLocaleString();
+  const teams = authUser.permissions.teams;
 
   return (
     <React.Fragment>
@@ -93,7 +94,7 @@ const CardBasicDetails = ({ card, authUser, handleClickSetDueTime }) => {
                 <TableRow>
                   <TableCell>Due Time</TableCell>
                   <TableCell>
-                    {dueTime} {canSetDueTime({card, authUser}) && (
+                    {dueTime} {canSetDueTime({card, authUser, teams}) && (
                       <Button variant="outlined" onClick={handleClickSetDueTime}>Set Time</Button>
                     )}
                   </TableCell>

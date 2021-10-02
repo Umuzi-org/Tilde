@@ -20,37 +20,36 @@ const useStyles = makeStyles({
     }
 });
 
-const DueTimeFormModal = ({ card, closeModal }) => {
-
-  const dueTime = card.dueTime;
-  // const dueTime = "";
-  /* dueTime is either an empty string or something like this: "2021-06-14T09:58:28Z".
-     If dueTime has a value, then we strip out the seconds, 
-     hence dueTime.split('').slice(0, 16).join('') is used */
-  const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
+export default ({
+  card,
+  cardId,
+  handleClose
+}) => {
   const classes = useStyles();
-
-  return (
-    <Modal open={!!card} onClose={closeModal}>
-      <Paper className={classes.paper}>
-        <form novalidate>
-          <TextField
-            id="datetime-local"
-            label="Due Date"
-            type="datetime-local"
-            defaultValue={defaultValue}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Grid container>
-            <Button className={classes.dueTimeButton} variant="outlined">Save</Button>
-            <Button className={classes.dueTimeButton} variant="outlined">Cancel</Button>
-          </Grid>
-        </form> 
-      </Paper>
-    </Modal>
-  )
-}
-
-export default DueTimeFormModal;
+  // const dueTime = card.dueTime;
+  const dueTime = "";
+  const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
+  if (cardId)
+    return (
+      <Modal open={true} onClose={handleClose}>
+        <Paper className={classes.paper}>
+          <form novalidate>
+            <TextField
+              id="datetime-local"
+              label="Due Date"
+              type="datetime-local"
+              defaultValue={defaultValue}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <Grid container>
+              <Button className={classes.dueTimeButton} variant="outlined">Save</Button>
+              <Button className={classes.dueTimeButton} variant="outlined">Cancel</Button>
+            </Grid>
+          </form> 
+        </Paper>
+      </Modal>
+    );
+  return <React.Fragment />;
+};

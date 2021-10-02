@@ -3,10 +3,31 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import operations from "./redux/operations";
 
-export const DueTimeFormModalUnconnected = ({ card, closeModal }) => {
-    return (
-        <Presentation card={card} closeModal={closeModal} />
-    )
+import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+
+function DueTimeFormModalUnconnected({
+    cardId,
+    card,
+    handleClose,
+    fetchAgileCard,
+}) {
+    React.useEffect(() => {
+        if (cardId && (card === undefined || card === null || card === {})) {
+          fetchAgileCard({ cardId });
+        }
+    }, [
+        cardId,
+        fetchAgileCard,
+        card,
+    ]);
+
+    const props = {
+        cardId,
+        card,
+        handleClose,
+    };
+
+    return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
@@ -23,9 +44,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return { 
-        closeModal: () => { 
+        handleClose: () => { 
             dispatch(operations.closeDueTimeFormModal())
-        }
+        },
+
+        fetchAgileCard: ({ cardId }) => {
+            dispatch(
+              apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
+                data: { cardId },
+              })
+            );
+        },
     }
 }
 

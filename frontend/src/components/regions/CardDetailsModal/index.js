@@ -129,7 +129,6 @@ function CardDetailsModalUnconnected({
 
 const mapStateToProps = (state) => {
   const cardId = state.CardDetailsModal.cardId;
-
   const card =
     !!cardId & (state.Entities.cards !== undefined)
       ? state.Entities.cards[cardId]
