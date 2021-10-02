@@ -1,16 +1,24 @@
 from django.contrib import admin
 from . import models
 from guardian.admin import GuardedModelAdmin
+from rest_framework.decorators import action
+from core.permissions import IsStaffUser
 
 
 class UserSetInline(admin.TabularInline):
     model = models.User.groups.through
     raw_id_fields = ("user",)
 
-#@admin.ModelAdmin.actions(description='Not doing much right now')
-#def make_inactive(modeladmin, request, queryset):
-    #queryset.update(active=False)
-def make_inactive(request, queryset):
+
+@action(
+    methods=['post'],
+    detail=True,
+    permission_classes=[IsStaffUser],
+    get_objects=models.Team.users
+)
+def deactivate_all_inactive_team_members(queryset, something):
+    members_in_team = models.Team.active_users
+    breakpoint()
     queryset.update(active=False)
 
 @admin.register(models.Team)
@@ -32,7 +40,7 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = [make_inactive]
+    actions = [deactivate_all_inactive_team_members]
 
 
 admin.site.register(models.UserProfile)
