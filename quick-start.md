@@ -6,7 +6,7 @@ Here's a video that shows you all the things: https://www.youtube.com/watch?v=NX
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/)
+- [Docker](https://www.docker.com/) - to run the DB for the backend.
 - [Python](https://www.python.org/) version 3 - to run the backend.
 - [Node.js](https://nodejs.org/en/) - to run the frontend.
 
