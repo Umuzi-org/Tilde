@@ -47,7 +47,7 @@ export default () => {
   return (
     <form className={classes.root}>
       <Typography variant="h5" style={{ fontWeight: 600 }}>
-        Reset password
+        Reset Password
       </Typography>
 
       <Alert severity="info" className={classes.alert}>
@@ -64,11 +64,11 @@ export default () => {
           variant="contained"
           color="primary"
         >
-          Reset password
+          Submit
         </Button>
   
         <Button className={classes.button} type="submit" variant="contained" color="primary">
-          Back home
+          Back
         </Button>
       </div>
     </form>
