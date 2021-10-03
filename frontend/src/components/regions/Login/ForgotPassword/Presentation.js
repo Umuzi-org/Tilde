@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
+import Box from "@material-ui/core/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     height: "100vh",
     overflow: "hidden",
 
@@ -28,15 +29,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: "275px",
   },
-  buttonDiv: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    margin: "0px",
-  },
   button: {
-    width: "300px ",
-    margin: "0px"
+    width: "134px ",
   },
 
 }));
@@ -67,7 +61,7 @@ export default () => {
           Submit
         </Button>
   
-        <Button className={classes.button} type="submit" variant="contained" color="primary">
+        <Button className={classes.button} type="submit" variant="contained" color="secondary">
           Back
         </Button>
       </div>
