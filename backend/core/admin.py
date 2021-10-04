@@ -9,17 +9,17 @@ class UserSetInline(admin.TabularInline):
     model = models.User.groups.through
     raw_id_fields = ("user",)
 
-
 @action(
-    methods=['post'],
+    #methods=['post', 'get'],
     detail=True,
     permission_classes=[IsStaffUser],
     get_objects=models.Team.users
 )
-def deactivate_all_inactive_team_members(queryset, something):
-    members_in_team = models.Team.active_users
-    breakpoint()
-    queryset.update(active=False)
+def delete_all_inactive_teams(instance, request, queryset: object):
+    [team.delete() for team in queryset if not team.active]
+    #team.users.filter(active=False).delete()
+    #elif team.users.all() not in team.active_users.all():
+
 
 @admin.register(models.Team)
 class TeamAdmin(GuardedModelAdmin):
@@ -40,7 +40,7 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = [deactivate_all_inactive_team_members]
+    actions = [delete_all_inactive_teams]
 
 
 admin.site.register(models.UserProfile)
