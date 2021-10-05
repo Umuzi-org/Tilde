@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     width: "275px",
   },
   button: {
-    width: "134px ",
+    width: "134px",
   },
 
 }));
@@ -56,13 +56,13 @@ export default () => {
           className={classes.button}
           type="submit"
           variant="contained"
-          color="primary"
+          color="secondary"
         >
-          Submit
+          back
         </Button>
   
-        <Button className={classes.button} type="submit" variant="contained" color="secondary">
-          Back
+        <Button className={classes.button} type="submit" variant="contained" color="primary">
+          submit
         </Button>
       </div>
     </form>
