@@ -14,9 +14,7 @@ class UserSetInline(admin.TabularInline):
     permission_classes=[IsStaffUser]
 )
 def delete_all_inactive_teams(instance, request, queryset: object):
-    [team.delete() for team in queryset if not team.active]
-    #team.users.filter(active=False).delete()
-    #elif team.users.all() not in team.active_users.all():
+    return [team.delete() for team in queryset if not team.active]
 
 
 @admin.register(models.Team)
