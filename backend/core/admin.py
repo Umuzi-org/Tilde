@@ -13,8 +13,12 @@ class UserSetInline(admin.TabularInline):
     detail=True,
     permission_classes=[IsStaffUser]
 )
-def delete_all_inactive_teams(instance, request, queryset: object):
-    return [team.delete() for team in queryset if not team.active]
+def make_members_inactive_for_inactive_teams(TeamAdminInstance, request, queryset: object):
+    for team in queryset:
+        if not team.active:
+            for team_member in team.active_users:
+                team_member.active = False
+                team_member.save()
 
 
 @admin.register(models.Team)
@@ -36,7 +40,7 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = [delete_all_inactive_teams]
+    actions = [make_members_inactive_for_inactive_teams]
 
 
 admin.site.register(models.UserProfile)
