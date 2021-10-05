@@ -10,10 +10,8 @@ class UserSetInline(admin.TabularInline):
     raw_id_fields = ("user",)
 
 @action(
-    #methods=['post', 'get'],
     detail=True,
-    permission_classes=[IsStaffUser],
-    get_objects=models.Team.users
+    permission_classes=[IsStaffUser]
 )
 def delete_all_inactive_teams(instance, request, queryset: object):
     [team.delete() for team in queryset if not team.active]
