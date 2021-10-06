@@ -33,4 +33,5 @@ class TestMakeTeamMembersInactiveForInactiveTeams(TestCase):
         assert mocked_queryset.return_value[0].active_users != None
 
         # Now calling make_members_inactive_for_inactive_teams will make all members in the team inactive
+        make_members_inactive_for_inactive_teams(TeamAdmin, HttpRequest, mocked_queryset)
         assert len(mocked_queryset.return_value[0].active_users) == 0
