@@ -27,7 +27,7 @@ When you `docker-compose up` again, your DB will be fresh as a daisy.
 
 ## Backend
 
-The backend is written in Django. We're going to start the Django app with commands below.
+The backend is written in Django. We're going to start the Django app with the commands below.
 
 Make sure the DB is up first the continue.
 
