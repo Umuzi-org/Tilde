@@ -7,7 +7,7 @@ Here's a video that shows you all the things: https://www.youtube.com/watch?v=NX
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) and Docker Compose - to run the DB for the backend. If you install Docker Desktop, you get Docker Compose, but if you install with your CLI such as on Linux then you need to install Docker Compose separately after installing Docker.
-- [Python](https://www.python.org/) version 3 - to run the backend.
+- [Python](https://www.python.org/) 3.9+ - to run the backend.
 - [Node.js](https://nodejs.org/en/) - to run the frontend.
 
 ## Database server
