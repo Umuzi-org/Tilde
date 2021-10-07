@@ -10,9 +10,7 @@ const columns = [
     { id: 'teams', label: 'Team', minWidth: 100 },
 ];
 
-const TeamsTable = (props) => {
-
-    const { teams } = props;
+const TeamsTable = ({ teams }) => {
 
     return (
         <Table stickyHeader aria-label="sticky table">
