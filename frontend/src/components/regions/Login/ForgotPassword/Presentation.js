@@ -4,8 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
-import LockRoundedIcon from "@material-ui/icons/LockRounded";
-import Box from "@material-ui/core/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(2),
     },
   },
-  alert: {
+  alertStyle: {
     margin: theme.spacing(1),
     width: "275px",
   },
-  button: {
+  buttonStyle: {
     width: "134px",
   },
 
@@ -44,16 +42,16 @@ export default () => {
         Reset Password
       </Typography>
 
-      <Alert severity="info" className={classes.alert}>
+      <Alert severity="info" className={classes.alertStyle}>
         Enter the email associated with your account and we will send an email
         with instructions to reset your password
       </Alert>
 
       <TextField label="Email" variant="outlined" type="email" required />
 
-      <div className={classes.buttonDiv}>
+      <div>
         <Button
-          className={classes.button}
+          className={classes.buttonStyle}
           type="submit"
           variant="contained"
           color="secondary"
@@ -61,7 +59,7 @@ export default () => {
           back
         </Button>
   
-        <Button className={classes.button} type="submit" variant="contained" color="primary">
+        <Button className={classes.buttonStyle} type="submit" variant="contained" color="primary">
           submit
         </Button>
       </div>
