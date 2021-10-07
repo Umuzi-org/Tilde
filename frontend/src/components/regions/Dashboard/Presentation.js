@@ -1,8 +1,7 @@
 import React from "react";
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ReviewTrustTable from "../UserDetails/ReviewTrustTable/Presentation";
-import TeamsTable from "../UserDetails/TeamsTable/Presentation";
+import TeamsTable from "../UserDetails/TeamsTable";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -13,22 +12,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+export default ({ user }) => {
   const classes = useStyles();
-  
+  const teams =  user.teamMemberships;
   return (
     <React.Fragment>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <Typography>TEAMS</Typography>
-            <TeamsTable />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography>REVIEW TRUSTS</Typography>
-            <ReviewTrustTable />
+            <Typography>You are a member of these teams:</Typography>
+            <TeamsTable teams={teams} />
           </Paper>
         </Grid>
       </Grid>
