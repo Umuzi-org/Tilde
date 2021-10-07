@@ -26,8 +26,10 @@ export default ({
   handleClose
 }) => {
   const classes = useStyles();
-  // const dueTime = card.dueTime;
-  const dueTime = "";
+  const dueTime = card.dueTime;
+  /* dueTime is either null or something like this: "2021-06-14T09:58:28Z".
+     If dueTime has a value, then we strip out the seconds, 
+     hence dueTime.split('').slice(0, 16).join('') is used */
   const defaultValue = dueTime ? dueTime.split('').slice(0, 16).join('') : "";
   if (cardId)
     return (
