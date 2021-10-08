@@ -1,7 +1,6 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-
 import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
 
 function TeamsTableUnconnected({
@@ -27,8 +26,15 @@ function TeamsTableUnconnected({
 }
 
 const mapStateToProps = (state) => {
-  const user = state.TeamsTable.user;
-  return { user };
+  const userId = state.TeamsTable.userId;
+  const user =
+    !!userId & (state.Entities.users !== undefined)
+      ? state.Entities.users[userId]
+      : null;
+  return { 
+    user, 
+    userId 
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {
