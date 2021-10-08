@@ -111,11 +111,11 @@ class TestingForTheStatsAPI(TestCase):
             UserStatsPerWeekSerializer, User=self.user
         ) == 0
 
-        # In total we did start new cards within the last 7 days but we did not complete any cards in the last seven
+        # We did start new cards within the last 7 days but we did not complete any cards in the last seven
         # days
         assert UserStatsPerWeekSerializer.get_cards_started_last_7_days(
             UserStatsPerWeekSerializer, User=self.user
-        ) > 0
+        ) == 1
         assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
             UserStatsPerWeekSerializer, User=self.user
         ) == 0
@@ -130,16 +130,16 @@ class TestingForTheStatsAPI(TestCase):
             content_item=content_item_2,
             status=AgileCard.COMPLETE,
         )
-        assignee__ = SocialProfileFactory().user
-        card_2.assignees.set([assignee__])
+        assigned_person = SocialProfileFactory().user
+        card_2.assignees.set([assigned_person])
 
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days' should also return at least one card
         assert UserStatsPerWeekSerializer.get_cards_in_completed_column(
-            UserStatsPerWeekSerializer, User=assignee__
+            UserStatsPerWeekSerializer, User=assigned_person
         ) == 1
         assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
-            UserStatsPerWeekSerializer, User=assignee__
+            UserStatsPerWeekSerializer, User=assigned_person
         ) == 1
 
     def test_cards_in_the_review_column_waiting_for_a_review(self):
