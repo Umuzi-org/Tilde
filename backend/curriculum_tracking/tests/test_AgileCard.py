@@ -728,7 +728,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.time_three = self.project_1.start_time + timedelta(days=3)
         self.time_four = self.project_1.start_time + timedelta(days=2)
 
-    def test_functionality_of_users_that_reviewed_since_last_review_request_for_project_1(self):
+    def test_correct_ids_returned_before_or_after_review_request(self):
 
         # Four reviews are made with the four review times above (No reviews done on project_2)
         review_1 = factories.RecruitProjectReviewFactory(
@@ -760,15 +760,16 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         review_4.timestamp = self.time_four
         review_4.save()
 
-        project_1_return_results = self.card_1.get_users_that_reviewed_since_last_review_request()
-        ids_which_can_be_returned = [review_2.reviewer_user.id, review_3.reviewer_user.id, review_4.reviewer_user.id]
+        ids_which_should_be_returned = [review_2.reviewer_user.id, review_3.reviewer_user.id, review_4.reviewer_user.id]
 
         # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
         # returning the wrong stuff and therefore it is not working as it should.
-        self.assertEqual(sorted(project_1_return_results), sorted(ids_which_can_be_returned))
-        assert len(self.card_1.get_users_that_reviewed_since_last_review_request()) > 0
+        self.assertEqual(
+            sorted(self.card_1.get_users_that_reviewed_since_last_review_request()),
+            sorted(ids_which_should_be_returned)
+        )
 
-    def test_functionality_of_users_that_reviewed_since_last_review_request_for_project_2(self):
+    def test_no_user_ids_should_return_since_review_done_before_latest_review_request(self):
 
         # Create a review request on card_2 of project_2
         request_review_time_2 = self.project_2.start_time + timedelta(1)
@@ -786,8 +787,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
 
         # Review done on project_2, card_2 were done before the latest request for a review, therefore,
         # get_users_that_reviewed_since_last_review_request() should return no user id's
-        project_2_return_results = self.card_2.get_users_that_reviewed_since_last_review_request()
-        assert len(project_2_return_results) == 0
+        assert len(self.card_2.get_users_that_reviewed_since_last_review_request()) == 0
 
     def test_two_different_projects_return_different_results_for_users_that_reviewed_since_last_review_request(self):
 
@@ -795,7 +795,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         project_one = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
         project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
 
-        # Requesting a review on project_1 and on project_two, but only performing a review on project_1
+        # Requesting a review on project_one and on project_two, but only performing a review on project_one
         project_one.review_request_time = timezone.now()
         project_two.review_request_time = timezone.now()
         review_on_project_one = factories.RecruitProjectReviewFactory(
