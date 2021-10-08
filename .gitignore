@@ -3,4 +3,3 @@ gitignore/
 venv/
 *.log
 certbot.out
-backend/curriculum_tracking/tests/for_testing_purposes.py
