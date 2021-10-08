@@ -1,14 +1,12 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import operations from "./redux/operations";
 
 import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
 
 function TeamsTableUnconnected({
   user,
   userId,
-  handleClose,
   fetchUser,
 }) {
   React.useEffect(() => {
@@ -23,7 +21,6 @@ function TeamsTableUnconnected({
   const props = {
     user,
     userId,
-    handleClose
   };
 
   return <Presentation {...props} />;
@@ -36,10 +33,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleClose: () => {
-      dispatch(operations.closeTeamsTable());
-    },
-
     fetchUser: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
