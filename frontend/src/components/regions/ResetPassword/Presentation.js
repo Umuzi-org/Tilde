@@ -23,12 +23,16 @@ const useStyles = makeStyles((theme) => ({
   alert: {
     margin: theme.spacing(1),
     width: "275px",
+    textAlign: "left"
   },
   buttonStyle: {
     variant: "contained",
     margin: "auto",
-    width: "134px",
+    width: "300px",
   },
+  emailAddress:{
+    fontFamily: "sans-serif"
+  }
 }));
 
 export default ({ email }) => {
@@ -43,7 +47,7 @@ export default ({ email }) => {
         does not match the previous one
       </Alert>
 
-      <p>Email: {email}</p>
+      <p className={classes.emailAddress}>Email: {email}</p>
       <TextField
         className={classes.textInput}
         label="New password"
