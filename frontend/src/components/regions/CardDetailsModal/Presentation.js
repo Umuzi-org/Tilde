@@ -55,7 +55,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card, authUser, handleClickSetDueTime }) => {
+const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -94,7 +94,7 @@ const CardBasicDetails = ({ card, authUser, handleClickSetDueTime }) => {
                 <TableRow>
                   <TableCell>Due Time</TableCell>
                   <TableCell>
-                    {dueTime} {canSetDueTime({card, authUser, teams}) && (
+                    {dueTime} {canSetDueTime({card, user, teams}) && (
                       <Button variant="outlined" onClick={handleClickSetDueTime}>Set Time</Button>
                     )}
                   </TableCell>
@@ -129,6 +129,7 @@ const CardBasicDetails = ({ card, authUser, handleClickSetDueTime }) => {
 
 export default ({
   card,
+  user,
   authUser,
   cardId,
   topicProgress,
@@ -155,6 +156,7 @@ export default ({
           {card ? 
             <CardBasicDetails 
               card={card} 
+              user={user}
               authUser={authUser} 
               handleClickSetDueTime={handleClickSetDueTime} 
             /> : <div>Loading...</div>

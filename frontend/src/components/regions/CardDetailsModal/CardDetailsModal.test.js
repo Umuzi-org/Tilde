@@ -2,7 +2,6 @@ import { canSetDueTime } from "./utils";
 
 test("canSetDueTime function returns true if card belongs to current user and there's no due time set", () => {
     const authUser = {
-        userId: 1,
         permissions: {
             teams: {
                 28: {
@@ -16,33 +15,36 @@ test("canSetDueTime function returns true if card belongs to current user and th
             }
         }
     }
+    const user = {
+        id: 295,
+    }
     const card = {
-        assignees: [authUser.userId],
+        assignees: [user.id],
         dueTime: null,
     }
     const teams = authUser.permissions.teams;
-    expect(canSetDueTime({card, authUser, teams})).toBe(true);
+    expect(canSetDueTime({card, user, teams})).toBe(true);
 });
 
 test("canSetDueTime function returns false if card belongs to current user, user has no special permissions and there is a due time set", () => {
     const authUser = {
-        userId: 1,
         permissions: {
             teams: {}
         }
     } 
+    const user = {
+        id: 295,
+    }
     const card = {
-        assignees: [authUser.userId],
+        assignees: [user.id],
         dueTime: "2021-06-14T09:58:28Z",
     }
     const teams = authUser.permissions.teams;
-    expect(canSetDueTime({card, authUser, teams})).toBe(false);
+    expect(canSetDueTime({card, user, teams})).toBe(false);
 });
 
 test("canSetDueTime function returns true if current user is not the assigned user but has management permissions and due time is not set", () => {
     const authUser = {
-        userId: 1,
-        email: "babalwa.mbolekwa@umuzi.org",
         permissions: {
             teams: {
                 28: {
@@ -56,17 +58,19 @@ test("canSetDueTime function returns true if current user is not the assigned us
             }
         }
     }
+    const user = {
+        id: 295,
+    }
     const card = {
-        assignees: [2],
+        assignees: [292],
         dueTime: null,
     }
     const teams = authUser.permissions.teams;
-    expect(canSetDueTime({card, authUser, teams})).toBe(true);
+    expect(canSetDueTime({card, user, teams})).toBe(true);
 });
 
 test("canSetDueTime function returns false if card doesn't belong to current user, current user doesn't have management permissions and there's no due time set", () => {
     const authUser = {
-        userId: 1,
         permissions: {
             teams: {
                 28: {
@@ -80,10 +84,13 @@ test("canSetDueTime function returns false if card doesn't belong to current use
             }
         }
     } 
+    const user = {
+        id: 295,
+    }
     const card = {
-        assignees: [2],
+        assignees: [200],
         dueTime: null,
     }
     const teams = authUser.permissions.teams;
-    expect(canSetDueTime({card, authUser, teams})).toBe(false);
+    expect(canSetDueTime({card, user, teams})).toBe(false);
 });
