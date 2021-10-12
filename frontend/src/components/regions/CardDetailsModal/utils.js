@@ -1,11 +1,21 @@
-export function canSetDueTime({ card, user, teams }) {
+export function canSetDueTime({ card, user, authUser }) {
+    if(card.dueTime) {
+        return false;
+    } else {
+        return user.id === authUser.userId;
+    }
+}
 
-    return (
-        !card.dueTime && (
-            (user.id === card.assignees[0]) ||
-            
-            (user.id !== card.assignees[0] && 
-                Object.keys(teams).map((key) => teams[key].permissions[0]).includes("MANAGE_CARDS"))
-        )
-    )
+
+function hasPermission({authUser, user}) {
+    const teamMemberships = Object.keys(user.teamMemberships);
+    const teams = authUser.permissions.teams;
+    for(let teamId of teamMemberships) {
+        const teamPermissions = teams[teamId] ? 
+        teams[teamId].permissions : [];
+        if(teamPermissions.includes('MANAGE_CARDS')) {
+            return true;
+        }
+    }
+    return false;
 }
