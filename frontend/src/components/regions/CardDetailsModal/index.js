@@ -28,7 +28,6 @@ function CardDetailsModalUnconnected({
   handleClose,
   openReviewFormModal,
   openDueTimeFormModal,
-  user,
   authUser,
   updateProjectLink,
   fetchProject,
@@ -111,7 +110,6 @@ function CardDetailsModalUnconnected({
     cardId,
     authUser,
     card,
-    user,
     topicProgressId,
     topicProgress,
     handleClose,
@@ -134,12 +132,6 @@ const mapStateToProps = (state) => {
   const card =
     !!cardId & (state.Entities.cards !== undefined)
       ? state.Entities.cards[cardId]
-      : null;
-
-  const userId = state.CardDetailsModal.userId;
-  const user =
-    !!cardId & (state.Entities.users !== undefined)
-      ? state.Entities.users[cardId]
       : null;
 
   const projectId =
@@ -182,7 +174,6 @@ const mapStateToProps = (state) => {
   return {
     cardId,
     card,
-    user: state.Entities.user,
     topicProgressId,
     topicProgress,
     project,

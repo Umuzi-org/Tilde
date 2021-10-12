@@ -129,7 +129,6 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
 
 export default ({
   card,
-  user,
   authUser,
   cardId,
   topicProgress,
@@ -156,7 +155,6 @@ export default ({
           {card ? 
             <CardBasicDetails 
               card={card} 
-              user={user}
               authUser={authUser} 
               handleClickSetDueTime={handleClickSetDueTime} 
             /> : <div>Loading...</div>
