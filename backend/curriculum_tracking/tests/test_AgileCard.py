@@ -703,22 +703,12 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.project_1 = self.card_1.recruit_project
         self.project_2 = self.card_2.recruit_project
         self.user = self.card_1.assignees.first()
-        self.assertIsNotNone(self.card_1.assignees)
-        self.assertIsNotNone(self.card_2.assignees)
-        self.assertIsNotNone(self.card_1.recruit_project)
-        self.assertIsNotNone(self.card_2.recruit_project)
-        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
-        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
-        self.assertEqual(self.project_1.content_item, self.card_1.content_item)
-        self.assertEqual(self.project_2.content_item, self.card_2.content_item)
 
         # Starting the projects (project_1 & project_2) and asserting that they are in status IN_PROGRESS
         self.project_1.start_time = timezone.now() - timedelta(days=5)
         self.project_2.start_time = timezone.now() - timedelta(days=5)
         self.project_1.save()
         self.project_2.save()
-        self.assertEqual(AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS)
-        self.assertEqual(AgileCard.derive_status_from_project(self.project_2), AgileCard.IN_PROGRESS)
 
         # Setting a request for review and creating four different review times (No reviews done yet)
         self.request_review_time = self.project_1.start_time + timedelta(1)
@@ -785,9 +775,10 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # so I manually created a 'recruit_project' attribute.
         project_one.recruit_project = project_one
 
-        assert AgileCard.get_users_that_reviewed_since_last_review_request(project_one) == [
-            review_on_project_one.reviewer_user.id
-        ]
+        self.assertEqual(
+            AgileCard.get_users_that_reviewed_since_last_review_request(project_one),
+                [review_on_project_one.reviewer_user.id]
+        )
 
     def test_request_review_but_no_review_done_since_time_of_review_request(self):
         project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
@@ -797,4 +788,4 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # so I manually created a 'recruit_project' attribute.
         project_two.recruit_project = project_two
 
-        assert AgileCard.get_users_that_reviewed_since_last_review_request(project_two) == []
+        self.assertEqual(AgileCard.get_users_that_reviewed_since_last_review_request(project_two), [])
