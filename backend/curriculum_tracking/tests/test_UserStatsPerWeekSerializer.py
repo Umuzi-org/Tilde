@@ -55,10 +55,12 @@ class TestingForTheStatsAPI(TestCase):
     def test_one_card_in_progress_before_any_reviews(self):
 
         # One card, no reviews just yet, function 'get_cards_in_progress_column' should return one card
-        assert self.card_1.status == AgileCard.IN_PROGRESS
-        assert self.project_1.content_item == self.card_1.content_item
-        assert AgileCard.derive_status_from_project(self.project_1) == AgileCard.IN_PROGRESS
-        assert UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, User=self.user) == 1
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.assertEqual(self.project_1.content_item, self.card_1.content_item)
+        self.assertEqual(AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS)
+        self.assertEqual(
+            UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, User=self.user), 1
+        )
 
     def test_one_card_in_review_feedback_column(self):
 
@@ -75,9 +77,9 @@ class TestingForTheStatsAPI(TestCase):
         review_1.save()
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
-        assert UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 1
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(
+            UserStatsPerWeekSerializer, User=self.user), 1
+        )
 
     def test_no_card_in_completed_column_after_competent_review_reviewer_not_trusted_reviewer(self):
         time_two = self.project_1.start_time + timedelta(days=4)
@@ -90,20 +92,20 @@ class TestingForTheStatsAPI(TestCase):
 
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
-        assert UserStatsPerWeekSerializer.get_cards_in_completed_column(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 0
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_in_completed_column(
+            UserStatsPerWeekSerializer, User=self.user), 0
+        )
 
     def test_one_card_started_in_the_past_seven_days(self):
-        assert UserStatsPerWeekSerializer.get_cards_started_last_7_days(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 1
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_started_last_7_days(
+            UserStatsPerWeekSerializer, User=self.user), 1
+        )
 
     def test_no_cards_completed_in_past_seven_days(self):
 
-        assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 0
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
+            UserStatsPerWeekSerializer, User=self.user), 0
+        )
 
     def test_one_card_in_complete_column(self):
 
@@ -120,12 +122,12 @@ class TestingForTheStatsAPI(TestCase):
 
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days' should also return at least one card
-        assert UserStatsPerWeekSerializer.get_cards_in_completed_column(
-            UserStatsPerWeekSerializer, User=assigned_person
-        ) == 1
-        assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
-            UserStatsPerWeekSerializer, User=assigned_person
-        ) == 1
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_in_completed_column(
+            UserStatsPerWeekSerializer, User=assigned_person), 1
+        )
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
+            UserStatsPerWeekSerializer, User=assigned_person), 1
+        )
 
     def test_cards_in_the_review_column_waiting_for_a_review(self):
 
@@ -152,9 +154,9 @@ class TestingForTheStatsAPI(TestCase):
         card_4.assignees.set([assigned_person])
 
         # We should get two cards in the review column waiting for a review
-        assert UserStatsPerWeekSerializer.get_cards_in_review_column(
-            UserStatsPerWeekSerializer, User=assigned_person
-        ) == 2
+        self.assertEqual(UserStatsPerWeekSerializer.get_cards_in_review_column(
+            UserStatsPerWeekSerializer, User=assigned_person), 2
+        )
 
     def test_pr_reviews_card_in_different_column_due_to_review_status(self):
 
@@ -208,12 +210,12 @@ class TestingForTheStatsAPI(TestCase):
         pr_review_two_days_before_yesterday.save()
 
         # Four PR reviews were done to date, so we should get a value of 4 for the particular user
-        assert UserStatsPerWeekSerializer.get_total_number_of_pr_reviews(
-            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()
-        ) == 4
+        self.assertEqual(UserStatsPerWeekSerializer.get_total_number_of_pr_reviews(
+            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()), 4
+        )
 
         # Four PR reviews were done but only three of them were done in the last seven days so we should get a value
         # of 3
-        assert UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
-            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()
-        ) == 3
+        self.assertEqual(UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
+            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()), 3
+        )
