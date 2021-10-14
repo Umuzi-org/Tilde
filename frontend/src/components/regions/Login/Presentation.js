@@ -5,6 +5,10 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
+// import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: "275px",
   },
+  buttonStyle: {
+    width: "300px",
+    margin: theme.spacing(1),
+  }
 }));
 
 const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
@@ -52,10 +60,22 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
       <TextField label="Email" variant="outlined" type="email" required />
       <TextField label="Password" variant="outlined" type="password" required />
       <div>
-        <Button type="submit" variant="contained" color="primary">
+        <FormControlLabel control={<Checkbox name="checkedB" color="primary"/>} label="Remember me" />
+      
+          <Link href="#" >
+            Forgot Password?
+          </Link>
+
+        </div>
+      <div>
+        <Button className={classes.buttonStyle} type="submit" variant="contained" color="default">
           Login
         </Button>
+      </div>
+
+      <div>
         <Button
+          className={classes.buttonStyle}
           type="submit"
           variant="contained"
           color="primary"
