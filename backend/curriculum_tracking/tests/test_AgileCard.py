@@ -728,7 +728,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.time_three = self.project_1.start_time + timedelta(days=3)
         self.time_four = self.project_1.start_time + timedelta(days=2)
 
-    def test_correct_ids_returned_before_or_after_review_request(self):
+    def test_correct_ids_returned_since_latest_review_request_and_not_reviewer_ids_from_before_review_request(self):
 
         # Four reviews are made with the four review times above (No reviews done on project_2)
         review_1 = factories.RecruitProjectReviewFactory(
@@ -769,46 +769,32 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
             sorted(ids_which_should_be_returned)
         )
 
-    def test_no_user_ids_should_return_since_review_done_before_latest_review_request(self):
+    def test_request_review_and_perform_review_since_time_of_review_request(self):
 
-        # Create a review request on card_2 of project_2
-        request_review_time_2 = self.project_2.start_time + timedelta(1)
-        self.project_2.request_review(force_timestamp=request_review_time_2)
-        time_of_review = self.project_2.start_time - timedelta(days=10)
-
-        # Create a review on card_2, the review will be before the latest request for a review
-        review_1_card_2 = factories.RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT,
-            recruit_project=self.project_2,
-            timestamp=time_of_review
-        )
-        review_1_card_2.timestamp = time_of_review
-        review_1_card_2.save()
-
-        # Review done on project_2, card_2 were done before the latest request for a review, therefore,
-        # get_users_that_reviewed_since_last_review_request() should return no user id's
-        assert len(self.card_2.get_users_that_reviewed_since_last_review_request()) == 0
-
-    def test_two_different_projects_return_different_results_for_users_that_reviewed_since_last_review_request(self):
-
-        # Creating two new projects
+        # Creating a new project
         project_one = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
-        project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
 
-        # Requesting a review on project_one and on project_two, but only performing a review on project_one
+        # Requesting a review on the project and performing a review on the project
         project_one.review_request_time = timezone.now()
-        project_two.review_request_time = timezone.now()
         review_on_project_one = factories.RecruitProjectReviewFactory(
             recruit_project=project_one,
             reviewer_user=factories.UserFactory(),
         )
 
-        # The next two lines had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
-        # so I manually created a 'recruit_project' attribute for project_one and for project_two
+        # The next line had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
+        # so I manually created a 'recruit_project' attribute.
         project_one.recruit_project = project_one
-        project_two.recruit_project = project_two
 
         assert AgileCard.get_users_that_reviewed_since_last_review_request(project_one) == [
             review_on_project_one.reviewer_user.id
         ]
+
+    def test_request_review_but_no_review_done_since_time_of_review_request(self):
+        project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
+        project_two.review_request_time = timezone.now()
+
+        # The next line had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
+        # so I manually created a 'recruit_project' attribute.
+        project_two.recruit_project = project_two
+
         assert AgileCard.get_users_that_reviewed_since_last_review_request(project_two) == []
