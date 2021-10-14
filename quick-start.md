@@ -6,7 +6,7 @@ Here's a video that shows you all the things: https://www.youtube.com/watch?v=NX
 
 ## Prerequisites
 
-We use docker-compose and Python3. That's about it.
+We use docker-compose and Python3.9 That's about it.
 
 ## Database server
 
@@ -36,7 +36,7 @@ python3 -m venv venv
 # please make sure you never commit your virtualenv directory to git!
 
 # activate it
-source venv/activate
+source venv/bin/activate
 
 # install dependencies
 pip install wheel
