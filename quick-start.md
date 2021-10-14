@@ -6,31 +6,37 @@ Here's a video that shows you all the things: https://www.youtube.com/watch?v=NX
 
 ## Prerequisites
 
-We use docker-compose and Python3.9 That's about it.
+We use docker-compose and Python3.9
+
+- [Docker](https://www.docker.com/) and Docker Compose - to run the DB for the backend. If you install Docker Desktop, you get Docker Compose, but if you install with your CLI such as on Linux then you need to install Docker Compose separately after installing Docker.
+- [Python](https://www.python.org/) 3.9+ - to run the backend.
+- [Node.js](https://nodejs.org/en/) - to run the frontend.
 
 ## Database server
 
-We are running Postgres. You can get a local test and development database up and running by doing the following:
+This project uses a Postgres database in a container.
 
-```
+You can get a local test and development database up and running by doing the following:
+
+```sh
 cd database/localhost
 docker-compose up
 ```
 
 You'll notice that it creates a folder called gitignore (we've told git to ignore all folders named gitignore). That's where the data is stored. So if you ever want to completely start over with the database then you can just kill the composition and delete that directory.
 
-When you `docker-compose up` again your db will be fresh as a daisy.
+When you `docker-compose up` again, your DB will be fresh as a daisy.
 
 ## Backend
 
-The backend is written in Django. For this to be up and running the database needs to be up and running.
+The backend is written in Django. We're going to start the Django app with the commands below.
 
-To set it up you need to be running Python 3. Seriously, this wont work with Python2 at all.
+Make sure the DB is up first, then continue.
 
-```
+```sh
 cd backend
 
-# make yourself a virtualenv
+# create a virtual environment
 python3 -m venv venv
 
 # please make sure you never commit your virtualenv directory to git!
@@ -45,7 +51,7 @@ pip install -r requirements.txt
 
 Make sure it works by running the tests:
 
-```
+```sh
 python manage.py test
 ```
 
@@ -53,41 +59,44 @@ Once that is done you'll be able to activate your virtual environment at any tim
 
 The first thing you'll want to do now is get Django to create tables in your database.
 
-```
+```sh
 python manage.py migrate
 ```
 
 Then you might want to create a superuser for yourself:
 
-```
+```sh
 python manage.py createsuperuser
 ```
 
-And lastly you will want to be able to run the development server:
+And lastly, to run the development server:
 
-```
+```sh
 python manage.py runserver
 ```
 
-The admin panel is available at `/admin`, and the
+The admin panel is available at `/admin`.
 
 ### Running the tests
 
-1. make sure that the database is up and running
-2. activate your virtualenv
-3. `python manage.py test`
+1. Make sure that the database is up and running
+2. ACtivate your virtualenv
+3. Run tests.
+    ```sh
+    python manage.py test
+    ```
 
 ## Frontend
 
-This is a perfectly normal React application. For it to function correctly, the backend needs to be up and running.
+This is a standard React application. For it to function correctly, the backend needs to be up and running.
 
-```
+```sh
 cd frontend
 npm install
 npm start
 ```
 
-That's it. By default it will connect to the django app you just launched.
+That's it. By default, it will connect to the Django app you just launched.
 
 ### Running the tests
 
@@ -95,13 +104,14 @@ That's it. By default it will connect to the django app you just launched.
 
 That's it.
 
-Please notes, the frontend tests are in now way sufficient. We were kinda in a hurry and still need to make some decisions about testing standards.
+Please notes, the frontend tests are in no way sufficient. We were kinda in a hurry and still need to make some decisions about testing standards.
 
 ## Getting login with Google to work
 
 This is only needed if you want to run the frontend and actually use it. Unfortunately our only login mechanism is Google so that's a bit of a pain in the neck. The first thing you need to do is get some credentials.
 
 Usually this tutorial is the way to go.
+
 https://developers.google.com/identity/sign-in/web/sign-in
 
 If you are devving on your localhost, we have some credentials you can use. Come say hi on our discord server and we'll share.
@@ -110,13 +120,13 @@ Once you have your credentials file then you need to make sure that your environ
 
 You need this available in your frontend in order to get the login to work:
 
-```
+```sh
 export REACT_APP_GOOGLE_CLIENT_ID="the client id in the secrets file"
 ```
 
 And then the backend needs this:
 
-```
+```sh
 export GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE=/path/to/your/credentials/file
 ```
 
@@ -128,7 +138,7 @@ There are a few convenience commands that you can use to set things up for first
 
 Note, to see details of any of these commands you can do the following: `python manage.py THE_COMMAND --help`
 
-```
+```sh
 # create your sweet self as a superuser
 python manage.py create_full_user sheena.oconnell@umuzi.org true true sheenarbw
 python manage.py set_password sheena.oconnell@umuzi.org sheena.oconnell@umuzi.org
@@ -141,7 +151,7 @@ python manage.py create_team "demo team"
 python manage.py add_user_to_team "sheena.oconnell@umuzi.org" "demo team"
 
 
-# add a curriulum. This sets up a simple course that demonstrates all card features
+# add a curriculum. This sets up a simple course that demonstrates all card features
 # generally curriculums are not created like this, usually they are stored as markdown files in a seperate repo
 
 python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
@@ -154,4 +164,4 @@ python manage.py add_course_reg "sheena.oconnell@umuzi.org" "Tilde: Intro for st
 python manage.py delete_and_recreate_user_cards "sheena.oconnell@umuzi.org"
 ```
 
-If you follow these steps then you should be able to log into the frontend as this user and poke around your board
+If you follow these steps, then you should be able to log into the frontend as this user and poke around your board.
