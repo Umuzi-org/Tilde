@@ -161,53 +161,29 @@ class TestingForTheStatsAPI(TestCase):
     def test_pr_reviews_card_in_different_column_due_to_review_status(self):
 
         # Now creating reviews on the PR
-        pr_review_for_pr_today = PullRequestReview.objects.create(
-            html_url="https://github.com/Umuzi-org/PullRequest-Review(1)",
-            pull_request_id=self.pull_request.id,
-            author_github_name="DeadManWalking",
+        factories.PullRequestReviewFactory(
+            id=1,
             submitted_at=self.today,
-            body="A horse walks into a bar, the barman says 'Why the long face?'",
-            commit_id=self.repo_card_one.assignees.first().id,
-            state="closed",
-            user_id=self.repo_card_one.assignees.first().id
+            commit_id=self.repo_card_one.assignees.first().id
         )
-        pr_review_for_pr_today.save()
 
-        pr_review_for_pr_yesterday = PullRequestReview.objects.create(
-            html_url="https://github.com/Umuzi-org/PullRequest-Review(2)",
-            pull_request_id=self.pull_request.id,
-            author_github_name="DeadManWalking",
+        factories.PullRequestReviewFactory(
+            id=2,
             submitted_at=self.yesterday,
-            body="A horse walks into a bar, the barman says 'Why the long face?'",
-            commit_id=self.repo_card_one.assignees.first().id,
-            state="closed",
-            user_id=self.repo_card_one.assignees.first().id
+            commit_id=self.repo_card_one.assignees.first().id
         )
-        pr_review_for_pr_yesterday.save()
 
-        pr_review_two_weeks_ago = PullRequestReview.objects.create(
-            html_url="https://github.com/Umuzi-org/PullRequest-Review(3)",
-            pull_request_id=self.pull_request.id,
-            author_github_name="DeadManWalking",
-            submitted_at=self.two_weeks_ago,
-            body="This review happened a long time ago.",
-            commit_id=self.repo_card_one.assignees.first().id,
-            state="closed",
-            user_id=self.repo_card_one.assignees.first().id
-        )
-        pr_review_two_weeks_ago.save()
-
-        pr_review_two_days_before_yesterday = PullRequestReview.objects.create(
-            html_url="https://github.com/Umuzi-org/PullRequest-Review(4)",
-            pull_request_id=self.pull_request.id,
-            author_github_name="DeadManWalking",
+        factories.PullRequestReviewFactory(
+            id=3,
             submitted_at=self.two_days_before_yesterday,
-            body="This review happened no more than two days ago",
-            commit_id=self.repo_card_one.assignees.first().id,
-            state="closed",
-            user_id=self.repo_card_one.assignees.first().id
+            commit_id=self.repo_card_one.assignees.first().id
         )
-        pr_review_two_days_before_yesterday.save()
+
+        factories.PullRequestReviewFactory(
+            id=4,
+            submitted_at=self.two_weeks_ago,
+            commit_id=self.repo_card_one.assignees.first().id
+        )
 
         # Four PR reviews were done to date, so we should get a value of 4 for the particular user
         self.assertEqual(UserStatsPerWeekSerializer.get_total_number_of_pr_reviews(
