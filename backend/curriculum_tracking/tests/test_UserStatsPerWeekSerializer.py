@@ -1,4 +1,3 @@
-from git_real.models import PullRequestReview
 from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from django.test import TestCase
 from curriculum_tracking.models import (
