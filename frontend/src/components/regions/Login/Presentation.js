@@ -8,7 +8,8 @@ import LockRoundedIcon from "@material-ui/icons/LockRounded";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-// import Divider from "@material-ui/core/Divider";
+import { Box } from "@material-ui/core";
+import Divider from "./Divider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,7 +73,9 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           Login
         </Button>
       </div>
-
+      <Box width={300} m={5}>
+        <Divider>Or</Divider>
+      </Box>
       <div>
         <Button
           className={classes.buttonStyle}
