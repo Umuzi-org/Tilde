@@ -13,7 +13,6 @@ from git_real.tests import factories as git_real_factories
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
     COMPETENT,
-    EXCELLENT,
 )
 from curriculum_tracking.tests.factories import (
     ContentItemFactory,
@@ -61,17 +60,12 @@ class TestingForTheStatsAPI(TestCase):
         assert AgileCard.derive_status_from_project(self.project_1) == AgileCard.IN_PROGRESS
         assert UserStatsPerWeekSerializer.get_cards_in_progress_column(UserStatsPerWeekSerializer, User=self.user) == 1
 
-    def test_create_four_reviews_cards_will_be_in_different_columns(self):
+    def test_one_card_in_review_feedback_column(self):
 
         # Request for a review to happen on project_1, card_1
         request_review_time = self.project_1.start_time + timedelta(1)
-        self.project_1.request_review(force_timestamp=request_review_time)
         time_one = self.project_1.start_time - timedelta(days=6)
-        time_two = self.project_1.start_time + timedelta(days=4)
-        time_three = self.project_1.start_time + timedelta(days=3)
-
-        # Three reviews are made at different times, so we should have different cards in different columns depending
-        # on the outcome of the review
+        self.project_1.request_review(force_timestamp=request_review_time)
         review_1 = RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_1,
@@ -80,6 +74,13 @@ class TestingForTheStatsAPI(TestCase):
         review_1.timestamp = time_one
         review_1.save()
 
+        # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
+        assert UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(
+            UserStatsPerWeekSerializer, User=self.user
+        ) == 1
+
+    def test_no_card_in_completed_column_after_competent_review_reviewer_not_trusted_reviewer(self):
+        time_two = self.project_1.start_time + timedelta(days=4)
         review_2 = RecruitProjectReviewFactory(
             status=COMPETENT,
             recruit_project=self.project_1,
@@ -87,35 +88,19 @@ class TestingForTheStatsAPI(TestCase):
         review_2.timestamp = time_two
         review_2.save()
 
-        review_3 = RecruitProjectReviewFactory(
-            status=EXCELLENT,
-            recruit_project=self.project_1,
-        )
-        review_3.timestamp = time_three
-        review_3.save()
-
-        # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
-        assert UserStatsPerWeekSerializer.get_cards_in_review_feedback_column(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 1
-
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
         assert UserStatsPerWeekSerializer.get_cards_in_completed_column(
             UserStatsPerWeekSerializer, User=self.user
         ) == 0
 
-        # review_3 had a status of Excellent, the reviewer is not trusted and therefore we should have zero cards in
-        # the completed column
-        assert UserStatsPerWeekSerializer.get_cards_in_completed_column(
-            UserStatsPerWeekSerializer, User=self.user
-        ) == 0
-
-        # We did start new cards within the last 7 days but we did not complete any cards in the last seven
-        # days
+    def test_one_card_started_in_the_past_seven_days(self):
         assert UserStatsPerWeekSerializer.get_cards_started_last_7_days(
             UserStatsPerWeekSerializer, User=self.user
         ) == 1
+
+    def test_no_cards_completed_in_past_seven_days(self):
+
         assert UserStatsPerWeekSerializer.get_cards_completed_last_7_days(
             UserStatsPerWeekSerializer, User=self.user
         ) == 0
@@ -162,13 +147,13 @@ class TestingForTheStatsAPI(TestCase):
             recruit_project=None,
         )
 
-        assignee_ = SocialProfileFactory().user
-        card_3.assignees.set([assignee_])
-        card_4.assignees.set([assignee_])
+        assigned_person = SocialProfileFactory().user
+        card_3.assignees.set([assigned_person])
+        card_4.assignees.set([assigned_person])
 
-        # We should get at least two cards in the review column waiting for a review
+        # We should get two cards in the review column waiting for a review
         assert UserStatsPerWeekSerializer.get_cards_in_review_column(
-            UserStatsPerWeekSerializer, User=assignee_
+            UserStatsPerWeekSerializer, User=assigned_person
         ) == 2
 
     def test_pr_reviews_card_in_different_column_due_to_review_status(self):
