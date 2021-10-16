@@ -73,7 +73,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           Login
         </Button>
       </div>
-      <Box width={300} m={5}>
+      <Box width={300} m={0}>
         <Divider>Or</Divider>
       </Box>
       <div>
