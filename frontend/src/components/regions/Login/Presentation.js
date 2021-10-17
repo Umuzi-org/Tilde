@@ -36,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
   buttonStyle: {
     width: "300px",
     margin: theme.spacing(1),
-  }
+    textTransform: "none",
+    fontWeight: 600,
+  },
 }));
 
 const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
@@ -61,20 +63,39 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
       <TextField label="Email" variant="outlined" type="email" required />
       <TextField label="Password" variant="outlined" type="password" required />
       <div>
-        <FormControlLabel control={<Checkbox name="checkedB" color="primary"/>} label="Remember me" />
-      
-          <Link href="#" >
-            Forgot Password?
-          </Link>
+        <FormControlLabel
+          control={
+            <Checkbox
+              style={{ marginLeft: "0" }}
+              name="checkedB"
+              color="primary"
+            />
+          }
+          label="Remember me"
+        />
 
-        </div>
+        <Link
+          style={{ overflow: "hidden", whiteSpace: "nowrap" }}
+          underline="always"
+          href="#"
+        >
+          Forgot Password?
+        </Link>
+      </div>
       <div>
-        <Button className={classes.buttonStyle} type="submit" variant="contained" color="default">
+        <Button
+          className={classes.buttonStyle}
+          type="submit"
+          variant="contained"
+          color="default"
+        >
           Login
         </Button>
       </div>
-      <Box width={300} m={0}>
-        <Divider>Or</Divider>
+      <Box width={200} m={0}>
+        <Divider>
+          <Typography style={{ fontWeight: 600 }}>OR</Typography>
+        </Divider>
       </Box>
       <div>
         <Button
