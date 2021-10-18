@@ -35,21 +35,23 @@ export default ({
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          <form novalidate>
-            <TextField
-              id="datetime-local"
-              label="Due Date"
-              type="datetime-local"
-              defaultValue={defaultValue}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <Grid container>
-              <Button className={classes.dueTimeButton} variant="outlined">Save</Button>
-              <Button className={classes.dueTimeButton} variant="outlined">Cancel</Button>
-            </Grid>
-          </form> 
+          {card ?
+            <form novalidate>
+              <TextField
+                id="datetime-local"
+                label="Due Date"
+                type="datetime-local"
+                defaultValue={defaultValue}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <Grid container>
+                <Button className={classes.dueTimeButton} variant="outlined">Save</Button>
+                <Button className={classes.dueTimeButton} variant="outlined">Cancel</Button>
+              </Grid>
+            </form> : <div>Loading...</div>
+          }
         </Paper>
       </Modal>
     );
