@@ -157,40 +157,29 @@ class TestingForTheStatsAPI(TestCase):
             UserStatsPerWeekSerializer, User=assigned_person), 2
         )
 
-    def test_pr_reviews_card_in_different_column_due_to_review_status(self):
+    def test_pr_reviews_done_within_the_last_seven_days(self):
 
         # Now creating reviews on the PR
-        factories.PullRequestReviewFactory(
+        yesterday_pr_review = factories.PullRequestReviewFactory(
             id=1,
-            submitted_at=self.today,
-            commit_id=self.repo_card_one.assignees.first().id
-        )
-
-        factories.PullRequestReviewFactory(
-            id=2,
             submitted_at=self.yesterday,
             commit_id=self.repo_card_one.assignees.first().id
         )
 
-        factories.PullRequestReviewFactory(
-            id=3,
+        two_days_ago_pr_review = factories.PullRequestReviewFactory(
+            id=2,
             submitted_at=self.two_days_before_yesterday,
             commit_id=self.repo_card_one.assignees.first().id
         )
-
-        factories.PullRequestReviewFactory(
-            id=4,
+        
+        two_weeks_ago_pr_review = factories.PullRequestReviewFactory(
+            id=3,
             submitted_at=self.two_weeks_ago,
             commit_id=self.repo_card_one.assignees.first().id
         )
 
-        # Four PR reviews were done to date, so we should get a value of 4 for the particular user
-        self.assertEqual(UserStatsPerWeekSerializer.get_total_number_of_pr_reviews(
-            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()), 4
-        )
-
-        # Four PR reviews were done but only three of them were done in the last seven days so we should get a value
-        # of 3
+        # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
+        # of 2
         self.assertEqual(UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
-            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()), 3
+            UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()), 2
         )
