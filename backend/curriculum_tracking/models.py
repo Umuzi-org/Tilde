@@ -191,6 +191,11 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
+class LearningOutcome(models.Model, Mixins):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+
+
 class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
@@ -241,6 +246,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
 
     tags = TaggableManager(blank=True)
+    learning_outcomes = models.ManyToManyField(
+        "LearningOutcome", blank=True, related_name="content_items"
+    )
 
     flavours = models.ManyToManyField(
         taggit.models.Tag,
