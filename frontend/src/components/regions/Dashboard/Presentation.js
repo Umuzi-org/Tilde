@@ -12,19 +12,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user }) => {
+export default ({ 
+  user, 
+  userId 
+}) => {
   const classes = useStyles();
-  const teams =  user.teamMemberships;
-  return (
-    <React.Fragment>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography>You are a member of these teams:</Typography>
-            <TeamsTable teams={teams} />
-          </Paper>
+  const teams =  user ? user.teamMemberships : {};
+  if(userId)
+    return (
+      <React.Fragment>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <Typography>You are a member of these teams:</Typography>
+              <TeamsTable teams={teams} />
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </React.Fragment>
-  )
+      </React.Fragment>
+    );
+  return <React.Fragment />;  
 };
