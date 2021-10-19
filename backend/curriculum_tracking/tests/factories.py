@@ -5,7 +5,7 @@ import git_real.models
 from curriculum_tracking import models
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from core.tests.factories import UserFactory, CurriculumFactory
-from git_real.tests.factories import RepositoryFactory
+from git_real.tests.factories import RepositoryFactory, PullRequestFactory
 from datetime import timedelta
 from django.utils import timezone
 
@@ -345,22 +345,11 @@ class PullRequestReviewFactory(DjangoModelFactory):
         model = git_real.models.PullRequestReview
 
     html_url = factory.lazy_attribute(lambda *args, **kwargs: next(_content_url_iterator))
-    pull_request_id = factory.LazyAttribute(
-        lambda *args, **kwargs: models.ContentItem.get_next_available_id()
-    )
-
+    pull_request = factory.SubFactory(PullRequestFactory)
     author_github_name = factory.SubFactory(UserFactory)
     submitted_at = factory.lazy_attribute(lambda o: timezone.now())
     body = "A horse walks into a bar, the barman says 'Why the long face?'"
-    commit_id = factory.LazyAttribute(
-        lambda *args, **kwargs: models.ContentItem.get_next_available_id()
-    )
-
     state = "closed"
-    user_id = factory.LazyAttribute(
-        lambda *args, **kwargs: models.ContentItem.get_next_available_id()
-    )
-
-    id = factory.LazyAttribute(
+    commit_id = factory.LazyAttribute(
         lambda *args, **kwargs: models.ContentItem.get_next_available_id()
     )
