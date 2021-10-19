@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonStyle: {
     variant: "contained",
+    backgroundColor: "#3F51B5",
+    color: "white",
     margin: "auto",
     width: "300px",
   },
@@ -64,7 +66,6 @@ export default ({ email }) => {
       />
       <Button
         variant="contained"
-        color="primary"
         className={classes.buttonStyle}
       >
         Submit
