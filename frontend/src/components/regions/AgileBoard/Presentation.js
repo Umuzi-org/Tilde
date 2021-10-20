@@ -58,7 +58,7 @@ export default ({
               >
                 <Paper elevation={3} className={classes.paper}>
                   <Typography variant="h5" align="center">
-                    {column.label}
+                    {column.label} ({column.cards["length"]})
                   </Typography>
                   <div
                     className={classes.column}
