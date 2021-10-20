@@ -1,6 +1,5 @@
 from factory.declarations import LazyAttribute
 from git_real.models import PullRequest, PullRequestReview
-from core import models
 from factory.django import DjangoModelFactory
 import factory
 from django.utils import timezone
