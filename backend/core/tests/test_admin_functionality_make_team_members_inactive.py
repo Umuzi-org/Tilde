@@ -4,7 +4,7 @@ from core.admin import TeamAdmin
 from mock import patch
 
 
-class TestMakeTeamMembersInactiveForATeamOrTeams(TestCase):
+class TestMakeTeamMembersInactiveForATeam(TestCase):
 
     def setUp(self):
         self.active_team = factories.TeamFactory()
