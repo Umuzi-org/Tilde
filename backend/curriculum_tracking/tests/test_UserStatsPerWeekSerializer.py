@@ -81,7 +81,7 @@ class TestingForTheStatsAPI(TestCase):
             UserStatsPerWeekSerializer, User=self.user), 1
         )
 
-    def test_no_card_in_completed_column_after_competent_review_reviewer_not_trusted_reviewer(self):
+    def test_no_card_in_completed_column_after_untrusted_competent_review(self):
         time_two = self.project_1.start_time + timedelta(days=4)
         review_2 = RecruitProjectReviewFactory(
             status=COMPETENT,
