@@ -75,7 +75,11 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         />
 
         <Link
-          style={{ overflow: "hidden", whiteSpace: "nowrap" }}
+          style={{
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            fontFamily: "Roboto",
+          }}
           underline="always"
           href="#"
         >
