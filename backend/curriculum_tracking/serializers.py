@@ -177,6 +177,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "can_force_start",
             "open_pr_count",
             "oldest_open_pr_updated_time",
+            "repo_url",
         ]
 
 
