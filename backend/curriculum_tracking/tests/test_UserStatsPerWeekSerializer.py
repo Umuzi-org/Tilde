@@ -19,6 +19,7 @@ from curriculum_tracking.tests.factories import (
     RecruitProjectReviewFactory,
 )
 from django.utils import timezone
+from git_real.tests.factories import PullRequestReviewFactory
 
 
 class TestingForTheStatsAPI(TestCase):
@@ -160,19 +161,19 @@ class TestingForTheStatsAPI(TestCase):
     def test_pr_reviews_done_within_the_last_seven_days(self):
 
         # Now creating reviews on the PR
-        yesterday_pr_review = factories.PullRequestReviewFactory(
+        yesterday_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.yesterday,
             commit_id=self.repo_card_one.assignees.first().id
         )
 
-        two_days_ago_pr_review = factories.PullRequestReviewFactory(
+        two_days_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_days_before_yesterday,
             commit_id=self.repo_card_one.assignees.first().id
         )
         
-        two_weeks_ago_pr_review = factories.PullRequestReviewFactory(
+        two_weeks_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_weeks_ago,
             commit_id=self.repo_card_one.assignees.first().id
