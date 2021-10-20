@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     textTransform: "none",
     fontWeight: 600,
-    width: "275px",
   },
 }));
 
@@ -101,10 +100,6 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
       <div>
         <Button
           className={classes.buttonStyle}
-        <Button type="submit" variant="contained" color="primary">
-          Login
-        </Button>
-        <Button
           type="submit"
           variant="contained"
           color="primary"
