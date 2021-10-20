@@ -62,11 +62,11 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
       <LockRoundedIcon />
       <TextField label="Email" variant="outlined" type="email" required />
       <TextField label="Password" variant="outlined" type="password" required />
-      <div>
+      <Box m={0}>
         <FormControlLabel
           control={
             <Checkbox
-              style={{ marginLeft: "0" }}
+              style={{ marginLeft: "0", width: "20px", padding: 0 }}
               name="checkedB"
               color="primary"
             />
@@ -81,7 +81,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         >
           Forgot Password?
         </Link>
-      </div>
+      </Box>
       <div>
         <Button
           className={classes.buttonStyle}
