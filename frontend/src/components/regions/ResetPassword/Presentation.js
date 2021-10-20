@@ -22,8 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   alert: {
     margin: theme.spacing(1),
-    width: "275px",
-    textAlign: "left"
+    textAlign: "left",
   },
   buttonStyle: {
     variant: "contained",
@@ -32,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     width: "300px",
   },
-  emailAddress:{
-    fontFamily: "sans-serif"
-  }
+  emailAddress: {
+    fontFamily: "sans-serif",
+  },
 }));
 
 export default ({ email }) => {
@@ -64,10 +63,7 @@ export default ({ email }) => {
         type="password"
         required
       />
-      <Button
-        variant="contained"
-        className={classes.buttonStyle}
-      >
+      <Button variant="contained" className={classes.buttonStyle}>
         Submit
       </Button>
     </form>
