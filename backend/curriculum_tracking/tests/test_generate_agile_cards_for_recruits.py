@@ -235,7 +235,7 @@ class create_or_update_content_cards_for_user_Tests(TestCase):
         ]
         create_or_update_content_cards_for_user(self.recruit, ordered_content_items)
 
-        cards = models.AgileCard.objects.all()
+        cards = models.AgileCard.objects.order_by("-id")
         cards = list(cards)
         self.assertEqual(len(cards), 2)
         self.assertEqual(cards[1], self.card)

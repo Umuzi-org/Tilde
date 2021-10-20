@@ -39,6 +39,10 @@ class Command(BaseCommand):
                         "url": content_item.url,
                         "is_hard_milestone": x.is_hard_milestone,
                         "is_soft_milestone": x.is_soft_milestone,
+                        "learning_outcomes": [
+                            f"[{outcome.name}] {outcome.description}"
+                            for outcome in content_item.learning_outcomes.all()
+                        ],
                     }
                 )
 
@@ -53,8 +57,9 @@ class Command(BaseCommand):
                 "flavours",
                 "tags",
                 "url",
-                "is_hard_milestone",
-                "is_soft_milestone",
+                # "is_hard_milestone",
+                # "is_soft_milestone",
+                "learning_outcomes",
             ]
         ]
         df.to_csv(f"gitignore/{stream}_cards.csv")

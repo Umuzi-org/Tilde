@@ -178,7 +178,13 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
+            "users_that_reviewed_since_last_review_request",
         ]
+
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField("get_users_that_reviewed_since_last_review_request")
+
+    def get_users_that_reviewed_since_last_review_request(self, instance):
+        return instance.get_users_that_reviewed_since_last_review_request()
 
 
 class cardsummarySerializer(serializers.ModelSerializer):

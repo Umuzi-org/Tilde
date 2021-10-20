@@ -1,3 +1,4 @@
+from factory import declarations
 from core.models import Curriculum
 from django.core.management.base import BaseCommand
 from curriculum_tracking import models
@@ -52,6 +53,46 @@ class Helper:
     @classmethod
     def set_repo_base_dir(cls, repo_base_dir):
         cls.repo_base_dir = Path(repo_base_dir)
+
+    @classmethod
+    def process_available_learning_outcomes(cls):
+        full_path = Helper.repo_base_dir / "learning_outcomes.yaml"
+
+        if not full_path.exists():
+            return
+
+        with open(full_path, "r") as f:
+            raw_learning_outcomes = yaml.load(f)
+
+        outcome_names = list(raw_learning_outcomes.keys())
+        assert len(outcome_names) == len(set(outcome_names)), "names must be unique"
+
+        all_outcomes = []
+
+        # first deal with the outcomes with ids
+        for name, info in raw_learning_outcomes.items():
+            if DB_ID in info and info[DB_ID]:
+                defaults = {"name": name, "description": info["description"]}
+                o, _ = models.LearningOutcome.get_or_create_or_update(
+                    id=info[DB_ID], overrides=defaults, defaults=defaults
+                )
+                all_outcomes.append(o)
+
+        # then the outcomes without ids
+        for name, info in raw_learning_outcomes.items():
+            if not info.get(DB_ID):
+                defaults = {"name": name, "description": info["description"]}
+                o = models.LearningOutcome.objects.create(
+                    name=name, description=info["description"]
+                )
+                all_outcomes.append(o)
+
+        final_structure = {
+            o.name: {"description": o.description, DB_ID: o.id} for o in all_outcomes
+        }
+
+        with open(full_path, "w") as f:
+            yaml.dump(final_structure, f)
 
     @classmethod
     def load_available_content_flavours(cls):
@@ -131,7 +172,7 @@ class Helper:
             "template_repo": meta.get("template_repo"),
         }
 
-        print(f"saving  {defaults['title']}")
+        print(f"saving {defaults['title']}")
 
         if DB_ID in meta:
             content_item, created = models.ContentItem.get_or_create_or_update(
@@ -153,13 +194,7 @@ class Helper:
             cls.available_content_flavours,
         )
 
-        # if (
-        #     content_item.project_submission_type
-        #     and content_item.project_submission_type != content_item.NO_SUBMIT
-        # ):
-        #     assert (
-        #         content_item.flavours.count()
-        #     ), f"{content_item} has no flavours!!"
+        set_learning_outcomes(content_item, meta.get("learning_outcomes", []))
 
         assert (
             content_item.title
@@ -257,6 +292,12 @@ def _update_tags(meta, content_item):
         content_item.tags.add(tag)
 
 
+def set_learning_outcomes(content_item, outcome_names):
+    print(f"setting outcomes: {outcome_names}")
+    outcomes = [models.LearningOutcome.objects.get(name=name) for name in outcome_names]
+    content_item.learning_outcomes.set(outcomes)
+
+
 def set_flavours(content_item, raw_flavours, available_content_flavours):
     right_hand_side = [i for l in available_content_flavours.values() for i in l]
 
@@ -305,34 +346,6 @@ def set_flavours(content_item, raw_flavours, available_content_flavours):
     assert final == sorted(
         flavours
     ), f"Flavours dpnt match: Expected {flavours} but got {final}"
-
-
-# def create_or_update_content(content_type, available_content_flavours):
-
-#     for file_path in recurse_get_all_content_index_file_paths():
-#         assert file_path.name == "_index.md", f"Bad content name: {file_path}"
-
-#         Helper.save_content(
-#             file_path=file_path,
-#             content_type=content_type,
-#             available_content_flavours=available_content_flavours,
-#         )
-
-# assert root_path.is_dir(), root_path
-# for child in root_path.iterdir():
-#     if child.is_dir():
-#         create_or_update_content(
-#             content_type, child, repo_base_dir, available_content_flavours
-#         )
-#     else:
-#         name = child.name
-#         if name == "_index.md":
-#             save_content(
-#                 file_path=child,
-#                 content_type=content_type,
-#                 repo_base_dir=repo_base_dir,
-#                 available_content_flavours=available_content_flavours,
-#             )
 
 
 def recurse_get_all_content_index_file_paths(root_path=None):
@@ -650,6 +663,7 @@ class Command(BaseCommand):
         Helper.set_url_template(url_template)
         Helper.set_repo_base_dir(path_to_repo)
         Helper.load_available_content_flavours()
+        Helper.process_available_learning_outcomes()
 
         curriculums_base_dir = Helper.repo_base_dir / "content/syllabuses"
         if process_content:

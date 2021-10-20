@@ -10,6 +10,11 @@ from datetime import timedelta
 from curriculum_tracking.models import ContentItem, RecruitProjectReview
 from django.utils import timezone
 from taggit.models import Tag
+from curriculum_tracking.constants import (
+    NOT_YET_COMPETENT,
+    COMPETENT,
+    EXCELLENT,
+)
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -87,6 +92,15 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card.reviewers.add(core_factories.UserFactory())
         card.assignees.add(core_factories.UserFactory())
         card.flavours.add(Tag.objects.create(name="asdsasa"))
+        project.review_request_time = timezone.now() - timedelta(days=5)
+        project.save()
+        review = factories.RecruitProjectReviewFactory(
+            status=NOT_YET_COMPETENT,
+            recruit_project=project,
+        )
+        review.timestamp = timezone.now() - timedelta(days=1)
+        review.save()
+
         PullRequestFactory(repository=project.repository)
 
         return card
