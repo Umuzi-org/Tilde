@@ -21,6 +21,7 @@ function CardDetailsModalUnconnected({
   projectId,
   cardId,
   card,
+  user,
   topicProgressId,
   topicProgress,
   topicReviews,
@@ -35,6 +36,7 @@ function CardDetailsModalUnconnected({
   fetchTopicProgress,
   fetchTopicReviews,
   fetchAgileCard,
+  fetchUser,
 }) {
   React.useEffect(() => {
     if (projectId) {
@@ -49,7 +51,13 @@ function CardDetailsModalUnconnected({
     
     if (cardId && (card === undefined || card === null || card === {})) {
       fetchAgileCard({ cardId });
+    } 
+    
+    if (card) {
+      fetchUser({ userId: card.assignees[0] });
     }
+
+
   }, [
     projectId,
     fetchProject,
@@ -60,6 +68,7 @@ function CardDetailsModalUnconnected({
     cardId,
     fetchAgileCard,
     card,
+    fetchUser,
   ]);
 
   const [
@@ -111,6 +120,7 @@ function CardDetailsModalUnconnected({
     cardId,
     authUser,
     card,
+    user,
     topicProgressId,
     topicProgress,
     handleClose,
@@ -134,6 +144,8 @@ const mapStateToProps = (state) => {
     !!cardId & (state.Entities.cards !== undefined)
       ? state.Entities.cards[cardId]
       : null;
+  const users = state.Entities.users || {};
+  const user = card ? users[card.assignees[0]] : null;
 
   const projectId =
     card && card.contentTypeNice === "project" && card.recruitProject;
@@ -175,6 +187,7 @@ const mapStateToProps = (state) => {
   return {
     cardId,
     card,
+    user,
     topicProgressId,
     topicProgress,
     project,
@@ -195,6 +208,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
           data: { cardId },
+        })
+      );
+    },
+
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId },
         })
       );
     },

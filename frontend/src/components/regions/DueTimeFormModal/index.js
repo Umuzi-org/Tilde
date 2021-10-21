@@ -31,14 +31,21 @@ function DueTimeFormModalUnconnected({
 }
 
 const mapStateToProps = (state) => {
-    const cardId = state.DueTimeFormModal.cardId;
-    const card = 
-        !!cardId && (state.Entities.cards !== undefined) 
-        ? state.Entities.cards[cardId] 
-        : null;
+    // const cardId = state.DueTimeFormModal.cardId;
+    // const card = 
+    //     !!cardId && (state.Entities.cards !== undefined) 
+    //     ? state.Entities.cards[cardId] 
+    //     : null;
+    // return {
+    //     cardId,
+    //     card,
+    // }
     return {
-        cardId,
-        card,
+        ...state,
+        cardId: state.DueTimeFormModal.cardId || null,
+        users: state.Entities.users || {},
+        card: state.Entities.cards || {},
+        authUser: state.App.authUser,
     }
 }
 
