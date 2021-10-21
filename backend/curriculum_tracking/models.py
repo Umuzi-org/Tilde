@@ -195,6 +195,14 @@ class LearningOutcome(models.Model, Mixins):
     name = models.CharField(max_length=256)
     description = models.TextField()
 
+    @classmethod
+    def get_next_available_id(cls):
+        """get the next available content item id"""
+        from django.db.models import Max
+
+        max_id = cls.objects.aggregate(Max("id"))["id__max"]
+        return (max_id or 0) + 1
+
 
 class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
@@ -1406,13 +1414,8 @@ class AgileCard(
             )
 
         elif self.content_item.content_type == ContentItem.TOPIC:
-            reviews = TopicReview.objects.filter(
-                topic_progress=self.topic_progress
-            )
+            reviews = TopicReview.objects.filter(topic_progress=self.topic_progress)
 
-        reviews = reviews.filter(
-            timestamp__gte=self.review_request_time
-        )
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
         return [review.reviewer_user_id for review in reviews]
-
