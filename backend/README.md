@@ -60,12 +60,21 @@ If a command's name is `command_name` then you can access it's documentation by 
 python manage.py command_name --help
 ```
 
+### Creating users and teams
+
 - `create_full_user`. Example usage: `python manage.py create_full_user someone.nice@example.com 1 1  first last umuzibot`
 - `set_password`. Example usage:  `python manage.py set_password someone.nice@example.com supersecret`
 - `create_team`. Example usage: `python manage.py create_team "demo team"`
 - `add_users_to_team` Example usage: `python manage.py add_users_to_team  "someone.nice@example.com"  "demo team"`
+
+### Curriculums and cards
+
+- `import_curriculum` Example usage: `python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json`
 - `add_course_reg` Example usage:: `python manage.py add_course_reg "someone.nice@example.com" "Intro to Tilde for tech bootcamps" 0`
 - `delete_and_recreate_user_cards` Example usage: `python manage.py delete_and_recreate_user_cards someone.nice@example.com`
+
+### you can also give people permissions over different things
+
 - `add_team_permission` Example usage: `python manage.py add_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 - `remove_team_permission` Example usage: `python manage.py remove_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 

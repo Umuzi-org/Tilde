@@ -116,7 +116,7 @@ class WhoAmISerializer(serializers.ModelSerializer):
     def get_is_superuser(self, instance):
         return int(instance.user.is_superuser)
 
-    def get_permissions(self, instance):
+    def get_permissions(self, instance: Token):
         return instance.user.get_permissions()
 
     # def get_teams(self, instance):

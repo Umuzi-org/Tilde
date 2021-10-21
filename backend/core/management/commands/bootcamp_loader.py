@@ -34,10 +34,10 @@ TEAM_COURSE_NAME_PARTS = {  # these strings end up in the Team names
     SEQUENCE_ALUMNI_WEB: "alumni web dev",
     SEQUENCE_ALUMNI_DATA_ENG: "alumni data eng",
     SEQUENCE_ALUMNI_JAVA: "alumni java",
-    SEQUENCE_SKILL_TEST_WEB = "skills test web dev",
-    SEQUENCE_SKILL_TEST_DATA_SCI = "skills test data sci",
-    SEQUENCE_SKILL_TEST_DATA_ENG = "skills test data eng",
-    SEQUENCE_SKILL_TEST_JAVA = "skills test java",
+    SEQUENCE_SKILL_TEST_WEB: "skills test web dev",
+    SEQUENCE_SKILL_TEST_DATA_SCI: "skills test data sci",
+    SEQUENCE_SKILL_TEST_DATA_ENG: "skills test data eng",
+    SEQUENCE_SKILL_TEST_JAVA: "skills test java",
     SEQUENCE_WEB: "web dev",
     SEQUENCE_DATA_ENG: "data eng",
     SEQUENCE_JAVA: "java",
@@ -58,9 +58,9 @@ SKILL_TEST_WEB = "Employed Web Development skills test"
 SKILL_TEST_DATA_SCI = "Employed Data Science skills test"
 SKILL_TEST_DATA_ENG = "Employed Data Engineering skills test"
 SKILL_TEST_JAVA = "Employed Java skills test"
-SKILLS_TEST_TILE_1 "Employed learnership intro to Tilde part 1"
-SKILLS_TEST_TILDE_2 "Employed learnership intro to Tilde part 2"
-STILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS "Employed common tech reqirements"
+SKILLS_TEST_TILDE_1 = "Employed learnership intro to Tilde part 1"
+SKILLS_TEST_TILDE_2 = "Employed learnership intro to Tilde part 2"
+SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS = "Employed common tech reqirements"
 
 # PRE_BOOT_COURSES_ALUMNI = [TILDE_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
 # PRE_BOOT_COURSES_NORMAL = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
@@ -97,28 +97,28 @@ SEQUENCE_COURSES = {
         DPD_BOOTCAMP,
     ],
     SEQUENCE_SKILL_TEST_WEB: [
-        SKILLS_TEST_TILE_1
-        SKILL_TEST_WEB
-        SKILLS_TEST_TILDE_2
-        STILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_WEB,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
     ],
     SEQUENCE_SKILL_TEST_DATA_SCI: [
-        SKILLS_TEST_TILE_1
-        SKILL_TEST_DATA_SCI
-        SKILLS_TEST_TILDE_2
-        STILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_DATA_SCI,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
     ],
     SEQUENCE_SKILL_TEST_DATA_ENG: [
-        SKILLS_TEST_TILE_1
-        SKILL_TEST_DATA_ENG
-        SKILLS_TEST_TILDE_2
-        STILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_DATA_ENG,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
     ],
     SEQUENCE_SKILL_TEST_JAVA: [
-        SKILLS_TEST_TILE_1
-        SKILL_TEST_JAVA
-        SKILLS_TEST_TILDE_2
-        STILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_JAVA,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
     ],
 }
 
@@ -157,11 +157,15 @@ def set_course_reg(user, course_names):
 
 
 def clean_github_username(name):
+
     name = name.strip().strip("/")
     if name.startswith("https://"):
         name = name[19:]
     if name.startswith("http://"):
         name = name[18:]
+    if name.startswith("com/"):
+        name = name[4:]
+
     return name
 
 

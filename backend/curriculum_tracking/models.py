@@ -191,6 +191,19 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
+class LearningOutcome(models.Model, Mixins):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+
+    @classmethod
+    def get_next_available_id(cls):
+        """get the next available content item id"""
+        from django.db.models import Max
+
+        max_id = cls.objects.aggregate(Max("id"))["id__max"]
+        return (max_id or 0) + 1
+
+
 class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
@@ -241,6 +254,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
 
     tags = TaggableManager(blank=True)
+    learning_outcomes = models.ManyToManyField(
+        "LearningOutcome", blank=True, related_name="content_items"
+    )
 
     flavours = models.ManyToManyField(
         taggit.models.Tag,
@@ -442,6 +458,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
 ):
+
     """what a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(
@@ -1386,3 +1403,19 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
+
+    def get_users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
+
+        if self.content_item.content_type == ContentItem.PROJECT:
+            reviews = RecruitProjectReview.objects.filter(
+                recruit_project=self.recruit_project
+            )
+
+        elif self.content_item.content_type == ContentItem.TOPIC:
+            reviews = TopicReview.objects.filter(topic_progress=self.topic_progress)
+
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
+
+        return [review.reviewer_user_id for review in reviews]

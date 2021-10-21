@@ -6,13 +6,15 @@ Here's a video that shows you all the things: https://www.youtube.com/watch?v=NX
 
 ## Prerequisites
 
+We use docker-compose and Python3.9
+
 - [Docker](https://www.docker.com/) and Docker Compose - to run the DB for the backend. If you install Docker Desktop, you get Docker Compose, but if you install with your CLI such as on Linux then you need to install Docker Compose separately after installing Docker.
 - [Python](https://www.python.org/) 3.9+ - to run the backend.
 - [Node.js](https://nodejs.org/en/) - to run the frontend.
 
 ## Database server
 
-This project uses a Postgres database in a container. 
+This project uses a Postgres database in a container.
 
 You can get a local test and development database up and running by doing the following:
 
@@ -34,7 +36,7 @@ Make sure the DB is up first, then continue.
 ```sh
 cd backend
 
-# create a virtual environment 
+# create a virtual environment
 python3 -m venv venv
 
 # please make sure you never commit your virtualenv directory to git!
