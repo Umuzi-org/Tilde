@@ -1,5 +1,4 @@
 from git_real.models import PullRequest
-import git_real
 import mock
 from django.test import TestCase
 from curriculum_tracking.models import (

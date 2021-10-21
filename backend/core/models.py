@@ -12,7 +12,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
-
 from django.contrib.auth.models import PermissionsMixin
 
 
