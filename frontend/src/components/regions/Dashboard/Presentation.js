@@ -13,12 +13,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default ({ 
-  user, 
-  userId 
+  user
 }) => {
   const classes = useStyles();
   const teams =  user ? user.teamMemberships : {};
-  if(userId)
+  if(user)
     return (
       <React.Fragment>
         <Grid container spacing={1}>
