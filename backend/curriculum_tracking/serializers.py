@@ -381,7 +381,13 @@ class TeamStatsSerializer(serializers.ModelSerializer):
             .first()
         )
         if card is not None:
-            return card.recruit_project.review_request_time
+            if card.recruit_project is not None:
+                return card.recruit_project.review_request_time
+            if card.topic_progress is not None:
+                return card.topic_progress.review_request_time
+            raise Exception(
+                f"card has no progress id:\n\tcard id: {card.id}\n\tcard: {card}"
+            )
 
     def get_total_cards_in_review(self, instance):
         return self._get_review_agile_cards(instance).count()

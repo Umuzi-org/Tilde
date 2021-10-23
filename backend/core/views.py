@@ -104,7 +104,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(
-        detail=True,
+        detail=False,
         methods=["GET"],
         serializer_class=TeamStatsSerializer,
         permission_classes=[
@@ -114,13 +114,22 @@ class TeamViewSet(viewsets.ModelViewSet):
             )
         ],
     )
-    def stats(self, request, pk=None):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            team = self.get_object()
-            return Response(TeamStatsSerializer(team).data)
-        else:
-            return Response(serializer.errors, status="BAD_REQUEST")
+    def summary_stats(self, request, pk=None):
+
+        page = self.paginate_queryset(self.get_queryset())
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        #     team = self.get_object()
+        #     return Response(TeamStatsSerializer(team).data)
+        # else:
+        #     return Response(serializer.errors, status="BAD_REQUEST")
 
     # @action(
     #     detail=True,
