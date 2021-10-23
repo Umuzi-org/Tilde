@@ -339,6 +339,7 @@ class TeamStatsSerializer(serializers.ModelSerializer):
         model = core_models.Team
         fields = [
             "id",
+            "name",  # TODO: remove this field once api accessable via gui
             "oldest_open_pr_time",
             "total_open_prs",
             "oldest_card_in_review_time",
