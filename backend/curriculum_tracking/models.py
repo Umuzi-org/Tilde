@@ -458,7 +458,6 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
 ):
-
     """what a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(

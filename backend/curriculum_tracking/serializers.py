@@ -1,3 +1,4 @@
+from git_real.models import PullRequest
 from . import models
 from rest_framework import serializers
 from django.db.models import Q
@@ -180,7 +181,9 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "users_that_reviewed_since_last_review_request",
         ]
 
-    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField("get_users_that_reviewed_since_last_review_request")
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
+        "get_users_that_reviewed_since_last_review_request"
+    )
 
     def get_users_that_reviewed_since_last_review_request(self, instance):
         return instance.get_users_that_reviewed_since_last_review_request()
@@ -329,3 +332,56 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "content_item",
             "attendee_user",
         ]
+
+
+class TeamStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = core_models.Team
+        fields = [
+            "id",
+            "oldest_open_pr_time",
+            "total_open_prs",
+            "oldest_card_in_review_time",
+            "total_cards_in_review",
+        ]
+
+    oldest_open_pr_time = serializers.SerializerMethodField("get_oldest_open_pr_time")
+    total_open_prs = serializers.SerializerMethodField("get_total_open_prs")
+    oldest_card_in_review_time = serializers.SerializerMethodField(
+        "get_oldest_card_in_review_time"
+    )
+    total_cards_in_review = serializers.SerializerMethodField(
+        "get_total_cards_in_review"
+    )
+
+    def _get_open_prs(self, instance):
+        users = instance.user_set.filter(active=True)
+        return PullRequest.objects.filter(state=PullRequest.OPEN).filter(
+            repository__recruit_projects__agile_card__assignees__in=users
+        )
+
+    def _get_review_agile_cards(self, instance):
+        users = instance.user_set.filter(active=True)
+        return models.AgileCard.objects.filter(
+            status=models.AgileCard.IN_REVIEW
+        ).filter(assignees__in=users)
+
+    def get_oldest_open_pr_time(self, instance):
+        pr = self._get_open_prs(instance).order_by("created_at").first()
+        if pr is not None:
+            return pr.created_at
+
+    def get_total_open_prs(self, instance):
+        return self._get_open_prs(instance).count()
+
+    def get_oldest_card_in_review_time(self, instance):
+        card = (
+            self._get_review_agile_cards(instance)
+            .order_by("recruit_project__review_request_time")
+            .first()
+        )
+        if card is not None:
+            return card.recruit_project.review_request_time
+
+    def get_total_cards_in_review(self, instance):
+        return self._get_review_agile_cards(instance).count()

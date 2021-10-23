@@ -2,21 +2,16 @@ from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from . import serializers
-
-# from rest_framework.decorators import action
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
-
-# from guardian.shortcuts import get_objects_for_user
-
-# from django.db.models import Q
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
+
+from curriculum_tracking.serializers import TeamStatsSerializer
 
 
 @api_view(["POST"])
@@ -107,6 +102,25 @@ class TeamViewSet(viewsets.ModelViewSet):
             # .prefetch_related("team_memberships__user")
         )
         return queryset
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        serializer_class=TeamStatsSerializer,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+            )
+        ],
+    )
+    def stats(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            team = self.get_object()
+            return Response(TeamStatsSerializer(team).data)
+        else:
+            return Response(serializer.errors, status="BAD_REQUEST")
 
     # @action(
     #     detail=True,
