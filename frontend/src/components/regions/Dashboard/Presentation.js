@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TeamsTable from "../UserDetails/TeamsTable";
 
@@ -23,7 +23,6 @@ export default ({
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <Typography>You are a member of these teams:</Typography>
               <TeamsTable teams={teams} />
             </Paper>
           </Grid>
