@@ -1,13 +1,13 @@
 import React from "react";
 import Presentation from "./Presentation";
-import { connect } from "react-redux";
 import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
 
-function TeamsTableUnconnected({
-  user,
-  userId,
-  fetchUser,
-}) {
+function TeamsTableUnconnected({ users, authedUserId, fetchUser }) {
+  let urlParams = useParams() || {};
+  const userId = parseInt(urlParams.userId || authedUserId || 0);
+  const user = users[userId];
   React.useEffect(() => {
     if (userId) {
       fetchUser({ userId });
@@ -15,26 +15,21 @@ function TeamsTableUnconnected({
   }, [
     userId,
     fetchUser,
+    user,
   ]);
 
   const props = {
-    user,
-    userId,
+    teams: user.teamMemberships
   };
 
   return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
-  const userId = state.TeamsTable.userId;
-  const user =
-    !!userId & (state.Entities.users !== undefined)
-      ? state.Entities.users[userId]
-      : null;
-  return { 
-    user, 
-    userId 
-  };
+  return {
+    users: state.Entities.users || {},
+    authedUserId: state.App.authUser.userId,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
