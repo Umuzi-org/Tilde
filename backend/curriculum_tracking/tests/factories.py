@@ -240,13 +240,16 @@ class AgileCardFactory(DjangoModelFactory):
     status = models.AgileCard.IN_PROGRESS
     is_hard_milestone = True
     is_soft_milestone = True
-    recruit_project = factory.SubFactory(RecruitProjectFactory)
+    recruit_project = factory.SubFactory(
+        RecruitProjectFactory, start_time=timezone.now()
+    )
     content_item = factory.LazyAttribute(
         lambda o: o.recruit_project.content_item
         if o.recruit_project
         else ContentItemFactory()
     )
     order = 1
+
     # assignees = factory.LazyAttribute(
     #     lambda o: o.recruit_project.recruit_users.all() if o.recruit_project else []
     # )

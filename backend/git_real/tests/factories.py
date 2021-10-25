@@ -3,8 +3,6 @@ from git_real.models import PullRequest, PullRequestReview
 from factory.django import DjangoModelFactory
 import factory
 from django.utils import timezone
-
-
 from core.tests.factories import UserFactory
 
 
