@@ -789,3 +789,16 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         project_two.recruit_project = project_two
 
         self.assertEqual(AgileCard.get_users_that_reviewed_since_last_review_request(project_two), [])
+
+
+class return_repository_url_linked_to_card(TestCase):
+
+    def setUp(self):
+        self.card = factories.AgileCardFactory()
+        self.card.recruit_project.repository = git_real_factories.RepositoryFactory()
+        self.card.save()
+        self.repository = self.card.recruit_project.repository
+
+    def test_repository_link_is_returned_and_that_it_is_an_actual_repository(self):
+        self.assertEqual(self.card.repo_url, self.repository.ssh_url)
+

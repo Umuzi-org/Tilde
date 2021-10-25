@@ -1013,7 +1013,11 @@ class AgileCard(
 
     @property
     def repo_url(self):
-        return self.recruit_project.link_submission or self.repository.ssh_url
+        if not self.recruit_project:
+            return None
+        if not self.recruit_project.repository:
+            return None
+        return self.recruit_project.repository.ssh_url
 
     @property
     def due_time(self):
