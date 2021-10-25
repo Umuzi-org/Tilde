@@ -1,8 +1,8 @@
+from git_real.models import PullRequest
 from . import models
 from rest_framework import serializers
 from django.db.models import Q
 from core import models as core_models
-from datetime import datetime, timedelta
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -181,7 +181,9 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "users_that_reviewed_since_last_review_request",
         ]
 
-    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField("get_users_that_reviewed_since_last_review_request")
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
+        "get_users_that_reviewed_since_last_review_request"
+    )
 
     def get_users_that_reviewed_since_last_review_request(self, instance):
         return instance.get_users_that_reviewed_since_last_review_request()
@@ -332,144 +334,61 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserStatsPerWeekSerializer(serializers.ModelSerializer):
+class TeamStatsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.User
+        model = core_models.Team
         fields = [
             "id",
-            "cards_in_completed_column",
-            "cards_in_review_column",
-            "cards_in_review_feedback_column",
-            "cards_in_progress_column",
-            "cards_completed_last_7_days",
-            "cards_started_last_7_days",
-            "total_number_of_tilde_reviews",
-            "tilde_reviews_done_last_7_days",
-            "total_number_of_pr_reviews",
-            "pr_reviews_done_last_7_days",
+            "name",  # TODO: remove this field once api accessable via gui
+            "oldest_open_pr_time",
+            "total_open_prs",
+            "oldest_card_in_review_time",
+            "total_cards_in_review",
         ]
 
-    cards_in_completed_column = serializers.SerializerMethodField("get_cards_in_completed_column")
-    cards_in_review_column = serializers.SerializerMethodField("get_cards_in_review_column")
-    cards_in_review_feedback_column = serializers.SerializerMethodField("get_cards_in_review_feedback_column")
-    cards_in_progress_column = serializers.SerializerMethodField("get_cards_in_progress_column")
-    cards_completed_last_7_days = serializers.SerializerMethodField("get_cards_completed_last_7_days")
-    cards_started_last_7_days = serializers.SerializerMethodField("get_cards_started_last_7_days")
-    total_number_of_tilde_reviews = serializers.SerializerMethodField("get_total_number_of_tilde_reviews")
-    tilde_reviews_done_last_7_days = serializers.SerializerMethodField("get_tilde_reviews_done_last_7_days")
-    total_number_of_pr_reviews = serializers.SerializerMethodField("get_total_number_of_pr_reviews")
-    pr_reviews_done_last_7_days = serializers.SerializerMethodField("get_pr_reviews_done_last_7_days")
+    oldest_open_pr_time = serializers.SerializerMethodField("get_oldest_open_pr_time")
+    total_open_prs = serializers.SerializerMethodField("get_total_open_prs")
+    oldest_card_in_review_time = serializers.SerializerMethodField(
+        "get_oldest_card_in_review_time"
+    )
+    total_cards_in_review = serializers.SerializerMethodField(
+        "get_total_cards_in_review"
+    )
 
-    def get_cards_in_completed_column(self, User):
-        from curriculum_tracking.models import AgileCard
+    def _get_open_prs(self, instance):
+        users = instance.user_set.filter(active=True)
+        return PullRequest.objects.filter(state=PullRequest.OPEN).filter(
+            repository__recruit_projects__agile_card__assignees__in=users
+        )
 
-        cards_in_completed_column_amount = AgileCard.objects.filter(
-            status=AgileCard.COMPLETE,
-            assignees=User.id
-        ).count()
+    def _get_review_agile_cards(self, instance):
+        users = instance.user_set.filter(active=True)
+        return models.AgileCard.objects.filter(
+            status=models.AgileCard.IN_REVIEW
+        ).filter(assignees__in=users)
 
-        return cards_in_completed_column_amount
+    def get_oldest_open_pr_time(self, instance):
+        pr = self._get_open_prs(instance).order_by("created_at").first()
+        if pr is not None:
+            return pr.created_at
 
-    def get_cards_in_review_column(self, User):
-        from curriculum_tracking.models import AgileCard
+    def get_total_open_prs(self, instance):
+        return self._get_open_prs(instance).count()
 
-        cards_in_review_column_amount = AgileCard.objects.filter(
-            status=AgileCard.IN_REVIEW,
-            assignees=User.id
-        ).count()
+    def get_oldest_card_in_review_time(self, instance):
+        card = (
+            self._get_review_agile_cards(instance)
+            .order_by("recruit_project__review_request_time")
+            .first()
+        )
+        if card is not None:
+            if card.recruit_project is not None:
+                return card.recruit_project.review_request_time
+            if card.topic_progress is not None:
+                return card.topic_progress.review_request_time
+            raise Exception(
+                f"card has no progress id:\n\tcard id: {card.id}\n\tcard: {card}"
+            )
 
-        return cards_in_review_column_amount
-
-    def get_cards_in_review_feedback_column(self, User):
-        from curriculum_tracking.models import AgileCard
-
-        cards_in_review_feedback_column_amount = AgileCard.objects.filter(
-            status=AgileCard.REVIEW_FEEDBACK,
-            assignees=User.id
-        ).count()
-
-        return cards_in_review_feedback_column_amount
-
-    def get_cards_in_progress_column(self, User):
-        from curriculum_tracking.models import AgileCard
-
-        cards_in_progress_column = AgileCard.objects.filter(
-            status=AgileCard.IN_PROGRESS,
-            assignees=User.id
-        ).count()
-
-        return cards_in_progress_column
-
-    def get_cards_completed_last_7_days(self, User):
-        from curriculum_tracking.models import AgileCard
-
-        cards_completed_past_seven_days = AgileCard.objects.filter(
-            status=AgileCard.COMPLETE,
-            assignees=User.id,
-            recruit_project__complete_time__gte=datetime.now() - timedelta(days=7)
-        ).count()
-
-        return cards_completed_past_seven_days
-
-    def get_cards_started_last_7_days(self, User):
-        from curriculum_tracking.models import AgileCard
-
-        cards_started_past_seven_days = AgileCard.objects.filter(
-            assignees=User.id,
-            recruit_project__start_time__gte=datetime.now() - timedelta(days=7)
-        ).count()
-
-        return cards_started_past_seven_days
-
-    def get_total_number_of_tilde_reviews(self, User):
-        from curriculum_tracking.models import RecruitProjectReview, TopicReview
-
-        tilde_project_reviews_done_to_date = RecruitProjectReview.objects.filter(
-            reviewer_user_id=User.id
-        ).all().count()
-
-        tilde_topic_reviews_done_to_date = TopicReview.objects.filter(
-            reviewer_user_id=User.id
-        ).all().count()
-
-        if tilde_project_reviews_done_to_date == None:
-            return tilde_topic_reviews_done_to_date
-        else:
-            return tilde_project_reviews_done_to_date
-
-    def get_tilde_reviews_done_last_7_days(self, User):
-        from curriculum_tracking.models import RecruitProjectReview, TopicReview
-
-        tilde_project_reviews_done_in_past_seven_days = RecruitProjectReview.objects.filter(
-            reviewer_user_id=User.id,
-            timestamp__gte=datetime.now() - timedelta(days=7)
-        ).all().count()
-
-        tilde_topic_reviews_done_in_past_seven_days = TopicReview.objects.filter(
-            reviewer_user_id=User.id,
-            timestamp__gte=datetime.now() - timedelta(days=7)
-        ).all().count()
-
-        if tilde_project_reviews_done_in_past_seven_days == None:
-            return tilde_topic_reviews_done_in_past_seven_days
-        else:
-            return tilde_project_reviews_done_in_past_seven_days
-
-    def get_total_number_of_pr_reviews(self, User):
-        from git_real.models import PullRequestReview
-
-        pr_reviews_done_to_date = PullRequestReview.objects.filter(
-            commit_id=User.id
-        ).count()
-
-        return pr_reviews_done_to_date
-
-    def get_pr_reviews_done_last_7_days(self, User):
-        from git_real.models import PullRequestReview
-
-        pr_reviews_done_past_seven_days = PullRequestReview.objects.filter(
-            commit_id=User.id,
-            submitted_at__gte=datetime.now() - timedelta(days=7)
-        ).count()
-
-        return pr_reviews_done_past_seven_days
+    def get_total_cards_in_review(self, instance):
+        return self._get_review_agile_cards(instance).count()

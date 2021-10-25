@@ -13,9 +13,9 @@ COURSES_BY_STREAM = {
         "Post Bootcamp Soft Skills",
     ],
     "bridge data eng": [
+        "Data eng bridging course",
         "Data Engineering boot camp - quick wins",
         "Data Engineering boot camp",
-        "Data eng bridging course",
         "Post Bootcamp Soft Skills",
     ],
     # PROV YES
