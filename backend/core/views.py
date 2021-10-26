@@ -1,3 +1,4 @@
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -171,6 +172,19 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
     filterset_fields = ["groups"]
+
+    @action(
+        detail=True,
+        methods=['GET'],
+        serializer_class=UserStatsPerWeekSerializer
+    )
+    def stats(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user_object = self.get_object()
+            return Response(UserStatsPerWeekSerializer(user_object).data)
+        else:
+            return Response(serializer.errors, status='BAD_REQUEST')
 
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
