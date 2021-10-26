@@ -39,6 +39,16 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "none",
     fontWeight: 600,
   },
+  linkStyles: {
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    fontFamily: "Roboto",
+  },
+  checkBoxStyles: {
+    marginLeft: "0",
+    width: "20px",
+    padding: "0",
+  }
 }));
 
 const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
@@ -66,7 +76,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         <FormControlLabel
           control={
             <Checkbox
-              style={{ marginLeft: "0", width: "20px", padding: 0 }}
+              className={classes.checkBoxStyles}
               name="checkedB"
               color="primary"
             />
@@ -75,11 +85,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         />
 
         <Link
-          style={{
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            fontFamily: "Roboto",
-          }}
+          className={classes.linkStyles}
           underline="always"
           href="#"
         >
