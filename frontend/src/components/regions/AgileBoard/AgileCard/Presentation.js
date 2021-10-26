@@ -12,12 +12,14 @@ import CardBadges from "../../../widgets/CardBadges";
 
 import { BLOCKED } from "../../../../constants";
 
+import Checkbox from '@material-ui/core/Checkbox';
 import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
 import AgileCardActions from "./AgileCardActions";
+import { showCheckedBox } from "./utils"
 
 const useStyles = makeStyles((theme) => {
   const card = {
@@ -148,7 +150,10 @@ export default ({
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
         <Typography variant="caption"> [card id:{card.id}]</Typography>
-
+        <Checkbox
+          checked={true}
+          color="primary"
+        />
         <Typography variant="h6" component="h2">
           {card.title} 
         </Typography>
