@@ -6,6 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
 
 const columns = [
     { id: 'teams', label: 'You are a member of these Teams:', minWidth: 100 },
@@ -30,7 +32,10 @@ const TeamsTable = ({ teams }) => {
                             style={{ minWidth: column.minWidth }}
                             className={classes.tableHead}
                         >
-                            {column.label}
+                            
+                            <Typography variant="h6" component="h2">
+                                {column.label}
+                            </Typography>
                         </TableCell>
                     ))}
                 </TableRow>
