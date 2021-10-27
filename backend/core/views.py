@@ -117,7 +117,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     )
     def summary_stats(self, request, pk=None):
 
-        page = self.paginate_queryset(self.get_queryset())
+        page = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -169,6 +169,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer
+    filter_backends = [DjangoFilterBackend]
+
+    filterset_fields = ["groups"]
 
     @action(
         detail=True,
