@@ -2,7 +2,7 @@ from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
 from django.http import Http404, HttpResponseForbidden
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
 from django_filters.rest_framework import DjangoFilterBackend
@@ -880,3 +880,53 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+
+class TrustedReviewerViewSet(viewsets.ModelViewSet):
+    #breakpoint()
+    serializer_class = serializers.UserField
+    filter_backends = [DjangoFilterBackend]
+    queryset = models.User.objects.all().order_by("last_name")
+    permission_classes = [IsReadOnly]
+
+    #def user_status(self):
+        #breakpoint()
+        #return self.queryset
+
+    """
+    @action(
+        detail=False,
+        methods=['GET'],
+        serializer_class=serializers.TeamReviewByOtherSerialiser,
+        permission_classes=[DenyAll],
+    )
+    def team_review_by_other(self, request, pk=None):
+        serialiser = get_Serialiser(data=request.post)
+        if serialiser.is_valid:
+            serialiser.reviewer_group
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.TeamReviewByUserSerialiser,
+        permission_classes=[DenyAll],  # TODO
+    )
+    def assign_user_as_reviewer(self, request, pk=None):
+        todo
+
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def auto_assign_reviewers(self, request, pk=None):
+        if request.method == "GET":
+            return Response({"status": "OK"})
+        else:
+            from long_running_request_actors import auto_assign_reviewers as actor
+
+            response = actor.send()
+            return Response({"status": "OK", "data": response.asdict()})
+    """

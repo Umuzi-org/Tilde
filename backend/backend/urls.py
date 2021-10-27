@@ -119,6 +119,12 @@ router.register(
     "workshopattendance",
 )
 
+router.register(
+    r"trusted_reviewer_status",
+    curriculum_tracking_api_views.TrustedReviewerViewSet,
+    "trustedreviewerstatus",
+)
+
 # router.register(
 #     r"agile_card_add_review",
 #     curriculum_tracking_api_views.AgileCardInteractionAddReview,
