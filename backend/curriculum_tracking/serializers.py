@@ -566,5 +566,5 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
     content_item = serializers.SerializerMethodField('get_name_not_id_of_content_item')
 
     def get_name_not_id_of_content_item(self, review_trust: object):
-        content_item_name = review_trust.__str__()
-        return content_item_name
+        content_item_name = review_trust
+        return str(content_item_name)
