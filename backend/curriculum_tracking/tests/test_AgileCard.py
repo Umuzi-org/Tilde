@@ -791,14 +791,23 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.assertEqual(AgileCard.get_users_that_reviewed_since_last_review_request(project_two), [])
 
 
-class return_repository_url_linked_to_card(TestCase):
+class RepoUrlTests(TestCase):
 
     def setUp(self):
         self.card = factories.AgileCardFactory()
         self.card.recruit_project.repository = git_real_factories.RepositoryFactory()
         self.card.save()
         self.repository = self.card.recruit_project.repository
+        self.card_no_repo = factories.AgileCardFactory(
+                            content_item=factories.ContentItemFactory(
+                            content_type=ContentItem.WORKSHOP),
+                            status=AgileCard.READY,
+                            recruit_project=None
+                            )
 
     def test_repository_link_is_returned_and_that_it_is_an_actual_repository(self):
         self.assertEqual(self.card.repo_url, self.repository.ssh_url)
+
+    def test_none_is_returned_for_card_not_linked_to_a_repository(self):
+        self.assertEqual(self.card_no_repo.repo_url, None)
 
