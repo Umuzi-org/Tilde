@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0.5),
     border: "1px solid grey",
   },
-  button: { marginRight: theme.spacing(1) },
+  button: { 
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1)
+  },
   gitHubLink: {
     margin: theme.spacing(1),
   },
@@ -37,15 +40,13 @@ export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
             </Tooltip>
           </a>
         )}
-
+        </Toolbar>
         <div className={classes.grow} />
         <div className={classes.button}>
           <LinkToUserBoard userId={userId} selected={userBoardSelected} />
-        </div>
-        <div className={classes.button}>
           <LinkToUserActions userId={userId} selected={UserActionsSelected} />
         </div>
-      </Toolbar>
+      
     </React.Fragment>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Tab from "@material/react-tab";
 
 import {
     Button,
@@ -16,6 +17,7 @@ export default ({to, label,selected}) => {
         <Button size="small" variant={variant}>
           {label}
         </Button>
+        {/* <Tab size="medium" variant={variant}>{label}</Tab> */}
       </Link>
     )
 }
