@@ -7,7 +7,7 @@ import csv
 def get_email_and_url(team):
     results = []
     for user in team.active_users:
-        project = RecruitProject.objects.filter(recruit_users__in=[user]).first() # filter_by
+        project = RecruitProject.objects.filter(recruit_users__in=[user]).first()
         results.append([user.email, project and (project.link_submission or project.git_url)])
     return results[0]
 
