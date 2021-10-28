@@ -552,3 +552,13 @@ class TeamStatsSerializer(serializers.ModelSerializer):
 
     def get_total_cards_in_review(self, instance):
         return self._get_review_agile_cards(instance).count()
+
+
+class ReviewTrustSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ReviewTrust
+        fields = [
+            "id",
+            "content_item",
+            "user",
+        ]
