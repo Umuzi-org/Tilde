@@ -5,6 +5,7 @@ import operations from "./redux/operations";
 
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
+import { dueTimeFormModalOperations } from "../DueTimeFormModal/redux";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
@@ -20,12 +21,14 @@ function CardDetailsModalUnconnected({
   projectId,
   cardId,
   card,
+  user,
   topicProgressId,
   topicProgress,
   topicReviews,
   projectReviews,
   handleClose,
   openReviewFormModal,
+  openDueTimeFormModal,
   authUser,
   updateProjectLink,
   fetchProject,
@@ -33,6 +36,7 @@ function CardDetailsModalUnconnected({
   fetchTopicProgress,
   fetchTopicReviews,
   fetchAgileCard,
+  fetchUser,
 }) {
   React.useEffect(() => {
     if (projectId) {
@@ -44,9 +48,16 @@ function CardDetailsModalUnconnected({
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
     }
+    
     if (cardId && (card === undefined || card === null || card === {})) {
       fetchAgileCard({ cardId });
+    } 
+    
+    if (card) {
+      fetchUser({ userId: card.assignees[0] });
     }
+
+
   }, [
     projectId,
     fetchProject,
@@ -57,6 +68,7 @@ function CardDetailsModalUnconnected({
     cardId,
     fetchAgileCard,
     card,
+    fetchUser,
   ]);
 
   const [
@@ -79,6 +91,10 @@ function CardDetailsModalUnconnected({
   const handleClickAddReview = () => {
     openReviewFormModal({ cardId: project.agileCard });
   };
+
+  const handleClickSetDueTime = () => {
+    openDueTimeFormModal({ cardId });
+  }
 
   const isReviewer =
     ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
@@ -104,19 +120,19 @@ function CardDetailsModalUnconnected({
     cardId,
     authUser,
     card,
+    user,
     topicProgressId,
     topicProgress,
     handleClose,
     topicReviews,
     projectReviews,
-
     handleClickAddReview,
     showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
-
     linkSubmission,
     formErrors,
+    handleClickSetDueTime,
   };
 
   return <Presentation {...props} />;
@@ -124,11 +140,12 @@ function CardDetailsModalUnconnected({
 
 const mapStateToProps = (state) => {
   const cardId = state.CardDetailsModal.cardId;
-
   const card =
     !!cardId & (state.Entities.cards !== undefined)
       ? state.Entities.cards[cardId]
       : null;
+  const users = state.Entities.users || {};
+  const user = card ? users[card.assignees[0]] : null;
 
   const projectId =
     card && card.contentTypeNice === "project" && card.recruitProject;
@@ -170,6 +187,7 @@ const mapStateToProps = (state) => {
   return {
     cardId,
     card,
+    user,
     topicProgressId,
     topicProgress,
     project,
@@ -190,6 +208,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
           data: { cardId },
+        })
+      );
+    },
+
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId },
         })
       );
     },
@@ -245,6 +271,10 @@ const mapDispatchToProps = (dispatch) => {
           data: { cardId, linkSubmission },
         })
       );
+    },
+
+    openDueTimeFormModal: ({ cardId }) => {
+      dispatch(dueTimeFormModalOperations.openDueTimeFormModal({ cardId }));
     },
   };
 };

@@ -20,7 +20,7 @@ import Modal from "../../widgets/Modal";
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
-import { canSetDueTime } from "./utils";
+import { canSetDueTime } from "./utils"; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -55,7 +55,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card, authUser }) => {
+const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -93,7 +93,9 @@ const CardBasicDetails = ({ card, authUser }) => {
                 <TableRow>
                   <TableCell>Due Time</TableCell>
                   <TableCell>
-                    {dueTime} {canSetDueTime({card, authUser}) && (<Button variant="outlined">Set Time</Button>)}
+                    {dueTime} {canSetDueTime({card, user, authUser}) && (
+                      <Button variant="outlined" onClick={handleClickSetDueTime}>Set Time</Button>
+                    )}
                   </TableCell>
                 </TableRow>
                 {card.startTime && (
@@ -126,6 +128,7 @@ const CardBasicDetails = ({ card, authUser }) => {
 
 export default ({
   card,
+  user,
   authUser,
   cardId,
   topicProgress,
@@ -135,6 +138,7 @@ export default ({
   topicReviews,
   projectReviews,
   handleClickAddReview,
+  handleClickSetDueTime,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
   showAddReviewButton,
@@ -148,7 +152,14 @@ export default ({
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          {card ? <CardBasicDetails card={card} authUser={authUser} /> : <div>Loading...</div>}
+          {card ? 
+            <CardBasicDetails 
+              card={card} 
+              user={user}
+              authUser={authUser} 
+              handleClickSetDueTime={handleClickSetDueTime} 
+            /> : <div>Loading...</div>
+          }
 
           {project ? (
             <ProjectDetails

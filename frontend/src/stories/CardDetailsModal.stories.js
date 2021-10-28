@@ -22,4 +22,5 @@ Primary.args = {
   card: repoProjectCard,
   reviews: [reviewObject],
   reviewIds: [1],
+  handleClickSetDueTime: () => {},
 };
