@@ -883,8 +883,8 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
 
 class TrustedReviewerViewSet(viewsets.ModelViewSet):
+    #breakpoint()
     serializer_class = serializers.ReviewTrustSerializer
-    #serializer_class = serializers.NoArgs
     filter_backends = [DjangoFilterBackend]
     queryset = models.ReviewTrust.objects.all()
     permission_classes = [IsReadOnly]
