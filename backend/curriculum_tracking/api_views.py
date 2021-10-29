@@ -19,6 +19,7 @@ from core.permissions import (
     DenyAll,
 )
 from core.models import Team
+from rest_framework.permissions import IsAuthenticated
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -882,20 +883,39 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
             return Response({"status": "OK", "data": response.asdict()})
 
 
-class TrustedReviewerViewSet(viewsets.ModelViewSet):
-    #breakpoint()
+class TrustedReviewerViewSet(viewsets.ViewSet):
+    """
+    # https://www.django-rest-framework.org/api-guide/viewsets/
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
     queryset = models.ReviewTrust.objects.all()
-    permission_classes = [IsReadOnly]
-    #breakpoint()
 
-    @action(
-        detail=False,
-        methods=['GET'],
-        serializer_class=serializers.ReviewTrustSerializer
-    )
-    def cards_names_with_review_trust(self, request, pk=None):
-        from django.http import HttpResponse
-        review_trusts = self.queryset
-        return HttpResponse(review_trusts)
+
+    def cards_names_with_review_trust(self):
+        perm = self.authentication_classes.IsAuthenticated
+        breakpoint()
+        if permissions.IsAdminUser:
+            return self.queryset
+    """
+
+    """
+    def list(self, request):
+        queryset = models.ReviewTrust.objects.all()
+        serializer = serializers.ReviewTrustSerializer(queryset, many=True)
+        return Response(serializer.data)
+    """
+
+    def list(self, request):
+        #perm = self.authentication_classes.IsAuthenticated
+        perm = self.get_permissions()
+        if permissions.IsAuthenticated:
+            queryset = models.ReviewTrust.objects.all()
+            serializer = serializers.ReviewTrustSerializer(queryset, many=True)
+            breakpoint()
+            return Response(serializer.data)
+
+
+
+
+
