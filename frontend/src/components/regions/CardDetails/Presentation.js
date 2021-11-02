@@ -33,41 +33,52 @@ import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1, 2, 1),
-  },
-
-  commentColumn: {
-    minWidth: 300,
-  },
-
-  tableContainer: {
-    maxHeight: 200,
-  },
-  sectionPaper: {
-    padding: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-  cardColors: {
-    root: {
-      margin: theme.spacing(1),
-      width: theme.spacing(40),
-      //   height: theme.spacing(16),
+const useStyles = makeStyles((theme) => {
+  const card = {
+    // borderWidth: 3,
+    borderRadius: theme.spacing(2),
+    // margin: theme.spacing(1),
+    textAlign: "center",
+  };
+  return {
+    paper: {
+      padding: theme.spacing(1, 2, 1),
     },
-
-    [BLOCKED]: {  backgroundColor: grey[400] },
-    [READY]: {backgroundColor: blue[400] },
-    [IN_PROGRESS]: {backgroundColor: green[400] },
-    [REVIEW_FEEDBACK]: {backgroundColor: red[400] },
-    [IN_REVIEW]: {backgroundColor: orange[400] },
-    [COMPLETE]: {backgroundColor: yellow[400] },
-
-    row: {
-      padding: 5,
+  
+    commentColumn: {
+      minWidth: 300,
     },
+  
+    tableContainer: {
+      maxHeight: 200,
+    },
+    sectionPaper: {
+      padding: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    yellowPaper: {
+      backgroundColor: yellow[300]
+    },
+    cardColors: {
+      root: {
+        margin: theme.spacing(1),
+        width: theme.spacing(40),
+        //   height: theme.spacing(16),
+      },
+  
+      [BLOCKED]: {...card, backgroundColor: grey[400] },
+      [READY]: {...card, backgroundColor: blue[400] },
+      [IN_PROGRESS]: {...card, backgroundColor: green[400] },
+      [REVIEW_FEEDBACK]: {...card, backgroundColor: red[400] },
+      [IN_REVIEW]: {...card, backgroundColor: orange[400] },
+      [COMPLETE]: {...card, backgroundColor: yellow[400] },
+  
+      row: {
+        padding: 5,
+      },
+    }
   }
-}));
+});
 
 
 const TopicProgressDetails = ({ topicProgress, reviews }) => {
@@ -108,11 +119,13 @@ const CardBasicDetails = ({ card }) => {
           <FlavourChips flavourNames={card.flavourNames} />
           <StoryPoints storyPoints={card.storyPoints} />
         </Grid>
-        <Paper className={classes[card.status]} variant="outlined">
+        <TableCell>
+                <Paper className={classes[card.status]} variant="outlined">
                   <Typography>
                     {AGILE_CARD_STATUS_CHOICES[card.status]}
                   </Typography>
-            </Paper>
+                </Paper>
+              </TableCell>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
