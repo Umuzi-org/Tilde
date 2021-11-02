@@ -1,4 +1,3 @@
-# from core import models
 from curriculum_tracking.serializers import TeamStatsSerializer
 from django.test import TestCase
 from . import factories
