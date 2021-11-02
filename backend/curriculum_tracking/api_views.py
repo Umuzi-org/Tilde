@@ -885,35 +885,26 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
 class TrustedReviewerViewSet(viewsets.ViewSet):
     """
-    # https://www.django-rest-framework.org/api-guide/viewsets/
+    https://www.django-rest-framework.org/api-guide/viewsets/
+    """
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user']
-    queryset = models.ReviewTrust.objects.all()
 
 
-    def cards_names_with_review_trust(self):
-        perm = self.authentication_classes.IsAuthenticated
-        breakpoint()
+    def list(self, request, pk=None):
+
+        if not permissions.IsAdminUser:
+            queryset = models.ReviewTrust.objects.filter(pk=pk)
+            serializer = serializers.ReviewTrustSerializer(queryset, many=True)
+            return Response(serializer.data)
+
         if permissions.IsAdminUser:
-            return self.queryset
-    """
-
-    """
-    def list(self, request):
-        queryset = models.ReviewTrust.objects.all()
-        serializer = serializers.ReviewTrustSerializer(queryset, many=True)
-        return Response(serializer.data)
-    """
-
-    def list(self, request):
-        #perm = self.authentication_classes.IsAuthenticated
-        perm = self.get_permissions()
-        if permissions.IsAuthenticated:
             queryset = models.ReviewTrust.objects.all()
             serializer = serializers.ReviewTrustSerializer(queryset, many=True)
-            breakpoint()
             return Response(serializer.data)
+        return []
+
 
 
 
