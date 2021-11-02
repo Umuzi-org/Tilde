@@ -1,3 +1,4 @@
+import curriculum_tracking.api_views
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
@@ -15,6 +16,8 @@ from curriculum_tracking.constants import (
     COMPETENT,
     EXCELLENT,
 )
+from curriculum_tracking.api_views import TrustedReviewerViewSet
+from mock import patch
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -372,3 +375,23 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
+
+
+class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
+
+    def setUpTestData(cls):
+        cls.card = factories.AgileCardFactory(
+            content_item=factories.ProjectContentItemFactory(), recruit_project=None
+        )
+        cls.recruit = UserFactory(is_superuser=False, is_staff=False)
+        cls.staff_member = UserFactory(is_staff=True)
+
+        cls.card.assignees.add(cls.recruit)
+
+        cls.login(UserFactory())
+
+    @patch('django.http.HttpRequest')
+    @patch('curriculum_tracking.api_views.TrustedReviewerViewSet')
+    def test_Review_Trust_Function_Returns_User_Status(self, mocked_reviewer_viewset, mocked_request):
+
+        val = TrustedReviewerViewSet.list(mocked_reviewer_viewset, mocked_request)
