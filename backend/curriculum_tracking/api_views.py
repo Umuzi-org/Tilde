@@ -153,7 +153,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
             get_objects=_get_teams_from_user_filter("assignees"),
         ),
     ]
-    serializer_class = serializers.cardsummarySerializer
+    serializer_class = serializers.CardSummarySerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["assignees", "content_item__content_type", "status"]
 

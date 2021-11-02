@@ -5,6 +5,8 @@ from django.db.models import Q
 from core import models as core_models
 from datetime import timedelta
 from django.utils import timezone
+from config.models import NameSpace
+from taggit.models import Tag
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -191,7 +193,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
         return instance.get_users_that_reviewed_since_last_review_request()
 
 
-class cardsummarySerializer(serializers.ModelSerializer):
+class CardSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AgileCard
         fields = [
@@ -534,6 +536,8 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
 
 
 class TeamStatsSerializer(serializers.ModelSerializer):
+    CONFIGURATION_NAMESPACE = "curriculum_tracking/serializers/TeamStatsSerializer"
+
     class Meta:
         model = core_models.Team
         fields = [
@@ -554,6 +558,16 @@ class TeamStatsSerializer(serializers.ModelSerializer):
         "get_total_cards_in_review"
     )
 
+    def _get_config_EXCLUDE_TAGS_FROM_REVIEW_STATS(self):
+        config = NameSpace.get_config(self.CONFIGURATION_NAMESPACE)
+        tag_names = config.EXCLUDE_TAGS_FROM_REVIEW_STATS
+        return [
+            instance
+            for instance, _ in [
+                Tag.objects.get_or_create(name=name) for name in tag_names
+            ]
+        ]
+
     def _get_open_prs(self, instance):
         users = instance.user_set.filter(active=True)
         return PullRequest.objects.filter(state=PullRequest.OPEN).filter(
@@ -561,10 +575,14 @@ class TeamStatsSerializer(serializers.ModelSerializer):
         )
 
     def _get_review_agile_cards(self, instance):
+        skip_tags = self._get_config_EXCLUDE_TAGS_FROM_REVIEW_STATS()
+
         users = instance.user_set.filter(active=True)
-        return models.AgileCard.objects.filter(
+        result = models.AgileCard.objects.filter(
             status=models.AgileCard.IN_REVIEW
         ).filter(assignees__in=users)
+        # breakpoint()
+        return result.filter(~Q(content_item__tags__in=skip_tags))
 
     def get_oldest_open_pr_time(self, instance):
         pr = self._get_open_prs(instance).order_by("created_at").first()
