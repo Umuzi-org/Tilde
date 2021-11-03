@@ -4,6 +4,7 @@ import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
 import Dashboard from "./components/regions/Dashboard";
+import CardDetails from "./components/regions/CardDetails";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
@@ -118,12 +119,22 @@ export const routes = {
   },
 
   dashboard: {
-      route: {
-        exact,
-        path: "/dashboard",
-        component: Dashboard,
-      },
-      
-      show: () => true,
+    route: {
+      exact,
+      path: "/dashboard",
+      component: Dashboard,
+    },
+
+    show: () => true,
+  },
+
+  cardDetails: {
+    route: {
+      exact,
+      path: "/card/:cardId",
+      component: CardDetails,
+    },
+
+    show: () => true,
   },
 };

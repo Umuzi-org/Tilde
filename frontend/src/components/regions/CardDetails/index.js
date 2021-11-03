@@ -1,7 +1,7 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import operations from "./redux/operations";
+import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
@@ -15,18 +15,24 @@ import {
   IN_PROGRESS,
 } from "../../../constants";
 
-function CardDetailsModalUnconnected({
-  project,
-  projectId,
-  cardId,
-  card,
-  topicProgressId,
-  topicProgress,
-  topicReviews,
+function CardDetailsUnconnected({
+  // project,
+  // projectId,
+  // cardId,
+  // card,
+  // topicProgressId,
+  // topicProgress,
+  // topicReviews,
+  // projectReviews,
+  // handleClose,
+  cards,
+  projects,
+  topicProgressArray,
   projectReviews,
-  handleClose,
-  openReviewFormModal,
+  topicReviews,
   authUser,
+
+  openReviewFormModal,
   updateProjectLink,
   fetchProject,
   fetchProjectReviews,
@@ -34,6 +40,22 @@ function CardDetailsModalUnconnected({
   fetchTopicReviews,
   fetchAgileCard,
 }) {
+  let urlParams = useParams() || {};
+  const { cardId } = urlParams;
+  const card = cards && cards[cardId];
+
+  const projectId =
+    card && card.contentTypeNice === "project" && card.recruitProject;
+  const project =
+    !!projectId & (projects !== undefined) ? projects[projectId] : null;
+
+  const topicProgressId =
+    card && card.contentTypeNice === "topic" && card.topicProgress;
+  const topicProgress =
+    !!topicProgressId & (topicProgressArray !== undefined)
+      ? topicProgressArray[topicProgressId]
+      : null;
+
   React.useEffect(() => {
     if (projectId) {
       fetchProject({ projectId });
@@ -98,6 +120,20 @@ function CardDetailsModalUnconnected({
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
 
+  const currentProjectReviews =
+    project && projectReviews
+      ? project.projectReviews
+          .map((reviewId) => projectReviews[reviewId])
+          .filter((review) => review !== undefined)
+      : [];
+
+  const currentTopicReviews =
+    topicProgress && topicReviews
+      ? topicProgress.topicReviews
+          .map((reviewId) => topicReviews[reviewId])
+          .filter((review) => review !== undefined)
+      : [];
+
   const props = {
     project,
     projectId,
@@ -105,9 +141,8 @@ function CardDetailsModalUnconnected({
     card,
     topicProgressId,
     topicProgress,
-    handleClose,
-    topicReviews,
-    projectReviews,
+    topicReviews: currentTopicReviews,
+    projectReviews: currentProjectReviews,
 
     handleClickAddReview,
     showAddReviewButton,
@@ -122,69 +157,71 @@ function CardDetailsModalUnconnected({
 }
 
 const mapStateToProps = (state) => {
-  const cardId = state.CardDetailsModal.cardId;
+  // const cardId = state.CardDetails.cardId;
 
-  const card =
-    !!cardId & (state.Entities.cards !== undefined)
-      ? state.Entities.cards[cardId]
-      : null;
+  // const card =
+  //   !!cardId & (state.Entities.cards !== undefined)
+  //     ? state.Entities.cards[cardId]
+  //     : null;
 
-  const projectId =
-    card && card.contentTypeNice === "project" && card.recruitProject;
-  const topicProgressId =
-    card && card.contentTypeNice === "topic" && card.topicProgress;
+  // const projectId =
+  //   card && card.contentTypeNice === "project" && card.recruitProject;
+  // const topicProgressId =
+  //   card && card.contentTypeNice === "topic" && card.topicProgress;
 
-  const project =
-    !!projectId & (state.Entities.projects !== undefined)
-      ? state.Entities.projects[projectId]
-      : null;
+  // const project =
+  //   !!projectId & (state.Entities.projects !== undefined)
+  //     ? state.Entities.projects[projectId]
+  //     : null;
 
-  const topicProgress =
-    !!topicProgressId & (state.Entities.topicProgress !== undefined)
-      ? state.Entities.topicProgress[topicProgressId]
-      : null;
+  // const topicProgress =
+  //   !!topicProgressId & (state.Entities.topicProgress !== undefined)
+  //     ? state.Entities.topicProgress[topicProgressId]
+  //     : null;
 
-  const projectReviews =
-    (project !== null) &
-    (project !== undefined) &
-    (state.Entities.projectReviews !== undefined)
-      ? project.projectReviews
-          .map((reviewId) => {
-            return state.Entities.projectReviews[reviewId];
-          })
-          .filter((review) => review !== undefined)
-      : [];
+  // const projectReviews =
+  //   (project !== null) &
+  //   (project !== undefined) &
+  //   (state.Entities.projectReviews !== undefined)
+  //     ? project.projectReviews
+  //         .map((reviewId) => {
+  //           return state.Entities.projectReviews[reviewId];
+  //         })
+  //         .filter((review) => review !== undefined)
+  //     : [];
 
-  const topicReviews =
-    (topicProgress !== null) &
-    (topicProgress !== undefined) &
-    (state.Entities.topicReviews !== undefined)
-      ? topicProgress.topicReviews
-          .map((reviewId) => {
-            return state.Entities.topicReviews[reviewId];
-          })
-          .filter((review) => review !== undefined)
-      : [];
+  // const topicReviews =
+  //   (topicProgress !== null) &
+  //   (topicProgress !== undefined) &
+  //   (state.Entities.topicReviews !== undefined)
+  //     ? topicProgress.topicReviews
+  //         .map((reviewId) => {
+  //           return state.Entities.topicReviews[reviewId];
+  //         })
+  //         .filter((review) => review !== undefined)
+  //     : [];
 
   return {
-    cardId,
-    card,
-    topicProgressId,
-    topicProgress,
-    project,
-    projectId,
-    projectReviews,
-    topicReviews,
+    // cardId,
+    // card,
+    // topicProgressId,
+    // topicProgress,
+    // project,
+    // projectId,
+    // projectReviews,
+    // topicReviews,
+    cards: state.Entities.cards,
+    projects: state.Entities.projects,
+    topicProgressArray: state.Entities.topicProgress,
+    projectReviews: state.Entities.projectReviews,
+    topicReviews: state.Entities.topicReviews,
+
     authUser: state.App.authUser,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleClose: () => {
-      dispatch(operations.closeCardDetailsModal());
-    },
-
     fetchAgileCard: ({ cardId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
@@ -248,9 +285,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const CardDetailsModal = connect(
+const CardDetails = connect(
   mapStateToProps,
   mapDispatchToProps
-)(CardDetailsModalUnconnected);
+)(CardDetailsUnconnected);
 
-export default CardDetailsModal;
+export default CardDetails;

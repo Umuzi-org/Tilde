@@ -13,8 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
-
-import Modal from "../../widgets/Modal";
+import CardBadges from "../../widgets/CardBadges";
 
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
@@ -67,6 +66,7 @@ const CardBasicDetails = ({ card }) => {
     <React.Fragment>
       <Grid container>
         <Grid item xs={12} sm={12} md={12}>
+          <CardBadges card={card} />
           <Typography variant="h5">
             {card.contentTypeNice}: {card.title}
           </Typography>
@@ -79,9 +79,15 @@ const CardBasicDetails = ({ card }) => {
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
-            <UsersTable userNames={card.assigneeNames} userIds={card.assignees} />
+            <UsersTable
+              userNames={card.assigneeNames}
+              userIds={card.assignees}
+            />
             <Typography variant="subtitle2">Reviewers:</Typography>
-            <UsersTable userNames={card.reviewerNames} userIds={card.reviewers} />
+            <UsersTable
+              userNames={card.reviewerNames}
+              userIds={card.reviewers}
+            />
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
@@ -114,8 +120,8 @@ const CardBasicDetails = ({ card }) => {
               </TableBody>
             </Table>
           </Paper>
-        </Grid>  
-      </Grid> 
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 };
@@ -124,8 +130,6 @@ export default ({
   card,
   cardId,
   topicProgress,
-  //   workshopAttendance,
-  handleClose,
   project,
   topicReviews,
   projectReviews,
@@ -141,41 +145,39 @@ export default ({
   const workshopAttendance = false;
   if (cardId)
     return (
-      <Modal open={true} onClose={handleClose}>
-        <Paper className={classes.paper}>
-          {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
+      <Paper className={classes.paper}>
+        {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
 
-          {project ? (
-            <ProjectDetails
-              project={project}
-              handleClickUpdateProjectLink={handleClickUpdateProjectLink}
-              showUpdateProjectLinkForm={showUpdateProjectLinkForm}
-              linkSubmission={linkSubmission}
-              formErrors={formErrors}
-              showAddReviewButton={showAddReviewButton}
-              handleClickAddReview={handleClickAddReview}
-              reviews={projectReviews}
-            />
-          ) : (
-            <React.Fragment />
-          )}
+        {project ? (
+          <ProjectDetails
+            project={project}
+            handleClickUpdateProjectLink={handleClickUpdateProjectLink}
+            showUpdateProjectLinkForm={showUpdateProjectLinkForm}
+            linkSubmission={linkSubmission}
+            formErrors={formErrors}
+            showAddReviewButton={showAddReviewButton}
+            handleClickAddReview={handleClickAddReview}
+            reviews={projectReviews}
+          />
+        ) : (
+          <React.Fragment />
+        )}
 
-          {topicProgress ? (
-            <TopicProgressDetails
-              topicProgress={topicProgress}
-              reviews={topicReviews}
-            />
-          ) : (
-            <React.Fragment />
-          )}
-          {workshopAttendance ? (
-            // <WorkshopAttendanceDetails />
-            <div>TODO: Workshop attendance details</div>
-          ) : (
-            <React.Fragment />
-          )}
-        </Paper>
-      </Modal>
+        {topicProgress ? (
+          <TopicProgressDetails
+            topicProgress={topicProgress}
+            reviews={topicReviews}
+          />
+        ) : (
+          <React.Fragment />
+        )}
+        {workshopAttendance ? (
+          // <WorkshopAttendanceDetails />
+          <div>TODO: Workshop attendance details</div>
+        ) : (
+          <React.Fragment />
+        )}
+      </Paper>
     );
   return <React.Fragment />;
 };

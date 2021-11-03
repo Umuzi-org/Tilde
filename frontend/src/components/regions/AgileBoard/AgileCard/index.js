@@ -1,7 +1,6 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import { cardDetailsModalOperations } from "../../CardDetailsModal/redux";
 import { getLatestMatchingCall } from "../../../../utils/ajaxRedux";
 import { addCardReviewOperations } from "../../AddCardReviewModal/redux";
 
@@ -13,7 +12,6 @@ function AgileCardUnconnected({
   card,
   authUser,
   viewedUser,
-  openCardDetailsModal,
   startProject,
   requestReview,
   cancelReviewRequest,
@@ -34,10 +32,6 @@ function AgileCardUnconnected({
   CARD_ADD_WORKSHOP_ATTENDANCE,
 }) {
   const cardId = card.id;
-
-  const handleClickOpenCardDetails = () => {
-    openCardDetailsModal({ cardId });
-  };
 
   const handleClickOpenWorkshopAttendanceForm = () => {
     // openWorkshopAttendanceModal({ cardId });
@@ -110,7 +104,7 @@ function AgileCardUnconnected({
 
   const props = {
     card,
-    handleClickOpenCardDetails,
+
     handleClickAddReview,
 
     authUser,
@@ -154,10 +148,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    openCardDetailsModal: ({ cardId }) => {
-      dispatch(cardDetailsModalOperations.openCardDetailsModal({ cardId }));
-    },
-
     startProject: ({ cardId }) => {
       dispatch(
         apiReduxApps.CARD_START_PROJECT.operations.start({

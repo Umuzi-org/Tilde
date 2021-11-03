@@ -21,9 +21,6 @@ export function getTeamPermissions({ authUser, viewedUser }) {
   } else {
     // we look at what teams this user belongs to. If authUser has a permission on one of those teams then they have the permission for the user
     for (let authedTeamId in authUser.permissions.teams) {
-      //   for (let teamId in viewedUser.teamMemberships) {
-      //     console.log({ authedTeamId, teamId });
-      //   }
       if (viewedUser.teamMemberships[authedTeamId]) {
         let heldPermissions =
           authUser.permissions.teams[authedTeamId].permissions;

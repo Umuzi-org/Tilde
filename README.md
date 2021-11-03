@@ -18,9 +18,9 @@ And this is for our staff (we call them staff):
 
 ## Tech stack
 
-![Tech stack](./tech-stack.png?raw=true "Tech stack")
+![Tech stack](/tech-stack.png?raw=true "Tech stack")
 
-We use JS, not Typescript
+We use JS, not Typescript.
 
 ## Community
 
@@ -45,9 +45,9 @@ You can run this as a standalone static site, or use it as an input to Tilde.
 
 We want to be able to use this platform and the community built around it to help as many people as we can. If you want to help out there are lots of different things to do:
 
-- Make a PR on this repo:) We would appreciate code, there's a lot to do
+- Make a PR on this repo. :) We would appreciate code, there's a lot to do.
 - Make a PR on our syllabus repo.
-- Help our community by hanging out on our Discord server and answering questions
+- Help our community by hanging out on our Discord server and answering questions.
 - Volunteer to help in other ways. We are educators and there are loads of ways to add value to what we do, from code review to mentorship sessions and pair programming sessions.
 - Tell your friends
 
@@ -65,7 +65,9 @@ Please take a look at our development milestones.
 
 For now, focus on this one:
 
+[roadmap.html](/roadmap.html)
+
 
 ## How to Contribute
 
-Check out contribute.md and quick-start.md for instructions.
+Check out [contribute.md](/contribute.md) and [quick-start.md](/quick-start.md) for instructions.

@@ -1,11 +1,11 @@
 import React from "react";
 
-import ProjectDetails from "../components/regions/CardDetailsModal/ProjectDetails";
+import ProjectDetails from "../components/regions/CardDetails/ProjectDetails";
 import reviewObject from "./fixtures/review.json";
 import projectObject from "./fixtures/project.json";
 
 export default {
-  title: "Tilde/CardDetailsModal/ProjectDetails",
+  title: "Tilde/CardDetails/ProjectDetails",
   component: ProjectDetails,
   argTypes: {},
 };
