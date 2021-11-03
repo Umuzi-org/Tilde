@@ -386,14 +386,14 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
         cls.staff_member = UserFactory(is_superuser=True, is_staff=True)
         cls.review_trust_object = factories.ReviewTrustFactory()
 
-    def test_staff_user_can_see_all_trusted_reviewer_objects(self):
+    def test_staff_user_can_view_all_trusted_reviewer_objects(self):
 
         self.login(self.staff_member)
         url = '/api/trusted_reviewer_status/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_normal_user_can_see_no_trusted_reviewer_objects_if_not_their_own(self):
+    def test_normal_user_can_view_no_trusted_reviewer_objects_except_their_own(self):
 
         self.login(self.recruit)
         url = '/api/trusted_reviewer_status/'

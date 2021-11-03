@@ -1,9 +1,8 @@
-from typing import Union
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
 from django.http import Http404, HttpResponseForbidden, HttpResponse
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,7 +20,7 @@ from core.permissions import (
 )
 from core.models import Team
 from core.views import _get_teams_from_user
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAdminUser
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -888,28 +887,9 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
     """
     A) Why if I change from viewsets.Viewset to viewsets.ModelViewSet do I get the queryset data else nothing?
-    B) Only staff users can login to Django admin, does that mean any other type of user won't be able to use this
+    B) Only staff/super users can login to Django admin, does that mean any other type of user won't be able to use this
        api endpoint?
-    """
-
-
-    """
-    serializer_class = serializers.ReviewTrustSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user']
-
-    def list(self, request, pk=None):
-
-        if not permissions.IsAdminUser:
-            queryset = models.ReviewTrust.objects.filter(pk=pk)
-            serializer = serializers.ReviewTrustSerializer(queryset, many=True)
-            return Response(serializer.data)
-
-        if permissions.IsAdminUser:
-            queryset = models.ReviewTrust.objects.all()
-            serializer = serializers.ReviewTrustSerializer(queryset, many=True)
-            return Response(serializer.data)
-        return []
+    C) What is the capital Q for in line 167 of this file?
     """
 
     permission_classes = [IsAdminUser | core_permissions.ActionIs("retrieve") & (core_permissions.IsMyUser
@@ -923,7 +903,6 @@ class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ReviewTrust.objects.all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
-
 
     @action(
         detail=True,
