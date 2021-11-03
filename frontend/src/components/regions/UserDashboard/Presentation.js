@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user, detailedStats }) => {
+export default ({ user, detailedStats, showTeamsTable }) => {
   const classes = useStyles();
-  // const teams = user ? user.teamMemberships : {};
+  const teams = user ? user.teamMemberships : {};
   if (user)
     return (
       <React.Fragment>
@@ -27,11 +27,13 @@ export default ({ user, detailedStats }) => {
               <UserDetailedStats detailedStats={detailedStats} />
             </Paper>
           </Grid>
-          {/* <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <TeamsTable teams={teams} />
-            </Paper>
-          </Grid> */}
+          {showTeamsTable && (
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <TeamsTable teams={teams} />
+              </Paper>
+            </Grid>
+          )}
         </Grid>
       </React.Fragment>
     );
