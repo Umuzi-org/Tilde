@@ -5,15 +5,22 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
 
 const columns = [
-    { id: 'teams', label: 'Team', minWidth: 100 },
+    { id: 'teams', label: 'You are a member of these Teams:', minWidth: 100 },
 ];
 
-const TeamsTable = (props) => {
+const useStyles = makeStyles(() => ({
+    tableHead: {
+        textAlign: "center"
+    }
+}));
 
-    const { teams } = props;
-
+const TeamsTable = ({ teams }) => {
+    const classes = useStyles();
     return (
         <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -23,27 +30,33 @@ const TeamsTable = (props) => {
                             key={column.id}
                             align={column.align}
                             style={{ minWidth: column.minWidth }}
+                            className={classes.tableHead}
                         >
-                            {column.label}
+                            
+                            <Typography variant="h6" component="h2">
+                                {column.label}
+                            </Typography>
                         </TableCell>
                     ))}
                 </TableRow>
             </TableHead>
-            <TableBody>
-                {   
-                    Object.keys(teams).length > 0 ?
-                        Object.values(teams).map((team) => (
-                            <TableRow key={Object.values(teams).indexOf(team)}>
-                                <TableCell>
-                                    {team.name}
-                                </TableCell>
+            {
+                <TableBody>
+                    {   
+                        teams ?
+                            Object.values(teams).map((team) => (
+                                <TableRow key={Object.values(teams).indexOf(team)}>
+                                    <TableCell>
+                                        {team.name}
+                                    </TableCell>
+                                </TableRow>
+                            )) :
+                            <TableRow>
+                                <TableCell>Nothing to display</TableCell>
                             </TableRow>
-                        )) :
-                        <TableRow>
-                            <TableCell>Nothing to display</TableCell>
-                        </TableRow>
-                }
-            </TableBody>
+                    }
+                </TableBody>
+            }
         </Table>
     )
 }

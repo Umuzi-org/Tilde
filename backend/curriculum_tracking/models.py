@@ -1054,7 +1054,6 @@ class AgileCard(
         return self.project.link_submission
 
     def __str__(self):
-        # feel free to edit this
         return f"{self.status}:{self.content_item}"
 
     @classmethod

@@ -1,26 +1,26 @@
 import React from "react";
 import Presentation from "./Presentation";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
-function DashboardUnconnected({ users, authedUserId, fetchUser }) {
+function TeamsTableUnconnected({ users, authedUserId, fetchUser }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const user = users[userId];
   React.useEffect(() => {
-    if(userId) {
-      fetchUser({ userId })
+    if (userId) {
+      fetchUser({ userId });
     }
-}, [
+  }, [
     userId,
     fetchUser,
     user,
-]);
+  ]);
 
   const props = {
-    user,
-  }
+    teams: user.teamMemberships
+  };
 
   return <Presentation {...props} />;
 }
@@ -37,16 +37,16 @@ const mapDispatchToProps = (dispatch) => {
     fetchUser: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
-          data: { userId: parseInt(userId) },
+          data: { userId },
         })
       );
     },
-  }
-}
+  };
+};
 
-const Dashboard = connect(
+const TeamsTable = connect(
   mapStateToProps,
   mapDispatchToProps
-)(DashboardUnconnected);
+)(TeamsTableUnconnected);
 
-export default Dashboard;
+export default TeamsTable;
