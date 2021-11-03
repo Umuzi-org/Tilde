@@ -1,6 +1,12 @@
 import React from "react";
 
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@material-ui/core";
 
 export default ({ detailedStats }) => {
   console.log(detailedStats);
@@ -8,6 +14,13 @@ export default ({ detailedStats }) => {
   return (
     <Table>
       <TableBody>
+        <TableRow>
+          <TableCell>
+            <Typography variant="h6" component="h2">
+              Performance
+            </Typography>
+          </TableCell>
+        </TableRow>
         <TableRow>
           <TableCell>Cards in complete column</TableCell>
           <TableCell>
