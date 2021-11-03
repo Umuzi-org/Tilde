@@ -1,23 +1,23 @@
 import React from "react";
-import { Grid, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import TeamsTable from "../UserDetails/TeamsTable";
+
+// TODO: should we include the user teams here?
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
     margin: theme.spacing(1),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
 
-export default ({ 
-  user
-}) => {
+export default ({ user }) => {
   const classes = useStyles();
-  const teams =  user ? user.teamMemberships : {};
-  if(user)
+  const teams = user ? user.teamMemberships : {};
+  if (user)
     return (
       <React.Fragment>
         <Grid container spacing={1}>
@@ -29,5 +29,5 @@ export default ({
         </Grid>
       </React.Fragment>
     );
-  return <React.Fragment />;  
+  return <React.Fragment />;
 };
