@@ -95,3 +95,5 @@ kubectl describe ingress tilde-prod-ingress
 curl http://backend.tilde.umuzi.org
 curl -v https://backend.tilde.umuzi.org
 ```
+
+
