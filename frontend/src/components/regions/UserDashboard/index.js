@@ -27,7 +27,7 @@ function DashboardUnconnected({
   }, [userId, fetchUser, fetchUserDetailedStats]);
 
   const showTeamsTable = user
-    ? hasPermissionOnUser({ authUser, user, TEAM_PERMISSIONS })
+    ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
     : false;
 
   const props = {
