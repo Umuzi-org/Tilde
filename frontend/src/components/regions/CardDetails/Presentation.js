@@ -35,20 +35,20 @@ import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => {
   const card = {
-    // borderWidth: 3,
+    borderWidth: 3,
     borderRadius: theme.spacing(2),
-    // margin: theme.spacing(1),
+    margin: theme.spacing(1),
     textAlign: "center",
   };
   return {
     paper: {
       padding: theme.spacing(1, 2, 1),
     },
-  
+
     commentColumn: {
       minWidth: 300,
     },
-  
+
     tableContainer: {
       maxHeight: 200,
     },
@@ -57,29 +57,26 @@ const useStyles = makeStyles((theme) => {
       marginBottom: theme.spacing(1),
     },
     yellowPaper: {
-      backgroundColor: yellow[300]
+      backgroundColor: green[400],
     },
-    cardColors: {
-      root: {
-        margin: theme.spacing(1),
-        width: theme.spacing(40),
-        //   height: theme.spacing(16),
-      },
-  
-      [BLOCKED]: {...card, backgroundColor: grey[400] },
-      [READY]: {...card, backgroundColor: blue[400] },
-      [IN_PROGRESS]: {...card, backgroundColor: green[400] },
-      [REVIEW_FEEDBACK]: {...card, backgroundColor: red[400] },
-      [IN_REVIEW]: {...card, backgroundColor: orange[400] },
-      [COMPLETE]: {...card, backgroundColor: yellow[400] },
-  
-      row: {
-        padding: 5,
-      },
-    }
-  }
-});
+    root: {
+      margin: theme.spacing(1),
+      width: theme.spacing(40),
+      height: theme.spacing(16),
+    },
 
+    [BLOCKED]: { ...card, backgroundColor: grey[400] },
+    [READY]: { ...card, backgroundColor: blue[400] },
+    [IN_PROGRESS]: { ...card, backgroundColor: green[400] },
+    [REVIEW_FEEDBACK]: { ...card, backgroundColor: red[400] },
+    [IN_REVIEW]: { ...card, backgroundColor: orange[400] },
+    [COMPLETE]: { ...card, backgroundColor: yellow[400] },
+
+    row: {
+      padding: 5,
+    },
+  };
+});
 
 const TopicProgressDetails = ({ topicProgress, reviews }) => {
   return (
@@ -120,12 +117,10 @@ const CardBasicDetails = ({ card }) => {
           <StoryPoints storyPoints={card.storyPoints} />
         </Grid>
         <TableCell>
-                <Paper className={classes[card.status]} variant="outlined">
-                  <Typography>
-                    {AGILE_CARD_STATUS_CHOICES[card.status]}
-                  </Typography>
-                </Paper>
-              </TableCell>
+          <Paper className={classes[card.status]} variant="outlined">
+            <Typography>{AGILE_CARD_STATUS_CHOICES[card.status]}</Typography>
+          </Paper>
+        </TableCell>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
