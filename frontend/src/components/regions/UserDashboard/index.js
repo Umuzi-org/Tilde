@@ -34,6 +34,7 @@ function DashboardUnconnected({
     user,
     detailedStats,
     showTeamsTable,
+    authUser,
   };
 
   return <Presentation {...props} />;
