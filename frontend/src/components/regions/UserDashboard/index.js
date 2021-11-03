@@ -4,23 +4,30 @@ import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
-function DashboardUnconnected({ users, authedUserId, fetchUser }) {
+function DashboardUnconnected({
+  authedUserId,
+  users,
+  userDetailedStats,
+  fetchUser,
+  fetchUserDetailedStats,
+}) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const user = users[userId];
+  const detailedStats = userDetailedStats[userId];
+
   React.useEffect(() => {
-    if(userId) {
-      fetchUser({ userId })
+    if (userId) {
+      fetchUser({ userId });
+      console.log("here");
+      fetchUserDetailedStats({ userId });
     }
-}, [
-    userId,
-    fetchUser,
-    user,
-]);
+  }, [userId, fetchUser, fetchUserDetailedStats]);
 
   const props = {
     user,
-  }
+    detailedStats,
+  };
 
   return <Presentation {...props} />;
 }
@@ -28,9 +35,10 @@ function DashboardUnconnected({ users, authedUserId, fetchUser }) {
 const mapStateToProps = (state) => {
   return {
     users: state.Entities.users || {},
+    userDetailedStats: state.Entities.userDetailedStats || {},
     authedUserId: state.App.authUser.userId,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -41,8 +49,16 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-  }
-}
+
+    fetchUserDetailedStats: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER_DETAILED_STATS.operations.maybeStart({
+          data: { userId: parseInt(userId) },
+        })
+      );
+    },
+  };
+};
 
 const Dashboard = connect(
   mapStateToProps,

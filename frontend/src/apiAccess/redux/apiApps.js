@@ -24,6 +24,8 @@ const FETCH_SINGLE_RECRUIT_PROJECT = "FETCH_SINGLE_RECRUIT_PROJECT";
 
 const FETCH_SINGLE_TEAM = "FETCH_SINGLE_TEAM";
 const FETCH_SINGLE_USER = "FETCH_SINGLE_USER";
+const FETCH_SINGLE_USER_DETAILED_STATS = "FETCH_SINGLE_USER_DETAILED_STATS";
+
 const FETCH_SINGLE_REPOSITORY = "FETCH_SINGLE_REPOSITORY";
 const FETCH_COMMITS_PAGE = "FETCH_COMMITS_PAGE";
 const FETCH_PULL_REQUESTS_PAGE = "FETCH_PULL_REQUESTS_PAGE";
@@ -84,6 +86,7 @@ export const entityApiAppTypes = {
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: "projectSummaryCards",
   FETCH_SINGLE_USER: "users",
+  FETCH_SINGLE_USER_DETAILED_STATS: "userDetailedStats",
   //   WHO_AM_I: "users",
 };
 
@@ -165,6 +168,11 @@ export const apiReduxApps = {
   FETCH_SINGLE_USER: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER,
     apiCaller: apiCallers.everyone.userEntity,
+  }),
+
+  FETCH_SINGLE_USER_DETAILED_STATS: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_USER_DETAILED_STATS,
+    apiCaller: apiCallers.everyone.userDetailedStatsEntity,
   }),
 
   FETCH_SINGLE_RECRUIT_PROJECT: createReduxApp({
