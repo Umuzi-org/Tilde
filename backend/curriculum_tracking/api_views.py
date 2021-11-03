@@ -2,7 +2,7 @@ from typing import Union
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden, HttpResponse
 from rest_framework.decorators import action, api_view, permission_classes
 from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
@@ -936,4 +936,4 @@ class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
     )
     def review_trusts_of_user(self, request, pk=None):
         review_trust_objects_for_user = models.ReviewTrust.objects.filter(pk=pk)
-        return HttpResponseForbidden(review_trust_objects_for_user)
+        return HttpResponse(review_trust_objects_for_user)
