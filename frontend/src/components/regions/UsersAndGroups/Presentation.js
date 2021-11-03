@@ -1,5 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
 import {
   Paper,
@@ -16,6 +17,9 @@ import {
 
 import FilterIcon from "@material-ui/icons/Filter"; //TODO better icon. Need to upgrade material ui
 import LaunchIcon from "@material-ui/icons/Launch";
+
+import { Link } from "react-router-dom";
+import { routes } from "../../../routes";
 
 const TeamSummaryStats = ({ summaryStats }) => {
   const oldestOpenPrTime = summaryStats.oldestOpenPrTime
@@ -57,32 +61,32 @@ const TeamSummaryStats = ({ summaryStats }) => {
   );
 };
 
-const TeamCard = ({ team, handleUserGroupClick, filterUsersByGroupName }) => {
-  const summaryStats = {
-    id: 183,
-    name: "B00t dpd demo",
-    oldestOpenPrTime: null,
-    totalOpenPrs: 0,
-    oldestCardInReviewTime: "2021-11-02T07:16:26.820156Z",
-    totalCardsInReview: 1,
-  };
-
+const TeamCard = ({
+  team,
+  summaryStats,
+  handleUserGroupClick,
+  filterUsersByGroupName,
+}) => {
   const filterButtonVariant =
     team.name === filterUsersByGroupName ? "contained" : "outlined";
+
+  console.log(summaryStats);
 
   return (
     <Paper variant="outlined" elevation={2}>
       <Typography variant="h6" gutterBottom component="div">
         {team.name}
       </Typography>
-      <Button
-        variant="outlined"
-        color="default"
-        size="small"
-        startIcon={<LaunchIcon />}
-      >
-        View
-      </Button>
+      <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
+        <Button
+          variant="outlined"
+          color="default"
+          size="small"
+          startIcon={<LaunchIcon />}
+        >
+          View
+        </Button>
+      </Link>
       <Button
         variant={filterButtonVariant}
         color="default"
@@ -104,14 +108,7 @@ const UserCard = ({ email, user }) => {
         {email}
       </Typography>
 
-      <Button
-        variant="outlined"
-        color="default"
-        size="small"
-        startIcon={<LaunchIcon />}
-      >
-        View
-      </Button>
+      <LinkToUserBoard userId={user.userId} label="View" />
     </Paper>
   );
 };
@@ -126,7 +123,6 @@ export default function Presentation({
   filterUsersByGroupName,
   handleUserGroupClick,
 }) {
-  console.log(users);
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
@@ -142,6 +138,7 @@ export default function Presentation({
             <TeamCard
               key={team.id}
               team={team}
+              summaryStats={teamSummaryStats[team.id]}
               handleUserGroupClick={handleUserGroupClick}
               filterUsersByGroupName={filterUsersByGroupName}
             />

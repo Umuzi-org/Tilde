@@ -101,7 +101,7 @@ function UsersAndGroupsUnconnected({
       filterByUser.value,
       filterUsersByGroupName
     ),
-    todo
+    teamSummaryStats,
     filterByGroup,
     filterByUser,
     filterUsersByGroupName,

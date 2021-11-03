@@ -20,6 +20,24 @@ export const Primary = Template.bind({});
 
 Primary.args = {
   teams: teams,
+  teamSummaryStats: {
+    1: {
+      id: 1,
+      name: "team1",
+      oldestOpenPrTime: "2021-10-13T04:45:01Z",
+      totalOpenPrs: 9,
+      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      totalCardsInReview: 17,
+    },
+    2: {
+      id: 1,
+      name: "team2",
+      oldestOpenPrTime: "2021-10-13T04:45:01Z",
+      totalOpenPrs: 9,
+      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      totalCardsInReview: 17,
+    },
+  },
   users: users,
   filterByGroup: {
     value: "",
@@ -34,5 +52,6 @@ Primary.args = {
     helpertext: "",
     required: false,
   },
+
   handleUserGroupClick: () => {},
 };
