@@ -63,6 +63,14 @@ async function teamsPage({ page }) {
   return { response, responseData };
 }
 
+async function teamsSummaryStatsPage({ page }) {
+  const limit = 10;
+  const offset = calculateOffset({ page, limit });
+  const url = `${API_BASE_URL}/api/teams/summary_stats/?active=true&limit=${limit}&offset=${offset}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
 async function teamEntity({ teamId }) {
   const url = `${API_BASE_URL}/api/teams/${teamId}`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -323,6 +331,7 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
 
 export default {
   // TODO: get rid of this. Rather just export the functions individually
+
   everyone: {
     whoAmI,
     logout,
@@ -330,6 +339,7 @@ export default {
     teamsPage,
     teamEntity,
     userEntity,
+    teamsSummaryStatsPage,
   },
 
   recruits: {
