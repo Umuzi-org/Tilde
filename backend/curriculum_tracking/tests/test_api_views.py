@@ -381,20 +381,21 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
     @classmethod
     def setUpTestData(cls):
-        cls.card = factories.AgileCardFactory(
-            content_item=factories.ProjectContentItemFactory(), recruit_project=None
-        )
+
         cls.recruit = UserFactory(is_superuser=False, is_staff=False)
         cls.staff_member = UserFactory(is_superuser=True, is_staff=True)
-        cls.card.assignees.add(cls.recruit)
         cls.review_trust_object = factories.ReviewTrustFactory()
 
-    @patch('django.http.HttpRequest')
-    @patch('curriculum_tracking.api_views.TrustedReviewerViewSet')
-    def test_staff_user_can_see_all_trusted_reviewer_objects(self, mocked_reviewer_viewset, mocked_request):
+    def test_staff_user_can_see_all_trusted_reviewer_objects(self):
 
         self.login(self.staff_member)
         url = '/api/trusted_reviewer_status/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_normal_user_can_see_no_trusted_reviewer_objects_if_not_their_own(self):
+
+        self.login(self.recruit)
+        url = '/api/trusted_reviewer_status/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
