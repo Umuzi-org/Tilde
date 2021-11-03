@@ -56,9 +56,6 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
-    yellowPaper: {
-      backgroundColor: green[400],
-    },
     root: {
       margin: theme.spacing(1),
       width: theme.spacing(40),
