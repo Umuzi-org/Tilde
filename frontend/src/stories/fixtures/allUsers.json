@@ -1,0 +1,3680 @@
+{
+  "keanu.bowker@umuzi.org": {
+    "userId": 208,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 208,
+        "userEmail": "keanu.bowker@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "philani.dlamini@umuzi.org": {
+    "userId": 292,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 292,
+        "userEmail": "philani.dlamini@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "takalani.maapola@umuzi.org": {
+    "userId": 441,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 441,
+        "userEmail": "takalani.maapola@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 24 data sci": {
+        "teamId": 41,
+        "userId": 441,
+        "userEmail": "takalani.maapola@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "thapelo.marakalla@umuzi.org": {
+    "userId": 423,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 423,
+        "userEmail": "thapelo.marakalla@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 24 data sci": {
+        "teamId": 41,
+        "userId": 423,
+        "userEmail": "thapelo.marakalla@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "sean.mohomane@umuzi.org": {
+    "userId": 457,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 457,
+        "userEmail": "sean.mohomane@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 24 data sci": {
+        "teamId": 41,
+        "userId": 457,
+        "userEmail": "sean.mohomane@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "thando.msutwana@umuzi.org": {
+    "userId": 419,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 419,
+        "userEmail": "thando.msutwana@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 24 data sci": {
+        "teamId": 41,
+        "userId": 419,
+        "userEmail": "thando.msutwana@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "mafanedza.nephawe@umuzi.org": {
+    "userId": 672,
+    "groups": {
+      "Data Science Recruits": {
+        "teamId": 16,
+        "userId": 672,
+        "userEmail": "mafanedza.nephawe@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 26 data sci": {
+        "teamId": 138,
+        "userId": 672,
+        "userEmail": "mafanedza.nephawe@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "khanyisile.moyo@umuzi.org": {
+    "userId": 286,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 286,
+        "userEmail": "khanyisile.moyo@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "tshepo.tshabalala@umuzi.org": {
+    "userId": 299,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 299,
+        "userEmail": "tshepo.tshabalala@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 24 data eng Old Mutual": {
+        "teamId": 114,
+        "userId": 299,
+        "userEmail": "tshepo.tshabalala@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "jade.makwela@umuzi.org": {
+    "userId": 452,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 452,
+        "userEmail": "jade.makwela@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 24 data eng Old Mutual": {
+        "teamId": 114,
+        "userId": 452,
+        "userEmail": "jade.makwela@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kgotego.mosime@umuzi.org": {
+    "userId": 433,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 433,
+        "userEmail": "kgotego.mosime@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "thabang.moroe@umuzi.org": {
+    "userId": 438,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 438,
+        "userEmail": "thabang.moroe@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 24 data eng Old Mutual": {
+        "teamId": 114,
+        "userId": 438,
+        "userEmail": "thabang.moroe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "selaelo.makgato@umuzi.org": {
+    "userId": 444,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 444,
+        "userEmail": "selaelo.makgato@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "lebohang.kebethi@umuzi.org": {
+    "userId": 507,
+    "groups": {
+      "Cohort 24 data eng": {
+        "teamId": 24,
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 24 data eng Old Mutual": {
+        "teamId": 114,
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sylvester.magwaza@umuzi.org": {
+    "userId": 296,
+    "groups": {
+      "Cohort 24 web dev": {
+        "teamId": 56,
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 22 + 24 web dev": {
+        "teamId": 103,
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "thulane.makofane@umuzi.org": {
+    "userId": 424,
+    "groups": {
+      "Cohort 24 web dev": {
+        "teamId": 56,
+        "userId": 424,
+        "userEmail": "thulane.makofane@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 22 + 24 web dev": {
+        "teamId": 103,
+        "userId": 424,
+        "userEmail": "thulane.makofane@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "lionel.raseemela@umuzi.org": {
+    "userId": 417,
+    "groups": {
+      "Cohort 24 web dev": {
+        "teamId": 56,
+        "userId": 417,
+        "userEmail": "lionel.raseemela@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "kgaolo.malatji@umuzi.org": {
+    "userId": 451,
+    "groups": {
+      "Cohort 24 web dev": {
+        "teamId": 56,
+        "userId": 451,
+        "userEmail": "kgaolo.malatji@umuzi.org",
+        "userActive": false
+      },
+      "Cohort 22 + 24 web dev": {
+        "teamId": 103,
+        "userId": 451,
+        "userEmail": "kgaolo.malatji@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "gugu.mavimbela@umuzi.org": {
+    "userId": 298,
+    "groups": {
+      "Cohort 22 + 24 web dev": {
+        "teamId": 103,
+        "userId": 298,
+        "userEmail": "gugu.mavimbela@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 298,
+        "userEmail": "gugu.mavimbela@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "ngoako.ramokgopa@umuzi.org": {
+    "userId": 449,
+    "groups": {
+      "Cohort 22 + 24 web dev": {
+        "teamId": 103,
+        "userId": 449,
+        "userEmail": "ngoako.ramokgopa@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 449,
+        "userEmail": "ngoako.ramokgopa@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "thapelo.masangane@umuzi.org": {
+    "userId": 553,
+    "groups": {
+      "Cohort 26 java": {
+        "teamId": 122,
+        "userId": 553,
+        "userEmail": "thapelo.masangane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mojalefa.mohlamonyane@umuzi.org": {
+    "userId": 558,
+    "groups": {
+      "Cohort 26 java": {
+        "teamId": 122,
+        "userId": 558,
+        "userEmail": "mojalefa.mohlamonyane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "khethukuthula.mkhize@umuzi.org": {
+    "userId": 550,
+    "groups": {
+      "Cohort 26 java": {
+        "teamId": 122,
+        "userId": 550,
+        "userEmail": "khethukuthula.mkhize@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "berned.ndebe@umuzi.org": {
+    "userId": 554,
+    "groups": {
+      "Cohort 26 java": {
+        "teamId": 122,
+        "userId": 554,
+        "userEmail": "berned.ndebe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "shalom.mothapo@umuzi.org": {
+    "userId": 80,
+    "groups": {
+      "Cohort 25 data eng": {
+        "teamId": 126,
+        "userId": 80,
+        "userEmail": "shalom.mothapo@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 data eng alumni": {
+        "teamId": 141,
+        "userId": 80,
+        "userEmail": "shalom.mothapo@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "thavha.tsiwana@umuzi.org": {
+    "userId": 578,
+    "groups": {
+      "Cohort 25 data eng": {
+        "teamId": 126,
+        "userId": 578,
+        "userEmail": "thavha.tsiwana@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "khensani.mashimbye@umuzi.org": {
+    "userId": 721,
+    "groups": {
+      "Cohort 25 data eng": {
+        "teamId": 126,
+        "userId": 721,
+        "userEmail": "khensani.mashimbye@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mahlori.baloyi@umuzi.org": {
+    "userId": 294,
+    "groups": {
+      "Cohort 25 data sci": {
+        "teamId": 127,
+        "userId": 294,
+        "userEmail": "mahlori.baloyi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mpho.mashau@umuzi.org": {
+    "userId": 477,
+    "groups": {
+      "Cohort 25 data sci": {
+        "teamId": 127,
+        "userId": 477,
+        "userEmail": "mpho.mashau@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "tlhakodiso.kgasago@umuzi.org": {
+    "userId": 585,
+    "groups": {
+      "Cohort 25 data sci": {
+        "teamId": 127,
+        "userId": 585,
+        "userEmail": "tlhakodiso.kgasago@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sipho.dlamini@umuzi.org": {
+    "userId": 577,
+    "groups": {
+      "Cohort 25 data sci": {
+        "teamId": 127,
+        "userId": 577,
+        "userEmail": "sipho.dlamini@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "phenyo.mopako@umuzi.org": {
+    "userId": 670,
+    "groups": {
+      "Cohort 25 data sci": {
+        "teamId": 127,
+        "userId": 670,
+        "userEmail": "phenyo.mopako@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "latifa.simbini@umuzi.org": {
+    "userId": 235,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java alumni": {
+        "teamId": 140,
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lufuno.khuvhe@umuzi.org": {
+    "userId": 587,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 587,
+        "userEmail": "lufuno.khuvhe@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 587,
+        "userEmail": "lufuno.khuvhe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lehlohonolo.mopeli@umuzi.org": {
+    "userId": 584,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 584,
+        "userEmail": "lehlohonolo.mopeli@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 584,
+        "userEmail": "lehlohonolo.mopeli@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "hlulani.nkuna@umuzi.org": {
+    "userId": 599,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 599,
+        "userEmail": "hlulani.nkuna@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 599,
+        "userEmail": "hlulani.nkuna@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "zodwa.sidinana@umuzi.org": {
+    "userId": 567,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 567,
+        "userEmail": "zodwa.sidinana@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 567,
+        "userEmail": "zodwa.sidinana@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "njabulo.mhlambi@umuzi.org": {
+    "userId": 580,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 580,
+        "userEmail": "njabulo.mhlambi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 580,
+        "userEmail": "njabulo.mhlambi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "charles.moswane@umuzi.org": {
+    "userId": 594,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 594,
+        "userEmail": "charles.moswane@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 594,
+        "userEmail": "charles.moswane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "oreneile.sejeso@umuzi.org": {
+    "userId": 595,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 595,
+        "userEmail": "oreneile.sejeso@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 595,
+        "userEmail": "oreneile.sejeso@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "takalani.mufamadi@umuzi.org": {
+    "userId": 609,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 609,
+        "userEmail": "takalani.mufamadi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 609,
+        "userEmail": "takalani.mufamadi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "velile.vamba@umuzi.org": {
+    "userId": 598,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 598,
+        "userEmail": "velile.vamba@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 598,
+        "userEmail": "velile.vamba@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "linda.sithole@umuzi.org": {
+    "userId": 674,
+    "groups": {
+      "Cohort 25 java": {
+        "teamId": 128,
+        "userId": 674,
+        "userEmail": "linda.sithole@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 2": {
+        "teamId": 188,
+        "userId": 674,
+        "userEmail": "linda.sithole@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "zinhle.mzimba@umuzi.org": {
+    "userId": 345,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 345,
+        "userEmail": "zinhle.mzimba@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "adric.maplanka@umuzi.org": {
+    "userId": 402,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 402,
+        "userEmail": "adric.maplanka@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 402,
+        "userEmail": "adric.maplanka@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "phine.hadebe@umuzi.org": {
+    "userId": 434,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 434,
+        "userEmail": "phine.hadebe@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 434,
+        "userEmail": "phine.hadebe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "zubair.ajam@umuzi.org": {
+    "userId": 521,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 521,
+        "userEmail": "zubair.ajam@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 521,
+        "userEmail": "zubair.ajam@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "tshidi.shalang@umuzi.org": {
+    "userId": 588,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 588,
+        "userEmail": "tshidi.shalang@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 588,
+        "userEmail": "tshidi.shalang@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "judlyn.muoghalu@umuzi.org": {
+    "userId": 570,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 570,
+        "userEmail": "judlyn.muoghalu@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 570,
+        "userEmail": "judlyn.muoghalu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "valerie.gongora@umuzi.org": {
+    "userId": 563,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 563,
+        "userEmail": "valerie.gongora@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 563,
+        "userEmail": "valerie.gongora@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sthembiso.radebe@umuzi.org": {
+    "userId": 568,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 568,
+        "userEmail": "sthembiso.radebe@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 568,
+        "userEmail": "sthembiso.radebe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "luvo.spofana@umuzi.org": {
+    "userId": 564,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 564,
+        "userEmail": "luvo.spofana@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 564,
+        "userEmail": "luvo.spofana@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "ronald.nkadimeng@umuzi.org": {
+    "userId": 571,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 571,
+        "userEmail": "ronald.nkadimeng@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 571,
+        "userEmail": "ronald.nkadimeng@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "todii.mashoko@umuzi.org": {
+    "userId": 575,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 575,
+        "userEmail": "todii.mashoko@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 575,
+        "userEmail": "todii.mashoko@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "christopher.maphakane@umuzi.org": {
+    "userId": 572,
+    "groups": {
+      "Cohort 25 web dev": {
+        "teamId": 129,
+        "userId": 572,
+        "userEmail": "christopher.maphakane@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 1": {
+        "teamId": 142,
+        "userId": 572,
+        "userEmail": "christopher.maphakane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mpho.khotleng@umuzi.org": {
+    "userId": 75,
+    "groups": {
+      "Cohort 25 it support": {
+        "teamId": 130,
+        "userId": 75,
+        "userEmail": "mpho.khotleng@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lesiba.masenya@umuzi.org": {
+    "userId": 601,
+    "groups": {
+      "Cohort 25 it support": {
+        "teamId": 130,
+        "userId": 601,
+        "userEmail": "lesiba.masenya@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lindokuhle.shabalala@umuzi.org": {
+    "userId": 484,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 484,
+        "userEmail": "lindokuhle.shabalala@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 484,
+        "userEmail": "lindokuhle.shabalala@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mbali.mtimkulu@umuzi.org": {
+    "userId": 352,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 352,
+        "userEmail": "mbali.mtimkulu@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 352,
+        "userEmail": "mbali.mtimkulu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "amen.nkala@umuzi.org": {
+    "userId": 479,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 479,
+        "userEmail": "amen.nkala@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 479,
+        "userEmail": "amen.nkala@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "wisani.matobela@umuzi.org": {
+    "userId": 458,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 458,
+        "userEmail": "wisani.matobela@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 458,
+        "userEmail": "wisani.matobela@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "itumeleng.matheba@umuzi.org": {
+    "userId": 480,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 480,
+        "userEmail": "itumeleng.matheba@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 480,
+        "userEmail": "itumeleng.matheba@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "refilwe.mashile@umuzi.org": {
+    "userId": 490,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 490,
+        "userEmail": "refilwe.mashile@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 490,
+        "userEmail": "refilwe.mashile@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "tumelo.mahlangu@umuzi.org": {
+    "userId": 696,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 696,
+        "userEmail": "tumelo.mahlangu@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 696,
+        "userEmail": "tumelo.mahlangu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "andile.dimba@umuzi.org": {
+    "userId": 682,
+    "groups": {
+      "Cohort 27 web dev": {
+        "teamId": 133,
+        "userId": 682,
+        "userEmail": "andile.dimba@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 682,
+        "userEmail": "andile.dimba@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "xolani.mgube@umuzi.org": {
+    "userId": 92,
+    "groups": {
+      "Cohort 25 web dev alumni": {
+        "teamId": 139,
+        "userId": 92,
+        "userEmail": "xolani.mgube@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 92,
+        "userEmail": "xolani.mgube@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sandi.sibulali@umuzi.org": {
+    "userId": 561,
+    "groups": {
+      "Cohort 25 web dev alumni": {
+        "teamId": 139,
+        "userId": 561,
+        "userEmail": "sandi.sibulali@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 web dev 2": {
+        "teamId": 143,
+        "userId": 561,
+        "userEmail": "sandi.sibulali@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "masai.mahapa@umuzi.org": {
+    "userId": 16,
+    "groups": {
+      "Cohort 25 java alumni": {
+        "teamId": 140,
+        "userId": 16,
+        "userEmail": "masai.mahapa@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 25 java 1": {
+        "teamId": 187,
+        "userId": 16,
+        "userEmail": "masai.mahapa@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mthokozisi.msibi@umuzi.org": {
+    "userId": 446,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 446,
+        "userEmail": "mthokozisi.msibi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "themba.ntuli@umuzi.org": {
+    "userId": 425,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 425,
+        "userEmail": "themba.ntuli@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mxolisi.sibaya@umuzi.org": {
+    "userId": 547,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 547,
+        "userEmail": "mxolisi.sibaya@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sedzani.ragau@umuzi.org": {
+    "userId": 552,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 552,
+        "userEmail": "sedzani.ragau@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sandile.nkosi@umuzi.org": {
+    "userId": 549,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 549,
+        "userEmail": "sandile.nkosi@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 549,
+        "userEmail": "sandile.nkosi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mpilo.ndlovu@umuzi.org": {
+    "userId": 555,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 555,
+        "userEmail": "mpilo.ndlovu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "christopher.ngalalume@umuzi.org": {
+    "userId": 683,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 683,
+        "userEmail": "christopher.ngalalume@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kgotlelelo.mangene@umuzi.org": {
+    "userId": 711,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 711,
+        "userEmail": "kgotlelelo.mangene@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 711,
+        "userEmail": "kgotlelelo.mangene@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "luke.scott@umuzi.org": {
+    "userId": 688,
+    "groups": {
+      "Cohort 28 web dev": {
+        "teamId": 146,
+        "userId": 688,
+        "userEmail": "luke.scott@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mduduzi.malapane@umuzi.org": {
+    "userId": 498,
+    "groups": {
+      "Cohort 28 data eng": {
+        "teamId": 147,
+        "userId": 498,
+        "userEmail": "mduduzi.malapane@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 498,
+        "userEmail": "mduduzi.malapane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "siphiwe.mposula@umuzi.org": {
+    "userId": 703,
+    "groups": {
+      "Cohort 28 data eng": {
+        "teamId": 147,
+        "userId": 703,
+        "userEmail": "siphiwe.mposula@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 703,
+        "userEmail": "siphiwe.mposula@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lungile.njakazi@umuzi.org": {
+    "userId": 716,
+    "groups": {
+      "Cohort 28 data eng": {
+        "teamId": 147,
+        "userId": 716,
+        "userEmail": "lungile.njakazi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 716,
+        "userEmail": "lungile.njakazi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "vuyisa.mrwebi@umuzi.org": {
+    "userId": 677,
+    "groups": {
+      "Cohort 28 data sci": {
+        "teamId": 148,
+        "userId": 677,
+        "userEmail": "vuyisa.mrwebi@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 677,
+        "userEmail": "vuyisa.mrwebi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "tsepo.matheleli@umuzi.org": {
+    "userId": 692,
+    "groups": {
+      "Cohort 28 data sci": {
+        "teamId": 148,
+        "userId": 692,
+        "userEmail": "tsepo.matheleli@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 692,
+        "userEmail": "tsepo.matheleli@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "codie.mellem@umuzi.org": {
+    "userId": 678,
+    "groups": {
+      "Cohort 28 data sci": {
+        "teamId": 148,
+        "userId": 678,
+        "userEmail": "codie.mellem@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 678,
+        "userEmail": "codie.mellem@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "bryce.lawrence@umuzi.org": {
+    "userId": 668,
+    "groups": {
+      "Cohort 28 data sci": {
+        "teamId": 148,
+        "userId": 668,
+        "userEmail": "bryce.lawrence@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 668,
+        "userEmail": "bryce.lawrence@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kihiko.augustine@gmail.com": {
+    "userId": 728,
+    "groups": {
+      "NCIT Assessors": {
+        "teamId": 153,
+        "userId": 728,
+        "userEmail": "kihiko.augustine@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "eddah.githuku@umuzi.org": {
+    "userId": 723,
+    "groups": {
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 723,
+        "userEmail": "eddah.githuku@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 web dev": {
+        "teamId": 166,
+        "userId": 723,
+        "userEmail": "eddah.githuku@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "maria.otieno@umuzi.org": {
+    "userId": 724,
+    "groups": {
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 724,
+        "userEmail": "maria.otieno@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 web dev": {
+        "teamId": 166,
+        "userId": 724,
+        "userEmail": "maria.otieno@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kelebogile.mokwena@umuzi.org": {
+    "userId": 735,
+    "groups": {
+      "Cohort 29 + 24 web dev": {
+        "teamId": 162,
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 web dev": {
+        "teamId": 166,
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      },
+      "BBD Group": {
+        "teamId": 205,
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sizwe.shabangu@umuzi.org": {
+    "userId": 751,
+    "groups": {
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 751,
+        "userEmail": "sizwe.shabangu@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data eng": {
+        "teamId": 167,
+        "userId": 751,
+        "userEmail": "sizwe.shabangu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kamogelo.maepa@umuzi.org": {
+    "userId": 704,
+    "groups": {
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 704,
+        "userEmail": "kamogelo.maepa@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data eng": {
+        "teamId": 167,
+        "userId": 704,
+        "userEmail": "kamogelo.maepa@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "thandiwe.khalaki@umuzi.org": {
+    "userId": 745,
+    "groups": {
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 745,
+        "userEmail": "thandiwe.khalaki@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data eng": {
+        "teamId": 167,
+        "userId": 745,
+        "userEmail": "thandiwe.khalaki@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "neo.mogale@umuzi.org": {
+    "userId": 747,
+    "groups": {
+      "Cohort 28 + 29 data eng": {
+        "teamId": 163,
+        "userId": 747,
+        "userEmail": "neo.mogale@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data eng": {
+        "teamId": 167,
+        "userId": 747,
+        "userEmail": "neo.mogale@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "philani.mtembu@umuzi.org": {
+    "userId": 474,
+    "groups": {
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 474,
+        "userEmail": "philani.mtembu@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data sci": {
+        "teamId": 165,
+        "userId": 474,
+        "userEmail": "philani.mtembu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "wesley.jackson@umuzi.org": {
+    "userId": 744,
+    "groups": {
+      "Cohort 28+ 29 data science": {
+        "teamId": 164,
+        "userId": 744,
+        "userEmail": "wesley.jackson@umuzi.org",
+        "userActive": true
+      },
+      "Cohort 29 data sci": {
+        "teamId": 165,
+        "userId": 744,
+        "userEmail": "wesley.jackson@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "nhlangano.chabalala@umuzi.org": {
+    "userId": 794,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 794,
+        "userEmail": "nhlangano.chabalala@umuzi.org",
+        "userActive": true
+      },
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 794,
+        "userEmail": "nhlangano.chabalala@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "keneilwe.manganya@umuzi.org": {
+    "userId": 795,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 795,
+        "userEmail": "keneilwe.manganya@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "tshepo.matheera@umuzi.org": {
+    "userId": 796,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 796,
+        "userEmail": "tshepo.matheera@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "ebernezer.letsoalo@umuzi.org": {
+    "userId": 797,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 797,
+        "userEmail": "ebernezer.letsoalo@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "karabo.leshabane@umuzi.org": {
+    "userId": 798,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 798,
+        "userEmail": "karabo.leshabane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "ditshepo.mashile@umuzi.org": {
+    "userId": 789,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 789,
+        "userEmail": "ditshepo.mashile@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "kgaugelo.rakgwale@umuzi.org": {
+    "userId": 790,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 790,
+        "userEmail": "kgaugelo.rakgwale@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lerato.mohlaudi@umuzi.org": {
+    "userId": 791,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 791,
+        "userEmail": "lerato.mohlaudi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "siviwe.madikane@umuzi.org": {
+    "userId": 792,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 792,
+        "userEmail": "siviwe.madikane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "caiphus.mamakgale@umuzi.org": {
+    "userId": 793,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 793,
+        "userEmail": "caiphus.mamakgale@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "simphiwe.khulu@umuzi.org": {
+    "userId": 799,
+    "groups": {
+      "DPD product team": {
+        "teamId": 170,
+        "userId": 799,
+        "userEmail": "simphiwe.khulu@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "alisonsmall72@gmail.com": {
+    "userId": 878,
+    "groups": {
+      "External data science": {
+        "teamId": 181,
+        "userId": 878,
+        "userEmail": "alisonsmall72@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "carrie.netshifhire@umuzi.org": {
+    "userId": 112,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 112,
+        "userEmail": "carrie.netshifhire@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lindelani.mbatha@umuzi.org": {
+    "userId": 8,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 8,
+        "userEmail": "lindelani.mbatha@umuzi.org",
+        "userActive": true
+      },
+      "DPD managment team": {
+        "teamId": 193,
+        "userId": 8,
+        "userEmail": "lindelani.mbatha@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "carly.whitaker@umuzi.org": {
+    "userId": 409,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 409,
+        "userEmail": "carly.whitaker@umuzi.org",
+        "userActive": true
+      },
+      "DPD managment team": {
+        "teamId": 193,
+        "userId": 409,
+        "userEmail": "carly.whitaker@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lesedi.thethe@umuzi.org": {
+    "userId": 885,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 885,
+        "userEmail": "lesedi.thethe@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mapuleng.khola@umuzi.org": {
+    "userId": 886,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 886,
+        "userEmail": "mapuleng.khola@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "moipone.tsoke@umuzi.org": {
+    "userId": 887,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 887,
+        "userEmail": "moipone.tsoke@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "nyakallo.ramantso@umuzi.org": {
+    "userId": 888,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 888,
+        "userEmail": "nyakallo.ramantso@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "palesa.liutloileng@umuzi.org": {
+    "userId": 889,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 889,
+        "userEmail": "palesa.liutloileng@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "khumo.rakgomo@umuzi.org": {
+    "userId": 881,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 881,
+        "userEmail": "khumo.rakgomo@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "thoko-ntsiki.bucibo@umuzi.org": {
+    "userId": 882,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 882,
+        "userEmail": "thoko-ntsiki.bucibo@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "aidan.lewis@umuzi.org": {
+    "userId": 883,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 883,
+        "userEmail": "aidan.lewis@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "busisiwe.gcuma@umuzi.org": {
+    "userId": 884,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 884,
+        "userEmail": "busisiwe.gcuma@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "Hloniphile.mdluli@umuzi.org": {
+    "userId": 879,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 879,
+        "userEmail": "Hloniphile.mdluli@umuzi.org",
+        "userActive": true
+      },
+      "DPD managment team": {
+        "teamId": 193,
+        "userId": 879,
+        "userEmail": "Hloniphile.mdluli@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lerato.molapisi@umuzi.org": {
+    "userId": 880,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 880,
+        "userEmail": "lerato.molapisi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lindokuhle.nkabinde@umuzi.org": {
+    "userId": 942,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 942,
+        "userEmail": "lindokuhle.nkabinde@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mante.moruthane@umuzi.org": {
+    "userId": 943,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 943,
+        "userEmail": "mante.moruthane@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "gabisile.camana@umuzi.org": {
+    "userId": 941,
+    "groups": {
+      "B00t dpd demo": {
+        "teamId": 183,
+        "userId": 941,
+        "userEmail": "gabisile.camana@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lovekilledtshepo@gmail.com": {
+    "userId": 754,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 754,
+        "userEmail": "lovekilledtshepo@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "raeesdolley76@gmail.com": {
+    "userId": 800,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 800,
+        "userEmail": "raeesdolley76@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "keleboneteboho@gmail.com": {
+    "userId": 478,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 478,
+        "userEmail": "keleboneteboho@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "georgehlongwane8@gmail.com": {
+    "userId": 526,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 526,
+        "userEmail": "georgehlongwane8@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "annettetchouawou@gmail.com": {
+    "userId": 767,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 767,
+        "userEmail": "annettetchouawou@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "andymatobela@gmail.com": {
+    "userId": 785,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 785,
+        "userEmail": "andymatobela@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mabuselakopano@gmail.com": {
+    "userId": 733,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 733,
+        "userEmail": "mabuselakopano@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nathanielmvana@gmail.com": {
+    "userId": 784,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 784,
+        "userEmail": "nathanielmvana@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "seansthomo@gmail.com": {
+    "userId": 740,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 740,
+        "userEmail": "seansthomo@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "thamsanqambexe@gmail.com": {
+    "userId": 803,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 803,
+        "userEmail": "thamsanqambexe@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "palesamapeka97@gmail.com": {
+    "userId": 809,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 809,
+        "userEmail": "palesamapeka97@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tylanvrooyen@gmail.com": {
+    "userId": 736,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 736,
+        "userEmail": "tylanvrooyen@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "reatjie@gmail.com": {
+    "userId": 781,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 781,
+        "userEmail": "reatjie@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "kamogelo40@gmail.com": {
+    "userId": 778,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 778,
+        "userEmail": "kamogelo40@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "patriciaslindile5@gmail.com": {
+    "userId": 812,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 812,
+        "userEmail": "patriciaslindile5@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tumi608@gmail.com": {
+    "userId": 877,
+    "groups": {
+      "bridge web dev": {
+        "teamId": 184,
+        "userId": 877,
+        "userEmail": "tumi608@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "muziwethu.mlotshwa@umuzi.org": {
+    "userId": 755,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 755,
+        "userEmail": "muziwethu.mlotshwa@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "paule.nembou@umuzi.org": {
+    "userId": 761,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 761,
+        "userEmail": "paule.nembou@umuzi.org",
+        "userActive": false
+      }
+    }
+  },
+  "loretta.khisa@umuzi.org": {
+    "userId": 759,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 759,
+        "userEmail": "loretta.khisa@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "taelo.seholoba@umuzi.org": {
+    "userId": 548,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 548,
+        "userEmail": "taelo.seholoba@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sinoxolo.cotyi@umuzi.org": {
+    "userId": 691,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 691,
+        "userEmail": "sinoxolo.cotyi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "sinethemba.khoza@umuzi.org": {
+    "userId": 741,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 741,
+        "userEmail": "sinethemba.khoza@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "mathibela.lemekoana@umuzi.org": {
+    "userId": 737,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 737,
+        "userEmail": "mathibela.lemekoana@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "steve.molele@umuzi.org": {
+    "userId": 734,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 734,
+        "userEmail": "steve.molele@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "lufuno.mbedzi@umuzi.org": {
+    "userId": 731,
+    "groups": {
+      "Cohort 30 web dev": {
+        "teamId": 185,
+        "userId": 731,
+        "userEmail": "lufuno.mbedzi@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "nkateko.mabaso@umuzi.org": {
+    "userId": 260,
+    "groups": {
+      "bridge data eng": {
+        "teamId": 186,
+        "userId": 260,
+        "userEmail": "nkateko.mabaso@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "eli.mashilwane@gmail.com": {
+    "userId": 702,
+    "groups": {
+      "bridge data eng": {
+        "teamId": 186,
+        "userId": 702,
+        "userEmail": "eli.mashilwane@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "meshack.nage@gmail.com": {
+    "userId": 836,
+    "groups": {
+      "bridge data eng": {
+        "teamId": 186,
+        "userId": 836,
+        "userEmail": "meshack.nage@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "9mm.ext.gp@gmail.com": {
+    "userId": 853,
+    "groups": {
+      "bridge data eng": {
+        "teamId": 186,
+        "userId": 853,
+        "userEmail": "9mm.ext.gp@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nyphindile@gmail.com": {
+    "userId": 892,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 892,
+        "userEmail": "nyphindile@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "navashen187@gmail.com": {
+    "userId": 893,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 893,
+        "userEmail": "navashen187@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nesangounder@gmail.com": {
+    "userId": 894,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 894,
+        "userEmail": "nesangounder@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mabuzaba@gmail.com": {
+    "userId": 895,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 895,
+        "userEmail": "mabuzaba@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "soomarkn@gmail.com": {
+    "userId": 896,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 896,
+        "userEmail": "soomarkn@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ericbeukes@gmail.com": {
+    "userId": 898,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 898,
+        "userEmail": "ericbeukes@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "jancovdmerwe@gmail.com": {
+    "userId": 899,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 899,
+        "userEmail": "jancovdmerwe@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "oosthupj@gmail.com": {
+    "userId": 900,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 900,
+        "userEmail": "oosthupj@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mduduzi.mathonsi@gmail.com": {
+    "userId": 901,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 901,
+        "userEmail": "mduduzi.mathonsi@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "kabeerjaggers@gmail.com": {
+    "userId": 902,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 902,
+        "userEmail": "kabeerjaggers@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "rentiaerasmus2@gmail.com": {
+    "userId": 903,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 903,
+        "userEmail": "rentiaerasmus2@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nt.mzini@gmail.com": {
+    "userId": 904,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 904,
+        "userEmail": "nt.mzini@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tbomeks@gmail.com": {
+    "userId": 905,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 905,
+        "userEmail": "tbomeks@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "sesinhlapo4@gmail.com": {
+    "userId": 906,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 906,
+        "userEmail": "sesinhlapo4@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mjtsolo@gmail.com": {
+    "userId": 907,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 907,
+        "userEmail": "mjtsolo@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "vishnun797@gmail.com": {
+    "userId": 908,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 908,
+        "userEmail": "vishnun797@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mkzuma17@gmail.com": {
+    "userId": 944,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 944,
+        "userEmail": "mkzuma17@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "vernicepetersen1001@gmail.com": {
+    "userId": 945,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 945,
+        "userEmail": "vernicepetersen1001@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "iklmmameshi@gmail.com": {
+    "userId": 923,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 923,
+        "userEmail": "iklmmameshi@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "kefuwealbert@gmail.com": {
+    "userId": 924,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 924,
+        "userEmail": "kefuwealbert@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "marlon.cameron3@gmail.com": {
+    "userId": 925,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 925,
+        "userEmail": "marlon.cameron3@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "adrian.sydney.chambers@gmail.com": {
+    "userId": 926,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 926,
+        "userEmail": "adrian.sydney.chambers@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "chambersdavid6908@gmail.com": {
+    "userId": 927,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 927,
+        "userEmail": "chambersdavid6908@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nthabee1@gmail.com": {
+    "userId": 928,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 928,
+        "userEmail": "nthabee1@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "fiki2804@gmail.com": {
+    "userId": 929,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 929,
+        "userEmail": "fiki2804@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ndawomny@gmail.com": {
+    "userId": 930,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 930,
+        "userEmail": "ndawomny@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "maryjane.seletswane@gmail.com": {
+    "userId": 931,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 931,
+        "userEmail": "maryjane.seletswane@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "dmathebe@gmail.com": {
+    "userId": 932,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 932,
+        "userEmail": "dmathebe@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ndivhuwoligudu6@gmail.com": {
+    "userId": 933,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 933,
+        "userEmail": "ndivhuwoligudu6@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "hboshoff101@gmail.com": {
+    "userId": 946,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 946,
+        "userEmail": "hboshoff101@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mksebopetsa@gmail.com": {
+    "userId": 949,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 949,
+        "userEmail": "mksebopetsa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "rakuamboishmael@gmail.com": {
+    "userId": 950,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 950,
+        "userEmail": "rakuamboishmael@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "lehloenyam2@gmail.com": {
+    "userId": 951,
+    "groups": {
+      "Boot skills test data eng 30 Sept 2021": {
+        "teamId": 190,
+        "userId": 951,
+        "userEmail": "lehloenyam2@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "dt.eckersley@gmail.com": {
+    "userId": 897,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 897,
+        "userEmail": "dt.eckersley@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tinyikor.maluleke@gmail.com": {
+    "userId": 909,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 909,
+        "userEmail": "tinyikor.maluleke@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ingaz4vili@gmail.com": {
+    "userId": 910,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 910,
+        "userEmail": "ingaz4vili@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "erasmum@gmail.com": {
+    "userId": 911,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 911,
+        "userEmail": "erasmum@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "sabelon8@gmail.com": {
+    "userId": 912,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 912,
+        "userEmail": "sabelon8@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "bandile.sikhakhane@gmail.com": {
+    "userId": 913,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 913,
+        "userEmail": "bandile.sikhakhane@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "andre.pistorius@gmail.com": {
+    "userId": 934,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 934,
+        "userEmail": "andre.pistorius@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "takalani.v@gmail.com": {
+    "userId": 936,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 936,
+        "userEmail": "takalani.v@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "pmmabina@gmail.com": {
+    "userId": 937,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 937,
+        "userEmail": "pmmabina@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "t.citwa@gmail.com": {
+    "userId": 947,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 947,
+        "userEmail": "t.citwa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "williamcoetzee13@gmail.com": {
+    "userId": 948,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 948,
+        "userEmail": "williamcoetzee13@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ngakane.debeila@gmail.com": {
+    "userId": 952,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 952,
+        "userEmail": "ngakane.debeila@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "morrischidi436@gmail.com": {
+    "userId": 935,
+    "groups": {
+      "Boot skills test data sci 30 Sept 2021": {
+        "teamId": 191,
+        "userId": 935,
+        "userEmail": "morrischidi436@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mphoherminah@gmail.com": {
+    "userId": 914,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 914,
+        "userEmail": "mphoherminah@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "adinleemoses@gmail.com": {
+    "userId": 915,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 915,
+        "userEmail": "adinleemoses@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "jacosteyn@gmail.com": {
+    "userId": 916,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 916,
+        "userEmail": "jacosteyn@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "williammakins595@gmail.com": {
+    "userId": 917,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 917,
+        "userEmail": "williammakins595@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "cmkhombo@gmail.com": {
+    "userId": 918,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 918,
+        "userEmail": "cmkhombo@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "gilbert.primo@gmail.com": {
+    "userId": 920,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 920,
+        "userEmail": "gilbert.primo@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "oliverbrian411@gmail.com": {
+    "userId": 921,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 921,
+        "userEmail": "oliverbrian411@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "williamstraining.email@gmail.com": {
+    "userId": 922,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 922,
+        "userEmail": "williamstraining.email@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mynanac@gmail.com": {
+    "userId": 919,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 919,
+        "userEmail": "mynanac@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ktwala149@gmail.com": {
+    "userId": 938,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 938,
+        "userEmail": "ktwala149@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "shane.e.goliath@gmail.com": {
+    "userId": 939,
+    "groups": {
+      "Boot skills test web dev 30 Sept 2021": {
+        "teamId": 192,
+        "userId": 939,
+        "userEmail": "shane.e.goliath@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "princemonarr@gmail.com": {
+    "userId": 953,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 953,
+        "userEmail": "princemonarr@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "okuhle.ntloyiya@gmail.com": {
+    "userId": 954,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 954,
+        "userEmail": "okuhle.ntloyiya@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "b.chokoe@gmail.com": {
+    "userId": 955,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 955,
+        "userEmail": "b.chokoe@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "williamsjoel304@gmail.com": {
+    "userId": 956,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 956,
+        "userEmail": "williamsjoel304@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "hashirsadaf@gmail.com": {
+    "userId": 957,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 957,
+        "userEmail": "hashirsadaf@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "admiralrisiva@gmail.com": {
+    "userId": 958,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 958,
+        "userEmail": "admiralrisiva@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mzwandilem388@gmail.com": {
+    "userId": 959,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 959,
+        "userEmail": "mzwandilem388@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "cleopathrastudies@gmail.com": {
+    "userId": 960,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 960,
+        "userEmail": "cleopathrastudies@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mokalapakevin@gmail.com": {
+    "userId": 961,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 961,
+        "userEmail": "mokalapakevin@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "rmawina@gmail.com": {
+    "userId": 962,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 962,
+        "userEmail": "rmawina@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tjjmalebana@gmail.com": {
+    "userId": 963,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 963,
+        "userEmail": "tjjmalebana@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "monenetshepo17@gmail.com": {
+    "userId": 964,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 964,
+        "userEmail": "monenetshepo17@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "onkenyathela7@gmail.com": {
+    "userId": 965,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 965,
+        "userEmail": "onkenyathela7@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mtimkhulusabelo0@gmail.com": {
+    "userId": 966,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 966,
+        "userEmail": "mtimkhulusabelo0@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "sibusison18@gmail.com": {
+    "userId": 967,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 967,
+        "userEmail": "sibusison18@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tianacassandra594@gmail.com": {
+    "userId": 968,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 968,
+        "userEmail": "tianacassandra594@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "lotoyaayanda7@gmail.com": {
+    "userId": 969,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 969,
+        "userEmail": "lotoyaayanda7@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "jimb56223@gmail.com": {
+    "userId": 970,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 970,
+        "userEmail": "jimb56223@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "masukuchelsea@gmail.com": {
+    "userId": 971,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 971,
+        "userEmail": "masukuchelsea@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mudzanani27@gmail.com": {
+    "userId": 972,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 972,
+        "userEmail": "mudzanani27@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "neos25722@gmail.com": {
+    "userId": 973,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 973,
+        "userEmail": "neos25722@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "fatmankamvelihle@gmail.com": {
+    "userId": 974,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 974,
+        "userEmail": "fatmankamvelihle@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "cebokazimakasi@gmail.com": {
+    "userId": 975,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 975,
+        "userEmail": "cebokazimakasi@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ndzalamabasa@gmail.com": {
+    "userId": 976,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 976,
+        "userEmail": "ndzalamabasa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "bgotywa@gmail.com": {
+    "userId": 977,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 977,
+        "userEmail": "bgotywa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ntladih1@gmail.com": {
+    "userId": 978,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 978,
+        "userEmail": "ntladih1@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "leratomashaba07@gmail.com": {
+    "userId": 979,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 979,
+        "userEmail": "leratomashaba07@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "gtmabus@gmail.com": {
+    "userId": 980,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 980,
+        "userEmail": "gtmabus@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "trevorisconscious95@gmail.com": {
+    "userId": 981,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 981,
+        "userEmail": "trevorisconscious95@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "khwezizama@gmail.com": {
+    "userId": 982,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 982,
+        "userEmail": "khwezizama@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "lubisialpha@gmail.com": {
+    "userId": 983,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 983,
+        "userEmail": "lubisialpha@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "samanthanm887@gmail.com": {
+    "userId": 984,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 984,
+        "userEmail": "samanthanm887@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nyamathulani@gmail.com": {
+    "userId": 985,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 985,
+        "userEmail": "nyamathulani@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "katlegotshoma456@gmail.com": {
+    "userId": 986,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 986,
+        "userEmail": "katlegotshoma456@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "gallikenole@gmail.com": {
+    "userId": 1030,
+    "groups": {
+      "Boot web dev 11 Oct 2021": {
+        "teamId": 194,
+        "userId": 1030,
+        "userEmail": "gallikenole@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ogo390@gmail.com": {
+    "userId": 987,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 987,
+        "userEmail": "ogo390@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "trinitytiratram@gmail.com": {
+    "userId": 988,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 988,
+        "userEmail": "trinitytiratram@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "dawnmoraa@gmail.com": {
+    "userId": 989,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 989,
+        "userEmail": "dawnmoraa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "hermela.fantu@gmail.com": {
+    "userId": 990,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 990,
+        "userEmail": "hermela.fantu@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "carenagala324@gmail.com": {
+    "userId": 991,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 991,
+        "userEmail": "carenagala324@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "maggie.learn@gmail.com": {
+    "userId": 992,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 992,
+        "userEmail": "maggie.learn@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "marymbirua@gmail.com": {
+    "userId": 993,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 993,
+        "userEmail": "marymbirua@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "sharpterfa@gmail.com": {
+    "userId": 1029,
+    "groups": {
+      "Boot web dev ACN 11 Oct 2021": {
+        "teamId": 195,
+        "userId": 1029,
+        "userEmail": "sharpterfa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "wyntonmcallister1996@gmail.com": {
+    "userId": 994,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 994,
+        "userEmail": "wyntonmcallister1996@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "lesedilehlokoe62@gmail.com": {
+    "userId": 995,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 995,
+        "userEmail": "lesedilehlokoe62@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mr7hein@gmail.com": {
+    "userId": 996,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 996,
+        "userEmail": "mr7hein@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "lebogangtyson@gmail.com": {
+    "userId": 997,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 997,
+        "userEmail": "lebogangtyson@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "aaupalesa@gmail.com": {
+    "userId": 998,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 998,
+        "userEmail": "aaupalesa@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "haaris.h.rajah@gmail.com": {
+    "userId": 999,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 999,
+        "userEmail": "haaris.h.rajah@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "nqobilepercy@gmail.com": {
+    "userId": 1000,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 1000,
+        "userEmail": "nqobilepercy@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "keamogetswe7298@gmail.com": {
+    "userId": 1001,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 1001,
+        "userEmail": "keamogetswe7298@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mnelisiwe387@gmail.com": {
+    "userId": 1002,
+    "groups": {
+      "Boot dpd 11 Oct 2021": {
+        "teamId": 196,
+        "userId": 1002,
+        "userEmail": "mnelisiwe387@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "keitu.maluks@gmail.com": {
+    "userId": 866,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 866,
+        "userEmail": "keitu.maluks@gmail.com",
+        "userActive": false
+      }
+    }
+  },
+  "mondeanna@gmail.com": {
+    "userId": 1003,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1003,
+        "userEmail": "mondeanna@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "katleholebona@gmail.com": {
+    "userId": 1004,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1004,
+        "userEmail": "katleholebona@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mpumelelomofokengkenneth@gmail.com": {
+    "userId": 1005,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1005,
+        "userEmail": "mpumelelomofokengkenneth@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ntombela1ns@gmail.com": {
+    "userId": 1006,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1006,
+        "userEmail": "ntombela1ns@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "gontsemfete@gmail.com": {
+    "userId": 1007,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1007,
+        "userEmail": "gontsemfete@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tabisile14@gmail.com": {
+    "userId": 1008,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1008,
+        "userEmail": "tabisile14@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "trevornyathitee468@gmail.com": {
+    "userId": 1009,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1009,
+        "userEmail": "trevornyathitee468@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "bangosanele14@gmail.com": {
+    "userId": 1010,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1010,
+        "userEmail": "bangosanele14@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "juniorfumani@gmail.com": {
+    "userId": 1011,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1011,
+        "userEmail": "juniorfumani@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "irvinmotheo72@gmail.com": {
+    "userId": 1012,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1012,
+        "userEmail": "irvinmotheo72@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "sthembisomolefi@gmail.com": {
+    "userId": 1013,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1013,
+        "userEmail": "sthembisomolefi@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "trossouw16@gmail.com": {
+    "userId": 1014,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1014,
+        "userEmail": "trossouw16@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "motheox@gmail.com": {
+    "userId": 1015,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1015,
+        "userEmail": "motheox@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "themblin84@gmail.com": {
+    "userId": 1016,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1016,
+        "userEmail": "themblin84@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tshwanelo.mofokeng@gmail.com": {
+    "userId": 1017,
+    "groups": {
+      "Boot data sci 11 Oct 2021": {
+        "teamId": 197,
+        "userId": 1017,
+        "userEmail": "tshwanelo.mofokeng@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "minaomobonike@gmail.com": {
+    "userId": 1018,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1018,
+        "userEmail": "minaomobonike@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ogepromise019@gmail.com": {
+    "userId": 1019,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1019,
+        "userEmail": "ogepromise019@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "pselance@gmail.com": {
+    "userId": 1020,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1020,
+        "userEmail": "pselance@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "agbonikasunday1@gmail.com": {
+    "userId": 1021,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1021,
+        "userEmail": "agbonikasunday1@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "modupeolasavage@gmail.com": {
+    "userId": 1022,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1022,
+        "userEmail": "modupeolasavage@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "atehestephen@gmail.com": {
+    "userId": 1023,
+    "groups": {
+      "Boot data sci ACN 11 Oct 2021": {
+        "teamId": 198,
+        "userId": 1023,
+        "userEmail": "atehestephen@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tinyikomasinga20@gmail.com": {
+    "userId": 863,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 863,
+        "userEmail": "tinyikomasinga20@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "maswanganyi.donald.a@gmail.com": {
+    "userId": 824,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 824,
+        "userEmail": "maswanganyi.donald.a@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "vmonoge@gmail.com": {
+    "userId": 1024,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 1024,
+        "userEmail": "vmonoge@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "tyrellebrandt11@gmail.com": {
+    "userId": 1025,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 1025,
+        "userEmail": "tyrellebrandt11@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mrmachaba@gmail.com": {
+    "userId": 1026,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 1026,
+        "userEmail": "mrmachaba@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "ntokozopetro81@gmail.com": {
+    "userId": 1027,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 1027,
+        "userEmail": "ntokozopetro81@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "bohopah@gmail.com": {
+    "userId": 1028,
+    "groups": {
+      "Boot data eng 11 Oct 2021": {
+        "teamId": 199,
+        "userId": 1028,
+        "userEmail": "bohopah@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "mandyrasemphe@gmail.com": {
+    "userId": 847,
+    "groups": {
+      "bridge data sci": {
+        "teamId": 202,
+        "userId": 847,
+        "userEmail": "mandyrasemphe@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "chanteldhlamini12@gmail.com": {
+    "userId": 868,
+    "groups": {
+      "bridge data sci": {
+        "teamId": 202,
+        "userId": 868,
+        "userEmail": "chanteldhlamini12@gmail.com",
+        "userActive": true
+      }
+    }
+  },
+  "joshua.ritson@umuzi.org": {
+    "userId": 5,
+    "groups": {
+      "External tech reviewers": {
+        "teamId": 204,
+        "userId": 5,
+        "userEmail": "joshua.ritson@umuzi.org",
+        "userActive": true
+      }
+    }
+  },
+  "ruddynriba@gmail.com": {
+    "userId": 268,
+    "groups": {
+      "External tech reviewers": {
+        "teamId": 204,
+        "userId": 268,
+        "userEmail": "ruddynriba@gmail.com",
+        "userActive": true
+      }
+    }
+  }
+}

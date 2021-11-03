@@ -1,0 +1,2192 @@
+[
+  {
+    "id": 183,
+    "name": "B00t dpd demo",
+    "active": true,
+    "members": [
+      {
+        "userId": 112,
+        "userEmail": "carrie.netshifhire@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 8,
+        "userEmail": "lindelani.mbatha@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 409,
+        "userEmail": "carly.whitaker@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 794,
+        "userEmail": "nhlangano.chabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 885,
+        "userEmail": "lesedi.thethe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 886,
+        "userEmail": "mapuleng.khola@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 887,
+        "userEmail": "moipone.tsoke@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 888,
+        "userEmail": "nyakallo.ramantso@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 889,
+        "userEmail": "palesa.liutloileng@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 881,
+        "userEmail": "khumo.rakgomo@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 882,
+        "userEmail": "thoko-ntsiki.bucibo@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 883,
+        "userEmail": "aidan.lewis@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 884,
+        "userEmail": "busisiwe.gcuma@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 879,
+        "userEmail": "Hloniphile.mdluli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 880,
+        "userEmail": "lerato.molapisi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 942,
+        "userEmail": "lindokuhle.nkabinde@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 943,
+        "userEmail": "mante.moruthane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 941,
+        "userEmail": "gabisile.camana@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 205,
+    "name": "BBD Group",
+    "active": true,
+    "members": [
+      {
+        "userId": 484,
+        "userEmail": "lindokuhle.shabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 352,
+        "userEmail": "mbali.mtimkulu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 479,
+        "userEmail": "amen.nkala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 458,
+        "userEmail": "wisani.matobela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 480,
+        "userEmail": "itumeleng.matheba@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 549,
+        "userEmail": "sandile.nkosi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 490,
+        "userEmail": "refilwe.mashile@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 711,
+        "userEmail": "kgotlelelo.mangene@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 696,
+        "userEmail": "tumelo.mahlangu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 682,
+        "userEmail": "andile.dimba@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 199,
+    "name": "Boot data eng 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 863,
+        "userEmail": "tinyikomasinga20@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 824,
+        "userEmail": "maswanganyi.donald.a@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1024,
+        "userEmail": "vmonoge@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1025,
+        "userEmail": "tyrellebrandt11@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1026,
+        "userEmail": "mrmachaba@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1027,
+        "userEmail": "ntokozopetro81@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1028,
+        "userEmail": "bohopah@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 197,
+    "name": "Boot data sci 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 866,
+        "userEmail": "keitu.maluks@gmail.com",
+        "userActive": false
+      },
+      {
+        "userId": 1003,
+        "userEmail": "mondeanna@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1004,
+        "userEmail": "katleholebona@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1005,
+        "userEmail": "mpumelelomofokengkenneth@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1006,
+        "userEmail": "ntombela1ns@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1007,
+        "userEmail": "gontsemfete@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1008,
+        "userEmail": "tabisile14@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1009,
+        "userEmail": "trevornyathitee468@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1010,
+        "userEmail": "bangosanele14@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1011,
+        "userEmail": "juniorfumani@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1012,
+        "userEmail": "irvinmotheo72@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1013,
+        "userEmail": "sthembisomolefi@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1014,
+        "userEmail": "trossouw16@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1015,
+        "userEmail": "motheox@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1016,
+        "userEmail": "themblin84@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1017,
+        "userEmail": "tshwanelo.mofokeng@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 198,
+    "name": "Boot data sci ACN 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 1018,
+        "userEmail": "minaomobonike@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1019,
+        "userEmail": "ogepromise019@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1020,
+        "userEmail": "pselance@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1021,
+        "userEmail": "agbonikasunday1@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1022,
+        "userEmail": "modupeolasavage@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1023,
+        "userEmail": "atehestephen@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 196,
+    "name": "Boot dpd 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 994,
+        "userEmail": "wyntonmcallister1996@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 995,
+        "userEmail": "lesedilehlokoe62@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 996,
+        "userEmail": "mr7hein@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 997,
+        "userEmail": "lebogangtyson@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 998,
+        "userEmail": "aaupalesa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 999,
+        "userEmail": "haaris.h.rajah@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1000,
+        "userEmail": "nqobilepercy@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1001,
+        "userEmail": "keamogetswe7298@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1002,
+        "userEmail": "mnelisiwe387@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 190,
+    "name": "Boot skills test data eng 30 Sept 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 892,
+        "userEmail": "nyphindile@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 893,
+        "userEmail": "navashen187@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 894,
+        "userEmail": "nesangounder@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 895,
+        "userEmail": "mabuzaba@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 896,
+        "userEmail": "soomarkn@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 898,
+        "userEmail": "ericbeukes@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 899,
+        "userEmail": "jancovdmerwe@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 900,
+        "userEmail": "oosthupj@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 901,
+        "userEmail": "mduduzi.mathonsi@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 902,
+        "userEmail": "kabeerjaggers@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 903,
+        "userEmail": "rentiaerasmus2@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 904,
+        "userEmail": "nt.mzini@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 905,
+        "userEmail": "tbomeks@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 906,
+        "userEmail": "sesinhlapo4@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 907,
+        "userEmail": "mjtsolo@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 908,
+        "userEmail": "vishnun797@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 944,
+        "userEmail": "mkzuma17@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 945,
+        "userEmail": "vernicepetersen1001@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 923,
+        "userEmail": "iklmmameshi@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 924,
+        "userEmail": "kefuwealbert@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 925,
+        "userEmail": "marlon.cameron3@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 926,
+        "userEmail": "adrian.sydney.chambers@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 927,
+        "userEmail": "chambersdavid6908@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 928,
+        "userEmail": "nthabee1@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 929,
+        "userEmail": "fiki2804@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 930,
+        "userEmail": "ndawomny@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 931,
+        "userEmail": "maryjane.seletswane@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 932,
+        "userEmail": "dmathebe@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 933,
+        "userEmail": "ndivhuwoligudu6@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 946,
+        "userEmail": "hboshoff101@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 949,
+        "userEmail": "mksebopetsa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 950,
+        "userEmail": "rakuamboishmael@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 951,
+        "userEmail": "lehloenyam2@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 191,
+    "name": "Boot skills test data sci 30 Sept 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 897,
+        "userEmail": "dt.eckersley@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 909,
+        "userEmail": "tinyikor.maluleke@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 910,
+        "userEmail": "ingaz4vili@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 911,
+        "userEmail": "erasmum@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 912,
+        "userEmail": "sabelon8@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 913,
+        "userEmail": "bandile.sikhakhane@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 934,
+        "userEmail": "andre.pistorius@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 936,
+        "userEmail": "takalani.v@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 937,
+        "userEmail": "pmmabina@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 947,
+        "userEmail": "t.citwa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 948,
+        "userEmail": "williamcoetzee13@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 952,
+        "userEmail": "ngakane.debeila@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 935,
+        "userEmail": "morrischidi436@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 192,
+    "name": "Boot skills test web dev 30 Sept 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 914,
+        "userEmail": "mphoherminah@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 915,
+        "userEmail": "adinleemoses@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 916,
+        "userEmail": "jacosteyn@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 917,
+        "userEmail": "williammakins595@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 918,
+        "userEmail": "cmkhombo@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 920,
+        "userEmail": "gilbert.primo@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 921,
+        "userEmail": "oliverbrian411@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 922,
+        "userEmail": "williamstraining.email@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 919,
+        "userEmail": "mynanac@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 938,
+        "userEmail": "ktwala149@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 939,
+        "userEmail": "shane.e.goliath@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 194,
+    "name": "Boot web dev 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 953,
+        "userEmail": "princemonarr@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 954,
+        "userEmail": "okuhle.ntloyiya@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 955,
+        "userEmail": "b.chokoe@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 956,
+        "userEmail": "williamsjoel304@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 957,
+        "userEmail": "hashirsadaf@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 958,
+        "userEmail": "admiralrisiva@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 959,
+        "userEmail": "mzwandilem388@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 960,
+        "userEmail": "cleopathrastudies@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 961,
+        "userEmail": "mokalapakevin@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 962,
+        "userEmail": "rmawina@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 963,
+        "userEmail": "tjjmalebana@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 964,
+        "userEmail": "monenetshepo17@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 965,
+        "userEmail": "onkenyathela7@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 966,
+        "userEmail": "mtimkhulusabelo0@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 967,
+        "userEmail": "sibusison18@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 968,
+        "userEmail": "tianacassandra594@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 969,
+        "userEmail": "lotoyaayanda7@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 970,
+        "userEmail": "jimb56223@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 971,
+        "userEmail": "masukuchelsea@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 972,
+        "userEmail": "mudzanani27@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 973,
+        "userEmail": "neos25722@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 974,
+        "userEmail": "fatmankamvelihle@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 975,
+        "userEmail": "cebokazimakasi@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 976,
+        "userEmail": "ndzalamabasa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 977,
+        "userEmail": "bgotywa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 978,
+        "userEmail": "ntladih1@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 979,
+        "userEmail": "leratomashaba07@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 980,
+        "userEmail": "gtmabus@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 981,
+        "userEmail": "trevorisconscious95@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 982,
+        "userEmail": "khwezizama@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 983,
+        "userEmail": "lubisialpha@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 984,
+        "userEmail": "samanthanm887@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 985,
+        "userEmail": "nyamathulani@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 986,
+        "userEmail": "katlegotshoma456@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1030,
+        "userEmail": "gallikenole@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 195,
+    "name": "Boot web dev ACN 11 Oct 2021",
+    "active": true,
+    "members": [
+      {
+        "userId": 987,
+        "userEmail": "ogo390@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 988,
+        "userEmail": "trinitytiratram@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 989,
+        "userEmail": "dawnmoraa@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 990,
+        "userEmail": "hermela.fantu@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 991,
+        "userEmail": "carenagala324@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 992,
+        "userEmail": "maggie.learn@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 993,
+        "userEmail": "marymbirua@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 1029,
+        "userEmail": "sharpterfa@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "name": "Cohort 22 + 24 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 298,
+        "userEmail": "gugu.mavimbela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 424,
+        "userEmail": "thulane.makofane@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 449,
+        "userEmail": "ngoako.ramokgopa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 451,
+        "userEmail": "kgaolo.malatji@umuzi.org",
+        "userActive": false
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Cohort 24 data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 286,
+        "userEmail": "khanyisile.moyo@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 299,
+        "userEmail": "tshepo.tshabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 452,
+        "userEmail": "jade.makwela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 433,
+        "userEmail": "kgotego.mosime@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 438,
+        "userEmail": "thabang.moroe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 444,
+        "userEmail": "selaelo.makgato@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 114,
+    "name": "Cohort 24 data eng Old Mutual",
+    "active": true,
+    "members": [
+      {
+        "userId": 299,
+        "userEmail": "tshepo.tshabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 452,
+        "userEmail": "jade.makwela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 438,
+        "userEmail": "thabang.moroe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Cohort 24 data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 441,
+        "userEmail": "takalani.maapola@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 423,
+        "userEmail": "thapelo.marakalla@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 457,
+        "userEmail": "sean.mohomane@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 419,
+        "userEmail": "thando.msutwana@umuzi.org",
+        "userActive": false
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Cohort 24 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 424,
+        "userEmail": "thulane.makofane@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 417,
+        "userEmail": "lionel.raseemela@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 451,
+        "userEmail": "kgaolo.malatji@umuzi.org",
+        "userActive": false
+      }
+    ]
+  },
+  {
+    "id": 126,
+    "name": "Cohort 25 data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 80,
+        "userEmail": "shalom.mothapo@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 578,
+        "userEmail": "thavha.tsiwana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 721,
+        "userEmail": "khensani.mashimbye@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 141,
+    "name": "Cohort 25 data eng alumni",
+    "active": true,
+    "members": [
+      {
+        "userId": 80,
+        "userEmail": "shalom.mothapo@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 127,
+    "name": "Cohort 25 data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 294,
+        "userEmail": "mahlori.baloyi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 477,
+        "userEmail": "mpho.mashau@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 585,
+        "userEmail": "tlhakodiso.kgasago@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 577,
+        "userEmail": "sipho.dlamini@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 670,
+        "userEmail": "phenyo.mopako@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 130,
+    "name": "Cohort 25 it support",
+    "active": true,
+    "members": [
+      {
+        "userId": 75,
+        "userEmail": "mpho.khotleng@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 601,
+        "userEmail": "lesiba.masenya@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 128,
+    "name": "Cohort 25 java",
+    "active": true,
+    "members": [
+      {
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 587,
+        "userEmail": "lufuno.khuvhe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 584,
+        "userEmail": "lehlohonolo.mopeli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 599,
+        "userEmail": "hlulani.nkuna@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 567,
+        "userEmail": "zodwa.sidinana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 580,
+        "userEmail": "njabulo.mhlambi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 594,
+        "userEmail": "charles.moswane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 595,
+        "userEmail": "oreneile.sejeso@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 609,
+        "userEmail": "takalani.mufamadi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 598,
+        "userEmail": "velile.vamba@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 674,
+        "userEmail": "linda.sithole@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 187,
+    "name": "Cohort 25 java 1",
+    "active": true,
+    "members": [
+      {
+        "userId": 16,
+        "userEmail": "masai.mahapa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 599,
+        "userEmail": "hlulani.nkuna@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 594,
+        "userEmail": "charles.moswane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 595,
+        "userEmail": "oreneile.sejeso@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 609,
+        "userEmail": "takalani.mufamadi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 598,
+        "userEmail": "velile.vamba@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 188,
+    "name": "Cohort 25 java 2",
+    "active": true,
+    "members": [
+      {
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 587,
+        "userEmail": "lufuno.khuvhe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 584,
+        "userEmail": "lehlohonolo.mopeli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 567,
+        "userEmail": "zodwa.sidinana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 580,
+        "userEmail": "njabulo.mhlambi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 674,
+        "userEmail": "linda.sithole@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 140,
+    "name": "Cohort 25 java alumni",
+    "active": true,
+    "members": [
+      {
+        "userId": 16,
+        "userEmail": "masai.mahapa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 235,
+        "userEmail": "latifa.simbini@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 129,
+    "name": "Cohort 25 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 345,
+        "userEmail": "zinhle.mzimba@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 402,
+        "userEmail": "adric.maplanka@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 434,
+        "userEmail": "phine.hadebe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 521,
+        "userEmail": "zubair.ajam@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 588,
+        "userEmail": "tshidi.shalang@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 570,
+        "userEmail": "judlyn.muoghalu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 563,
+        "userEmail": "valerie.gongora@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 568,
+        "userEmail": "sthembiso.radebe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 564,
+        "userEmail": "luvo.spofana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 571,
+        "userEmail": "ronald.nkadimeng@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 575,
+        "userEmail": "todii.mashoko@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 572,
+        "userEmail": "christopher.maphakane@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 142,
+    "name": "Cohort 25 web dev 1",
+    "active": true,
+    "members": [
+      {
+        "userId": 402,
+        "userEmail": "adric.maplanka@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 563,
+        "userEmail": "valerie.gongora@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 568,
+        "userEmail": "sthembiso.radebe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 571,
+        "userEmail": "ronald.nkadimeng@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 575,
+        "userEmail": "todii.mashoko@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 572,
+        "userEmail": "christopher.maphakane@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 143,
+    "name": "Cohort 25 web dev 2",
+    "active": true,
+    "members": [
+      {
+        "userId": 92,
+        "userEmail": "xolani.mgube@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 434,
+        "userEmail": "phine.hadebe@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 521,
+        "userEmail": "zubair.ajam@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 588,
+        "userEmail": "tshidi.shalang@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 570,
+        "userEmail": "judlyn.muoghalu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 564,
+        "userEmail": "luvo.spofana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 561,
+        "userEmail": "sandi.sibulali@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 139,
+    "name": "Cohort 25 web dev alumni",
+    "active": true,
+    "members": [
+      {
+        "userId": 92,
+        "userEmail": "xolani.mgube@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 561,
+        "userEmail": "sandi.sibulali@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 138,
+    "name": "Cohort 26 data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 672,
+        "userEmail": "mafanedza.nephawe@umuzi.org",
+        "userActive": false
+      }
+    ]
+  },
+  {
+    "id": 122,
+    "name": "Cohort 26 java",
+    "active": true,
+    "members": [
+      {
+        "userId": 553,
+        "userEmail": "thapelo.masangane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 558,
+        "userEmail": "mojalefa.mohlamonyane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 550,
+        "userEmail": "khethukuthula.mkhize@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 554,
+        "userEmail": "berned.ndebe@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 133,
+    "name": "Cohort 27 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 484,
+        "userEmail": "lindokuhle.shabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 352,
+        "userEmail": "mbali.mtimkulu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 479,
+        "userEmail": "amen.nkala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 458,
+        "userEmail": "wisani.matobela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 480,
+        "userEmail": "itumeleng.matheba@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 490,
+        "userEmail": "refilwe.mashile@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 696,
+        "userEmail": "tumelo.mahlangu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 682,
+        "userEmail": "andile.dimba@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 163,
+    "name": "Cohort 28 + 29 data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 751,
+        "userEmail": "sizwe.shabangu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 498,
+        "userEmail": "mduduzi.malapane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 507,
+        "userEmail": "lebohang.kebethi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 704,
+        "userEmail": "kamogelo.maepa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 703,
+        "userEmail": "siphiwe.mposula@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 716,
+        "userEmail": "lungile.njakazi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 745,
+        "userEmail": "thandiwe.khalaki@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 747,
+        "userEmail": "neo.mogale@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 147,
+    "name": "Cohort 28 data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 498,
+        "userEmail": "mduduzi.malapane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 703,
+        "userEmail": "siphiwe.mposula@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 716,
+        "userEmail": "lungile.njakazi@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 148,
+    "name": "Cohort 28 data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 677,
+        "userEmail": "vuyisa.mrwebi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 692,
+        "userEmail": "tsepo.matheleli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 678,
+        "userEmail": "codie.mellem@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 668,
+        "userEmail": "bryce.lawrence@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 146,
+    "name": "Cohort 28 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 446,
+        "userEmail": "mthokozisi.msibi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 425,
+        "userEmail": "themba.ntuli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 547,
+        "userEmail": "mxolisi.sibaya@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 552,
+        "userEmail": "sedzani.ragau@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 549,
+        "userEmail": "sandile.nkosi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 555,
+        "userEmail": "mpilo.ndlovu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 683,
+        "userEmail": "christopher.ngalalume@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 711,
+        "userEmail": "kgotlelelo.mangene@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 688,
+        "userEmail": "luke.scott@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 164,
+    "name": "Cohort 28+ 29 data science",
+    "active": true,
+    "members": [
+      {
+        "userId": 474,
+        "userEmail": "philani.mtembu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 677,
+        "userEmail": "vuyisa.mrwebi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 692,
+        "userEmail": "tsepo.matheleli@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 678,
+        "userEmail": "codie.mellem@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 668,
+        "userEmail": "bryce.lawrence@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 744,
+        "userEmail": "wesley.jackson@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 162,
+    "name": "Cohort 29 + 24 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 296,
+        "userEmail": "sylvester.magwaza@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 298,
+        "userEmail": "gugu.mavimbela@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 449,
+        "userEmail": "ngoako.ramokgopa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 723,
+        "userEmail": "eddah.githuku@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 724,
+        "userEmail": "maria.otieno@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 167,
+    "name": "Cohort 29 data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 751,
+        "userEmail": "sizwe.shabangu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 704,
+        "userEmail": "kamogelo.maepa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 745,
+        "userEmail": "thandiwe.khalaki@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 747,
+        "userEmail": "neo.mogale@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 165,
+    "name": "Cohort 29 data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 474,
+        "userEmail": "philani.mtembu@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 744,
+        "userEmail": "wesley.jackson@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 166,
+    "name": "Cohort 29 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 723,
+        "userEmail": "eddah.githuku@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 724,
+        "userEmail": "maria.otieno@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 735,
+        "userEmail": "kelebogile.mokwena@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 185,
+    "name": "Cohort 30 web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 755,
+        "userEmail": "muziwethu.mlotshwa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 761,
+        "userEmail": "paule.nembou@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 759,
+        "userEmail": "loretta.khisa@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 548,
+        "userEmail": "taelo.seholoba@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 691,
+        "userEmail": "sinoxolo.cotyi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 741,
+        "userEmail": "sinethemba.khoza@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 737,
+        "userEmail": "mathibela.lemekoana@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 734,
+        "userEmail": "steve.molele@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 731,
+        "userEmail": "lufuno.mbedzi@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 193,
+    "name": "DPD managment team",
+    "active": true,
+    "members": [
+      {
+        "userId": 8,
+        "userEmail": "lindelani.mbatha@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 409,
+        "userEmail": "carly.whitaker@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 879,
+        "userEmail": "Hloniphile.mdluli@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 170,
+    "name": "DPD product team",
+    "active": true,
+    "members": [
+      {
+        "userId": 794,
+        "userEmail": "nhlangano.chabalala@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 795,
+        "userEmail": "keneilwe.manganya@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 796,
+        "userEmail": "tshepo.matheera@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 797,
+        "userEmail": "ebernezer.letsoalo@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 798,
+        "userEmail": "karabo.leshabane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 789,
+        "userEmail": "ditshepo.mashile@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 790,
+        "userEmail": "kgaugelo.rakgwale@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 791,
+        "userEmail": "lerato.mohlaudi@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 792,
+        "userEmail": "siviwe.madikane@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 793,
+        "userEmail": "caiphus.mamakgale@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 799,
+        "userEmail": "simphiwe.khulu@umuzi.org",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Data Science Recruits",
+    "active": true,
+    "members": [
+      {
+        "userId": 208,
+        "userEmail": "keanu.bowker@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 292,
+        "userEmail": "philani.dlamini@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 441,
+        "userEmail": "takalani.maapola@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 423,
+        "userEmail": "thapelo.marakalla@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 457,
+        "userEmail": "sean.mohomane@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 419,
+        "userEmail": "thando.msutwana@umuzi.org",
+        "userActive": false
+      },
+      {
+        "userId": 672,
+        "userEmail": "mafanedza.nephawe@umuzi.org",
+        "userActive": false
+      }
+    ]
+  },
+  {
+    "id": 181,
+    "name": "External data science",
+    "active": true,
+    "members": [
+      {
+        "userId": 878,
+        "userEmail": "alisonsmall72@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 204,
+    "name": "External tech reviewers",
+    "active": true,
+    "members": [
+      {
+        "userId": 5,
+        "userEmail": "joshua.ritson@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 268,
+        "userEmail": "ruddynriba@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 153,
+    "name": "NCIT Assessors",
+    "active": true,
+    "members": [
+      {
+        "userId": 728,
+        "userEmail": "kihiko.augustine@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 186,
+    "name": "bridge data eng",
+    "active": true,
+    "members": [
+      {
+        "userId": 260,
+        "userEmail": "nkateko.mabaso@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 702,
+        "userEmail": "eli.mashilwane@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 836,
+        "userEmail": "meshack.nage@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 853,
+        "userEmail": "9mm.ext.gp@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 202,
+    "name": "bridge data sci",
+    "active": true,
+    "members": [
+      {
+        "userId": 847,
+        "userEmail": "mandyrasemphe@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 868,
+        "userEmail": "chanteldhlamini12@gmail.com",
+        "userActive": true
+      }
+    ]
+  },
+  {
+    "id": 184,
+    "name": "bridge web dev",
+    "active": true,
+    "members": [
+      {
+        "userId": 754,
+        "userEmail": "lovekilledtshepo@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 800,
+        "userEmail": "raeesdolley76@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 478,
+        "userEmail": "keleboneteboho@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 526,
+        "userEmail": "georgehlongwane8@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 767,
+        "userEmail": "annettetchouawou@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 785,
+        "userEmail": "andymatobela@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 733,
+        "userEmail": "mabuselakopano@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 784,
+        "userEmail": "nathanielmvana@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 740,
+        "userEmail": "seansthomo@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 803,
+        "userEmail": "thamsanqambexe@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 809,
+        "userEmail": "palesamapeka97@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 736,
+        "userEmail": "tylanvrooyen@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 781,
+        "userEmail": "reatjie@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 778,
+        "userEmail": "kamogelo40@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 812,
+        "userEmail": "patriciaslindile5@gmail.com",
+        "userActive": true
+      },
+      {
+        "userId": 877,
+        "userEmail": "tumi608@gmail.com",
+        "userActive": true
+      }
+    ]
+  }
+]
