@@ -890,15 +890,28 @@ class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
     B) Only staff/super users can login to Django admin, does that mean any other type of user won't be able to use this
        api endpoint?
     C) What is the capital Q for in line 167 of this file?
+    D) What is the difference between ActionIs('retrieve') and ActionIs('list')?
     """
 
-    permission_classes = [IsAdminUser | core_permissions.ActionIs("retrieve") & (core_permissions.IsMyUser
-                                          | core_permissions.HasObjectPermission(
-                                                    permissions=models.Team.PERMISSION_VIEW,
-                                                    get_objects=_get_teams_from_user,
-                                                    )
-                                                )
-                                            ]
+    permission_classes = [
+        ActionIs("retrieve")
+        & (
+                curriculum_permissions.IsProjectReviewer
+                | curriculum_permissions.IsCardReviewer
+                | core_permissions.IsStaffUser
+                | curriculum_permissions.IsCardAssignee
+                | core_permissions.IsCurrentUserInSpecificFilter("user")
+                | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=_get_teams_from_workshop_attendance,
+        )
+        )
+        | core_permissions.IsCurrentUserInSpecificFilter("user")
+        | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=_get_teams_from_user_filter("user"),
+        )
+    ]
 
     queryset = models.ReviewTrust.objects.all()
     serializer_class = serializers.ReviewTrustSerializer
