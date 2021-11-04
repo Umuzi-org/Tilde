@@ -189,24 +189,23 @@ class TestingForTheStatsAPI(TestCase):
         yesterday_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_days_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_days_before_yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_weeks_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_weeks_ago,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
         # of 2
-        breakpoint()
         self.assertEqual(
             UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
                 UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()
