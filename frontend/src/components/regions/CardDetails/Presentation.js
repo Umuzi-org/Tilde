@@ -13,6 +13,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
+import CardBadges from "../../widgets/CardBadges";
+
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
@@ -64,6 +66,7 @@ const CardBasicDetails = ({ card }) => {
     <React.Fragment>
       <Grid container>
         <Grid item xs={12} sm={12} md={12}>
+          <CardBadges card={card} />
           <Typography variant="h5">
             {card.contentTypeNice}: {card.title}
           </Typography>

@@ -170,13 +170,15 @@ class RecruitProjectFactory(DjangoModelFactory):
         FlavourMixin.flavours(self, *args, **kwargs)
 
 
-class RecruitProjectInRevewColumnFactory(RecruitProjectFactory):
+class RecruitProjectInReviewFactory(RecruitProjectFactory):
     start_time = factory.lazy_attribute(
         lambda *a, **k: timezone.now() - timedelta(days=15)
     )
     review_request_time = factory.lazy_attribute(
         lambda *a, **k: timezone.now() - timedelta(days=10)
     )
+
+    # agile_card = factory.SubFactory(AgileCardFactory)
 
 
 #     project = RecruitProjectFactory(*args, **kwargs)
@@ -194,7 +196,7 @@ class RecruitProjectReviewFactory(DjangoModelFactory):
         lambda o: timezone.now()
     )  # TODO: sheena timestamp not being used properly in factory
     comments = "something seriously useful"
-    recruit_project = factory.SubFactory(RecruitProjectInRevewColumnFactory)
+    recruit_project = factory.SubFactory(RecruitProjectInReviewFactory)
     reviewer_user = factory.SubFactory(UserFactory)
 
 

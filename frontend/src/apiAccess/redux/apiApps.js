@@ -24,10 +24,13 @@ const FETCH_SINGLE_RECRUIT_PROJECT = "FETCH_SINGLE_RECRUIT_PROJECT";
 
 const FETCH_SINGLE_TEAM = "FETCH_SINGLE_TEAM";
 const FETCH_SINGLE_USER = "FETCH_SINGLE_USER";
+const FETCH_SINGLE_USER_DETAILED_STATS = "FETCH_SINGLE_USER_DETAILED_STATS";
+
 const FETCH_SINGLE_REPOSITORY = "FETCH_SINGLE_REPOSITORY";
 const FETCH_COMMITS_PAGE = "FETCH_COMMITS_PAGE";
 const FETCH_PULL_REQUESTS_PAGE = "FETCH_PULL_REQUESTS_PAGE";
 const FETCH_TEAMS_PAGE = "FETCH_TEAMS_PAGE";
+const FETCH_TEAM_SUMMARY_STATS_PAGE = "FETCH_TEAM_SUMMARY_STATS_PAGE";
 
 const CARD_START_PROJECT = "CARD_START_PROJECT";
 const CARD_REQUEST_REVIEW = "CARD_REQUEST_REVIEW";
@@ -43,7 +46,7 @@ const CARD_SET_PROJECT_LINK = "CARD_SET_PROJECT_LINK";
 
 const FETCH_SINGLE_AGILE_CARD = "FETCH_SINGLE_AGILE_CARD";
 
-const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS";
+const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mistake. fix please
 
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
@@ -60,6 +63,7 @@ export const pagedApiAppTypes = {
   FETCH_COMMITS_PAGE: "repoCommits",
   FETCH_PULL_REQUESTS_PAGE: "pullRequests",
   FETCH_TEAMS_PAGE: "teams",
+  FETCH_TEAM_SUMMARY_STATS_PAGE: "teamSummaryStats",
   FETCH_TOPIC_PROGRESS_REVIEWS_PAGE: "topicReviews",
 };
 
@@ -82,6 +86,7 @@ export const entityApiAppTypes = {
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: "projectSummaryCards",
   FETCH_SINGLE_USER: "users",
+  FETCH_SINGLE_USER_DETAILED_STATS: "userDetailedStats",
   //   WHO_AM_I: "users",
 };
 
@@ -140,6 +145,11 @@ export const apiReduxApps = {
     apiCaller: apiCallers.everyone.teamsPage,
   }),
 
+  FETCH_TEAM_SUMMARY_STATS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_TEAM_SUMMARY_STATS_PAGE,
+    apiCaller: apiCallers.everyone.teamsSummaryStatsPage,
+  }),
+
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     apiCaller: apiCallers.recruits.recruitProjectReviewsPage,
@@ -158,6 +168,11 @@ export const apiReduxApps = {
   FETCH_SINGLE_USER: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER,
     apiCaller: apiCallers.everyone.userEntity,
+  }),
+
+  FETCH_SINGLE_USER_DETAILED_STATS: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_USER_DETAILED_STATS,
+    apiCaller: apiCallers.everyone.userDetailedStatsEntity,
   }),
 
   FETCH_SINGLE_RECRUIT_PROJECT: createReduxApp({

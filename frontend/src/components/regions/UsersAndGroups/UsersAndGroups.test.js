@@ -45,7 +45,7 @@ test("cleanAndFilterTeams can deal with whitespace filter", () => {
   expect(names).toEqual(["demo group 1 AAA", "demo group 2 aaa"]);
 });
 
-test("cleanAndFilterTeams can deal with upper and lowecase", () => {
+test("cleanAndFilterTeams can deal with upper and lowercase", () => {
   const ret = cleanAndFilterTeams({ teams, filterBy: "aaa" });
 
   const names = ret.map((group) => group.name);

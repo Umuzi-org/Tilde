@@ -139,7 +139,7 @@ def get_df(url):
 def set_course_reg(user, course_names):
     curriculums = []
     for name in course_names:
-        # print(name)
+        print(name)
         curriculums.append(Curriculum.objects.get(name=name))
 
     course_ids = [curriculum.id for curriculum in curriculums]

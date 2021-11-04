@@ -175,8 +175,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['GET'],
-        serializer_class=UserStatsPerWeekSerializer
+        methods=["GET"],
+        serializer_class=UserStatsPerWeekSerializer,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.IsMyUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user,
+            )
+        ],
     )
     def stats(self, request, pk=None):
         serializer = self.get_serializer(data=request.data)
@@ -184,8 +192,28 @@ class UserViewSet(viewsets.ModelViewSet):
             user_object = self.get_object()
             return Response(UserStatsPerWeekSerializer(user_object).data)
         else:
-            return Response(serializer.errors, status='BAD_REQUEST')
+            return Response(serializer.errors, status="BAD_REQUEST")
 
+    # @action(
+    #     detail=False,
+    #     methods=["GET"],
+    #     serializer_class=UserSummaryStatsSerializer,
+    #     permission_classes=[
+    #         IsAdminUser
+    #         | core_permissions.HasObjectPermission(
+    #             permissions=models.Team.PERMISSION_VIEW,
+    #         )
+    #     ],
+    # )
+    # def summary_stats(self, request, pk=None):
+
+    #     page = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+
+    #     serializer = self.get_serializer(self.get_queryset(), many=True)
+    #     return Response(serializer.data)
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
 
