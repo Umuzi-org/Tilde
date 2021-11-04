@@ -3,3 +3,4 @@ gitignore/
 venv/
 *.log
 certbot.out
+node_modules/

@@ -31,7 +31,7 @@ class ReviewableMixin:
         if user.is_superuser:
             return True
 
-        teams = self.get_teams()
+        teams = self.get_teams(assignees_only=True)
         for team in teams:
             if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
                 return True
@@ -191,6 +191,19 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
+class LearningOutcome(models.Model, Mixins):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+
+    @classmethod
+    def get_next_available_id(cls):
+        """get the next available content item id"""
+        from django.db.models import Max
+
+        max_id = cls.objects.aggregate(Max("id"))["id__max"]
+        return (max_id or 0) + 1
+
+
 class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
@@ -241,6 +254,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
 
     tags = TaggableManager(blank=True)
+    learning_outcomes = models.ManyToManyField(
+        "LearningOutcome", blank=True, related_name="content_items"
+    )
 
     flavours = models.ManyToManyField(
         taggit.models.Tag,
@@ -494,11 +510,11 @@ class RecruitProject(
                     result.append(user)
         return result
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.recruit_users.all()] + [
-            user.id for user in self.reviewer_users.all()
-        ]
+        user_ids = [user.id for user in self.recruit_users.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewer_users.all()])
         return Team.get_teams_from_user_ids(user_ids)
 
     def reviews_queryset(self):
@@ -829,7 +845,10 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         if request_time > self.timestamp:
             return False
-        first_review = (RecruitProjectReview.objects.filter(timestamp__gte=request_time).order_by("timestamp").first()
+        first_review = (
+            RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .order_by("timestamp")
+            .first()
         )
 
         return self == first_review
@@ -991,11 +1010,11 @@ class AgileCard(
             return self.BLOCKED
         return self.READY
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.assignees.all()] + [
-            user.id for user in self.reviewers.all()
-        ]
+        user_ids = [user.id for user in self.assignees.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewers.all()])
         return Team.get_teams_from_user_ids(user_ids)
 
     @property
@@ -1035,7 +1054,6 @@ class AgileCard(
         return self.project.link_submission
 
     def __str__(self):
-        # feel free to edit this
         return f"{self.status}:{self.content_item}"
 
     @classmethod
@@ -1383,3 +1401,19 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
+
+    def get_users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
+
+        if self.content_item.content_type == ContentItem.PROJECT:
+            reviews = RecruitProjectReview.objects.filter(
+                recruit_project=self.recruit_project
+            )
+
+        elif self.content_item.content_type == ContentItem.TOPIC:
+            reviews = TopicReview.objects.filter(topic_progress=self.topic_progress)
+
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
+
+        return [review.reviewer_user_id for review in reviews]

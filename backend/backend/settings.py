@@ -334,11 +334,11 @@ LOGGING = {  # TODO: copy this back into template project
             "level": "INFO",
             "propagate": False,
         },
-        # "django.server": {
-        #     "handlers": ["console"],
-        #     "level": "INFO",
-        #     "propagate": False,
-        # },
+        "django.server": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

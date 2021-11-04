@@ -43,7 +43,7 @@ def get_content_item_from_url(url):
 
 def create_content_items(data):
     for content in data:
-        content_items, created = ContentItem.objects.get_or_create(
+        content_item, created = ContentItem.objects.get_or_create(
             # flavours = ','.join(content['flavours']),
             content_type=content["content_type"],
             continue_from_repo=get_content_item_from_url(content["continue_from_repo"]),
@@ -57,6 +57,12 @@ def create_content_items(data):
             topic_needs_review=content["topic_needs_review"],
             url=content["url"],
         )
+
+        for tag in content["tags"]:
+            content_item.tags.add(tag)
+
+        if content['flavours']:
+            content_item.set_flavours(content['flavours'])
 
 
 def create_content_item_orders(data):

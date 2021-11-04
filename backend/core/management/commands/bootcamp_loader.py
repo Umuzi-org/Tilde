@@ -22,26 +22,45 @@ SEQUENCE_WEB = "WD"
 SEQUENCE_DATA_SCI = "DS"
 SEQUENCE_DATA_ENG = "DE"
 SEQUENCE_JAVA = "Java"
+SEQUENCE_SKILL_TEST_WEB = "Skills Test WD"
+SEQUENCE_SKILL_TEST_DATA_SCI = "Skills Test DS"
+SEQUENCE_SKILL_TEST_DATA_ENG = "Skills Test DE"
+SEQUENCE_SKILL_TEST_JAVA = "Skills Test Java"
 SEQUENCE_IT = "IT"
 SEQUENCE_EXTERNAL_WEB = "WD - Ext"
+SEQUENCE_DPD = "DPD"
 
 TEAM_COURSE_NAME_PARTS = {  # these strings end up in the Team names
     SEQUENCE_ALUMNI_WEB: "alumni web dev",
     SEQUENCE_ALUMNI_DATA_ENG: "alumni data eng",
     SEQUENCE_ALUMNI_JAVA: "alumni java",
+    SEQUENCE_SKILL_TEST_WEB: "skills test web dev",
+    SEQUENCE_SKILL_TEST_DATA_SCI: "skills test data sci",
+    SEQUENCE_SKILL_TEST_DATA_ENG: "skills test data eng",
+    SEQUENCE_SKILL_TEST_JAVA: "skills test java",
     SEQUENCE_WEB: "web dev",
     SEQUENCE_DATA_ENG: "data eng",
     SEQUENCE_JAVA: "java",
     SEQUENCE_IT: "it support",
     SEQUENCE_EXTERNAL_WEB: "web dev",
     SEQUENCE_DATA_SCI: "data sci",
+    SEQUENCE_DPD: "dpd",
 }
 
 
 TILDE_INTRO = "Intro to Tilde for tech bootcamps"
+TILDE_INTRO_NON_TECH = "Intro to Tilde for non-coder bootcampers"
 BOOTCAMP_INTRO = "Introduction to Bootcamp and Learnership"
 COMMON_TECH_BOOT_REQUIREMENTS = "Common tech bootcamp requirements"
 POST_BOOTCAMP_SOFT_SKILLS = "Post Bootcamp Soft Skills"
+DPD_BOOTCAMP = "UX Strategy Syllabus"
+SKILL_TEST_WEB = "Employed Web Development skills test"
+SKILL_TEST_DATA_SCI = "Employed Data Science skills test"
+SKILL_TEST_DATA_ENG = "Employed Data Engineering skills test"
+SKILL_TEST_JAVA = "Employed Java skills test"
+SKILLS_TEST_TILDE_1 = "Employed learnership intro to Tilde part 1"
+SKILLS_TEST_TILDE_2 = "Employed learnership intro to Tilde part 2"
+SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS = "Employed common tech reqirements"
 
 # PRE_BOOT_COURSES_ALUMNI = [TILDE_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
 # PRE_BOOT_COURSES_NORMAL = [TILDE_INTRO, BOOTCAMP_INTRO, COMMON_TECH_BOOT_REQUIREMENTS]
@@ -73,6 +92,34 @@ SEQUENCE_COURSES = {
         "Web development boot camp",
         POST_BOOTCAMP_SOFT_SKILLS,
     ],
+    SEQUENCE_DPD: [
+        TILDE_INTRO_NON_TECH,
+        DPD_BOOTCAMP,
+    ],
+    SEQUENCE_SKILL_TEST_WEB: [
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_WEB,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
+    ],
+    SEQUENCE_SKILL_TEST_DATA_SCI: [
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_DATA_SCI,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
+    ],
+    SEQUENCE_SKILL_TEST_DATA_ENG: [
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_DATA_ENG,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
+    ],
+    SEQUENCE_SKILL_TEST_JAVA: [
+        SKILLS_TEST_TILDE_1,
+        SKILL_TEST_JAVA,
+        SKILLS_TEST_TILDE_2,
+        SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS,
+    ],
 }
 
 
@@ -92,7 +139,7 @@ def get_df(url):
 def set_course_reg(user, course_names):
     curriculums = []
     for name in course_names:
-        # print(name)
+        print(name)
         curriculums.append(Curriculum.objects.get(name=name))
 
     course_ids = [curriculum.id for curriculum in curriculums]
@@ -110,11 +157,15 @@ def set_course_reg(user, course_names):
 
 
 def clean_github_username(name):
+
     name = name.strip().strip("/")
     if name.startswith("https://"):
         name = name[19:]
     if name.startswith("http://"):
         name = name[18:]
+    if name.startswith("com/"):
+        name = name[4:]
+
     return name
 
 
@@ -130,6 +181,8 @@ def check_email(row):
 
 
 def check_github(row):
+    if GIT not in row:
+        return True
     github = clean_github_username(row[GIT].strip())
     final_url = f"https://github.com/{github}"
     if requests.get(final_url).status_code == 404:
@@ -151,9 +204,10 @@ def setup_user(email, first_name, last_name, github, sequence, bootcamp_name):
     user.active = True
     user.save()
 
-    profile = SocialProfile.objects.get_or_create(user=user)[0]
-    profile.github_name = github
-    profile.save()
+    if github:
+        profile = SocialProfile.objects.get_or_create(user=user)[0]
+        profile.github_name = github
+        profile.save()
 
     team = get_team(sequence, bootcamp_name)
     team.user_set.add(user)
@@ -165,7 +219,7 @@ def process_row(row):
     email = row[EMAIL].strip()
     first_name = row[FIRST_NAME].strip()
     last_name = row[LAST_NAME].strip()
-    github = clean_github_username(row[GIT].strip())
+    github = clean_github_username(row.get(GIT, "").strip())
     sequence = row[COURSE].strip()
     bootcamp_name = row[BOOTCAMP_NAME]
 

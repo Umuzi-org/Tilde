@@ -35,7 +35,7 @@ class Command(BaseCommand):
             settings = yaml.load(f)
         self.content_location = self.path / settings["content_location"]
         self.base_url = settings["base_url"]
-        self.setup_flavours(settings["flavours"])
+        self.setup_flavours(settings.get("flavours", {}))
 
         self.seen_content_ids = {}
         self.seen_course_ids = {}
@@ -146,7 +146,16 @@ class Command(BaseCommand):
         root_path = root_path or self.content_location
         assert root_path.is_dir(), root_path
         for child in root_path.iterdir():
+            if child.name.startswith("."):
+                continue
+
             if child.is_dir():
+                if child.name.startswith("_"):
+                    continue
+                if str(child) in [
+                    str(self.path / s) for s in ["node_modules", "scripts", "static"]
+                ]:
+                    continue
                 for path in self.recurse_get_all_content_index_file_paths(child):
                     yield path
             else:
@@ -286,6 +295,7 @@ class Command(BaseCommand):
 
         content_paths = self.recurse_get_all_content_index_file_paths()
         for file_path in content_paths:
+
             content_item_post = frontmatter.load(file_path)
             if DB_ID in content_item_post:
                 continue

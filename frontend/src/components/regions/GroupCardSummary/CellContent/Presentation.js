@@ -24,6 +24,7 @@ import {
   COMPLETE,
 } from "../../../../constants";
 
+import { routes } from "../../../../routes";
 import yellow from "@material-ui/core/colors/yellow";
 import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
@@ -101,9 +102,16 @@ export default ({ card, handleClickOpenCardDetails }) => {
           <TableBody>
             <TableRow>
               <TableCell>
-                <IconButton onClick={handleClickOpenCardDetails}>
-                  <MoreIcon />
-                </IconButton>
+                <a
+                  href={routes.cardDetails.route.path.replace(
+                    ":cardId",
+                    card.id
+                  )}
+                >
+                  <IconButton>
+                    <MoreIcon />
+                  </IconButton>
+                </a>
               </TableCell>
               <TableCell>
                 <Paper className={classes[card.status]} variant="outlined">

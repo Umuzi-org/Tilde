@@ -20,8 +20,9 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   const props = {
     userId,
     user,
-    userBoardSelected: url.endsWith("board"), // these match the urls in routes.js
-    UserActionsSelected: url.endsWith("actions"),
+    userBoardSelected: url.endsWith("/board"), // these match the urls in routes.js
+    UserActionsSelected: url.endsWith("/actions"),
+    userDashboardSelected: url.endsWith("/dashboard"),
   };
 
   return <Presentation {...props} />;

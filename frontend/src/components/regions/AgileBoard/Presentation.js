@@ -18,13 +18,18 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
       width: theme.spacing(35),
-      height: theme.spacing(100),
+      // height: theme.spacing(100),
       // height: `calc(100% - ${0}px)`,
+      // height: "calc(100vh - 20rem)",
     },
   },
 
+  paper: {
+    height: "calc(100vh - 6rem)",
+  },
+
   column: {
-    height: "100%",
+    height: "calc(100% - 2.5rem)",
     overflowY: "scroll",
   },
 }));
@@ -51,7 +56,7 @@ export default ({
                 className={classes.grid}
                 key={column.label}
               >
-                <Paper elevation={3}>
+                <Paper elevation={3} className={classes.paper}>
                   <Typography variant="h5" align="center">
                     {column.label}
                   </Typography>
