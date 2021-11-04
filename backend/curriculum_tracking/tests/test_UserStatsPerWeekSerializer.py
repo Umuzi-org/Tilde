@@ -206,6 +206,7 @@ class TestingForTheStatsAPI(TestCase):
 
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
         # of 2
+        breakpoint()
         self.assertEqual(
             UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
                 UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()

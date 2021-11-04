@@ -521,7 +521,7 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     def get_total_pr_reviews_done(self, user):
 
         pr_reviews_done_to_date = PullRequestReview.objects.filter(
-            commit_id=user.id
+            user=user
         ).count()
 
         return pr_reviews_done_to_date
@@ -529,7 +529,7 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     def get_pr_reviews_done_last_7_days(self, user):
 
         pr_reviews_done_past_seven_days = PullRequestReview.objects.filter(
-            commit_id=user.id, submitted_at__gte=timezone.now() - timedelta(days=7)
+            user=user, submitted_at__gte=timezone.now() - timedelta(days=7)
         ).count()
 
         return pr_reviews_done_past_seven_days
