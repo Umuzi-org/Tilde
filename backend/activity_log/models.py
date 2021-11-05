@@ -28,13 +28,17 @@ class LogEntry(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     actor_user = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="log_entries_as_actor"
+        User,
+        on_delete=models.PROTECT,
+        related_name="log_entries_as_actor",
+        null=True,
+        blank=True,
     )
 
     effected_user = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="log_entries_as_effected_user"
     )
 
-    objects_effected = models.ManyToManyField(ObjectEffected)
+    object_1 = models.ManyToManyField(ObjectEffected)
 
     event_type = models.ForeignKey(EventType, on_delete=models.PROTECT)
