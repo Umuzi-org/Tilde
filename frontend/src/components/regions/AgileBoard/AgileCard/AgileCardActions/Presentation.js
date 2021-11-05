@@ -9,6 +9,8 @@ import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import CardButton from "../../../../widgets/CardButton";
 import ViewContentButton from "../../../../widgets/ViewContentButton";
 
+import { routes } from "../../../../../routes";
+
 export default ({
   card,
 
@@ -68,11 +70,19 @@ export default ({
           ""
         )}
 
-        <CardButton
+        {/* <CardButton
+            widget={<ViewCardDetailsButton cardId={card.Id}/>}
+          /> */}
+
+        <a href={routes.cardDetails.route.path.replace(":cardId", card.id)}>
+          <CardButton label="Details" startIcon={<MoreIcon />} />{" "}
+        </a>
+
+        {/* <CardButton
           label="Details"
           startIcon={<MoreIcon />}
           onClick={handleClickOpenCardDetails}
-        />
+        /> */}
 
         {showButtonRequestReview ? (
           <CardButton

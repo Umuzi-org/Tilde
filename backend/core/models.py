@@ -12,7 +12,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
-
 from django.contrib.auth.models import PermissionsMixin
 
 
@@ -161,7 +160,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Curriculum(models.Model, Mixins):
-    name = models.CharField(max_length=40)  # eg: data engineering
+    name = models.CharField(max_length=100)  # eg: data engineering
     url = models.URLField(
         max_length=2083,
         blank=True,

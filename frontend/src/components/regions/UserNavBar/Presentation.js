@@ -3,6 +3,8 @@ import React from "react";
 import { Typography, Toolbar, Tooltip } from "@material-ui/core";
 
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+import LinkToUserDashboard from "../../widgets/LinkToUserDashboard";
+
 import LinkToUserActions from "../../widgets/LinkToUserActions";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,7 +21,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
+export default ({
+  user,
+  userId,
+  userBoardSelected,
+  UserActionsSelected,
+  userDashboardSelected,
+}) => {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -44,6 +52,12 @@ export default ({ user, userId, userBoardSelected, UserActionsSelected }) => {
         </div>
         <div className={classes.button}>
           <LinkToUserActions userId={userId} selected={UserActionsSelected} />
+        </div>
+        <div className={classes.button}>
+          <LinkToUserDashboard
+            userId={userId}
+            selected={userDashboardSelected}
+          />
         </div>
       </Toolbar>
     </React.Fragment>

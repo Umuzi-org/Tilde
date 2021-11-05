@@ -170,13 +170,15 @@ class RecruitProjectFactory(DjangoModelFactory):
         FlavourMixin.flavours(self, *args, **kwargs)
 
 
-class RecruitProjectInRevewColumnFactory(RecruitProjectFactory):
+class RecruitProjectInReviewFactory(RecruitProjectFactory):
     start_time = factory.lazy_attribute(
         lambda *a, **k: timezone.now() - timedelta(days=15)
     )
     review_request_time = factory.lazy_attribute(
         lambda *a, **k: timezone.now() - timedelta(days=10)
     )
+
+    # agile_card = factory.SubFactory(AgileCardFactory)
 
 
 #     project = RecruitProjectFactory(*args, **kwargs)
@@ -190,9 +192,11 @@ class RecruitProjectReviewFactory(DjangoModelFactory):
         model = "curriculum_tracking.RecruitProjectReview"
 
     status = NOT_YET_COMPETENT
-    timestamp = factory.lazy_attribute(lambda o: timezone.now())
+    timestamp = factory.lazy_attribute(
+        lambda o: timezone.now()
+    )  # TODO: sheena timestamp not being used properly in factory
     comments = "something seriously useful"
-    recruit_project = factory.SubFactory(RecruitProjectInRevewColumnFactory)
+    recruit_project = factory.SubFactory(RecruitProjectInReviewFactory)
     reviewer_user = factory.SubFactory(UserFactory)
 
 
@@ -238,13 +242,16 @@ class AgileCardFactory(DjangoModelFactory):
     status = models.AgileCard.IN_PROGRESS
     is_hard_milestone = True
     is_soft_milestone = True
-    recruit_project = factory.SubFactory(RecruitProjectFactory)
+    recruit_project = factory.SubFactory(
+        RecruitProjectFactory, start_time=timezone.now()
+    )
     content_item = factory.LazyAttribute(
         lambda o: o.recruit_project.content_item
         if o.recruit_project
         else ContentItemFactory()
     )
     order = 1
+
     # assignees = factory.LazyAttribute(
     #     lambda o: o.recruit_project.recruit_users.all() if o.recruit_project else []
     # )

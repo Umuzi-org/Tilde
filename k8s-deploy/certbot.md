@@ -50,9 +50,11 @@ Go to the **Google cloud DNS** console and edit the `_acme-challenge.tilde.umuzi
 
 
 Then delete and recreate the tls secrets:
+
 ```
 kubectl delete secret tilde-domain-ssl
 ```
+
 You may need to delete and recreate the ingress
 
 ## Configuring cluster to use secrets
@@ -93,3 +95,5 @@ kubectl describe ingress tilde-prod-ingress
 curl http://backend.tilde.umuzi.org
 curl -v https://backend.tilde.umuzi.org
 ```
+
+

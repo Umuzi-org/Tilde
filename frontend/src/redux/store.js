@@ -4,7 +4,7 @@ import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
-import CardDetailsModal from "../components/regions/CardDetailsModal/redux";
+import CardDetails from "../components/regions/CardDetails/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
@@ -29,7 +29,7 @@ export const store = createStore(
     App,
     AgileBoard,
     googleLogin,
-    CardDetailsModal,
+    CardDetails,
     AddCardReviewModal,
     MarkSingleCardAttendanceModal,
     Entities,
