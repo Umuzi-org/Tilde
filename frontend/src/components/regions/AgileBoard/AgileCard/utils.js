@@ -1,4 +1,4 @@
-// To be used later once viro agree's on the ui
+
 const isCardInReviewColumn = ({ card }) => {
 	return card.status === "IR";
 }
