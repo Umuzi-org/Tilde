@@ -19,8 +19,6 @@ from core.permissions import (
     DenyAll,
 )
 from core.models import Team
-from core.views import _get_teams_from_user
-from rest_framework.permissions import IsAdminUser
 
 
 def _get_teams_from_topic_progress(self, request, view):
