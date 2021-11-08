@@ -387,26 +387,27 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
         cls.staff_member = UserFactory(is_superuser=False, is_staff=True)
 
         cls.review_trust_object = factories.ReviewTrustFactory()
-        cls.review_trust_object_for_a_recruit = factories.ReviewTrustFactory(
+        cls.review_trust_object_for_recruit = factories.ReviewTrustFactory(
             user=factories.UserFactory(is_superuser=False, is_staff=False)
         )
 
         cls.api_url = '/api/trusted_reviewer_status/'
 
-    def test_staff_user_can_view_all_trusted_reviewer_objects(self):
+    def test_admin_user_can_view_all_trusted_reviewer_objects(self):
 
         self.login(self.staff_member_superuser)
         response = self.client.get(self.api_url)
         self.assertEqual(response.status_code, 200)
 
-    def test_normal_user_can_view_no_trusted_reviewer_objects_except_their_own(self):
+    def test_normal_user_cannot_view_other_user_trusted_review_objects(self):
 
         self.login(self.recruit)
         response = self.client.get(self.api_url)
+        breakpoint()
         self.assertEqual(response.status_code, 403)
 
     def test_users_can_view_their_own_reviewer_trusts(self):
-        self.login(self.review_trust_object_for_a_recruit.user)
+        self.login(self.review_trust_object_for_recruit.user)
         response = self.client.get(self.api_url)  # This returns 403 (forbidden) but it should allow the request
-                                                  # since the user logged in has a trusted reviewer object
+        breakpoint()                                          # since the user logged in has a trusted reviewer object
 

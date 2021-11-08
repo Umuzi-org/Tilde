@@ -893,29 +893,49 @@ class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
     D) What is the difference between ActionIs('retrieve') and ActionIs('list')?
     """
 
-    permission_classes = [
-        ActionIs("retrieve")
+
+    """
+    permission_classes = [permissions.IsAdminUser
+        | ActionIs("retrieve")
         & (
-                curriculum_permissions.IsProjectReviewer
-                | curriculum_permissions.IsCardReviewer
-                | core_permissions.IsStaffUser
-                | curriculum_permissions.IsCardAssignee
-                | core_permissions.IsCurrentUserInSpecificFilter("user")
+                curriculum_permissions.CardBelongsToRequestingUser
+                #| core_permissions.IsStaffUser
                 | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
             get_objects=_get_teams_from_workshop_attendance,
         )
-        )
-        | core_permissions.IsCurrentUserInSpecificFilter("user")
-        | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_user_filter("user"),
         )
     ]
 
     queryset = models.ReviewTrust.objects.all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
+    """
+
+
+    permission_classes = [
+        ActionIs("list")
+        & (
+                IsAdminUser
+                | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=_get_teams_from_recruit_project_review,
+        )
+        )
+        | ActionIs("retrieve")
+        & (
+                IsAdminUser
+                | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=_get_teams_from_recruit_project_review,
+        )
+        )
+    ]
+
+    queryset = models.ReviewTrust.objects.order_by("pk")
+    serializer_class = serializers.ReviewTrustSerializer
+    filter_backends = [DjangoFilterBackend]
+
 
     @action(
         detail=True,
