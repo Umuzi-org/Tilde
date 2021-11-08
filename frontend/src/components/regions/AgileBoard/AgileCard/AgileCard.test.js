@@ -59,10 +59,10 @@ test("showCheckedBox should return true if the card is in the review column and 
     status: "IR",
     usersThatReviewedSinceLastReviewRequest: [777, 555, 28, 3332],
   }
-  const user = {
+  const authUser = {
     id: 28,
   }
-  expect(showCheckedBox({user, card})).toBe(true)
+  expect(showCheckedBox({authUser, card})).toBe(true)
 })
 
 test("showCheckedBox should return false if the card is in the review column but the user is not part of the latest reviewers", () => {
@@ -70,10 +70,10 @@ test("showCheckedBox should return false if the card is in the review column but
     status: "IR",
     usersThatReviewedSinceLastReviewRequest: [777, 555, 3332],
   }
-  const user = {
+  const authUser = {
     id: 28,
   }
-  expect(showCheckedBox({user, card})).toBe(false)
+  expect(showCheckedBox({authUser, card})).toBe(false)
 })
 
 test("showCheckedBox should return false if the card is not in the review column", () => {
@@ -81,8 +81,8 @@ test("showCheckedBox should return false if the card is not in the review column
     status: "IP",
     usersThatReviewedSinceLastReviewRequest: [777, 555, 28, 3332],
   }
-  const user = {
+  const authUser = {
     id: 28,
   }
-  expect(showCheckedBox({user, card})).toBe(false)
+  expect(showCheckedBox({authUser, card})).toBe(false)
 })

@@ -151,7 +151,7 @@ export default ({
         </Typography>
         <Typography variant="caption"> [card id:{card.id}]</Typography>
         <Checkbox
-          checked={showCheckedBox()}
+          checked={showCheckedBox({authUser, card})}
           color="primary"
         />
         <Typography variant="h6" component="h2">

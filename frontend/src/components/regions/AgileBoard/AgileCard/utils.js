@@ -3,12 +3,12 @@ const isCardInReviewColumn = ({ card }) => {
 	return card.status === "IR";
 }
 
-const checkIfUserIdExistsInReviewers = ({ user, card }) => {
-	const userId = user.id;
+const checkIfUserIdExistsInReviewers = ({ authUser, card }) => {
+	const userId = authUser.id;
 	const reviewerList = card.usersThatReviewedSinceLastReviewRequest;
 	return reviewerList.includes(userId);
 }
 
-export function showCheckedBox({ user, card }) {
-	return isCardInReviewColumn({ card }) && checkIfUserIdExistsInReviewers({ user, card });
+export function showCheckedBox({ authUser, card }) {
+	return isCardInReviewColumn({ card }) && checkIfUserIdExistsInReviewers({ authUser, card });
 }
