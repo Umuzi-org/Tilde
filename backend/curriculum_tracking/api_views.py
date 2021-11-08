@@ -1,7 +1,7 @@
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
-from django.http import Http404, HttpResponseForbidden, HttpResponse
+from django.http import Http404, HttpResponseForbidden
 from rest_framework.decorators import action
 from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
