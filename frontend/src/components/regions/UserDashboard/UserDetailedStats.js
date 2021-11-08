@@ -22,23 +22,23 @@ export default ({ detailedStats }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in complete column</TableCell>
+          <TableCell>Cards in complete column as assignee</TableCell>
           <TableCell>
             {detailedStats.cardsInCompletedColumnAsAssignee}
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in review column</TableCell>
+          <TableCell>Cards in review column as assignee</TableCell>
           <TableCell>{detailedStats.cardsInReviewColumnAsAssignee}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in review feedback column</TableCell>
+          <TableCell>Cards in review feedback column as assignee</TableCell>
           <TableCell>
             {detailedStats.cardsInReviewFeedbackColumnAsAssignee}
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in complete column</TableCell>
+          <TableCell>Cards in complete column as assignee</TableCell>
           <TableCell>{detailedStats.cardsInProgressColumnAsAssignee}</TableCell>
         </TableRow>
         <TableRow>
@@ -48,7 +48,7 @@ export default ({ detailedStats }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards started in the last 7 days</TableCell>
+          <TableCell>Cards started in the last 7 days as assignee</TableCell>
           <TableCell>
             {detailedStats.cardsStartedLast_7DaysAsAssignee}
           </TableCell>
