@@ -16,7 +16,7 @@ from curriculum_tracking.constants import (
     COMPETENT,
     EXCELLENT,
 )
-from curriculum_tracking.api_views import TrustedReviewerViewSet
+from curriculum_tracking.api_views import ReviewTrustsViewSet
 from mock import patch
 
 
@@ -379,35 +379,39 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 
 class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
-    @classmethod
-    def setUpTestData(cls):
+    LIST_URL_NAME = 'reviewtrust-list'
 
-        cls.recruit = UserFactory(is_superuser=False, is_staff=False)
-        cls.staff_member_superuser = UserFactory(is_superuser=True, is_staff=True)
-        cls.staff_member = UserFactory(is_superuser=False, is_staff=True)
+    def setUp(self):
 
-        cls.review_trust_object = factories.ReviewTrustFactory()
-        cls.review_trust_object_for_recruit = factories.ReviewTrustFactory(
-            user=factories.UserFactory(is_superuser=False, is_staff=False)
-        )
+        self.api_url = self.get_list_url()
 
-        cls.api_url = '/api/trusted_reviewer_status/'
+    def test_staff_member_can_view_all_trusted_reviewer_objects(self):
+        staff_member = UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_member)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
 
     def test_admin_user_can_view_all_trusted_reviewer_objects(self):
-
-        self.login(self.staff_member_superuser)
+        staff_member_superuser = UserFactory(is_superuser=True, is_staff=False)
+        self.login(staff_member_superuser)
         response = self.client.get(self.api_url)
         self.assertEqual(response.status_code, 200)
 
     def test_normal_user_cannot_view_other_user_trusted_review_objects(self):
-
-        self.login(self.recruit)
+        review_trust_object = factories.ReviewTrustFactory()
+        recruit = UserFactory(is_superuser=False, is_staff=False)
+        self.login(recruit)
         response = self.client.get(self.api_url)
-        breakpoint()
         self.assertEqual(response.status_code, 403)
+        self.assertNotIn(str(review_trust_object.content_item), response.data)
 
     def test_users_can_view_their_own_reviewer_trusts(self):
-        self.login(self.review_trust_object_for_recruit.user)
-        response = self.client.get(self.api_url)  # This returns 403 (forbidden) but it should allow the request
-        breakpoint()                                          # since the user logged in has a trusted reviewer object
+        review_trust_object = factories.ReviewTrustFactory(
+            user=factories.UserFactory(is_superuser=False, is_staff=False)
+        )
+        self.login(review_trust_object.user)
+        response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0].get('content_item'), f'{str(review_trust_object.content_item)} []')
+
 

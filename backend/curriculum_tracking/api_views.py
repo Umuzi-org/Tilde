@@ -884,68 +884,20 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
             return Response({"status": "OK", "data": response.asdict()})
 
 
-class TrustedReviewerViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    A) Why if I change from viewsets.Viewset to viewsets.ModelViewSet do I get the queryset data else nothing?
-    B) Only staff/super users can login to Django admin, does that mean any other type of user won't be able to use this
-       api endpoint?
-    C) What is the capital Q for in line 167 of this file?
-    D) What is the difference between ActionIs('retrieve') and ActionIs('list')?
-    """
+class ReviewTrustsViewSet(viewsets.ModelViewSet):
 
-
-    """
     permission_classes = [permissions.IsAdminUser
-        | ActionIs("retrieve")
+        | ActionIs('list')
         & (
-                curriculum_permissions.CardBelongsToRequestingUser
-                #| core_permissions.IsStaffUser
-                | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_workshop_attendance,
-        )
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("user"),
+            )
         )
     ]
 
     queryset = models.ReviewTrust.objects.all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
-    """
-
-
-    permission_classes = [
-        ActionIs("list")
-        & (
-                IsAdminUser
-                | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_recruit_project_review,
-        )
-        )
-        | ActionIs("retrieve")
-        & (
-                IsAdminUser
-                | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_recruit_project_review,
-        )
-        )
-    ]
-
-    queryset = models.ReviewTrust.objects.order_by("pk")
-    serializer_class = serializers.ReviewTrustSerializer
-    filter_backends = [DjangoFilterBackend]
-
-
-    @action(
-        detail=True,
-        methods=["GET"],
-        serializer_class=serializers.ReviewTrustSerializer,
-        permission_classes=[IsAdminUser | core_permissions.HasObjectPermission(
-                permissions=models.Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user,
-            )],
-    )
-    def review_trusts_of_user(self, request, pk=None):
-        review_trust_objects_for_user = models.ReviewTrust.objects.filter(pk=pk)
-        return HttpResponse(review_trust_objects_for_user)
+    filterset_fields = ["user"]

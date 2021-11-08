@@ -120,9 +120,9 @@ router.register(
 )
 
 router.register(
-    r"trusted_reviewer_status",
-    curriculum_tracking_api_views.TrustedReviewerViewSet,
-    "trustedreviewerstatus",
+    r"review_trust",
+    curriculum_tracking_api_views.ReviewTrustsViewSet,
+    "reviewtrust",
 )
 
 # router.register(
