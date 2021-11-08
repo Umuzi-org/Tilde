@@ -8,24 +8,9 @@ import {
   TableCell,
   Typography,
 } from "@material-ui/core";
-import {
-  AGILE_CARD_STATUS_CHOICES,
-  BLOCKED,
-  READY,
-  IN_PROGRESS,
-  REVIEW_FEEDBACK,
-  IN_REVIEW,
-  COMPLETE,
-} from "../../../constants";
-import yellow from "@material-ui/core/colors/yellow";
-import orange from "@material-ui/core/colors/orange";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
-import grey from "@material-ui/core/colors/grey";
-import blue from "@material-ui/core/colors/blue";
 
 import { makeStyles } from "@material-ui/core/styles";
-
+import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
@@ -61,14 +46,6 @@ const useStyles = makeStyles((theme) => {
       width: theme.spacing(40),
       height: theme.spacing(16),
     },
-
-    [BLOCKED]: { ...card, backgroundColor: grey[400] },
-    [READY]: { ...card, backgroundColor: blue[400] },
-    [IN_PROGRESS]: { ...card, backgroundColor: green[400] },
-    [REVIEW_FEEDBACK]: { ...card, backgroundColor: red[400] },
-    [IN_REVIEW]: { ...card, backgroundColor: orange[400] },
-    [COMPLETE]: { ...card, backgroundColor: yellow[400] },
-
     row: {
       padding: 5,
     },
@@ -114,9 +91,7 @@ const CardBasicDetails = ({ card }) => {
           <StoryPoints storyPoints={card.storyPoints} />
         </Grid>
         <TableCell>
-          <Paper className={classes[card.status]} variant="outlined">
-            <Typography>{AGILE_CARD_STATUS_CHOICES[card.status]}</Typography>
-          </Paper>
+          <CardStatusChip card={card} />
         </TableCell>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
