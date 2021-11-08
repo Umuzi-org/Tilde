@@ -10,7 +10,8 @@ const LoginUnconnected = ({
   googleLogin,
   AUTHENTICATE_WITH_ONE_TIME_TOKEN,
 }) => {
-  const loginWithGoogleButtonClick = () => {
+  const loginWithGoogleButtonClick = (e) => {
+    e.preventDefault()
     if (!googleLogin.loading) initialiseGoogleAuthStart(googleLogin);
   };
 
