@@ -1,7 +1,8 @@
 
-const isCardInReviewColumn = ({ card }) => {
+const checkIfCardIsInReviewColumn = ({ card }) => {
 	return card.status === "IR";
 }
+checkIfCardIsInReviewColumn()
 
 const checkIfUserIdExistsInReviewers = ({ authUser, card }) => {
 	const userId = authUser.id;
@@ -10,5 +11,5 @@ const checkIfUserIdExistsInReviewers = ({ authUser, card }) => {
 }
 
 export function showCheckedBox({ authUser, card }) {
-	return isCardInReviewColumn({ card }) && checkIfUserIdExistsInReviewers({ authUser, card });
+	return checkIfCardIsInReviewColumn({ card }) && checkIfUserIdExistsInReviewers({ authUser, card });
 }
