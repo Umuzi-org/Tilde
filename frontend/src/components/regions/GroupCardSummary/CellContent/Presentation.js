@@ -1,5 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import CardStatusChip from "../../../widgets/CardStatusChip.js";
+
 import {
   Paper,
   Typography,
@@ -25,33 +27,15 @@ import {
 } from "../../../../constants";
 
 import { routes } from "../../../../routes";
-import yellow from "@material-ui/core/colors/yellow";
-import orange from "@material-ui/core/colors/orange";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
-import grey from "@material-ui/core/colors/grey";
-import blue from "@material-ui/core/colors/blue";
 
 const useStyles = makeStyles((theme) => {
-  const card = {
-    // borderWidth: 3,
-    borderRadius: theme.spacing(2),
-    // margin: theme.spacing(1),
-    textAlign: "center",
-  };
+ 
   return {
     root: {
       margin: theme.spacing(1),
       width: theme.spacing(40),
       //   height: theme.spacing(16),
     },
-
-    [BLOCKED]: { ...card, backgroundColor: grey[400] },
-    [READY]: { ...card, backgroundColor: blue[400] },
-    [IN_PROGRESS]: { ...card, backgroundColor: green[400] },
-    [REVIEW_FEEDBACK]: { ...card, backgroundColor: red[400] },
-    [IN_REVIEW]: { ...card, backgroundColor: orange[400] },
-    [COMPLETE]: { ...card, backgroundColor: yellow[400] },
 
     row: {
       padding: 5,
@@ -115,9 +99,7 @@ export default ({ card, handleClickOpenCardDetails }) => {
               </TableCell>
               <TableCell>
                 <Paper className={classes[card.status]} variant="outlined">
-                  <Typography>
-                    {AGILE_CARD_STATUS_CHOICES[card.status]}
-                  </Typography>
+                <CardStatusChip card={card} />
                 </Paper>
               </TableCell>
               <TableCell>
