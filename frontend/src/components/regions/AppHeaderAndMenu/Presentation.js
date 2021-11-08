@@ -231,7 +231,9 @@ export default function Presentation(props) {
         }}
         open={props.openSlider}
       >
-        <div className={classes.toolbarIcon}>
+        <div className={classes.toolbarIcon} onClick={(event) => {
+          
+        }}>
           <IconButton onClick={handleCloseSlider}>
             <ChevronLeftIcon />
           </IconButton>
