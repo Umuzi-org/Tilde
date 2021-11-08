@@ -82,10 +82,10 @@ const useStyles = makeStyles((theme) => {
       }),
       width: theme.spacing(7),
       [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9),
-      },
+        width: theme.spacing(0),
+      }
     },
-    appBarSpacer: { ...theme.mixins.toolbar, background: "blue" },
+    appBarSpacer: { ...theme.mixins.toolbar },
 
     childContainer: {
       height: `calc(100% - ${
@@ -231,9 +231,7 @@ export default function Presentation(props) {
         }}
         open={props.openSlider}
       >
-        <div className={classes.toolbarIcon} onClick={(event) => {
-          
-        }}>
+        <div className={classes.toolbarIcon}>
           <IconButton onClick={handleCloseSlider}>
             <ChevronLeftIcon />
           </IconButton>
