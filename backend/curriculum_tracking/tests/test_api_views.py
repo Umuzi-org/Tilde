@@ -1,4 +1,3 @@
-import curriculum_tracking.api_views
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
@@ -16,8 +15,6 @@ from curriculum_tracking.constants import (
     COMPETENT,
     EXCELLENT,
 )
-from curriculum_tracking.api_views import ReviewTrustsViewSet
-from mock import patch
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -380,6 +377,10 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
     LIST_URL_NAME = 'reviewtrust-list'
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.ReviewTrustFactory()
 
     def setUp(self):
 
