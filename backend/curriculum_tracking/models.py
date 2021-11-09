@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team
@@ -1429,3 +1430,40 @@ class AgileCard(
 #     card_review_medium_priority_if_older_than = models.DurationField(
 #         null=True, blank=True
 #     )
+
+
+class BurndownSnapshot(models.Model):
+    MIN_HOURS_BETWEEN_SNAPSHOTS = 4
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    cards_total_count = models.SmallIntegerField()
+    project_cards_total_count = models.SmallIntegerField()
+    cards_in_complete_column_total_count = models.SmallIntegerField()
+    project_cards_in_complete_column_total_count = models.SmallIntegerField()
+
+    @classmethod
+    def create_snapshot(Cls, user):
+        match = Cls.objects.filter(
+            user=user,
+            timestamp__gte=timezone.now()
+            - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
+        ).first()
+
+        if match:
+            # there was a snapshot taken recently, no need to store another one
+            return match
+
+        cards = AgileCard.objects.filter(assignees=user)
+        project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)
+
+        complete_cards = cards.filter(status=AgileCard.COMPLETE)
+        complete_project_cards = project_cards.filter(status=AgileCard.COMPLETE)
+
+        return Cls.objects.create(
+            user=user,
+            cards_total_count=cards.count(),
+            project_cards_total_count=project_cards.count(),
+            cards_in_complete_column_total_count=complete_cards.count(),
+            project_cards_in_complete_column_total_count=complete_project_cards.count(),
+        )
