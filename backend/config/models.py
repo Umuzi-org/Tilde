@@ -9,15 +9,15 @@ class NameSpace(
     models.Model,
     Mixins,
 ):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=250)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
     def get_value(self, name):
         instance = Value.objects.get(name=name, namespace=self)
         return instance.get()
-
-    def __str__(self):
-        return self.name
 
     @classmethod
     def get_config(Klass, namespace: str):

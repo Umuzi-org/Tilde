@@ -161,6 +161,10 @@ export default ({
           </Typography>
         )}
 
+        <Typography variant="h6" component="h2">
+          {card.title}
+        </Typography>
+       
         {/* {card.flavourNames.map((flavour) => (
           <Chip
             key={flavour}

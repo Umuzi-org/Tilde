@@ -1,16 +1,16 @@
 import React from "react";
 import { routes } from "../../routes";
+
 import BaseButtonLink from "./BaseButtonLink";
 
 export function getUrl({ userId }) {
-  return routes.userActions.route.path.replace(":userId", userId);
+  return routes.userDashboard.route.path.replace(":userId", userId);
 }
-
-export default ({ userId, selected }) => {
+export default ({ userId, selected, label }) => {
   return (
     <BaseButtonLink
       to={getUrl}
-      label="Actions"
+      label={label || "Dashboard"}
       selected={selected}
     />
   );

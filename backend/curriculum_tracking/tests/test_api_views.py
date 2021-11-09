@@ -12,8 +12,6 @@ from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
-    COMPETENT,
-    EXCELLENT,
 )
 
 
@@ -244,7 +242,7 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["link_submission", "complete_time"]
 
     def verbose_instance_factory(self):
-        project = factories.RecruitProjectInRevewColumnFactory(
+        project = factories.RecruitProjectInReviewFactory(
             content_item=factories.ProjectContentItemFactory(
                 project_submission_type=ContentItem.REPOSITORY,
             )

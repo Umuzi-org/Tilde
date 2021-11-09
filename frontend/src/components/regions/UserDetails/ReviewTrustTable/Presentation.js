@@ -42,7 +42,7 @@ const ReviewTrustTable = (props) => {
             </TableHead>
             <TableBody>
                 {   
-                    trustInstances.length > 0 ? 
+                    trustInstances ? 
                         trustInstances.map((trustInstance) => (
                             <TableRow>
                                 <TableCell>{trustInstance.content_item_title}</TableCell>

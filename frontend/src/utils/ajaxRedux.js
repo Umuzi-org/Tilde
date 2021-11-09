@@ -344,7 +344,7 @@ export function getLatestMatchingCall({ callLog, requestData }) {
   for (let key in requestData)
     if (requestData[key] === undefined)
       throw new Error(
-        `cannot seach for requests with undefined parameter values. key=${key} requestData = ${JSON.stringify(
+        `cannot search for requests with undefined parameter values. key=${key} requestData = ${JSON.stringify(
           requestData
         )}`
       );

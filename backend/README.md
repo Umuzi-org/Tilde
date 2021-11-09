@@ -63,7 +63,7 @@ python manage.py command_name --help
 ### Creating users and teams
 
 - `create_full_user`. Example usage: `python manage.py create_full_user someone.nice@example.com 1 1  first last umuzibot`
-- `set_password`. Example usage:  `python manage.py set_password someone.nice@example.com supersecret`
+- `set_password`. Example usage:  `python manage.py set_password someone.nice@example.com  --password=supersecret`
 - `create_team`. Example usage: `python manage.py create_team "demo team"`
 - `add_users_to_team` Example usage: `python manage.py add_users_to_team  "someone.nice@example.com"  "demo team"`
 
