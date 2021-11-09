@@ -813,7 +813,27 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # The next line had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
         # so I manually created a 'recruit_project' attribute.
         project_two.recruit_project = project_two
-
+        
         self.assertEqual(
             AgileCard.get_users_that_reviewed_since_last_review_request(project_two), []
         )
+
+class repo_url_Tests(TestCase):
+
+    def test_repository_link_is_returned_and_that_it_is_an_actual_repository(self):
+        card = factories.AgileCardFactory()
+        card.recruit_project.repository = git_real_factories.RepositoryFactory()
+        card.save()
+        repository = card.recruit_project.repository
+        self.assertEqual(card.repo_url, repository.ssh_url)
+
+    def test_none_is_returned_for_card_not_linked_to_a_repository(self):
+        card_no_repo = factories.AgileCardFactory(
+                content_item=factories.ContentItemFactory(
+                content_type=ContentItem.WORKSHOP),
+                status=AgileCard.READY,
+                recruit_project=None
+        )
+        self.assertEqual(card_no_repo.repo_url, None)
+
+

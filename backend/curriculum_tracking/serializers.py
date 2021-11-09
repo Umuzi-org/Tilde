@@ -182,6 +182,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "can_force_start",
             "open_pr_count",
             "oldest_open_pr_updated_time",
+            "repo_url",
             "users_that_reviewed_since_last_review_request",
         ]
 
@@ -219,6 +220,7 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "code_review_ny_competent_since_last_review_request",
             "open_pr_count",
             "oldest_open_pr_updated_time",
+            "repo_url",
         ]
 
 

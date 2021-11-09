@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import List
 from django.db import models
+from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -1030,6 +1031,14 @@ class AgileCard(
         if not assignees_only:
             user_ids.extend([user.id for user in self.reviewers.all()])
         return Team.get_teams_from_user_ids(user_ids)
+
+    @property
+    def repo_url(self):
+        if not self.recruit_project:
+            return None
+        if not self.recruit_project.repository:
+            return None
+        return self.recruit_project.repository.ssh_url
 
     @property
     def due_time(self):
