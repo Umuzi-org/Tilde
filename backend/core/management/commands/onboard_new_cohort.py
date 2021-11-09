@@ -233,5 +233,7 @@ class Command(BaseCommand):
         df.apply(set_up_course_registrations, axis=1)
         print("re-reviewing cards")
         df.apply(re_review_cards, axis=1)
+
+        # breakpoint()
         print("setting up rocketchat users")
         setup_rocketchat_users(df)

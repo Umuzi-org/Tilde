@@ -1,3 +1,4 @@
+from re import A
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -410,6 +411,9 @@ class AgileCardViewset(viewsets.ModelViewSet):
             type_or_404=models.ContentItem.PROJECT,
         )
         card.start_project()
+
+        log_creators.log_card_started(card=card, actor_user=request.user)
+
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(

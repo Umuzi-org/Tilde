@@ -1417,3 +1417,15 @@ class AgileCard(
         reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
         return [review.reviewer_user_id for review in reviews]
+
+
+# class ExtraTeamConfig(models.Model, Mixins):
+#     team = models.ForeignKey(Team,on_delete=models.CASCADE)
+#     pr_is_high_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     pr_medium_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     card_review_is_high_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
+#     card_review_medium_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
