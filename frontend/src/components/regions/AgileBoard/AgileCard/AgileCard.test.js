@@ -57,32 +57,31 @@ test("getAgeString function returns correct string when age is less than a minut
 test("showCheckedBox should return true if the card is in the review column and the user is part of the latest reviewers", () => {
   const card = {
     status: "IR",
-    usersThatReviewedSinceLastReviewRequest: [777, 555, 28, 3332],
+    reviewers: [777, 555, 28, 3332],
   }
-  const authUser = {
+  const viewedUser = {
     id: 28,
   }
-  expect(showCheckedBox({authUser, card})).toBe(true)
+  expect(showCheckedBox({ viewedUser, card })).toBe(true)
 })
 
 test("showCheckedBox should return false if the card is in the review column but the user is not part of the latest reviewers", () => {
   const card = {
     status: "IR",
-    usersThatReviewedSinceLastReviewRequest: [777, 555, 3332],
+    reviewers: [777, 555, 3332],
   }
-  const authUser = {
+  const viewedUser = {
     id: 28,
   }
-  expect(showCheckedBox({authUser, card})).toBe(false)
+  expect(showCheckedBox({ viewedUser, card })).toBe(false)
 })
 
 test("showCheckedBox should return false if the card is not in the review column", () => {
   const card = {
     status: "IP",
-    usersThatReviewedSinceLastReviewRequest: [777, 555, 28, 3332],
   }
-  const authUser = {
+  const viewedUser = {
     id: 28,
   }
-  expect(showCheckedBox({authUser, card})).toBe(false)
+  expect(showCheckedBox({ viewedUser, card })).toBe(false)
 })
