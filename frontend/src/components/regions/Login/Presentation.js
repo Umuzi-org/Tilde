@@ -5,6 +5,11 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
+import { Box } from "@material-ui/core";
+import Divider from "./Divider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +33,23 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: "275px",
   },
+  buttonStyle: {
+    width: "300px",
+    margin: theme.spacing(1),
+    textTransform: "none",
+    fontWeight: 600,
+    width: "275px",
+  },
+  linkStyles: {
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    fontFamily: "Roboto",
+  },
+  checkBoxStyles: {
+    marginLeft: "0",
+    width: "20px",
+    padding: "0",
+  }
 }));
 
 const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
@@ -51,6 +73,44 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
       <LockRoundedIcon />
       <TextField label="Email" variant="outlined" type="email" required />
       <TextField label="Password" variant="outlined" type="password" required />
+      <Box m={0}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              className={classes.checkBoxStyles}
+              name="checkedB"
+              color="primary"
+            />
+          }
+          label="Remember me"
+        />
+
+        <Link
+          className={classes.linkStyles}
+          underline="always"
+          href="#"
+        >
+          Forgot Password?
+        </Link>
+      </Box>
+      <div>
+        <Button
+          className={classes.buttonStyle}
+          type="submit"
+          variant="contained"
+          color="default"
+        >
+          Login
+        </Button>
+      </div>
+      <Box width={200} m={0}>
+        <Divider>
+          <Typography style={{ fontWeight: 600 }}>OR</Typography>
+        </Divider>
+      </Box>
+      <div>
+        <Button
+          className={classes.buttonStyle}
       <div>
         <Button type="submit" variant="contained" color="primary">
           Login
