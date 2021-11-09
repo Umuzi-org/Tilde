@@ -33,6 +33,7 @@ class TestingForTheStatsAPI(TestCase):
         self.user = self.card_1.assignees.first()
         self.project_1.start_time = timezone.now() - timedelta(days=5)
         self.project_1.save()
+        self.stats_serializer = UserStatsPerWeekSerializer()
 
         # Will use this repo card, PR, today, yesterday, two_days_before_yesterday and two_weeks_ago later on
         # in test 'test_pr_reviews_card_in_different_column_due_to_review_status'.
@@ -61,12 +62,7 @@ class TestingForTheStatsAPI(TestCase):
         self.assertEqual(
             AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS
         )
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_progress_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
-            ),
-            1,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_in_progress_column_as_assignee(user=self.user), 1)
 
     def test_one_card_in_review_feedback_column(self):
 
@@ -81,12 +77,7 @@ class TestingForTheStatsAPI(TestCase):
         review_1.save()
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_review_feedback_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
-            ),
-            1,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_in_review_feedback_column_as_assignee(user=self.user), 1)
 
     def test_no_card_in_completed_column_after_untrusted_competent_review(self):
         time_two = self.project_1.start_time + timedelta(days=4)
@@ -99,29 +90,14 @@ class TestingForTheStatsAPI(TestCase):
 
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_complete_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
-            ),
-            0,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_in_complete_column_as_assignee(user=self.user), 0)
 
     def test_one_card_started_in_the_past_seven_days(self):
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_started_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
-            ),
-            1,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_started_last_7_days_as_assignee(user=self.user), 1)
 
     def test_no_cards_completed_in_past_seven_days(self):
 
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_completed_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
-            ),
-            0,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_completed_last_7_days_as_assignee(user=self.user), 0)
 
     def test_one_card_in_complete_column(self):
 
@@ -138,18 +114,8 @@ class TestingForTheStatsAPI(TestCase):
 
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days_as_assignee' should also return at least one card
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_complete_column_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
-            ),
-            1,
-        )
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_completed_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
-            ),
-            1,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_in_complete_column_as_assignee(user=assigned_person), 1)
+        self.assertEqual(self.stats_serializer.get_cards_completed_last_7_days_as_assignee(user=assigned_person), 1)
 
     def test_cards_in_the_review_column_waiting_for_a_review(self):
 
@@ -176,12 +142,7 @@ class TestingForTheStatsAPI(TestCase):
         card_4.assignees.set([assigned_person])
 
         # We should get two cards in the review column waiting for a review
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_review_column_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
-            ),
-            2,
-        )
+        self.assertEqual(self.stats_serializer.get_cards_in_review_column_as_assignee(user=assigned_person), 2)
 
     def test_pr_reviews_done_within_the_last_seven_days(self):
 
@@ -189,36 +150,30 @@ class TestingForTheStatsAPI(TestCase):
         yesterday_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_days_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_days_before_yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_weeks_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_weeks_ago,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
         # of 2
-        self.assertEqual(
-            UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
-                UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()
-            ),
-            2,
-        )
+        self.assertEqual(self.stats_serializer.get_pr_reviews_done_last_7_days(self.repo_card_one.assignees.first()), 2)
 
     def test_get_tilde_cards_reviewed_in_last_7_days(self):
         user = UserFactory()
-        serializer = UserStatsPerWeekSerializer()
 
         # no reviews done yet
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review, but it's too old to count
@@ -230,7 +185,7 @@ class TestingForTheStatsAPI(TestCase):
         review1.save()
         AgileCardFactory(recruit_project=review1.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review within the right timeframe
@@ -243,7 +198,7 @@ class TestingForTheStatsAPI(TestCase):
         AgileCardFactory(recruit_project=review2.recruit_project)
         # assert review.reviewer_user == user
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review on the same card, so now the number of cards reviewed is still 1
@@ -256,7 +211,7 @@ class TestingForTheStatsAPI(TestCase):
         review3.save()
         # AgileCardFactory(recruit_project=review3.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review, now the number of cards reviewed is 2
@@ -268,5 +223,5 @@ class TestingForTheStatsAPI(TestCase):
         review4.save()
         AgileCardFactory(recruit_project=review4.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
