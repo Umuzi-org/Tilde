@@ -20,11 +20,11 @@ import {
   IN_REVIEW,
   COMPLETE,
 } from "../../constants";
-
 const useStyles = makeStyles((theme) => {
   const card = {
-    margin: theme.spacing(1),
-    width: theme.spacing(15),
+    margin: theme.spacing(2),
+    width: theme.spacing("auto"),
+    padding: theme.spacing(0.5),
     borderRadius: theme.spacing(2),
     textAlign: "center",
   };
@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => {
 export default ({ card }) => {
   const classes = useStyles();
   return (
-    <Paper className={classes[card.status]} variant="outlined">
+      <Paper className={classes[card.status]} variant="outlined">
       <Typography>{AGILE_CARD_STATUS_CHOICES[card.status]}</Typography>
-    </Paper>
+    </Paper>   
   );
 };
