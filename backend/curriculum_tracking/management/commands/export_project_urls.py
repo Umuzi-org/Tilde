@@ -10,7 +10,7 @@ def get_user_and_projectlink(team, content_item):
     for user in team.active_users:
         project = RecruitProject.objects.filter(recruit_users__in=[user], content_item=content_item).first()
         results.append([user.email, project and (project.link_submission or project.git_url)])
-    return results[0]
+    return results
 
 class Command(BaseCommand):
     ''' python manage.py export_project_urls <team> <project>
