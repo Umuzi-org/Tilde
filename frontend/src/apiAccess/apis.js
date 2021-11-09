@@ -83,6 +83,12 @@ async function userEntity({ userId }) {
   return { response, responseData };
 }
 
+async function userDetailedStatsEntity({ userId }) {
+  const url = `${API_BASE_URL}/api/users/${userId}/stats/`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
 async function recruitProjectsPage({ userId, page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
@@ -340,6 +346,7 @@ export default {
     teamEntity,
     userEntity,
     teamsSummaryStatsPage,
+    userDetailedStatsEntity,
   },
 
   recruits: {
