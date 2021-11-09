@@ -1,13 +1,14 @@
 from django.core.management.base import BaseCommand
 from core.models import Team
-from curriculum_tracking.models import RecruitProject
+from curriculum_tracking.models import RecruitProject, ContentItem
+from curriculum_tracking.helpers import get_projects
 import csv
 
 
-def get_email_and_url(team):
+def get_user_and_projectlink(team, content_item):
     results = []
     for user in team.active_users:
-        project = RecruitProject.objects.filter(recruit_users__in=[user]).first()
+        project = RecruitProject.objects.filter(recruit_users__in=[user], content_item=content_item).first()
         results.append([user.email, project and (project.link_submission or project.git_url)])
     return results[0]
 
@@ -19,11 +20,12 @@ class Command(BaseCommand):
         parser.add_argument("content_item_title", type=str)
 
     def handle(self, *args, **options):
-        print(args, options)
+        # print(args, options)
         team = Team.objects.get(name=options["team_name"])
-        results = get_email_and_url(team)
+        content_item = ContentItem.objects.get(title=options['content_item_title'])
+        results = get_user_and_projectlink(team, content_item)
 
         with open('gitignore/test.csv', 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(['user_eamil', 'url'])
+            writer.writerow(['user_email', 'url'])
             writer.writerows(results)
