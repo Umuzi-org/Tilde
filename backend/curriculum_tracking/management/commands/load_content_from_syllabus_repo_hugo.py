@@ -83,7 +83,9 @@ class Helper:
             if not info.get(DB_ID):
                 defaults = {"name": name, "description": info["description"]}
                 o = models.LearningOutcome.objects.create(
-                    name=name, description=info["description"]
+                    id=models.LearningOutcome.get_next_available_id(),
+                    name=name,
+                    description=info["description"],
                 )
                 all_outcomes.append(o)
 

@@ -3,7 +3,7 @@ import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
-import Dashboard from "./components/regions/Dashboard";
+import UserDashboard from "./components/regions/UserDashboard";
 import CardDetails from "./components/regions/CardDetails";
 
 import { TEAM_PERMISSIONS } from "./constants";
@@ -114,7 +114,7 @@ export const routes = {
     route: {
       exact,
       path: "/users/:userId/dashboard",
-      component: Dashboard,
+      component: UserDashboard,
     },
   },
 
@@ -122,10 +122,17 @@ export const routes = {
     route: {
       exact,
       path: "/dashboard",
-      component: Dashboard,
+      component: UserDashboard,
     },
 
     show: () => true,
+
+    sliderNavigation: {
+      //these get used to draw buttons in the left hand side slider/hamburger menu
+      icon: () => "D",
+      label: "Dashboard",
+      helpText: "Your dashboard",
+    },
   },
 
   cardDetails: {

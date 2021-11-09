@@ -92,6 +92,7 @@ class IsReadOnly(BasePermission):
 
 class IsMyUser(BasePermission):
     def has_permission(self, request, view):
+        # breakpoint()
         instance = view.get_object()
         return request.user == instance
 
