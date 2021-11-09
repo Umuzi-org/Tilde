@@ -12,8 +12,6 @@ from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
-    COMPETENT,
-    EXCELLENT,
 )
 
 

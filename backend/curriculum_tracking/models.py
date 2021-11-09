@@ -1,5 +1,7 @@
+from datetime import timedelta
 from typing import List
 from django.db import models
+from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -986,6 +988,8 @@ class AgileCard(
     # curriculum and what they h\ave done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
+    __original_status = None
+
     @property
     def progress_instance(self):
         if self.recruit_project_id:
@@ -995,12 +999,23 @@ class AgileCard(
         if self.workshop_attendance_id:
             return self.workshop_attendance
 
+    def __init__(self, *args, **kwargs):
+        super(AgileCard, self).__init__(*args, **kwargs)
+        self.__original_status = self.status
+
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
                 f"Nosubmit Project cannot be converted to a card. {self.content_item}"
             )
         super(AgileCard, self).save(*args, **kwargs)
+
+        if (
+            AgileCard.COMPLETE in [self.status, self.__original_status]
+            and self.status != self.__original_status
+        ):
+            for user in self.assignees.all():
+                BurndownSnapshot.create_snapshot(user)
 
     def status_ready_or_blocked(self):
         """if there was no progress on this card, would the status be READY or BLOCKED?It would be blocked if the prerequisites are not met"""
@@ -1016,6 +1031,14 @@ class AgileCard(
         if not assignees_only:
             user_ids.extend([user.id for user in self.reviewers.all()])
         return Team.get_teams_from_user_ids(user_ids)
+
+    @property
+    def repo_url(self):
+        if not self.recruit_project:
+            return None
+        if not self.recruit_project.repository:
+            return None
+        return self.recruit_project.repository.ssh_url
 
     @property
     def due_time(self):
@@ -1417,3 +1440,52 @@ class AgileCard(
         reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
         return [review.reviewer_user_id for review in reviews]
+
+
+# class ExtraTeamConfig(models.Model, Mixins):
+#     team = models.ForeignKey(Team,on_delete=models.CASCADE)
+#     pr_is_high_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     pr_medium_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     card_review_is_high_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
+#     card_review_medium_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
+
+
+class BurndownSnapshot(models.Model):
+    MIN_HOURS_BETWEEN_SNAPSHOTS = 4
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    cards_total_count = models.SmallIntegerField()
+    project_cards_total_count = models.SmallIntegerField()
+    cards_in_complete_column_total_count = models.SmallIntegerField()
+    project_cards_in_complete_column_total_count = models.SmallIntegerField()
+
+    @classmethod
+    def create_snapshot(Cls, user):
+        match = Cls.objects.filter(
+            user=user,
+            timestamp__gte=timezone.now()
+            - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
+        ).first()
+
+        if match:
+            # there was a snapshot taken recently, no need to store another one
+            return match
+
+        cards = AgileCard.objects.filter(assignees=user)
+        project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)
+
+        complete_cards = cards.filter(status=AgileCard.COMPLETE)
+        complete_project_cards = project_cards.filter(status=AgileCard.COMPLETE)
+
+        return Cls.objects.create(
+            user=user,
+            cards_total_count=cards.count(),
+            project_cards_total_count=project_cards.count(),
+            cards_in_complete_column_total_count=complete_cards.count(),
+            project_cards_in_complete_column_total_count=complete_project_cards.count(),
+        )
