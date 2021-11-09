@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { Typography, Toolbar, Tooltip } from "@material-ui/core";
 
@@ -21,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tabs: {
     "& .MuiTabs-indicator": {
-      backgroundColor: "blue"
-    }
+      backgroundColor: "blue",
+    },
   }
 }));
 
@@ -50,19 +51,23 @@ export default ({
         )}
         
       </Toolbar>
-      <div>
       <Tabs value={value} className={classes.tabs}>
-        <a href={getUserBoardUrl({userId})}>
+        <Link
+          to={getUserBoardUrl({userId})}  
+        >
           <Tab label="BOARD" />
-        </a>
-        <a href={getUserActionUrl({userId})}>
+        </Link>
+        <Link
+          to={getUserActionUrl({userId})} 
+        >
           <Tab label="ACTIONS" />
-        </a>
-        <a href={getUserDasboardUrl({userId})}>
+        </Link>
+        <Link
+          to={getUserDasboardUrl({userId})} 
+        >
           <Tab label="DASHBOARD" />
-        </a>
-        </Tabs>
-        </div>
+        </Link>
+      </Tabs>
     </React.Fragment>
   );
 };
