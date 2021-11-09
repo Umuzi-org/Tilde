@@ -987,6 +987,8 @@ class AgileCard(
     # curriculum and what they h\ave done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
+    __original_status = None
+
     @property
     def progress_instance(self):
         if self.recruit_project_id:
@@ -996,12 +998,23 @@ class AgileCard(
         if self.workshop_attendance_id:
             return self.workshop_attendance
 
+    def __init__(self, *args, **kwargs):
+        super(AgileCard, self).__init__(*args, **kwargs)
+        self.__original_status = self.status
+
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
                 f"Nosubmit Project cannot be converted to a card. {self.content_item}"
             )
         super(AgileCard, self).save(*args, **kwargs)
+
+        if (
+            AgileCard.COMPLETE in [self.status, self.__original_status]
+            and self.status != self.__original_status
+        ):
+            for user in self.assignees.all():
+                BurndownSnapshot.create_snapshot(user)
 
     def status_ready_or_blocked(self):
         """if there was no progress on this card, would the status be READY or BLOCKED?It would be blocked if the prerequisites are not met"""

@@ -330,6 +330,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 )
 
             card.refresh_from_db()
+
             return Response(serializers.AgileCardSerializer(card).data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
