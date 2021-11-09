@@ -152,8 +152,8 @@ export default ({
         <Typography variant="caption"> [card id:{card.id}]</Typography>
         {checkIfCardIsInReviewColumn({ card }) ? 
           <Checkbox
-            checked={showCheckedBox({ viewedUser, card }) ? true : false}
-            color="primary"
+            checked={showCheckedBox({ viewedUser, card })}
+            style={{color:"#3f51b5"}}
           />
         :
           <Typography variant="h6" component="h2">
