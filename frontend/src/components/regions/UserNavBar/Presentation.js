@@ -1,32 +1,36 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { Typography, Toolbar, Tooltip } from "@material-ui/core";
 
-import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-import LinkToUserDashboard from "../../widgets/LinkToUserDashboard";
+import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
+import { getUrl as getUserDasboardUrl } from "../../widgets/LinkToUserDashboard";
+import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
 
-import LinkToUserActions from "../../widgets/LinkToUserActions";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import { makeStyles } from "@material-ui/core/styles";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 const useStyles = makeStyles((theme) => ({
-  grow: { flexGrow: 1 },
   toolbar: {
     margin: theme.spacing(0.5),
     border: "1px solid grey",
   },
-  button: { marginRight: theme.spacing(1) },
   gitHubLink: {
     margin: theme.spacing(1),
   },
+  tabs: {
+    "& .MuiTabs-indicator": {
+      backgroundColor: "blue",
+    },
+  }
 }));
 
 export default ({
   user,
   userId,
-  userBoardSelected,
-  UserActionsSelected,
-  userDashboardSelected,
+  value,
 }) => {
   const classes = useStyles();
   return (
@@ -45,21 +49,25 @@ export default ({
             </Tooltip>
           </a>
         )}
-
-        <div className={classes.grow} />
-        <div className={classes.button}>
-          <LinkToUserBoard userId={userId} selected={userBoardSelected} />
-        </div>
-        <div className={classes.button}>
-          <LinkToUserActions userId={userId} selected={UserActionsSelected} />
-        </div>
-        <div className={classes.button}>
-          <LinkToUserDashboard
-            userId={userId}
-            selected={userDashboardSelected}
-          />
-        </div>
+        
       </Toolbar>
+      <Tabs value={value} className={classes.tabs}>
+        <Link
+          to={getUserBoardUrl({userId})}  
+        >
+          <Tab label="BOARD" />
+        </Link>
+        <Link
+          to={getUserActionUrl({userId})} 
+        >
+          <Tab label="ACTIONS" />
+        </Link>
+        <Link
+          to={getUserDasboardUrl({userId})} 
+        >
+          <Tab label="DASHBOARD" />
+        </Link>
+      </Tabs>
     </React.Fragment>
   );
 };
