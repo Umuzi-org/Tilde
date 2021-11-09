@@ -21,12 +21,6 @@ import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => {
-  const card = {
-    borderWidth: 3,
-    borderRadius: theme.spacing(2),
-    margin: theme.spacing(1),
-    textAlign: "center",
-  };
   return {
     paper: {
       padding: theme.spacing(1, 2, 1),

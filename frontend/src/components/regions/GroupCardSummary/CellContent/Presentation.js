@@ -4,7 +4,6 @@ import CardStatusChip from "../../../widgets/CardStatusChip.js";
 
 import {
   Paper,
-  Typography,
   Tooltip,
   Table,
   TableBody,
@@ -16,20 +15,9 @@ import CardBadges from "../../../widgets/CardBadges";
 // import CardButton from "../../../widgets/CardButton";
 import MoreIcon from "@material-ui/icons/More";
 
-import {
-  AGILE_CARD_STATUS_CHOICES,
-  BLOCKED,
-  READY,
-  IN_PROGRESS,
-  REVIEW_FEEDBACK,
-  IN_REVIEW,
-  COMPLETE,
-} from "../../../../constants";
-
 import { routes } from "../../../../routes";
 
 const useStyles = makeStyles((theme) => {
- 
   return {
     root: {
       margin: theme.spacing(1),
@@ -99,7 +87,7 @@ export default ({ card, handleClickOpenCardDetails }) => {
               </TableCell>
               <TableCell>
                 <Paper className={classes[card.status]} variant="outlined">
-                <CardStatusChip card={card} />
+                  <CardStatusChip card={card} />
                 </Paper>
               </TableCell>
               <TableCell>
