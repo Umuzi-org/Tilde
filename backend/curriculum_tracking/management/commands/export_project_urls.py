@@ -15,17 +15,17 @@ def get_user_and_projectlink(team, content_item):
 class Command(BaseCommand):
     ''' python manage.py export_project_urls <team> <project>
     '''
+
     def add_arguments(self, parser):
         parser.add_argument("team_name", type=str)
         parser.add_argument("content_item_title", type=str)
 
     def handle(self, *args, **options):
-        # print(args, options)
         team = Team.objects.get(name=options["team_name"])
         content_item = ContentItem.objects.get(title=options['content_item_title'])
         results = get_user_and_projectlink(team, content_item)
 
-        with open('gitignore/test.csv', 'w') as f:
+        with open(f'gitignore/{team}_{content_item}_urls.csv', 'w') as f:
             writer = csv.writer(f)
             writer.writerow(['user_email', 'url'])
             writer.writerows(results)
