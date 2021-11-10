@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
+import Button from "@material-ui/core/Button"
 
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
@@ -98,6 +99,7 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
+          <Button>
           <Badge badgeContent={openPrCount} color="primary"> 
             {oldestOpenPrUpdatedTime === null ? (
               <CallMergeIcon />
@@ -109,6 +111,7 @@ export default ({ card }) => {
             />
             )}
           </Badge>
+          </Button>
         </Tooltip>
       ) : (
         <React.Fragment />
