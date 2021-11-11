@@ -131,7 +131,7 @@ export default function Presentation({
             Teams
           </Typography>
 
-          <TextField label="Teams" variant="outlined" {...filterByGroup} />
+          <TextField label="Teams" variant="outlined" {...filterByGroup} style={{width: "62%"}} />
         </Paper>
         {teams.map((team) => {
           return (
@@ -148,12 +148,13 @@ export default function Presentation({
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
           <Typography variant="h5" gutterBottom component="div">
-            People
+            Users
           </Typography>
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
             {...filterByUser}
+            style={{width: "62%"}}
           />
         </Paper>
         {Object.keys(users)
