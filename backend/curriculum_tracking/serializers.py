@@ -619,10 +619,12 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "content_item",
+            "flavours",
             "user",
         ]
 
     content_item = serializers.SerializerMethodField('get_name_not_id_of_content_item')
+    flavours = serializers.CharField(help_text="comma separated list of flavours")
 
     def get_name_not_id_of_content_item(self, review_trust: object):
         content_item_name = review_trust
