@@ -156,9 +156,8 @@ export default ({
             style={{ color: "#3f51b5" }}
           />
         ) : (
-          <Typography variant="h6" component="h2">
-            {card.title}
-          </Typography>
+          <>
+          </>
         )}
 
         <Typography variant="h6" component="h2">

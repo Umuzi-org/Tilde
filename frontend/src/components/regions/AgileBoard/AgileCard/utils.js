@@ -3,7 +3,7 @@ export function checkIfCardIsInReviewColumn({ card }) {
 }
 
 const checkIfUserIdExistsInReviewers = ({ viewedUser, card }) => {
-  return card.reviewers.includes(viewedUser.id);
+  return card.usersThatReviewedSinceLastReviewRequest.includes(viewedUser.id);
 };
 
 export function showCheckedBox({ viewedUser, card }) {

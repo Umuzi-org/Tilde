@@ -57,7 +57,7 @@ test("getAgeString function returns correct string when age is less than a minut
 test("showCheckedBox should return true if the card is in the review column and the user is part of the latest reviewers", () => {
   const card = {
     status: "IR",
-    reviewers: [777, 555, 28, 3332],
+    usersThatReviewedSinceLastReviewRequest: [777, 555, 28, 3332],
   }
   const viewedUser = {
     id: 28,
@@ -68,7 +68,7 @@ test("showCheckedBox should return true if the card is in the review column and 
 test("showCheckedBox should return false if the card is in the review column but the user is not part of the latest reviewers", () => {
   const card = {
     status: "IR",
-    reviewers: [777, 555, 3332],
+    usersThatReviewedSinceLastReviewRequest: [777, 555, 3332],
   }
   const viewedUser = {
     id: 28,
