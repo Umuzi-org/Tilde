@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => {
   return {
     button: {
       paddingBottom: theme.spacing(0.3),
-      marginLeft: theme.spacing(1)
+      marginLeft: "16px",
     },
   };
 });
