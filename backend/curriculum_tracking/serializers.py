@@ -338,7 +338,7 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserStatsPerWeekSerializer(serializers.ModelSerializer):
+class UserDetailedStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
         fields = [
@@ -347,6 +347,7 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
             "cards_in_review_column_as_assignee",
             "cards_in_review_feedback_column_as_assignee",
             "cards_in_progress_column_as_assignee",
+            "cards_currently_blocked_as_assignee",
             "cards_completed_last_7_days_as_assignee",
             "cards_started_last_7_days_as_assignee",
             "total_tilde_reviews_done",
@@ -369,6 +370,11 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     cards_in_progress_column_as_assignee = serializers.SerializerMethodField(
         "get_cards_in_progress_column_as_assignee"
     )
+
+    cards_currently_blocked_as_assignee = serializers.SerializerMethodField(
+        "get_cards_currently_blocked_as_assignee"
+    )
+
     cards_completed_last_7_days_as_assignee = serializers.SerializerMethodField(
         "get_cards_completed_last_7_days_as_assignee"
     )
@@ -429,6 +435,14 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         ).count()
 
         return cards_in_progress_column_as_assignee
+
+    def get_cards_currently_blocked_as_assignee(self, user):
+
+        cards_currently_blocked_as_assignee = models.AgileCard.objects.filter(
+            status=models.AgileCard.BLOCKED, assignees=user.id
+        ).count()
+
+        return cards_currently_blocked_as_assignee
 
     def get_cards_completed_last_7_days_as_assignee(self, user):
 

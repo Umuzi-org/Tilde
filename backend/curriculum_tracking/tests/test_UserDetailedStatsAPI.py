@@ -1,5 +1,5 @@
 from core.tests.factories import UserFactory
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer
+from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
@@ -23,7 +23,7 @@ from django.utils import timezone
 from git_real.tests.factories import PullRequestReviewFactory
 
 
-class TestingForTheStatsAPI(TestCase):
+class TestingForUserDetailedStatsAPI(TestCase):
     def setUp(self):
         self.card_1 = AgileCardFactory(
             status=AgileCard.IN_PROGRESS,
@@ -62,8 +62,8 @@ class TestingForTheStatsAPI(TestCase):
             AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS
         )
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_progress_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
+            UserDetailedStatsSerializer.get_cards_in_progress_column_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
             ),
             1,
         )
@@ -82,8 +82,8 @@ class TestingForTheStatsAPI(TestCase):
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_review_feedback_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
+            UserDetailedStatsSerializer.get_cards_in_review_feedback_column_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
             ),
             1,
         )
@@ -100,16 +100,16 @@ class TestingForTheStatsAPI(TestCase):
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_complete_column_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
+            UserDetailedStatsSerializer.get_cards_in_complete_column_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
             ),
             0,
         )
 
     def test_one_card_started_in_the_past_seven_days(self):
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_started_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
+            UserDetailedStatsSerializer.get_cards_started_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
             ),
             1,
         )
@@ -117,8 +117,8 @@ class TestingForTheStatsAPI(TestCase):
     def test_no_cards_completed_in_past_seven_days(self):
 
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_completed_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=self.user
+            UserDetailedStatsSerializer.get_cards_completed_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
             ),
             0,
         )
@@ -139,14 +139,14 @@ class TestingForTheStatsAPI(TestCase):
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days_as_assignee' should also return at least one card
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_complete_column_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
+            UserDetailedStatsSerializer.get_cards_in_complete_column_as_assignee(
+                UserDetailedStatsSerializer, user=assigned_person
             ),
             1,
         )
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_completed_last_7_days_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
+            UserDetailedStatsSerializer.get_cards_completed_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=assigned_person
             ),
             1,
         )
@@ -177,8 +177,8 @@ class TestingForTheStatsAPI(TestCase):
 
         # We should get two cards in the review column waiting for a review
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_cards_in_review_column_as_assignee(
-                UserStatsPerWeekSerializer, user=assigned_person
+            UserDetailedStatsSerializer.get_cards_in_review_column_as_assignee(
+                UserDetailedStatsSerializer, user=assigned_person
             ),
             2,
         )
@@ -207,15 +207,15 @@ class TestingForTheStatsAPI(TestCase):
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
         # of 2
         self.assertEqual(
-            UserStatsPerWeekSerializer.get_pr_reviews_done_last_7_days(
-                UserStatsPerWeekSerializer, self.repo_card_one.assignees.first()
+            UserDetailedStatsSerializer.get_pr_reviews_done_last_7_days(
+                UserDetailedStatsSerializer, self.repo_card_one.assignees.first()
             ),
             2,
         )
 
     def test_get_tilde_cards_reviewed_in_last_7_days(self):
         user = UserFactory()
-        serializer = UserStatsPerWeekSerializer()
+        serializer = UserDetailedStatsSerializer()
 
         # no reviews done yet
         count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
@@ -270,3 +270,19 @@ class TestingForTheStatsAPI(TestCase):
 
         count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
+
+    def test_no_cards_currently_blocked(self):
+        user = UserFactory()
+        serializer = UserDetailedStatsSerializer()
+
+        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        self.assertEqual(count, 0)
+
+    def test_one_card_currently_blocked(self):
+
+        serializer = UserDetailedStatsSerializer()
+        card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
+        user = card.assignees.first()
+
+        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        self.assertEqual(count, 1)
