@@ -439,9 +439,8 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
     def get_cards_currently_blocked_as_assignee(self, user):
 
         cards_currently_blocked_as_assignee = models.AgileCard.objects.filter(
-            status=models.AgileCard.BLOCKED, assignees=user.id
+            Q(status=models.AgileCard.BLOCKED) & Q(assignees=user.id)
         ).count()
-
         return cards_currently_blocked_as_assignee
 
     def get_cards_completed_last_7_days_as_assignee(self, user):
