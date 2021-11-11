@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.models import Team
 from curriculum_tracking.models import RecruitProject, ContentItem
-from curriculum_tracking.helpers import get_projects
 import csv
 
 
