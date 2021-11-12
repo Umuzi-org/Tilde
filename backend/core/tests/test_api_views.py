@@ -6,6 +6,58 @@ from guardian.shortcuts import assign_perm
 from django.contrib.auth.models import Group
 
 
+# class TestUserViewSet(APITestCase, APITestCaseMixin):
+#     LIST_URL_NAME = "user-list"
+#     SUPPRESS_TEST_POST_TO_CREATE = True
+
+#     def verbose_instance_factory(self):
+#         user = factories.UserFactory()
+#         return user
+
+
+class TestUserStatsPermissions(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "user-list"
+    SUPPRESS_TEST_GET_LIST = True
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def test_can_see_own_stats(self):
+        user = factories.UserFactory()
+        self.login(user)
+
+        url = self.get_instance_url(pk=user.id) + "stats/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_unpermissioned_users_get_permission_denied(self):
+        user = factories.UserFactory()
+        self.login(factories.UserFactory())
+
+        url = self.get_instance_url(pk=user.id) + "stats/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_superuser_can_see_stats(self):
+        user = factories.UserFactory()
+        self.login(factories.UserFactory(is_superuser=True))
+
+        url = self.get_instance_url(pk=user.id) + "stats/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_see_stats_if_has_view_access(self):
+        user = factories.UserFactory()
+        team = factories.TeamFactory()
+        team.user_set.add(user)
+
+        manager = factories.UserFactory()
+        assign_perm(Team.PERMISSION_VIEW_ALL, manager, team)
+        self.login(manager)
+
+        url = self.get_instance_url(pk=user.id) + "stats/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
 class TestTeamViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "team-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
@@ -72,34 +124,3 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
-
-
-# class TestUserViewSet(APITestCase, APITestCaseMixin):
-#     LIST_URL_NAME = "user-list"
-#     SUPPRESS_TEST_POST_TO_CREATE = True
-
-#     def verbose_instance_factory(self):
-#         # team = factories.TeamFactory()
-#         user = factories.UserFactory()
-#         # team.user_set.add(user)
-#         return user
-
-# def test_action_stats(self): TODO
-#     user = factories.UserFactory()
-
-#     url = self.get_instance_url(pk=user.id)
-#     response = self.client.get(url)
-#     data = response.data
-
-#     # assigned to these cards
-#     data['as_assignee_number_of_in_progress_cards']
-#     data['as_assignee_number_of_review_feedback_cards']
-#     data['as_assignee_number_of_review_cards']
-#     data['as_assignee_number_of_complete_cards']
-#     data['as_assignee_number_of_ready_cards']
-#     data['as_assignee_number_of_blocked_cards']
-#     data['as_assignee_oldest_card_awaiting_review']
-#     data['number_of_reviews_done_in_last_7_days']
-#     data['number_of_cards_reviewed_in_last_7_days']
-#     data['as_reviewer_oldest_card_awaiting_review']
-#     data['as_assignee_number_of_open_prs']

@@ -1,22 +1,18 @@
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from . import serializers
-
-# from rest_framework.decorators import action
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions as drf_permissions
-
-# from guardian.shortcuts import get_objects_for_user
-
-# from django.db.models import Q
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
+
+from curriculum_tracking.serializers import TeamStatsSerializer
 
 
 @api_view(["POST"])
@@ -108,6 +104,34 @@ class TeamViewSet(viewsets.ModelViewSet):
         )
         return queryset
 
+    @action(
+        detail=False,
+        methods=["GET"],
+        serializer_class=TeamStatsSerializer,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+            )
+        ],
+    )
+    def summary_stats(self, request, pk=None):
+
+        page = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        #     team = self.get_object()
+        #     return Response(TeamStatsSerializer(team).data)
+        # else:
+        #     return Response(serializer.errors, status="BAD_REQUEST")
+
     # @action(
     #     detail=True,
     #     methods=["get"],
@@ -145,7 +169,51 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = models.User.objects.all().order_by("last_name")
     serializer_class = serializers.UserSerializer
+    filter_backends = [DjangoFilterBackend]
 
+    filterset_fields = ["groups"]
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        serializer_class=UserStatsPerWeekSerializer,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.IsMyUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user,
+            )
+        ],
+    )
+    def stats(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user_object = self.get_object()
+            return Response(UserStatsPerWeekSerializer(user_object).data)
+        else:
+            return Response(serializer.errors, status="BAD_REQUEST")
+
+    # @action(
+    #     detail=False,
+    #     methods=["GET"],
+    #     serializer_class=UserSummaryStatsSerializer,
+    #     permission_classes=[
+    #         IsAdminUser
+    #         | core_permissions.HasObjectPermission(
+    #             permissions=models.Team.PERMISSION_VIEW,
+    #         )
+    #     ],
+    # )
+    # def summary_stats(self, request, pk=None):
+
+    #     page = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+
+    #     serializer = self.get_serializer(self.get_queryset(), many=True)
+    #     return Response(serializer.data)
     # def assign_as_reviewer(self, request, pk=None):
     #     return Response("TODO")
 

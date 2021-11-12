@@ -147,7 +147,7 @@ export default ({
         <Typography variant="caption">
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
-        <Typography variant="caption">[card id:{card.id}]</Typography>
+        <Typography variant="caption"> [card id:{card.id}]</Typography>
 
         <Typography variant="h6" component="h2">
           {card.title}

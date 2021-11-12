@@ -3,7 +3,6 @@ This script gets run after a bunch of people get accepted from a bootcamp. They 
 """
 
 from django.core.management.base import BaseCommand
-import pandas as pd
 from core.models import Team
 from ..rocketchat import Rocketchat, GROUP
 from core.models import User
@@ -75,8 +74,6 @@ def update_user_email(row):
 
 
 def set_up_course_registrations(row):
-    # print(row)
-
     user = User.objects.get(email=row[NEW_EMAIL])
     course_names = COURSES_BY_STREAM[row[DEPARTMENT]]
     set_course_reg(user, course_names)
