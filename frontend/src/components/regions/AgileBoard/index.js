@@ -87,6 +87,8 @@ function getAllLatestCalls({
             status,
           },
         }) || defaultCallLogEntry;
+  
+      totalCards = totalCards + lastReviewerCall.responseData?.count;
 
       current.anyLoading = current.anyLoading || lastReviewerCall.loading;
       current.lastReviewerCallPage = lastReviewerCall.requestData.page;
@@ -143,7 +145,7 @@ function AgileBoardUnconnected({
           userId,
         })
       : {};
-
+  
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];
     for (let status of statuses) {
