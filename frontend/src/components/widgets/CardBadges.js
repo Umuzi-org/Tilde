@@ -1,7 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
-import Button from "@material-ui/core/Button"
+import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
 
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
@@ -99,18 +100,22 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
-          <Button>
-          <Badge badgeContent={openPrCount} color="primary"> 
-            {oldestOpenPrUpdatedTime === null ? (
-              <CallMergeIcon />
-            ) : (
-              <Chip
-              avatar={<CallMergeIcon />}
-              className={classes.chip}
-              label={getAgeString(oldestOpenPrUpdatedTime)}
-            />
-            )}
-          </Badge>
+          <Button 
+          style={{ textTransform: "lowercase" }}
+          component={Link}
+          to={card.repoUrl}
+          >
+            <Badge badgeContent={openPrCount} color="primary">
+              {oldestOpenPrUpdatedTime === null ? (
+                <CallMergeIcon />
+              ) : (
+                <Chip
+                  avatar={<CallMergeIcon />}
+                  className={classes.chip}
+                  label={getAgeString(oldestOpenPrUpdatedTime)}
+                />
+              )}
+            </Badge>
           </Button>
         </Tooltip>
       ) : (
