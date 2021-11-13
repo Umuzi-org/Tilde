@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  widgetStyle: {
+    textTransform: "lowercase",
+  },
 }));
 
 export const CompetentIcon = SentimentSatisfiedIcon;
@@ -100,10 +103,11 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
-          <Button 
-          style={{ textTransform: "lowercase" }}
-          component={Link}
-          to={card.repoUrl}
+          <Button
+            className={classes.widgetStyle}
+            component={Link}
+            to={card.repoUrl}
+            rel="noopener"
           >
             <Badge badgeContent={openPrCount} color="primary">
               {oldestOpenPrUpdatedTime === null ? (
