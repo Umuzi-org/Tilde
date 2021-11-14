@@ -45,9 +45,10 @@ export default ({ card }) => {
     codeReviewNyCompetentSinceLastReviewRequest,
     codeReviewRedFlagSinceLastReviewRequest,
     openPrCount,
+    repoUrl,
     oldestOpenPrUpdatedTime,
   } = card;
-
+  console.log("Sbonelo" + card.repoUrl)
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -106,7 +107,7 @@ export default ({ card }) => {
           <Button
             className={classes.widgetStyle}
             component={Link}
-            to={card.repoUrl}
+            to={repoUrl}
             rel="noopener"
           >
             <Badge badgeContent={openPrCount} color="primary">
