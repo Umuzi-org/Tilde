@@ -52,6 +52,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
             updated_at=self.today,
         )
         self.pull_request.save()
+        self.serializer = UserDetailedStatsSerializer()
 
     def test_one_card_in_progress_before_any_reviews(self):
 
@@ -215,7 +216,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
     def test_get_tilde_cards_reviewed_in_last_7_days(self):
         user = UserFactory()
-        serializer = UserDetailedStatsSerializer()
+        serializer = self.serializer
 
         # no reviews done yet
         count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
@@ -271,18 +272,35 @@ class TestingForUserDetailedStatsAPI(TestCase):
         count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
 
-    def test_no_cards_currently_blocked(self):
+    def test_zero_cards_currently_blocked(self):
         user = UserFactory()
-        serializer = UserDetailedStatsSerializer()
+        serializer = self.serializer
 
         count = serializer.get_cards_currently_blocked_as_assignee(user)
         self.assertEqual(count, 0)
 
     def test_one_card_currently_blocked(self):
 
-        serializer = UserDetailedStatsSerializer()
+        serializer = self.serializer
         card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
         user = card.assignees.first()
 
         count = serializer.get_cards_currently_blocked_as_assignee(user)
         self.assertEqual(count, 1)
+
+    def test_one_card_currently_on_ready_status(self):
+
+        card = factories.AgileCardFactory(status=AgileCard.READY)
+        user = card.assignees.first()
+
+        count = self.serializer.get_cards_ready_as_assignee(user)
+        self.assertEqual(count, 1)
+
+    def test_zero_cards_currently_on_ready_status(self):
+
+        card = self.card_1
+        user = card.assignees.first()
+
+        count = self.serializer.get_cards_ready_as_assignee(user)
+        self.assertEqual(count, 0)
+
