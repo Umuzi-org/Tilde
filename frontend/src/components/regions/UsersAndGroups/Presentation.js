@@ -1,7 +1,7 @@
 import React from "react";
 // import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-
+import { useStyles } from "../../widgets/LinkToUserBoard";
 import {
   Paper,
   Typography,
@@ -71,10 +71,15 @@ const TeamCard = ({
     team.name === filterUsersByGroupName ? "contained" : "outlined";
 
   console.log(summaryStats);
-
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.title}
+      >
         {team.name}
       </Typography>
       <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
@@ -83,6 +88,7 @@ const TeamCard = ({
           color="default"
           size="small"
           startIcon={<LaunchIcon />}
+          className={classes.title}
         >
           View
         </Button>
@@ -93,6 +99,7 @@ const TeamCard = ({
         size="small"
         startIcon={<FilterIcon />}
         onClick={() => handleUserGroupClick(team.name)}
+        className={classes.title}
       >
         Filter
       </Button>
@@ -102,13 +109,23 @@ const TeamCard = ({
 };
 
 const UserCard = ({ email, user }) => {
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.title}
+      >
         {email}
       </Typography>
 
-      <LinkToUserBoard userId={user.userId} label="View" />
+      <LinkToUserBoard
+        userId={user.userId}
+        className={classes.title}
+        label="View"
+      />
     </Paper>
   );
 };
@@ -123,15 +140,26 @@ export default function Presentation({
   filterUsersByGroupName,
   handleUserGroupClick,
 }) {
+  const classes = useStyles();
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.title}
+          >
             Teams
           </Typography>
 
-          <TextField label="Teams" variant="outlined" {...filterByGroup} />
+          <TextField
+            label="Teams"
+            variant="outlined"
+            {...filterByGroup}
+            className={classes.input}
+          />
         </Paper>
         {teams.map((team) => {
           return (
@@ -147,13 +175,19 @@ export default function Presentation({
       </Grid>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
-            People
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.title}
+          >
+            Users
           </Typography>
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
             {...filterByUser}
+            className={classes.input}
           />
         </Paper>
         {Object.keys(users)
