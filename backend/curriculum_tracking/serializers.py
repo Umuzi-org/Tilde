@@ -444,14 +444,15 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
     def get_cards_currently_blocked_as_assignee(self, user):
 
         cards_currently_blocked_as_assignee = models.AgileCard.objects.filter(
-            Q(status=models.AgileCard.BLOCKED) & Q(assignees=user.id)
+            status=models.AgileCard.BLOCKED, assignees=user.id
         ).count()
+
         return cards_currently_blocked_as_assignee
 
     def get_cards_ready_as_assignee(self, user):
 
         cards_currently_ready_as_assignee = models.AgileCard.objects.filter(
-            Q(status=models.AgileCard.READY) & Q(assignees=user.id)
+            status=models.AgileCard.READY, assignees=user.id
         ).count()
 
         return cards_currently_ready_as_assignee
