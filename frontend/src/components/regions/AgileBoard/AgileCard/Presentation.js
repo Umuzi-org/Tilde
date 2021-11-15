@@ -19,7 +19,10 @@ import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
 import AgileCardActions from "./AgileCardActions";
-import { checkIfCardIsInReviewColumn, showCheckedBox } from "./utils";
+import {
+  checkIfCardIsInReviewColumn,
+  userReviewedSinceLastReviewRequest,
+} from "./utils";
 
 const useStyles = makeStyles((theme) => {
   const card = {
@@ -152,18 +155,17 @@ export default ({
         <Typography variant="caption"> [card id:{card.id}]</Typography>
         {checkIfCardIsInReviewColumn({ card }) ? (
           <Checkbox
-            checked={showCheckedBox({ viewedUser, card })}
+            checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
             style={{ color: "#3f51b5" }}
           />
         ) : (
-          <>
-          </>
+          <React.Fragment />
         )}
 
         <Typography variant="h6" component="h2">
           {card.title}
         </Typography>
-       
+
         {/* {card.flavourNames.map((flavour) => (
           <Chip
             key={flavour}

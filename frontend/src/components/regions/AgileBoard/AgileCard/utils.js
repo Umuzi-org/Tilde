@@ -3,7 +3,5 @@ export function checkIfCardIsInReviewColumn({ card }) {
 }
 
 export function userReviewedSinceLastReviewRequest({ viewedUser, card }) {
-  return (
-    card.usersThatReviewedSinceLastReviewRequest.includes(viewedUser.id);
-  );
+  return card.usersThatReviewedSinceLastReviewRequest.includes(viewedUser.id);
 }
