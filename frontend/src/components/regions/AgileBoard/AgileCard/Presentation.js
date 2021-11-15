@@ -157,6 +157,7 @@ export default ({
           <Checkbox
             checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
             style={{ color: "#3f51b5" }}
+            disabled
           />
         ) : (
           <React.Fragment />
