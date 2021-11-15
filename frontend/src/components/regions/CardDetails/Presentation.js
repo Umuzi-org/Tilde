@@ -84,9 +84,9 @@ const CardBasicDetails = ({ card }) => {
           <FlavourChips flavourNames={card.flavourNames} />
           <StoryPoints storyPoints={card.storyPoints} />
         </Grid>
-        <TableCell>
+        <Grid item xs={0.5} sm={0.5} md={0.5}>
           <CardStatusChip card={card} />
-        </TableCell>
+        </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>

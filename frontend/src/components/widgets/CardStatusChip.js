@@ -5,10 +5,7 @@ import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import grey from "@material-ui/core/colors/grey";
 import blue from "@material-ui/core/colors/blue";
-import {
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -22,7 +19,7 @@ import {
 } from "../../constants";
 const useStyles = makeStyles((theme) => {
   const card = {
-    margin: theme.spacing(2),
+    margin: theme.spacing(0.3),
     width: theme.spacing("auto"),
     padding: theme.spacing(0.5),
     borderRadius: theme.spacing(2),
@@ -41,8 +38,8 @@ const useStyles = makeStyles((theme) => {
 export default ({ card }) => {
   const classes = useStyles();
   return (
-      <Paper className={classes[card.status]} variant="outlined">
+    <Paper className={classes[card.status]} variant="outlined">
       <Typography>{AGILE_CARD_STATUS_CHOICES[card.status]}</Typography>
-    </Paper>   
+    </Paper>
   );
 };

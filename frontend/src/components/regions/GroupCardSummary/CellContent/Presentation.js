@@ -86,9 +86,7 @@ export default ({ card, handleClickOpenCardDetails }) => {
                 </a>
               </TableCell>
               <TableCell>
-                <Paper className={classes[card.status]} variant="outlined">
-                  <CardStatusChip card={card} />
-                </Paper>
+                <CardStatusChip card={card} />
               </TableCell>
               <TableCell>
                 <CardBadges card={card} />
