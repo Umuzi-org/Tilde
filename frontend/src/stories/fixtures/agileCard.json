@@ -1,62 +1,61 @@
 {
-    "id": 130508,
-    "contentItem": 223,
-    "contentItemUrl": "http://syllabus.africacode.net/projects/oop/person/",
-    "status": "IR",
-    "recruitProject": 10163,
+    "id": 107015,
+    "contentItem": 550,
+    "contentItemUrl": "http://syllabus.africacode.net/projects/memory-game/part-2/",
+    "status": "RF",
+    "recruitProject": 5738,
     "assignees": [
-        809
+        424
     ],
     "reviewers": [
-        812,
-        759,
-        779,
-        219,
-        236,
-        26
+        26,
+        185,
+        295
     ],
     "assigneeNames": [
-        "palesamapeka97@gmail.com"
+        "thulane.makofane@umuzi.org"
     ],
     "reviewerNames": [
-        "patriciaslindile5@gmail.com",
-        "loretta.khisa@umuzi.org",
-        "giftnduduzo@gmail.com",
-        "faith.mofokeng@umuzi.org",
-        "lerato.mabe@umuzi.org",
-        "sbonelo.mkhize@umuzi.org"
+        "sbonelo.mkhize@umuzi.org",
+        "kaleem.mohammad@umuzi.org",
+        "babalwa.mbolekwa@umuzi.org"
     ],
     "isHardMilestone": false,
-    "isSoftMilestone": false,
-    "title": "Person",
+    "isSoftMilestone": true,
+    "title": "extra features for your memory game",
     "contentType": "P",
     "contentTypeNice": "project",
-    "storyPoints": 2,
+    "storyPoints": 1,
     "tagNames": [
-        "oop"
+        "tdd",
+        "html",
+        "css",
+        "web-frontend",
+        "git-feature-branching"
     ],
-    "order": 23,
-    "codeReviewCompetentSinceLastReviewRequest": 0,
+    "order": 95,
+    "codeReviewCompetentSinceLastReviewRequest": 2,
     "codeReviewExcellentSinceLastReviewRequest": 0,
     "codeReviewRedFlagSinceLastReviewRequest": 0,
-    "codeReviewNyCompetentSinceLastReviewRequest": 0,
-    "requiresCards": [],
-    "requiredByCards": [
-        130509
+    "codeReviewNyCompetentSinceLastReviewRequest": 2,
+    "requiresCards": [
+        106979,
+        107011,
+        107014
     ],
+    "requiredByCards": [],
     "flavourNames": [
         "javascript"
     ],
-    "projectSubmissionTypeNice": "repo",
+    "projectSubmissionTypeNice": "continue_repo",
     "topicNeedsReview": false,
     "topicProgress": null,
     "dueTime": null,
     "completeTime": null,
-    "reviewRequestTime": null,
-    "startTime": "2021-10-18T12:47:23.946078Z",
+    "reviewRequestTime": "2021-06-04T11:37:22.261965Z",
+    "startTime": "2021-05-14T07:43:31.278064Z",
     "canStart": false,
     "canForceStart": false,
-    "openPrCount": 0,
-    "oldestOpenPrUpdatedTime": null,
-    "usersThatReviewedSinceLastReviewRequest": []
+    "openPrCount": 1,
+    "oldestOpenPrUpdatedTime": "2021-06-14T09:58:28Z"
 }
