@@ -881,3 +881,11 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+
+class BurnDownSnapShotViewset(viewsets.ModelViewSet):
+
+    serializer_class = serializers.BurnDownSnapShotSerializer
+    queryset = models.WorkshopAttendance.objects.order_by("-pk")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["user"]
