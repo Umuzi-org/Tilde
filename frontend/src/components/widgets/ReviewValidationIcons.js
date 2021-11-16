@@ -1,9 +1,9 @@
 import React from "react";
 
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Tooltip } from "@material-ui/core";
 
 import { INCORRECT, CORRECT, CONTRADICTED } from "../../constants";

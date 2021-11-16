@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import CardBadges from "../../../widgets/CardBadges";
 // import CardButton from "../../../widgets/CardButton";
-import MoreIcon from "@material-ui/icons/More";
+import MoreIcon from "@mui/icons-material/More";
 
 import {
   AGILE_CARD_STATUS_CHOICES,

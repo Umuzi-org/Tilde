@@ -7,7 +7,7 @@ import {
 } from "../../widgets/ActionLogCards";
 import Loading from "../../widgets/Loading";
 
-import TodayIcon from "@material-ui/icons/Today";
+import TodayIcon from "@mui/icons-material/Today";
 import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
 

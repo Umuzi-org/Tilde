@@ -1,11 +1,11 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import CardActions from "@material-ui/core/CardActions";
-import MoreIcon from "@material-ui/icons/More";
-import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
-import ArrowBackRoundedIcon from "@material-ui/icons/ArrowBackRounded";
-import ArrowForwardRounded from "@material-ui/icons/ArrowForwardRounded";
-import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
+import MoreIcon from "@mui/icons-material/More";
+import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRounded from "@mui/icons-material/ArrowForwardRounded";
+import RateReviewRoundedIcon from "@mui/icons-material/RateReviewRounded";
 import CardButton from "../../../../widgets/CardButton";
 import ViewContentButton from "../../../../widgets/ViewContentButton";
 

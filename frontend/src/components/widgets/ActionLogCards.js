@@ -1,5 +1,5 @@
 import React from "react";
-import LaunchIcon from "@material-ui/icons/Launch";
+import LaunchIcon from "@mui/icons-material/Launch";
 import ReviewValidationIcons from "./ReviewValidationIcons";
 import ReviewStatus from "./ReviewStatus";
 import { routes } from "../../routes";

@@ -5,8 +5,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
-import AccessAlarms from "@material-ui/icons/AccessAlarms";
+import AssistantPhotoIcon from "@mui/icons-material/AssistantPhoto";
+import AccessAlarms from "@mui/icons-material/AccessAlarms";
 
 import CardBadges from "../../../widgets/CardBadges";
 

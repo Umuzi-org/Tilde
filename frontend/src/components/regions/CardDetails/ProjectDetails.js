@@ -6,7 +6,7 @@ import ViewContentButton from "../../widgets/ViewContentButton";
 import RepositoryDetails from "../RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
 
-import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
+import RateReviewRoundedIcon from "@mui/icons-material/RateReviewRounded";
 import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => ({

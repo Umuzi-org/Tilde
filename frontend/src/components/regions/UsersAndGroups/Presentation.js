@@ -15,8 +15,8 @@ import {
   TextField,
 } from "@material-ui/core";
 
-import FilterIcon from "@material-ui/icons/Filter"; //TODO better icon. Need to upgrade material ui
-import LaunchIcon from "@material-ui/icons/Launch";
+import FilterIcon from "@mui/icons-material/Filter"; //TODO better icon. Need to upgrade material ui
+import LaunchIcon from "@mui/icons-material/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";

@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { routes } from "../../../../routes";
-import LaunchIcon from "@material-ui/icons/Launch";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 const useStyles = makeStyles(() => ({
   tableHead: {

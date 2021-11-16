@@ -7,7 +7,7 @@ import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
 import { getUrl as getUserDasboardUrl } from "../../widgets/LinkToUserDashboard";
 import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
 
-import GitHubIcon from "@material-ui/icons/GitHub";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
