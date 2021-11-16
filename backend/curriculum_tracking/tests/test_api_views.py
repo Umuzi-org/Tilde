@@ -1,7 +1,7 @@
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
-from core.tests.factories import UserFactory
+from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from . import factories
 from core.tests import factories as core_factories
@@ -383,11 +383,12 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
     def setUp(self):
 
         self.api_url = self.get_list_url()
+        self.team1 = TeamFactory()
+        self.team1_users = [UserFactory() for _ in range(3)]
 
     def test_staff_member_can_view_all_burndown_snapshot_objects(self):
 
         staff_member = UserFactory(is_superuser=False, is_staff=True)
-        burndown_snapshot_object = factories.BurndownSnapshotFactory()
         self.login(staff_member)
         response = self.client.get(self.api_url)
         self.assertEqual(response.status_code, 200)
@@ -404,14 +405,21 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0].get('user'), burndown_snapshot_object.user.id)
 
-    def test_user_without_view_access_to_other_user_burndown_snapshot_object_cannot_view_object(self):
+    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(self):
 
-        burndown_snapshot_object = factories.BurndownSnapshotFactory(
-            user=UserFactory(is_superuser=False, is_staff=False)
-        )
-        user_without_view_access = UserFactory(is_superuser=False, is_staff=False)
-        self.login(user_without_view_access)
+        for user in self.team1_users:
+            self.login(user)
+            response = self.client.get(f'{self.api_url}?user__id={user.id}')
+            self.assertEqual(response.status_code, 200)
 
-        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
-        self.assertEqual(response.status_code, 403)
+    def test_team1_users_cannot_view_team2_burndown_snapshot_objects(self):
+
+        team2 = TeamFactory()
+        team2_users = [UserFactory() for _ in range(3)]
+
+        for user in self.team1_users:
+            self.login(user)
+            response = self.client.get(f'{self.api_url}?user__id={[user.id for user in team2_users]}')
+            self.assertEqual(response.status_code, 403)
+
 
