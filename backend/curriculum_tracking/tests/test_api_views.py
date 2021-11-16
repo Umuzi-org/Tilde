@@ -370,3 +370,48 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
+
+
+class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
+
+    LIST_URL_NAME = 'burndownsnapshot-list'
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.BurndownSnapshotFactory()
+
+    def setUp(self):
+
+        self.api_url = self.get_list_url()
+
+    def test_staff_member_can_view_all_burndown_snapshot_objects(self):
+
+        staff_member = UserFactory(is_superuser=False, is_staff=True)
+        burndown_snapshot_object = factories.BurndownSnapshotFactory()
+        self.login(staff_member)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.data)
+
+    def test_users_can_view_their_own_burndown_snapshot_objects(self):
+
+        burndown_snapshot_object = factories.BurndownSnapshotFactory(
+            user=UserFactory(is_superuser=False, is_staff=False)
+        )
+        self.login(burndown_snapshot_object.user)
+        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0].get('user'), burndown_snapshot_object.user.id)
+
+    def test_user_without_view_access_to_other_user_burndown_snapshot_object_cannot_view_object(self):
+
+        burndown_snapshot_object = factories.BurndownSnapshotFactory(
+            user=UserFactory(is_superuser=False, is_staff=False)
+        )
+        user_without_view_access = UserFactory(is_superuser=False, is_staff=False)
+        self.login(user_without_view_access)
+
+        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
+        self.assertEqual(response.status_code, 403)
+
