@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MuiAlert from "@material-ui/lab/Alert";
+import MuiAlert from "@mui/lab/Alert";
 
 const FormErrors = ({ show }) => {
   if (show) {

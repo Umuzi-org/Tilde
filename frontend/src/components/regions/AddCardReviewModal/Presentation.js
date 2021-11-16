@@ -1,21 +1,21 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
-import { Typography, Paper, Button, Grid } from "@material-ui/core";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import Alert from "@material-ui/lab/Alert";
+import { Typography, Paper, Button, Grid } from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import Alert from "@mui/lab/Alert";
 
 import Help from "../../widgets/Help";
 import CardButton from "../../widgets/CardButton";
-import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
-import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
-import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
-import MoodBadIcon from "@material-ui/icons/MoodBad";
+import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import MoodBadIcon from "@mui/icons-material/MoodBad";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
