@@ -9,7 +9,6 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 import Loading from "../../widgets/Loading";
@@ -25,8 +24,8 @@ const useStyles = makeStyles((theme) => {
       background: "#fff",
       left: 0,
       zIndex: 1,
+      marginLeft: "16px",
     },
-
     container: {
       // width: 912 - 200,
       // height: 976 - 300,
@@ -48,7 +47,9 @@ export default ({
 
   return (
     <React.Fragment>
-      <Typography variant="h4">{userGroup.name}</Typography>
+      <Typography variant="h4" className={classes.sticky}>
+        {userGroup.name}
+      </Typography>
 
       <div className={classes.container} onScroll={handleScroll}>
         <Table>
