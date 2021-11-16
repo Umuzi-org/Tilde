@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.6.2",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.1.0",
     "@mui/lab": "^5.0.0-alpha.54",
-    "@mui/material": "^5.1.0",
+    "@mui/material": "^5.1.1",
     "@mui/styled-engine-sc": "^5.1.0",
     "@mui/styles": "^5.1.0",
     "@testing-library/jest-dom": "^4.2.4",
