@@ -457,10 +457,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         )
 
         return project_reviews_done_to_date + topic_reviews_done_to_date
-        # if tilde_project_reviews_done_to_date == None:
-        #     return tilde_topic_reviews_done_to_date
-        # else:
-        #     return tilde_project_reviews_done_to_date
 
     def get_tilde_cards_reviewed_in_last_7_days(self, user):
         tilde_project_reviews_done_in_past_seven_days = (
