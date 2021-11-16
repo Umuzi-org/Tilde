@@ -228,4 +228,4 @@ class TestingForTheStatsAPI(TestCase):
         review5.save()
         AgileCardFactory(topic_progress=review5.topic_progress)
         count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
-        self.assertEqual(count, 2)
+        self.assertEqual(count, 3)
