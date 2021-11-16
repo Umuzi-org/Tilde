@@ -20,7 +20,7 @@ import {
 const useStyles = makeStyles((theme) => {
   const card = {
     margin: theme.spacing(0.3),
-    width: theme.spacing("auto"),
+    width: theme.spacing(15),
     padding: theme.spacing(0.5),
     borderRadius: theme.spacing(2),
     textAlign: "center",
