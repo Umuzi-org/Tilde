@@ -1,5 +1,5 @@
 import React from "react";
-// import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@mui/material/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
 import {
@@ -13,7 +13,7 @@ import {
   Button,
   Grid,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import FilterIcon from "@mui/icons-material/Filter"; //TODO better icon. Need to upgrade material ui
 import LaunchIcon from "@mui/icons-material/Launch";

@@ -4,7 +4,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 
 import { INCORRECT, CORRECT, CONTRADICTED } from "../../constants";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 import {
   Table,
   Typography,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";

@@ -1,8 +1,8 @@
 import React from "react";
 // import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import Chip from "@material-ui/core/Chip";
+import Chip from "@mui/material/Chip";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 
 
 const statusLabels = {  

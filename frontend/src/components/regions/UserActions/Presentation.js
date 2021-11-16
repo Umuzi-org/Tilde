@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Typography, Paper, Grid } from "@material-ui/core";
+import { Typography, Paper, Grid } from "@mui/material";
 import {
   ActionReviewedCard,
   ActionCardCompleted,
@@ -8,7 +8,7 @@ import {
 import Loading from "../../widgets/Loading";
 
 import TodayIcon from "@mui/icons-material/Today";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 import { ACTION_NAMES } from "./constants";
 
 const useStyles = makeStyles((theme) => ({

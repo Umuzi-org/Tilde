@@ -10,7 +10,7 @@ import { routes } from "../../routes.js";
 import { getAuthToken } from "../../utils/authTokenStorage";
 import { apiReduxApps } from "../../apiAccess/redux/apiApps";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createMuiTheme({});
 

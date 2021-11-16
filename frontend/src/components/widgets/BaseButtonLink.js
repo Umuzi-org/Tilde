@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import {
     Button,
-  } from "@material-ui/core";
+  } from "@mui/material";
 
 export default ({to, label,selected}) => {
 

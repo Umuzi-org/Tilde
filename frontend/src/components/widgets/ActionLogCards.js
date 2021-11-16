@@ -11,9 +11,9 @@ import {
   Tooltip,
   CardActions,
   Button,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 
 const timestampToLocaleString = (timestamp) => {
   const date = new Date(timestamp);

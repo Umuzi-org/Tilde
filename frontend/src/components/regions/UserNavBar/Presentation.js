@@ -1,16 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Typography, Toolbar, Tooltip } from "@material-ui/core";
+import { Typography, Toolbar, Tooltip } from "@mui/material";
 
 import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
 import { getUrl as getUserDasboardUrl } from "../../widgets/LinkToUserDashboard";
 import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
 
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { makeStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import { makeStyles } from "@mui/material/styles";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {

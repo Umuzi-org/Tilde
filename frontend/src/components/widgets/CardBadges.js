@@ -1,13 +1,13 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Badge from "@material-ui/core/Badge";
+import { makeStyles } from "@mui/material/styles";
+import Badge from "@mui/material/Badge";
 
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import CallMergeIcon from "@mui/icons-material/CallMerge";
 import MoodBadIcon from "@mui/icons-material/MoodBad";
-import { Chip, Tooltip } from "@material-ui/core";
+import { Chip, Tooltip } from "@mui/material";
 
 import { getAgeString } from "./utils";
 

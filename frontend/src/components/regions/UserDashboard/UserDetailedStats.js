@@ -6,7 +6,7 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;

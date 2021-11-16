@@ -1,9 +1,9 @@
 import React from "react";
-import Chip from "@material-ui/core/Chip";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Chip from "@mui/material/Chip";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@mui/material/styles";
 
 import AssistantPhotoIcon from "@mui/icons-material/AssistantPhoto";
 import AccessAlarms from "@mui/icons-material/AccessAlarms";
@@ -12,12 +12,12 @@ import CardBadges from "../../../widgets/CardBadges";
 
 import { BLOCKED } from "../../../../constants";
 
-import Checkbox from "@material-ui/core/Checkbox";
+import Checkbox from "@mui/material/Checkbox";
 import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
-import blue from "@material-ui/core/colors/blue";
-import orange from "@material-ui/core/colors/orange";
+import blue from "@mui/material/colors/blue";
+import orange from "@mui/material/colors/orange";
 import AgileCardActions from "./AgileCardActions";
 import {
   checkIfCardIsInReviewColumn,

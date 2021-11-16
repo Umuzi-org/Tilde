@@ -1,16 +1,16 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
 
 import AgileCard from "./AgileCard";
 import Loading from "../../widgets/Loading";
 
 // import MarkSingleCardAttendanceModal from "../MarkSingleCardAttendanceModal";
-import { Divider } from "@material-ui/core";
+import { Divider } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   grid: {

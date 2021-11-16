@@ -1,8 +1,8 @@
 import React from "react";
-import { Chip, Tooltip } from "@material-ui/core";
+import { Chip, Tooltip } from "@mui/material";
 import LabelIcon from "@mui/icons-material/Label";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 const useStyles = makeStyles((theme) => {
   return {
     chip: {
