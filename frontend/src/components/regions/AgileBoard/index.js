@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
 import Loading from "../../widgets/Loading";
 
-function boardFromCards({ cards, latestCalls }) {
+export function boardFromCards({ cards, latestCalls }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
     return {
       label: columnName,
