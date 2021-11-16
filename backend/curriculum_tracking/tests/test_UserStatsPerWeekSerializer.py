@@ -229,3 +229,40 @@ class TestingForTheStatsAPI(TestCase):
         AgileCardFactory(topic_progress=review5.topic_progress)
         count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 3)
+
+    def test_get_total_tilde_cards_reviewed_done(self):
+        user = UserFactory()
+
+        # no reviews done yet
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 0)
+
+        # add a review
+        review2 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review2.timestamp = self.yesterday
+        review2.save()
+        AgileCardFactory(recruit_project=review2.recruit_project)
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 1)
+
+        # add really old review
+        review1 = RecruitProjectReviewFactory(
+            timestamp=self.two_weeks_ago, reviewer_user=user
+        )
+        review1.timestamp = self.two_weeks_ago
+        review1.save()
+        AgileCardFactory(recruit_project=review1.recruit_project)
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 2)
+
+        # add a topic review, now we should have 3 reviews
+        review5 = TopicReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review5.timestamp = self.yesterday
+        review5.save()
+        AgileCardFactory(topic_progress=review5.topic_progress)
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 3)
