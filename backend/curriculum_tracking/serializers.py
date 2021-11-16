@@ -618,6 +618,7 @@ class BurnDownSnapShotSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.BurndownSnapshot
         fields = [
+            "id",
             "user",
             "timestamp",
             "cards_total_count",
