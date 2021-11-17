@@ -48,7 +48,7 @@ export default ({ card }) => {
     repoUrl,
     oldestOpenPrUpdatedTime,
   } = card;
-  console.log("Sbonelo" + card.repoUrl)
+  console.log("Sbonelo " + codeReviewCompetentSinceLastReviewRequest)
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -106,9 +106,9 @@ export default ({ card }) => {
         <Tooltip title="Number of open pull requests on this card and their age">
           <Button
             className={classes.widgetStyle}
-            component={Link}
-            to={repoUrl}
-            rel="noopener"
+            href={card.repoUrl}
+            target="_blank" 
+            rel="noreferrer noopener"
           >
             <Badge badgeContent={openPrCount} color="primary">
               {oldestOpenPrUpdatedTime === null ? (
