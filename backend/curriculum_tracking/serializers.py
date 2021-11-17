@@ -619,11 +619,12 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "content_item",
+            "content_item_title",
             "flavours",
             "user",
         ]
 
-    content_item = serializers.SerializerMethodField('get_content_item_title')
+    content_item_title = serializers.SerializerMethodField('get_content_item_title')
     flavours = serializers.CharField(help_text="comma separated list of flavours")
 
     def get_content_item_title(self, review_trust: object):
