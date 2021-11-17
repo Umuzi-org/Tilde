@@ -15,7 +15,7 @@ import Tab from "@material-ui/core/Tab";
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     margin: theme.spacing(0.5),
-    border: "1px solid grey",
+    // border: "1px solid grey",
   },
   gitHubLink: {
     margin: theme.spacing(1),
@@ -24,14 +24,10 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiTabs-indicator": {
       backgroundColor: "blue",
     },
-  }
+  },
 }));
 
-export default ({
-  user,
-  userId,
-  value,
-}) => {
+export default ({ user, userId, value }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -49,22 +45,15 @@ export default ({
             </Tooltip>
           </a>
         )}
-        
       </Toolbar>
       <Tabs value={value} className={classes.tabs}>
-        <Link
-          to={getUserBoardUrl({userId})}  
-        >
+        <Link to={getUserBoardUrl({ userId })}>
           <Tab label="BOARD" />
         </Link>
-        <Link
-          to={getUserActionUrl({userId})} 
-        >
+        <Link to={getUserActionUrl({ userId })}>
           <Tab label="ACTIONS" />
         </Link>
-        <Link
-          to={getUserDasboardUrl({userId})} 
-        >
+        <Link to={getUserDasboardUrl({ userId })}>
           <Tab label="DASHBOARD" />
         </Link>
       </Tabs>

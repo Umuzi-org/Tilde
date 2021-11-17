@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 
 export default ({ detailedStats }) => {
-  console.log(detailedStats);
   if (!detailedStats) return <React.Fragment />;
   return (
     <Table>
