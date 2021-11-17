@@ -613,6 +613,20 @@ class TeamStatsSerializer(serializers.ModelSerializer):
         return self._get_review_agile_cards(instance).count()
 
 
+class BurnDownSnapShotSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.BurndownSnapshot
+        fields = [
+            "id",
+            "user",
+            "timestamp",
+            "cards_total_count",
+            "project_cards_total_count",
+            "cards_in_complete_column_total_count",
+            "project_cards_in_complete_column_total_count",
+        ]
+
 class ReviewTrustSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewTrust

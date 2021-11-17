@@ -125,6 +125,12 @@ router.register(
     "reviewtrust",
 )
 
+router.register(
+    r"burndown_snap_shot",
+    curriculum_tracking_api_views.BurnDownSnapShotViewset,
+    "burndownsnapshot",
+)
+
 # router.register(
 #     r"agile_card_add_review",
 #     curriculum_tracking_api_views.AgileCardInteractionAddReview,
