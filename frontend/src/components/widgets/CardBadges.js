@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
@@ -48,7 +47,6 @@ export default ({ card }) => {
     repoUrl,
     oldestOpenPrUpdatedTime,
   } = card;
-  console.log("Sbonelo " + codeReviewCompetentSinceLastReviewRequest)
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -107,7 +105,7 @@ export default ({ card }) => {
           <Button
             className={classes.widgetStyle}
             href={card.repoUrl}
-            target="_blank" 
+            target="_blank"
             rel="noreferrer noopener"
           >
             <Badge badgeContent={openPrCount} color="primary">
