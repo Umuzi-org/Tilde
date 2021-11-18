@@ -383,9 +383,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     tilde_reviews_done_last_7_days = serializers.SerializerMethodField(
         "get_tilde_reviews_done_last_7_days"
     )
-    tilde_cards_reviewed_in_last_7_days = serializers.SerializerMethodField(
-        "get_tilde_cards_reviewed_in_last_7_days"
-    )
 
     # tilde_review_disagreements_in_last_7_days = serializers.SerializerMethodField(
     #     "get_tilde_review_disagreements_in_last_7_days"
@@ -457,32 +454,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
         )
 
         return project_reviews_done_to_date + topic_reviews_done_to_date
-
-    def get_tilde_cards_reviewed_in_last_7_days(self, user):
-        tilde_project_reviews_done_in_past_seven_days = (
-            models.RecruitProjectReview.objects.filter(
-                reviewer_user_id=user.id,
-                timestamp__gte=timezone.now() - timedelta(days=7),
-            )
-        )
-
-        tilde_topic_reviews_done_in_past_seven_days = models.TopicReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
-        )
-
-        return (
-            models.AgileCard.objects.filter(
-                Q(
-                    recruit_project__project_reviews__in=tilde_project_reviews_done_in_past_seven_days
-                )
-                | Q(
-                    topic_progress__topic_reviews__in=tilde_topic_reviews_done_in_past_seven_days
-                )
-            )
-            .distinct()
-            .count()
-        )
 
     def get_tilde_reviews_done_last_7_days(self, user):
         project_reviews_done_last_7_days = (

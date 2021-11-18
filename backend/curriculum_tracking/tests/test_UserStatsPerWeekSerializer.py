@@ -170,11 +170,11 @@ class TestingForTheStatsAPI(TestCase):
         # of 2
         self.assertEqual(self.stats_serializer.get_pr_reviews_done_last_7_days(self.repo_card_one.assignees.first()), 2)
 
-    def test_get_tilde_cards_reviewed_in_last_7_days(self):
+    def test_get_tilde_reviews_done_last_7_days(self):
         user = UserFactory()
 
         # no reviews done yet
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review, but it's too old to count
@@ -184,7 +184,7 @@ class TestingForTheStatsAPI(TestCase):
         review1.timestamp = self.two_weeks_ago
         review1.save()
         AgileCardFactory(recruit_project=review1.recruit_project)
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review within the right timeframe
@@ -194,7 +194,7 @@ class TestingForTheStatsAPI(TestCase):
         review2.timestamp = self.yesterday
         review2.save()
         AgileCardFactory(recruit_project=review2.recruit_project)
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review on the same card, so now the number of cards reviewed is still 1
@@ -207,7 +207,7 @@ class TestingForTheStatsAPI(TestCase):
         review3.save()
         # AgileCardFactory(recruit_project=review3.recruit_project)
 
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review, now the number of cards reviewed is 2
@@ -217,7 +217,7 @@ class TestingForTheStatsAPI(TestCase):
         review4.timestamp = self.yesterday
         review4.save()
         AgileCardFactory(recruit_project=review4.recruit_project)
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 2)
 
         # add a topic review, now the number of cards reviewed is 3
@@ -227,7 +227,7 @@ class TestingForTheStatsAPI(TestCase):
         review5.timestamp = self.yesterday
         review5.save()
         AgileCardFactory(topic_progress=review5.topic_progress)
-        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
         self.assertEqual(count, 3)
 
     def test_get_total_tilde_cards_reviewed_done(self):
