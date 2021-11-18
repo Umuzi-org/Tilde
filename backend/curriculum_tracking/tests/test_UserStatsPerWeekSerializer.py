@@ -173,10 +173,6 @@ class TestingForTheStatsAPI(TestCase):
     def test_no_tilde_reviews_done_in_last_7_days(self):
         user = UserFactory()
 
-        # no reviews done yet
-        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
-        self.assertEqual(count, 0)
-
         # add a review, but it's too old to count
         review = RecruitProjectReviewFactory(
             timestamp=self.two_weeks_ago, reviewer_user=user
@@ -197,8 +193,6 @@ class TestingForTheStatsAPI(TestCase):
         review1.timestamp = self.yesterday
         review1.save()
         AgileCardFactory(recruit_project=review1.recruit_project)
-        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
-        self.assertEqual(count, 1)
 
         # add another review, now the number of cards reviewed is 2
         review2 = RecruitProjectReviewFactory(
@@ -207,8 +201,6 @@ class TestingForTheStatsAPI(TestCase):
         review2.timestamp = self.yesterday
         review2.save()
         AgileCardFactory(recruit_project=review2.recruit_project)
-        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
-        self.assertEqual(count, 2)
 
         # add a topic review, now the number of cards reviewed is 3
         review3 = TopicReviewFactory(
@@ -237,8 +229,6 @@ class TestingForTheStatsAPI(TestCase):
         review1.timestamp = self.yesterday
         review1.save()
         AgileCardFactory(recruit_project=review1.recruit_project)
-        count = self.stats_serializer.get_total_tilde_reviews_done(user)
-        self.assertEqual(count, 1)
 
         # add really old review
         review2 = RecruitProjectReviewFactory(
@@ -247,8 +237,6 @@ class TestingForTheStatsAPI(TestCase):
         review2.timestamp = self.two_weeks_ago
         review2.save()
         AgileCardFactory(recruit_project=review2.recruit_project)
-        count = self.stats_serializer.get_total_tilde_reviews_done(user)
-        self.assertEqual(count, 2)
 
         # add a topic review, now we should have 3 reviews
         review3 = TopicReviewFactory(
