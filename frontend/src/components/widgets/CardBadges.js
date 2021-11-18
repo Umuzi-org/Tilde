@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   widgetStyle: {
-    textTransform: "lowercase",
+    textDecoration: "none",
   },
 }));
 
@@ -102,9 +102,9 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
-          <Button
+          <a
             className={classes.widgetStyle}
-            href={card.repoUrl}
+            href={repoUrl}
             target="_blank"
             rel="noreferrer noopener"
           >
@@ -119,7 +119,7 @@ export default ({ card }) => {
                 />
               )}
             </Badge>
-          </Button>
+          </a>
         </Tooltip>
       ) : (
         <React.Fragment />
