@@ -26,7 +26,7 @@ def get_asset(name):
 
 def get_body_and_headers(asset_name):
     headers = get_asset(f"{asset_name}_request_headers")
-
+    #breakpoint()
     body = get_asset(f"{asset_name}_request_body")
     body["headers"] = headers
 
@@ -229,3 +229,47 @@ class PushEventTests(APITestCase):
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.count(), 1)
+
+
+class TestBugInPullRequestReview(APITestCase):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_to_find_bug(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(PullRequest.objects.all().count(), 0)
+        self.assertEqual(PullRequestReview.objects.all().count(), 0)
+
+        body, headers = get_body_and_headers("bug_pull_request_review_requested")
+        #body, headers = get_body_and_headers("pull_request_review_submitted")
+        review_data = body['pull_request']
+        social_profile = SocialProfileFactory(github_name=review_data["user"]["login"])
+        url = reverse(views.github_webhook)
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+        self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(self.client.post(url, format="json", data=body, extra=headers).status_code, 200)
+        self.assertEqual(PullRequest.objects.all().count(), 1)
+        asdf = PullRequestReview.objects.all()
+        breakpoint()
+        """
+
+        self.assertEqual(PullRequestReview.objects.all().count(), 1)
+
+        pr = PullRequest.objects.first()
+        review = PullRequestReview.objects.first()
+
+        self.assertEqual(review.html_url, review_data["html_url"])
+        self.assertEqual(review.pull_request, pr)
+        self.assertEqual(review.author_github_name, social_profile.github_name)
+        self.assertEqual(review.body, review_data["body"])
+        self.assertEqual(review.commit_id, review_data["commit_id"])
+        self.assertEqual(review.state, review_data["state"])
+        self.assertEqual(review.user, social_profile.user)
+
+        self.assertEqual(
+            review.submitted_at, strp_github_standard_time(review_data["submitted_at"])
+        )
+
+        self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(PullRequest.objects.all().count(), 1)
+        self.assertEqual(PullRequestReview.objects.all().count(), 1)
+        """
