@@ -445,12 +445,11 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
     def get_total_tilde_reviews_done(self, user):
         project_reviews_done_to_date = (
             models.RecruitProjectReview.objects.filter(reviewer_user_id=user.id)
-            .all()
             .count()
         )
 
         topic_reviews_done_to_date = (
-            models.TopicReview.objects.filter(reviewer_user_id=user.id).all().count()
+            models.TopicReview.objects.filter(reviewer_user_id=user.id).count()
         )
 
         return project_reviews_done_to_date + topic_reviews_done_to_date
@@ -461,7 +460,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
                 reviewer_user_id=user.id,
                 timestamp__gte=timezone.now() - timedelta(days=7),
             )
-            .all()
             .count()
         )
 
@@ -470,7 +468,6 @@ class UserStatsPerWeekSerializer(serializers.ModelSerializer):
                 reviewer_user_id=user.id,
                 timestamp__gte=timezone.now() - timedelta(days=7),
             )
-            .all()
             .count()
         )
 
