@@ -26,7 +26,6 @@ def get_asset(name):
 
 def get_body_and_headers(asset_name):
     headers = get_asset(f"{asset_name}_request_headers")
-    #breakpoint()
     body = get_asset(f"{asset_name}_request_body")
     body["headers"] = headers
 
@@ -208,7 +207,6 @@ class PushEventTests(APITestCase):
         pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
             int(repository["pushed_at"])
         )
-
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.count(), 1)
@@ -231,45 +229,49 @@ class PushEventTests(APITestCase):
         self.assertEqual(Push.objects.count(), 1)
 
 
-class TestBugInPullRequestReview(APITestCase):
+class TestFindBugInPushEvents(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_to_find_bug(self, has_permission):
+
         has_permission.return_value = True
-
-        self.assertEqual(PullRequest.objects.all().count(), 0)
-        self.assertEqual(PullRequestReview.objects.all().count(), 0)
-
-        body, headers = get_body_and_headers("bug_pull_request_review_requested")
-        #body, headers = get_body_and_headers("pull_request_review_submitted")
-        review_data = body['pull_request']
-        social_profile = SocialProfileFactory(github_name=review_data["user"]["login"])
         url = reverse(views.github_webhook)
+        body, headers = get_body_and_headers("bug_push")
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
-        self.client.post(url, format="json", data=body, extra=headers)
-        self.assertEqual(self.client.post(url, format="json", data=body, extra=headers).status_code, 200)
-        self.assertEqual(PullRequest.objects.all().count(), 1)
-        asdf = PullRequestReview.objects.all()
-        breakpoint()
+        head_commit = body["head_commit"]   # Problem here, this returns None, it should be a massive dictionary with lots of values
+
+        """
+        author_github_name = head_commit["author"]["username"]
+        committer_github_name = head_commit["committer"]["username"]
+        message = head_commit["message"]
+        head_commit_url = head_commit["url"]
+        commit_timestamp = dateutil.parser.isoparse(head_commit["timestamp"])
+        pusher_username = body["pusher"]["name"]
         """
 
-        self.assertEqual(PullRequestReview.objects.all().count(), 1)
-
-        pr = PullRequest.objects.first()
-        review = PullRequestReview.objects.first()
-
-        self.assertEqual(review.html_url, review_data["html_url"])
-        self.assertEqual(review.pull_request, pr)
-        self.assertEqual(review.author_github_name, social_profile.github_name)
-        self.assertEqual(review.body, review_data["body"])
-        self.assertEqual(review.commit_id, review_data["commit_id"])
-        self.assertEqual(review.state, review_data["state"])
-        self.assertEqual(review.user, social_profile.user)
-
-        self.assertEqual(
-            review.submitted_at, strp_github_standard_time(review_data["submitted_at"])
+        repository = body["repository"]
+        ref = body["ref"]
+        pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
+            int(repository["pushed_at"])
         )
 
+        github_webhook_return_value = self.client.post(url, format="json", data=body, extra=headers)  # This should be something like <Response status_code=200, "application/json">
         self.client.post(url, format="json", data=body, extra=headers)
-        self.assertEqual(PullRequest.objects.all().count(), 1)
-        self.assertEqual(PullRequestReview.objects.all().count(), 1)
+        self.assertEqual(Push.objects.count(), 1)
+        push = Push.objects.first()
+
         """
+        self.assertEqual(push.author_github_name, author_github_name)
+        self.assertEqual(push.committer_github_name, committer_github_name)
+        self.assertEqual(push.message, message)
+        self.assertEqual(push.head_commit_url, head_commit_url)
+        self.assertEqual(push.pusher_username, pusher_username)
+        self.assertEqual(push.pushed_at_time, pushed_at_time)
+        self.assertEqual(push.ref, ref)
+        self.assertEqual(push.repository, repo)
+        self.assertEqual(push.commit_timestamp, commit_timestamp)
+        # self.assertEqual(push.commit_timestamp.isoformat(), commit_timestamp.isoformat())
+        # BUG: if you uncomment the above line then you'll see that the stored timestamps aren't keeping the timezonne info. Please fix here and in all other places where we are getting info from gihub
+        """
+
+        self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(Push.objects.count(), 1)
