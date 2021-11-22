@@ -28,7 +28,7 @@ const TeamsTable = ({ teams, authUser }) => {
             className={classes.tableHead}
             colSpan="2"
           >
-            <Typography variant="h6" component="h2" style={{ width: "90%" }}>
+            <Typography variant="h6" component="h2">
               Team memberships
             </Typography>
           </TableCell>

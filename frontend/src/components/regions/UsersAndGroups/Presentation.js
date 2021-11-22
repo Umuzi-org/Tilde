@@ -78,7 +78,7 @@ const TeamCard = ({
         variant="h6"
         gutterBottom
         component="div"
-        className={classes.title}
+        className={classes.marginsAlignment}
       >
         {team.name}
       </Typography>
@@ -88,7 +88,7 @@ const TeamCard = ({
           color="default"
           size="small"
           startIcon={<LaunchIcon />}
-          className={classes.title}
+          className={classes.marginsAlignment}
         >
           View
         </Button>
@@ -99,7 +99,7 @@ const TeamCard = ({
         size="small"
         startIcon={<FilterIcon />}
         onClick={() => handleUserGroupClick(team.name)}
-        className={classes.title}
+        className={classes.marginsAlignment}
       >
         Filter
       </Button>
@@ -116,7 +116,7 @@ const UserCard = ({ email, user }) => {
         variant="h6"
         gutterBottom
         component="div"
-        className={classes.title}
+        className={classes.marginsAlignment}
       >
         {email}
       </Typography>
@@ -149,7 +149,7 @@ export default function Presentation({
             variant="h5"
             gutterBottom
             component="div"
-            className={classes.title}
+            className={classes.marginsAlignment}
           >
             Teams
           </Typography>
@@ -179,7 +179,7 @@ export default function Presentation({
             variant="h5"
             gutterBottom
             component="div"
-            className={classes.title}
+            className={classes.marginsAlignment}
           >
             Users
           </Typography>

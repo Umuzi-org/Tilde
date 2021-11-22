@@ -14,7 +14,7 @@ export default ({ userId, selected, label }) => {
       to={getUrl({ userId })}
       label={label || "Board"}
       selected={selected}
-      className={classes.title}
+      className={classes.marginsAlignment}
     />
   );
 };
