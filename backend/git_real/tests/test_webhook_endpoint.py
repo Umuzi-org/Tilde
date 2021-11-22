@@ -229,46 +229,15 @@ class PushEventTests(APITestCase):
         self.assertEqual(Push.objects.count(), 1)
 
 
-class TestFindBugInPushEvents(APITestCase):
+class TestPayloadBugInPushEvents(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
-    def test_to_find_bug(self, has_permission):
+    def test_payload_without_head_commit_details_is_handled_without_error(self, has_permission):
 
         has_permission.return_value = True
         url = reverse(views.github_webhook)
         body, headers = get_body_and_headers("bug_push")
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
-
-        """
-        head_commit = body["head_commit"]   # Problem here, this returns None, it should be a massive dictionary with lots of values
-        author_github_name = head_commit["author"]["username"]
-        committer_github_name = head_commit["committer"]["username"]
-        message = head_commit["message"]
-        head_commit_url = head_commit["url"]
-        commit_timestamp = dateutil.parser.isoparse(head_commit["timestamp"])
-        pusher_username = body["pusher"]["name"]
-        ref = body["ref"]
-        pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
-            int(repository["pushed_at"])
-        )
-        """
-
-        # This should be something like <Response status_code=200, "application/json">
-        repository = body["repository"]
-        push_object = Push.create_or_update_from_github_api_data(repository, body)
-
-        """
-        self.assertEqual(push.author_github_name, author_github_name)
-        self.assertEqual(push.committer_github_name, committer_github_name)
-        self.assertEqual(push.message, message)
-        self.assertEqual(push.head_commit_url, head_commit_url)
-        self.assertEqual(push.pusher_username, pusher_username)
-        self.assertEqual(push.pushed_at_time, pushed_at_time)
-        self.assertEqual(push.ref, ref)
-        self.assertEqual(push.repository, repo)
-        self.assertEqual(push.commit_timestamp, commit_timestamp)
-        # self.assertEqual(push.commit_timestamp.isoformat(), commit_timestamp.isoformat())
-        # BUG: if you uncomment the above line then you'll see that the stored timestamps aren't keeping the timezonne info. Please fix here and in all other places where we are getting info from gihub
-        """
+        push_object = Push.create_or_update_from_github_api_data(repo, body)
 
         self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(Push.objects.count(), 1)
