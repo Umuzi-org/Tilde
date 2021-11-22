@@ -627,6 +627,7 @@ class BurnDownSnapShotSerializer(serializers.ModelSerializer):
             "project_cards_in_complete_column_total_count",
         ]
 
+
 class ReviewTrustSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewTrust
@@ -634,12 +635,11 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
             "id",
             "content_item",
             "content_item_title",
-            "flavours",
+            "flavour_names",
             "user",
         ]
 
     content_item_title = serializers.SerializerMethodField('get_content_item_title')
-    flavours = serializers.CharField(help_text="comma separated list of flavours")
 
     def get_content_item_title(self, review_trust: object):
         return review_trust.content_item.title

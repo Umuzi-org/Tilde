@@ -917,7 +917,7 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
         )
     ]
 
-    queryset = models.ReviewTrust.objects.all()
+    queryset = models.ReviewTrust.objects.order_by('user').all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user"]

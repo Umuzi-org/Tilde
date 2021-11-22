@@ -411,9 +411,7 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
         self.login(review_trust_object.user)
         response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get('content_item'), review_trust_object.content_item.title)
-
-
+        self.assertEqual(response.data[0].get('content_item_title'), review_trust_object.content_item.title)
 
 
 class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
