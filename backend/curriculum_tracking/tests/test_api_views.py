@@ -376,6 +376,7 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
     LIST_URL_NAME = 'reviewtrust-list'
     SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["flavour_names"]
 
     def verbose_instance_factory(self):
         return factories.ReviewTrustFactory()
