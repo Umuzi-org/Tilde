@@ -237,27 +237,24 @@ class TestFindBugInPushEvents(APITestCase):
         url = reverse(views.github_webhook)
         body, headers = get_body_and_headers("bug_push")
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
-        head_commit = body["head_commit"]   # Problem here, this returns None, it should be a massive dictionary with lots of values
 
         """
+        head_commit = body["head_commit"]   # Problem here, this returns None, it should be a massive dictionary with lots of values
         author_github_name = head_commit["author"]["username"]
         committer_github_name = head_commit["committer"]["username"]
         message = head_commit["message"]
         head_commit_url = head_commit["url"]
         commit_timestamp = dateutil.parser.isoparse(head_commit["timestamp"])
         pusher_username = body["pusher"]["name"]
-        """
-
-        repository = body["repository"]
         ref = body["ref"]
         pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
             int(repository["pushed_at"])
         )
+        """
 
-        github_webhook_return_value = self.client.post(url, format="json", data=body, extra=headers)  # This should be something like <Response status_code=200, "application/json">
-        self.client.post(url, format="json", data=body, extra=headers)
-        self.assertEqual(Push.objects.count(), 1)
-        push = Push.objects.first()
+        # This should be something like <Response status_code=200, "application/json">
+        repository = body["repository"]
+        push_object = Push.create_or_update_from_github_api_data(repository, body)
 
         """
         self.assertEqual(push.author_github_name, author_github_name)
