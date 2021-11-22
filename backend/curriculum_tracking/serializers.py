@@ -343,12 +343,12 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
         model = models.User
         fields = [
             "id",
-            "cards_in_completed_column_as_assignee",
-            "cards_in_review_column_as_assignee",
-            "cards_in_review_feedback_column_as_assignee",
-            "cards_in_progress_column_as_assignee",
-            "cards_currently_blocked_as_assignee",
-            "cards_ready_as_assignee",
+            "cards_assigned_with_status_complete",
+            "cards_assigned_with_status_in_review",
+            "cards_assigned_with_status_review_feedback",
+            "cards_assigned_with_status_in_progress",
+            "cards_assigned_with_status_blocked",
+            "cards_assigned_with_status_ready",
             "cards_completed_last_7_days_as_assignee",
             "cards_started_last_7_days_as_assignee",
             "total_tilde_reviews_done",
@@ -359,25 +359,25 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
             # "tilde_review_disagreements_in_last_7_days",
         ]
 
-    cards_in_completed_column_as_assignee = serializers.SerializerMethodField(
+    cards_assigned_with_status_complete = serializers.SerializerMethodField(
         "get_cards_in_complete_column_as_assignee"
     )
-    cards_in_review_column_as_assignee = serializers.SerializerMethodField(
-        "get_cards_in_review_column_as_assignee"
+    cards_assigned_with_status_in_review = serializers.SerializerMethodField(
+        "get_cards_assigned_with_status_in_review"
     )
-    cards_in_review_feedback_column_as_assignee = serializers.SerializerMethodField(
-        "get_cards_in_review_feedback_column_as_assignee"
+    cards_assigned_with_status_review_feedback = serializers.SerializerMethodField(
+        "get_cards_assigned_with_status_review_feedback"
     )
-    cards_in_progress_column_as_assignee = serializers.SerializerMethodField(
-        "get_cards_in_progress_column_as_assignee"
-    )
-
-    cards_currently_blocked_as_assignee = serializers.SerializerMethodField(
-        "get_cards_currently_blocked_as_assignee"
+    cards_assigned_with_status_in_progress = serializers.SerializerMethodField(
+        "get_cards_assigned_with_status_in_progress"
     )
 
-    cards_ready_as_assignee = serializers.SerializerMethodField(
-        "get_cards_ready_as_assignee"
+    cards_assigned_with_status_blocked = serializers.SerializerMethodField(
+        "get_cards_assigned_with_status_blocked"
+    )
+
+    cards_assigned_with_status_ready = serializers.SerializerMethodField(
+        "get_cards_assigned_with_status_ready"
     )
 
     cards_completed_last_7_days_as_assignee = serializers.SerializerMethodField(
@@ -409,47 +409,47 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
 
     def get_cards_in_complete_column_as_assignee(self, user):
 
-        cards_in_completed_column_as_assignee_amount = models.AgileCard.objects.filter(
+        cards_assigned_with_status_complete_amount = models.AgileCard.objects.filter(
             status=models.AgileCard.COMPLETE, assignees=user.id
         ).count()
 
-        return cards_in_completed_column_as_assignee_amount
+        return cards_assigned_with_status_complete_amount
 
-    def get_cards_in_review_column_as_assignee(self, user):
+    def get_cards_assigned_with_status_in_review(self, user):
 
-        cards_in_review_column_as_assignee_amount = models.AgileCard.objects.filter(
+        cards_assigned_with_status_in_review_amount = models.AgileCard.objects.filter(
             status=models.AgileCard.IN_REVIEW, assignees=user.id
         ).count()
 
-        return cards_in_review_column_as_assignee_amount
+        return cards_assigned_with_status_in_review_amount
 
-    def get_cards_in_review_feedback_column_as_assignee(self, user):
+    def get_cards_assigned_with_status_review_feedback(self, user):
 
-        cards_in_review_feedback_column_as_assignee_amount = (
+        cards_assigned_with_status_review_feedback_amount = (
             models.AgileCard.objects.filter(
                 status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
             ).count()
         )
 
-        return cards_in_review_feedback_column_as_assignee_amount
+        return cards_assigned_with_status_review_feedback_amount
 
-    def get_cards_in_progress_column_as_assignee(self, user):
+    def get_cards_assigned_with_status_in_progress(self, user):
 
-        cards_in_progress_column_as_assignee = models.AgileCard.objects.filter(
+        cards_assigned_with_status_in_progress = models.AgileCard.objects.filter(
             status=models.AgileCard.IN_PROGRESS, assignees=user.id
         ).count()
 
-        return cards_in_progress_column_as_assignee
+        return cards_assigned_with_status_in_progress
 
-    def get_cards_currently_blocked_as_assignee(self, user):
+    def get_cards_assigned_with_status_blocked(self, user):
 
-        cards_currently_blocked_as_assignee = models.AgileCard.objects.filter(
+        cards_assigned_with_status_blocked = models.AgileCard.objects.filter(
             status=models.AgileCard.BLOCKED, assignees=user.id
         ).count()
 
-        return cards_currently_blocked_as_assignee
+        return cards_assigned_with_status_blocked
 
-    def get_cards_ready_as_assignee(self, user):
+    def get_cards_assigned_with_status_ready(self, user):
 
         cards_currently_ready_as_assignee = models.AgileCard.objects.filter(
             status=models.AgileCard.READY, assignees=user.id

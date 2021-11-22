@@ -56,14 +56,14 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
     def test_one_card_in_progress_before_any_reviews(self):
 
-        # One card, no reviews just yet, function 'get_cards_in_progress_column_as_assignee' should return one card
+        # One card, no reviews just yet, function 'get_cards_assigned_with_status_in_progress' should return one card
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.project_1.content_item, self.card_1.content_item)
         self.assertEqual(
             AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS
         )
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_progress_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_progress(
                 UserDetailedStatsSerializer, user=self.user
             ),
             1,
@@ -83,7 +83,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_review_feedback_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_review_feedback(
                 UserDetailedStatsSerializer, user=self.user
             ),
             1,
@@ -178,7 +178,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
         # We should get two cards in the review column waiting for a review
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_review_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_review(
                 UserDetailedStatsSerializer, user=assigned_person
             ),
             2,
@@ -276,7 +276,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         user = UserFactory()
         serializer = self.serializer
 
-        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        count = serializer.get_cards_assigned_with_status_blocked(user)
         self.assertEqual(count, 0)
 
     def test_one_card_currently_blocked(self):
@@ -285,7 +285,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
         user = card.assignees.first()
 
-        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        count = serializer.get_cards_assigned_with_status_blocked(user)
         self.assertEqual(count, 1)
 
     def test_one_card_currently_on_ready_status(self):
@@ -293,7 +293,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = factories.AgileCardFactory(status=AgileCard.READY)
         user = card.assignees.first()
 
-        count = self.serializer.get_cards_ready_as_assignee(user)
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
         self.assertEqual(count, 1)
 
     def test_zero_cards_currently_on_ready_status(self):
@@ -301,6 +301,5 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = self.card_1
         user = card.assignees.first()
 
-        count = self.serializer.get_cards_ready_as_assignee(user)
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
         self.assertEqual(count, 0)
-
