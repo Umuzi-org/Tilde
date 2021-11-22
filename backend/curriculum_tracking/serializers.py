@@ -348,7 +348,7 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
             "cards_in_review_feedback_column_as_assignee",
             "cards_in_progress_column_as_assignee",
             "cards_currently_blocked_as_assignee",
-            "cards_ready_as_assignee"
+            "cards_ready_as_assignee",
             "cards_completed_last_7_days_as_assignee",
             "cards_started_last_7_days_as_assignee",
             "total_tilde_reviews_done",
@@ -456,7 +456,6 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
         ).count()
 
         return cards_currently_ready_as_assignee
-
 
     def get_cards_completed_last_7_days_as_assignee(self, user):
 
