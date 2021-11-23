@@ -125,6 +125,13 @@ router.register(
     "burndownsnapshot",
 )
 
+router.register(
+    r"push",
+    curriculum_tracking_api_views.PushViewSet,
+    "push",
+)
+
+
 # router.register(
 #     r"agile_card_add_review",
 #     curriculum_tracking_api_views.AgileCardInteractionAddReview,
