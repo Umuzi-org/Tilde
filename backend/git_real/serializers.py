@@ -67,3 +67,19 @@ class PullRequestReviewSerializer(serializers.ModelSerializer):
             # "number",
             "user",
         ]
+
+class PushSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Push
+        fields = [
+            "id",
+            "repository",
+            "author_github_name",
+            "committer_github_name",
+            "pusher_username",
+            "message",
+            "head_commit_url",
+            "commit_timestamp",
+            "pushed_at_time",
+            "ref",
+        ]
