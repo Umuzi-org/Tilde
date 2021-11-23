@@ -58,5 +58,6 @@
     "canStart": false,
     "canForceStart": false,
     "openPrCount": 0,
+    "repoUrl" :"https://github.com/Umuzi-org/Tilde/pulls",
     "oldestOpenPrUpdatedTime": null
 }

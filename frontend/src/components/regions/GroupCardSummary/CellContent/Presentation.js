@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const TimesTable = ({ card }) => {
+const TimesTable = ({ card, CardBadges }) => {
   const classes = useStyles();
   const nice = (dateTime) => {
     if (dateTime) {

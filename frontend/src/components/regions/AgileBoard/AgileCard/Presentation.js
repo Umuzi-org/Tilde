@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const getCardClassName = ({ classes, card, filterUserId }) => {
+const getCardClassName = ({ classes, card, filterUserId, CardBadges }) => {
   const isReviewer = card.reviewers.indexOf(filterUserId) !== -1;
 
   if (isReviewer) return classes.reviewCard;
@@ -80,6 +80,7 @@ export default ({
   authUser,
   viewedUser,
   filterUserId,
+  repoUrl,
 
   handleClickAddReview,
   handleClickOpenCardDetails,
@@ -121,6 +122,7 @@ export default ({
     card,
     authUser,
     viewedUser,
+    repoUrl,
 
     loadingStartProject,
     loadingStartTopic,

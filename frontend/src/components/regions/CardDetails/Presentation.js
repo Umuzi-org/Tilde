@@ -52,7 +52,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card }) => {
+const CardBasicDetails = ({ card, CardBadges }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -139,6 +139,7 @@ export default ({
   showAddReviewButton,
   linkSubmission,
   formErrors,
+  repoUrl,
 }) => {
   const classes = useStyles();
 
