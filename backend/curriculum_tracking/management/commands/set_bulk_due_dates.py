@@ -22,6 +22,5 @@ class Command(BaseCommand):
         team_cards = get_team_cards(team, content_item_id)
 
         for card in team_cards:
-            if flavours in card.flavour_names:
-                AgileCard.set_due_time(card, datetime.now())
-            continue
+            if card.flavours_match(flavours):
+                AgileCard.set_due_time(card, datetime.today())
