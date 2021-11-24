@@ -152,7 +152,6 @@ export default ({
         <Typography variant="caption">
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
-        <Typography variant="caption"> [card id:{card.id}]</Typography>
         {checkIfCardIsInReviewColumn({ card }) ? (
           <Checkbox
             checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
