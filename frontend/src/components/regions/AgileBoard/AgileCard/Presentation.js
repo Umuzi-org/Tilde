@@ -12,12 +12,17 @@ import CardBadges from "../../../widgets/CardBadges";
 
 import { BLOCKED } from "../../../../constants";
 
+import Checkbox from "@material-ui/core/Checkbox";
 import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
 import AgileCardActions from "./AgileCardActions";
+import {
+  checkIfCardIsInReviewColumn,
+  userReviewedSinceLastReviewRequest,
+} from "./utils";
 
 const useStyles = makeStyles((theme) => {
   const card = {
@@ -34,12 +39,15 @@ const useStyles = makeStyles((theme) => {
   const blockedCard = {
     ...card,
     backgroundColor: theme.palette.grey[200],
+  };  
+  const title = {
+    marginLeft: "10px",
+    marginTop: "8px",
   };
-
   return {
     card,
     goalCard,
-
+    title,
     blockedCard,
     blockedGoal: {
       ...goalCard,
@@ -72,7 +80,8 @@ const getCardClassName = ({ classes, card, filterUserId, CardBadges }) => {
 };
 
 function ListCardUsers({ userNames, userIds }) {
-  return <Typography>{userNames.join(", ")}</Typography>;
+  const classes = useStyles();
+  return <Typography className={classes.title}>{userNames.join(", ")}</Typography>;
 }
 
 export default ({
@@ -146,15 +155,24 @@ export default ({
     >
       <CardContent>
         <CardBadges card={card} />
-        <Typography variant="caption">
+        <Typography variant="caption" className={classes.title}>
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
         <Typography variant="caption"> [card id:{card.id}]</Typography>
+        {checkIfCardIsInReviewColumn({ card }) ? (
+          <Checkbox
+            checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
+            style={{ color: "#3f51b5" }}
+            disabled
+          />
+        ) : (
+          <React.Fragment />
+        )}
 
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" className={classes.title}>
           {card.title}
         </Typography>
-       
+
         {/* {card.flavourNames.map((flavour) => (
           <Chip
             key={flavour}
@@ -188,7 +206,7 @@ export default ({
         <FlavourChips flavourNames={card.flavourNames} />
         <StoryPoints storyPoints={card.storyPoints} />
 
-        <Typography variant="subtitle2">Assignees:</Typography>
+        <Typography variant="subtitle2" className={classes.title}>Assignees:</Typography>
 
         <ListCardUsers
           userNames={card.assigneeNames}
@@ -197,9 +215,10 @@ export default ({
 
         {card.reviewerNames.length ? (
           <React.Fragment>
-            <Typography variant="subtitle2">Reviewers:</Typography>
+            <Typography variant="subtitle2" className={classes.title}>Reviewers:</Typography>
 
             <ListCardUsers
+            
               userNames={card.reviewerNames}
               userIds={card.reviewerIds}
             />

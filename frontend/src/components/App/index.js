@@ -12,21 +12,12 @@ import { apiReduxApps } from "../../apiAccess/redux/apiApps";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
-const theme = createMuiTheme({
-  // status: {
-  //   danger: orange[500],
-  // },
-  //   palette: {
-  //     type: "dark",
-  //   },
-});
+const theme = createMuiTheme({});
 
 function shouldCallWhoAmI({ authUser }) {
   if (authUser.userId) return false;
   if (!getAuthToken()) return false;
-  //   if (callStatus.loading) return false;
-  //   if (callStatus.error) return false;
-  //   if (callStatus.responseOk) return false;
+
   return true;
 }
 
