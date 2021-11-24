@@ -1,12 +1,19 @@
 import React from "react";
 import { routes } from "../../routes";
 import BaseButtonLink from "./BaseButtonLink";
-import { useStyles } from "./BaseButtonLink";
-
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles({
+  marginsAlignment: {
+    marginTop: "8px",
+    marginLeft: "16px",
+  },
+  input: {
+    width: "62%",
+  },
+});
 export function getUrl({ userId }) {
   return routes.userBoard.route.path.replace(":userId", userId);
 }
-export { useStyles };
 export default ({ userId, selected, label }) => {
   const classes = useStyles();
   return (

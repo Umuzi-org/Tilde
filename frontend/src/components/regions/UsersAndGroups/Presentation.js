@@ -1,7 +1,7 @@
 import React from "react";
 // import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-import { useStyles } from "../../widgets/LinkToUserBoard";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Paper,
   Typography,
@@ -20,7 +20,15 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-
+const useStyles = makeStyles({
+  marginsAlignment: {
+    marginTop: "8px",
+    marginLeft: "16px",
+  },
+  input: {
+    width: "62%",
+  },
+});
 const TeamSummaryStats = ({ summaryStats }) => {
   const oldestOpenPrTime = summaryStats.oldestOpenPrTime
     ? new Date(summaryStats.oldestOpenPrTime)
