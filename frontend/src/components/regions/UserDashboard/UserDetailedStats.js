@@ -10,6 +10,8 @@ import {
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;
+  const detailedStatsData = Object.keys(detailedStats).reduce((obj, k) => Object.assign(obj, { [detailedStats[k.split(/(?=[A-Z])/).join('_').toLowerCase()]]: detailedStats[k] }),{});
+  console.log("Bee", detailedStatsData);
   return (
     <Table>
       <TableBody>
