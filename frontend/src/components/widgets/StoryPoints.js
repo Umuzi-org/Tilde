@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => {
   return {
     chip: {
-      margin: theme.spacing(0.3),
+      margin: theme.spacing(1),
     },
   };
 });
