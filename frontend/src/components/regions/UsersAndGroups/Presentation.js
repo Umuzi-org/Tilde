@@ -1,5 +1,4 @@
 import React from "react";
-// import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 import { makeStyles } from "@material-ui/core/styles";
 import {
