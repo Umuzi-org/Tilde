@@ -63,7 +63,7 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
   );
 };
 
-const CardBasicDetails = ({ card, CardBadges }) => {
+const CardBasicDetails = ({ card }) => {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
