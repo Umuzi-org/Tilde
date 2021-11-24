@@ -10,8 +10,6 @@ import {
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;
-  const detailedStatsData = Object.keys(detailedStats).reduce((obj, k) => Object.assign(obj, { [detailedStats[k.split(/(?=[A-Z])/).join('_').toLowerCase()]]: detailedStats[k] }),{});
-  console.log("Bee", detailedStatsData);
   return (
     <Table>
       <TableBody>
@@ -39,8 +37,16 @@ export default ({ detailedStats }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in complete column as assignee</TableCell>
+          <TableCell>Cards in progress column as assignee</TableCell>
           <TableCell>{detailedStats.cardsInProgressColumnAsAssignee}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Cards in blocked column as assignee</TableCell>
+          <TableCell>{detailedStats.cardsBlockedColumnAsAssignee}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Cards in ready column as assignee</TableCell>
+          <TableCell>{detailedStats.cardsReadyColumnAsAssignee}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards completed in the last 7 days</TableCell>

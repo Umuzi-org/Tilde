@@ -4,6 +4,8 @@
   "cardsInReviewColumnAsAssignee": 0,
   "cardsInReviewFeedbackColumnAsAssignee": 3,
   "cardsInProgressColumnAsAssignee": 0,
+  "cardsBlockedColumnAsAssignee": 0,
+  "cardsReadyColumnAsAssignee": 0,
   "cardsCompletedLast_7DaysAsAssignee": 0,
   "cardsStartedLast_7DaysAsAssignee": 0,
   "totalTildeReviewsDone": 576,
