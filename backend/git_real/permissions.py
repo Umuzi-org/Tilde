@@ -3,7 +3,7 @@ import hmac
 from hashlib import sha256
 import hashlib
 from backend.settings import GIT_REAL_WEBHOOK_SECRET
-
+from .models import Repository
 
 class IsWebhookSignatureOk(BasePermission):
     """
@@ -22,6 +22,25 @@ class IsWebhookSignatureOk(BasePermission):
         correct = recieved_digest == "sha1=" + digest
         if not correct:
             return False
-            # breakpoint()
 
         return correct
+
+def user_can_see_repository(repo, user):
+    for project in repo.recruit_projects.all():
+        if user in project.recruit_users.all():
+            return True
+        if user in project.reviewer_users.all():
+            return True
+    return False
+
+class IsFilteredByRepoAttachedToProjectICanSee(BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method != "GET":
+            return False
+        if "repository" not in request.GET:
+            return False
+        repo = Repository.objects.get(pk=int(request.GET["repository"]))
+        user = request.user
+
+        return user_can_see_repository(repo, user)
