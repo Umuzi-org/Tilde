@@ -9,6 +9,13 @@ from .serializers import PushSerializer
 from .permissions import IsFilteredByRepoAttachedToProjectICanSee
 
 
+def _get_teams_from_repository_instance(repo):
+    projects = repo.recruit_projects.all()
+    for project in projects:
+        user_ids = [user.id for user in project.recruit_users.all()]
+        for team in Team.get_teams_from_user_ids(user_ids):
+            yield team
+
 def _get_teams_from_repository_filter(self, request, view):
     repo_id = dict(request.query_params).get("repository")
     if not repo_id:
