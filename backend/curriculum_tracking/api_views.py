@@ -1,3 +1,5 @@
+from rest_framework.generics import GenericAPIView
+
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -838,8 +840,9 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
     ]
 
 
-class ManagmentActionsViewSet(viewsets.ViewSet):
+class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
     serializer_class = serializers.NoArgs
+    queryset = models.Team.objects.all()
 
     def list(self, request):
         return Response([])
@@ -882,6 +885,23 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        serializer_class=serializers.SetDueTimeSerializer,
+        permission_classes=[
+            curriculum_permissions.CardDueTimeIsNotSet
+            | HasObjectPermission(
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
+            )
+        ],
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+        breakpoint()
+        serializer = self.get_serializer(data=request.data)
+        return None
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
