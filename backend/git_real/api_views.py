@@ -2,19 +2,8 @@
 
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
-# from rest_framework import permissions
 from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
-
-# from core.permissions import (
-#     ActionIs,
-#     IsStaffUser,
-#     HasObjectPermission,
-#     IsReadOnly,
-#     DenyAll,
-#     IsCurrentUserInSpecificFilter,
-# )
-
 from core.models import Team
 from .models import Push, Repository
 from .serializers import PushSerializer

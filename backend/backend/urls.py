@@ -19,6 +19,7 @@ from django.conf.urls import include
 from rest_framework import routers
 from core import views as core_views
 from curriculum_tracking import api_views as curriculum_tracking_api_views
+from git_real import api_views as git_real_api_views
 
 
 # from rest_framework.schemas import get_schema_view
@@ -127,7 +128,7 @@ router.register(
 
 router.register(
     r"push",
-    curriculum_tracking_api_views.PushViewSet,
+    git_real_api_views.PushViewSet,
     "push",
 )
 
