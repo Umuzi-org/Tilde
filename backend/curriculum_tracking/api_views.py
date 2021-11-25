@@ -901,21 +901,3 @@ class BurnDownSnapShotViewset(viewsets.ModelViewSet):
     queryset = models.BurndownSnapshot.objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user__id", "timestamp"]
-
-
-class PushViewSet(viewsets.ModelViewSet):
-    serializer_class = git_serializers.PushSerializer
-    queryset = git_models.Push.objects.order_by("-pushed_at_time")
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["repository"]
-
-    permission_classes = [
-        ActionIs("list")
-        & (
-            curriculum_permissions.IsFilteredByRepoAttachedToProjectICanSee
-            | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_repository_filter,
-            )
-        )
-    ]
