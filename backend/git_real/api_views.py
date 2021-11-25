@@ -2,11 +2,11 @@
 
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
-from curriculum_tracking import permissions as curriculum_permissions
 from core import permissions as core_permissions
 from core.models import Team
 from .models import Push, Repository
 from .serializers import PushSerializer
+from .permissions import IsFilteredByRepoAttachedToProjectICanSee
 
 
 def _get_teams_from_repository_filter(self, request, view):
@@ -30,7 +30,7 @@ class PushViewSet(viewsets.ModelViewSet):
     permission_classes = [
         core_permissions.ActionIs("list")
         & (
-            curriculum_permissions.IsFilteredByRepoAttachedToProjectICanSee
+            IsFilteredByRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_repository_filter,
