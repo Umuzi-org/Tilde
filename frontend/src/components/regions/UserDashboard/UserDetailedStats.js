@@ -61,11 +61,11 @@ export default ({ detailedStats }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Total competence reviews done</TableCell>
+          <TableCell>Total tilde reviews done</TableCell>
           <TableCell>{detailedStats.totalTildeReviewsDone}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Total competence reviews done in last 7 days</TableCell>
+          <TableCell>Total tilde reviews done in last 7 days</TableCell>
           <TableCell>{detailedStats.tildeReviewsDoneLast_7Days}</TableCell>
         </TableRow>
         <TableRow>
