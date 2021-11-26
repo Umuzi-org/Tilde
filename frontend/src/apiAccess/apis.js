@@ -200,6 +200,14 @@ async function personallyAssignedAgileCardsPage({
   return { response, responseData };
 }
 
+async function userBurndownSnapshotsPage({
+  assigneeUserId,
+  reviewerUser,
+  page,
+}) {
+
+}
+
 async function agileCardEntity({ cardId }) {
   let url = `${API_BASE_URL}/api/agile_card/${cardId}/`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -346,6 +354,7 @@ export default {
     userDetailedStatsEntity,
     recruitProjectsPage,
     personallyAssignedAgileCardsPage,
+    userBurndownSnapshotsPage,
     recruitProjectEntity,
     topicProgressEntity,
     recruitProjectReviewsPage,
