@@ -1,10 +1,10 @@
 {
   "id": 295,
   "cardsInCompletedColumnAsAssignee": 81,
-  "cardsInReviewColumnAsAssignee": 0,
+  "cardsInReviewColumnAsAssignee": 2,
   "cardsInReviewFeedbackColumnAsAssignee": 3,
-  "cardsInProgressColumnAsAssignee": 0,
-  "cardsCompletedLast_7DaysAsAssignee": 0,
+  "cardsInProgressColumnAsAssignee": 4,
+  "cardsCompletedLast_7DaysAsAssignee": 1,
   "cardsStartedLast_7DaysAsAssignee": 0,
   "totalTildeReviewsDone": 576,
   "tildeReviewsDoneLast_7Days": 30,
