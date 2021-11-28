@@ -10,7 +10,12 @@ import {
 import { colors } from "@material-ui/core";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const COLORS = [colors.yellow[600], colors.orange[600], colors.red[600], colors.green[600]];
+const COLORS = [
+  colors.yellow[600],
+  colors.orange[600],
+  colors.red[600],
+  colors.green[600],
+];
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
@@ -51,11 +56,11 @@ export default ({ detailedStats }) => {
     { name: "Review", value: detailedStats.cardsInReviewColumnAsAssignee },
     {
       name: "Review Feedback",
-      value: detailedStats.cardsInReviewFeedbackColumnAsAssignee
+      value: detailedStats.cardsInReviewFeedbackColumnAsAssignee,
     },
     {
       name: "In Progress",
-      value: detailedStats.cardsInProgressColumnAsAssignee
+      value: detailedStats.cardsInProgressColumnAsAssignee,
     },
   ].filter((element) => element.value);
   return (
