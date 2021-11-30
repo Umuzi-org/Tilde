@@ -1,6 +1,6 @@
 import React from "react";
-import Presentation from "./Presentation";
+import UserChart from "./Presentation";
 
 export default () => {
-  return <Presentation />;
+  return <UserChart />;
 };
