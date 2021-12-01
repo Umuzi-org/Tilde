@@ -1,5 +1,4 @@
 from rest_framework.generics import GenericAPIView
-
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -22,6 +21,8 @@ from core.permissions import (
     IsCurrentUserInSpecificFilter,
 )
 from core.models import Team
+from curriculum_tracking.management.helpers import get_team_cards
+from curriculum_tracking.models import AgileCard
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -841,11 +842,16 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
 
 
 class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
+
     serializer_class = serializers.NoArgs
-    queryset = models.Team.objects.all()
+    queryset = models.Team.objects.filter(active=True)
 
     def list(self, request):
         return Response([])
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        return queryset
 
     @action(
         detail=False,
@@ -890,18 +896,22 @@ class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
         detail=False,
         methods=["POST"],
         serializer_class=serializers.SetDueTimeSerializer,
-        permission_classes=[
-            curriculum_permissions.CardDueTimeIsNotSet
-            | HasObjectPermission(
-                permissions=Team.PERMISSION_MANAGE_CARDS,
-                get_objects=_get_teams_from_card,
-            )
-        ],
+        permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
     )
     def bulk_set_due_dates(self, request, pk=None):
-        breakpoint()
         serializer = self.get_serializer(data=request.data)
-        return None
+        if serializer.is_valid():
+            teams = self.get_object()   # This will get you all the teams, we only need the teams in the request data
+            for team in teams:
+                if team.name in request.data.get('team'):
+                    team_cards = get_team_cards(team, request.data.get('content_item'))
+
+            for card in team_cards:
+                AgileCard.set_due_time(card, request.data.get('due_time'))
+            return Response(f'Due dates set for these team cards: {[card for card in team_cards]}')
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):

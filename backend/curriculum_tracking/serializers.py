@@ -1,3 +1,4 @@
+import core.models
 from git_real.models import PullRequest, PullRequestReview
 from . import models
 from rest_framework import serializers
@@ -244,16 +245,18 @@ class WorkshopAttendanceTime(serializers.ModelSerializer):
         fields = ["timestamp"]
 
 
+class SetDueTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProject
+        fields = ["due_time", "content_item", "flavours", "team"]
+
+    team = serializers.ChoiceField(core.models.Team.objects.filter(active=True))
+
+
 class AddReviewerUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AgileCard
         fields = ["reviewers"]
-
-
-class SetDueTimeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.RecruitProject
-        fields = ["due_time"]
 
 
 class TeamField(serializers.RelatedField):
