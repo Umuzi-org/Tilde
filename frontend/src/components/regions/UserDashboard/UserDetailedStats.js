@@ -9,14 +9,13 @@ import {
 } from "@material-ui/core";
 
 export default ({ detailedStats }) => {
-  console.log(detailedStats);
   if (!detailedStats) return <React.Fragment />;
   return (
     <Table>
       <TableBody>
         <TableRow>
           <TableCell>
-            <Typography variant="h6" component="h2">
+            <Typography variant="h6" component="h2" align="center">
               Performance
             </Typography>
           </TableCell>
