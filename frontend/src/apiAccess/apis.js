@@ -202,10 +202,19 @@ async function personallyAssignedAgileCardsPage({
 
 async function userBurndownSnapshotsPage({
   assigneeUserId,
-  reviewerUser,
+  reviewerUserId,
   page,
+  status,
 }) {
+  const limit = 20;
 
+  const offset = calculateOffset({ page, limit });
+
+  let url = `${API_BASE_URL}/api/burndown_snap_shot/?status=${status}&limit=${limit}&offset=${offset}`;
+  if (assigneeUserId) url += `&assignees=${assigneeUserId}`;
+  if (reviewerUserId) url += `&reviewers=${reviewerUserId}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
 }
 
 async function agileCardEntity({ cardId }) {
