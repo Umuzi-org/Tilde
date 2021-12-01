@@ -124,3 +124,40 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
+
+
+class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
+
+    #LIST_URL_NAME = "managmentaction-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+
+        team = factories.TeamFactory()
+        user = factories.UserFactory()
+        team.user_set.add(user)
+        return team
+
+    def setUp(self):
+
+        #self.url = self.get_list_url()
+        self.api_url = '/api/managment_actions/bulk_set_due_dates/'
+
+        self.blue_team = factories.TeamFactory()
+        self.red_team = factories.TeamFactory()
+        self.user_one_blue = factories.UserFactory(first_name='one_blue', is_superuser=False, is_staff=False)
+        self.user_two_blue = factories.UserFactory(first_name='two_blue', is_superuser=False, is_staff=False)
+        self.user_one_red = factories.UserFactory(first_name='one_red', is_superuser=False, is_staff=False)
+        self.user_two_red = factories.UserFactory(first_name='two_red', is_superuser=False, is_staff=False)
+
+        self.blue_team.user_set.add(self.user_one_blue)
+        self.blue_team.user_set.add(self.user_two_blue)
+        self.red_team.user_set.add(self.user_one_red)
+        self.red_team.user_set.add(self.user_two_red)
+
+    def test_team_members_cannot_bulk_set_due_dates(self):
+
+        self.login(self.user_one_blue)
+        response = self.client.post(self.api_url)
+        breakpoint()
+

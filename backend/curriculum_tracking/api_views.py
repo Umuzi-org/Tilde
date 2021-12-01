@@ -913,7 +913,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
 
     permission_classes = [permissions.IsAdminUser
