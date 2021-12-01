@@ -7,9 +7,6 @@ const useStyles = makeStyles({
     marginTop: "8px",
     marginLeft: "16px",
   },
-  input: {
-    width: "62%",
-  },
 });
 export default ({ to, label, selected }) => {
   const classes = useStyles();
