@@ -23,62 +23,62 @@ export default ({ detailedStats }) => {
         <TableRow>
           <TableCell>Cards in complete column as assignee</TableCell>
           <TableCell>
-            {detailedStats.cardsInCompletedColumnAsAssignee}
+            {detailedStats.cards_assigned_with_status_complete}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in review column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsInReviewColumnAsAssignee}</TableCell>
+          <TableCell>{detailedStats.cards_assigned_with_status_in_review}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in review feedback column as assignee</TableCell>
           <TableCell>
-            {detailedStats.cardsInReviewFeedbackColumnAsAssignee}
+            {detailedStats.cards_assigned_with_status_review_feedback}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in progress column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsInProgressColumnAsAssignee}</TableCell>
+          <TableCell>{detailedStats.cards_assigned_with_status_in_progress}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in blocked column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsBlockedColumnAsAssignee}</TableCell>
+          <TableCell>{detailedStats.cards_assigned_with_status_blocked}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in ready column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsReadyColumnAsAssignee}</TableCell>
+          <TableCell>{detailedStats.cards_assigned_with_status_ready}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards completed in the last 7 days</TableCell>
           <TableCell>
-            {detailedStats.cardsCompletedLast_7DaysAsAssignee}
+            {detailedStats.cards_completed_last_7_days_as_assignee}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards started in the last 7 days as assignee</TableCell>
           <TableCell>
-            {detailedStats.cardsStartedLast_7DaysAsAssignee}
+            {detailedStats.cards_started_last_7_days_as_assignee}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Total tilde reviews done</TableCell>
-          <TableCell>{detailedStats.totalTildeReviewsDone}</TableCell>
+          <TableCell>{detailedStats.total_tilde_reviews_done}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Total tilde reviews done in last 7 days</TableCell>
-          <TableCell>{detailedStats.tildeReviewsDoneLast_7Days}</TableCell>
+          <TableCell>{detailedStats.tilde_reviews_done_last_7_days}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Total pull request reviews done</TableCell>
-          <TableCell>{detailedStats.totalPrReviewsDone}</TableCell>
+          <TableCell>{detailedStats.total_pr_reviews_done}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Total pull request reviews done in last 7 day</TableCell>
-          <TableCell>{detailedStats.prReviewsDoneLast_7Days}</TableCell>
+          <TableCell>{detailedStats.pr_reviews_done_last_7_days}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Tilde cards reviewed in last 7 days</TableCell>
-          <TableCell>{detailedStats.tildeCardsReviewedInLast_7Days}</TableCell>
+          <TableCell>{detailedStats.tilde_cards_reviewed_in_last_7_days}</TableCell>
         </TableRow>
       </TableBody>
     </Table>
