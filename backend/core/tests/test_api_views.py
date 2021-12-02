@@ -129,8 +129,9 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
 
 class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
-    LIST_URL_NAME = "managmentaction"
+    LIST_URL_NAME = "team-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
 
     def verbose_instance_factory(self):
 
