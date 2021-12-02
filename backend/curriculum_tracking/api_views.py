@@ -902,3 +902,22 @@ class BurnDownSnapShotViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user__id", "timestamp"]
 
+
+
+class ReviewTrustsViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAdminUser
+        | ActionIs('list')
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("user"),
+            )
+        )
+    ]
+
+    queryset = models.ReviewTrust.objects.order_by('user').all()
+    serializer_class = serializers.ReviewTrustSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["user"]
