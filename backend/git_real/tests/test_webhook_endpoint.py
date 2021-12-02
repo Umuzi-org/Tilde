@@ -231,13 +231,10 @@ class PushEventTests(APITestCase):
 
 class TestNoHeadCommitInPushEvents(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
-    def test_payload_without_head_commit_details_is_handled_without_error(self, has_permission):
+    def test_payload_without_head_commit_details_is_handled_but_not_stored_to_db(self, has_permission):
 
         has_permission.return_value = True
-        url = reverse(views.github_webhook)
         body, headers = get_body_and_headers("webhook_push")
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
         push_object = Push.create_or_update_from_github_api_data(repo, body)
-
-        self.client.post(url, format="json", data=body, extra=headers)
-        self.assertEqual(Push.objects.count(), 1)
+        self.assertEqual(Push.objects.count(), 0)
