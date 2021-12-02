@@ -14,6 +14,9 @@ import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfie
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
+// import SvgIcon from '@mui/material/SvgIcon';
+// import CancelIcon from '@mui/icons-material/Cancel';
+// import CloseIcon from '@mui/icons-material/Close';
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -38,12 +41,24 @@ const useStyles = makeStyles((theme) => ({
   rightButton: {
     float: "right",
   },
+  helpPopUpInfo: {
+    textAlign: "right",
+    marginTop: "8px",
+    marginRight: "12px",
+    fontSize: "18px",
+  },
 }));
 
-const StatusHelp = () => {
+const StatusHelp = ({ helpPopUp, closeHelpPopUp}) => {
+  const classes = useStyles();
+  
   return (
     <Help buttonText="How do I choose a status?">
+      { helpPopUp && 
       <Paper>
+        <Typography variant="subtitle2" className={classes.helpPopUpInfo} onClick={closeHelpPopUp}>
+          X
+        </Typography>
         <Typography variant="subtitle2">
           <SentimentSatisfiedIcon /> Competent
         </Typography>
@@ -130,7 +145,7 @@ const StatusHelp = () => {
             </li>
           </ul>
         </Typography>
-      </Paper>
+      </Paper>}
     </Help>
   );
 };
@@ -142,6 +157,8 @@ export default ({
   comments,
   formErrors,
   closeModal,
+  helpPopUp,
+  closeHelpPopUp,
   statusChoices,
   loading,
 }) => {
@@ -159,7 +176,7 @@ export default ({
         </Typography>
 
         <Alert severity="info" className={classes.alert}>
-          Whatever you writ here will be visable to staff and to the person you
+          Whatever you write here will be visible to staff and to the person you
           are reviewing. Take the time to give an accurate and useful review
         </Alert>
 
@@ -191,13 +208,15 @@ export default ({
                   })}
                 </Select>
               </FormControl>
-              <StatusHelp />
+              <StatusHelp 
+                helpPopUp={helpPopUp} 
+                closeHelpPopUp={closeHelpPopUp}/>
             </Grid>
             <Grid item xs={12}>
               <TextareaAutosize
                 className={classes.textArea}
                 aria-label="your comments"
-                rowsMin={5}
+                minRows={5}
                 placeholder="Your comments*"
                 {...comments}
               />
