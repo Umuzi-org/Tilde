@@ -1,11 +1,12 @@
 // import React, { PureComponent } from 'react';
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import UserDetailedStats from "../../../stories/fixtures/userDetailedStats.json";
 
 const data = [
   {
     name: 'Cards completed',
-    uv: 400,
+    uv: UserDetailedStats.cardsInCompletedColumnAsAssignee,
     pv: 240,
     amt: 240,
   },
