@@ -183,7 +183,6 @@ class Push(models.Model, Mixins):
         ref = request_body["ref"]
 
         try:
-
             defaults = {
                 "commit_timestamp": head_commit.get("timestamp"),
                 "author_github_name": head_commit.get("author").get("username"),
@@ -195,18 +194,8 @@ class Push(models.Model, Mixins):
                 ),
             }
 
-        except (TypeError, AttributeError):
-
-            defaults = {
-                "commit_timestamp": head_commit.get('updated_at'),
-                "author_github_name": request_body.get("pusher").get("email"),
-                "committer_github_name": request_body.get("pusher").get("name"),
-                "message": "Bug in payload, no message exists",
-                "pusher_username": request_body.get("pusher").get("name"),
-                "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
-                    int(request_body["repository"]["pushed_at"])
-                ),
-            }
+        except (TypeError, AttributeError) as error:
+            return f'{[error]} error occurred during the handling of the push event.'
 
         instance, _ = cls.get_or_create_or_update(
             repository=repo,
