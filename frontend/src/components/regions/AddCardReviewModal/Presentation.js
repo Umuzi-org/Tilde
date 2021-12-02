@@ -14,9 +14,6 @@ import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfie
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import MoodBadIcon from "@material-ui/icons/MoodBad";
-// import SvgIcon from '@mui/material/SvgIcon';
-// import CancelIcon from '@mui/icons-material/Cancel';
-// import CloseIcon from '@mui/icons-material/Close';
 
 import { makeStyles } from "@material-ui/core/styles";
 
