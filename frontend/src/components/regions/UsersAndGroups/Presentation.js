@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     marginTop: "8px",
     marginLeft: "16px",
   },
-  input: {
+  textBoxSize: {
     width: "62%",
   },
 });
@@ -165,7 +165,7 @@ export default function Presentation({
             label="Teams"
             variant="outlined"
             {...filterByGroup}
-            className={classes.input}
+            className={classes.textBoxSize}
           />
         </Paper>
         {teams.map((team) => {
@@ -194,7 +194,7 @@ export default function Presentation({
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
             {...filterByUser}
-            className={classes.input}
+            className={classes.textBoxSize}
           />
         </Paper>
         {Object.keys(users)
