@@ -2,30 +2,37 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import UserDetailedStats from "../../../stories/fixtures/userDetailedStats.json";
-
 const data = [
   {
-    name: 'Cards completed',
-    uv: UserDetailedStats.cardsInCompletedColumnAsAssignee,
-    pv: 240,
+    name: '0',
+    cardsCompleted: UserDetailedStats.cardsInCompletedColumnAsAssignee,
+    projectsCompleted: 14,
+    incompleteCards: 100,
+    incompleteProjects: 240,
     amt: 240,
   },
   {
-    name: 'Projects completed',
-    uv: 300,
-    pv: 139,
+    name: '3',
+    cardsCompleted: 300,
+    projectsCompleted: 45,
+    incompleteCards: 70,
+    incompleteProjects: 139,
     amt: 221,
   },
   {
-    name: 'Incomplete cards',
-    uv: 200,
-    pv: 980,
+    name: '6',
+    cardsCompleted: 200,
+    projectsCompleted: 80,
+    incompleteCards: 50,
+    incompleteProjects: 980,
     amt: 229,
   },
   {
-    name: 'Incomplete project cards',
-    uv: 278,
-    pv: 390,
+    name: '9',
+    cardsCompleted: 278,
+    projectsCompleted: 122,
+    incompleteCards: 30,
+    incompleteProjects: 390,
     amt: 200,
   },
 ];
@@ -52,11 +59,13 @@ export default ({}) => {
       <Legend />
       <Line
         type="monotone"
-        dataKey="pv"
-        stroke="#8884d8"
+        dataKey="incompleteProjects"
+        stroke="black"
         activeDot={{ r: 8 }}
       />
-      <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="cardsCompleted" stroke="green" />
+      <Line type="monotone" dataKey="projectsCompleted" stroke="blue" />
+      <Line type="monotone" dataKey="incompleteCards" stroke="orange" />
     </LineChart>
     </div>
   );
