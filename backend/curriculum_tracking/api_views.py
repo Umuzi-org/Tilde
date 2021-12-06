@@ -575,10 +575,9 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
         for project in projects:
             if project.flavours_match(card.flavour_names):
-                #breakpoint()
+                breakpoint()
                 project.setup_repository()
 
-        #breakpoint()
         return Response(serializers.AgileCardSerializer(card).data)
 
 
