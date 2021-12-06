@@ -38,11 +38,15 @@ const useStyles = makeStyles((theme) => ({
   rightButton: {
     float: "right",
   },
+  
   helpPopUpInfo: {
     textAlign: "right",
     marginTop: "8px",
     marginRight: "12px",
     fontSize: "18px",
+    "&:hover": {
+      backgroundColor: "#A8A8A8",
+    },
   },
 }));
 
