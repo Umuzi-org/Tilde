@@ -107,6 +107,7 @@ function AgileCardUnconnected({
 
     handleClickAddReview,
 
+    repoUrl
     authUser,
     viewedUser,
     filterUserId,
