@@ -565,7 +565,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
         serializer_class=serializers.NoArgs,
         permission_classes=[(curriculum_permissions.IsCardAssignee) | IsStaffUser | HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
-                get_objects=_get_teams_from_card,
             )
         ]
     )
@@ -575,9 +574,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
         projects = projects.filter(content_item=card.content_item)
 
         for project in projects:
-            if project.flavours_match(card.flavours):
+            if project.flavours_match(card.flavour_names):
+                #breakpoint()
                 project.setup_repository()
-        breakpoint()
+
+        #breakpoint()
+        return Response(serializers.AgileCardSerializer(card).data)
 
 
     # def todo_content_in_ready_column(self):
