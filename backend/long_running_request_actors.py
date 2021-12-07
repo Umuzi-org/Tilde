@@ -72,3 +72,11 @@ def auto_assign_reviewers():
     )
 
     work()
+
+
+@dramatiq.actor()
+def setup_project_repo(card_id):
+    from curriculum_tracking.models import AgileCard
+    card = AgileCard.objects.get(pk=card_id)
+    project = card.recruit_project
+    project.setup_repository()

@@ -20,6 +20,7 @@ from core.permissions import (
     IsCurrentUserInSpecificFilter,
 )
 from core.models import Team
+import dramatiq
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -569,7 +570,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ]
     )
     def setup_project_repo(self, request, pk=None):
+        from long_running_request_actors import setup_project_repo
         card: models.AgileCard = self.get_object()
+        #breakpoint()
+        response = setup_project_repo.send(card.id)
+        return Response({"status": "OK", "data": response.asdict()})
+    """
+    card: models.AgileCard = self.get_object()
         projects = models.RecruitProject.objects.filter(recruit_users__email__in=[card.assignees.first().email])
         projects = projects.filter(content_item=card.content_item)
 
@@ -577,9 +584,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             if project.flavours_match(card.flavour_names):
                 breakpoint()
                 project.setup_repository()
-
-        return Response(serializers.AgileCardSerializer(card).data)
-
+    """
 
     # def todo_content_in_ready_column(self):
     #     todo_tag, _ = taggit.models.Tag.objects.get_or_create(name="todo")
