@@ -178,11 +178,10 @@ class Push(models.Model, Mixins):
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
 
-        head_commit = request_body["head_commit"] or request_body['repository']
-        head_commit_url = head_commit["url"] or request_body['compare']
-        ref = request_body["ref"]
-
         try:
+            head_commit = request_body["head_commit"]
+            head_commit_url = head_commit["url"]
+            ref = request_body["ref"]
             defaults = {
                 "commit_timestamp": head_commit.get("timestamp"),
                 "author_github_name": head_commit.get("author").get("username"),
