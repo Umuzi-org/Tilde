@@ -1,5 +1,6 @@
 import React from "react";
 import { getAgeString } from "../../widgets/utils"
+import { getColor } from "../../widgets/"
 import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
@@ -38,48 +39,12 @@ const TeamSummaryStats = ({ summaryStats }) => {
   const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
     ? new Date(summaryStats.oldestCardInReviewTime)
     : null;
-  const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); //2012-02-06
-  const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
-  let specificDayForPr = getAgeString(openPrAge);
-  let specificDayForTildeReview = getAgeString(tildeReviewAge); //2 months ago
+  
 
-  let reviewColor;
-  let prColor;
-  let [day, week, month, year] = ["day", "week", "month", "year"];
-
-  if (specificDayForPr.includes(day)) {
-    if (specificDayForPr[0] >= 1) {
-      prColor = "orange";
-    }
-    if (specificDayForPr[0] > 2) {
-      prColor = "red";
-    }
-  } else if (
-    specificDayForPr.includes(week) ||
-    specificDayForPr.includes(month) ||
-    specificDayForPr.includes(year)
-  ) {
-    prColor = "red";
-  } else {
-    prColor = "black";
-  }
-  //tilde
-  if (specificDayForTildeReview.includes(day)) {
-    if (specificDayForTildeReview[0] <= 3) {
-      reviewColor = "orange";
-    }
-    if (specificDayForTildeReview[0] > 3) {
-      reviewColor = "red";
-    }
-  } else if (
-    specificDayForTildeReview.includes(week) ||
-    specificDayForTildeReview.includes(month) ||
-    specificDayForTildeReview.includes(year)
-  ) {
-    reviewColor = "red";
-  } else {
-    reviewColor = "black";
-  }
+  // const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
+  // const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  // let specificDayForPr = getAgeString(openPrAge);
+  // let specificDayForTildeReview = getAgeString(tildeReviewAge); 
 
   return (
     <Table>
@@ -94,14 +59,14 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell style={{color: `${prColor}`}}>
+          <TableCell>
           {getAgeString(openPrAge) ? getAgeString(openPrAge) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell style={{color: `${reviewColor}`}}>
+          <TableCell>
           {getAgeString(tildeReviewAge) ? getAgeString(tildeReviewAge) : "-"}
           </TableCell>
         </TableRow>
@@ -118,8 +83,6 @@ const TeamCard = ({
 }) => {
   const filterButtonVariant =
     team.name === filterUsersByGroupName ? "contained" : "outlined";
-
-  console.log(summaryStats);
 
   return (
     <Paper variant="outlined" elevation={2}>
