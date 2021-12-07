@@ -1,4 +1,5 @@
 import React from "react";
+import { getAgeString } from "../../widgets/utils"
 import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
@@ -25,9 +26,9 @@ const useStyles = makeStyles((theme) => {
   return {
     textBoxSize: {
       width: theme.spacing(58),
-    }
-  }
-})
+    },
+  };
+});
 
 const TeamSummaryStats = ({ summaryStats }) => {
   const oldestOpenPrTime = summaryStats.oldestOpenPrTime
@@ -37,6 +38,48 @@ const TeamSummaryStats = ({ summaryStats }) => {
   const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
     ? new Date(summaryStats.oldestCardInReviewTime)
     : null;
+  const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); //2012-02-06
+  const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  let specificDayForPr = getAgeString(openPrAge);
+  let specificDayForTildeReview = getAgeString(tildeReviewAge); //2 months ago
+
+  let reviewColor;
+  let prColor;
+  let [day, week, month, year] = ["day", "week", "month", "year"];
+
+  if (specificDayForPr.includes(day)) {
+    if (specificDayForPr[0] >= 1) {
+      prColor = "orange";
+    }
+    if (specificDayForPr[0] > 2) {
+      prColor = "red";
+    }
+  } else if (
+    specificDayForPr.includes(week) ||
+    specificDayForPr.includes(month) ||
+    specificDayForPr.includes(year)
+  ) {
+    prColor = "red";
+  } else {
+    prColor = "black";
+  }
+  //tilde
+  if (specificDayForTildeReview.includes(day)) {
+    if (specificDayForTildeReview[0] <= 3) {
+      reviewColor = "orange";
+    }
+    if (specificDayForTildeReview[0] > 3) {
+      reviewColor = "red";
+    }
+  } else if (
+    specificDayForTildeReview.includes(week) ||
+    specificDayForTildeReview.includes(month) ||
+    specificDayForTildeReview.includes(year)
+  ) {
+    reviewColor = "red";
+  } else {
+    reviewColor = "black";
+  }
 
   return (
     <Table>
@@ -51,17 +94,15 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell>
-            {oldestOpenPrTime ? oldestOpenPrTime.toLocaleString() : "-"}
+          <TableCell style={{color: `${prColor}`}}>
+          {getAgeString(openPrAge) ? getAgeString(openPrAge) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell>
-            {oldestCardInReviewTime
-              ? oldestCardInReviewTime.toLocaleString()
-              : "-"}
+          <TableCell style={{color: `${reviewColor}`}}>
+          {getAgeString(tildeReviewAge) ? getAgeString(tildeReviewAge) : "-"}
           </TableCell>
         </TableRow>
       </TableBody>
@@ -140,7 +181,12 @@ export default function Presentation({
             Teams
           </Typography>
 
-          <TextField label="Teams" variant="outlined" {...filterByGroup} className={classes.textBoxSize}/>
+          <TextField
+            label="Teams"
+            variant="outlined"
+            {...filterByGroup}
+            className={classes.textBoxSize}
+          />
         </Paper>
         {teams.map((team) => {
           return (
