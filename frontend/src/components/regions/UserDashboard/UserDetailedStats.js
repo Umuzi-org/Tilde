@@ -10,8 +10,6 @@ import {
 import { cardColors } from "../../../colors";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-console.log(cardColors)
-
 const [...COLORS] = Object.values(cardColors);
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
