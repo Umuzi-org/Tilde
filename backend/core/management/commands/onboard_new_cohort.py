@@ -234,4 +234,4 @@ class Command(BaseCommand):
         print("setting up rocketchat users")
         setup_rocketchat_users(df)
         print("re-reviewing cards")
-        df.apply(re_review_cards, axis=1)
+        # df.apply(re_review_cards, axis=1)
