@@ -295,8 +295,10 @@ def _update_tags(meta, content_item):
 
 
 def set_learning_outcomes(content_item, outcome_names):
-    print(f"setting outcomes: {outcome_names}")
-    outcomes = [models.LearningOutcome.objects.get(name=name) for name in outcome_names]
+    outcomes = []
+    for name in outcome_names:
+        print(f"setting outcomes: {name}")
+        outcomes.append(models.LearningOutcome.objects.get(name=name))
     content_item.learning_outcomes.set(outcomes)
 
 
