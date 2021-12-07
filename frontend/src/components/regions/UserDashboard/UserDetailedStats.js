@@ -7,15 +7,12 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { colors } from "@material-ui/core";
+import { cardColors } from "../../../colors";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const COLORS = [
-  colors.yellow[600],
-  colors.orange[600],
-  colors.red[600],
-  colors.green[600],
-];
+console.log(cardColors)
+
+const [...COLORS] = Object.values(cardColors);
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
