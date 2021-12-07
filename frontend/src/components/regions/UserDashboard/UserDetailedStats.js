@@ -15,7 +15,7 @@ export default ({ detailedStats }) => {
       <TableBody>
         <TableRow>
           <TableCell>
-            <Typography variant="h6" component="h2">
+            <Typography variant="h6" component="h2" align="center">
               Performance
             </Typography>
           </TableCell>

@@ -1,5 +1,5 @@
 import React from "react";
-// import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
 import {
@@ -20,6 +20,14 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
+
+const useStyles = makeStyles((theme) => {
+  return {
+    textBoxSize: {
+      width: theme.spacing(58),
+    }
+  }
+})
 
 const TeamSummaryStats = ({ summaryStats }) => {
   const oldestOpenPrTime = summaryStats.oldestOpenPrTime
@@ -123,6 +131,7 @@ export default function Presentation({
   filterUsersByGroupName,
   handleUserGroupClick,
 }) {
+  const classes = useStyles();
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
@@ -131,7 +140,7 @@ export default function Presentation({
             Teams
           </Typography>
 
-          <TextField label="Teams" variant="outlined" {...filterByGroup} />
+          <TextField label="Teams" variant="outlined" {...filterByGroup} className={classes.textBoxSize}/>
         </Paper>
         {teams.map((team) => {
           return (
@@ -148,12 +157,13 @@ export default function Presentation({
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
           <Typography variant="h5" gutterBottom component="div">
-            People
+            Users
           </Typography>
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
             {...filterByUser}
+            className={classes.textBoxSize}
           />
         </Paper>
         {Object.keys(users)

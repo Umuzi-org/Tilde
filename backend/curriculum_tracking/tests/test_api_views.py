@@ -372,6 +372,50 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
 
+class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
+
+    LIST_URL_NAME = 'reviewtrust-list'
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        review_trust_object = factories.ReviewTrustFactory()
+        review_trust_object.flavours.add(Tag.objects.create(name="anything_really"))
+        return review_trust_object
+
+    def setUp(self):
+
+        self.api_url = self.get_list_url()
+
+    def test_staff_member_can_view_all_trusted_reviewer_objects(self):
+        staff_member = UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_member)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_user_can_view_all_trusted_reviewer_objects(self):
+        staff_member_superuser = UserFactory(is_superuser=True, is_staff=False)
+        self.login(staff_member_superuser)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_normal_user_cannot_view_other_user_trusted_review_objects(self):
+        review_trust_object = factories.ReviewTrustFactory()
+        recruit = UserFactory(is_superuser=False, is_staff=False)
+        self.login(recruit)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn(str(review_trust_object.content_item), response.data)
+
+    def test_users_can_view_their_own_reviewer_trusts(self):
+        review_trust_object = factories.ReviewTrustFactory(
+            user=factories.UserFactory(is_superuser=False, is_staff=False)
+        )
+        self.login(review_trust_object.user)
+        response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0].get('content_item_title'), review_trust_object.content_item.title)
+
+
 class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
     LIST_URL_NAME = 'burndownsnapshot-list'
