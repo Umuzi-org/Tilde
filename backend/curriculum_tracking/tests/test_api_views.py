@@ -234,6 +234,22 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         project.refresh_from_db()
         self.assertEqual(project.link_submission, link_2)
 
+    def setup_project_repo_api_action(self):
+
+        super_user = factories.UserFactory(is_superuser=True)
+        card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(),
+            recruit_project__repository=None,
+        )
+        project = card.recruit_project
+        url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
+
+        self.login(super_user)
+        response = self.client.post(url, data={"card_id": card.id})
+        project.refresh_from_db()
+        repo = card.recruit_project.repository
+        breakpoint()
+
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "recruitproject-list"
