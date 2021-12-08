@@ -850,8 +850,7 @@ class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
         return Response([])
 
     def get_object(self):
-        queryset = self.get_queryset()
-        return queryset
+        return self.get_queryset()
 
     @action(
         detail=False,
