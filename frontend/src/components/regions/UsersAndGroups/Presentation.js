@@ -35,8 +35,7 @@ const TeamSummaryStats = ({ summaryStats }) => {
 
   const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
   const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
-  const specificDayForPr = getAgeString(openPrAge);
-  const specificDayForTildeReview = getAgeString(tildeReviewAge); 
+
 
   return (
     <Table>

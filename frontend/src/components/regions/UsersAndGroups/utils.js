@@ -15,7 +15,6 @@ export const getPrColor = (oldestOpenPrTime) => {
 }
 
 export const getTildeReviewColor = (oldestOpenPrTime) => {
-    console.log(timeDifferenceInDays(oldestOpenPrTime))
     if(timeDifferenceInDays(oldestOpenPrTime) === 1){
         prColor = "black"
     }
