@@ -573,7 +573,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         from long_running_request_actors import setup_project_repo
         card: models.AgileCard = self.get_object()
         #breakpoint()
-        response = setup_project_repo.send(card.id)
+        response = setup_project_repo.send(card.id) # Here you send the actor 'setup_project_repo' created a message, hence the '.send', the actor needs the message to do something with it
         return Response({"status": "OK", "data": response.asdict()})
     """
     card: models.AgileCard = self.get_object()
