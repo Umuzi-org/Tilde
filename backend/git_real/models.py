@@ -193,8 +193,8 @@ class Push(models.Model, Mixins):
                 ),
             }
 
-        except (TypeError, AttributeError) as error:
-            return f'{[error]} error occurred during the handling of the push event.'
+        except (TypeError, AttributeError):
+            return None
 
         instance, _ = cls.get_or_create_or_update(
             repository=repo,
