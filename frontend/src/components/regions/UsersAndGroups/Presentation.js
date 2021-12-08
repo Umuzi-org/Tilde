@@ -32,23 +32,11 @@ const useStyles = makeStyles((theme) => {
 });
 
 const TeamSummaryStats = ({ summaryStats }) => {
-  const oldestOpenPrTime = summaryStats.oldestOpenPrTime
-    ? new Date(summaryStats.oldestOpenPrTime)
-    : null;
-
-  const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
-    ? new Date(summaryStats.oldestCardInReviewTime)
-    : null;
-    // console.log("result for new Date() " , Math.ceil(Math.abs(new Date() - new Date(summaryStats.oldestCardInReviewTime)) / 1000 * 60 * 60 * 24))
-  // console.log("result: ", new Date(summaryStats.oldestOpenPrTime))
-  // console.log("another result: ", new Date(summaryStats.oldestCardInReviewTime))
-  // console.log(getPrColor(summaryStats.oldestOpenPrTime))
-  // console.log(getTildeReviewColor(summaryStats.oldestCardInReviewTime))
 
   const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
   const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
-  let specificDayForPr = getAgeString(openPrAge);
-  let specificDayForTildeReview = getAgeString(tildeReviewAge); 
+  const specificDayForPr = getAgeString(openPrAge);
+  const specificDayForTildeReview = getAgeString(tildeReviewAge); 
 
   return (
     <Table>
