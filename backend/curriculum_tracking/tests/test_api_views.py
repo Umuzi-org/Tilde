@@ -1,3 +1,4 @@
+import social_auth.tests.test_login_with_google_one_time_pin
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
@@ -236,18 +237,22 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
     def setup_project_repo_api_action(self):
 
+        from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
+        from git_real.constants import GIT_REAL_BOT_USERNAME
+        from curriculum_tracking import models
+
         super_user = factories.UserFactory(is_superuser=True)
         card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(),
+            content_item=factories.ContentItemFactory(content_type=models.ContentItem.REPOSITORY),
             recruit_project__repository=None,
         )
-        project = card.recruit_project
-        url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
 
+        social_profile = SocialProfileFactory(github_name=GIT_REAL_BOT_USERNAME, user=card.assignees.first())
+        token = GithubOAuthTokenFactory(user=social_profile.user)
+        url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
+        breakpoint()
         self.login(super_user)
         response = self.client.post(url, data={"card_id": card.id})
-        project.refresh_from_db()
-        repo = card.recruit_project.repository
         breakpoint()
 
 
