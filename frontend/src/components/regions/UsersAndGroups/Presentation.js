@@ -1,6 +1,6 @@
 import React from "react";
 import { getAgeString } from "../../widgets/utils"
-import { getColor } from "../../widgets/"
+import { getPrColor, getTildeReviewColor } from "./utils"
 import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
@@ -39,12 +39,16 @@ const TeamSummaryStats = ({ summaryStats }) => {
   const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
     ? new Date(summaryStats.oldestCardInReviewTime)
     : null;
-  
+    // console.log("result for new Date() " , Math.ceil(Math.abs(new Date() - new Date(summaryStats.oldestCardInReviewTime)) / 1000 * 60 * 60 * 24))
+  // console.log("result: ", new Date(summaryStats.oldestOpenPrTime))
+  // console.log("another result: ", new Date(summaryStats.oldestCardInReviewTime))
+  // console.log(getPrColor(summaryStats.oldestOpenPrTime))
+  // console.log(getTildeReviewColor(summaryStats.oldestCardInReviewTime))
 
-  // const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
-  // const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
-  // let specificDayForPr = getAgeString(openPrAge);
-  // let specificDayForTildeReview = getAgeString(tildeReviewAge); 
+  const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
+  const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  let specificDayForPr = getAgeString(openPrAge);
+  let specificDayForTildeReview = getAgeString(tildeReviewAge); 
 
   return (
     <Table>
@@ -59,14 +63,14 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell>
+          <TableCell style={{color: getPrColor(summaryStats.oldestOpenPrTime)}}>
           {getAgeString(openPrAge) ? getAgeString(openPrAge) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell>
+          <TableCell  style={{color: getTildeReviewColor(summaryStats.oldestCardInReviewTime)}}>
           {getAgeString(tildeReviewAge) ? getAgeString(tildeReviewAge) : "-"}
           </TableCell>
         </TableRow>

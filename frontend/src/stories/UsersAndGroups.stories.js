@@ -26,7 +26,7 @@ Primary.args = {
       name: "team1",
       oldestOpenPrTime: "2021-12-06T04:45:01Z",
       totalOpenPrs: 9,
-      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      oldestCardInReviewTime: "2021-12-06T08:23:03.06Z",
       totalCardsInReview: 17,
     },
     2: {
@@ -34,7 +34,7 @@ Primary.args = {
       name: "team2",
       oldestOpenPrTime: "2021-12-03T04:45:01Z",
       totalOpenPrs: 9,
-      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      oldestCardInReviewTime: "2021-11-06T08:23:03.06Z",
       totalCardsInReview: 17,
     },
   },
