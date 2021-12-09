@@ -45,7 +45,7 @@ def upload_readme(api, repo_full_name, readme_text):
             json=False,
         )
 
-    assert str(response.status_code).startswith("2"), f"{response}\n {response.json()}"
+    #assert str(response.status_code).startswith("2"), f"{response}\n {response.json()}"
 
 
 def create_org_repo(api, repo_full_name, private=True, exists_ok=False, **post_kwargs):

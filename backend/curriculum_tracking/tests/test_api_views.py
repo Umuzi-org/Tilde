@@ -1,19 +1,22 @@
-import social_auth.tests.test_login_with_google_one_time_pin
 from git_real.tests.factories import PullRequestFactory
+from git_real.constants import GITHUB_DATETIME_FORMAT
+from social_auth.tests.factories import SocialProfileFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from . import factories
 from core.tests import factories as core_factories
-from django.utils.timezone import datetime
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview
+from curriculum_tracking.models import ContentItem, RecruitProjectReview, RecruitProject, AgileCard
 from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
+import mock
+
+
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -235,25 +238,50 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         project.refresh_from_db()
         self.assertEqual(project.link_submission, link_2)
 
-    def setup_project_repo_api_action(self):
+    @mock.patch.object(RecruitProject, "setup_repository")
+    def setup_project_repo_call_from_api_action_option(self, get_repo):
 
-        from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
-        from git_real.constants import GIT_REAL_BOT_USERNAME
-        from curriculum_tracking import models
-
+        JAVASCRIPT = "js"
         super_user = factories.UserFactory(is_superuser=True)
-        card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type=models.ContentItem.REPOSITORY),
-            recruit_project__repository=None,
+
+        def get_repo_mock(
+            github_auth_login="", repo_full_name="", api=None, response404=None, add_collaborators=None
+        ):
+            return {
+                "full_name": f"me/{repo_full_name}",
+                "owner": {"login": "me"},
+                "ssh_url": f"https://{repo_full_name}.git",
+                "private": True,
+                "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
+                "archived": False,
+            }
+        get_repo.side_effect = get_repo_mock
+
+        content_item = factories.ContentItemFactory(
+            content_type=ContentItem.PROJECT,
+            project_submission_type=ContentItem.REPOSITORY,
+            flavours=[JAVASCRIPT],
         )
 
-        social_profile = SocialProfileFactory(github_name=GIT_REAL_BOT_USERNAME, user=card.assignees.first())
-        token = GithubOAuthTokenFactory(user=social_profile.user)
+        card = factories.AgileCardFactory(
+            content_item=content_item,
+            flavours=[JAVASCRIPT],
+            status=AgileCard.READY,
+            recruit_project=None,
+        )
+
+        assignee = SocialProfileFactory().user
+        card.assignees.set([assignee])
+        card.start_project()
+
+        project = card.recruit_project
+        card.refresh_from_db()
+        project.refresh_from_db()
+
         url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
-        breakpoint()
         self.login(super_user)
-        response = self.client.post(url, data={"card_id": card.id})
-        breakpoint()
+        self.client.post(url, data={"card_id": card.id})
+        self.assertTrue(project.setup_repository.called)
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):

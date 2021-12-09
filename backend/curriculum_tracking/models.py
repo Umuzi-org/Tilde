@@ -1212,6 +1212,7 @@ class AgileCard(
             # self.recruit_project.create_repo_and_assign_collaborators(
             #     card_flavour_names=self.flavour_names
             # )
+
             self.recruit_project.setup_repository(add_collaborators=False)
             # assert self.recruit_project.repository
             # retry it just in case of github having eventual consistency issues

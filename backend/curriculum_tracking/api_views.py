@@ -570,26 +570,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ]
     )
     def setup_project_repo(self, request, pk=None):
+        from long_running_request_actors import setup_project_repo
         """
         Because you are selecting agile cards by id, pk will become that id, that is why we pass pk
         when we send info to the actor 'setup_project_repo'.
         """
-        """
-        from long_running_request_actors import setup_project_repo
-
         response = setup_project_repo.send(pk)
         return Response({"status": "OK", "data": response.asdict()})
-        """
-        card: models.AgileCard = self.get_object()
-        #projects = models.RecruitProject.objects.filter(recruit_users__email__in=[card.assignees.first().email])
-        #projects = projects.filter(content_item=card.content_item)
-        #for project in projects:
-                #project.setup_repository()
-        project = card.recruit_project
-        project.setup_repository()
-
-
-
 
     # def todo_content_in_ready_column(self):
     #     todo_tag, _ = taggit.models.Tag.objects.get_or_create(name="todo")
