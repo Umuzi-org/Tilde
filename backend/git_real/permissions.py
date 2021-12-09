@@ -24,23 +24,3 @@ class IsWebhookSignatureOk(BasePermission):
             return False
 
         return correct
-
-def user_can_see_repository(repo, user):
-    for project in repo.recruit_projects.all():
-        if user in project.recruit_users.all():
-            return True
-        if user in project.reviewer_users.all():
-            return True
-    return False
-
-class IsFilteredByRepoAttachedToProjectICanSee(BasePermission):
-
-    def has_permission(self, request, view):
-        if request.method != "GET":
-            return False
-        if "repository" not in request.GET:
-            return False
-        repo = Repository.objects.get(pk=int(request.GET["repository"]))
-        user = request.user
-
-        return user_can_see_repository(repo, user)
