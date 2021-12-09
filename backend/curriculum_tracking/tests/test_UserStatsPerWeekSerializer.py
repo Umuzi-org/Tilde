@@ -18,6 +18,7 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     AgileCardFactory,
     RecruitProjectReviewFactory,
+    TopicReviewFactory
 )
 from django.utils import timezone
 from git_real.tests.factories import PullRequestReviewFactory
@@ -225,3 +226,81 @@ class TestingForTheStatsAPI(TestCase):
 
         count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
+
+    def test_no_tilde_reviews_done_in_last_7_days(self):
+        user = UserFactory()
+
+        # add a review, but it's too old to count
+        review = RecruitProjectReviewFactory(
+            timestamp=self.two_weeks_ago, reviewer_user=user
+        )
+        review.timestamp = self.two_weeks_ago
+        review.save()
+        AgileCardFactory(recruit_project=review.recruit_project)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
+        self.assertEqual(count, 0)
+
+    def test_multiple_tilde_reviews_done_in_last_7_days(self):
+        user = UserFactory()
+
+        # add a review within the right timeframe
+        review1 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review1.timestamp = self.yesterday
+        review1.save()
+        AgileCardFactory(recruit_project=review1.recruit_project)
+
+        # add another review, now the number of cards reviewed is 2
+        review2 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review2.timestamp = self.yesterday
+        review2.save()
+        AgileCardFactory(recruit_project=review2.recruit_project)
+
+        # add a topic review, now the number of cards reviewed is 3
+        review3 = TopicReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review3.timestamp = self.yesterday
+        review3.save()
+        AgileCardFactory(topic_progress=review3.topic_progress)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
+        self.assertEqual(count, 3)
+
+    def test_no_tilde_reviews_done(self):
+        user = UserFactory()
+
+        # no reviews done yet
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 0)
+
+    def test_multiple_tilde_reviews_done(self):
+        user = UserFactory()
+
+        # add a review
+        review1 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review1.timestamp = self.yesterday
+        review1.save()
+        AgileCardFactory(recruit_project=review1.recruit_project)
+
+        # add really old review
+        review2 = RecruitProjectReviewFactory(
+            timestamp=self.two_weeks_ago, reviewer_user=user
+        )
+        review2.timestamp = self.two_weeks_ago
+        review2.save()
+        AgileCardFactory(recruit_project=review2.recruit_project)
+
+        # add a topic review, now we should have 3 reviews
+        review3 = TopicReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review3.timestamp = self.yesterday
+        review3.save()
+        AgileCardFactory(topic_progress=review3.topic_progress)
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 3)
