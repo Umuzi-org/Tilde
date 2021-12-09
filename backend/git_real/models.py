@@ -178,7 +178,9 @@ class Push(models.Model, Mixins):
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
 
-        try:
+        if not request_body["head_commit"]:
+            return None
+        else:
             head_commit = request_body["head_commit"]
             head_commit_url = head_commit["url"]
             ref = request_body["ref"]
@@ -193,14 +195,11 @@ class Push(models.Model, Mixins):
                 ),
             }
 
-        except (TypeError, AttributeError):
-            return None
-
-        instance, _ = cls.get_or_create_or_update(
-            repository=repo,
-            head_commit_url=head_commit_url,
-            ref=ref,
-            defaults=defaults,
-            overrides=defaults,
-        )
-        return instance
+            instance, _ = cls.get_or_create_or_update(
+                repository=repo,
+                head_commit_url=head_commit_url,
+                ref=ref,
+                defaults=defaults,
+                overrides=defaults,
+            )
+            return instance
