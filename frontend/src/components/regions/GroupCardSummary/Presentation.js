@@ -25,8 +25,24 @@ const useStyles = makeStyles((theme) => {
       background: "#fff",
       left: 0,
       zIndex: 1,
-    },
 
+     ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
+        background: "none",
+      }, 
+    },
+    title: {
+      marginLeft: "8px",
+      ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
+        fontSize: "1.5rem",
+        marginLeft: "8px",
+      }, 
+    },
+      subTitle: {
+        marginLeft: "8px",
+        ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
+          marginLeft: "8px",
+        }, 
+    },
     container: {
       // width: 912 - 200,
       // height: 976 - 300,
@@ -48,7 +64,7 @@ export default ({
 
   return (
     <React.Fragment>
-      <Typography variant="h4">{userGroup.name}</Typography>
+      <Typography className={classes.title} variant="h4">{userGroup.name}</Typography>
 
       <div className={classes.container} onScroll={handleScroll}>
         <Table>
@@ -61,7 +77,7 @@ export default ({
                     {/* <Typography variant="caption">
                   [order:{column.order}]
                 </Typography> */}
-                    <Typography variant="subtitle1">{column.label}</Typography>
+                    <Typography className={classes.subTitle} variant="subtitle1">{column.label}</Typography>
                     {/* <ViewContentButtonSmall
                     contentUrl={column.url}
                     contentItemId={column.id}
