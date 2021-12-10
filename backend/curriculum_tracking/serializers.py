@@ -77,12 +77,20 @@ class RecruitProjectReviewSerializer(serializers.ModelSerializer):
             "trusted",
             "validated",
             "agile_card",
+            "negative_reviews"         #**
         ]
 
     agile_card = serializers.SerializerMethodField("get_agile_card")
     title = serializers.SerializerMethodField("get_title")
     reviewed_user_emails = serializers.SerializerMethodField("get_reviewed_user_emails")
     reviewed_user_ids = serializers.SerializerMethodField("get_reviewed_user_ids")
+    negative_reviews = serializers.SerializerMethodField("get_negative_reviews") #**
+
+    #**
+    def get_negative_reviews(self, card):
+        nyc_reviews = models.RecruitProjectReview.objects.filter(status=models.RecruitProjectReview.NOT_YET_COMPETENT, recruit_project=card.content_item).count()
+        rf_reviews = models.RecruitProjectReview.objects.filter(status=models.RecruitProjectReview.RED_FLAG, recruit_project=card.content_item).count()
+        return nyc_reviews + rf_reviews
 
     def get_agile_card(self, instance):
         try:

@@ -559,6 +559,23 @@ class AgileCardViewset(viewsets.ModelViewSet):
         card.delete_workshop_attendance()
         return Response(serializers.AgileCardSerializer(card).data)
 
+
+
+
+    @action(
+        detail=True,
+        methods=["get"],
+        serializer_class=serializers.RecruitProjectReviewSerializer,
+        permission_classes=[
+            HasObjectPermission(
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_object=_get_teams_from_card,
+            )
+        ],
+    )
+    def get_negative_reviews(self, request, pk=None):
+        return Response(serializers.RecruitProjectReviewSerializer.data)
+
     # def todo_content_in_ready_column(self):
     #     todo_tag, _ = taggit.models.Tag.objects.get_or_create(name="todo")
     #     AgileCard.objects.filter(status=AgileCard.READY).filter(content_item__tags__in=[todo_tag]).values('content_item','content_item__title','content_item__content_type').distinct()
