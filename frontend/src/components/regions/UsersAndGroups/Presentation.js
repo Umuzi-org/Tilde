@@ -22,15 +22,15 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-
-const useStyles = makeStyles((theme) => {
-  return {
-    textBoxSize: {
-      width: theme.spacing(58),
-    },
-  };
+const useStyles = makeStyles({
+  marginsAlignment: {
+    marginTop: "8px",
+    marginLeft: "16px",
+  },
+  textBoxSize: {
+    width: "62%",
+  },
 });
-
 const TeamSummaryStats = ({ summaryStats }) => {
 
   const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
@@ -75,9 +75,16 @@ const TeamCard = ({
   const filterButtonVariant =
     team.name === filterUsersByGroupName ? "contained" : "outlined";
 
+  console.log(summaryStats);
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
         {team.name}
       </Typography>
       <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
@@ -86,6 +93,7 @@ const TeamCard = ({
           color="default"
           size="small"
           startIcon={<LaunchIcon />}
+          className={classes.marginsAlignment}
         >
           View
         </Button>
@@ -96,6 +104,7 @@ const TeamCard = ({
         size="small"
         startIcon={<FilterIcon />}
         onClick={() => handleUserGroupClick(team.name)}
+        className={classes.marginsAlignment}
       >
         Filter
       </Button>
@@ -105,13 +114,23 @@ const TeamCard = ({
 };
 
 const UserCard = ({ email, user }) => {
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
         {email}
       </Typography>
 
-      <LinkToUserBoard userId={user.userId} label="View" />
+      <LinkToUserBoard
+        userId={user.userId}
+        className={classes.title}
+        label="View"
+      />
     </Paper>
   );
 };
@@ -131,7 +150,12 @@ export default function Presentation({
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
             Teams
           </Typography>
 
@@ -156,7 +180,12 @@ export default function Presentation({
       </Grid>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
             Users
           </Typography>
           <TextField
