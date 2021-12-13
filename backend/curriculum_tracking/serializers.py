@@ -77,20 +77,21 @@ class RecruitProjectReviewSerializer(serializers.ModelSerializer):
             "trusted",
             "validated",
             "agile_card",
-            "negative_reviews"         #**
+            #"negative_reviews"         #**  Not needed anymore
         ]
 
     agile_card = serializers.SerializerMethodField("get_agile_card")
     title = serializers.SerializerMethodField("get_title")
     reviewed_user_emails = serializers.SerializerMethodField("get_reviewed_user_emails")
     reviewed_user_ids = serializers.SerializerMethodField("get_reviewed_user_ids")
-    negative_reviews = serializers.SerializerMethodField("get_negative_reviews") #**
+    #negative_reviews = serializers.SerializerMethodField("get_negative_reviews") #**  Not needed anymore
 
-    #**
-    def get_negative_reviews(self):
-        nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=self.recruit_project).count()
-        rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=self.recruit_project).count()
-        return nyc_reviews + rf_reviews
+    #**  This part is good but it's not needed anymore
+    #def get_negative_reviews(self, project_review: object):
+        #nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=self.recruit_project).count()
+        #rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=self.recruit_project).count()
+
+        #return nyc_reviews + rf_reviews
 
     def get_agile_card(self, instance):
         try:
@@ -192,11 +193,20 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
+            "negative_reviews",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
+
+    negative_reviews = serializers.SerializerMethodField("get_negative_reviews")
+
+    def get_negative_reviews(self, card: object):
+        validations = models.RecruitProjectReview.objects.filter(
+            validated__in=models.RecruitProjectReview.REVIEW_VALIDATED_STATUS_CHOICES
+        ).filter(recruit_project=card.recruit_project).count()
+        return validations
 
     def get_users_that_reviewed_since_last_review_request(self, instance):
         return instance.get_users_that_reviewed_since_last_review_request()
