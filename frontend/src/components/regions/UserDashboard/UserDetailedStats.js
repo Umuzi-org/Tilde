@@ -46,16 +46,22 @@ const renderCustomizedLabel = ({ cardStatusPieData }) => {
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;
+  
+  const cardsAssignedWithStatusComplete = detailedStats.cardsAssignedWithStatusComplete;
+  const cardsAssignedWithStatusInReview = detailedStats.cardsAssignedWithStatusInReview;
+  const cardsAssignedWithStatusReviewFeedback = detailedStats.cardsAssignedWithStatusReviewFeedback;
+  const cardsAssignedWithStatusInProgress = detailedStats.cardsAssignedWithStatusInProgress;
+
   const cardStatusPieData = [
-    { name: "Complete", value: detailedStats.cardsInCompletedColumnAsAssignee },
-    { name: "Review", value: detailedStats.cardsInReviewColumnAsAssignee },
+    { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete },
+    { name: `Review (${cardsAssignedWithStatusInReview})`, value: cardsAssignedWithStatusInReview },
     {
-      name: "Review Feedback",
-      value: detailedStats.cardsInReviewFeedbackColumnAsAssignee,
+      name: `Review Feedback (${cardsAssignedWithStatusReviewFeedback})`,
+      value: cardsAssignedWithStatusReviewFeedback,
     },
     {
-      name: "In Progress",
-      value: detailedStats.cardsInProgressColumnAsAssignee,
+      name: `In Progress (${cardsAssignedWithStatusInProgress})`,
+      value: cardsAssignedWithStatusInProgress,
     },
   ].filter((element) => element.value);
   return (
@@ -63,7 +69,7 @@ export default ({ detailedStats }) => {
       <Typography variant="h6" component="h2">
         Assigned card statuses
       </Typography>
-      <PieChart width={400} height={400}>
+      <PieChart width={600} height={400}>
         <Pie
           data={cardStatusPieData}
           dataKey="value"
