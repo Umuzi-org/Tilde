@@ -77,20 +77,20 @@ class RecruitProjectReviewSerializer(serializers.ModelSerializer):
             "trusted",
             "validated",
             "agile_card",
-            "negative_reviews"         #**
+            #"neg_reviews"         #**
         ]
 
     agile_card = serializers.SerializerMethodField("get_agile_card")
     title = serializers.SerializerMethodField("get_title")
     reviewed_user_emails = serializers.SerializerMethodField("get_reviewed_user_emails")
     reviewed_user_ids = serializers.SerializerMethodField("get_reviewed_user_ids")
-    negative_reviews = serializers.SerializerMethodField("get_negative_reviews") #**
+    #neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
 
     #**
-    def get_negative_reviews(self):
-        nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=self.recruit_project).count()
-        rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=self.recruit_project).count()
-        return nyc_reviews + rf_reviews
+    # def get_neg_reviews(self, instance):
+    #     nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=instance.recruit_project).count()
+    #     rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=instance.recruit_project).count()
+    #     return nyc_reviews + rf_reviews
 
     def get_agile_card(self, instance):
         try:
@@ -192,14 +192,37 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
+            #"neg_reviews"  #**
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
+    #neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
 
     def get_users_that_reviewed_since_last_review_request(self, instance):
         return instance.get_users_that_reviewed_since_last_review_request()
+
+    #**
+    # def get_neg_reviews(self, instance):
+    #     nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=instance.recruit_project).count()
+    #     rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=instance.recruit_project).count()
+    #     return nyc_reviews + rf_reviews
+
+
+#**
+class NegReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.AgileCard
+        fields = ["neg_reviews"]
+
+    neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
+
+    #**
+    def get_neg_reviews(self, card):
+        nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=card.recruit_project).count()
+        rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=card.recruit_project).count()
+        return nyc_reviews + rf_reviews
 
 
 class CardSummarySerializer(serializers.ModelSerializer):

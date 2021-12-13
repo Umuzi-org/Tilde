@@ -565,7 +565,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.RecruitProjectReviewSerializer,
+        #serializer_class=serializers.RecruitProjectReviewSerializer,
+        serializer_class=serializers.NegReviewSerializer,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -574,16 +575,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ],
     )
     def get_negative_reviews(self, request, pk=None):
-        card: models.AgileCard = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
-        )
+        #return Response(request.data)
+
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            card = self.get_object()
+
             return Response(serializers.AgileCardSerializer(card).data)
         else:
-            return Response(serializer.errors,
-                             status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     
