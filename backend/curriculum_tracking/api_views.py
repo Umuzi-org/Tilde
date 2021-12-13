@@ -561,10 +561,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
 
 
-
+    ##**
     @action(
         detail=True,
-        methods=["get"],
+        methods=["post"],
         serializer_class=serializers.RecruitProjectReviewSerializer,
         permission_classes=[
             HasObjectPermission(
@@ -574,7 +574,19 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ],
     )
     def get_negative_reviews(self, request, pk=None):
-        return Response(serializers.RecruitProjectReviewSerializer.data)
+        card: models.AgileCard = self.get_card_or_error(
+            status_or_404=None,
+            type_or_404=models.ContentItem.PROJECT,
+        )
+        if serializer.is_valid():
+            return Response(serializers.AgileCardSerializer(card).data)
+        else:
+            return Response(serializer.errors,
+                             status=status.HTTP_400_BAD_REQUEST)
+
+
+    
+
 
     # def todo_content_in_ready_column(self):
     #     todo_tag, _ = taggit.models.Tag.objects.get_or_create(name="todo")
