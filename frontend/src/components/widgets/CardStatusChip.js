@@ -11,9 +11,9 @@ import {
   IN_REVIEW,
   COMPLETE,
 } from "../../constants";
-import { cardColors } from "../../colors"
+import { cardColors } from "../../colors";
 const useStyles = makeStyles((theme) => {
-  console.log(cardColors.RF)
+  console.log(cardColors.RF);
   const card = {
     margin: theme.spacing(0.3),
     width: theme.spacing(15),
