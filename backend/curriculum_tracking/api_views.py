@@ -578,6 +578,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             status_or_404=None,
             type_or_404=models.ContentItem.PROJECT,
         )
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             return Response(serializers.AgileCardSerializer(card).data)
         else:
