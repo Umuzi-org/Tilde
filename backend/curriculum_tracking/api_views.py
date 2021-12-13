@@ -564,9 +564,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
     ##**
     @action(
         detail=True,
-        methods=["post"],
+        methods=["GET"],  # We only want to get information so that's why this is no GET and no longer POST
         #serializer_class=serializers.RecruitProjectReviewSerializer,
-        serializer_class=serializers.NegReviewSerializer,
+        #serializer_class=serializers.NegReviewSerializer,
+        serializer_class=serializers.NoArgs,    # Changed to not using a serializer else I get issues between AgileCard serializer and RecruitProjectReview Serializer (I will explain)
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -575,8 +576,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ],
     )
     def get_negative_reviews(self, request, pk=None):
-        #return Response(request.data)
-
+        """
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             card = self.get_object()
@@ -584,7 +584,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
             return Response(serializers.AgileCardSerializer(card).data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        """
+        card_object = self.get_object()     # This will give you the card object you just selected, ergo, the card you want to know more about
+        validations = models.RecruitProjectReview.objects.filter(
+            Q(validated='i') | Q(validated='d') & Q(recruit_project__agile_card=card_object)
+        ).count()   # I will explain 'Q' to you and how it works, there is probably an easier way to do this part.
 
+        return Response(validations)    # Notice my response is no longer serialized so therefore I don't need to worry about any serializers anymore
 
     
 
