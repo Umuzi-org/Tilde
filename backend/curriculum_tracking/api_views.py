@@ -564,8 +564,9 @@ class AgileCardViewset(viewsets.ModelViewSet):
     ##**
     @action(
         detail=True,
-        methods=["GET"],    #"""I added the GET part so that you can GET information"""
-        serializer_class=serializers.NoArgs,    # I changed this to a serializer with no arguments since the AgileCard serializer and the RecruitProjectReview serializer don't have the same fields and this makes life difficult
+        methods=["post"],
+        #serializer_class=serializers.RecruitProjectReviewSerializer,
+        serializer_class=serializers.NegReviewSerializer,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -574,26 +575,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
         ],
     )
     def get_negative_reviews(self, request, pk=None):
+        #return Response(request.data)
 
-        """
-        card: models.AgileCard = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
-        )
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            card = self.get_object()
+
             return Response(serializers.AgileCardSerializer(card).data)
         else:
-            return Response(serializer.errors,
-                             status=status.HTTP_400_BAD_REQUEST)
-        """
-
-        card_object = self.get_object() # This will get you information of the card you just selected before you got the opportunity to click on 'Get negative reviews'
-        validations = models.RecruitProjectReview.objects.filter(
-            Q(validated='i') | Q(validated='d') & Q(recruit_project__agile_card=card_object)
-        ).count()
-
-        return Response(validations)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     
