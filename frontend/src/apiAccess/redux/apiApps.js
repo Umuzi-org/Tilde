@@ -93,7 +93,7 @@ export const entityApiAppTypes = {
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
     BASE_TYPE: WHO_AM_I,
-    apiCaller: apiCallers.everyone.whoAmI,
+    apiCaller: apiCallers.whoAmI,
     reasonsNotToStart: [
       [
         ({ authUser }) => {
@@ -118,7 +118,7 @@ export const apiReduxApps = {
 
   AUTHENTICATE_WITH_ONE_TIME_TOKEN: createReduxApp({
     BASE_TYPE: AUTHENTICATE_WITH_ONE_TIME_TOKEN,
-    apiCaller: apiCallers.everyone.authenticateWithOneTimeToken,
+    apiCaller: apiCallers.authenticateWithOneTimeToken,
     reasonsNotToStart: [
       [
         ({ authUser }) => {
@@ -131,150 +131,150 @@ export const apiReduxApps = {
 
   LOGOUT: createReduxApp({
     BASE_TYPE: LOGOUT,
-    apiCaller: apiCallers.everyone.logout,
+    apiCaller: apiCallers.logout,
     reasonsNotToStart: [],
   }),
 
   FETCH_RECRUIT_PROJECTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_RECRUIT_PROJECTS_PAGE,
-    apiCaller: apiCallers.recruits.recruitProjectsPage,
+    apiCaller: apiCallers.recruitProjectsPage,
   }),
 
   FETCH_TEAMS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TEAMS_PAGE,
-    apiCaller: apiCallers.everyone.teamsPage,
+    apiCaller: apiCallers.teamsPage,
   }),
 
   FETCH_TEAM_SUMMARY_STATS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TEAM_SUMMARY_STATS_PAGE,
-    apiCaller: apiCallers.everyone.teamsSummaryStatsPage,
+    apiCaller: apiCallers.teamsSummaryStatsPage,
   }),
 
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-    apiCaller: apiCallers.recruits.recruitProjectReviewsPage,
+    apiCaller: apiCallers.recruitProjectReviewsPage,
   }),
 
   FETCH_TOPIC_PROGRESS_REVIEWS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TOPIC_PROGRESS_REVIEWS_PAGE,
-    apiCaller: apiCallers.recruits.topicProgressReviewsPage,
+    apiCaller: apiCallers.topicProgressReviewsPage,
   }),
 
   FETCH_SINGLE_TEAM: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_TEAM,
-    apiCaller: apiCallers.everyone.teamEntity,
+    apiCaller: apiCallers.teamEntity,
   }),
 
   FETCH_SINGLE_USER: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER,
-    apiCaller: apiCallers.everyone.userEntity,
+    apiCaller: apiCallers.userEntity,
   }),
 
   FETCH_SINGLE_USER_DETAILED_STATS: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER_DETAILED_STATS,
-    apiCaller: apiCallers.everyone.userDetailedStatsEntity,
+    apiCaller: apiCallers.userDetailedStatsEntity,
   }),
 
   FETCH_SINGLE_RECRUIT_PROJECT: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_RECRUIT_PROJECT,
-    apiCaller: apiCallers.recruits.recruitProjectEntity,
+    apiCaller: apiCallers.recruitProjectEntity,
   }),
 
   FETCH_SINGLE_TOPIC_PRGRESS: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_TOPIC_PRGRESS,
-    apiCaller: apiCallers.recruits.topicProgressEntity,
+    apiCaller: apiCallers.topicProgressEntity,
   }),
 
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-    apiCaller: apiCallers.recruits.personallyAssignedAgileCardsPage,
+    apiCaller: apiCallers.personallyAssignedAgileCardsPage,
   }),
 
   FETCH_COHORTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_COHORTS_PAGE,
-    apiCaller: apiCallers.staff.cohortsPage,
+    apiCaller: apiCallers.cohortsPage,
   }),
 
   FETCH_SINGLE_REPOSITORY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_REPOSITORY,
-    apiCaller: apiCallers.recruits.repositoryEntity,
+    apiCaller: apiCallers.repositoryEntity,
   }),
 
   FETCH_COMMITS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_COMMITS_PAGE,
-    apiCaller: apiCallers.recruits.repositoryCommitsPage,
+    apiCaller: apiCallers.repositoryCommitsPage,
   }),
 
   FETCH_PULL_REQUESTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PULL_REQUESTS_PAGE,
-    apiCaller: apiCallers.recruits.repositoryPullRequestsPage,
+    apiCaller: apiCallers.repositoryPullRequestsPage,
   }),
 
   CARD_SET_PROJECT_LINK: createReduxApp({
     BASE_TYPE: CARD_SET_PROJECT_LINK,
-    apiCaller: apiCallers.recruits.setProjectLinkSubmission,
+    apiCaller: apiCallers.setProjectLinkSubmission,
   }),
 
   CARD_START_PROJECT: createReduxApp({
     BASE_TYPE: CARD_START_PROJECT,
-    apiCaller: apiCallers.recruits.startProject,
+    apiCaller: apiCallers.startProject,
   }),
   CARD_REQUEST_REVIEW: createReduxApp({
     BASE_TYPE: CARD_REQUEST_REVIEW,
-    apiCaller: apiCallers.recruits.requestReview,
+    apiCaller: apiCallers.requestReview,
   }),
   CARD_CANCEL_REVIEW_REQUEST: createReduxApp({
     BASE_TYPE: CARD_CANCEL_REVIEW_REQUEST,
-    apiCaller: apiCallers.recruits.cancelReviewRequest,
+    apiCaller: apiCallers.cancelReviewRequest,
   }),
   CARD_ADD_REVIEW: createReduxApp({
     BASE_TYPE: CARD_ADD_REVIEW,
-    apiCaller: apiCallers.recruits.addReview,
+    apiCaller: apiCallers.addReview,
   }),
 
   CARD_START_TOPIC: createReduxApp({
     BASE_TYPE: CARD_START_TOPIC,
-    apiCaller: apiCallers.recruits.startTopic,
+    apiCaller: apiCallers.startTopic,
   }),
 
   CARD_STOP_TOPIC: createReduxApp({
     BASE_TYPE: CARD_STOP_TOPIC,
-    apiCaller: apiCallers.recruits.stopTopic,
+    apiCaller: apiCallers.stopTopic,
   }),
 
   CARD_FINISH_TOPIC: createReduxApp({
     BASE_TYPE: CARD_FINISH_TOPIC,
-    apiCaller: apiCallers.recruits.finishTopic,
+    apiCaller: apiCallers.finishTopic,
   }),
 
   CARD_ADD_WORKSHOP_ATTENDANCE: createReduxApp({
     BASE_TYPE: CARD_ADD_WORKSHOP_ATTENDANCE,
-    apiCaller: apiCallers.staff.markWorkshopAttendance,
+    apiCaller: apiCallers.markWorkshopAttendance,
   }),
 
   CARD_REMOVE_WORKSHOP_ATTENDANCE: createReduxApp({
     BASE_TYPE: CARD_REMOVE_WORKSHOP_ATTENDANCE,
-    apiCaller: apiCallers.staff.cancelWorkshopAttendance,
+    apiCaller: apiCallers.cancelWorkshopAttendance,
   }),
 
   FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
-    apiCaller: apiCallers.staff.personallyAssignedCardSummariesPage,
+    apiCaller: apiCallers.personallyAssignedCardSummariesPage,
   }),
 
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: createReduxApp({
     BASE_TYPE: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-    apiCaller: apiCallers.recruits.userActionsCardsCompletedPage,
+    apiCaller: apiCallers.userActionsCardsCompletedPage,
   }),
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_PROJECT_CARD_SUMMARY,
-    apiCaller: apiCallers.staff.personallyAssignedCardSummaryEntity,
+    apiCaller: apiCallers.personallyAssignedCardSummaryEntity,
   }),
 
   FETCH_SINGLE_AGILE_CARD: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_AGILE_CARD,
-    apiCaller: apiCallers.staff.agileCardEntity,
+    apiCaller: apiCallers.agileCardEntity,
   }),
 };
 

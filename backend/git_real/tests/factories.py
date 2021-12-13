@@ -86,3 +86,4 @@ class PullRequestReviewFactory(DjangoModelFactory):
     body = "A horse walks into a bar, the barman says 'Why the long face?'"
     state = "closed"
     commit_id = factory.LazyAttribute(lambda *args, **kwargs: next(_commit_id_generator))
+    user = factory.SubFactory(UserFactory)
