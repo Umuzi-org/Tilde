@@ -10,7 +10,7 @@ import {
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#94918F"];
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
@@ -51,6 +51,8 @@ export default ({ detailedStats }) => {
   const cardsAssignedWithStatusInReview = detailedStats.cardsAssignedWithStatusInReview;
   const cardsAssignedWithStatusReviewFeedback = detailedStats.cardsAssignedWithStatusReviewFeedback;
   const cardsAssignedWithStatusInProgress = detailedStats.cardsAssignedWithStatusInProgress;
+  const cardsAssignedWithStatusBlocked = detailedStats.cardsAssignedWithStatusBlocked;
+
 
   const cardStatusPieData = [
     { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete },
@@ -62,6 +64,10 @@ export default ({ detailedStats }) => {
     {
       name: `In Progress (${cardsAssignedWithStatusInProgress})`,
       value: cardsAssignedWithStatusInProgress,
+    },
+    {
+      name: `Blocked (${cardsAssignedWithStatusBlocked})`,
+      value: cardsAssignedWithStatusBlocked,
     },
   ].filter((element) => element.value);
   return (
