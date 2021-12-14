@@ -142,7 +142,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
     def setUp(self):
 
-        self.api_url = '/api/managment_actions/bulk_set_due_dates/'
+        self.api_url = f'{self.get_list_url()}bulk_set_due_dates/'
 
         self.blue_team = factories.TeamFactory(name='BLUE TEAM')
         self.red_team = factories.TeamFactory(name='RED TEAM')
@@ -159,11 +159,17 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
     def test_team_members_cannot_bulk_set_due_dates_for_the_team_they_belong_to(self):
 
-        self.login(self.user_one_blue)
-        response = self.client.post(self.api_url, format="json", data={
-            'due_time': '2021-12-03T14:17', 'content_item': '2', 'team': str(self.blue_team)
+        project = RecruitProjectFactory(due_time=None)
+        card = AgileCardFactory(recruit_project=project)
+        card.reviewers.add(self.user_one_red)
+        card.assignees.add(self.user_two_red)
+
+        self.login(self.user_one_red)
+        response = self.client.post(path=self.api_url, format="json", data={
+            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.red_team)
         })
-        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.assertEqual(response.status_code, 403)
 
     def test_team_members_cannot_bulk_set_due_dates_for_teams_they_dont_belong_to(self):
 
@@ -182,9 +188,10 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertIsNone(card.due_time)
 
         self.login(self.super_user)
-        response = self.client.post(self.api_url, format='json', data={
+        response = self.client.post(path=self.api_url, format='json', data={
             'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.blue_team)
         })
+
         self.assertEqual(response.status_code, 200)
         card.refresh_from_db()
         self.assertIsNotNone(card.due_time)

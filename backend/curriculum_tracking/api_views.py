@@ -849,9 +849,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
     def list(self, request):
         return Response([])
 
-    def get_object(self):
-        return self.get_queryset()
-
     @action(
         detail=False,
         methods=["post", "get"],
@@ -890,27 +887,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
-
-    @action(
-        detail=False,
-        methods=["POST"],
-        serializer_class=serializers.SetDueTimeSerializer,
-        permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
-    )
-    def bulk_set_due_dates(self, request, pk=None):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            teams = self.get_object()   # This will get you all the teams, we only need the teams in the request data
-            breakpoint()
-            for team in teams:
-                if team.name in request.data.get('team'):
-                    team_cards = get_team_cards(team, request.data.get('content_item'))
-
-            for card in team_cards:
-                card.set_due_time(request.data.get('due_time'))
-            return Response(f'Due dates set for these team cards: {[card for card in team_cards]}')
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
