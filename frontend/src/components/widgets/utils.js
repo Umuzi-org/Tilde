@@ -13,5 +13,5 @@ export const getAgeString = (dateString) => {
 
 export const repoUrlCleaner = (repoUrl) => {
   const gitRepo = repoUrl.substring(repoUrl.indexOf("Umuzi-org"));
-  return `https://github.com/${gitRepo.replace('.git', '/pulls')}`;
-}
+  return `https://github.com/${gitRepo.replace(".git", "/pulls")}`;
+};
