@@ -565,10 +565,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["GET"],  # We only want to get information so that's why this is no GET and no longer POST
-        #serializer_class=serializers.RecruitProjectReviewSerializer,
+        
         serializer_class=serializers.AgileCardSerializer,
-        #serializer_class=serializers.NegReviewSerializer,
-        #serializer_class=serializers.NoArgs,    # Changed to not using a serializer else I get issues between AgileCard serializer and RecruitProjectReview Serializer (I will explain)
+        #serializer_class=serializers.NegReviewSerializer,  #Couldnt get dedicated serializer to work
+        #serializer_class=serializers.NoArgs,    # Can work with no serializer, then only integer value appears when action is called
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -578,6 +578,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def get_total_nyc_and_rf_reviews(self, request, pk=None):
         
+        #***do I need to get the serializer and check if valid first?
         #serializer = self.get_serializer(data=request.data)
         #if serializer.is_valid():
             #card = self.get_object()
@@ -586,13 +587,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
         #else:
             #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        #serializer = self.get_serializer(data=request.data)
-        card_object = self.get_object()     # This will give you the card object you just selected, ergo, the card you want to know more about
+
+        #***below if done without using a serializer
         #negative_reviews = models.RecruitProjectReview.objects.filter(status__in=['NYC', 'R']).filter(recruit_project__agile_card=card_object).count()
-           
-         # I will explain 'Q' to you and how it works, there is probably an easier way to do this part.
 
         #return Response(negative_reviews)    # Notice my response is no longer serialized so therefore I don't need to worry about any serializers anymore
+
+        card_object = self.get_object() 
         return Response(serializers.AgileCardSerializer(card_object).data)
     
 

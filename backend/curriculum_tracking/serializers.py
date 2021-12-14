@@ -205,26 +205,23 @@ class AgileCardSerializer(serializers.ModelSerializer):
 
     #**
     def get_total_nyc_and_rf_reviews(self, card):
-         #nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=instance.recruit_project).count()
-         #rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=instance.recruit_project).count()
          negative_reviews = models.RecruitProjectReview.objects.filter(status__in=['NYC', 'R']).filter(recruit_project__agile_card=card).count()
-         #return nyc_reviews + rf_reviews
          return negative_reviews
 
 
-#**
-class NegReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.AgileCard
-        fields = ["neg_reviews"]
+#** attempt to make own serializer for neg reviews
+# class NegReviewSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = models.AgileCard
+#         fields = ["neg_reviews"]
 
-    neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
+#     neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
 
-    #**
-    def get_neg_reviews(self, card):
-        nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=card.recruit_project).count()
-        rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=card.recruit_project).count()
-        return nyc_reviews + rf_reviews
+#     #**
+#     def get_neg_reviews(self, card):
+#         nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=card.recruit_project).count()
+#         rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=card.recruit_project).count()
+#         return nyc_reviews + rf_reviews
 
 
 class CardSummarySerializer(serializers.ModelSerializer):
