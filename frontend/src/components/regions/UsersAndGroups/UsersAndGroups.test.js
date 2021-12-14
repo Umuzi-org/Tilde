@@ -78,22 +78,22 @@ test("cleanAndFilterTeams can deal with multiple words in any order", () => {
   expect(names).toEqual(["demo group 1 AAA", "demo group 2 aaa"]);
 });
 
-test("getColor should return a black text whenever an oldest pull request is made 'just now'", () => {
+test("getPrColor should return a black text whenever an oldest pull request is made 'just now'", () => {
   const newDate = new Date();
-  expect(getColor(newDate)).toBe(palette.default);
+  expect(getPrColor(newDate)).toBe(palette.default);
 });
 
-test("getColor should return a red text whenever an oldest pull request is older than two days", () => {
-  const oldDate = "2021-10-13T04:45:01Z"
-  expect(getColor(oldDate)).toBe(palette.error);
+test("getPrColor should return a red text whenever an oldest pull request is older than two days", () => {
+  const oldDate = "2021-10-13T04:45:01Z";
+  expect(getPrColor(oldDate)).toBe(palette.error);
 });
 
-test("getColor should return a black text whenever an oldest tilde review request is made 'just now'", () => {
+test("getTildeReviewColor should return a black text whenever an oldest tilde review request is made 'just now'", () => {
   const newDate = new Date();
-  expect(getTildeReviewColor(new Date())).toBe(palette.default);
+  expect(getTildeReviewColor(newDate)).toBe(palette.default);
 });
 
-test("getColor should return a red text whenever an oldest tilde review request is older than three days", () => {
-  const oldDate = "2021-10-13T04:45:01Z"
-  expect(getTildeReviewColor(oldDate).toBe(palette.error);
+test("getTildeReviewColor should return a red text whenever an oldest tilde review request is older than three days", () => {
+  const oldDate = "2021-10-13T04:45:01Z";
+  expect(getTildeReviewColor(oldDate)).toBe(palette.error);
 });
