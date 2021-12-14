@@ -13,7 +13,6 @@ import {
 } from "../../constants";
 import { cardColors } from "../../colors";
 const useStyles = makeStyles((theme) => {
-  console.log(cardColors.RF);
   const card = {
     margin: theme.spacing(0.3),
     width: theme.spacing(15),
