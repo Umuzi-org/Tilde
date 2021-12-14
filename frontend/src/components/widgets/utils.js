@@ -10,3 +10,8 @@ export const getAgeString = (dateString) => {
       Docs link: https://www.npmjs.com/package/javascript-time-ago */
   return timeAgo.format(date);
 };
+
+export const repoUrlCleaner = (repoUrl) => {
+  const gitRepo = repoUrl.substring(repoUrl.indexOf("Umuzi-org"));
+  return `https://github.com/${gitRepo.replace('.git', '/pulls')}`;
+}
