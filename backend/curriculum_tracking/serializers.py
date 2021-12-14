@@ -222,7 +222,11 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
+            "team",
         ]
+
+    team = serializers.ChoiceField(core.models.Team.objects.filter(active=True))
+    due_time = serializers.DateTimeField()
 
 
 class NoArgs(serializers.Serializer):
@@ -248,9 +252,7 @@ class WorkshopAttendanceTime(serializers.ModelSerializer):
 class SetDueTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProject
-        fields = ["due_time", "content_item", "flavours", "team"]
-
-    team = serializers.ChoiceField(core.models.Team.objects.filter(active=True))
+        fields = ["due_time", "content_item", "flavours"]
 
 
 class AddReviewerUserSerializer(serializers.ModelSerializer):

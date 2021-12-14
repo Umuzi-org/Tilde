@@ -1,4 +1,4 @@
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer, CardSummarySerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -11,8 +11,10 @@ from rest_framework import permissions as drf_permissions
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
-
+from rest_framework import viewsets, status
+from core.permissions import HasObjectPermission
 from curriculum_tracking.serializers import TeamStatsSerializer
+from curriculum_tracking.management.helpers import get_team_cards
 
 
 @api_view(["POST"])
@@ -104,6 +106,9 @@ class TeamViewSet(viewsets.ModelViewSet):
         )
         return queryset
 
+    def get_object(self):
+        return self.get_queryset()
+
     @action(
         detail=False,
         methods=["GET"],
@@ -143,6 +148,29 @@ class TeamViewSet(viewsets.ModelViewSet):
     # )
     # def shuffle_reviewers(self, request, pk=None):
     #     return Response("TODO")
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        serializer_class=CardSummarySerializer,
+        permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            teams = self.get_object()  # This will get you all the teams, we only need the teams in the request data
+            breakpoint()
+            team_cards = [get_team_cards(team, request.data.get('content_item')) if team.name in request.data.get('team') else None for team in teams]
+            for team in teams:
+                if team.name in request.data.get('team'):
+                    team_cards = get_team_cards(team, request.data.get('content_item'))
+
+            for card in team_cards:
+                card.set_due_time(request.data.get('due_time'))
+
+            return Response(f'Due dates set for these team cards: {[card for card in team_cards]}')
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _get_teams_from_user(self, request, view):
