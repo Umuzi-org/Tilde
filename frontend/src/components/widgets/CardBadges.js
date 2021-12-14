@@ -10,6 +10,7 @@ import MoodBadIcon from "@material-ui/icons/MoodBad";
 import { Chip, Tooltip } from "@material-ui/core";
 
 import { getAgeString } from "./utils";
+import { repoUrlCleaner } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,7 +104,7 @@ export default ({ card }) => {
         <Tooltip title="Number of open pull requests on this card and their age">
           <a
             className={classes.widgetStyle}
-            href={repoUrl}
+            href={repoUrlCleaner(repoUrl)}
             target="_blank"
             rel="noreferrer noopener"
           >
