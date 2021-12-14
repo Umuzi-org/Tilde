@@ -46,13 +46,14 @@ const renderCustomizedLabel = ({ cardStatusPieData }) => {
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;
-  
-  const cardsAssignedWithStatusComplete = detailedStats.cardsAssignedWithStatusComplete;
-  const cardsAssignedWithStatusInReview = detailedStats.cardsAssignedWithStatusInReview;
-  const cardsAssignedWithStatusReviewFeedback = detailedStats.cardsAssignedWithStatusReviewFeedback;
-  const cardsAssignedWithStatusInProgress = detailedStats.cardsAssignedWithStatusInProgress;
-  const cardsAssignedWithStatusBlocked = detailedStats.cardsAssignedWithStatusBlocked;
 
+  const { 
+    cardsAssignedWithStatusComplete, 
+    cardsAssignedWithStatusInReview, 
+    cardsAssignedWithStatusReviewFeedback, 
+    cardsAssignedWithStatusInProgress, 
+    cardsAssignedWithStatusBlocked 
+  } = detailedStats;
 
   const cardStatusPieData = [
     { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete },
