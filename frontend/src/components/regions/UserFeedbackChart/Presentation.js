@@ -14,6 +14,7 @@ data.map(
   (date) =>
     (date.timestamp = new Date(date.timestamp).toISOString().slice(0, 10))
 );
+const colorArr = ["orange", "green", "black", "blue"];
 export default () => {
   return (
     <div>
@@ -36,19 +37,19 @@ export default () => {
         <Line
           type="monotone"
           dataKey="cardsTotalCount"
-          stroke="black"
+          stroke={colorArr[2]}
           activeDot={{ r: 8 }}
         />
-        <Line type="monotone" dataKey="projectCardsTotalCount" stroke="green" />
+        <Line type="monotone" dataKey="projectCardsTotalCount" stroke={colorArr[1]} />
         <Line
           type="monotone"
           dataKey="cardsInCompleteColumnTotalCount"
-          stroke="blue"
+          stroke={colorArr[3]}
         />
         <Line
           type="monotone"
           dataKey="projectCardsInCompleteColumnTotalCount"
-          stroke="orange"
+          stroke={colorArr[0]}
         />
       </LineChart>
     </div>
