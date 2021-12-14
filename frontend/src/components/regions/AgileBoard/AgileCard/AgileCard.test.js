@@ -1,5 +1,6 @@
 import { getAgeString } from "../../../widgets/utils";
 import { userReviewedSinceLastReviewRequest } from "./utils";
+import { repoUrlCleaner } from "../../../widgets/utils";
 
 test("getAgeString function doesn't break if null date", () => {
   expect(getAgeString(null)).toBe("");
@@ -74,4 +75,9 @@ test("userReviewedSinceLastReviewRequest should return false if the card is in t
     id: 28,
   }
   expect(userReviewedSinceLastReviewRequest({ viewedUser, card })).toBe(false)
+})
+
+test("git repo url should be cleaned to link to the pull request index on github", () => {
+  const gitRepo = "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git"
+  expect(repoUrlCleaner(gitRepo)).toBe("https://github.com/Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python/pulls")
 })
