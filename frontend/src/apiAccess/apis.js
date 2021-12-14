@@ -336,9 +336,6 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
 }
 
 export default {
-  // TODO: get rid of this. Rather just export the functions individually
-
-  everyone: {
     whoAmI,
     logout,
     authenticateWithOneTimeToken,
@@ -347,41 +344,29 @@ export default {
     userEntity,
     teamsSummaryStatsPage,
     userDetailedStatsEntity,
-  },
-
-  recruits: {
     recruitProjectsPage,
     personallyAssignedAgileCardsPage,
-
     recruitProjectEntity,
     topicProgressEntity,
     recruitProjectReviewsPage,
     topicProgressReviewsPage,
-
     repositoryEntity,
     repositoryCommitsPage,
     repositoryPullRequestsPage,
-
     startProject,
     requestReview,
     cancelReviewRequest,
     addReview,
-
     startTopic,
     stopTopic,
     finishTopic,
-
     setProjectLinkSubmission,
     userActionsCardsCompletedPage,
-  },
-  staff: {
     cohortsPage,
     cohortRecruits,
     markWorkshopAttendance,
     cancelWorkshopAttendance,
-
     personallyAssignedCardSummariesPage,
     personallyAssignedCardSummaryEntity,
     agileCardEntity,
-  },
 };

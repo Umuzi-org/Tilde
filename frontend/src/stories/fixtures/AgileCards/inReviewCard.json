@@ -52,5 +52,6 @@
     "canStart": false,
     "canForceStart": false,
     "openPrCount": 0,
-    "oldestOpenPrUpdatedTime": null
+    "oldestOpenPrUpdatedTime": null,
+    "usersThatReviewedSinceLastReviewRequest": [777, 555, 295, 3332]
 }

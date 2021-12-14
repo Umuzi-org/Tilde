@@ -1,7 +1,6 @@
 import React from "react";
-// import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Paper,
   Typography,
@@ -20,7 +19,15 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-
+const useStyles = makeStyles({
+  marginsAlignment: {
+    marginTop: "8px",
+    marginLeft: "16px",
+  },
+  textBoxSize: {
+    width: "62%",
+  },
+});
 const TeamSummaryStats = ({ summaryStats }) => {
   const oldestOpenPrTime = summaryStats.oldestOpenPrTime
     ? new Date(summaryStats.oldestOpenPrTime)
@@ -71,10 +78,15 @@ const TeamCard = ({
     team.name === filterUsersByGroupName ? "contained" : "outlined";
 
   console.log(summaryStats);
-
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
         {team.name}
       </Typography>
       <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
@@ -83,6 +95,7 @@ const TeamCard = ({
           color="default"
           size="small"
           startIcon={<LaunchIcon />}
+          className={classes.marginsAlignment}
         >
           View
         </Button>
@@ -93,6 +106,7 @@ const TeamCard = ({
         size="small"
         startIcon={<FilterIcon />}
         onClick={() => handleUserGroupClick(team.name)}
+        className={classes.marginsAlignment}
       >
         Filter
       </Button>
@@ -102,13 +116,23 @@ const TeamCard = ({
 };
 
 const UserCard = ({ email, user }) => {
+  const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
-      <Typography variant="h6" gutterBottom component="div">
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
         {email}
       </Typography>
 
-      <LinkToUserBoard userId={user.userId} label="View" />
+      <LinkToUserBoard
+        userId={user.userId}
+        className={classes.title}
+        label="View"
+      />
     </Paper>
   );
 };
@@ -123,15 +147,26 @@ export default function Presentation({
   filterUsersByGroupName,
   handleUserGroupClick,
 }) {
+  const classes = useStyles();
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
             Teams
           </Typography>
 
-          <TextField label="Teams" variant="outlined" {...filterByGroup} />
+          <TextField
+            label="Teams"
+            variant="outlined"
+            {...filterByGroup}
+            className={classes.textBoxSize}
+          />
         </Paper>
         {teams.map((team) => {
           return (
@@ -147,13 +182,19 @@ export default function Presentation({
       </Grid>
       <Grid item xs={6}>
         <Paper variant="outlined" elevation={2}>
-          <Typography variant="h5" gutterBottom component="div">
-            People
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
+            Users
           </Typography>
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
             {...filterByUser}
+            className={classes.textBoxSize}
           />
         </Paper>
         {Object.keys(users)

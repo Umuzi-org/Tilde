@@ -22,6 +22,9 @@ TODAY = timezone.now().date().strftime("%a %d %b %Y")
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        credentials = authorize_creds()
+        service = build("drive", "v3", credentials=credentials)
+
         self.bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
         )
@@ -35,9 +38,9 @@ class Command(BaseCommand):
             url = card.recruit_project.link_submission
             if url:
                 if url.startswith("https://drive.google.com/"):
-                    self.sync_card_drive_link(card)
+                    self.sync_card_drive_link(card, service)
                 elif url.startswith("https://docs.google.com/"):
-                    self.sync_card_drive_link(card)
+                    self.sync_card_drive_link(card, service)
                 else:
                     # print(f"skipping: {url}")
                     # continue
@@ -64,13 +67,25 @@ class Command(BaseCommand):
     #     breakpoint()
     #     pass
 
-    def sync_card_drive_link(self, card):
+    def sync_card_drive_link(self, card, service):
+
         user: User = card.assignees.first()
         link = card.recruit_project.link_submission
         print(f"processing link:\n\t{link}")
 
-        credentials = authorize_creds()
-        service = build("drive", "v3", credentials=credentials)
+        extension = (
+            "docx"  # If we ever support other file types then this will stop working
+        )
+        filename = f"{user.last_name} {user.first_name} [{user.id}] {card.content_item.title} {TODAY}.{extension}"
+        file_path = DESTINATION / filename
+
+        if file_path.exists():
+            print("already downloaded")
+            return
+
+        import time
+
+        time.sleep(10)
 
         found = re.search("https://drive.google.com/file/d/(.*)/", link) or re.search(
             "https://docs.google.com/document/d/(.*)/", link
@@ -113,10 +128,9 @@ class Command(BaseCommand):
             )
             return
 
-        filename = f"{user.last_name} {user.first_name} [{user.id}] {card.content_item.title} {TODAY}.{extension}"
         request = service.files().get_media(fileId=file_id)
 
-        with open(DESTINATION / filename, "wb") as fh:
+        with open(file_path, "wb") as fh:
             downloader = MediaIoBaseDownload(fh, request)
             done = False
             while done is False:
