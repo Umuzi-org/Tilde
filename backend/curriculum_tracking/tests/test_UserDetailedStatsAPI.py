@@ -18,6 +18,7 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     AgileCardFactory,
     RecruitProjectReviewFactory,
+    TopicReviewFactory,
 )
 from django.utils import timezone
 from git_real.tests.factories import PullRequestReviewFactory
@@ -33,6 +34,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         self.user = self.card_1.assignees.first()
         self.project_1.start_time = timezone.now() - timedelta(days=5)
         self.project_1.save()
+        self.stats_serializer = UserDetailedStatsSerializer()
 
         # Will use this repo card, PR, today, yesterday, two_days_before_yesterday and two_weeks_ago later on
         # in test 'test_pr_reviews_card_in_different_column_due_to_review_status'.
@@ -56,14 +58,14 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
     def test_one_card_in_progress_before_any_reviews(self):
 
-        # One card, no reviews just yet, function 'get_cards_in_progress_column_as_assignee' should return one card
+        # One card, no reviews just yet, function 'get_cards_assigned_with_status_in_progress' should return one card
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.project_1.content_item, self.card_1.content_item)
         self.assertEqual(
             AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS
         )
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_progress_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_progress(
                 UserDetailedStatsSerializer, user=self.user
             ),
             1,
@@ -83,7 +85,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_review_feedback_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_review_feedback(
                 UserDetailedStatsSerializer, user=self.user
             ),
             1,
@@ -101,7 +103,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_complete_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_complete(
                 UserDetailedStatsSerializer, user=self.user
             ),
             0,
@@ -140,7 +142,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days_as_assignee' should also return at least one card
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_complete_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_complete(
                 UserDetailedStatsSerializer, user=assigned_person
             ),
             1,
@@ -178,7 +180,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
 
         # We should get two cards in the review column waiting for a review
         self.assertEqual(
-            UserDetailedStatsSerializer.get_cards_in_review_column_as_assignee(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_review(
                 UserDetailedStatsSerializer, user=assigned_person
             ),
             2,
@@ -190,19 +192,19 @@ class TestingForUserDetailedStatsAPI(TestCase):
         yesterday_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_days_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_days_before_yesterday,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         two_weeks_ago_pr_review = PullRequestReviewFactory(
             pull_request=self.pull_request,
             submitted_at=self.two_weeks_ago,
-            commit_id=self.repo_card_one.assignees.first().id,
+            user=self.repo_card_one.assignees.first(),
         )
 
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
@@ -219,7 +221,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         serializer = self.serializer
 
         # no reviews done yet
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review, but it's too old to count
@@ -231,7 +233,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         review1.save()
         AgileCardFactory(recruit_project=review1.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 0)
 
         # add a review within the right timeframe
@@ -244,7 +246,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         AgileCardFactory(recruit_project=review2.recruit_project)
         # assert review.reviewer_user == user
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review on the same card, so now the number of cards reviewed is still 1
@@ -257,7 +259,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         review3.save()
         # AgileCardFactory(recruit_project=review3.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 1)
 
         # add another review, now the number of cards reviewed is 2
@@ -269,14 +271,14 @@ class TestingForUserDetailedStatsAPI(TestCase):
         review4.save()
         AgileCardFactory(recruit_project=review4.recruit_project)
 
-        count = serializer.get_tilde_cards_reviewed_in_last_7_days(user)
+        count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
 
     def test_zero_cards_currently_blocked(self):
         user = UserFactory()
         serializer = self.serializer
 
-        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        count = serializer.get_cards_assigned_with_status_blocked(user)
         self.assertEqual(count, 0)
 
     def test_one_card_currently_blocked(self):
@@ -285,7 +287,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
         user = card.assignees.first()
 
-        count = serializer.get_cards_currently_blocked_as_assignee(user)
+        count = serializer.get_cards_assigned_with_status_blocked(user)
         self.assertEqual(count, 1)
 
     def test_one_card_currently_on_ready_status(self):
@@ -293,7 +295,7 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = factories.AgileCardFactory(status=AgileCard.READY)
         user = card.assignees.first()
 
-        count = self.serializer.get_cards_ready_as_assignee(user)
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
         self.assertEqual(count, 1)
 
     def test_zero_cards_currently_on_ready_status(self):
@@ -301,6 +303,79 @@ class TestingForUserDetailedStatsAPI(TestCase):
         card = self.card_1
         user = card.assignees.first()
 
-        count = self.serializer.get_cards_ready_as_assignee(user)
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
         self.assertEqual(count, 0)
 
+    def test_no_tilde_reviews_done_in_last_7_days(self):
+        user = UserFactory()
+
+        # add a review, but it's too old to count
+        review = RecruitProjectReviewFactory(
+            timestamp=self.two_weeks_ago, reviewer_user=user
+        )
+        review.timestamp = self.two_weeks_ago
+        review.save()
+        AgileCardFactory(recruit_project=review.recruit_project)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
+        self.assertEqual(count, 0)
+
+    def test_multiple_tilde_reviews_done_in_last_7_days(self):
+        user = UserFactory()
+
+        # add a review within the right timeframe
+        review1 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review1.timestamp = self.yesterday
+        review1.save()
+        AgileCardFactory(recruit_project=review1.recruit_project)
+
+        # add another review, now the number of cards reviewed is 2
+        review2 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review2.timestamp = self.yesterday
+        review2.save()
+        AgileCardFactory(recruit_project=review2.recruit_project)
+
+        # add a topic review, now the number of cards reviewed is 3
+        review3 = TopicReviewFactory(timestamp=self.yesterday, reviewer_user=user)
+        review3.timestamp = self.yesterday
+        review3.save()
+        AgileCardFactory(topic_progress=review3.topic_progress)
+        count = self.stats_serializer.get_tilde_reviews_done_last_7_days(user)
+        self.assertEqual(count, 3)
+
+    def test_no_tilde_reviews_done(self):
+        user = UserFactory()
+
+        # no reviews done yet
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 0)
+
+    def test_multiple_tilde_reviews_done(self):
+        user = UserFactory()
+
+        # add a review
+        review1 = RecruitProjectReviewFactory(
+            timestamp=self.yesterday, reviewer_user=user
+        )
+        review1.timestamp = self.yesterday
+        review1.save()
+        AgileCardFactory(recruit_project=review1.recruit_project)
+
+        # add really old review
+        review2 = RecruitProjectReviewFactory(
+            timestamp=self.two_weeks_ago, reviewer_user=user
+        )
+        review2.timestamp = self.two_weeks_ago
+        review2.save()
+        AgileCardFactory(recruit_project=review2.recruit_project)
+
+        # add a topic review, now we should have 3 reviews
+        review3 = TopicReviewFactory(timestamp=self.yesterday, reviewer_user=user)
+        review3.timestamp = self.yesterday
+        review3.save()
+        AgileCardFactory(topic_progress=review3.topic_progress)
+        count = self.stats_serializer.get_total_tilde_reviews_done(user)
+        self.assertEqual(count, 3)

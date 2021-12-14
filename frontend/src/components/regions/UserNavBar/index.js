@@ -17,12 +17,25 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   }, [fetchUser, user, userId, authUser]);
 
   const url = window.location.href;
+
+  const userBoardSelected = url.endsWith("/board"); // these match the urls in routes.js
+  const userActionsSelected = url.endsWith("/actions");
+  const userDashboardSelected = url.endsWith("/dashboard");
+
+  let value;
+  if (userBoardSelected){
+    value = 0;
+  }
+  if(userActionsSelected){
+    value = 1;
+  }
+  if(userDashboardSelected){
+    value = 2;
+  }
   const props = {
     userId,
     user,
-    userBoardSelected: url.endsWith("/board"), // these match the urls in routes.js
-    UserActionsSelected: url.endsWith("/actions"),
-    userDashboardSelected: url.endsWith("/dashboard"),
+    value,
   };
 
   return <Presentation {...props} />;

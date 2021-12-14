@@ -64,13 +64,6 @@ class UserManager(BaseUserManager):
         return user
 
 
-# class Group(AuthGroup):
-#     class Meta:
-#         proxy = True
-#         app_label = "core"
-#         verbose_name = "Group"
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     active = models.BooleanField(default=True)
@@ -329,3 +322,43 @@ class Team(AuthGroup, Mixins):
                 if team.active and team.id not in yielded:
                     yielded.append(team.id)
                     yield team
+
+
+class Stream(models.Model):
+    """a collection of curriculums. Eg someone might need to do a soft skills curriculum and then a web dev part 1 curriculum"""
+
+    name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class StreamCurriculum(models.Model):
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+
+    class Meta(object):
+        ordering = ["order"]
+        unique_together = ["stream", "curriculum"]
+
+    def __str__(self) -> str:
+        return super().__str__()
+
+
+class StreamRegistration(models.Model):
+    """This could be linked to a learnership contract, but it could also be a bootcamp situation"""
+
+    name = models.CharField(max_length=100, help_text="eg: Cohort 30")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    ideal_end_date = models.DateField(null=True, blank=True)
+    latest_end_date = models.DateField()
+    stream = models.ForeignKey(Stream, on_delete=models.PROTECT)
+    employer_partner = models.ForeignKey(
+        Organisation, on_delete=models.PROTECT, blank=True, null=True
+    )
+    active = models.BooleanField(default=True)
+
+    def __str__(self) -> str:
+        return f"{self.user} {self.name}"

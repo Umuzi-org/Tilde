@@ -17,6 +17,7 @@ from core.permissions import (
     HasObjectPermission,
     IsReadOnly,
     DenyAll,
+    IsCurrentUserInSpecificFilter,
 )
 from core.models import Team
 
@@ -330,6 +331,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 )
 
             card.refresh_from_db()
+
             return Response(serializers.AgileCardSerializer(card).data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -880,3 +882,42 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+
+class BurnDownSnapShotViewset(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAdminUser
+        | ActionIs("list")
+        & (
+              IsCurrentUserInSpecificFilter("user__id")
+            | core_permissions.HasObjectPermission(
+                      permissions=Team.PERMISSION_VIEW,
+                      get_objects=_get_teams_from_user_filter("user__id"),
+                      )
+            )
+        ]
+
+    serializer_class = serializers.BurnDownSnapShotSerializer
+    queryset = models.BurndownSnapshot.objects.order_by("-timestamp")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["user__id", "timestamp"]
+
+
+
+class ReviewTrustsViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAdminUser
+        | ActionIs('list')
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("user"),
+            )
+        )
+    ]
+
+    queryset = models.ReviewTrust.objects.order_by('user').all()
+    serializer_class = serializers.ReviewTrustSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["user"]
