@@ -192,22 +192,24 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
-            #"neg_reviews"  #**
+            "total_nyc_and_rf_reviews"  #**
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
-    #neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
+    total_nyc_and_rf_reviews = serializers.SerializerMethodField("get_total_nyc_and_rf_reviews") #**
 
     def get_users_that_reviewed_since_last_review_request(self, instance):
         return instance.get_users_that_reviewed_since_last_review_request()
 
     #**
-    # def get_neg_reviews(self, instance):
-    #     nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=instance.recruit_project).count()
-    #     rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=instance.recruit_project).count()
-    #     return nyc_reviews + rf_reviews
+    def get_total_nyc_and_rf_reviews(self, card):
+         #nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=instance.recruit_project).count()
+         #rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=instance.recruit_project).count()
+         negative_reviews = models.RecruitProjectReview.objects.filter(status__in=['NYC', 'R']).filter(recruit_project__agile_card=card).count()
+         #return nyc_reviews + rf_reviews
+         return negative_reviews
 
 
 #**
