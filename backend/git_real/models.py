@@ -178,7 +178,7 @@ class Push(models.Model, Mixins):
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
 
-        if not request_body["head_commit"]:
+        if request_body["head_commit"] is None and bool(request_body['pusher']):
             return None
         else:
             head_commit = request_body["head_commit"]
