@@ -10,7 +10,7 @@ export const timeDifferenceInDays = (time) => {
 
 export const getPrColor = (oldestOpenPrTime) => {
   let prColor;
-  if (timeDifferenceInDays(oldestOpenPrTime) === 1) {
+  if (timeDifferenceInDays(oldestOpenPrTime) === 0 || timeDifferenceInDays(oldestOpenPrTime) === 1) {
     prColor = palette.default;
   } else if (timeDifferenceInDays(oldestOpenPrTime) <= 2) {
     prColor = palette.warning;
@@ -22,7 +22,7 @@ export const getPrColor = (oldestOpenPrTime) => {
 
 export const getTildeReviewColor = (oldestOpenPrTime) => {
   let tildeReviewColor
-  if (timeDifferenceInDays(oldestOpenPrTime) === 1) {
+  if (timeDifferenceInDays(oldestOpenPrTime) === 1 || timeDifferenceInDays(oldestOpenPrTime) === 1) {
     tildeReviewColor = palette.default;
   } else if (timeDifferenceInDays(oldestOpenPrTime) <= 3) {
     tildeReviewColor = palette.warning;

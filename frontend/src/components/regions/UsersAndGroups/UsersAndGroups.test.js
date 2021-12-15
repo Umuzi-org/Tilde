@@ -90,7 +90,7 @@ test("getPrColor should return a red text whenever an oldest pull request is old
 
 test("getPrColor should return an orange text when an oldest pull request is older than 1 day old", () => {
   const getYesterdayDate = new Date();
-  getYesterdayDate.setDate(getYesterdayDate.getDate() - 1);
+  getYesterdayDate.setDate(getYesterdayDate.getDate() - 2);
   expect(getPrColor(getYesterdayDate)).toBe(palette.warning);
 });
 
@@ -106,7 +106,7 @@ test("getTildeReviewColor should return a red text whenever an oldest tilde revi
 
 test("getTildeReviewColor should return an orange text when an oldest pull request is older than 1 day old", () => {
   const getYesterdayDate = new Date();
-  getYesterdayDate.setDate(getYesterdayDate.getDate() - 1);
+  getYesterdayDate.setDate(getYesterdayDate.getDate() - 2);
   expect(getTildeReviewColor(getYesterdayDate)).toBe(palette.warning);
 });
 
