@@ -10,6 +10,7 @@ import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
 
 function AgileCardUnconnected({
   card,
+  repoUrl,
   authUser,
   viewedUser,
   startProject,
@@ -107,6 +108,7 @@ function AgileCardUnconnected({
 
     handleClickAddReview,
 
+    repoUrl,
     authUser,
     viewedUser,
     filterUserId,
