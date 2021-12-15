@@ -267,16 +267,11 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
             content_item=content_item,
             flavours=[JAVASCRIPT],
             status=AgileCard.READY,
-            recruit_project=None,
         )
 
         assignee = SocialProfileFactory().user
         card.assignees.set([assignee])
-        card.start_project()
-
         project = card.recruit_project
-        card.refresh_from_db()
-        project.refresh_from_db()
 
         url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
         self.login(super_user)
