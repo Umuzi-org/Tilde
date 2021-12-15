@@ -7,10 +7,8 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { cardColors } from "../../../colors";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-
-const COLORS = [cardColors.C, cardColors.IR, cardColors.RF, cardColors.IP]
+import { fillColor } from "./utils";
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
@@ -52,6 +50,7 @@ export default ({ detailedStats }) => {
     cardsAssignedWithStatusInReview, 
     cardsAssignedWithStatusReviewFeedback, 
     cardsAssignedWithStatusInProgress, 
+    cardsAssignedWithStatusReady,
     cardsAssignedWithStatusBlocked 
   } = detailedStats;
 
@@ -65,6 +64,10 @@ export default ({ detailedStats }) => {
     {
       name: `In Progress (${cardsAssignedWithStatusInProgress})`,
       value: cardsAssignedWithStatusInProgress,
+    },
+    {
+      name: `Ready (${cardsAssignedWithStatusReady})`,
+      value: cardsAssignedWithStatusReady,
     },
     {
       name: `Blocked (${cardsAssignedWithStatusBlocked})`,
@@ -89,7 +92,8 @@ export default ({ detailedStats }) => {
           {cardStatusPieData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={COLORS[index % COLORS.length]}
+              fill={fillColor(entry.name)}
+
             ></Cell>
           ))}
         </Pie>
