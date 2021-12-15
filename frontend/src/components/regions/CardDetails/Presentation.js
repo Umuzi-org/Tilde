@@ -153,6 +153,7 @@ export default ({
   showAddReviewButton,
   linkSubmission,
   formErrors,
+  repoUrl,
 }) => {
   const classes = useStyles();
 

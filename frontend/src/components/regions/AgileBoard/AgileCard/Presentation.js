@@ -89,6 +89,7 @@ export default ({
   authUser,
   viewedUser,
   filterUserId,
+  repoUrl,
 
   handleClickAddReview,
   handleClickOpenCardDetails,
@@ -130,6 +131,7 @@ export default ({
     card,
     authUser,
     viewedUser,
+    repoUrl,
 
     loadingStartProject,
     loadingStartTopic,
