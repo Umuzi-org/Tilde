@@ -1,5 +1,10 @@
 {
   "id": 295,
+  "cardsInCompletedColumnAsAssignee": 81,
+  "cardsInReviewColumnAsAssignee": 2,
+  "cardsInReviewFeedbackColumnAsAssignee": 3,
+  "cardsInProgressColumnAsAssignee": 4,
+  "cardsCompletedLast_7DaysAsAssignee": 1,
   "cardsAssignedWithStatusComplete": 81,
   "cardsAssignedWithStatusInReview": 0,
   "cardsAssignedWithStatusReviewFeedback": 3,
