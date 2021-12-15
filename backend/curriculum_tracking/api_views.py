@@ -844,7 +844,6 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
 class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
 
     serializer_class = serializers.NoArgs
-    queryset = models.Team.objects.filter(active=True)
 
     def list(self, request):
         return Response([])

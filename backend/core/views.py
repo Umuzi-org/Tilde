@@ -106,8 +106,8 @@ class TeamViewSet(viewsets.ModelViewSet):
         )
         return queryset
 
-    def get_object(self):
-        return self.get_queryset()
+    #def get_object(self):
+        #return self.get_queryset()
 
     @action(
         detail=False,
