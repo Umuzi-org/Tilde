@@ -3,14 +3,13 @@ const palette = {
   error: "#ef5350",
   default: "#212121",
 };
-const timeNow = new Date();
-const milliseconds = 1000 * 60 * 60 * 24;
-const timeDifferenceInDays = (time) => {
-  return Math.ceil(Math.abs(timeNow - new Date(time)) / milliseconds);
+
+export const timeDifferenceInDays = (time) => {
+  return Math.ceil(Math.abs(new Date() - new Date(time)) / (1000 * 60 * 60 * 24));
 };
-let prColor;
 
 export const getPrColor = (oldestOpenPrTime) => {
+  let prColor;
   if (timeDifferenceInDays(oldestOpenPrTime) === 1) {
     prColor = palette.default;
   } else if (timeDifferenceInDays(oldestOpenPrTime) <= 2) {
@@ -22,12 +21,13 @@ export const getPrColor = (oldestOpenPrTime) => {
 };
 
 export const getTildeReviewColor = (oldestOpenPrTime) => {
+  let tildeReviewColor
   if (timeDifferenceInDays(oldestOpenPrTime) === 1) {
-    prColor = palette.default;
+    tildeReviewColor = palette.default;
   } else if (timeDifferenceInDays(oldestOpenPrTime) <= 3) {
-    prColor = palette.warning;
+    tildeReviewColor = palette.warning;
   } else {
-    prColor = palette.error;
+    tildeReviewColor = palette.error;
   }
-  return prColor;
+  return tildeReviewColor;
 };

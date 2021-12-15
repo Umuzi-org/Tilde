@@ -1,5 +1,5 @@
 import { cleanAndFilterTeams } from ".";
-import { getPrColor, getTildeReviewColor } from "./utils"
+import { getPrColor, getTildeReviewColor, timeDifferenceInDays } from "./utils"
 
 const teams = {
   "1": {
@@ -88,6 +88,12 @@ test("getPrColor should return a red text whenever an oldest pull request is old
   expect(getPrColor(oldDate)).toBe(palette.error);
 });
 
+test("getPrColor should return an orange text when an oldest pull request is older than 1 day old", () => {
+  const getYesterdayDate = new Date();
+  getYesterdayDate.setDate(getYesterdayDate.getDate() - 1);
+  expect(getPrColor(getYesterdayDate)).toBe(palette.warning);
+});
+
 test("getTildeReviewColor should return a black text whenever an oldest tilde review request is made 'just now'", () => {
   const newDate = new Date();
   expect(getTildeReviewColor(newDate)).toBe(palette.default);
@@ -97,3 +103,15 @@ test("getTildeReviewColor should return a red text whenever an oldest tilde revi
   const oldDate = "2021-10-13T04:45:01Z";
   expect(getTildeReviewColor(oldDate)).toBe(palette.error);
 });
+
+test("getTildeReviewColor should return an orange text when an oldest pull request is older than 1 day old", () => {
+  const getYesterdayDate = new Date();
+  getYesterdayDate.setDate(getYesterdayDate.getDate() - 1);
+  expect(getTildeReviewColor(getYesterdayDate)).toBe(palette.warning);
+});
+
+test("timeDifferenceInDays should return 5 as the difference between the current date and '5 days ago'", () => {
+  const getDate = new Date();
+  getDate.setDate(getDate.getDate() - 5);
+  expect(timeDifferenceInDays(getDate)).toBe(5);
+})
