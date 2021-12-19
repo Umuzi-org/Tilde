@@ -2,7 +2,7 @@ import React from "react";
 import Presentation from "./Presentation";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   let urlParams = useParams() || {};
@@ -23,13 +23,13 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   const userDashboardSelected = url.endsWith("/dashboard");
 
   let value;
-  if (userBoardSelected){
+  if (userBoardSelected) {
     value = 0;
   }
-  if(userActionsSelected){
+  if (userActionsSelected) {
     value = 1;
   }
-  if(userDashboardSelected){
+  if (userDashboardSelected) {
     value = 2;
   }
   const props = {
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
+    users: state.apiEntities.users || {},
     authUserId: state.App.authUser.userId,
   };
 };

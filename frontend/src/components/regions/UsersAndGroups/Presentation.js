@@ -77,7 +77,6 @@ const TeamCard = ({
   const filterButtonVariant =
     team.name === filterUsersByGroupName ? "contained" : "outlined";
 
-  console.log(summaryStats);
   const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
