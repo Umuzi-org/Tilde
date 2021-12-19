@@ -16,6 +16,7 @@ def github_webhook(request):
         event = request.headers.get("X-Github-Event") or request.data.get(
             "headers", {}
         ).get("X-Github-Event")
+
         assert event, f"no event listed. headers = {request.headers}"
 
         if event in ["pull_request", "pull_request_review", "push"]:
@@ -41,7 +42,6 @@ def github_webhook(request):
             Push.create_or_update_from_github_api_data(
                 repo=repo, request_body=request.data
             )
-
         return Response({})
 
     return Response({"status": "This endpoint exists"})

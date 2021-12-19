@@ -9,14 +9,13 @@ import {
 } from "@material-ui/core";
 
 export default ({ detailedStats }) => {
-  console.log(detailedStats);
   if (!detailedStats) return <React.Fragment />;
   return (
     <Table>
       <TableBody>
         <TableRow>
           <TableCell>
-            <Typography variant="h6" component="h2">
+            <Typography variant="h6" component="h2" align="center">
               Performance
             </Typography>
           </TableCell>
@@ -24,22 +23,30 @@ export default ({ detailedStats }) => {
         <TableRow>
           <TableCell>Cards in complete column as assignee</TableCell>
           <TableCell>
-            {detailedStats.cardsInCompletedColumnAsAssignee}
+            {detailedStats.cardsAssignedWithStatusComplete}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in review column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsInReviewColumnAsAssignee}</TableCell>
+          <TableCell>{detailedStats.cardsAssignedWithStatusInReview}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards in review feedback column as assignee</TableCell>
           <TableCell>
-            {detailedStats.cardsInReviewFeedbackColumnAsAssignee}
+            {detailedStats.cardsAssignedWithStatusReviewFeedback}
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Cards in complete column as assignee</TableCell>
-          <TableCell>{detailedStats.cardsInProgressColumnAsAssignee}</TableCell>
+          <TableCell>Cards in progress column as assignee</TableCell>
+          <TableCell>{detailedStats.cardsAssignedWithStatusInProgress}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Cards in blocked column as assignee</TableCell>
+          <TableCell>{detailedStats.cardsAssignedWithStatusBlocked}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Cards in ready column as assignee</TableCell>
+          <TableCell>{detailedStats.cardsAssignedWithStatusReady}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Cards completed in the last 7 days</TableCell>
@@ -54,11 +61,11 @@ export default ({ detailedStats }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Total competence reviews done</TableCell>
+          <TableCell>Total tilde reviews done</TableCell>
           <TableCell>{detailedStats.totalTildeReviewsDone}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Total competence reviews done in last 7 days</TableCell>
+          <TableCell>Total tilde reviews done in last 7 days</TableCell>
           <TableCell>{detailedStats.tildeReviewsDoneLast_7Days}</TableCell>
         </TableRow>
         <TableRow>

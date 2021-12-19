@@ -8,8 +8,9 @@ import {
   TableCell,
   Typography,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 
+import { makeStyles } from "@material-ui/core/styles";
+import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
@@ -19,23 +20,33 @@ import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
 import Reviews from "./Reviews";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1, 2, 1),
-  },
+const useStyles = makeStyles((theme) => {
+  return {
+    paper: {
+      padding: theme.spacing(1, 2, 1),
+    },
 
-  commentColumn: {
-    minWidth: 300,
-  },
+    commentColumn: {
+      minWidth: 300,
+    },
 
-  tableContainer: {
-    maxHeight: 200,
-  },
-  sectionPaper: {
-    padding: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-}));
+    tableContainer: {
+      maxHeight: 200,
+    },
+    sectionPaper: {
+      padding: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    root: {
+      margin: theme.spacing(1),
+      width: theme.spacing(40),
+      height: theme.spacing(16),
+    },
+    row: {
+      padding: 5,
+    },
+  };
+});
 
 const TopicProgressDetails = ({ topicProgress, reviews }) => {
   return (
@@ -75,6 +86,9 @@ const CardBasicDetails = ({ card }) => {
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
           <StoryPoints storyPoints={card.storyPoints} />
+        </Grid>
+        <Grid item xs={0.5} sm={0.5} md={0.5}>
+          <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
@@ -139,6 +153,7 @@ export default ({
   showAddReviewButton,
   linkSubmission,
   formErrors,
+  repoUrl,
 }) => {
   const classes = useStyles();
 

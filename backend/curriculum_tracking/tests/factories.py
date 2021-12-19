@@ -1,5 +1,7 @@
 from factory.django import DjangoModelFactory
 import factory
+
+from curriculum_tracking.models import BurndownSnapshot
 from curriculum_tracking import models
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from core.tests.factories import UserFactory, CurriculumFactory
@@ -343,3 +345,15 @@ class WorkshopAttendanceFactory(DjangoModelFactory):
     attendee_user = factory.SubFactory(UserFactory)
     content_item = factory.SubFactory(ProjectContentItemFactory)
     timestamp = timezone.now()
+
+
+class BurndownSnapshotFactory(DjangoModelFactory):
+    class Meta:
+        model = BurndownSnapshot
+
+    user = factory.SubFactory(UserFactory)
+    timestamp = timezone.now()
+    cards_total_count = 10
+    project_cards_total_count = 20
+    cards_in_complete_column_total_count = 30
+    project_cards_in_complete_column_total_count = 40
