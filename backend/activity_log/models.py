@@ -105,9 +105,15 @@ class LogEntry(models.Model):
             ),
             object_2_id=object_2.id if object_2 else None,
             event_type=event_type,
-            timestamp__gte=timezone.now()
-            - timezone.timedelta(seconds=debounce_seconds),
-        ).first()
+        )
+
+        if debounce_seconds:
+            match = match.filter(
+                timestamp__gte=timezone.now()
+                - timezone.timedelta(seconds=debounce_seconds)
+            )
+
+        match = match.first()
 
         if match == None:
             Cls.objects.create(

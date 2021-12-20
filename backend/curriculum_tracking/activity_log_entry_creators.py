@@ -69,6 +69,7 @@ def log_project_competence_review_done(review):
             object_1=review,
             object_2=review.recruit_project,
             event_type=event_type,
+            debounce_seconds=False,
         )
 
 
@@ -80,6 +81,7 @@ def log_topic_competence_review_done(review):
         object_1=review,
         object2=review.topic_progress,
         event_type=event_type,
+        debounce_seconds=False,
     )
 
 
