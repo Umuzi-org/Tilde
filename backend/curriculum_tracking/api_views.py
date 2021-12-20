@@ -727,14 +727,6 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
         )
     ]
 
-    # def get_permissions(self):
-    #     breakpoint()
-    #     foo
-
-    #     o = PermissionClass()
-    #     o.has_permission(view=self, request=self.request)
-    #     return super().get_permissions()
-
 
 class ContentItemViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ContentItemSerializer
@@ -886,16 +878,17 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAdminUser
+    permission_classes = [
+        permissions.IsAdminUser
         | ActionIs("list")
         & (
-              IsCurrentUserInSpecificFilter("user__id")
+            IsCurrentUserInSpecificFilter("user__id")
             | core_permissions.HasObjectPermission(
-                      permissions=Team.PERMISSION_VIEW,
-                      get_objects=_get_teams_from_user_filter("user__id"),
-                      )
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user_filter("user__id"),
             )
-        ]
+        )
+    ]
 
     serializer_class = serializers.BurnDownSnapShotSerializer
     queryset = models.BurndownSnapshot.objects.order_by("-timestamp")
@@ -903,11 +896,11 @@ class BurnDownSnapShotViewset(viewsets.ModelViewSet):
     filterset_fields = ["user__id", "timestamp"]
 
 
-
 class ReviewTrustsViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAdminUser
-        | ActionIs('list')
+    permission_classes = [
+        permissions.IsAdminUser
+        | ActionIs("list")
         & (
             core_permissions.IsCurrentUserInSpecificFilter("user")
             | core_permissions.HasObjectPermission(
@@ -917,7 +910,7 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
         )
     ]
 
-    queryset = models.ReviewTrust.objects.order_by('user').all()
+    queryset = models.ReviewTrust.objects.order_by("user").all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user"]

@@ -136,7 +136,7 @@ export const apiReduxApps = {
   FETCH_SINGLE_TEAM: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_TEAM,
     apiCaller: apiCallers.teamEntity,
-    responseIsList: true,
+    responseIsList: false,
     responseEntityType: "teams",
   }),
 

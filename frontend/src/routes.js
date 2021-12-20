@@ -6,10 +6,12 @@ import UsersAndGroups from "./components/regions/UsersAndGroups";
 import UserDashboard from "./components/regions/UserDashboard";
 import CardDetails from "./components/regions/CardDetails";
 import Redirector from "./components/regions/Redirector";
+import TeamDashboard from "./components/pages/TeamDashboard";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
+import TeamNavBar from "./components/regions/TeamNavBar";
 const exact = true;
 
 export const routes = {
@@ -17,7 +19,7 @@ export const routes = {
     route: {
       exact,
       path: "/",
-      component: Redirector,
+      component: Redirector, // todo: fix spelling
     },
     sliderNavigation: {
       //     //these get used to draw buttons in the left hand side slider/hamburger menu
@@ -77,7 +79,16 @@ export const routes = {
     },
   },
 
+  teamNavBar: {
+    route: {
+      exact: false,
+      path: "/teams/:teamId/",
+      component: TeamNavBar,
+    },
+  },
+
   groupCardSummary: {
+    // todo Rename this to teamCardSummary
     route: {
       exact,
       path: "/teams/:teamId/card_summary",
@@ -86,7 +97,18 @@ export const routes = {
     show: () => true,
   },
 
+  teamDashboard: {
+    // todo Rename this to teamCardSummary
+    route: {
+      exact,
+      path: "/teams/:teamId/dashboard",
+      component: TeamDashboard,
+    },
+    show: () => true,
+  },
+
   profile: {
+    // TODO: What is in this component? Can we just delete it?
     route: {
       exact,
       path: "/people/:id",
