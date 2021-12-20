@@ -8,6 +8,7 @@ from curriculum_tracking.models import (
     WorkshopAttendance,
     ContentItem,
     TopicReview,
+    BurndownSnapshot,
 )
 from . import factories
 from core.tests.factories import UserFactory
@@ -26,6 +27,22 @@ from django.utils import timezone
 
 TYPESCRIPT = "ts"
 JAVASCRIPT = "js"
+
+
+class save_Tests(TestCase):
+    def test_changing_card_status_to_complete_makes_burndown_snapshot(self):
+        card = factories.AgileCardFactory()
+        self.assertEqual(BurndownSnapshot.objects.count(), 0)
+        card.status = AgileCard.COMPLETE
+        card.save()
+        self.assertEqual(BurndownSnapshot.objects.count(), 1)
+
+    def test_changing_card_status_from_complete_makes_burndown_snapshot(self):
+        card = factories.AgileCardFactory(status=AgileCard.COMPLETE)
+        self.assertEqual(BurndownSnapshot.objects.count(), 0)
+        card.status = AgileCard.REVIEW_FEEDBACK
+        card.save()
+        self.assertEqual(BurndownSnapshot.objects.count(), 1)
 
 
 class oldest_open_pr_updated_time_Tests(TestCase):
@@ -690,7 +707,6 @@ class WorkshopMovementTests(TestCase):
 
 
 class ReviewerIdsSinceLatestReviewRequest(TestCase):
-
     def setUp(self):
         self.card_1 = factories.AgileCardFactory(
             status=AgileCard.IN_PROGRESS,
@@ -718,13 +734,15 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         self.time_three = self.project_1.start_time + timedelta(days=3)
         self.time_four = self.project_1.start_time + timedelta(days=2)
 
-    def test_correct_ids_returned_since_latest_review_request_and_not_reviewer_ids_from_before_review_request(self):
+    def test_correct_ids_returned_since_latest_review_request_and_not_reviewer_ids_from_before_review_request(
+        self,
+    ):
 
         # Four reviews are made with the four review times above (No reviews done on project_2)
         review_1 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
             recruit_project=self.project_1,
-            timestamp=self.time_one
+            timestamp=self.time_one,
         )
         review_1.timestamp = self.time_one
         review_1.save()
@@ -750,19 +768,25 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         review_4.timestamp = self.time_four
         review_4.save()
 
-        ids_which_should_be_returned = [review_2.reviewer_user.id, review_3.reviewer_user.id, review_4.reviewer_user.id]
+        ids_which_should_be_returned = [
+            review_2.reviewer_user.id,
+            review_3.reviewer_user.id,
+            review_4.reviewer_user.id,
+        ]
 
         # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
         # returning the wrong stuff and therefore it is not working as it should.
         self.assertEqual(
             sorted(self.card_1.get_users_that_reviewed_since_last_review_request()),
-            sorted(ids_which_should_be_returned)
+            sorted(ids_which_should_be_returned),
         )
 
     def test_request_review_and_perform_review_since_time_of_review_request(self):
 
         # Creating a new project
-        project_one = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
+        project_one = factories.RecruitProjectFactory(
+            content_item=factories.ProjectContentItemFactory(flavours=["js"])
+        )
 
         # Requesting a review on the project and performing a review on the project
         project_one.review_request_time = timezone.now()
@@ -777,15 +801,39 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
 
         self.assertEqual(
             AgileCard.get_users_that_reviewed_since_last_review_request(project_one),
-                [review_on_project_one.reviewer_user.id]
+            [review_on_project_one.reviewer_user.id],
         )
 
     def test_request_review_but_no_review_done_since_time_of_review_request(self):
-        project_two = factories.RecruitProjectFactory(content_item=factories.ProjectContentItemFactory(flavours=["js"]))
+        project_two = factories.RecruitProjectFactory(
+            content_item=factories.ProjectContentItemFactory(flavours=["js"])
+        )
         project_two.review_request_time = timezone.now()
 
         # The next line had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
         # so I manually created a 'recruit_project' attribute.
         project_two.recruit_project = project_two
+        
+        self.assertEqual(
+            AgileCard.get_users_that_reviewed_since_last_review_request(project_two), []
+        )
 
-        self.assertEqual(AgileCard.get_users_that_reviewed_since_last_review_request(project_two), [])
+class repo_url_Tests(TestCase):
+
+    def test_repository_link_is_returned_and_that_it_is_an_actual_repository(self):
+        card = factories.AgileCardFactory()
+        card.recruit_project.repository = git_real_factories.RepositoryFactory()
+        card.save()
+        repository = card.recruit_project.repository
+        self.assertEqual(card.repo_url, repository.ssh_url)
+
+    def test_none_is_returned_for_card_not_linked_to_a_repository(self):
+        card_no_repo = factories.AgileCardFactory(
+                content_item=factories.ContentItemFactory(
+                content_type=ContentItem.WORKSHOP),
+                status=AgileCard.READY,
+                recruit_project=None
+        )
+        self.assertEqual(card_no_repo.repo_url, None)
+
+

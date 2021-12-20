@@ -2,7 +2,10 @@ import React from "react";
 import Presentation from "./Presentation";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
+
+// TODO: refactor this. Rather make use of EntityNavBar.
+// look at how the team nav bar works
 
 const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   let urlParams = useParams() || {};
@@ -17,12 +20,25 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   }, [fetchUser, user, userId, authUser]);
 
   const url = window.location.href;
+
+  const userBoardSelected = url.endsWith("/board"); // these match the urls in routes.js. Could be more DRY
+  const userActionsSelected = url.endsWith("/actions");
+  const userDashboardSelected = url.endsWith("/dashboard");
+
+  let value;
+  if (userBoardSelected) {
+    value = 0;
+  }
+  if (userActionsSelected) {
+    value = 1;
+  }
+  if (userDashboardSelected) {
+    value = 2;
+  }
   const props = {
     userId,
     user,
-    userBoardSelected: url.endsWith("/board"), // these match the urls in routes.js
-    UserActionsSelected: url.endsWith("/actions"),
-    userDashboardSelected: url.endsWith("/dashboard"),
+    value,
   };
 
   return <Presentation {...props} />;
@@ -42,7 +58,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
+    users: state.apiEntities.users || {},
     authUserId: state.App.authUser.userId,
   };
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
 
 function toLocaleString(dateTimeString) {
@@ -61,17 +61,17 @@ function RepositoryDetailsUnconnected({
 const mapStateToProps = (state) => {
   return {
     repositories:
-      state.Entities.repositories === undefined
+      state.apiEntities.repositories === undefined
         ? {}
-        : state.Entities.repositories,
+        : state.apiEntities.repositories,
     commits:
-      state.Entities.repoCommits === undefined
+      state.apiEntities.repoCommits === undefined
         ? {}
-        : state.Entities.repoCommits,
+        : state.apiEntities.repoCommits,
     pullRequests:
-      state.Entities.pullRequests === undefined
+      state.apiEntities.pullRequests === undefined
         ? {}
-        : state.Entities.pullRequests,
+        : state.apiEntities.pullRequests,
   };
 };
 const mapDispatchToProps = (dispatch) => {

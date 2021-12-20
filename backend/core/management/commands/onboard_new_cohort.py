@@ -231,9 +231,7 @@ class Command(BaseCommand):
         df.apply(add_user_to_group, axis=1)
         print("setting up course registrations")
         df.apply(set_up_course_registrations, axis=1)
-        print("re-reviewing cards")
-        df.apply(re_review_cards, axis=1)
-
-        # breakpoint()
         print("setting up rocketchat users")
         setup_rocketchat_users(df)
+        print("re-reviewing cards")
+        # df.apply(re_review_cards, axis=1)

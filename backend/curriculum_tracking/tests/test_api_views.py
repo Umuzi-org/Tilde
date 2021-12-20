@@ -1,7 +1,7 @@
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
-from core.tests.factories import UserFactory
+from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from . import factories
 from core.tests import factories as core_factories
@@ -12,8 +12,6 @@ from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
-    COMPETENT,
-    EXCELLENT,
 )
 
 
@@ -372,3 +370,100 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         response = self.client.get(f"{url}{workshop_attendance.id}", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
+
+
+class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
+
+    LIST_URL_NAME = 'reviewtrust-list'
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        review_trust_object = factories.ReviewTrustFactory()
+        review_trust_object.flavours.add(Tag.objects.create(name="anything_really"))
+        return review_trust_object
+
+    def setUp(self):
+
+        self.api_url = self.get_list_url()
+
+    def test_staff_member_can_view_all_trusted_reviewer_objects(self):
+        staff_member = UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_member)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_user_can_view_all_trusted_reviewer_objects(self):
+        staff_member_superuser = UserFactory(is_superuser=True, is_staff=False)
+        self.login(staff_member_superuser)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_normal_user_cannot_view_other_user_trusted_review_objects(self):
+        review_trust_object = factories.ReviewTrustFactory()
+        recruit = UserFactory(is_superuser=False, is_staff=False)
+        self.login(recruit)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn(str(review_trust_object.content_item), response.data)
+
+    def test_users_can_view_their_own_reviewer_trusts(self):
+        review_trust_object = factories.ReviewTrustFactory(
+            user=factories.UserFactory(is_superuser=False, is_staff=False)
+        )
+        self.login(review_trust_object.user)
+        response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0].get('content_item_title'), review_trust_object.content_item.title)
+
+
+class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
+
+    LIST_URL_NAME = 'burndownsnapshot-list'
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.BurndownSnapshotFactory()
+
+    def setUp(self):
+
+        self.api_url = self.get_list_url()
+        self.team1 = TeamFactory()
+        self.team1_users = [UserFactory() for _ in range(3)]
+
+    def test_staff_member_can_view_all_burndown_snapshot_objects(self):
+
+        staff_member = UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_member)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.data)
+
+    def test_users_can_view_their_own_burndown_snapshot_objects(self):
+
+        burndown_snapshot_object = factories.BurndownSnapshotFactory(
+            user=UserFactory(is_superuser=False, is_staff=False)
+        )
+        self.login(burndown_snapshot_object.user)
+        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0].get('user'), burndown_snapshot_object.user.id)
+
+    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(self):
+
+        for user in self.team1_users:
+            self.login(user)
+            response = self.client.get(f'{self.api_url}?user__id={user.id}')
+            self.assertEqual(response.status_code, 200)
+
+    def test_team1_users_cannot_view_team2_burndown_snapshot_objects(self):
+
+        team2 = TeamFactory()
+        team2_users = [UserFactory() for _ in range(3)]
+
+        for user in self.team1_users:
+            self.login(user)
+            response = self.client.get(f'{self.api_url}?user__id={[user.id for user in team2_users]}')
+            self.assertEqual(response.status_code, 403)
+
+

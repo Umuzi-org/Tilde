@@ -6,9 +6,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-
-const columns = [{ id: "teams", label: "Team memberships", minWidth: 100 }];
+import { Typography, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { routes } from "../../../../routes";
+import LaunchIcon from "@material-ui/icons/Launch";
 
 const useStyles = makeStyles(() => ({
   tableHead: {
@@ -16,24 +17,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TeamsTable = ({ teams }) => {
+const TeamsTable = ({ teams, authUser }) => {
   const classes = useStyles();
   return (
     <Table stickyHeader aria-label="sticky table">
       <TableHead>
         <TableRow>
-          {columns.map((column) => (
-            <TableCell
-              key={column.id}
-              align={column.align}
-              style={{ minWidth: column.minWidth }}
-              className={classes.tableHead}
-            >
-              <Typography variant="h6" component="h2">
-                {column.label}
-              </Typography>
-            </TableCell>
-          ))}
+          <TableCell
+            style={{ minWidth: 100 }}
+            className={classes.tableHead}
+            colSpan="2"
+          >
+            <Typography variant="h6" component="h2">
+              Team memberships
+            </Typography>
+          </TableCell>
         </TableRow>
       </TableHead>
       {
@@ -42,6 +40,26 @@ const TeamsTable = ({ teams }) => {
             Object.values(teams).map((team) => (
               <TableRow key={Object.values(teams).indexOf(team)}>
                 <TableCell>{team.name}</TableCell>
+                <TableCell>
+                  {(authUser.isSuperuser ||
+                    authUser.permissions.teams[team.id]) && (
+                    <Link
+                      to={routes.groupCardSummary.route.path.replace(
+                        ":teamId",
+                        team.id
+                      )}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="default"
+                        size="small"
+                        startIcon={<LaunchIcon />}
+                      >
+                        View
+                      </Button>
+                    </Link>
+                  )}
+                </TableCell>
               </TableRow>
             ))
           ) : (

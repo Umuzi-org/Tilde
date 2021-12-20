@@ -56,6 +56,9 @@ class LogEntry(models.Model):
         null=True,
         blank=True,
     )
+    # object_1 = GenericRelation(
+    #     object_id_field="object_1_id", content_type_field="object_1_content_type", to=
+    # )
     object_1 = GenericForeignKey("object_1_content_type", "object_1_id")
 
     object_2_content_type = models.ForeignKey(
@@ -89,16 +92,17 @@ class LogEntry(models.Model):
         Why?
 
         Some actions can be repeated, eg a card can be started and stopped several times over. If someone is randomly clicking around then we probably don't want a record of all their random clicks. We would just want to store the first event that happened within a set duration"""
-        breakpoint()
         match = Cls.objects.filter(
             actor_user=actor_user,
             effected_user=effected_user,
             # object_1=object_1,
             # object_2=object_2,
-            object_1_content_type=object_1.content_type,
+            object_1_content_type=ContentType.objects.get_for_model(object_1),
             object_1_id=object_1.id,
-            #  object_2_content_type= object_2.content_type if object_2 else None,
-            # object_2_id= object_2.id,
+            object_2_content_type=(
+                ContentType.objects.get_for_model(object_2) if object_2 else None
+            ),
+            object_2_id=object_2.id if object_2 else None,
             event_type=event_type,
             timestamp__gte=timezone.now()
             - timezone.timedelta(seconds=debounce_seconds),

@@ -30,6 +30,8 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
         response = self.client.post(start_url)
 
+        card.refresh_from_db()
+
         # sanity check
         assert card.assignees.count() == 1
         assert response.status_code == 200
@@ -39,7 +41,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
         self.assertEqual(entry.actor_user, actor_user)
         self.assertEqual(entry.effected_user, card.assignees.first())
-        self.assertEqual(entry.object_1, card)
+        self.assertEqual(entry.object_1, card.recruit_project)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
 
@@ -50,6 +52,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
 
 # class log_card_review_requested_Tests(TestCase):
+# every time a person moves a card into the review request column, we make an activity log entry
 
 
 # class log_card_review_request_cancelled_Tests(TestCase):
