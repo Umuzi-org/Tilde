@@ -63,20 +63,22 @@ COMPETENCE_REVIEW_DONE = "COMPETENCE_REVIEW_DONE"
 def log_project_competence_review_done(review):
     event_type, _ = EventType.objects.get_or_create(name=COMPETENCE_REVIEW_DONE)
     for user in review.recruit_project.recruit_users.all():
-        LogEntry.objects.get_or_create(
+        LogEntry.debounce_create(
             actor_user=review.reviewer_user,
             effected_user=user,
             object_1=review,
+            object_2=review.recruit_project,
             event_type=event_type,
         )
 
 
 def log_topic_competence_review_done(review):
     event_type, _ = EventType.objects.get_or_create(name=COMPETENCE_REVIEW_DONE)
-    LogEntry.objects.get_or_create(
+    LogEntry.debounce_create(
         actor_user=review.reviewer_user,
         effected_user=review.topic_progress.user,
         object_1=review,
+        object2=review.topic_progress,
         event_type=event_type,
     )
 

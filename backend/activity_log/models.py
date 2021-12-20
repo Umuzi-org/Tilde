@@ -92,6 +92,7 @@ class LogEntry(models.Model):
         Why?
 
         Some actions can be repeated, eg a card can be started and stopped several times over. If someone is randomly clicking around then we probably don't want a record of all their random clicks. We would just want to store the first event that happened within a set duration"""
+
         match = Cls.objects.filter(
             actor_user=actor_user,
             effected_user=effected_user,

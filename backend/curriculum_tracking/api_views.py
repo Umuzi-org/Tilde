@@ -313,24 +313,27 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 if card.recruit_project == None:
                     raise Http404
 
-                models.RecruitProjectReview.objects.create(
+                review = models.RecruitProjectReview.objects.create(
                     status=serializer.data["status"],
                     timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     recruit_project=card.recruit_project,
                     reviewer_user=request.user,
                 )
+
             elif card.content_item.content_type == models.ContentItem.TOPIC:
                 if card.topic_progress == None:
                     raise Http404
 
-                models.TopicReview.objects.create(
+                review = models.TopicReview.objects.create(
                     status=serializer.data["status"],
                     timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     topic_progress=card.topic_progress,
                     reviewer_user=request.user,
                 )
+
+            log_creators.log_project_competence_review_done(review)
 
             card.refresh_from_db()
 
