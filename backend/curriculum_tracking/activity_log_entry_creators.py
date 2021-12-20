@@ -83,6 +83,7 @@ def log_topic_competence_review_done(review):
         event_type=event_type,
         debounce_seconds=False,
     )
+    # TODO test that these are created as they should be
 
 
 ######################

@@ -62,7 +62,13 @@ def log_pr_opened(pull_request):
 
 def log_pr_reviewed(pull_request_review):
     event_type, _ = EventType.objects.get_or_create(name=PR_REVIEWED)
-    todo
+    LogEntry.debounce_create(
+        actor_user=pull_request_review.user,
+        effected_user=pull_request_review.pull_request.repository.user,
+        object_1=pull_request_review,
+        object_2=pull_request_review.pull_request.repository,
+        event_type=event_type,
+    )
 
 
 def log_push_event():
