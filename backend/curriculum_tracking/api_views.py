@@ -22,6 +22,9 @@ from core.permissions import (
 )
 from core.models import Team
 import curriculum_tracking.activity_log_entry_creators as log_creators
+from django.db.models import Q
+
+from rest_framework import filters
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -91,14 +94,6 @@ def _get_teams_from_topic_progress_filter(self, request, view):
     return _get_teams_from_topic_progress_instance(topic_progress)
 
 
-def _get_teams_from_user_filter(filter_name):
-    def get_teams_from_user_filter(self, request, view):
-        user_ids = core_permissions.get_clean_user_ids_from_filter(request, filter_name)
-        return Team.get_teams_from_user_ids(user_ids)
-
-    return get_teams_from_user_filter
-
-
 def _get_teams_from_repository_instance(repo):
     projects = repo.recruit_projects.all()
     for project in projects:
@@ -131,11 +126,6 @@ def _get_teams_from_workshop_attendance(self, request, view):
     return Team.get_teams_from_user_ids(user_ids=user_ids)
 
 
-from django.db.models import Q
-
-from rest_framework import filters
-
-
 class CardSummaryViewset(viewsets.ModelViewSet):
 
     permission_classes = [
@@ -153,7 +143,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
         | core_permissions.IsCurrentUserInSpecificFilter("assignees")
         | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_user_filter("assignees"),
+            get_objects=core_permissions.get_teams_from_user_filter("assignees"),
         ),
     ]
     serializer_class = serializers.CardSummarySerializer
@@ -229,11 +219,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 | core_permissions.IsCurrentUserInSpecificFilter("reviewers")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("assignees"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "assignees"
+                    ),
                 )
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("reviewers"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "reviewers"
+                    ),
                 )
             )
         )
@@ -591,7 +585,7 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
 
         # o = core_permissions.HasObjectPermission(
         #     Team.PERMISSION_VIEW,
-        #     _get_teams_from_user_filter("recruit_users"),
+        #     core_permissions.get_teams_from_user_filter("recruit_users"),
         # )()
         # o.has_permission(view=self, request=self.request)
 
@@ -613,7 +607,9 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
                 | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("recruit_users"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "recruit_users"
+                    ),
                 )
             ]
         return [permission() for permission in permission_classes]
@@ -640,7 +636,7 @@ class TopicProgressViewset(viewsets.ModelViewSet):
                 core_permissions.IsCurrentUserInSpecificFilter("user")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("user"),
+                    get_objects=core_permissions.get_teams_from_user_filter("user"),
                 )
             ]
 
@@ -667,11 +663,15 @@ class TopicReviewViewset(viewsets.ModelViewSet):
             | core_permissions.IsCurrentUserInSpecificFilter("topic_progress__user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("topic_progress__user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "topic_progress__user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("reviewer_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
@@ -711,13 +711,15 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter(
+                get_objects=core_permissions.get_teams_from_user_filter(
                     "recruit_project__recruit_users"
                 ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("reviewer_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
@@ -832,7 +834,9 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
             core_permissions.IsCurrentUserInSpecificFilter("attendee_user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("attendee_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "attendee_user"
+                ),
             )
         )
     ]
@@ -893,7 +897,7 @@ class BurnDownSnapShotViewset(viewsets.ModelViewSet):
             IsCurrentUserInSpecificFilter("user__id")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("user__id"),
+                get_objects=core_permissions.get_teams_from_user_filter("user__id"),
             )
         )
     ]
@@ -913,7 +917,7 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
             core_permissions.IsCurrentUserInSpecificFilter("user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("user"),
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
             )
         )
     ]

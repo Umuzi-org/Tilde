@@ -8,18 +8,18 @@ from django.contrib.contenttypes.models import ContentType
 # see https://docs.djangoproject.com/en/3.2/ref/contrib/contenttypes/#django.contrib.contenttypes.fields.GenericForeignKey
 
 
-class ObjectEffected(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
+# class ObjectEffected(models.Model):
+#     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+#     object_id = models.PositiveIntegerField()
+#     content_object = GenericForeignKey("content_type", "object_id")
 
-    class Meta:
-        unique_together = [
-            [
-                "content_type",
-                "object_id",
-            ]
-        ]
+#     class Meta:
+#         unique_together = [
+#             [
+#                 "content_type",
+#                 "object_id",
+#             ]
+#         ]
 
 
 class EventType(models.Model):
@@ -123,3 +123,8 @@ class LogEntry(models.Model):
                 object_2=object_2,
                 event_type=event_type,
             )
+
+    # def set_object(self, number,object):
+    #     content_type = ContentType.objects.get_for_model(object)
+    #     if number == 1:
+    #         self.object_1_
