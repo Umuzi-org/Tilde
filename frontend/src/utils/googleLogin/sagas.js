@@ -5,7 +5,7 @@ import { loadScript, googleAuthAvailable } from "./helpers";
 import { GOOGLE_SCRIPT, GOOGLE_CLIENT_ID, GOOGLE_SCOPE } from "./consts";
 import operations from "./operations";
 
-import { apiReduxApps } from "../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../apiAccess/apiApps";
 
 const successCallbackActionCreator =
   apiReduxApps.AUTHENTICATE_WITH_ONE_TIME_TOKEN.operations.start;

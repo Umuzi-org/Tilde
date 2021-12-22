@@ -1,0 +1,16 @@
+{
+  "id": 295,
+  "cardsAssignedWithStatusComplete": 81,
+  "cardsAssignedWithStatusInReview": 0,
+  "cardsAssignedWithStatusReviewFeedback": 3,
+  "cardsAssignedWithStatusInProgress": 0,
+  "cardsAssignedWithStatusBlocked": 0,
+  "cardsAssignedWithStatusReady": 0,
+  "cardsCompletedLast_7DaysAsAssignee": 0,
+  "cardsStartedLast_7DaysAsAssignee": 0,
+  "totalTildeReviewsDone": 576,
+  "tildeReviewsDoneLast_7Days": 30,
+  "totalPrReviewsDone": 0,
+  "prReviewsDoneLast_7Days": 0,
+  "tildeCardsReviewedInLast_7Days": 30
+}

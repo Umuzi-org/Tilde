@@ -1,42 +1,145 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-
-// hactoberfest: Visual debt. Make this look better: max height of container should fit viewport
-import { Link } from "react-router-dom";
-
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-
+import { makeStyles } from "@material-ui/core/styles";
 import {
-  TableRow,
-  TableHead,
-  TextField,
-  Grid,
+  Paper,
+  Typography,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
+  TableHead,
+  TableRow,
   Button,
-  Typography,
-  Tooltip,
+  Grid,
+  TextField,
 } from "@material-ui/core";
 
-import { routes } from "../../../routes";
+import FilterIcon from "@material-ui/icons/Filter"; //TODO better icon. Need to upgrade material ui
+import LaunchIcon from "@material-ui/icons/Launch";
 
-const useStyles = makeStyles((theme) => ({
-  highlightedGroup: {
-    backgroundColor: theme.palette.primary.light,
+import { Link } from "react-router-dom";
+import { routes } from "../../../routes";
+const useStyles = makeStyles({
+  marginsAlignment: {
+    marginTop: "8px",
+    marginLeft: "16px",
   },
-  // container: {
-  //   maxHeight: 800,
-  // },
-  groupName: {
-    cursor: "pointer",
+  textBoxSize: {
+    width: "62%",
   },
-}));
+});
+const TeamSummaryStats = ({ summaryStats }) => {
+  const oldestOpenPrTime = summaryStats.oldestOpenPrTime
+    ? new Date(summaryStats.oldestOpenPrTime)
+    : null;
+
+  const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
+    ? new Date(summaryStats.oldestCardInReviewTime)
+    : null;
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell></TableCell>
+          <TableCell>Count</TableCell>
+          <TableCell>Oldest</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>Pull Requests</TableCell>
+          <TableCell>{summaryStats.totalOpenPrs}</TableCell>
+          <TableCell>
+            {oldestOpenPrTime ? oldestOpenPrTime.toLocaleString() : "-"}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Review Cards</TableCell>
+          <TableCell>{summaryStats.totalCardsInReview}</TableCell>
+          <TableCell>
+            {oldestCardInReviewTime
+              ? oldestCardInReviewTime.toLocaleString()
+              : "-"}
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+};
+
+const TeamCard = ({
+  team,
+  summaryStats,
+  handleUserGroupClick,
+  filterUsersByGroupName,
+}) => {
+  const filterButtonVariant =
+    team.name === filterUsersByGroupName ? "contained" : "outlined";
+
+  const classes = useStyles();
+  return (
+    <Paper variant="outlined" elevation={2}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
+        {team.name}
+      </Typography>
+      <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
+        <Button
+          variant="outlined"
+          color="default"
+          size="small"
+          startIcon={<LaunchIcon />}
+          className={classes.marginsAlignment}
+        >
+          View
+        </Button>
+      </Link>
+      <Button
+        variant={filterButtonVariant}
+        color="default"
+        size="small"
+        startIcon={<FilterIcon />}
+        onClick={() => handleUserGroupClick(team.name)}
+        className={classes.marginsAlignment}
+      >
+        Filter
+      </Button>
+      {summaryStats ? <TeamSummaryStats summaryStats={summaryStats} /> : ""}
+    </Paper>
+  );
+};
+
+const UserCard = ({ email, user }) => {
+  const classes = useStyles();
+  return (
+    <Paper variant="outlined" elevation={2}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        className={classes.marginsAlignment}
+      >
+        {email}
+      </Typography>
+
+      <LinkToUserBoard
+        userId={user.userId}
+        className={classes.title}
+        label="View"
+      />
+    </Paper>
+  );
+};
 
 export default function Presentation({
   teams,
   users,
+  teamSummaryStats,
   filterByGroup,
   filterByUser,
 
@@ -44,95 +147,60 @@ export default function Presentation({
   handleUserGroupClick,
 }) {
   const classes = useStyles();
-  //   const usersLabel = filterUsersByGroupName ? "": "Users"
   return (
-    <Grid container>
-      <Grid item xs={6} className={classes.grid}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TextField
-                    label="Teams"
-                    variant="outlined"
-                    {...filterByGroup}
-                  />
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {teams.map((group) => {
-                return (
-                  <TableRow
-                    key={group.id}
-                    className={
-                      group.name === filterUsersByGroupName
-                        ? classes.highlightedGroup
-                        : ""
-                    }
-                  >
-                    <Tooltip title="click on the group name to filter users. Click again to cancel the filter">
-                      <TableCell
-                        onClick={() => handleUserGroupClick(group.name)}
-                        className={classes.groupName}
-                      >
-                        <Typography>{group.name}</Typography>
-                      </TableCell>
-                    </Tooltip>
-                    <TableCell>
-                      <Link
-                        to={routes.groupCardSummary.route.path.replace(
-                          ":teamId",
-                          group.id
-                        )}
-                      >
-                        <Button size="small" variant="outlined">
-                          Cards
-                        </Button>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <Paper variant="outlined" elevation={2}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
+            Teams
+          </Typography>
 
-      <Grid item xs={6} className={classes.grid}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TextField
-                    label={`${filterUsersByGroupName} Users`}
-                    variant="outlined"
-                    {...filterByUser}
-                  />
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(users)
-                .sort()
-                .map((email) => {
-                  return (
-                    <TableRow key={email}>
-                      <TableCell>{email}</TableCell>
-                      <TableCell>
-                        <LinkToUserBoard
-                          userId={users[email].userId}
-                          label="Details"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+          <TextField
+            label="Teams"
+            variant="outlined"
+            {...filterByGroup}
+            className={classes.textBoxSize}
+          />
+        </Paper>
+        {teams.map((team) => {
+          return (
+            <TeamCard
+              key={team.id}
+              team={team}
+              summaryStats={teamSummaryStats[team.id]}
+              handleUserGroupClick={handleUserGroupClick}
+              filterUsersByGroupName={filterUsersByGroupName}
+            />
+          );
+        })}
+      </Grid>
+      <Grid item xs={6}>
+        <Paper variant="outlined" elevation={2}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            component="div"
+            className={classes.marginsAlignment}
+          >
+            Users
+          </Typography>
+          <TextField
+            label={`${filterUsersByGroupName} Users`}
+            variant="outlined"
+            {...filterByUser}
+            className={classes.textBoxSize}
+          />
+        </Paper>
+        {Object.keys(users)
+          .sort()
+          .map((email) => {
+            return <UserCard key={email} email={email} user={users[email]} />;
+          })}
       </Grid>
     </Grid>
   );

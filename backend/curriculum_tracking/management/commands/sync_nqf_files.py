@@ -22,6 +22,9 @@ TODAY = timezone.now().date().strftime("%a %d %b %Y")
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        credentials = authorize_creds()
+        service = build("drive", "v3", credentials=credentials)
+
         self.bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
         )
@@ -35,12 +38,17 @@ class Command(BaseCommand):
             url = card.recruit_project.link_submission
             if url:
                 if url.startswith("https://drive.google.com/"):
-                    self.sync_card_link(card)
+                    self.sync_card_drive_link(card, service)
+                elif url.startswith("https://docs.google.com/"):
+                    self.sync_card_drive_link(card, service)
                 else:
+                    # print(f"skipping: {url}")
+                    # continue
+
                     self.add_review(
                         card,
                         NOT_YET_COMPETENT,
-                        "Please follow the submission instructions exactly: Upload the document to google drive and submit a link. Do not submit other kinds of links. The url should start with https://drive.google.com/",
+                        "Please follow the submission instructions exactly: Upload the document to google drive and submit a link",
                     )
             else:
                 self.add_review(
@@ -49,22 +57,46 @@ class Command(BaseCommand):
                     "Please submit a link to your work before asking for a review. Make sure your work is publically accessable so it can be reviewed",
                 )
 
-    def sync_card_link(self, card):
+    # def sync_card_docs_link(self, card):
+    #     user: User = card.assignees.first()
+    #     link = card.recruit_project.link_submission
+    #     print(f"processing link:\n\t{link}")
+
+    #     credentials = authorize_creds()
+    #     service = build("drive", "v3", credentials=credentials)
+    #     breakpoint()
+    #     pass
+
+    def sync_card_drive_link(self, card, service):
+
         user: User = card.assignees.first()
         link = card.recruit_project.link_submission
         print(f"processing link:\n\t{link}")
 
-        credentials = authorize_creds()
-        service = build("drive", "v3", credentials=credentials)
+        extension = (
+            "docx"  # If we ever support other file types then this will stop working
+        )
+        filename = f"{user.last_name} {user.first_name} [{user.id}] {card.content_item.title} {TODAY}.{extension}"
+        file_path = DESTINATION / filename
 
-        found = re.search("https://drive.google.com/file/d/(.*)/", link)
+        if file_path.exists():
+            print("already downloaded")
+            return
+
+        import time
+
+        time.sleep(10)
+
+        found = re.search("https://drive.google.com/file/d/(.*)/", link) or re.search(
+            "https://docs.google.com/document/d/(.*)/", link
+        )
         if found:
             file_id = found.groups()[0]
         else:
             self.add_review(
                 card,
                 RED_FLAG,
-                "This link is not valid. Please link to a specific file in your google drive. The link should look like this: https://drive.google.com/file/d/SOME_WEIRD_STUFF/...",
+                "This link is not valid. Please link to a specific file in your google drive. The link should look like this: https://docs.google.com/file/d/SOME_WEIRD_STUFF/...",
             )
             return
 
@@ -96,10 +128,9 @@ class Command(BaseCommand):
             )
             return
 
-        filename = f"{user.last_name} {user.first_name} [{user.id}] {card.content_item.title} {TODAY}.{extension}"
         request = service.files().get_media(fileId=file_id)
 
-        with open(DESTINATION / filename, "wb") as fh:
+        with open(file_path, "wb") as fh:
             downloader = MediaIoBaseDownload(fh, request)
             done = False
             while done is False:
@@ -115,7 +146,6 @@ class Command(BaseCommand):
         )
 
         if not has_review:
-            # breakpoint()
             self.add_review(
                 card,
                 COMPETENT,

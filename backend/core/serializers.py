@@ -1,4 +1,3 @@
-# from rest_framework.decorators import permission_classes
 from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -116,7 +115,7 @@ class WhoAmISerializer(serializers.ModelSerializer):
     def get_is_superuser(self, instance):
         return int(instance.user.is_superuser)
 
-    def get_permissions(self, instance):
+    def get_permissions(self, instance: Token):
         return instance.user.get_permissions()
 
     # def get_teams(self, instance):
@@ -131,8 +130,3 @@ class UserErrorSerialiser(serializers.Serializer):
         fields = ["message"]
 
     message = serializers.CharField()
-
-
-class UserStatsSerializer(serializers.Serializer):
-    class Meta:
-        fields = []

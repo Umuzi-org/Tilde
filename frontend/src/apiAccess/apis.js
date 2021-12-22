@@ -63,6 +63,14 @@ async function teamsPage({ page }) {
   return { response, responseData };
 }
 
+async function teamsSummaryStatsPage({ page }) {
+  const limit = 10;
+  const offset = calculateOffset({ page, limit });
+  const url = `${API_BASE_URL}/api/teams/summary_stats/?active=true&limit=${limit}&offset=${offset}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
 async function teamEntity({ teamId }) {
   const url = `${API_BASE_URL}/api/teams/${teamId}`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -71,6 +79,12 @@ async function teamEntity({ teamId }) {
 
 async function userEntity({ userId }) {
   const url = `${API_BASE_URL}/api/users/${userId}/`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
+async function userDetailedStatsEntity({ userId }) {
+  const url = `${API_BASE_URL}/api/users/${userId}/stats/`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -322,49 +336,37 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
 }
 
 export default {
-  // TODO: get rid of this. Rather just export the functions individually
-  everyone: {
     whoAmI,
     logout,
     authenticateWithOneTimeToken,
     teamsPage,
     teamEntity,
     userEntity,
-  },
-
-  recruits: {
+    teamsSummaryStatsPage,
+    userDetailedStatsEntity,
     recruitProjectsPage,
     personallyAssignedAgileCardsPage,
-
     recruitProjectEntity,
     topicProgressEntity,
     recruitProjectReviewsPage,
     topicProgressReviewsPage,
-
     repositoryEntity,
     repositoryCommitsPage,
     repositoryPullRequestsPage,
-
     startProject,
     requestReview,
     cancelReviewRequest,
     addReview,
-
     startTopic,
     stopTopic,
     finishTopic,
-
     setProjectLinkSubmission,
     userActionsCardsCompletedPage,
-  },
-  staff: {
     cohortsPage,
     cohortRecruits,
     markWorkshopAttendance,
     cancelWorkshopAttendance,
-
     personallyAssignedCardSummariesPage,
     personallyAssignedCardSummaryEntity,
     agileCardEntity,
-  },
 };

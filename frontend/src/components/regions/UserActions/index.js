@@ -4,11 +4,10 @@ import Presentation from "./Presentation";
 // https://api.github.com/users/sheenarbw/events
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 
-import { cardDetailsModalOperations } from "../CardDetailsModal/redux";
 import { ACTION_NAMES } from "./constants";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
 // TODO: look nice
 
@@ -28,7 +27,6 @@ function UserActionsUnconnected({
   cardSummaries,
   fetchProjectReviewsPages,
   fetchCardCompletions,
-  openCardDetailsModal,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
@@ -59,10 +57,6 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
-  const handleClickOpenProjectDetails = ({ cardId }) => {
-    openCardDetailsModal({ cardId });
-  };
-
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
@@ -91,7 +85,7 @@ function UserActionsUnconnected({
 
   const getTimeFields = (date) => {
     if (!date) {
-      console.log("date is falsy!!!!!!!!!!!!!");
+      console.warn("date is falsy!!!!!!!!!!!!!");
       return {};
     }
 
@@ -147,7 +141,6 @@ function UserActionsUnconnected({
     orderedDates,
     actionLogByDate,
     anyLoading,
-    handleClickOpenProjectDetails,
     handleScroll,
   };
   return <Presentation {...props} />;
@@ -155,9 +148,9 @@ function UserActionsUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
-    projectReviews: state.Entities.projectReviews || {},
-    cardSummaries: state.Entities.projectSummaryCards || {},
+    users: state.apiEntities.users || {},
+    projectReviews: state.apiEntities.projectReviews || {},
+    cardSummaries: state.apiEntities.projectSummaryCards || {},
     authedUserId: state.App.authUser.userId,
     FETCH_RECRUIT_PROJECT_REVIEWS_PAGE:
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
@@ -190,10 +183,6 @@ const mapDispatchToProps = (dispatch) => {
           data: { userId: parseInt(userId) },
         })
       );
-    },
-
-    openCardDetailsModal: ({ cardId }) => {
-      dispatch(cardDetailsModalOperations.openCardDetailsModal({ cardId }));
     },
   };
 };
