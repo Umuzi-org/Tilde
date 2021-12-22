@@ -43,18 +43,18 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(data_yesterday["date"], str(self.yesterday.date()))
         self.assertEqual(data_yesterday["total"], 2)
 
-    # def test_list_api_filter_by_effected_user(self):
-    #     url = f"{self.get_list_url()}?effected_user={self.entry1.effected_user.id}"
-    #     response = self.client.get(url)
-    #     self.assertEqual(len(response.data), 1)
+    def test_list_api_filter_by_effected_user(self):
+        url = f"{self.get_list_url()}?effected_user={self.entry1.effected_user.id}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
 
-    #     self.assertEqual(response.data[0]["count"], 1)
-    #     self.assertEqual(response.data[0]["date"], self.today)
+        self.assertEqual(response.data[0]["total"], 1)
+        self.assertEqual(response.data[0]["date"], str(self.today.date()))
 
-    # def test_list_api_filter_by_event_type(self):
-    #     url = f"{self.get_list_url()}?event_type__name={self.entry1.event_type.name}"
-    #     response = self.client.get(url)
-    #     self.assertEqual(len(response.data), 1)
+    def test_list_api_filter_by_event_type(self):
+        url = f"{self.get_list_url()}?event_type__name={self.entry1.event_type.name}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
 
-    #     self.assertEqual(response.data[0]["count"], 1)
-    #     self.assertEqual(response.data[0]["date"], self.today)
+        self.assertEqual(response.data[0]["total"], 1)
+        self.assertEqual(response.data[0]["date"], str(self.today.date()))
