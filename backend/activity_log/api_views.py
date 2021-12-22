@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers
 from django.db.models.functions import Cast
-from django.db.models import DateField, Count
+from django.db.models import DateField, Count, Value, CharField
 import core.permissions as core_permissions
 from core.models import Team
 from . import models
@@ -38,8 +38,13 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         )
         query = query.values("date").annotate(total=Count("date"))
         query = query.order_by("-date")
-        # TODO: annotate filters
-        # breakpoint()
+
+        filters = "&".join(
+            [f"{key}={value}" for key, value in self.request.GET.items()]
+        )
+
+        query = query.annotate(filters=Value(filters, output_field=CharField()))
+
         return query
 
 

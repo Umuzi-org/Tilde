@@ -14,7 +14,10 @@ class ActivityLogDayCountSerializer(serializers.Serializer):
     total = serializers.SerializerMethodField("get_total")
 
     def get_id(self, instance):
-        return "foo"
+        result = f"date={str(instance['date'])}"
+        if instance["filters"]:
+            return f"{result}&{instance['filters']}"
+        return result
 
     def get_date(self, instance):
         return str(instance["date"])
