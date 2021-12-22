@@ -1,4 +1,13 @@
 from rest_framework.permissions import BasePermission
+from core.models import Team
+
+
+def get_teams_from_user_filter(filter_name):
+    def _get_teams_from_user_filter(self, request, view):
+        user_ids = get_clean_user_ids_from_filter(request, filter_name)
+        return Team.get_teams_from_user_ids(user_ids)
+
+    return _get_teams_from_user_filter
 
 
 class DenyAll(BasePermission):
@@ -92,6 +101,7 @@ class IsReadOnly(BasePermission):
 
 class IsMyUser(BasePermission):
     def has_permission(self, request, view):
+        # breakpoint()
         instance = view.get_object()
         return request.user == instance
 

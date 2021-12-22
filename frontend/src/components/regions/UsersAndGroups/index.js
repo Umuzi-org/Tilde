@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Presentation from "./Presentation.js";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 // import operations from "./redux/operations.js";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
@@ -63,11 +63,15 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
-  //   console.log(users)
   return users;
 }
 
-function UsersAndGroupsUnconnected({ fetchteamsPages, teams }) {
+function UsersAndGroupsUnconnected({
+  teams,
+  teamSummaryStats,
+  fetchTeamsPages,
+  fetchTeamSummaryStatsPages,
+}) {
   const [
     formState,
     { filterByGroup, filterByUser },
@@ -97,6 +101,7 @@ function UsersAndGroupsUnconnected({ fetchteamsPages, teams }) {
       filterByUser.value,
       filterUsersByGroupName
     ),
+    teamSummaryStats,
     filterByGroup,
     filterByUser,
     filterUsersByGroupName,
@@ -104,28 +109,36 @@ function UsersAndGroupsUnconnected({ fetchteamsPages, teams }) {
   };
 
   React.useEffect(() => {
-    fetchteamsPages({
-      dataSequence: [
-        { page: 1 },
-        { page: 2 },
-        { page: 3 },
-        { page: 4 },
-        { page: 5 },
-      ],
+    const dataSequence = [
+      { page: 1 },
+      { page: 2 },
+      { page: 3 },
+      { page: 4 },
+      { page: 5 },
+      { page: 6 },
+      { page: 7 },
+      { page: 8 },
+    ];
+
+    fetchTeamsPages({
+      dataSequence,
     });
-  }, [fetchteamsPages]);
+
+    fetchTeamSummaryStatsPages({ dataSequence });
+  }, [fetchTeamsPages, fetchTeamSummaryStatsPages]);
 
   return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
   return {
-    teams: state.Entities.teams || {},
+    teams: state.apiEntities.teams || {},
+    teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const fetchteamsPages = ({ dataSequence }) => {
+  const fetchTeamsPages = ({ dataSequence }) => {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
@@ -133,8 +146,19 @@ const mapDispatchToProps = (dispatch) => {
     );
   };
 
+  const fetchTeamSummaryStatsPages = ({ dataSequence }) => {
+    dispatch(
+      apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
+        {
+          dataSequence,
+        }
+      )
+    );
+  };
+
   return {
-    fetchteamsPages,
+    fetchTeamsPages,
+    fetchTeamSummaryStatsPages,
   };
 };
 

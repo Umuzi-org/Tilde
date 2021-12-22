@@ -3,13 +3,33 @@ import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
+import UserDashboard from "./components/regions/UserDashboard";
+import CardDetails from "./components/regions/CardDetails";
+import Redirector from "./components/regions/Redirector";
+import TeamDashboard from "./components/pages/TeamDashboard";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
+import TeamNavBar from "./components/regions/TeamNavBar";
 const exact = true;
 
 export const routes = {
+  homeRedirect: {
+    route: {
+      exact,
+      path: "/",
+      component: Redirector, // todo: fix spelling
+    },
+    sliderNavigation: {
+      //     //these get used to draw buttons in the left hand side slider/hamburger menu
+      icon: () => "B",
+      label: "Your Board",
+      helpText: "Your board",
+    },
+    show: () => true,
+  },
+
   groupNav: {
     route: {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
@@ -33,38 +53,6 @@ export const routes = {
         }
       }
     },
-  },
-
-  board: {
-    route: {
-      // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
-      exact,
-      path: "/",
-      component: AgileBoard,
-    },
-    sliderNavigation: {
-      //these get used to draw buttons in the left hand side slider/hamburger menu
-      icon: () => "B",
-      label: "Board",
-      helpText: "Your personal board",
-    },
-    show: () => true,
-  },
-
-  actions: {
-    route: {
-      // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
-      exact,
-      path: "/actions",
-      component: UserActions,
-    },
-    sliderNavigation: {
-      //these get used to draw buttons in the left hand side slider/hamburger menu
-      icon: () => "A",
-      label: "Actions",
-      helpText: "Your personal action log",
-    },
-    show: () => true,
   },
 
   userNavBar: {
@@ -91,7 +79,16 @@ export const routes = {
     },
   },
 
+  teamNavBar: {
+    route: {
+      exact: false,
+      path: "/teams/:teamId/",
+      component: TeamNavBar,
+    },
+  },
+
   groupCardSummary: {
+    // todo Rename this to teamCardSummary
     route: {
       exact,
       path: "/teams/:teamId/card_summary",
@@ -100,11 +97,40 @@ export const routes = {
     show: () => true,
   },
 
+  teamDashboard: {
+    // todo Rename this to teamCardSummary
+    route: {
+      exact,
+      path: "/teams/:teamId/dashboard",
+      component: TeamDashboard,
+    },
+    show: () => true,
+  },
+
   profile: {
+    // TODO: What is in this component? Can we just delete it?
     route: {
       exact,
       path: "/people/:id",
       component: UserProfile,
     },
+  },
+
+  userDashboard: {
+    route: {
+      exact,
+      path: "/users/:userId/dashboard",
+      component: UserDashboard,
+    },
+  },
+
+  cardDetails: {
+    route: {
+      exact,
+      path: "/card/:cardId",
+      component: CardDetails,
+    },
+
+    show: () => true,
   },
 };

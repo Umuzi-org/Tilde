@@ -1,3 +1,0 @@
-export default {
-  SET_CARD_DETAILS_MODAL_OPEN: "SET_CARD_DETAILS_MODAL_OPEN",
-};

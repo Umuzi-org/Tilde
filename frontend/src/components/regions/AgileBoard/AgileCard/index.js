@@ -1,19 +1,15 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import { cardDetailsModalOperations } from "../../CardDetailsModal/redux";
-import { getLatestMatchingCall } from "../../../../utils/ajaxRedux";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { addCardReviewOperations } from "../../AddCardReviewModal/redux";
-
-// import { markSingleCardWorkshopAttendanceOperations } from "../../MarkSingleCardAttendanceModal/redux";
-
-import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 
 function AgileCardUnconnected({
   card,
+  repoUrl,
   authUser,
   viewedUser,
-  openCardDetailsModal,
   startProject,
   requestReview,
   cancelReviewRequest,
@@ -34,10 +30,6 @@ function AgileCardUnconnected({
   CARD_ADD_WORKSHOP_ATTENDANCE,
 }) {
   const cardId = card.id;
-
-  const handleClickOpenCardDetails = () => {
-    openCardDetailsModal({ cardId });
-  };
 
   const handleClickOpenWorkshopAttendanceForm = () => {
     // openWorkshopAttendanceModal({ cardId });
@@ -110,9 +102,10 @@ function AgileCardUnconnected({
 
   const props = {
     card,
-    handleClickOpenCardDetails,
+
     handleClickAddReview,
 
+    repoUrl,
     authUser,
     viewedUser,
     filterUserId,
@@ -154,10 +147,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    openCardDetailsModal: ({ cardId }) => {
-      dispatch(cardDetailsModalOperations.openCardDetailsModal({ cardId }));
-    },
-
     startProject: ({ cardId }) => {
       dispatch(
         apiReduxApps.CARD_START_PROJECT.operations.start({

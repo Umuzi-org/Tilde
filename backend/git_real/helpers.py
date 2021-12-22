@@ -2,8 +2,20 @@ import base64
 from social_auth.github_api import Api
 from git_real import models
 from git_real.constants import GITHUB_DATETIME_FORMAT, GITHUB_DEFAULT_TIMEZONE
-from timezone_helpers import timestamp_str_to_tz_aware_datetime
+from timezone_helpers import (
+    timestamp_str_to_tz_aware_datetime,
+    timestamp_int_to_tz_aware_datetime,
+)
 from django.http import Http404
+
+
+def github_timestamp_int_to_tz_aware_datetime(timestamp):
+    if timestamp:
+        return timestamp_int_to_tz_aware_datetime(
+            timestamp=timestamp,
+            zone_name=GITHUB_DEFAULT_TIMEZONE,
+        )
+    return None
 
 
 def strp_github_standard_time(timestamp: str):

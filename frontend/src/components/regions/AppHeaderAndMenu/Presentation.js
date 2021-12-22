@@ -21,15 +21,12 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
 
-import CardDetailsModal from "../CardDetailsModal";
 import AddCardReviewModal from "../AddCardReviewModal";
 
 import Avatar from "@material-ui/core/Avatar";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => {
-  // console.log("xxxxxxxxxxxxxxxx");
-  // console.log(theme.mixins.toolbar);
   return {
     root: {
       display: "flex",
@@ -85,10 +82,10 @@ const useStyles = makeStyles((theme) => {
       }),
       width: theme.spacing(7),
       [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9),
-      },
+        width: theme.spacing(0),
+      }
     },
-    appBarSpacer: { ...theme.mixins.toolbar, background: "blue" },
+    appBarSpacer: { ...theme.mixins.toolbar },
 
     childContainer: {
       height: `calc(100% - ${
@@ -155,7 +152,6 @@ export default function Presentation(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <CardDetailsModal />
       <AddCardReviewModal />
       {/* <MarkSingleCardAttendanceModal /> */}
 

@@ -1,7 +1,12 @@
+from git_real.models import PullRequest, PullRequestReview
 from . import models
 from rest_framework import serializers
 from django.db.models import Q
 from core import models as core_models
+from datetime import timedelta
+from django.utils import timezone
+from config.models import NameSpace
+from taggit.models import Tag
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -177,10 +182,19 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "can_force_start",
             "open_pr_count",
             "oldest_open_pr_updated_time",
+            "repo_url",
+            "users_that_reviewed_since_last_review_request",
         ]
 
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
+        "get_users_that_reviewed_since_last_review_request"
+    )
 
-class cardsummarySerializer(serializers.ModelSerializer):
+    def get_users_that_reviewed_since_last_review_request(self, instance):
+        return instance.get_users_that_reviewed_since_last_review_request()
+
+
+class CardSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AgileCard
         fields = [
@@ -205,6 +219,8 @@ class cardsummarySerializer(serializers.ModelSerializer):
             "code_review_red_flag_since_last_review_request",
             "code_review_ny_competent_since_last_review_request",
             "open_pr_count",
+            "oldest_open_pr_updated_time",
+            "repo_url",
         ]
 
 
@@ -322,3 +338,288 @@ class WorkshopAttendanceSerializer(serializers.ModelSerializer):
             "content_item",
             "attendee_user",
         ]
+
+
+class UserStatsPerWeekSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = [
+            "id",
+            "cards_in_completed_column_as_assignee",
+            "cards_in_review_column_as_assignee",
+            "cards_in_review_feedback_column_as_assignee",
+            "cards_in_progress_column_as_assignee",
+            "cards_completed_last_7_days_as_assignee",
+            "cards_started_last_7_days_as_assignee",
+            "total_tilde_reviews_done",
+            "tilde_reviews_done_last_7_days",
+            "total_pr_reviews_done",
+            "pr_reviews_done_last_7_days",
+            "tilde_cards_reviewed_in_last_7_days",
+            # "tilde_review_disagreements_in_last_7_days",
+        ]
+
+    cards_in_completed_column_as_assignee = serializers.SerializerMethodField(
+        "get_cards_in_complete_column_as_assignee"
+    )
+    cards_in_review_column_as_assignee = serializers.SerializerMethodField(
+        "get_cards_in_review_column_as_assignee"
+    )
+    cards_in_review_feedback_column_as_assignee = serializers.SerializerMethodField(
+        "get_cards_in_review_feedback_column_as_assignee"
+    )
+    cards_in_progress_column_as_assignee = serializers.SerializerMethodField(
+        "get_cards_in_progress_column_as_assignee"
+    )
+    cards_completed_last_7_days_as_assignee = serializers.SerializerMethodField(
+        "get_cards_completed_last_7_days_as_assignee"
+    )
+    cards_started_last_7_days_as_assignee = serializers.SerializerMethodField(
+        "get_cards_started_last_7_days_as_assignee"
+    )
+    total_tilde_reviews_done = serializers.SerializerMethodField(
+        "get_total_tilde_reviews_done"
+    )
+    tilde_reviews_done_last_7_days = serializers.SerializerMethodField(
+        "get_tilde_reviews_done_last_7_days"
+    )
+    tilde_cards_reviewed_in_last_7_days = serializers.SerializerMethodField(
+        "get_tilde_cards_reviewed_in_last_7_days"
+    )
+
+    # tilde_review_disagreements_in_last_7_days = serializers.SerializerMethodField(
+    #     "get_tilde_review_disagreements_in_last_7_days"
+    # )
+
+    total_pr_reviews_done = serializers.SerializerMethodField(
+        "get_total_pr_reviews_done"
+    )
+    pr_reviews_done_last_7_days = serializers.SerializerMethodField(
+        "get_pr_reviews_done_last_7_days"
+    )
+
+    def get_cards_in_complete_column_as_assignee(self, user):
+        cards_in_completed_column_as_assignee_amount = models.AgileCard.objects.filter(
+            status=models.AgileCard.COMPLETE, assignees=user.id
+        ).count()
+
+        return cards_in_completed_column_as_assignee_amount
+
+    def get_cards_in_review_column_as_assignee(self, user):
+        cards_in_review_column_as_assignee_amount = models.AgileCard.objects.filter(
+            status=models.AgileCard.IN_REVIEW, assignees=user.id
+        ).count()
+
+        return cards_in_review_column_as_assignee_amount
+
+    def get_cards_in_review_feedback_column_as_assignee(self, user):
+        cards_in_review_feedback_column_as_assignee_amount = (
+            models.AgileCard.objects.filter(
+                status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
+            ).count()
+        )
+
+        return cards_in_review_feedback_column_as_assignee_amount
+
+    def get_cards_in_progress_column_as_assignee(self, user):
+        cards_in_progress_column_as_assignee = models.AgileCard.objects.filter(
+            status=models.AgileCard.IN_PROGRESS, assignees=user.id
+        ).count()
+
+        return cards_in_progress_column_as_assignee
+
+    def get_cards_completed_last_7_days_as_assignee(self, user):
+        cards_completed_past_seven_days = models.AgileCard.objects.filter(
+            status=models.AgileCard.COMPLETE,
+            assignees=user.id,
+            recruit_project__complete_time__gte=timezone.now() - timedelta(days=7),
+        ).count()
+
+        return cards_completed_past_seven_days
+
+    def get_cards_started_last_7_days_as_assignee(self, user):
+        cards_started_past_seven_days = models.AgileCard.objects.filter(
+            assignees=user.id,
+            recruit_project__start_time__gte=timezone.now() - timedelta(days=7),
+        ).count()
+
+        return cards_started_past_seven_days
+
+    def get_total_tilde_reviews_done(self, user):
+        project_reviews_done_to_date = (
+            models.RecruitProjectReview.objects.filter(reviewer_user_id=user.id)
+            .count()
+        )
+
+        topic_reviews_done_to_date = (
+            models.TopicReview.objects.filter(reviewer_user_id=user.id).count()
+        )
+
+        return project_reviews_done_to_date + topic_reviews_done_to_date
+
+    def get_tilde_cards_reviewed_in_last_7_days(self, user):
+
+        tilde_project_reviews_done_in_past_seven_days = (
+            models.RecruitProjectReview.objects.filter(
+                reviewer_user_id=user.id,
+                timestamp__gte=timezone.now() - timedelta(days=7),
+            )
+        )
+
+        tilde_topic_reviews_done_in_past_seven_days = models.TopicReview.objects.filter(
+            reviewer_user_id=user.id,
+            timestamp__gte=timezone.now() - timedelta(days=7),
+        )
+
+        return (
+            models.AgileCard.objects.filter(
+                Q(
+                    recruit_project__project_reviews__in=tilde_project_reviews_done_in_past_seven_days
+                )
+                | Q(
+                    topic_progress__topic_reviews__in=tilde_topic_reviews_done_in_past_seven_days
+                )
+            )
+            .distinct()
+            .count()
+        )
+
+    def get_tilde_reviews_done_last_7_days(self, user):
+        project_reviews_done_last_7_days = (
+            models.RecruitProjectReview.objects.filter(
+                reviewer_user_id=user.id,
+                timestamp__gte=timezone.now() - timedelta(days=7),
+            )
+            .count()
+        )
+
+        topic_reviews_done_last_7_days = (
+            models.TopicReview.objects.filter(
+                reviewer_user_id=user.id,
+                timestamp__gte=timezone.now() - timedelta(days=7),
+            )
+            .count()
+        )
+
+        return project_reviews_done_last_7_days + topic_reviews_done_last_7_days
+
+    def get_total_pr_reviews_done(self, user):
+        pr_reviews_done_to_date = PullRequestReview.objects.filter(
+            user=user
+        ).count()
+
+        return pr_reviews_done_to_date
+
+    def get_pr_reviews_done_last_7_days(self, user):
+        pr_reviews_done_past_seven_days = PullRequestReview.objects.filter(
+            user=user, submitted_at__gte=timezone.now() - timedelta(days=7)
+        ).count()
+
+        return pr_reviews_done_past_seven_days
+
+
+class TeamStatsSerializer(serializers.ModelSerializer):
+    CONFIGURATION_NAMESPACE = "curriculum_tracking/serializers/TeamStatsSerializer"
+
+    class Meta:
+        model = core_models.Team
+        fields = [
+            "id",
+            "name",  # TODO: remove this field once api accessable via gui
+            "oldest_open_pr_time",
+            "total_open_prs",
+            "oldest_card_in_review_time",
+            "total_cards_in_review",
+        ]
+
+    oldest_open_pr_time = serializers.SerializerMethodField("get_oldest_open_pr_time")
+    total_open_prs = serializers.SerializerMethodField("get_total_open_prs")
+    oldest_card_in_review_time = serializers.SerializerMethodField(
+        "get_oldest_card_in_review_time"
+    )
+    total_cards_in_review = serializers.SerializerMethodField(
+        "get_total_cards_in_review"
+    )
+
+    def _get_config_EXCLUDE_TAGS_FROM_REVIEW_STATS(self):
+        config = NameSpace.get_config(self.CONFIGURATION_NAMESPACE)
+        tag_names = config.EXCLUDE_TAGS_FROM_REVIEW_STATS
+        return [
+            instance
+            for instance, _ in [
+                Tag.objects.get_or_create(name=name) for name in tag_names
+            ]
+        ]
+
+    def _get_open_prs(self, instance):
+        users = instance.user_set.filter(active=True)
+        return PullRequest.objects.filter(state=PullRequest.OPEN).filter(
+            repository__recruit_projects__agile_card__assignees__in=users
+        )
+
+    def _get_review_agile_cards(self, instance):
+        skip_tags = self._get_config_EXCLUDE_TAGS_FROM_REVIEW_STATS()
+
+        users = instance.user_set.filter(active=True)
+        result = models.AgileCard.objects.filter(
+            status=models.AgileCard.IN_REVIEW
+        ).filter(assignees__in=users)
+        return result.filter(~Q(content_item__tags__in=skip_tags))
+
+    def get_oldest_open_pr_time(self, instance):
+        pr = self._get_open_prs(instance).order_by("created_at").first()
+        if pr is not None:
+            return pr.created_at
+
+    def get_total_open_prs(self, instance):
+        return self._get_open_prs(instance).count()
+
+    def get_oldest_card_in_review_time(self, instance):
+        card = (
+            self._get_review_agile_cards(instance)
+            .order_by("recruit_project__review_request_time")
+            .first()
+        )
+        if card is not None:
+            if card.recruit_project is not None:
+                return card.recruit_project.review_request_time
+            if card.topic_progress is not None:
+                return card.topic_progress.review_request_time
+            raise Exception(
+                f"card has no progress id:\n\tcard id: {card.id}\n\tcard: {card}"
+            )
+
+    def get_total_cards_in_review(self, instance):
+        return self._get_review_agile_cards(instance).count()
+
+
+class BurnDownSnapShotSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.BurndownSnapshot
+        fields = [
+            "id",
+            "user",
+            "timestamp",
+            "cards_total_count",
+            "project_cards_total_count",
+            "cards_in_complete_column_total_count",
+            "project_cards_in_complete_column_total_count",
+        ]
+
+
+class ReviewTrustSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ReviewTrust
+        fields = [
+            "id",
+            "content_item",
+            "content_item_title",
+            "flavour_names",
+            "user",
+        ]
+
+    content_item_title = serializers.SerializerMethodField('get_content_item_title')
+
+    def get_content_item_title(self, review_trust: object):
+        return review_trust.content_item.title

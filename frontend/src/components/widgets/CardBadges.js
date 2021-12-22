@@ -10,12 +10,16 @@ import MoodBadIcon from "@material-ui/icons/MoodBad";
 import { Chip, Tooltip } from "@material-ui/core";
 
 import { getAgeString } from "./utils";
+import { repoUrlCleaner } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
     },
+  },
+  widgetStyle: {
+    textDecoration: "none",
   },
 }));
 
@@ -40,9 +44,9 @@ export default ({ card }) => {
     codeReviewNyCompetentSinceLastReviewRequest,
     codeReviewRedFlagSinceLastReviewRequest,
     openPrCount,
+    repoUrl,
     oldestOpenPrUpdatedTime,
   } = card;
-
   return (
     <div className={classes.root}>
       {codeReviewCompetentSinceLastReviewRequest ? (
@@ -98,17 +102,24 @@ export default ({ card }) => {
 
       {openPrCount ? (
         <Tooltip title="Number of open pull requests on this card and their age">
-          <Badge badgeContent={openPrCount} color="primary"> 
-            {oldestOpenPrUpdatedTime === null ? (
-              <CallMergeIcon />
-            ) : (
-              <Chip
-              avatar={<CallMergeIcon />}
-              className={classes.chip}
-              label={getAgeString(oldestOpenPrUpdatedTime)}
-            />
-            )}
-          </Badge>
+          <a
+            className={classes.widgetStyle}
+            href={repoUrlCleaner(repoUrl)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <Badge badgeContent={openPrCount} color="primary">
+              {oldestOpenPrUpdatedTime === null ? (
+                <CallMergeIcon />
+              ) : (
+                <Chip
+                  avatar={<CallMergeIcon />}
+                  className={classes.chip}
+                  label={getAgeString(oldestOpenPrUpdatedTime)}
+                />
+              )}
+            </Badge>
+          </a>
         </Tooltip>
       ) : (
         <React.Fragment />

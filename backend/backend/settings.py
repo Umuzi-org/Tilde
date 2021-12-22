@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     "social_auth.apps.SocialAuthConfig",
     "dev_helpers.apps.DevHelpersConfig",
     "config.apps.ConfigConfig",
+    "activity_log.apps.ActivityLogConfig",
 ]
 
 SITE_ID = 1  # from allauth docs
@@ -334,11 +335,11 @@ LOGGING = {  # TODO: copy this back into template project
             "level": "INFO",
             "propagate": False,
         },
-        # "django.server": {
-        #     "handlers": ["console"],
-        #     "level": "INFO",
-        #     "propagate": False,
-        # },
+        "django.server": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

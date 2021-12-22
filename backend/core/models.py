@@ -12,7 +12,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
-
 from django.contrib.auth.models import PermissionsMixin
 
 
@@ -63,13 +62,6 @@ class UserManager(BaseUserManager):
             is_admin=True,
         )
         return user
-
-
-# class Group(AuthGroup):
-#     class Meta:
-#         proxy = True
-#         app_label = "core"
-#         verbose_name = "Group"
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -161,7 +153,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Curriculum(models.Model, Mixins):
-    name = models.CharField(max_length=40)  # eg: data engineering
+    name = models.CharField(max_length=100)  # eg: data engineering
     url = models.URLField(
         max_length=2083,
         blank=True,
@@ -245,11 +237,20 @@ class Team(AuthGroup, Mixins):
     PERMISSION_TRUSTED_REVIEWER = PERMISSION_TRUSTED_REVIEWER
 
     PERMISSION_VIEW = [
+        # anyone with these permissions get to navigate to a specific team on the frontend and see the status of all the cards.
         PERMISSION_MANAGE_CARDS,
         PERMISSION_VIEW_ALL,
         PERMISSION_ASSIGN_REVIEWERS,
         PERMISSION_REVIEW_CARDS,
         PERMISSION_TRUSTED_REVIEWER,
+    ]
+
+    PERMISSION_REPO_COLLABORATER_AUTO_ADD = [
+        # when a repo is created then folks with these permissions get added to the repo as collaborators
+        PERMISSION_MANAGE_CARDS,
+        PERMISSION_VIEW_ALL,
+        PERMISSION_ASSIGN_REVIEWERS,
+        PERMISSION_REVIEW_CARDS,
     ]
 
     sponsor_organisation = models.ForeignKey(
@@ -321,3 +322,43 @@ class Team(AuthGroup, Mixins):
                 if team.active and team.id not in yielded:
                     yielded.append(team.id)
                     yield team
+
+
+class Stream(models.Model):
+    """a collection of curriculums. Eg someone might need to do a soft skills curriculum and then a web dev part 1 curriculum"""
+
+    name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class StreamCurriculum(models.Model):
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+
+    class Meta(object):
+        ordering = ["order"]
+        unique_together = ["stream", "curriculum"]
+
+    def __str__(self) -> str:
+        return super().__str__()
+
+
+class StreamRegistration(models.Model):
+    """This could be linked to a learnership contract, but it could also be a bootcamp situation"""
+
+    name = models.CharField(max_length=100, help_text="eg: Cohort 30")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    ideal_end_date = models.DateField(null=True, blank=True)
+    latest_end_date = models.DateField()
+    stream = models.ForeignKey(Stream, on_delete=models.PROTECT)
+    employer_partner = models.ForeignKey(
+        Organisation, on_delete=models.PROTECT, blank=True, null=True
+    )
+    active = models.BooleanField(default=True)
+
+    def __str__(self) -> str:
+        return f"{self.user} {self.name}"

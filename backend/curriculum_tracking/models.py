@@ -1,5 +1,7 @@
+from datetime import timedelta
 from typing import List
 from django.db import models
+from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -31,10 +33,12 @@ class ReviewableMixin:
         if user.is_superuser:
             return True
 
-        teams = self.get_teams()
-        for team in teams:
-            if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
-                return True
+        if not self.content_item.title.startswith("Assessment"):
+            # assessment cards need to have individual trust applied
+            teams = self.get_teams(assignees_only=True)
+            for team in teams:
+                if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
+                    return True
 
         trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
         for trust in trusts:
@@ -191,6 +195,19 @@ class ContentItemOrder(models.Model, Mixins):
         return self.post.title
 
 
+class LearningOutcome(models.Model, Mixins):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+
+    @classmethod
+    def get_next_available_id(cls):
+        """get the next available content item id"""
+        from django.db.models import Max
+
+        max_id = cls.objects.aggregate(Max("id"))["id__max"]
+        return (max_id or 0) + 1
+
+
 class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     # NQF_ASSESSMENT = "N"
     PROJECT = "P"
@@ -241,6 +258,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
 
     tags = TaggableManager(blank=True)
+    learning_outcomes = models.ManyToManyField(
+        "LearningOutcome", blank=True, related_name="content_items"
+    )
 
     flavours = models.ManyToManyField(
         taggit.models.Tag,
@@ -494,11 +514,11 @@ class RecruitProject(
                     result.append(user)
         return result
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.recruit_users.all()] + [
-            user.id for user in self.reviewer_users.all()
-        ]
+        user_ids = [user.id for user in self.recruit_users.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewer_users.all()])
         return Team.get_teams_from_user_ids(user_ids)
 
     def reviews_queryset(self):
@@ -536,8 +556,8 @@ class RecruitProject(
         collaborator_users = {
             "reviewer users": list(self.reviewer_users.filter(active=True)),
             "assigned users": list(self.recruit_users.filter(active=True)),
-            "users with view permission": self.get_users_with_permission(
-                Team.PERMISSION_VIEW
+            "users with explicit permission": self.get_users_with_permission(
+                Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD
             ),
         }
 
@@ -612,7 +632,6 @@ class RecruitProject(
     def setup_repository(self, add_collaborators=True):
         from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
         from git_real.helpers import (
-            create_org_repo,
             upload_readme,
             protect_master,
         )
@@ -638,6 +657,7 @@ class RecruitProject(
         api = Api(github_auth_login)
 
         repo = self._get_or_create_repo(api)
+        assert repo.user == recruit_user
 
         assert (
             repo != None
@@ -814,13 +834,28 @@ class RecruitProjectReview(models.Model, Mixins):
         negative = [NOT_YET_COMPETENT, RED_FLAG]
         if other.trusted:
             if self.status in positive and other.status in positive:
-                self.validated = RecruitProjectReview.CORRECT
+                if self.is_first_review_after_request():
+                    self.validated = RecruitProjectReview.CORRECT
             else:
                 self.validated = RecruitProjectReview.INCORRECT
         else:
             if self.status in positive and other.status in negative:
                 self.validated = RecruitProjectReview.CONTRADICTED
         self.save()
+
+    def is_first_review_after_request(self):
+        request_time = self.recruit_project.review_request_time
+        if not request_time:
+            return False
+        if request_time > self.timestamp:
+            return False
+        first_review = (
+            RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .order_by("timestamp")
+            .first()
+        )
+
+        return self == first_review
 
 
 class TopicProgress(
@@ -955,6 +990,8 @@ class AgileCard(
     # curriculum and what they h\ave done so far. Sometimes they really shouldn't be pruned.
     # this field is filled in by signals
 
+    __original_status = None
+
     @property
     def progress_instance(self):
         if self.recruit_project_id:
@@ -964,12 +1001,23 @@ class AgileCard(
         if self.workshop_attendance_id:
             return self.workshop_attendance
 
+    def __init__(self, *args, **kwargs):
+        super(AgileCard, self).__init__(*args, **kwargs)
+        self.__original_status = self.status
+
     def save(self, *args, **kwargs):
         if self.content_item.project_submission_type == ContentItem.NO_SUBMIT:
             raise ValidationError(
                 f"Nosubmit Project cannot be converted to a card. {self.content_item}"
             )
         super(AgileCard, self).save(*args, **kwargs)
+
+        if (
+            AgileCard.COMPLETE in [self.status, self.__original_status]
+            and self.status != self.__original_status
+        ):
+            for user in self.assignees.all():
+                BurndownSnapshot.create_snapshot(user)
 
     def status_ready_or_blocked(self):
         """if there was no progress on this card, would the status be READY or BLOCKED?It would be blocked if the prerequisites are not met"""
@@ -979,12 +1027,20 @@ class AgileCard(
             return self.BLOCKED
         return self.READY
 
-    def get_teams(self):
+    def get_teams(self, assignees_only=False):
         """return the teams of the users invoved in this project"""
-        user_ids = [user.id for user in self.assignees.all()] + [
-            user.id for user in self.reviewers.all()
-        ]
+        user_ids = [user.id for user in self.assignees.all()]
+        if not assignees_only:
+            user_ids.extend([user.id for user in self.reviewers.all()])
         return Team.get_teams_from_user_ids(user_ids)
+
+    @property
+    def repo_url(self):
+        if not self.recruit_project:
+            return None
+        if not self.recruit_project.repository:
+            return None
+        return self.recruit_project.repository.ssh_url
 
     @property
     def due_time(self):
@@ -1023,7 +1079,6 @@ class AgileCard(
         return self.project.link_submission
 
     def __str__(self):
-        # feel free to edit this
         return f"{self.status}:{self.content_item}"
 
     @classmethod
@@ -1371,3 +1426,66 @@ class AgileCard(
                 if self.recruit_project:
                     self.recruit_project.reviewer_users.add(user)
         self.save()
+
+    def get_users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
+
+        if self.content_item.content_type == ContentItem.PROJECT:
+            reviews = RecruitProjectReview.objects.filter(
+                recruit_project=self.recruit_project
+            )
+
+        elif self.content_item.content_type == ContentItem.TOPIC:
+            reviews = TopicReview.objects.filter(topic_progress=self.topic_progress)
+
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
+
+        return [review.reviewer_user_id for review in reviews]
+
+
+# class ExtraTeamConfig(models.Model, Mixins):
+#     team = models.ForeignKey(Team,on_delete=models.CASCADE)
+#     pr_is_high_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     pr_medium_priority_if_older_than = models.DurationField(null=True, blank=True)
+#     card_review_is_high_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
+#     card_review_medium_priority_if_older_than = models.DurationField(
+#         null=True, blank=True
+#     )
+class BurndownSnapshot(models.Model):
+    MIN_HOURS_BETWEEN_SNAPSHOTS = 4
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    cards_total_count = models.SmallIntegerField()
+    project_cards_total_count = models.SmallIntegerField()
+    cards_in_complete_column_total_count = models.SmallIntegerField()
+    project_cards_in_complete_column_total_count = models.SmallIntegerField()
+
+    @classmethod
+    def create_snapshot(Cls, user):
+        match = Cls.objects.filter(
+            user=user,
+            timestamp__gte=timezone.now()
+            - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
+        ).first()
+
+        if match:
+            # there was a snapshot taken recently, no need to store another one
+            return match
+
+        cards = AgileCard.objects.filter(assignees=user)
+        project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)
+
+        complete_cards = cards.filter(status=AgileCard.COMPLETE)
+        complete_project_cards = project_cards.filter(status=AgileCard.COMPLETE)
+
+        return Cls.objects.create(
+            user=user,
+            cards_total_count=cards.count(),
+            project_cards_total_count=project_cards.count(),
+            cards_in_complete_column_total_count=complete_cards.count(),
+            project_cards_in_complete_column_total_count=complete_project_cards.count(),
+        )
