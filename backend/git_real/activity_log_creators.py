@@ -68,6 +68,8 @@ def log_pr_reviewed(pull_request_review):
         object_1=pull_request_review,
         object_2=pull_request_review.pull_request.repository,
         event_type=event_type,
+        timestamp=pull_request_review.submitted_at,
+        debounce_seconds=False,
     )
 
 

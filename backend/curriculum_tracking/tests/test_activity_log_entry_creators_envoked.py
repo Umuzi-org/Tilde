@@ -1,6 +1,7 @@
 """for each of the log entry creators in curriculum_tracking.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 from rest_framework.test import APITestCase
+
 from test_mixins import APITestCaseMixin
 from . import factories
 from core.tests.factories import UserFactory
