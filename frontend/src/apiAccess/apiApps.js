@@ -52,6 +52,8 @@ const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mist
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
 
+const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
+
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
     BASE_TYPE: WHO_AM_I,
@@ -95,6 +97,13 @@ export const apiReduxApps = {
     BASE_TYPE: LOGOUT,
     apiCaller: apiCallers.logout,
     reasonsNotToStart: [],
+  }),
+
+  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
+    apiCaller: apiCallers.activityLogDayCountsPage,
+    responseIsList: true,
+    responseEntityType: "activityLogDayCounts",
   }),
 
   FETCH_RECRUIT_PROJECTS_PAGE: createReduxApp({
