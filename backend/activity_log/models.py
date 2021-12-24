@@ -39,7 +39,11 @@ class LogEntry(models.Model):
     )
 
     effected_user = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="log_entries_as_effected_user"
+        User,
+        on_delete=models.PROTECT,
+        related_name="log_entries_as_effected_user",
+        null=True,
+        blank=True,
     )
 
     # object_1 = models.ForeignKey(ObjectEffected)
