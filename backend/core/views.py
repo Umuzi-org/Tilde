@@ -1,4 +1,4 @@
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer, CardSummarySerializer, AgileCardSerializer
+from curriculum_tracking.serializers import UserStatsPerWeekSerializer, CardSummarySerializer, NoArgs
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -150,18 +150,23 @@ class TeamViewSet(viewsets.ModelViewSet):
     #     return Response("TODO")
 
     @action(
-        detail=False,
+        detail=True,
         methods=["POST"],
         serializer_class=CardSummarySerializer,
         permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
     )
     def bulk_set_due_dates(self, request, pk=None):
 
-        team: models.Team = models.Team.objects.filter(name=request.data.get('team')).first()
-        team_cards = get_team_cards(team, request.data.get('content_item'))
-        [card.set_due_time(request.data.get('due_time')) for card in team_cards]
+        team: models.Team = models.Team.objects.get(pk=pk)
+        serializer = self.get_serializer(data=request.data)
 
-        return Response(AgileCardSerializer([card for card in team_cards][0]).data)
+        if serializer.is_valid():
+            team_cards = get_team_cards(team, serializer.validated_data.get('content_item'))
+            [
+                card.set_due_time(request.data.get('due_time')) for card in team_cards if
+                card.flavour_names in [[serializer.validated_data.get('flavour_names')]]
+            ]
+        return Response(CardSummarySerializer([card for card in team_cards][0]).data)
 
 
 def _get_teams_from_user(self, request, view):

@@ -222,11 +222,11 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
-            "team",
+            "flavour_names"
         ]
 
-    team = serializers.ChoiceField(core.models.Team.objects.filter(active=True))
     due_time = serializers.DateTimeField()
+    flavour_names = serializers.ChoiceField(choices=['JAVASCRIPT', 'PYTHON', 'JAVA'])
 
 
 class NoArgs(serializers.Serializer):

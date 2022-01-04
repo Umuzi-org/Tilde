@@ -142,7 +142,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
     def setUp(self):
 
-        self.api_url = f'{self.get_list_url()}bulk_set_due_dates/'
+        self.api_url = f'{self.get_list_url()}'
 
         self.blue_team = factories.TeamFactory(name='BLUE TEAM')
         self.red_team = factories.TeamFactory(name='RED TEAM')
@@ -163,12 +163,12 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         card = AgileCardFactory(recruit_project=project)
         card.reviewers.add(self.user_one_red)
         card.assignees.add(self.user_two_red)
-
-        self.login(self.user_one_red)
-        response = self.client.post(path=self.api_url, format="json", data={
-            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.red_team)
+        self.login(self.user_one_red)   # /api/teams/1/bulk_set_due_dates/
+        response = self.client.post(path=f'{self.api_url}{str(self.red_team.id)}/bulk_set_due_dates/', format="json", data={
+            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.red_team),
+            'flavour_names': 'JAVASCRIPT'
         })
-
+        breakpoint()
         self.assertEqual(response.status_code, 403)
 
     def test_team_members_cannot_bulk_set_due_dates_for_teams_they_dont_belong_to(self):
