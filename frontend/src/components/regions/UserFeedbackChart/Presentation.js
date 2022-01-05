@@ -8,13 +8,16 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import orange from "@material-ui/core/colors/orange";
+import green from "@material-ui/core/colors/green";
+import red from "@material-ui/core/colors/red";
+import blue from "@material-ui/core/colors/blue";
 import { data } from "./CardDataStats";
 
 data.map(
   (date) =>
     (date.timestamp = new Date(date.timestamp).toISOString().slice(0, 10))
 );
-const colorArr = ["orange", "green", "black", "blue"];
 export default () => {
   return (
     <div>
@@ -37,19 +40,19 @@ export default () => {
         <Line
           type="monotone"
           dataKey="cardsTotalCount"
-          stroke={colorArr[2]}
+          stroke={orange[400]}
           activeDot={{ r: 8 }}
         />
-        <Line type="monotone" dataKey="projectCardsTotalCount" stroke={colorArr[1]} />
+        <Line type="monotone" dataKey="projectCardsTotalCount" stroke={green[400]} />
         <Line
           type="monotone"
           dataKey="cardsInCompleteColumnTotalCount"
-          stroke={colorArr[3]}
+          stroke={red[400]}
         />
         <Line
           type="monotone"
           dataKey="projectCardsInCompleteColumnTotalCount"
-          stroke={colorArr[0]}
+          stroke={blue[400]}
         />
       </LineChart>
     </div>
