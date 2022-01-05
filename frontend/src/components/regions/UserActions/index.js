@@ -4,10 +4,10 @@ import Presentation from "./Presentation";
 // https://api.github.com/users/sheenarbw/events
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 import { ACTION_NAMES } from "./constants";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
 // TODO: look nice
 
@@ -148,9 +148,9 @@ function UserActionsUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
-    projectReviews: state.Entities.projectReviews || {},
-    cardSummaries: state.Entities.projectSummaryCards || {},
+    users: state.apiEntities.users || {},
+    projectReviews: state.apiEntities.projectReviews || {},
+    cardSummaries: state.apiEntities.projectSummaryCards || {},
     authedUserId: state.App.authUser.userId,
     FETCH_RECRUIT_PROJECT_REVIEWS_PAGE:
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,

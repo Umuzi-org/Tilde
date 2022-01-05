@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
 const arrayToObjectWithIdKeys = ({ data }) => {
   let dataAsObject = {};
@@ -177,8 +177,8 @@ const GroupCardSummaryUnconnected = ({
 };
 
 const mapStateToProps = (state) => {
-  const cards = state.Entities.projectSummaryCards || {};
-  const teams = state.Entities.teams || {};
+  const cards = state.apiEntities.projectSummaryCards || {};
+  const teams = state.apiEntities.teams || {};
   const { FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE } = state;
 
   return {

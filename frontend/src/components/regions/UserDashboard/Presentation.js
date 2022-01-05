@@ -4,8 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import TeamsTable from "../UserDetails/TeamsTable";
 import UserDetailedStats from "./UserDetailedStats";
 
-// TODO: should we include the user teams here?
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),

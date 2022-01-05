@@ -632,7 +632,6 @@ class RecruitProject(
     def setup_repository(self, add_collaborators=True):
         from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
         from git_real.helpers import (
-            create_org_repo,
             upload_readme,
             protect_master,
         )
@@ -658,6 +657,7 @@ class RecruitProject(
         api = Api(github_auth_login)
 
         repo = self._get_or_create_repo(api)
+        assert repo.user == recruit_user
 
         assert (
             repo != None
@@ -1455,8 +1455,6 @@ class AgileCard(
 #     card_review_medium_priority_if_older_than = models.DurationField(
 #         null=True, blank=True
 #     )
-
-
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
     timestamp = models.DateTimeField(auto_now_add=True)
