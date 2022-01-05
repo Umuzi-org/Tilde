@@ -1,6 +1,4 @@
 from rest_framework.test import APITestCase
-from pathlib import Path
-import json
 from django.urls import reverse
 from git_real import views
 from git_real.models import PullRequest, PullRequestReview, Push
@@ -16,21 +14,7 @@ from django.utils import timezone
 import dateutil.parser
 
 # from timezone_helpers import timestamp_zoned_str_to_tz_aware_datetime
-
-
-def get_asset(name):
-    path = Path(__file__).parent / "assets" / f"{name}.json"
-    with open(path, "r") as f:
-        return json.load(f)
-
-
-def get_body_and_headers(asset_name):
-    headers = get_asset(f"{asset_name}_request_headers")
-
-    body = get_asset(f"{asset_name}_request_body")
-    body["headers"] = headers
-
-    return body, headers
+from .utils import get_body_and_headers
 
 
 class TestPullRequestEvents(APITestCase):
@@ -208,7 +192,6 @@ class PushEventTests(APITestCase):
         pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
             int(repository["pushed_at"])
         )
-
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.count(), 1)
@@ -229,3 +212,16 @@ class PushEventTests(APITestCase):
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.count(), 1)
+
+
+class TestNoHeadCommitInPushEvents(APITestCase):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_payload_without_head_commit_details_is_handled_but_not_stored_to_db(
+        self, has_permission
+    ):
+
+        has_permission.return_value = True
+        body, headers = get_body_and_headers("webhook_push")
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+        push_object = Push.create_or_update_from_github_api_data(repo, body)
+        self.assertEqual(Push.objects.count(), 0)

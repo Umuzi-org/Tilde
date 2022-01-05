@@ -1,6 +1,7 @@
-import { createReduxApp } from "../../utils/ajaxRedux";
-import apiCallers from "../apis";
-import { getAuthToken } from "../../utils/authTokenStorage";
+// import { createReduxApp } from "../../utils/ajaxRedux";
+import apiCallers from "./apis";
+import { getAuthToken } from "../utils/authTokenStorage";
+import { createReduxApp } from "@prelude/redux-api-toolbox/src/appCreator";
 
 const WHO_AM_I = "WHO_AM_I";
 const AUTHENTICATE_WITH_ONE_TIME_TOKEN = "AUTHENTICATE_WITH_ONE_TIME_TOKEN";
@@ -51,44 +52,7 @@ const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mist
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
 
-// if you want to maintain a list of objects returned from some list response, then add that base action type here
-export const pagedApiAppTypes = {
-  FETCH_RECRUIT_PROJECTS_PAGE: "projects",
-  FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: "cards",
-  FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: "projectSummaryCards", // TODO rename to summaryCards
-  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: "projectSummaryCards",
-  FETCH_COHORTS_PAGE: "cohorts",
-  FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: "projectReviews",
-  //   FETCH_VERBOSE_RECRUIT_PROJECT_REVIEWS_PAGE: "FETCH_VERBOSE_RECRUIT_PROJECT_REVIEWS_PAGE"
-  FETCH_COMMITS_PAGE: "repoCommits",
-  FETCH_PULL_REQUESTS_PAGE: "pullRequests",
-  FETCH_TEAMS_PAGE: "teams",
-  FETCH_TEAM_SUMMARY_STATS_PAGE: "teamSummaryStats",
-  FETCH_TOPIC_PROGRESS_REVIEWS_PAGE: "topicReviews",
-};
-
-export const entityApiAppTypes = {
-  FETCH_SINGLE_RECRUIT_PROJECT: "projects",
-  FETCH_SINGLE_TOPIC_PRGRESS: "topicProgress",
-  FETCH_SINGLE_REPOSITORY: "repositories",
-  FETCH_SINGLE_TEAM: "teams",
-  CARD_START_PROJECT: "cards",
-  CARD_REQUEST_REVIEW: "cards",
-  CARD_CANCEL_REVIEW_REQUEST: "cards",
-  CARD_ADD_REVIEW: "cards",
-  CARD_START_TOPIC: "cards",
-  CARD_STOP_TOPIC: "cards",
-  CARD_FINISH_TOPIC: "cards",
-  CARD_ADD_WORKSHOP_ATTENDANCE: "cards",
-  CARD_REMOVE_WORKSHOP_ATTENDANCE: "cards",
-  FETCH_SINGLE_AGILE_CARD: "cards",
-  CARD_SET_PROJECT_LINK: "cards",
-
-  FETCH_SINGLE_PROJECT_CARD_SUMMARY: "projectSummaryCards",
-  FETCH_SINGLE_USER: "users",
-  FETCH_SINGLE_USER_DETAILED_STATS: "userDetailedStats",
-  //   WHO_AM_I: "users",
-};
+const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
 
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
@@ -135,146 +99,212 @@ export const apiReduxApps = {
     reasonsNotToStart: [],
   }),
 
+  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
+    apiCaller: apiCallers.activityLogDayCountsPage,
+    responseIsList: true,
+    responseEntityType: "activityLogDayCounts",
+  }),
+
   FETCH_RECRUIT_PROJECTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_RECRUIT_PROJECTS_PAGE,
     apiCaller: apiCallers.recruitProjectsPage,
+    responseIsList: true,
+    responseEntityType: "projects",
   }),
 
   FETCH_TEAMS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TEAMS_PAGE,
     apiCaller: apiCallers.teamsPage,
+    responseIsList: true,
+    responseEntityType: "teams",
   }),
 
   FETCH_TEAM_SUMMARY_STATS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TEAM_SUMMARY_STATS_PAGE,
     apiCaller: apiCallers.teamsSummaryStatsPage,
+
+    responseIsList: true,
+    responseEntityType: "teamSummaryStats",
   }),
 
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     apiCaller: apiCallers.recruitProjectReviewsPage,
+    responseIsList: true,
+    responseEntityType: "projectReviews",
   }),
 
   FETCH_TOPIC_PROGRESS_REVIEWS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_TOPIC_PROGRESS_REVIEWS_PAGE,
     apiCaller: apiCallers.topicProgressReviewsPage,
+    responseIsList: true,
+    responseEntityType: "topicReviews",
   }),
 
   FETCH_SINGLE_TEAM: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_TEAM,
     apiCaller: apiCallers.teamEntity,
+    responseIsList: false,
+    responseEntityType: "teams",
   }),
 
   FETCH_SINGLE_USER: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER,
     apiCaller: apiCallers.userEntity,
+    responseIsList: false,
+    responseEntityType: "users",
   }),
 
   FETCH_SINGLE_USER_DETAILED_STATS: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_USER_DETAILED_STATS,
     apiCaller: apiCallers.userDetailedStatsEntity,
+    responseIsList: false,
+    responseEntityType: "userDetailedStats",
   }),
 
   FETCH_SINGLE_RECRUIT_PROJECT: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_RECRUIT_PROJECT,
     apiCaller: apiCallers.recruitProjectEntity,
+    responseIsList: false,
+    responseEntityType: "projects",
   }),
 
   FETCH_SINGLE_TOPIC_PRGRESS: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_TOPIC_PRGRESS,
     apiCaller: apiCallers.topicProgressEntity,
+    responseIsList: true,
+    responseEntityType: "topicProgress",
   }),
 
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     apiCaller: apiCallers.personallyAssignedAgileCardsPage,
+    responseIsList: true,
+    responseEntityType: "cards",
   }),
 
   FETCH_COHORTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_COHORTS_PAGE,
     apiCaller: apiCallers.cohortsPage,
+    responseEntityType: "cohorts", // TODO: rename to teams. Or remove this if we dont use it
+    responseIsList: true,
   }),
 
   FETCH_SINGLE_REPOSITORY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_REPOSITORY,
     apiCaller: apiCallers.repositoryEntity,
+    responseIsList: true,
+    responseEntityType: "repositories",
   }),
 
   FETCH_COMMITS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_COMMITS_PAGE,
     apiCaller: apiCallers.repositoryCommitsPage,
+    responseEntityType: "repoCommits",
+    responseIsList: true,
   }),
 
   FETCH_PULL_REQUESTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PULL_REQUESTS_PAGE,
     apiCaller: apiCallers.repositoryPullRequestsPage,
+    responseEntityType: "pullRequests",
+    responseIsList: true,
   }),
 
   CARD_SET_PROJECT_LINK: createReduxApp({
     BASE_TYPE: CARD_SET_PROJECT_LINK,
     apiCaller: apiCallers.setProjectLinkSubmission,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_START_PROJECT: createReduxApp({
     BASE_TYPE: CARD_START_PROJECT,
     apiCaller: apiCallers.startProject,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
   CARD_REQUEST_REVIEW: createReduxApp({
     BASE_TYPE: CARD_REQUEST_REVIEW,
     apiCaller: apiCallers.requestReview,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
   CARD_CANCEL_REVIEW_REQUEST: createReduxApp({
     BASE_TYPE: CARD_CANCEL_REVIEW_REQUEST,
     apiCaller: apiCallers.cancelReviewRequest,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
   CARD_ADD_REVIEW: createReduxApp({
     BASE_TYPE: CARD_ADD_REVIEW,
     apiCaller: apiCallers.addReview,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_START_TOPIC: createReduxApp({
     BASE_TYPE: CARD_START_TOPIC,
     apiCaller: apiCallers.startTopic,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_STOP_TOPIC: createReduxApp({
     BASE_TYPE: CARD_STOP_TOPIC,
     apiCaller: apiCallers.stopTopic,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_FINISH_TOPIC: createReduxApp({
     BASE_TYPE: CARD_FINISH_TOPIC,
     apiCaller: apiCallers.finishTopic,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_ADD_WORKSHOP_ATTENDANCE: createReduxApp({
     BASE_TYPE: CARD_ADD_WORKSHOP_ATTENDANCE,
     apiCaller: apiCallers.markWorkshopAttendance,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   CARD_REMOVE_WORKSHOP_ATTENDANCE: createReduxApp({
     BASE_TYPE: CARD_REMOVE_WORKSHOP_ATTENDANCE,
     apiCaller: apiCallers.cancelWorkshopAttendance,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 
   FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
     apiCaller: apiCallers.personallyAssignedCardSummariesPage,
+    responseIsList: true,
+    responseEntityType: "projectSummaryCards", // TODO: rename to summaryCards
   }),
 
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: createReduxApp({
     BASE_TYPE: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     apiCaller: apiCallers.userActionsCardsCompletedPage,
+    responseIsList: true,
+    responseEntityType: "projectSummaryCards",
   }),
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_PROJECT_CARD_SUMMARY,
     apiCaller: apiCallers.personallyAssignedCardSummaryEntity,
+    responseEntityType: "projectSummaryCards",
+    responseIsList: false,
   }),
 
   FETCH_SINGLE_AGILE_CARD: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_AGILE_CARD,
     apiCaller: apiCallers.agileCardEntity,
+    responseEntityType: "cards",
+    responseIsList: false,
   }),
 };
 

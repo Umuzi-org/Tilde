@@ -68,6 +68,14 @@ SKILLS_TEST_COMMON_TECH_BOOT_REQUIREMENTS = "Employed common tech reqirements"
 
 
 SEQUENCE_COURSES = {
+    SEQUENCE_JAVA: [
+        TILDE_INTRO,
+        BOOTCAMP_INTRO,
+        "Java boot camp - quick wins",
+        COMMON_TECH_BOOT_REQUIREMENTS,
+        "Java boot camp",
+        POST_BOOTCAMP_SOFT_SKILLS,
+    ],
     SEQUENCE_DATA_SCI: [
         TILDE_INTRO,
         BOOTCAMP_INTRO,

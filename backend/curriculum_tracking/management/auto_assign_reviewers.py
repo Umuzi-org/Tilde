@@ -142,7 +142,9 @@ def get_possible_competent_reviewers(card):
     ).filter(recruit_users__active__in=[True])
     projects = filter_by_flavour_match(projects, card.flavours.all())
 
-    complete_projects = projects.filter(complete_time__isnull=False)
+    complete_projects = projects.filter(complete_time__isnull=False).filter(
+        Q(agile_card__isnull=True) | Q(agile_card__status=AgileCard.COMPLETE)
+    )
 
     competent_users = (
         User.objects.filter(recruit_projects__in=complete_projects)
