@@ -1,3 +1,4 @@
+import long_running_request_actors
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
 from social_auth.tests.factories import SocialProfileFactory
@@ -239,7 +240,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(project.link_submission, link_2)
 
     @mock.patch.object(RecruitProject, "setup_repository")
-    def setup_project_repo_call_from_api_action_option(self, get_repo):
+    def test_setup_project_repo_call_from_api_action_option(self, setup_repository):
 
         JAVASCRIPT = "js"
         super_user = factories.UserFactory(is_superuser=True)
@@ -255,7 +256,6 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
                 "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
                 "archived": False,
             }
-        get_repo.side_effect = get_repo_mock
 
         content_item = factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
@@ -272,11 +272,11 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         assignee = SocialProfileFactory().user
         card.assignees.set([assignee])
         project = card.recruit_project
-
         url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
         self.login(super_user)
-        self.client.post(url, data={"card_id": card.id})
-        self.assertTrue(project.setup_repository.called)
+        response = self.client.post(path=url, data={"card_id": card.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(project.setup_repository.assert_called)
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
