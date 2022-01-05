@@ -142,8 +142,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
     def setUp(self):
 
-        self.api_url = f'{self.get_list_url()}'
-
         self.blue_team = factories.TeamFactory(name='BLUE TEAM')
         self.red_team = factories.TeamFactory(name='RED TEAM')
         self.user_one_blue = factories.UserFactory(first_name='one_blue', is_superuser=False, is_staff=False)
@@ -163,33 +161,40 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         card = AgileCardFactory(recruit_project=project)
         card.reviewers.add(self.user_one_red)
         card.assignees.add(self.user_two_red)
-        self.login(self.user_one_red)   # /api/teams/1/bulk_set_due_dates/
-        response = self.client.post(path=f'{self.api_url}{str(self.red_team.id)}/bulk_set_due_dates/', format="json", data={
+        self.login(self.user_two_red)
+        url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        response = self.client.post(path=url, format="json", data={
             'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.red_team),
-            'flavour_names': 'JAVASCRIPT'
+            'flavour_names': 'JAVASCRIPT', 'status': card.status
         })
-        breakpoint()
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_team_members_cannot_bulk_set_due_dates_for_teams_they_dont_belong_to(self):
-
-        self.login(self.user_one_blue)
-        response = self.client.post(self.api_url, format="json", data={
-            'due_time': '2021-12-03T14:17', 'content_item': '2', 'team': str(self.red_team)
-        })
-        self.assertEqual(response.data["detail"].code, "permission_denied")
-
-    def test_super_user_can_bulk_set_due_dates_for_a_team(self):
 
         project = RecruitProjectFactory(due_time=None)
         card = AgileCardFactory(recruit_project=project)
         card.reviewers.add(self.user_one_blue)
+        card.assignees.add(self.user_one_red)
+        self.login(self.user_one_blue)
+        url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        response = self.client.post(path=url, format="json", data={
+            'due_time': '2021-12-03T14:17', 'content_item': '2', 'team': str(self.red_team),
+            'flavour_names': 'JAVASCRIPT', 'status': card.status
+        })
+        self.assertEqual(response.status_code, 404)
+
+    def test_super_user_can_bulk_set_due_dates_for_a_team(self):
+
+        project = RecruitProjectFactory(due_time=None)
+        card = AgileCardFactory(recruit_project=project, flavours=['JAVASCRIPT'])
+        card.reviewers.add(self.user_one_blue)
         card.assignees.add(self.user_two_blue)
         self.assertIsNone(card.due_time)
-
         self.login(self.super_user)
-        response = self.client.post(path=self.api_url, format='json', data={
-            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.blue_team)
+        url = f'{self.get_instance_url(pk=self.blue_team.id)}bulk_set_due_dates/'
+        response = self.client.post(path=url, format='json', data={
+            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.blue_team),
+            'flavour_names': 'JAVASCRIPT', 'status': card.status
         })
 
         self.assertEqual(response.status_code, 200)
@@ -203,18 +208,23 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         different content_item should not have it's due_time updated, it should be left as it is.
         """
         project = RecruitProjectFactory(due_time=None)
-        card_1 = AgileCardFactory(recruit_project=project)
+        card_1 = AgileCardFactory(recruit_project=project, flavours=['JAVASCRIPT'])
         card_1.assignees.add(self.user_one_red)
-        card_2 = AgileCardFactory(recruit_project=RecruitProjectFactory(due_time=None), content_item=card_1.content_item)
+        card_2 = AgileCardFactory(
+            recruit_project=RecruitProjectFactory(due_time=None), content_item=card_1.content_item,
+            flavours=['JAVASCRIPT']
+        )
         card_2.assignees.add(self.user_two_red)
-        card_3 = AgileCardFactory(recruit_project=RecruitProjectFactory(due_time=None))
+        card_3 = AgileCardFactory(recruit_project=RecruitProjectFactory(due_time=None), flavours=['JAVASCRIPT'])
         card_3.assignees.add(self.user_two_red)
         self.assertEqual(card_1.content_item, card_2.content_item)
         self.assertNotEqual(card_1.content_item, card_3.content_item)
 
         self.login(self.super_user)
-        response = self.client.post(self.api_url, format='json', data={
-            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team)
+        url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        response = self.client.post(path=url, format='json', data={
+            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team),
+            'flavour_names': 'JAVASCRIPT', 'status': card_1.status
         })
         self.assertEqual(response.status_code, 200)
 
