@@ -33,10 +33,12 @@ class ReviewableMixin:
         if user.is_superuser:
             return True
 
-        teams = self.get_teams(assignees_only=True)
-        for team in teams:
-            if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
-                return True
+        if not self.content_item.title.startswith("Assessment"):
+            # assessment cards need to have individual trust applied
+            teams = self.get_teams(assignees_only=True)
+            for team in teams:
+                if user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team):
+                    return True
 
         trusts = ReviewTrust.objects.filter(user=user, content_item=self.content_item)
         for trust in trusts:
