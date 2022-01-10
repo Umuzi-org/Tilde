@@ -9,7 +9,6 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 import Loading from "../../widgets/Loading";

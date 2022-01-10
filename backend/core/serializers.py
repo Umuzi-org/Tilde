@@ -1,4 +1,3 @@
-# from rest_framework.decorators import permission_classes
 from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
