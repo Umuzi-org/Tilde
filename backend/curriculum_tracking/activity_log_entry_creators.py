@@ -64,7 +64,7 @@ COMPETENCE_REVIEW_DONE = "COMPETENCE_REVIEW_DONE"
 
 def log_project_competence_review_done(review):
     event_type, _ = EventType.objects.get_or_create(name=COMPETENCE_REVIEW_DONE)
-    for user in review.recruit_project.recruit_users.all():     # Not sure why the For loop is needed, the particular card will only have one user assigned to it
+    for user in review.recruit_project.recruit_users.all():
 
         LogEntry.debounce_create(
             actor_user=review.reviewer_user,
