@@ -82,8 +82,8 @@ class LogEntry(models.Model):
         event_type,
         actor_user,
         effected_user,
-        object_1,
-        object_2=None,
+        object_1,       # RecruitProjectReview object
+        object_2=None,  # RecruitProject object
         debounce_seconds=120,
         timestamp=None,
     ):

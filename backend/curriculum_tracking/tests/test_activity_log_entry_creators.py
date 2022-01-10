@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .factories import RecruitProjectReviewFactory, TopicReviewFactory
+from .factories import RecruitProjectReviewFactory, TopicReviewFactory, UserFactory
 import curriculum_tracking.activity_log_entry_creators as creators
 from activity_log.models import LogEntry
 
@@ -23,6 +23,18 @@ class log_project_competence_review_done_Tests(TestCase):
         creators.log_project_competence_review_done(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
 
+    def test_two_entries_created_for_two_reviews_with_second_done_within_debounce_period_by_another_user(self):
+        review1 = RecruitProjectReviewFactory()
+        review2 = RecruitProjectReviewFactory(
+            status=review1.status,
+            timestamp=review1.timestamp,
+            comments=review1.comments,
+            recruit_project=review1.recruit_project,
+            reviewer_user=UserFactory()
+        )
+        creators.log_project_competence_review_done(review1)
+        creators.log_project_competence_review_done(review2)
+        self.assertEqual(LogEntry.objects.count(), 2)
 
 class log_topic_competence_review_done_Tests(TestCase):
     def test_that_timestamp_properly_set(self):
@@ -38,5 +50,19 @@ class log_topic_competence_review_done_Tests(TestCase):
 
         review2 = TopicReviewFactory()
         creators.log_topic_competence_review_done(review2)
+        creators.log_topic_competence_review_done(review2)
+        self.assertEqual(LogEntry.objects.count(), 2)
+
+    def test_two_entries_created_for_two_reviews_with_second_done_within_debounce_period_by_another_user(self):
+        review1 = TopicReviewFactory()
+        review2 = TopicReviewFactory(
+            status=review1.status,
+            timestamp=review1.timestamp,
+            comments=review1.comments,
+            topic_progress=review1.topic_progress,
+            reviewer_user=UserFactory()
+        )
+
+        creators.log_topic_competence_review_done(review1)
         creators.log_topic_competence_review_done(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
