@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
+// TODO: refactor this. Rather make use of EntityNavBar.
+// look at how the team nav bar works
+
 const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   let urlParams = useParams() || {};
 
@@ -18,7 +21,7 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
 
   const url = window.location.href;
 
-  const userBoardSelected = url.endsWith("/board"); // these match the urls in routes.js
+  const userBoardSelected = url.endsWith("/board"); // these match the urls in routes.js. Could be more DRY
   const userActionsSelected = url.endsWith("/actions");
   const userDashboardSelected = url.endsWith("/dashboard");
 
