@@ -13,20 +13,16 @@ PRIORITY_MEDIUM = 50
 PRIORITY_HIGH = 0
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
-django.setup()
-#### NB dont import any models until ADTER django.setup is called
-
-
+from dramatiq.brokers.stub import StubBroker
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from backend.settings import (
     RABBITMQ_USER,
     RABBITMQ_HOST,
     RABBITMQ_PASSWORD,
     RABBITMQ_PORT,
+    BUSY_UNIT_TESTING,
 )
 
-from social_auth.models import SocialProfile
 
 connection = {}
 if RABBITMQ_PASSWORD:
@@ -34,7 +30,17 @@ if RABBITMQ_PASSWORD:
         "url"
     ] = f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}"
 
-rabbitmq_broker = RabbitmqBroker(**connection)
+if BUSY_UNIT_TESTING:
+    rabbitmq_broker = StubBroker()
+    rabbitmq_broker.emit_after("process_boot")
+else:
+    rabbitmq_broker = RabbitmqBroker(**connection)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+    django.setup()
+
+#### NB dont import any models until AFTER django.setup is called
+
+
 dramatiq.set_broker(rabbitmq_broker)
 
 MINUTE = 60 * 1000
@@ -52,7 +58,9 @@ def test_long_running_request():
 @dramatiq.actor()
 def recruit_project_setup_repository(project_id):
     from curriculum_tracking.models import RecruitProject
+    from django.db import connection
 
+    print(connection.settings_dict)
     project = RecruitProject.objects.get(pk=project_id)
     project.setup_repository()
 

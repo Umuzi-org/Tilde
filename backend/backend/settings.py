@@ -21,7 +21,6 @@ BUSY_UNIT_TESTING = "test" in sys.argv
 RUNNING_IN_GAE = bool(os.getenv("GAE_APPLICATION", False))
 # BASE_URL = os.getenv("BASE_URL")
 
-
 err = "Cant run unit tests on GAE cloud"
 if BUSY_UNIT_TESTING:
     assert not RUNNING_IN_GAE, err
