@@ -1,5 +1,4 @@
 import dramatiq
-
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
 from social_auth.tests.factories import SocialProfileFactory
@@ -247,7 +246,6 @@ class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
     def test_setup_project_repo_call_from_api_action_option(self, setup_repository):
 
         from long_running_request_actors import recruit_project_setup_repository
-
         broker = dramatiq.get_broker()
         worker = dramatiq.Worker(broker, worker_timeout=100)
         worker.start()

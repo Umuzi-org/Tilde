@@ -24,7 +24,6 @@ import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
 from rest_framework import filters
-import dramatiq
 
 
 def _get_teams_from_topic_progress(self, request, view):
