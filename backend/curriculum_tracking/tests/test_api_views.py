@@ -257,22 +257,6 @@ class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
         JAVASCRIPT = "js"
         super_user = factories.UserFactory(is_superuser=True)
 
-        def get_repo_mock(
-            github_auth_login="",
-            repo_full_name="",
-            api=None,
-            response404=None,
-            add_collaborators=None,
-        ):
-            return {
-                "full_name": f"me/{repo_full_name}",
-                "owner": {"login": "me"},
-                "ssh_url": f"https://{repo_full_name}.git",
-                "private": True,
-                "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
-                "archived": False,
-            }
-
         content_item = factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.REPOSITORY,

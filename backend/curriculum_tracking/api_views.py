@@ -565,8 +565,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         detail=True,
         methods=["POST"],
         serializer_class=serializers.NoArgs,
-        permission_classes=[(curriculum_permissions.IsCardAssignee) | IsStaffUser | HasObjectPermission(
+        permission_classes=[
+            curriculum_permissions.IsCardAssignee | IsStaffUser | HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card
             )
         ]
     )
