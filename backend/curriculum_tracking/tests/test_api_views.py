@@ -1,3 +1,5 @@
+import dramatiq
+
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
 from social_auth.tests.factories import SocialProfileFactory
@@ -244,14 +246,10 @@ class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_setup_project_repo_call_from_api_action_option(self, setup_repository):
 
-        from long_running_request_actors import (
-            rabbitmq_broker,
-            recruit_project_setup_repository,
-        )
-        from dramatiq import Worker
+        from long_running_request_actors import recruit_project_setup_repository
 
-        rabbitmq_broker.flush_all()
-        worker = Worker(rabbitmq_broker, worker_timeout=100)
+        broker = dramatiq.get_broker()
+        worker = dramatiq.Worker(broker, worker_timeout=100)
         worker.start()
 
         JAVASCRIPT = "js"
@@ -276,9 +274,8 @@ class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
         self.login(super_user)
         response = self.client.post(path=url, data={"card_id": card.id})
 
-        rabbitmq_broker.join(
-            recruit_project_setup_repository.queue_name, fail_fast=True
-        )
+        # The .join function allows the broker and the worker to finish their processes
+        broker.join(recruit_project_setup_repository.queue_name)
         worker.join()
 
         self.assertEqual(response.status_code, 200)
