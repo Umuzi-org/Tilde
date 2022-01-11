@@ -1,6 +1,6 @@
 // import { takeLatest, put } from "redux-saga/effects";
 // import operations from "./operations";
-// import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+// import { apiReduxApps } from "../../../../apiAccess/apiApps";
 
 // function* addWorkshopAttendanceSideEffects() {
 //   yield put(operations.closeCardReviewForm());

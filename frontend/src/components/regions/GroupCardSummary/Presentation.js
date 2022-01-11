@@ -9,7 +9,6 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 import Loading from "../../widgets/Loading";
@@ -31,11 +30,17 @@ const useStyles = makeStyles((theme) => {
       }, 
     },
     title: {
-      marginLeft: "16px",
+      marginLeft: "8px",
       ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
         fontSize: "1.5rem",
-        marginLeft: "16px",
+        marginLeft: "8px",
       }, 
+    },
+      subTitle: {
+        marginLeft: "8px",
+        ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
+          marginLeft: "8px",
+        }, 
     },
     container: {
       // width: 912 - 200,
@@ -71,7 +76,7 @@ export default ({
                     {/* <Typography variant="caption">
                   [order:{column.order}]
                 </Typography> */}
-                    <Typography variant="subtitle1">{column.label}</Typography>
+                    <Typography className={classes.subTitle} variant="subtitle1">{column.label}</Typography>
                     {/* <ViewContentButtonSmall
                     contentUrl={column.url}
                     contentItemId={column.id}

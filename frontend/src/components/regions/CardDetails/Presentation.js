@@ -86,8 +86,6 @@ const CardBasicDetails = ({ card }) => {
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
           <StoryPoints storyPoints={card.storyPoints} />
-        </Grid>
-        <Grid item xs={0.5} sm={0.5} md={0.5}>
           <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
@@ -153,6 +151,7 @@ export default ({
   showAddReviewButton,
   linkSubmission,
   formErrors,
+  repoUrl,
 }) => {
   const classes = useStyles();
 

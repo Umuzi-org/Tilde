@@ -10,7 +10,7 @@ class NameSpace(
     Mixins,
 ):
     name = models.CharField(max_length=250)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -22,7 +22,11 @@ class NameSpace(
     @classmethod
     def get_config(Klass, namespace: str):
         """all the configuration in this namespace as a namedtuple"""
-        instance = Klass.objects.get(name=namespace)
+        try:
+            instance = Klass.objects.get(name=namespace)
+        except Klass.DoesNotExist:
+            print(f"namespace = {namespace}")
+            raise
         values = Value.objects.filter(namespace=instance)
         name_value_pairs = [(value.name, value.get()) for value in values]
 
