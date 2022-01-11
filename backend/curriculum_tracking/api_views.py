@@ -843,7 +843,7 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
     ]
 
 
-class ManagmentActionsViewSet(viewsets.ViewSet, GenericAPIView):
+class ManagmentActionsViewSet(viewsets.ViewSet):
 
     serializer_class = serializers.NoArgs
 
