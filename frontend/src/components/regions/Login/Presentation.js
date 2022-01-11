@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "0",
     width: "20px",
     padding: "0",
-  }
+  },
 }));
 
 const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
@@ -85,11 +85,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           label="Remember me"
         />
 
-        <Link
-          className={classes.linkStyles}
-          underline="always"
-          href="#"
-        >
+        <Link className={classes.linkStyles} underline="always" href="#">
           Forgot Password?
         </Link>
       </Box>
@@ -109,9 +105,7 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         </Divider>
       </Box>
       <div>
-        <Button
-          className={classes.buttonStyle}
-      <div>
+        <Button className={classes.buttonStyle} />
         <Button type="submit" variant="contained" color="primary">
           Login
         </Button>
