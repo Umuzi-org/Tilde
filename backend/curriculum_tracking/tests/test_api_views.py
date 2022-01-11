@@ -1,23 +1,25 @@
-import long_running_request_actors
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
 from social_auth.tests.factories import SocialProfileFactory
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from . import factories
 from core.tests import factories as core_factories
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview, RecruitProject, AgileCard
+from curriculum_tracking.models import (
+    ContentItem,
+    RecruitProjectReview,
+    RecruitProject,
+    AgileCard,
+)
 from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
 import mock
-
-
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -66,7 +68,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         return topic_progress
 
 
-class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
+class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     FIELDS_THAT_CAN_BE_FALSEY = [
@@ -242,11 +244,25 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_setup_project_repo_call_from_api_action_option(self, setup_repository):
 
+        from long_running_request_actors import (
+            rabbitmq_broker,
+            recruit_project_setup_repository,
+        )
+        from dramatiq import Worker
+
+        rabbitmq_broker.flush_all()
+        worker = Worker(rabbitmq_broker, worker_timeout=100)
+        worker.start()
+
         JAVASCRIPT = "js"
         super_user = factories.UserFactory(is_superuser=True)
 
         def get_repo_mock(
-            github_auth_login="", repo_full_name="", api=None, response404=None, add_collaborators=None
+            github_auth_login="",
+            repo_full_name="",
+            api=None,
+            response404=None,
+            add_collaborators=None,
         ):
             return {
                 "full_name": f"me/{repo_full_name}",
@@ -275,8 +291,15 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
         self.login(super_user)
         response = self.client.post(path=url, data={"card_id": card.id})
+
+        rabbitmq_broker.join(
+            recruit_project_setup_repository.queue_name, fail_fast=True
+        )
+        worker.join()
+
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(project.setup_repository.assert_called)
+        project.setup_repository.assert_called()
+        worker.stop()
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
@@ -418,7 +441,7 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 
 class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
-    LIST_URL_NAME = 'reviewtrust-list'
+    LIST_URL_NAME = "reviewtrust-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
@@ -455,14 +478,17 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
             user=factories.UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(review_trust_object.user)
-        response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
+        response = self.client.get(f"{self.api_url}?user={review_trust_object.user.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get('content_item_title'), review_trust_object.content_item.title)
+        self.assertEqual(
+            response.data[0].get("content_item_title"),
+            review_trust_object.content_item.title,
+        )
 
 
 class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
-    LIST_URL_NAME = 'burndownsnapshot-list'
+    LIST_URL_NAME = "burndownsnapshot-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
@@ -488,16 +514,20 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
             user=UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(burndown_snapshot_object.user)
-        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
+        response = self.client.get(
+            f"{self.api_url}?user__id={burndown_snapshot_object.user.id}"
+        )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get('user'), burndown_snapshot_object.user.id)
+        self.assertEqual(response.data[0].get("user"), burndown_snapshot_object.user.id)
 
-    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(self):
+    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(
+        self,
+    ):
 
         for user in self.team1_users:
             self.login(user)
-            response = self.client.get(f'{self.api_url}?user__id={user.id}')
+            response = self.client.get(f"{self.api_url}?user__id={user.id}")
             self.assertEqual(response.status_code, 200)
 
     def test_team1_users_cannot_view_team2_burndown_snapshot_objects(self):
@@ -507,7 +537,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
         for user in self.team1_users:
             self.login(user)
-            response = self.client.get(f'{self.api_url}?user__id={[user.id for user in team2_users]}')
+            response = self.client.get(
+                f"{self.api_url}?user__id={[user.id for user in team2_users]}"
+            )
             self.assertEqual(response.status_code, 403)
-
-
