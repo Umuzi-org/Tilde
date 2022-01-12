@@ -1,7 +1,9 @@
 """for each of the log entry creators in curriculum_tracking.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 from rest_framework.test import APITestCase
+from django.test import TestCase
 
+import activity_log.models
 from test_mixins import APITestCaseMixin
 from . import factories
 from core.tests.factories import UserFactory
@@ -9,6 +11,10 @@ from curriculum_tracking.models import AgileCard, ContentItem
 from activity_log.models import LogEntry
 from curriculum_tracking import activity_log_entry_creators as creators
 from curriculum_tracking.constants import COMPETENT
+from django.utils import timezone
+import time
+from mock import patch
+from freezegun import freeze_time
 
 
 class log_card_started_Tests(APITestCase, APITestCaseMixin):
@@ -59,7 +65,100 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 # class log_card_review_request_cancelled_Tests(TestCase):
 
 
-# class log_card_moved_to_complete_Tests(TestCase):
+class log_card_moved_to_complete_Tests(TestCase):
+
+    def test_card_to_complete_creates_one_log_entry(self):
+
+        actor_user = UserFactory(is_superuser=True)
+        card = factories.AgileCardFactory(
+            status=AgileCard.COMPLETE,
+            content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+        card.save()
+
+        creators.log_card_moved_to_complete(card, actor_user)
+        self.assertTrue(card.status==AgileCard.COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 1)
+        self.assertEqual(LogEntry.objects.first().object_1_id, card.id)
+        self.assertEqual(LogEntry.objects.first().actor_user, actor_user)
+
+    def test_card_to_complete_then_rf_then_complete_creates_one_complete_entry_within_debounce_period(self):
+        """
+        Although two LogEntries are created, only one of them is of status 'CARD_MOVED_TO_COMPLETE'
+        """
+        actor_user = UserFactory(is_superuser=True)
+        card = factories.AgileCardFactory(
+            status=AgileCard.COMPLETE,
+            content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+
+        card.save()
+        creators.log_card_moved_to_complete(card, actor_user)
+        self.assertTrue(card.status == AgileCard.COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+        card.status = AgileCard.REVIEW_FEEDBACK
+        card.save()
+        creators.log_card_moved_to_review_feedback(card, actor_user)
+        self.assertTrue(card.status == AgileCard.REVIEW_FEEDBACK)
+        self.assertEqual(LogEntry.objects.count(), 2)
+
+        card.status = AgileCard.COMPLETE
+        card.save()
+        creators.log_card_moved_to_complete(card, actor_user)
+        self.assertTrue(card.status == AgileCard.COMPLETE)
+        log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
+        self.assertTrue(log_entries, 1)
+
+    @patch('time.sleep')
+    def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self, mock_sleep):
+
+        actor_user = UserFactory(is_superuser=True)
+        card = factories.AgileCardFactory(
+            status=AgileCard.IN_REVIEW,
+            content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+
+        initial_complete_review = factories.RecruitProjectReviewFactory(
+            recruit_project=card.recruit_project,
+            timestamp=timezone.now(),
+            reviewer_user=actor_user
+        )
+        card.status = AgileCard.COMPLETE
+        card.save()
+        creators.log_card_moved_to_complete(card, actor_user)
+        self.assertTrue(card.status == AgileCard.COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+        nyc_review = factories.RecruitProjectReviewFactory(
+            recruit_project=card.recruit_project,
+            timestamp=initial_complete_review.timestamp + timezone.timedelta(seconds=20),
+            reviewer_user=actor_user
+        )
+        card.status = AgileCard.REVIEW_FEEDBACK
+        card.save()
+        creators.log_card_moved_to_review_feedback(card, actor_user)
+
+        complete_review = factories.RecruitProjectReviewFactory(
+            recruit_project=card.recruit_project,
+            timestamp=nyc_review.timestamp + timezone.timedelta(seconds=120),
+            reviewer_user=actor_user
+        )
+        card.status = AgileCard.COMPLETE
+        card.save()
+
+        time.sleep(121)
+        creators.log_card_moved_to_complete(card, actor_user)
+        self.assertTrue(card.status == AgileCard.COMPLETE)
+        log_entries = [entry.event_type.name for entry in LogEntry.objects.all()]
+        print(log_entries)
+        #self.assertTrue(log_entries, 1)
 
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
