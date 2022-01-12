@@ -853,6 +853,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .filter(recruit_project = self.recruit_project)
             .order_by("timestamp")
             .first()
         )
