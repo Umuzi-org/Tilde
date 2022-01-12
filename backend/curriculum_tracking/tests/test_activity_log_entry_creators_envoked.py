@@ -12,10 +12,6 @@ from activity_log.models import LogEntry
 from curriculum_tracking import activity_log_entry_creators as creators
 from curriculum_tracking.constants import COMPETENT
 from django.utils import timezone
-import time
-from mock import patch, Mock
-import datetime as realdatetime
-from datetime import date
 
 
 class log_card_started_Tests(APITestCase, APITestCaseMixin):
