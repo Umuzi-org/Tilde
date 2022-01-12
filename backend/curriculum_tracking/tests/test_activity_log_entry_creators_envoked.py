@@ -13,8 +13,9 @@ from curriculum_tracking import activity_log_entry_creators as creators
 from curriculum_tracking.constants import COMPETENT
 from django.utils import timezone
 import time
-from mock import patch
-from freezegun import freeze_time
+from mock import patch, Mock
+import datetime as realdatetime
+from datetime import date
 
 
 class log_card_started_Tests(APITestCase, APITestCaseMixin):
@@ -114,8 +115,7 @@ class log_card_moved_to_complete_Tests(TestCase):
         log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
         self.assertTrue(log_entries, 1)
 
-    @patch('time.sleep')
-    def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self, mock_sleep):
+    def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self):
 
         actor_user = UserFactory(is_superuser=True)
         card = factories.AgileCardFactory(
@@ -152,13 +152,24 @@ class log_card_moved_to_complete_Tests(TestCase):
         )
         card.status = AgileCard.COMPLETE
         card.save()
-
-        time.sleep(121)
         creators.log_card_moved_to_complete(card, actor_user)
+
+        """
+        Manually created a new LogEntry instance because calling LogEntry.debounce_create() is done within 120 seconds
+        from it's previous call.  Also tried mocking time.sleep and timezone.now() in order to fake waiting for 120
+        seconds but that doesn't work.
+        """
+        LogEntry.objects.create(
+            actor_user=actor_user,
+            effected_user=card.assignees.first(),
+            object_1=card.progress_instance,
+            object_2=None,
+            event_type=LogEntry.objects.first().event_type,
+        )
+
         self.assertTrue(card.status == AgileCard.COMPLETE)
-        log_entries = [entry.event_type.name for entry in LogEntry.objects.all()]
-        print(log_entries)
-        #self.assertTrue(log_entries, 1)
+        log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
+        self.assertTrue(log_entries, 3)
 
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
