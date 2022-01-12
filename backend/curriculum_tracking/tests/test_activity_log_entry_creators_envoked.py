@@ -114,8 +114,15 @@ class log_card_moved_to_complete_Tests(TestCase):
         log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
         self.assertTrue(log_entries, 1)
 
-    @patch('django.utils.timezone.now', return_value=datetime.datetime(
-        timezone.now().year, timezone.now().month, timezone.now().day, timezone.now().hour, tzinfo=pytz.timezone('utc'))
+    @patch('django.utils.timezone.now',
+           return_value=datetime.datetime(
+            timezone.now().year,
+            timezone.now().month,
+            timezone.now().day,
+            timezone.now().hour,
+            timezone.now().minute,
+            timezone.now().second,
+            tzinfo=pytz.timezone('utc'))
     )
     def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self, mock_now):
 
@@ -157,22 +164,8 @@ class log_card_moved_to_complete_Tests(TestCase):
 
         mock_now.return_value = timezone.now() + timezone.timedelta(seconds=121)
         creators.log_card_moved_to_complete(card, actor_user)
-
-        """
-        Manually created a new LogEntry instance because calling LogEntry.debounce_create() is done within 120 seconds
-        from it's previous call.  Also tried mocking time.sleep and timezone.now() in order to fake waiting for 120
-        seconds but that doesn't work.
-        """
-
-        LogEntry.objects.create(
-            actor_user=actor_user,
-            effected_user=card.assignees.first(),
-            object_1=card.progress_instance,
-            object_2=None,
-            event_type=LogEntry.objects.first().event_type,
-        )
-
         self.assertTrue(card.status == AgileCard.COMPLETE)
+
         log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
         self.assertTrue(log_entries, 3)
 
