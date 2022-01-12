@@ -1,4 +1,8 @@
+import django.db
 import dramatiq
+
+import curriculum_tracking.api_views
+import long_running_request_actors
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
 from social_auth.tests.factories import SocialProfileFactory
