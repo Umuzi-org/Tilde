@@ -12,6 +12,9 @@ from activity_log.models import LogEntry
 from curriculum_tracking import activity_log_entry_creators as creators
 from curriculum_tracking.constants import COMPETENT
 from django.utils import timezone
+from mock import patch
+import datetime
+import pytz
 
 
 class log_card_started_Tests(APITestCase, APITestCaseMixin):
@@ -111,7 +114,10 @@ class log_card_moved_to_complete_Tests(TestCase):
         log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
         self.assertTrue(log_entries, 1)
 
-    def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self):
+    @patch('django.utils.timezone.now', return_value=datetime.datetime(
+        timezone.now().year, timezone.now().month, timezone.now().day, timezone.now().hour, tzinfo=pytz.timezone('utc'))
+    )
+    def test_card_to_complete_then_rf_then_complete_creates_two_complete_entries_after_debounce_period(self, mock_now):
 
         actor_user = UserFactory(is_superuser=True)
         card = factories.AgileCardFactory(
@@ -148,6 +154,8 @@ class log_card_moved_to_complete_Tests(TestCase):
         )
         card.status = AgileCard.COMPLETE
         card.save()
+
+        mock_now.return_value = timezone.now() + timezone.timedelta(seconds=121)
         creators.log_card_moved_to_complete(card, actor_user)
 
         """
@@ -155,6 +163,7 @@ class log_card_moved_to_complete_Tests(TestCase):
         from it's previous call.  Also tried mocking time.sleep and timezone.now() in order to fake waiting for 120
         seconds but that doesn't work.
         """
+
         LogEntry.objects.create(
             actor_user=actor_user,
             effected_user=card.assignees.first(),
