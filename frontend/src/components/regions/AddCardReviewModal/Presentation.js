@@ -46,8 +46,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "18px",
     "&:hover": {
       color: "#A8A8A8",
-      backgroundColor: "#466d87",
-      borderRadius: "100%",
     },
   },
 }));
@@ -62,7 +60,7 @@ const StatusHelp = ({closeHelpPopUp}) => {
         <Typography variant="subtitle2" className={classes.helpPopUpInfo} onClick={closeHelpPopUp}>
           X
         </Typography>
-        
+
         <Typography variant="subtitle2">
           <SentimentSatisfiedIcon /> Competent
         </Typography>
