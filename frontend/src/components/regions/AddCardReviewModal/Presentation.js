@@ -46,20 +46,23 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "18px",
     "&:hover": {
       color: "#A8A8A8",
+      backgroundColor: "#466d87",
+      borderRadius: "100%",
     },
   },
 }));
 
-const StatusHelp = ({ helpPopUp, closeHelpPopUp}) => {
+const StatusHelp = ({closeHelpPopUp}) => {
   const classes = useStyles();
   
   return (
     <Help buttonText="How do I choose a status?">
-      { helpPopUp && 
-      <Paper>
+       
+      <Paper id="popUpInfo">
         <Typography variant="subtitle2" className={classes.helpPopUpInfo} onClick={closeHelpPopUp}>
           X
         </Typography>
+        
         <Typography variant="subtitle2">
           <SentimentSatisfiedIcon /> Competent
         </Typography>
@@ -146,7 +149,7 @@ const StatusHelp = ({ helpPopUp, closeHelpPopUp}) => {
             </li>
           </ul>
         </Typography>
-      </Paper>}
+      </Paper>
     </Help>
   );
 };
@@ -158,7 +161,6 @@ export default ({
   comments,
   formErrors,
   closeModal,
-  helpPopUp,
   closeHelpPopUp,
   statusChoices,
   loading,
@@ -210,7 +212,6 @@ export default ({
                 </Select>
               </FormControl>
               <StatusHelp 
-                helpPopUp={helpPopUp} 
                 closeHelpPopUp={closeHelpPopUp}/>
             </Grid>
             <Grid item xs={12}>
