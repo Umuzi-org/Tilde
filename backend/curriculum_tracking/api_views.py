@@ -577,7 +577,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
         Because you are selecting agile cards by id, pk will become that id, we use that id to find the associated
         project_id and then send the project id to recruit_project_setup_repository
         """
-        #breakpoint()
         card: models.AgileCard = self.get_object()
         response = recruit_project_setup_repository.send(card.recruit_project.id)
         return Response({"status": "OK", "data": response.asdict()})

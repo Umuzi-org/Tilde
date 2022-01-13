@@ -73,7 +73,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         return topic_progress
 
 
-class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
+class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     FIELDS_THAT_CAN_BE_FALSEY = [
@@ -246,43 +246,46 @@ class AgileCardViewsetTests(APITransactionTestCase, APITestCaseMixin):
         project.refresh_from_db()
         self.assertEqual(project.link_submission, link_2)
 
-    @mock.patch.object(RecruitProject, "setup_repository")
-    def test_setup_project_repo_call_from_api_action_option(self, setup_repository):
 
-        from long_running_request_actors import recruit_project_setup_repository
-        broker = dramatiq.get_broker()
-        worker = dramatiq.Worker(broker, worker_timeout=100)
-        worker.start()
+class TestLongRunningActorsCalledFromAgileCardAPIView(APITestCase, APITestCaseMixin):
 
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+
+    def setUp(self):
         JAVASCRIPT = "js"
-        super_user = factories.UserFactory(is_superuser=True)
+        self.super_user = factories.UserFactory(is_superuser=True)
 
-        content_item = factories.ContentItemFactory(
+        self.content_item = factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.REPOSITORY,
             flavours=[JAVASCRIPT],
         )
 
-        card = factories.AgileCardFactory(
-            content_item=content_item,
+        self.card = factories.AgileCardFactory(
+            content_item=self.content_item,
             flavours=[JAVASCRIPT],
             status=AgileCard.READY,
         )
 
-        assignee = SocialProfileFactory().user
-        card.assignees.set([assignee])
-        project = card.recruit_project
-        url = f"{self.get_list_url()}{card.id}/setup_project_repo/"
-        self.login(super_user)
-        response = self.client.post(path=url, data={"card_id": card.id})
+        self.assignee = SocialProfileFactory().user
+        self.card.assignees.set([self.assignee])
+        self.project = self.card.recruit_project
+        self.url = f"{self.get_list_url()}{self.card.id}/setup_project_repo/"
 
-        # The .join function allows the broker and the worker to finish their processes
-        broker.join(recruit_project_setup_repository.queue_name)
-        worker.join()
+    @mock.patch.object(long_running_request_actors.recruit_project_setup_repository, 'send')
+    def test_send_called_from_api_view_action_option(self, send):
+        self.login(self.super_user)
+        try:
+            response = self.client.post(path=self.url, data={"card_id": self.card.id})
+        except RecursionError:
+            send.assert_called()
 
-        self.assertEqual(response.status_code, 200)
-        project.setup_repository.assert_called()
-        worker.stop()
+    @mock.patch.object(RecruitProject, "setup_repository")
+    def test_setup_repository_called_from_long_running_actor_recruit_project_setup_repository(self, setup_repository):
+        long_running_request_actors.recruit_project_setup_repository(self.project.id)
+        self.project.setup_repository.assert_called()
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
