@@ -36,6 +36,21 @@ class log_project_competence_review_done_Tests(TestCase):
         creators.log_project_competence_review_done(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
 
+    def test_logging_the_same_entry_twice_only_produces_one_log_entry(self):
+        review1 = RecruitProjectReviewFactory()
+        creators.log_project_competence_review_done(review1)
+        creators.log_project_competence_review_done(review1)
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+    def test_log_project_creator_is_envoked_for_a_project_review(self):
+        review1 = RecruitProjectReviewFactory()
+        try:
+            creators.log_topic_competence_review_done(review1)
+        except AttributeError as error:
+            self.assertTrue(error)
+        self.assertEqual(LogEntry.objects.count(), 0)
+
+
 class log_topic_competence_review_done_Tests(TestCase):
     def test_that_timestamp_properly_set(self):
         review = TopicReviewFactory()
@@ -66,3 +81,17 @@ class log_topic_competence_review_done_Tests(TestCase):
         creators.log_topic_competence_review_done(review1)
         creators.log_topic_competence_review_done(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
+
+    def test_logging_the_same_entry_twice_only_produces_one_log_entry(self):
+        review1 = TopicReviewFactory()
+        creators.log_topic_competence_review_done(review1)
+        creators.log_topic_competence_review_done(review1)
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+    def test_log_topic_creator_is_envoked_for_a_topic_review(self):
+        review1 = TopicReviewFactory()
+        try:
+            creators.log_project_competence_review_done(review1)
+        except AttributeError as error:
+            self.assertTrue(error)
+        self.assertEqual(LogEntry.objects.count(), 0)
