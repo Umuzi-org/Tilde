@@ -42,7 +42,7 @@ class log_project_competence_review_done_Tests(TestCase):
         creators.log_project_competence_review_done(review1)
         self.assertEqual(LogEntry.objects.count(), 1)
 
-    def test_log_project_creator_is_envoked_for_a_project_review(self):
+    def test_log_project_creator_is_invoked_for_a_project_review(self):
         review1 = RecruitProjectReviewFactory()
         try:
             creators.log_topic_competence_review_done(review1)
@@ -88,7 +88,7 @@ class log_topic_competence_review_done_Tests(TestCase):
         creators.log_topic_competence_review_done(review1)
         self.assertEqual(LogEntry.objects.count(), 1)
 
-    def test_log_topic_creator_is_envoked_for_a_topic_review(self):
+    def test_log_topic_creator_is_invoked_for_a_topic_review(self):
         review1 = TopicReviewFactory()
         try:
             creators.log_project_competence_review_done(review1)
