@@ -5,7 +5,7 @@ import Presentation from "./Presentation.js";
 
 import { routes } from "../../../routes";
 
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 function AppMenuUnconnected({ children, LOGOUT, logoutStart, authUser }) {
   const [openSlider, setOpenSlider] = React.useState(false);

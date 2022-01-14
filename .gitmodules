@@ -1,0 +1,3 @@
+[submodule "frontend/gitmodules/redux-api-toolbox"]
+	path = frontend/gitmodules/redux-api-toolbox
+	url = git@github.com:preludetech/redux-api-toolbox.git

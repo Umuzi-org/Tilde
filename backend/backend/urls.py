@@ -20,6 +20,7 @@ from rest_framework import routers
 from core import views as core_views
 from curriculum_tracking import api_views as curriculum_tracking_api_views
 from git_real import api_views as git_real_api_views
+from activity_log import api_views as activity_log_api_views
 
 
 # from rest_framework.schemas import get_schema_view
@@ -138,6 +139,11 @@ router.register(
     "push",
 )
 
+router.register(
+    r"activity_log_day_count",
+    activity_log_api_views.ActivityLogDayCountViewset,
+    "activitylogdaycount",
+)
 
 # router.register(
 #     r"agile_card_add_review",

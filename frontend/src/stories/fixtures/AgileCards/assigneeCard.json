@@ -60,6 +60,7 @@
     "startTime": "2021-03-05T00:54:01.605295Z",
     "canStart": false,
     "canForceStart": false,
+    "repoUrl": "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git",
     "openPrCount": 0,
     "oldestOpenPrUpdatedTime": null
 }

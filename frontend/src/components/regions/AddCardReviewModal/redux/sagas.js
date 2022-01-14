@@ -1,6 +1,6 @@
 import { takeLatest, put, takeEvery, select } from "redux-saga/effects";
 import operations from "./operations";
-import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import types from "./types";
 
 function* addReviewSuccessSideEffects(action) {
@@ -32,7 +32,7 @@ function* addReviewSuccessSideEffects(action) {
 
 function* setOpenProjectReviewCardIdSideEffects({ cardId }) {
   if (cardId) {
-    const cards = yield select((state) => state.Entities.cards) || {};
+    const cards = yield select((state) => state.apiEntities.cards) || {};
     const card = cards[cardId];
     if (!card) {
       yield put(

@@ -6,6 +6,9 @@ rm -rf curriculum_tracking/migrations
 rm -rf git_real/migrations
 rm -rf social_auth/migrations
 rm -rf config/migrations
+rm -rf activity_log/migrations
+
+
 # rm -rf dev_helpers/migrations
 
 git checkout master -- core/migrations
@@ -14,6 +17,7 @@ git checkout master -- curriculum_tracking/migrations
 git checkout master -- git_real/migrations
 git checkout master -- social_auth/migrations
 git checkout master -- config/migrations
+git checkout master -- activity_log/migrations
 # git checkout master -- dev_helpers/migrations
 
 

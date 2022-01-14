@@ -6,7 +6,6 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
 )
 
-
 from django.core.exceptions import MultipleObjectsReturned
 
 
@@ -63,6 +62,7 @@ class PullRequest(models.Model, Mixins):
     closed_at = models.DateTimeField(blank=True, null=True)
     merged_at = models.DateTimeField(blank=True, null=True)
     number = models.PositiveSmallIntegerField()
+
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
 
     # user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
@@ -73,7 +73,6 @@ class PullRequest(models.Model, Mixins):
 
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, pull_request_data):
-
         assert repo != None, "repo is missing"
         number = pull_request_data["number"]
 
@@ -85,15 +84,15 @@ class PullRequest(models.Model, Mixins):
                 pull_request_data["created_at"],
             ),
             "updated_at": pull_request_data["updated_at"]
-            and strp_github_standard_time(
+                          and strp_github_standard_time(
                 pull_request_data["updated_at"],
             ),
             "closed_at": pull_request_data["closed_at"]
-            and strp_github_standard_time(
+                         and strp_github_standard_time(
                 pull_request_data["closed_at"],
             ),
             "merged_at": pull_request_data["merged_at"]
-            and strp_github_standard_time(
+                         and strp_github_standard_time(
                 pull_request_data["merged_at"],
             ),
         }
@@ -131,7 +130,7 @@ class PullRequestReview(models.Model, Mixins):
             "commit_id": review_data["commit_id"],
             "state": review_data["state"],
             "submitted_at": review_data.get("submitted_at")
-            and strp_github_standard_time(review_data["submitted_at"]),
+                            and strp_github_standard_time(review_data["submitted_at"]),
             "pull_request": pull_request,
             "author_github_name": github_name,
             "user": User.objects.filter(
@@ -179,25 +178,28 @@ class Push(models.Model, Mixins):
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
 
-        head_commit = request_body["head_commit"]
-        head_commit_url = head_commit["url"]
-        ref = request_body["ref"]
-        defaults = {
-            "commit_timestamp": head_commit["timestamp"],
-            "author_github_name": head_commit["author"]["username"],
-            "committer_github_name": head_commit["committer"]["username"],
-            "message": head_commit["message"],
-            "pusher_username": request_body["pusher"]["name"],
-            "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
-                int(request_body["repository"]["pushed_at"])
-            ),
-        }
+        if request_body["head_commit"] is None and bool(request_body['pusher']):
+            return None
+        else:
+            head_commit = request_body["head_commit"]
+            head_commit_url = head_commit["url"]
+            ref = request_body["ref"]
+            defaults = {
+                "commit_timestamp": head_commit.get("timestamp"),
+                "author_github_name": head_commit.get("author").get("username"),
+                "committer_github_name": head_commit.get("committer").get("username"),
+                "message": head_commit.get("message"),
+                "pusher_username": request_body.get("pusher").get("name"),
+                "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
+                    int(request_body["repository"]["pushed_at"])
+                ),
+            }
 
-        instance, _ = cls.get_or_create_or_update(
-            repository=repo,
-            head_commit_url=head_commit_url,
-            ref=ref,
-            defaults=defaults,
-            overrides=defaults,
-        )
-        return instance
+            instance, _ = cls.get_or_create_or_update(
+                repository=repo,
+                head_commit_url=head_commit_url,
+                ref=ref,
+                defaults=defaults,
+                overrides=defaults,
+            )
+            return instance
