@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { fillColor } from "./utils";
+import { cardColors } from "../../../colors";
 
 const renderCustomizedLabel = ({ cardStatusPieData }) => {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
@@ -55,23 +55,27 @@ export default ({ detailedStats }) => {
   } = detailedStats;
 
   const cardStatusPieData = [
-    { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete },
-    { name: `Review (${cardsAssignedWithStatusInReview})`, value: cardsAssignedWithStatusInReview },
+    { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete, color: cardColors.C },
+    { name: `Review (${cardsAssignedWithStatusInReview})`, value: cardsAssignedWithStatusInReview, color: cardColors.IR },
     {
       name: `Review Feedback (${cardsAssignedWithStatusReviewFeedback})`,
       value: cardsAssignedWithStatusReviewFeedback,
+      color: cardColors.RF,
     },
     {
       name: `In Progress (${cardsAssignedWithStatusInProgress})`,
       value: cardsAssignedWithStatusInProgress,
+      color: cardColors.IP,
     },
     {
       name: `Ready (${cardsAssignedWithStatusReady})`,
       value: cardsAssignedWithStatusReady,
+      color: cardColors.R,
     },
     {
       name: `Blocked (${cardsAssignedWithStatusBlocked})`,
       value: cardsAssignedWithStatusBlocked,
+      color: cardColors.B,
     },
   ].filter((element) => element.value);
   return (
@@ -92,8 +96,7 @@ export default ({ detailedStats }) => {
           {cardStatusPieData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={fillColor(entry.name)}
-
+              fill={entry.color}
             ></Cell>
           ))}
         </Pie>
