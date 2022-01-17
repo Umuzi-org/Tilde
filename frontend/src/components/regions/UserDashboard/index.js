@@ -1,6 +1,6 @@
 import React from "react";
 import Presentation from "./Presentation";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -42,8 +42,8 @@ function DashboardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
-    userDetailedStats: state.Entities.userDetailedStats || {},
+    users: state.apiEntities.users || {},
+    userDetailedStats: state.apiEntities.userDetailedStats || {},
     // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser || {},
   };

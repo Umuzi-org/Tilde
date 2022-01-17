@@ -1,8 +1,8 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import operations from "./redux/operations.js";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
@@ -60,8 +60,8 @@ const AddReviewModalUnconnected = ({
 const mapStateToProps = (state) => {
   const cardId = state.AddCardReviewModal.cardId;
   const card =
-    !!cardId & (state.Entities.cards !== undefined)
-      ? state.Entities.cards[cardId]
+    !!cardId & (state.apiEntities.cards !== undefined)
+      ? state.apiEntities.cards[cardId]
       : null;
 
   return {

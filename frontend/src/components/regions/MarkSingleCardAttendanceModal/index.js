@@ -1,7 +1,7 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 import operations from "./redux/operations.js";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
@@ -47,8 +47,8 @@ const MarkSingleCardAttendanceModalUnconnected = ({
 const mapStateToProps = (state) => {
   const cardId = state.MarkSingleCardAttendanceModal.cardId;
   const card =
-    !!cardId & (state.Entities.cards !== undefined)
-      ? state.Entities.cards[cardId]
+    !!cardId & (state.apiEntities.cards !== undefined)
+      ? state.apiEntities.cards[cardId]
       : null;
 
   return {
