@@ -1,12 +1,9 @@
 import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
-import { getLatestMatchingCall } from "../../../../utils/ajaxRedux";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { addCardReviewOperations } from "../../AddCardReviewModal/redux";
-
-// import { markSingleCardWorkshopAttendanceOperations } from "../../MarkSingleCardAttendanceModal/redux";
-
-import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 
 function AgileCardUnconnected({
   card,

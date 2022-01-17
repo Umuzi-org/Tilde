@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     "social_auth.apps.SocialAuthConfig",
     "dev_helpers.apps.DevHelpersConfig",
     "config.apps.ConfigConfig",
+    "activity_log.apps.ActivityLogConfig",
 ]
 
 SITE_ID = 1  # from allauth docs
@@ -362,3 +363,5 @@ if not GIT_REAL_WEBHOOK_SECRET:
 
 CURRICULUM_TRACKING_REVIEW_BOT_EMAIL = "reviewbot@noreply.org"
 CURRICULUM_TRACKING_TRUST_STREAK_LENGTH = 4
+
+OLD_PASSWORD_FIELD_ENABLED = True  # this means that when changing a password via dj-rest-auth, the old password is required

@@ -1,3 +1,4 @@
+from re import A
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -20,6 +21,10 @@ from core.permissions import (
     IsCurrentUserInSpecificFilter,
 )
 from core.models import Team
+import curriculum_tracking.activity_log_entry_creators as log_creators
+from django.db.models import Q
+
+from rest_framework import filters
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -89,14 +94,6 @@ def _get_teams_from_topic_progress_filter(self, request, view):
     return _get_teams_from_topic_progress_instance(topic_progress)
 
 
-def _get_teams_from_user_filter(filter_name):
-    def get_teams_from_user_filter(self, request, view):
-        user_ids = core_permissions.get_clean_user_ids_from_filter(request, filter_name)
-        return Team.get_teams_from_user_ids(user_ids)
-
-    return get_teams_from_user_filter
-
-
 def _get_teams_from_repository_instance(repo):
     projects = repo.recruit_projects.all()
     for project in projects:
@@ -129,11 +126,6 @@ def _get_teams_from_workshop_attendance(self, request, view):
     return Team.get_teams_from_user_ids(user_ids=user_ids)
 
 
-from django.db.models import Q
-
-from rest_framework import filters
-
-
 class CardSummaryViewset(viewsets.ModelViewSet):
 
     permission_classes = [
@@ -151,7 +143,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
         | core_permissions.IsCurrentUserInSpecificFilter("assignees")
         | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
-            get_objects=_get_teams_from_user_filter("assignees"),
+            get_objects=core_permissions.get_teams_from_user_filter("assignees"),
         ),
     ]
     serializer_class = serializers.CardSummarySerializer
@@ -227,11 +219,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 | core_permissions.IsCurrentUserInSpecificFilter("reviewers")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("assignees"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "assignees"
+                    ),
                 )
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("reviewers"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "reviewers"
+                    ),
                 )
             )
         )
@@ -311,24 +307,28 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 if card.recruit_project == None:
                     raise Http404
 
-                models.RecruitProjectReview.objects.create(
+                review = models.RecruitProjectReview.objects.create(
                     status=serializer.data["status"],
                     timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     recruit_project=card.recruit_project,
                     reviewer_user=request.user,
                 )
+                log_creators.log_project_competence_review_done(review)
+
             elif card.content_item.content_type == models.ContentItem.TOPIC:
                 if card.topic_progress == None:
                     raise Http404
 
-                models.TopicReview.objects.create(
+                review = models.TopicReview.objects.create(
                     status=serializer.data["status"],
                     timestamp=timezone.now(),
                     comments=serializer.data["comments"],
                     topic_progress=card.topic_progress,
                     reviewer_user=request.user,
                 )
+
+                log_creators.log_topic_competence_review_done(review)
 
             card.refresh_from_db()
 
@@ -411,6 +411,9 @@ class AgileCardViewset(viewsets.ModelViewSet):
             type_or_404=models.ContentItem.PROJECT,
         )
         card.start_project()
+
+        log_creators.log_card_started(card=card, actor_user=request.user)
+
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(
@@ -583,7 +586,7 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
 
         # o = core_permissions.HasObjectPermission(
         #     Team.PERMISSION_VIEW,
-        #     _get_teams_from_user_filter("recruit_users"),
+        #     core_permissions.get_teams_from_user_filter("recruit_users"),
         # )()
         # o.has_permission(view=self, request=self.request)
 
@@ -605,7 +608,9 @@ class RecruitProjectViewset(viewsets.ModelViewSet):  # TODO
                 | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("recruit_users"),
+                    get_objects=core_permissions.get_teams_from_user_filter(
+                        "recruit_users"
+                    ),
                 )
             ]
         return [permission() for permission in permission_classes]
@@ -632,7 +637,7 @@ class TopicProgressViewset(viewsets.ModelViewSet):
                 core_permissions.IsCurrentUserInSpecificFilter("user")
                 | core_permissions.HasObjectPermission(
                     permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_user_filter("user"),
+                    get_objects=core_permissions.get_teams_from_user_filter("user"),
                 )
             ]
 
@@ -659,11 +664,15 @@ class TopicReviewViewset(viewsets.ModelViewSet):
             | core_permissions.IsCurrentUserInSpecificFilter("topic_progress__user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("topic_progress__user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "topic_progress__user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("reviewer_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
@@ -703,13 +712,15 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter(
+                get_objects=core_permissions.get_teams_from_user_filter(
                     "recruit_project__recruit_users"
                 ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("reviewer_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
             )
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
@@ -726,14 +737,6 @@ class RecruitProjectReviewViewset(viewsets.ModelViewSet):
             )
         )
     ]
-
-    # def get_permissions(self):
-    #     breakpoint()
-    #     foo
-
-    #     o = PermissionClass()
-    #     o.has_permission(view=self, request=self.request)
-    #     return super().get_permissions()
 
 
 class ContentItemViewset(viewsets.ModelViewSet):
@@ -832,7 +835,9 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
             core_permissions.IsCurrentUserInSpecificFilter("attendee_user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("attendee_user"),
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "attendee_user"
+                ),
             )
         )
     ]
@@ -886,16 +891,17 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAdminUser
+    permission_classes = [
+        permissions.IsAdminUser
         | ActionIs("list")
         & (
-              IsCurrentUserInSpecificFilter("user__id")
+            IsCurrentUserInSpecificFilter("user__id")
             | core_permissions.HasObjectPermission(
-                      permissions=Team.PERMISSION_VIEW,
-                      get_objects=_get_teams_from_user_filter("user__id"),
-                      )
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter("user__id"),
             )
-        ]
+        )
+    ]
 
     serializer_class = serializers.BurnDownSnapShotSerializer
     queryset = models.BurndownSnapshot.objects.order_by("-timestamp")
@@ -903,21 +909,21 @@ class BurnDownSnapShotViewset(viewsets.ModelViewSet):
     filterset_fields = ["user__id", "timestamp"]
 
 
-
 class ReviewTrustsViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAdminUser
-        | ActionIs('list')
+    permission_classes = [
+        permissions.IsAdminUser
+        | ActionIs("list")
         & (
             core_permissions.IsCurrentUserInSpecificFilter("user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user_filter("user"),
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
             )
         )
     ]
 
-    queryset = models.ReviewTrust.objects.order_by('user').all()
+    queryset = models.ReviewTrust.objects.order_by("user").all()
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user"]

@@ -131,8 +131,8 @@ function UsersAndGroupsUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    teams: state.Entities.teams || {},
-    teamSummaryStats: state.Entities.teamSummaryStats || {},
+    teams: state.apiEntities.teams || {},
+    teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
 };
 
