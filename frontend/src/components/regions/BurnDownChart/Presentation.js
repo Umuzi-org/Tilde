@@ -12,19 +12,18 @@ import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
-import { data } from "./CardDataStats";
 
-data.map(
-  (date) =>
-    (date.timestamp = new Date(date.timestamp).toISOString().slice(0, 10))
-);
-export default () => {
+export default ({burnDownSnapshots}) => {
+  burnDownSnapshots.map(
+    (burnDownSnapshot) =>
+      (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp).toISOString().slice(0, 10))
+  );
   return (
     <div>
       <LineChart
         width={1000}
         height={500}
-        data={data}
+        data={burnDownSnapshots}
         margin={{
           top: 20,
           right: 30,
