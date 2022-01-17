@@ -202,9 +202,7 @@ async function personallyAssignedAgileCardsPage({
 
 async function userBurndownSnapshotsPage({ userId, page }) {
   const limit = 20;
-
   const offset = calculateOffset({ page, limit });
-
   const url = `${API_BASE_URL}/api/burndown_snap_shot/?limit=${limit}&offset=${offset}&user__id=${userId}`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
