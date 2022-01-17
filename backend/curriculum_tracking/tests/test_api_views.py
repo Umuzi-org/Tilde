@@ -29,6 +29,7 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         "start_time",
         "open_pr_count",
         "oldest_open_pr_updated_time",
+        "flavour_names",
     ]
 
     def verbose_instance_factory(self):
