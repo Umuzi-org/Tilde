@@ -189,6 +189,8 @@ export const apiReduxApps = {
   FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE,
     apiCaller: apiCallers.userBurndownSnapshotsPage,
+    responseIsList: true,
+    responseEntityType: "burndownSnapshots",
   }),
 
   FETCH_COHORTS_PAGE: createReduxApp({

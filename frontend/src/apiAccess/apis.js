@@ -72,7 +72,7 @@ async function teamsSummaryStatsPage({ page }) {
 }
 
 async function teamEntity({ teamId }) {
-  const url = `${API_BASE_URL}/api/teams/${teamId}`;
+  const url = `${API_BASE_URL}/api/teams/${teamId}/`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
@@ -200,10 +200,7 @@ async function personallyAssignedAgileCardsPage({
   return { response, responseData };
 }
 
-async function userBurndownSnapshotsPage({
-  userId,
-  page,
-}) {
+async function userBurndownSnapshotsPage({ userId, page }) {
   const limit = 20;
 
   const offset = calculateOffset({ page, limit });
