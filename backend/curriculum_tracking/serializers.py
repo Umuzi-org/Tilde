@@ -209,20 +209,6 @@ class AgileCardSerializer(serializers.ModelSerializer):
          return negative_reviews
 
 
-#** attempt to make own serializer for neg reviews
-# class NegReviewSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = models.AgileCard
-#         fields = ["neg_reviews"]
-
-#     neg_reviews = serializers.SerializerMethodField("get_neg_reviews") #**
-
-#     #**
-#     def get_neg_reviews(self, card):
-#         nyc_reviews = models.RecruitProjectReview.objects.filter(status='NYC', recruit_project=card.recruit_project).count()
-#         rf_reviews = models.RecruitProjectReview.objects.filter(status='R', recruit_project=card.recruit_project).count()
-#         return nyc_reviews + rf_reviews
-
 
 class CardSummarySerializer(serializers.ModelSerializer):
     class Meta:

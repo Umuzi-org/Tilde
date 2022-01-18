@@ -567,11 +567,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
     ##**
     @action(
         detail=True,
-        methods=["GET"],  # We only want to get information so that's why this is no GET and no longer POST
-        
+        methods=["GET"],  
         serializer_class=serializers.AgileCardSerializer,
-        #serializer_class=serializers.NegReviewSerializer,  #Couldnt get dedicated serializer to work
-        #serializer_class=serializers.NoArgs,    # Can work with no serializer, then only integer value appears when action is called
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -581,23 +578,20 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def get_total_nyc_and_rf_reviews(self, request, pk=None):
         
-        #***do I need to get the serializer and check if valid first?
+        #***do I need to get the serializer and check if valid first? And if so, what else do I need to add?
+        #card = self.get_object()
         #serializer = self.get_serializer(data=request.data)
         #if serializer.is_valid():
-            #card = self.get_object()
+            ## what to add here to make this work?
 
             #return Response(serializers.AgileCardSerializer(card).data)
         #else:
             #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-        #***below if done without using a serializer
-        #negative_reviews = models.RecruitProjectReview.objects.filter(status__in=['NYC', 'R']).filter(recruit_project__agile_card=card_object).count()
 
-        #return Response(negative_reviews)    # Notice my response is no longer serialized so therefore I don't need to worry about any serializers anymore
-
-        card_object = self.get_object() 
-        return Response(serializers.AgileCardSerializer(card_object).data)
+        card = self.get_object() 
+        return Response(serializers.AgileCardSerializer(card).data)
     
 
 
