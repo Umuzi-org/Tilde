@@ -81,7 +81,6 @@ class log_card_moved_to_complete_Tests(TestCase):
         creators.log_card_moved_to_complete(card, actor_user)
         self.assertTrue(card.status==AgileCard.COMPLETE)
         self.assertEqual(LogEntry.objects.count(), 1)
-        self.assertEqual(LogEntry.objects.first().object_1_id, card.id)
         self.assertEqual(LogEntry.objects.first().actor_user, actor_user)
 
     def test_card_to_complete_then_rf_then_complete_creates_one_complete_entry_within_debounce_period(self):
