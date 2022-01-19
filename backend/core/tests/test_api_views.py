@@ -133,13 +133,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
 
-    def verbose_instance_factory(self):
-
-        team = factories.TeamFactory()
-        user = factories.UserFactory()
-        team.user_set.add(user)
-        return team
-
     def setUp(self):
 
         self.blue_team = factories.TeamFactory(name='BLUE TEAM')
@@ -164,9 +157,10 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.login(self.user_two_red)
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
         response = self.client.post(path=url, format="json", data={
-            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.red_team),
-            'flavour_names': 'JAVASCRIPT', 'status': card.status
+            'due_time': '2021-12-03T14:17', 'content_item': card.content_item.id,
+            'flavour_names': ['js'], 'status': card.status
         })
+        breakpoint()
         self.assertEqual(response.status_code, 404)
 
     def test_team_members_cannot_bulk_set_due_dates_for_teams_they_dont_belong_to(self):

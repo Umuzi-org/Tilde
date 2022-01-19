@@ -2,7 +2,6 @@ from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
@@ -130,3 +129,17 @@ class UserErrorSerialiser(serializers.Serializer):
         fields = ["message"]
 
     message = serializers.CharField()
+
+
+class BulkSetDueTimeSerializer(serializers.Serializer):
+    class Meta:
+        fields = [
+            "flavours",
+            "content_item",
+            "team"
+        ]
+
+    flavours = serializers.ListField(child=serializers.IntegerField())
+    content_item = serializers.IntegerField()
+    team = serializers.IntegerField()
+

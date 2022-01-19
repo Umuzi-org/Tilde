@@ -88,6 +88,9 @@ class FlavourMixin:
     def flavours_match(self, flavour_strings: List[str]):
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
+    def flavour_ids_match(self, flavour_ids: List[int]):
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+
     @property
     def flavour_names(self):
         return [o.name for o in self.flavours.all()]

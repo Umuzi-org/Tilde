@@ -152,7 +152,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["POST"],
-        serializer_class=CardSummarySerializer,
+        serializer_class=serializers.BulkSetDueTimeSerializer,
         permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
     )
     def bulk_set_due_dates(self, request, pk=None):
@@ -164,9 +164,10 @@ class TeamViewSet(viewsets.ModelViewSet):
             team_cards = get_team_cards(team, serializer.validated_data.get('content_item'))
             [
                 card.set_due_time(request.data.get('due_time')) for card in team_cards if
-                card.flavour_names in [[serializer.validated_data.get('flavour_names')]]
+                card.flavour_ids_match(serializer.validated_data.get('flavours'))
             ]
-        return Response(CardSummarySerializer([card for card in team_cards][0]).data)
+        breakpoint()
+        return Response([CardSummarySerializer(card).data for card in team_cards])
 
 
 def _get_teams_from_user(self, request, view):
