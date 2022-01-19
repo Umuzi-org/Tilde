@@ -51,7 +51,7 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[minimum, maximum]} />
+      <YAxis domain={[100, 200]} />
       <Tooltip />
       <Line
         type="monotone"
