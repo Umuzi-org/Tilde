@@ -1,33 +1,29 @@
-const palette = {
-  warning: "#ff9800",
-  error: "#ef5350",
-  default: "#212121",
-};
-
+const PR_WARNING_AGE_THRESHOLD = 1
+const PR_ERROR_AGE_THRESHOLD = 2
+const TILDE_ERROR_AGE_THRESHOLD = 3
+const TILDE_WARNING_AGE_THRESHOLD = 2
 export const timeDifferenceInDays = (time) => {
-  return Math.ceil(Math.abs(new Date() - new Date(time)) / (1000 * 60 * 60 * 24));
+  return Math.ceil(Math.abs(new Date() - new Date(time)) / (1000 * 60 * 60 * 24) - 1)
+}
+
+export const getPrStatus = (oldestOpenPrTime) => {
+  const ageInDays = timeDifferenceInDays(oldestOpenPrTime)
+  if (ageInDays >= PR_ERROR_AGE_THRESHOLD){
+    return "error";
+  }
+  if(ageInDays === PR_WARNING_AGE_THRESHOLD){
+    return "warning"
+  }
+  return "default"
 };
 
-export const getPrColor = (oldestOpenPrTime) => {
-  let prColor;
-  if (timeDifferenceInDays(oldestOpenPrTime) === 0 || timeDifferenceInDays(oldestOpenPrTime) === 1) {
-    prColor = palette.default;
-  } else if (timeDifferenceInDays(oldestOpenPrTime) <= 2) {
-    prColor = palette.warning;
-  } else {
-    prColor = palette.error;
+export const getTildeReviewStatus = (oldestOPenTildeReviewTime) => {
+  const ageInDays = timeDifferenceInDays(oldestOPenTildeReviewTime)
+  if (ageInDays >= TILDE_ERROR_AGE_THRESHOLD){
+    return "error";
   }
-  return prColor;
-};
-
-export const getTildeReviewColor = (oldestOpenPrTime) => {
-  let tildeReviewColor
-  if (timeDifferenceInDays(oldestOpenPrTime) === 1 || timeDifferenceInDays(oldestOpenPrTime) === 1) {
-    tildeReviewColor = palette.default;
-  } else if (timeDifferenceInDays(oldestOpenPrTime) <= 3) {
-    tildeReviewColor = palette.warning;
-  } else {
-    tildeReviewColor = palette.error;
+  if(ageInDays <= TILDE_WARNING_AGE_THRESHOLD && ageInDays !== 0){
+    return "warning"
   }
-  return tildeReviewColor;
+  return "default"
 };

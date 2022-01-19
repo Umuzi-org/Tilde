@@ -1,6 +1,6 @@
 import React from "react";
 import { getAgeString } from "../../widgets/utils"
-import { getPrColor, getTildeReviewColor } from "./utils"
+import { getPrStatus, getTildeReviewStatus } from "./utils"
 import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 
@@ -22,7 +22,8 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme)=> ({
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -30,12 +31,32 @@ const useStyles = makeStyles({
   textBoxSize: {
     width: "62%",
   },
-});
-const TeamSummaryStats = ({ summaryStats }) => {
+  warning: {
+    color: theme.palette.warning.dark
+  },
+  error: {
+    color: theme.palette.error.dark
+  },
+  default: {
+    color: theme.palette.primary
+  }
 
+}));
+
+const TeamSummaryStats = ({ summaryStats }) => {
   const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
   const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  const classes = useStyles();
 
+  const prStatusClassName = 
+  getPrStatus(summaryStats.oldestOpenPrTime) === "error" ? classes.error : 
+  getPrStatus(summaryStats.oldestOpenPrTime) === "warning" ? classes.warning : 
+  classes.default
+
+  const tildeReviewStatusClassName = 
+  getTildeReviewStatus(summaryStats.oldestCardInReviewTime) === "error" ? classes.error : 
+  getTildeReviewStatus(summaryStats.oldestCardInReviewTime) === "warning" ? classes.warning : 
+  classes.default
 
   return (
     <Table>
@@ -50,14 +71,14 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell style={{color: getPrColor(summaryStats.oldestOpenPrTime)}}>
+          <TableCell className={prStatusClassName}>
           {getAgeString(openPrAge) ? getAgeString(openPrAge) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell  style={{color: getTildeReviewColor(summaryStats.oldestCardInReviewTime)}}>
+          <TableCell className={tildeReviewStatusClassName}>
           {getAgeString(tildeReviewAge) ? getAgeString(tildeReviewAge) : "-"}
           </TableCell>
         </TableRow>
