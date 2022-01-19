@@ -235,7 +235,7 @@ async function cohortRecruits({ page, cohort }) {
 }
 
 async function repositoryEntity({ repositoryId }) {
-  const url = `${API_BASE_URL}/api/repository/${repositoryId}`;
+  const url = `${API_BASE_URL}/api/repository/${repositoryId}/`;
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
