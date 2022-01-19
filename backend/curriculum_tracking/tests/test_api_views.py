@@ -1,6 +1,3 @@
-import django.db
-import dramatiq
-
 import curriculum_tracking.api_views
 import long_running_request_actors
 from git_real.tests.factories import PullRequestFactory
@@ -24,6 +21,8 @@ from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
+import rest_framework.response as response
+from django.http import HttpResponse
 import mock
 
 
@@ -274,13 +273,13 @@ class TestLongRunningActorsCalledFromAgileCardAPIView(APITestCase, APITestCaseMi
         self.project = self.card.recruit_project
         self.url = f"{self.get_list_url()}{self.card.id}/setup_project_repo/"
 
+    @mock.patch('curriculum_tracking.api_views.Response')
     @mock.patch.object(long_running_request_actors.recruit_project_setup_repository, 'send')
-    def test_send_called_from_api_view_action_option(self, send):
+    def test_send_called_from_api_view_action_option(self, send, Response):
         self.login(self.super_user)
-        try:
-            response = self.client.post(path=self.url, data={"card_id": self.card.id})
-        except RecursionError:
-            send.assert_called()
+        Response.return_value = HttpResponse({"status": "OK"})
+        response = self.client.post(path=self.url, data={"card_id": self.card.id})
+        send.assert_called()
 
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_setup_repository_called_from_long_running_actor_recruit_project_setup_repository(self, setup_repository):
