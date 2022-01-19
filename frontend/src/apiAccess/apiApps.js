@@ -10,6 +10,8 @@ const LOGOUT = "LOGOUT";
 const FETCH_RECRUIT_PROJECTS_PAGE = "FETCH_RECRUIT_PROJECTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE";
+const FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE =
+  "FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE";
 const FETCH_SINGLE_PROJECT_CARD_SUMMARY = "FETCH_SINGLE_PROJECT_CARD_SUMMARY";
@@ -182,6 +184,13 @@ export const apiReduxApps = {
     apiCaller: apiCallers.personallyAssignedAgileCardsPage,
     responseIsList: true,
     responseEntityType: "cards",
+  }),
+
+  FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE,
+    apiCaller: apiCallers.userBurndownSnapshotsPage,
+    responseIsList: true,
+    responseEntityType: "burndownSnapshots",
   }),
 
   FETCH_COHORTS_PAGE: createReduxApp({
