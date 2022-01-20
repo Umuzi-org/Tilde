@@ -15,3 +15,7 @@ export const repoUrlCleaner = (repoUrl) => {
   const gitRepo = repoUrl.substring(repoUrl.indexOf("Umuzi-org"));
   return `https://github.com/${gitRepo.replace(".git", "/pulls")}`;
 };
+
+export const trimLongReview = (review) => {
+  return review.split("\n")[0];
+};
