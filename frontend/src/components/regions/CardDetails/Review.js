@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -9,7 +9,7 @@ import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 import { trimLongReview } from "../../widgets/utils";
-import ExpandMore from "@material-ui/icons/ExpandMore";
+import CropFreeIcon from '@material-ui/icons/CropFree';
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
@@ -64,6 +64,14 @@ const Review = ({ review, closeModal }) => {
         title={
           <Typography className={classes.timeFont}>
             {timestamp.toLocaleString()}
+            <Button
+              type="button"
+              size="small"
+              className={classes.rightAlignExpander}
+              onClick={() => setOpenReviewPopUp(true)}
+            >
+              {review.comments.includes("\n") ? <CropFreeIcon fontSize="small" /> : React.Fragment}
+            </Button>
           </Typography>
         }
         subheader={
@@ -76,13 +84,13 @@ const Review = ({ review, closeModal }) => {
       <CardContent className={classes.cardContent}>
         <Typography>
           <Markdown children={trimLongReview(review.comments)} />
-          <Button
+          {/* <Button
             type="button"
             className={classes.rightAlignExpander}
             onClick={() => setOpenReviewPopUp(true)}
           >
             {review.comments.includes("\n") ? <ExpandMore /> : React.Fragment}
-          </Button>
+          </Button> */}
         </Typography>
       </CardContent>
       <IconButton disabled>
@@ -96,7 +104,7 @@ const Review = ({ review, closeModal }) => {
         setOpenReviewPopUp={setOpenReviewPopUp}
         title={`${review.reviewerUserEmail}'s review:`}
       >
-        <Markdown children={review.comments}/>
+        <Markdown children={review.comments} />
       </ReviewPopUp>
     </Card>
   );
