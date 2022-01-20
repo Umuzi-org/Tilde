@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "100%",
   },
-  rightAlignExpander: {
+  iconAlignment: {
     position: "absolute",
     right: "10px",
   },
@@ -67,7 +67,7 @@ const Review = ({ review, closeModal }) => {
             <Button
               type="button"
               size="small"
-              className={classes.rightAlignExpander}
+              className={classes.iconAlignment}
               onClick={() => setOpenReviewPopUp(true)}
             >
               {review.comments.includes("\n") ? <CropFreeIcon fontSize="small" /> : React.Fragment}
@@ -84,13 +84,6 @@ const Review = ({ review, closeModal }) => {
       <CardContent className={classes.cardContent}>
         <Typography>
           <Markdown children={trimLongReview(review.comments)} />
-          {/* <Button
-            type="button"
-            className={classes.rightAlignExpander}
-            onClick={() => setOpenReviewPopUp(true)}
-          >
-            {review.comments.includes("\n") ? <ExpandMore /> : React.Fragment}
-          </Button> */}
         </Typography>
       </CardContent>
       <IconButton disabled>
