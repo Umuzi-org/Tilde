@@ -1,5 +1,4 @@
 from django.test import TestCase
-
 import curriculum_tracking
 from git_real.tests.factories import PullRequestFactory
 from .factories import (
@@ -19,7 +18,7 @@ from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
 from taggit.models import Tag
-from curriculum_tracking.tests.factories import ProjectContentItemFactory, TopicProgressFactory
+from curriculum_tracking.tests.factories import ProjectContentItemFactory, ContentItemFactory, TopicProgressFactory
 import mock
 
 
@@ -134,23 +133,15 @@ class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCa
         "tag_names",
         "can_start",
         "can_force_start",
+        "flavour_names",
+        "open_pr_count",
+        "oldest_open_pr_updated_time",
+        "users_that_reviewed_since_last_review_request"
     ]
 
     def verbose_instance_factory(self):
         project = RecruitProjectFactory()
         card = AgileCardFactory(recruit_project=project)
-        card.reviewers.add(core_factories.UserFactory())
-        card.assignees.add(core_factories.UserFactory())
-        card.flavours.add(Tag.objects.create(name="asdsasa"))
-        project.review_request_time = timezone.now() - timedelta(days=5)
-        project.save()
-        review = RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT,
-            recruit_project=project,
-        )
-        review.timestamp = timezone.now() - timedelta(days=1)
-        review.save()
-        PullRequestFactory(repository=project.repository)
         return card
 
     def setUp(self):
@@ -169,6 +160,7 @@ class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCa
                 path=f'{self.api_url}{card.id}/add_review/',
                 data={"status": "NYC", "comments": "dammit"}
             )
+
         self.assertTrue(response.status_code, 200)
         proj_comp_review.assert_called()
         topic_comp_review.assert_not_called()
@@ -179,12 +171,15 @@ class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCa
             self, proj_comp_review, topic_comp_review
     ):
         super_user = UserFactory(is_superuser=True)
-        card = AgileCardFactory(content_item=TopicProgressFactory())
+        card = AgileCardFactory(content_item=ContentItemFactory())
+        card.topic_progress = TopicProgressFactory()
+        card.save()
         self.login(super_user)
         response = self.client.post(
             path=f'{self.api_url}{card.id}/add_review/',
             data={"status": "NYC", "comments": "dammit"}
         )
+
         self.assertTrue(response.status_code, 200)
         topic_comp_review.assert_called()
         proj_comp_review.assert_not_called()

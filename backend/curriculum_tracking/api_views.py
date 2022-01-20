@@ -300,7 +300,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def add_review(self, request, pk=None):
         card = self.get_object()
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             if card.content_item.content_type == models.ContentItem.PROJECT:
