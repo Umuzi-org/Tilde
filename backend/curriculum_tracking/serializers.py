@@ -7,6 +7,7 @@ from datetime import timedelta
 from django.utils import timezone
 from config.models import NameSpace
 from taggit.models import Tag
+from activity_log.models import EventType
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -623,3 +624,13 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
 
     def get_content_item_title(self, review_trust: object):
         return review_trust.content_item.title
+
+
+class TrustSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = EventType
+        fields = [
+            'name',
+            'description'
+        ]        

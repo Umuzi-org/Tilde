@@ -52,3 +52,5 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
 # a normal model viewset allowing list and retrieve actions
 # default order = -timestamp
 # filter by users, event type
+
+

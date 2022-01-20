@@ -137,7 +137,11 @@ router.register(
     activity_log_api_views.ActivityLogDayCountViewset,
     "activitylogdaycount",
 )
-
+router.register(
+    r"trust_View",
+    curriculum_tracking_api_views.PushRequestViewSet,
+    "pushrequest-list",
+)
 
 # router.register(
 #     r"agile_card_add_review",
@@ -163,3 +167,4 @@ urlpatterns = [
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
 ]
+

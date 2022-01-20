@@ -23,8 +23,10 @@ from core.permissions import (
 from core.models import Team
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
-
+from activity_log.models import EventType
 from rest_framework import filters
+
+import curriculum_tracking.serializers 
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -926,3 +928,18 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user"]
+
+
+class PushRequestViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.TrustSerializer
+    queryset = EventType.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    
+
+    permission_classes = [
+        ActionIs("list")
+        & (core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW
+            )
+        )
+    ]
