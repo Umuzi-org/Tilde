@@ -22,7 +22,7 @@ export const getTildeReviewStatus = (oldestOPenTildeReviewTime) => {
   if (ageInDays >= TILDE_ERROR_AGE_THRESHOLD){
     return "error";
   }
-  if((ageInDays >= TILDE_WARNING_AGE_THRESHOLD[0] || ageInDays <= TILDE_WARNING_AGE_THRESHOLD[1]) && ageInDays !== 0){
+  if(ageInDays === TILDE_WARNING_AGE_THRESHOLD[0] || ageInDays === TILDE_WARNING_AGE_THRESHOLD[1]){
     return "warning"
   }
   return "default"
