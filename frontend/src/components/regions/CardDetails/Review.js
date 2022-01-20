@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -8,13 +8,18 @@ import Typography from "@material-ui/core/Typography";
 import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-// import ShowMoreText from "react-show-more-text";
-// import ExpandLess from "@material-ui/icons/ExpandLess";
-// import ExpandMore from "@material-ui/icons/ExpandMore";
+import { trimLongReview } from "../../widgets/utils";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import Button from "@material-ui/core/Button";
+import ReviewPopUp from "./ReviewPopUp";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "100%",
+  },
+  rightAlignExpander: {
+    position: "absolute",
+    right: "10px",
   },
   timeFont: {
     fontSize: 11,
@@ -32,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: 0,
     },
   },
+  iconColor: {
+    color: "black",
+  },
   cardContent: {
     paddingTop: 0,
     paddingBottom: 0,
@@ -44,11 +52,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review }) => {
+const Review = ({ review, closeModal }) => {
   const classes = useStyles();
-
-  // const [expand, setExpand] = useState(false);
-  // const onClick = () => setExpand(!expand);
+  const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
 
   const timestamp = new Date(review.timestamp);
 
@@ -68,26 +74,30 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {/* <Typography className={classes.cardFont}>
-          <ShowMoreText
-            lines={1}
-            more={<ExpandMore />}
-            less={<ExpandLess />}
-            onClick={onClick}
-            expanded={expand}
-            width={0}
-            truncatedEndingComponent={"..."}
-            > */}
-        <Markdown children={review.comments} />
-        {/* </ShowMoreText> */}
-        {/* </Typography> */}
+        <Typography>
+          <Markdown children={trimLongReview(review.comments)} />
+          <Button
+            type="button"
+            className={classes.rightAlignExpander}
+            onClick={() => setOpenReviewPopUp(true)}
+          >
+            {review.comments.includes("\n") ? <ExpandMore /> : React.Fragment}
+          </Button>
+        </Typography>
       </CardContent>
-      <IconButton>
+      <IconButton disabled>
         <ReviewStatus status={review.status} />
       </IconButton>
-      <IconButton>
+      <IconButton disabled className={classes.iconColor}>
         <ReviewValidationIcons review={review} />
       </IconButton>
+      <ReviewPopUp
+        openReviewPopUp={openReviewPopUp}
+        setOpenReviewPopUp={setOpenReviewPopUp}
+        title={`${review.reviewerUserEmail}'s review:`}
+      >
+        <Markdown children={review.comments}/>
+      </ReviewPopUp>
     </Card>
   );
 };
