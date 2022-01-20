@@ -1,4 +1,6 @@
 from django.test import TestCase
+
+import curriculum_tracking
 from git_real.tests.factories import PullRequestFactory
 from .factories import (
     RecruitProjectReviewFactory,
@@ -17,6 +19,8 @@ from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
 from taggit.models import Tag
+from curriculum_tracking.tests.factories import ProjectContentItemFactory, TopicProgressFactory
+import mock
 
 
 class log_project_competence_review_done_Tests(TestCase):
@@ -152,8 +156,35 @@ class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCa
     def setUp(self):
         self.api_url = self.get_list_url()
 
-    def test_log_project_competence_review_invoked_from_api_endpoint_for_project_review(self):
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_topic_competence_review_done')
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_project_competence_review_done')
+    def test_log_project_competence_review_invoked_from_api_endpoint_for_project_review(
+            self, proj_comp_review, topic_comp_review
+    ):
+
         super_user = UserFactory(is_superuser=True)
-        review1 = RecruitProjectReviewFactory()
+        card = AgileCardFactory(content_item=ProjectContentItemFactory())
         self.login(super_user)
-        breakpoint()
+        response = self.client.post(
+                path=f'{self.api_url}{card.id}/add_review/',
+                data={"status": "NYC", "comments": "dammit"}
+            )
+        self.assertTrue(response.status_code, 200)
+        proj_comp_review.assert_called()
+        topic_comp_review.assert_not_called()
+
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_topic_competence_review_done')
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_project_competence_review_done')
+    def test_log_topic_competence_review_invoked_from_api_endpoint_for_topic_review(
+            self, proj_comp_review, topic_comp_review
+    ):
+        super_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(content_item=TopicProgressFactory())
+        self.login(super_user)
+        response = self.client.post(
+            path=f'{self.api_url}{card.id}/add_review/',
+            data={"status": "NYC", "comments": "dammit"}
+        )
+        self.assertTrue(response.status_code, 200)
+        topic_comp_review.assert_called()
+        proj_comp_review.assert_not_called()
