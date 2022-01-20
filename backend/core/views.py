@@ -161,12 +161,12 @@ class TeamViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+
             team_cards = get_team_cards(team, serializer.validated_data.get('content_item'))
             [
                 card.set_due_time(request.data.get('due_time')) for card in team_cards if
                 card.flavour_ids_match(serializer.validated_data.get('flavours'))
             ]
-        breakpoint()
         return Response([CardSummarySerializer(card).data for card in team_cards])
 
 

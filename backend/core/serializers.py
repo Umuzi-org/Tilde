@@ -134,11 +134,13 @@ class UserErrorSerialiser(serializers.Serializer):
 class BulkSetDueTimeSerializer(serializers.Serializer):
     class Meta:
         fields = [
+            "due_time"
             "flavours",
             "content_item",
             "team"
         ]
 
+    due_time = serializers.DateTimeField()
     flavours = serializers.ListField(child=serializers.IntegerField())
     content_item = serializers.IntegerField()
     team = serializers.IntegerField()

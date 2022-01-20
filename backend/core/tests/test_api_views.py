@@ -158,9 +158,8 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
         response = self.client.post(path=url, format="json", data={
             'due_time': '2021-12-03T14:17', 'content_item': card.content_item.id,
-            'flavour_names': ['js'], 'status': card.status
+            'flavours': [1, 2, 3]
         })
-        breakpoint()
         self.assertEqual(response.status_code, 404)
 
     def test_team_members_cannot_bulk_set_due_dates_for_teams_they_dont_belong_to(self):
@@ -172,28 +171,28 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.login(self.user_one_blue)
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
         response = self.client.post(path=url, format="json", data={
-            'due_time': '2021-12-03T14:17', 'content_item': '2', 'team': str(self.red_team),
-            'flavour_names': 'JAVASCRIPT', 'status': card.status
+            'due_time': '2021-12-03T14:17', 'content_item': '2', 'team': str(self.red_team.id),
+            'flavours': [1, 2, 3]
         })
         self.assertEqual(response.status_code, 404)
 
     def test_super_user_can_bulk_set_due_dates_for_a_team(self):
 
         project = RecruitProjectFactory(due_time=None)
-        card = AgileCardFactory(recruit_project=project, flavours=['JAVASCRIPT'])
+        card = AgileCardFactory(recruit_project=project, flavours=['JAVASCRIPT', 'PYTHON'])
         card.reviewers.add(self.user_one_blue)
         card.assignees.add(self.user_two_blue)
         self.assertIsNone(card.due_time)
         self.login(self.super_user)
         url = f'{self.get_instance_url(pk=self.blue_team.id)}bulk_set_due_dates/'
         response = self.client.post(path=url, format='json', data={
-            'due_time': '2021-12-03T14:17', 'content_item': str(card.content_item.id), 'team': str(self.blue_team),
-            'flavour_names': 'JAVASCRIPT', 'status': card.status
+            'due_time': '2021-12-03T14:17', 'content_item': card.content_item.id, 'team': str(self.blue_team.id),
+            'flavours': [card.flavours.first().id, card.flavours.last().id]
         })
 
         self.assertEqual(response.status_code, 200)
         card.refresh_from_db()
-        self.assertIsNotNone(card.due_time)
+        self.assertTrue(card.due_time, '2021-12-03T14:17')
 
     def test_bulk_set_due_date_happened_for_every_card_with_the_same_content_item_for_the_team(self):
 
@@ -217,8 +216,8 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.login(self.super_user)
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
         response = self.client.post(path=url, format='json', data={
-            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team),
-            'flavour_names': 'JAVASCRIPT', 'status': card_1.status
+            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
+            'flavours': [card_1.flavours.first().id]
         })
         self.assertEqual(response.status_code, 200)
 
@@ -229,6 +228,42 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         for card in team_cards:
             card.refresh_from_db()
-            self.assertIsNotNone(card.due_time)
+            self.assertTrue(card.due_time, '2022-01-20T12:17')
 
+        self.assertIsNone(card_3.due_time)
+
+    def test_due_date_not_set_if_flavour_name_differs_to_request(self):
+
+        """
+        Three cards (1 'js' flavour & 2 'python' flavoured); the request is for team_cards with a 'js' flavour to have
+        their due dates set and all other flavoured cards to not have their due dates altered.
+        """
+        project = RecruitProjectFactory(due_time=None)
+        card_1 = AgileCardFactory(recruit_project=project, flavours=['JAVASCRIPT'])
+        card_1.assignees.add(self.user_one_red)
+        card_2 = AgileCardFactory(
+            recruit_project=RecruitProjectFactory(due_time=None), content_item=card_1.content_item,
+            flavours=['PYTHON']
+        )
+        card_2.assignees.add(self.user_two_red)
+        card_3 = AgileCardFactory(
+            recruit_project=RecruitProjectFactory(due_time=None), content_item=card_1.content_item,
+            flavours=['PYTHON']
+        )
+        card_3.assignees.add(self.user_two_red)
+        self.assertEqual(card_1.content_item, card_2.content_item)
+        self.assertEqual(card_1.content_item, card_3.content_item)
+        self.login(self.super_user)
+        url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        response = self.client.post(path=url, format='json', data={
+            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
+            'flavours': [card_1.flavours.first().id]
+        })
+        self.assertEqual(response.status_code, 200)
+
+        card_1.refresh_from_db()
+        card_2.refresh_from_db()
+        card_3.refresh_from_db()
+        self.assertTrue(card_1.due_time, '2022-01-20T12:17')
+        self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
