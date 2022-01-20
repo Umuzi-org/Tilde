@@ -19,7 +19,6 @@ export const getPrStatus = (oldestOpenPrTime) => {
 
 export const getTildeReviewStatus = (oldestOPenTildeReviewTime) => {
   const ageInDays = timeDifferenceInDays(oldestOPenTildeReviewTime)
-  console.log(ageInDays)
   if (ageInDays >= TILDE_ERROR_AGE_THRESHOLD){
     return "error";
   }
