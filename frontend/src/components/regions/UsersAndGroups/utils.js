@@ -2,6 +2,7 @@ const PR_WARNING_AGE_THRESHOLD = 1
 const PR_ERROR_AGE_THRESHOLD = 2
 const TILDE_ERROR_AGE_THRESHOLD = 3
 const TILDE_WARNING_AGE_THRESHOLD = [1,2]
+
 export const timeDifferenceInDays = (time) => {
   return Math.ceil(Math.abs(new Date() - new Date(time)) / (1000 * 60 * 60 * 24) - 1)
 }

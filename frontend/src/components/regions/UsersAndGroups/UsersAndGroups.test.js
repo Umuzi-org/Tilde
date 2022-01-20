@@ -103,7 +103,7 @@ test("getTildeReviewStatus should return an orange text when an oldest pull requ
 
 test("getTildeReviewStatus should return a black text whenever an oldest tilde review request is made 'just now'", () => {
   const newDate = new Date();
-  const hoursAgo = newDate.setHours(newDate.getHours() - 2)
+  const hoursAgo = newDate.setHours(newDate.getHours() - 2);
   expect(getTildeReviewStatus(hoursAgo)).toBe("default");
 });
 
