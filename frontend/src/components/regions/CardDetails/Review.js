@@ -9,7 +9,7 @@ import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 import { trimLongReview } from "../../widgets/utils";
-import CropFreeIcon from '@material-ui/icons/CropFree';
+import CropFreeIcon from "@material-ui/icons/CropFree";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review, closeModal }) => {
+const Review = ({ review }) => {
   const classes = useStyles();
   const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
 
@@ -70,7 +70,11 @@ const Review = ({ review, closeModal }) => {
               className={classes.iconAlignment}
               onClick={() => setOpenReviewPopUp(true)}
             >
-              {review.comments.includes("\n") ? <CropFreeIcon fontSize="small" /> : React.Fragment}
+              {review.comments.includes("\n") ? (
+                <CropFreeIcon fontSize="small" />
+              ) : (
+                React.Fragment
+              )}
             </Button>
           </Typography>
         }
