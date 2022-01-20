@@ -1,4 +1,4 @@
-import { getAgeString } from "../../../widgets/utils";
+import { getAgeString, trimLongReview } from "../../../widgets/utils";
 import { userReviewedSinceLastReviewRequest } from "./utils";
 import { repoUrlCleaner } from "../../../widgets/utils";
 
@@ -82,5 +82,13 @@ test("git repo url should be cleaned to link to the pull request index on github
     "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git";
   expect(repoUrlCleaner(gitRepo)).toBe(
     "https://github.com/Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python/pulls"
+  );
+});
+
+test("A long review should be shortend", () => {
+  const longReview =
+    "This is a very decriptive, long code review\n that can become hard to read.\n We need to shorten it";
+  expect(trimLongReview(longReview)).toBe(
+    "This is a very decriptive, long code review"
   );
 });
