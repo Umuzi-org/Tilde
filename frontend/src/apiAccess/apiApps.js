@@ -194,7 +194,7 @@ export const apiReduxApps = {
   FETCH_SINGLE_REPOSITORY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_REPOSITORY,
     apiCaller: apiCallers.repositoryEntity,
-    responseIsList: true,
+    responseIsList: false,
     responseEntityType: "repositories",
   }),
 

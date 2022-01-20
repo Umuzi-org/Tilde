@@ -315,6 +315,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     recruit_project=card.recruit_project,
                     reviewer_user=request.user,
                 )
+                log_creators.log_project_competence_review_done(review)
 
             elif card.content_item.content_type == models.ContentItem.TOPIC:
                 if card.topic_progress == None:
@@ -328,7 +329,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     reviewer_user=request.user,
                 )
 
-            log_creators.log_project_competence_review_done(review)
+                log_creators.log_topic_competence_review_done(review)
 
             card.refresh_from_db()
 

@@ -121,11 +121,11 @@ def log_topic_competence_review_done(review):
 # REVIEW_TRUST_EARNED = "REVIEW_TRUST_EARNED"
 # REVIEW_TRUST_REMOVED = "REVIEW_TRUST_REMOVED"
 
-# def log_review_trust_created():
+# def log_review_trust_earned():
 #     event_type, _ = EventType.objects.get_or_create(name=REVIEW_TRUST_EARNED)
 #     todo
 
 
-# def log_review_trust_removed():
+# def log_review_trust_revoked():
 #     event_type, _ = EventType.objects.get_or_create(name=REVIEW_TRUST_REMOVED)
 #     todo

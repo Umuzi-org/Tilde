@@ -660,7 +660,9 @@ class RecruitProject(
         api = Api(github_auth_login)
 
         repo = self._get_or_create_repo(api)
-        assert repo.user == recruit_user
+        # assert (
+        #     repo.user == recruit_user
+        # ), f"RecruitProject {self.id}: {repo.user} != {recruit_user}"
 
         assert (
             repo != None
@@ -854,6 +856,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .filter(recruit_project = self.recruit_project)
             .order_by("timestamp")
             .first()
         )
