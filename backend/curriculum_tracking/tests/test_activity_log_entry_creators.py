@@ -1,7 +1,22 @@
 from django.test import TestCase
-from .factories import RecruitProjectReviewFactory, TopicReviewFactory, UserFactory
+from git_real.tests.factories import PullRequestFactory
+from .factories import (
+    RecruitProjectReviewFactory,
+    TopicReviewFactory,
+    UserFactory,
+    AgileCardFactory,
+    RecruitProjectFactory
+)
 import curriculum_tracking.activity_log_entry_creators as creators
 from activity_log.models import LogEntry
+from test_mixins import APITestCase, APITestCaseMixin
+from core.tests import factories as core_factories
+from datetime import timedelta
+from django.utils import timezone
+from curriculum_tracking.constants import (
+    NOT_YET_COMPETENT,
+)
+from taggit.models import Tag
 
 
 class log_project_competence_review_done_Tests(TestCase):
@@ -42,12 +57,11 @@ class log_project_competence_review_done_Tests(TestCase):
         creators.log_project_competence_review_done(review1)
         self.assertEqual(LogEntry.objects.count(), 1)
 
-    def test_log_project_creator_is_invoked_for_a_project_review(self):
+    def test_log_project_creator_is_invoked_for_a_project_review_else_attribute_error_is_raised(self):
         review1 = RecruitProjectReviewFactory()
-        try:
+        with self.assertRaises(AttributeError) as exception:
             creators.log_topic_competence_review_done(review1)
-        except AttributeError as error:
-            self.assertTrue(error)
+        self.assertTrue(exception, AttributeError)
         self.assertEqual(LogEntry.objects.count(), 0)
 
 
@@ -88,10 +102,58 @@ class log_topic_competence_review_done_Tests(TestCase):
         creators.log_topic_competence_review_done(review1)
         self.assertEqual(LogEntry.objects.count(), 1)
 
-    def test_log_topic_creator_is_invoked_for_a_topic_review(self):
+    def test_log_topic_creator_is_invoked_for_a_topic_review_else_attribute_error_is_raised(self):
         review1 = TopicReviewFactory()
-        try:
+        with self.assertRaises(AttributeError) as exception:
             creators.log_project_competence_review_done(review1)
-        except AttributeError as error:
-            self.assertTrue(error)
+        self.assertTrue(exception, AttributeError)
         self.assertEqual(LogEntry.objects.count(), 0)
+
+
+class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+        "requires_cards",
+        "required_by_cards",
+        "project_submission_type_nice",
+        "topic_needs_review",
+        "topic_progress",
+        "due_time",
+        "complete_time",
+        "review_request_time",
+        "start_time",
+        "tag_names",
+        "can_start",
+        "can_force_start",
+    ]
+
+    def verbose_instance_factory(self):
+        project = RecruitProjectFactory()
+        card = AgileCardFactory(recruit_project=project)
+        card.reviewers.add(core_factories.UserFactory())
+        card.assignees.add(core_factories.UserFactory())
+        card.flavours.add(Tag.objects.create(name="asdsasa"))
+        project.review_request_time = timezone.now() - timedelta(days=5)
+        project.save()
+        review = RecruitProjectReviewFactory(
+            status=NOT_YET_COMPETENT,
+            recruit_project=project,
+        )
+        review.timestamp = timezone.now() - timedelta(days=1)
+        review.save()
+        PullRequestFactory(repository=project.repository)
+        return card
+
+    def setUp(self):
+        self.api_url = self.get_list_url()
+
+    def test_log_project_competence_review_invoked_from_api_endpoint_for_project_review(self):
+        super_user = UserFactory(is_superuser=True)
+        review1 = RecruitProjectReviewFactory()
+        self.login(super_user)
+        breakpoint()
