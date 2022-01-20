@@ -9,7 +9,12 @@ import {
 const ReviewPopUp = (props) => {
   const { title, children, openReviewPopUp, setOpenReviewPopUp } = props;
   return (
-    <Dialog open={openReviewPopUp}>
+    <Dialog
+      open={openReviewPopUp}
+      onClose={() => {
+        setOpenReviewPopUp(false);
+      }}
+    >
       <DialogTitle>
         <div>
           <Typography variant="h6" component="div">
@@ -22,6 +27,6 @@ const ReviewPopUp = (props) => {
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-export default ReviewPopUp
+export default ReviewPopUp;
