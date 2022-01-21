@@ -85,7 +85,7 @@ test("git repo url should be cleaned to link to the pull request index on github
   );
 });
 
-test("A long review should be shortend", () => {
+test("A long review should be shortened", () => {
   const longReview =
     "This is a very decriptive, long code review\n that can become hard to read.\n We need to shorten it";
   expect(trimLongReview(longReview)).toBe(
