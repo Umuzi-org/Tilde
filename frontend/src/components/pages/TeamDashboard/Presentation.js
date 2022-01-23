@@ -33,9 +33,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, minimum, maximum }) => {
-  // TODO calculate maximum and minimum so that all the graphs have the same proportions
-
+const ReviewLineChart = ({ data, YAxisData }) => {
+  let min = 0;
+  let max = 100;
+  let reviewsArr = []
+  for(let i in YAxisData){
+    let YAxisArr = YAxisData[i];
+    for(let j = 0; j < YAxisArr.length; j++){
+      reviewsArr.push(YAxisArr[j].COMPETENCE_REVIEW_DONE)
+    }
+  }
+  reviewsArr.sort((a, b) => (a - b));
+  min = reviewsArr[0];
+  max = reviewsArr[reviewsArr.length-1];
   return (
     // <ResponsiveContainer width="100%" height="100%">
     <LineChart
@@ -51,7 +61,7 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[100, 200]} />
+      <YAxis domain={[min, max]} />
       <Tooltip />
       <Line
         type="monotone"
@@ -88,6 +98,8 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                         {activityLogDayCounts ? (
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
+                            YAxisData={activityLogDayCounts}
+                            // maximum={20}
                             eventTypes={eventTypes}
                           ></ReviewLineChart>
                         ) : (
