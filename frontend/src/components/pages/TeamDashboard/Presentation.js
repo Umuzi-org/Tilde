@@ -34,8 +34,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReviewLineChart = ({ data, YAxisData }) => {
-  let min = 0;
-  let max = 100;
   let reviewsArr = []
   for(let i in YAxisData){
     let YAxisArr = YAxisData[i];
@@ -44,10 +42,9 @@ const ReviewLineChart = ({ data, YAxisData }) => {
     }
   }
   reviewsArr.sort((a, b) => (a - b));
-  min = reviewsArr[0];
-  max = reviewsArr[reviewsArr.length-1];
+  let min = reviewsArr[0];
+  let max = reviewsArr[reviewsArr.length-1];
   return (
-    // <ResponsiveContainer width="100%" height="100%">
     <LineChart
       width={900}
       height={100}
@@ -75,7 +72,6 @@ const ReviewLineChart = ({ data, YAxisData }) => {
         stroke="#82ca9d"
       />
     </LineChart>
-    // </ResponsiveContainer>
   );
 };
 
@@ -99,7 +95,6 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
                             YAxisData={activityLogDayCounts}
-                            // maximum={20}
                             eventTypes={eventTypes}
                           ></ReviewLineChart>
                         ) : (
