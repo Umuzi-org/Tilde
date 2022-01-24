@@ -33,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, YAxisData }) => {
-  let reviewsArr = []
-  for(let i in YAxisData){
-    let YAxisArr = YAxisData[i];
-    for(let j = 0; j < YAxisArr.length; j++){
-      reviewsArr.push(YAxisArr[j].COMPETENCE_REVIEW_DONE)
+const ReviewLineChart = ({ data, allUsersData }) => {
+  const reviewsArr = []
+  for(let i in allUsersData){
+    let allUsersArr = allUsersData[i];
+    for(let j = 0; j < allUsersArr.length; j++){
+      reviewsArr.push(allUsersArr[j].COMPETENCE_REVIEW_DONE)
     }
   }
   reviewsArr.sort((a, b) => (a - b));
@@ -94,7 +94,7 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                         {activityLogDayCounts ? (
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
-                            YAxisData={activityLogDayCounts}
+                            allUsersData={activityLogDayCounts}
                             eventTypes={eventTypes}
                           ></ReviewLineChart>
                         ) : (
