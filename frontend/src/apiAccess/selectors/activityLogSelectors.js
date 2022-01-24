@@ -1,11 +1,9 @@
-export const getActivityLogCountsByDayForUsers = ({
-  userIds,
-  activityLogDayCounts,
-  eventTypes,
-}) => {
+export const getActivityLogCountsByDayForUsers = ({ userIds, activityLogDayCounts, eventTypes, }) => {
   let result = {};
-  // sort activityLogDayCounts by date (min to max)
-  // find min and max dates
+  const sortedActivityLogDayCounts = activityLogDayCounts.sort((a, b) => new Date(a) - new Date(b));
+  const minDate = sortedActivityLogDayCounts[0].date;
+  const maxDate = sortedActivityLogDayCounts[sortedActivityLogDayCounts.length - 1].date;
+
   userIds.forEach(
     (userId) =>
       (result[userId] = getActivityLogCountsByDayForSingleUser({
