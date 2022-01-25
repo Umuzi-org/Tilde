@@ -1,31 +1,22 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@material-ui/core";
 
-const ReviewPopUp = (props) => {
-  const { title, children, openReviewPopUp, setOpenReviewPopUp } = props;
+import Typography from "@material-ui/core/Typography"
+import Markdown from "react-markdown";
+import Modal from "../../widgets/Modal";
+
+const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
   return (
-    <Dialog
+    <Modal
       open={openReviewPopUp}
       onClose={() => {
         setOpenReviewPopUp(false);
       }}
     >
-      <DialogTitle>
-        <div>
-          <Typography variant="h6" component="div">
-            {title}
-          </Typography>
-        </div>
-      </DialogTitle>
-      <DialogContent dividers>
-        <div>{children}</div>
-      </DialogContent>
-    </Dialog>
+      <Typography variant="h6" component="div">
+        {review.reviewerUserEmail}'s review:
+      </Typography>
+      <Markdown children={review.comments} />
+    </Modal>
   );
 };
 
