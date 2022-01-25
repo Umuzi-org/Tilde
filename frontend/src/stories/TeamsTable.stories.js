@@ -12,4 +12,5 @@ const Template = args => <TeamsTable {...args} />
 export const Primary = Template.bind({});
 Primary.args = {
   teams: user.teamMemberships,
+  authUser: user
 }
