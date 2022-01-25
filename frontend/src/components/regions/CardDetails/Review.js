@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-import { trimLongReview } from "../../widgets/utils";
+import { trimLongReview } from "./utils";
 import CropFreeIcon from "@material-ui/icons/CropFree";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
@@ -99,9 +99,8 @@ const Review = ({ review }) => {
       <ReviewPopUp
         openReviewPopUp={openReviewPopUp}
         setOpenReviewPopUp={setOpenReviewPopUp}
-        title={`${review.reviewerUserEmail}'s review:`}
+        review={review}
       >
-        <Markdown children={review.comments} />
       </ReviewPopUp>
     </Card>
   );
