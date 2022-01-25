@@ -58,5 +58,6 @@
     "canStart": false,
     "canForceStart": false,
     "openPrCount": 0,
+    "repoUrl": "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git",
     "oldestOpenPrUpdatedTime": null
 }

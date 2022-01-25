@@ -1,11 +1,11 @@
 import { takeEvery, put, select } from "redux-saga/effects";
 // import operations from "./operations";
-import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 
 function* setProjectLinkSuccessSideEffects(action) {
   const { cardId } = action.requestData;
 
-  const getCard = (state) => state.Entities.cards[cardId];
+  const getCard = (state) => state.apiEntities.cards[cardId];
 
   const card = yield select(getCard);
 
