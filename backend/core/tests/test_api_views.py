@@ -4,6 +4,8 @@ from . import factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
 from django.contrib.auth.models import Group
+import mock
+import long_running_request_actors
 
 
 # class TestUserViewSet(APITestCase, APITestCaseMixin):
@@ -124,3 +126,21 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
+
+class Test_learner_delete_and_recreate_cards(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME="user-list"
+    SUPPRESS_TEST_POST_TO_CREATE=True
+    SUPPRESS_TEST_GET_LIST=True
+
+    # @mock.patch('curriculum_tracking.api_views.Response')
+    @mock.patch.object(long_running_request_actors.user_delete_and_recreate_cards, 'send')
+    def test_send_called_from_api_view_action_option(self, send):
+        # Response.return_value = HttpResponse({"status": "OK"})
+        user = factories.UserFactory()
+        superuser = factories.UserFactory(is_superuser=True)
+        self.login(superuser)
+        url = self.get_instance_url(pk=user.id) + "delete_and_recreate_cards/"
+        response = self.client.post(url)
+        send.assert_called()
+
+    # @mock.patch.object("generate_and_update_all_cards_for_user")

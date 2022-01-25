@@ -75,14 +75,13 @@ def auto_assign_reviewers():
 
 
 @dramatiq.actor()
-def learner_delete_and_recreate_cards(user_email):
+def user_delete_and_recreate_cards(user_id):
     from core.models import User
     from curriculum_tracking import models
     from curriculum_tracking.card_generation_helpers import (
         generate_and_update_all_cards_for_user,
     )
 
-    # user = User.objects.get(pk=user_id)
-    user = User.objects.get(email=user_email)
+    user = User.objects.get(pk=user_id)
     models.AgileCard.objects.filter(assignees__in=[user]).delete()
     generate_and_update_all_cards_for_user(user, None)

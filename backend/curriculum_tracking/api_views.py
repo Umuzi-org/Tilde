@@ -20,12 +20,11 @@ from core.permissions import (
     DenyAll,
     IsCurrentUserInSpecificFilter,
 )
-from core.models import Team
+from core.models import Team, User
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
 from rest_framework import filters
-import dramatiq
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -535,18 +534,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
         card.attended_workshop(timestamp=timezone.now())
         return Response(serializers.AgileCardSerializer(card).data)
         # serializer = self.get_serializer(data=request.data)
-        
-    @action(
-        detail=True,
-        methods=["post"],
-        serializer_class=serializers.NoArgs,
-        permission_classes=[
-            IsStaffUser | HasObjectPermission(
-                permissions=Team.PERMISSION_MANAGE_CARDS,
-            )
-        ]
-    )
-
         # if serializer.is_valid():
         #     card.attended_workshop(timestamp = serializer.data['timestamp'])
         #     return Response(serializers.AgileCardSerializer(card).data)
@@ -572,6 +559,8 @@ class AgileCardViewset(viewsets.ModelViewSet):
         )
         card.delete_workshop_attendance()
         return Response(serializers.AgileCardSerializer(card).data)
+        
+    
 
     # def todo_content_in_ready_column(self):
     #     todo_tag, _ = taggit.models.Tag.objects.get_or_create(name="todo")

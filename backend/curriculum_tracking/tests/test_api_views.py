@@ -13,6 +13,10 @@ from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
+import long_running_request_actors
+import mock
+from django.http import HttpResponse
+from curriculum_tracking.card_generation_helpers import generate_and_update_all_cards_for_user
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):

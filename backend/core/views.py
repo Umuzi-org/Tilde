@@ -194,6 +194,24 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status="BAD_REQUEST")
 
+    @action(
+        detail=True,
+        methods=["post"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_user,
+            )
+        ]
+    )
+    def delete_and_recreate_cards(self, request):
+        from long_running_request_actors import learner_delete_and_recreate_cards
+        user: models.User = self.get_object()
+        response = learner_delete_and_recreate_cards.send(user.id)
+        return Response({"status": "OK", "data": response.asdict()})
+
     # @action(
     #     detail=False,
     #     methods=["GET"],
