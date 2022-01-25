@@ -42,8 +42,8 @@ const ReviewLineChart = ({ data, allUsersData }) => {
     }
   }
   reviewsArr.sort((a, b) => (a - b));
-  let min = reviewsArr[0];
-  let max = reviewsArr[reviewsArr.length-1];
+  const minValue = reviewsArr[0];
+  const maxValue = reviewsArr[reviewsArr.length-1];
   return (
     <LineChart
       width={900}
@@ -58,7 +58,7 @@ const ReviewLineChart = ({ data, allUsersData }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[min, max]} />
+      <YAxis domain={[minValue, maxValue]} />
       <Tooltip />
       <Line
         type="monotone"
