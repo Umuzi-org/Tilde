@@ -9,7 +9,10 @@ import {
   ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
 } from "../../../constants";
 
-import { getActivityLogCountsByDayForUsers } from "../../../apiAccess/selectors/activityLogSelectors";
+import {
+  getMinAndMaxDate,
+  getActivityLogCountsByDayForUsers,
+} from "../../../apiAccess/selectors/activityLogSelectors";
 
 function DashboardUnconnected({
   // authUser,
@@ -68,6 +71,7 @@ function DashboardUnconnected({
       eventTypes,
       userIds: team ? team.members.map((member) => member.userId) : [],
     }),
+    getMinAndMaxDate(activityLogDayCounts)
   };
 
   return <Presentation {...props} />;
