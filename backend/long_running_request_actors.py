@@ -13,6 +13,11 @@ PRIORITY_MEDIUM = 50
 PRIORITY_HIGH = 0
 
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+django.setup()
+#### NB dont import any models until ADTER django.setup is called
+
+
 from dramatiq.brokers.stub import StubBroker
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from backend.settings import (
@@ -58,9 +63,7 @@ def test_long_running_request():
 @dramatiq.actor()
 def recruit_project_setup_repository(project_id):
     from curriculum_tracking.models import RecruitProject
-    from django.db import connection
 
-    print(connection.settings_dict)
     project = RecruitProject.objects.get(pk=project_id)
     project.setup_repository()
 
