@@ -43,9 +43,10 @@ const AddReviewModalUnconnected = ({
     const { status, comments } = dataFromState({ state: formState });
     saveReview({ status, comments, cardId });
   };
+  const closePopUpInfo = React.useRef(0);
 
-  const closeHelpPopUp = (e) => {
-    document.getElementById("popUpInfo").remove();
+  const closeHelpPopUp = () => {
+    closePopUpInfo.current.style.display = 'none';
   }
     
   const props = {
@@ -56,6 +57,7 @@ const AddReviewModalUnconnected = ({
     formErrors,
     closeModal,
     closeHelpPopUp,
+    closePopUpInfo,
     statusChoices: REVIEW_STATUS_CHOICES,
     loading: latestCall.loading,
   };

@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   rightButton: {
     float: "right",
   },
+  popUpInfo: {
+    display:"block",
+  },
   
   helpPopUpInfo: {
     textAlign: "right",
@@ -50,13 +53,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StatusHelp = ({closeHelpPopUp}) => {
-  const classes = useStyles();
+const StatusHelp = ({ closePopUpInfo, closeHelpPopUp }) => {
+const classes = useStyles();
   
   return (
     <Help buttonText="How do I choose a status?">
-       
-      <Paper id="popUpInfo">
+
+      <Paper ref={closePopUpInfo} className={classes.popUpInfo}>
         <Typography variant="subtitle2" className={classes.helpPopUpInfo} onClick={closeHelpPopUp}>
           X
         </Typography>
@@ -160,6 +163,7 @@ export default ({
   formErrors,
   closeModal,
   closeHelpPopUp,
+  closePopUpInfo,
   statusChoices,
   loading,
 }) => {
@@ -210,7 +214,9 @@ export default ({
                 </Select>
               </FormControl>
               <StatusHelp 
-                closeHelpPopUp={closeHelpPopUp}/>
+                closeHelpPopUp={closeHelpPopUp}
+                closePopUpInfo={closePopUpInfo}
+                />
             </Grid>
             <Grid item xs={12}>
               <TextareaAutosize
