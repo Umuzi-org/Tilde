@@ -106,3 +106,44 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
             start_url, data={"status": COMPETENT, "comments": "blah more stuff"}
         )
         self.assertEqual(LogEntry.objects.count(), 2)
+
+
+class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"  #based on class of api-viewset
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+
+    def test_review_requested(self):
+        actor_user = UserFactory(is_superuser=True, is_staff=True)
+        content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            )
+        card = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            
+            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+            content_item=content_item
+            
+        )
+        card.start_project()
+        self.login(actor_user)
+
+        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        response = self.client.post(request_review_url)
+        assert response.status_code == 200, response.data
+
+        card.refresh_from_db()
+
+        # sanity check
+        assert card.assignees.count() == 1
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        self.assertEqual(entry.actor_user, actor_user) #person who pushed review request button
+        self.assertEqual(entry.effected_user, card.assignees.first()) #person whose card it is
+        self.assertEqual(entry.object_1, card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+            
+
