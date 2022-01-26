@@ -119,14 +119,15 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
                 project_submission_type=ContentItem.LINK, template_repo=None
             )
         card = factories.AgileCardFactory(
-            status=AgileCard.READY,
+            status=AgileCard.READY, 
+
             
             recruit_project=factories.RecruitProjectFactory(content_item=content_item),
             content_item=content_item
             
         )
-        card.start_project()
-        self.login(actor_user)
+        self.login(actor_user) #do we not login first before starting project?
+        card.start_project() #means card is now IP
 
         request_review_url = f"{self.get_instance_url(card.id)}request_review/"
         response = self.client.post(request_review_url)
