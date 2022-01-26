@@ -34,16 +34,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReviewLineChart = ({ data, allUsersData }) => {
-  const reviewsArr = []
+  const numbersArr = [];
   for(let i in allUsersData){
-    let allUsersArr = allUsersData[i];
-    for(let j = 0; j < allUsersArr.length; j++){
-      reviewsArr.push(allUsersArr[j].COMPETENCE_REVIEW_DONE)
-    }
+    allUsersData[i].map((arrValues) => (numbersArr.push(arrValues.COMPETENCE_REVIEW_DONE)));
   }
-  reviewsArr.sort((a, b) => (a - b));
-  const minValue = reviewsArr[0];
-  const maxValue = reviewsArr[reviewsArr.length-1];
+  const minValue = Math.min(...numbersArr);
+  const maxValue = Math.max(...numbersArr);
   return (
     <LineChart
       width={900}
