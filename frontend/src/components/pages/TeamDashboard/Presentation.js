@@ -33,7 +33,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, minimum, maximum }) => {
+const ReviewLineChart = ({
+  data,
+  minimumCount,
+  maximumCount,
+  minimumDate,
+  maximumDate,
+}) => {
   // TODO calculate maximum and minimum so that all the graphs have the same proportions
 
   return (
@@ -50,8 +56,8 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" />
-      <YAxis domain={[minimum, maximum]} />
+      <XAxis dataKey="date" domain={[minimumDate, maximumDate]} />
+      <YAxis domain={[minimumCount, maximumCount]} />
       <Tooltip />
       <Line
         type="monotone"
@@ -69,7 +75,13 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
   );
 };
 
-export default ({ team, activityLogDayCounts, eventTypes }) => {
+export default ({
+  team,
+  activityLogDayCounts,
+  eventTypes,
+  minimumDate,
+  maximumDate,
+}) => {
   const classes = useStyles();
   if (team)
     return (
@@ -89,6 +101,8 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
                             eventTypes={eventTypes}
+                            minimumDate={minimumDate}
+                            maximumDate={maximumDate}
                           ></ReviewLineChart>
                         ) : (
                           "Loading..."
