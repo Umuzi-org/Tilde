@@ -162,6 +162,8 @@ export default ({
   comments,
   formErrors,
   closeModal,
+  closePopUpModal,
+  closePopUp,
   closeHelpPopUp,
   closePopUpInfo,
   statusChoices,
@@ -175,7 +177,10 @@ export default ({
 
   return (
     <Modal open={!!card} onClose={closeModal}>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} ref={closePopUp}>
+        <Typography variant="subtitle2" className={classes.helpPopUpInfo} onClick={closePopUpModal}>
+          X
+        </Typography>
         <Typography variant="h5">
           Add Review for {card.contentType}: {card.title}
         </Typography>
