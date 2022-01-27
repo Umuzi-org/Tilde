@@ -2,19 +2,20 @@
 """
 from rest_framework.test import APITestCase
 from django.test import TestCase
-
-import activity_log.models
+import curriculum_tracking
 from test_mixins import APITestCaseMixin
 from . import factories
 from core.tests.factories import UserFactory
+from .factories import AgileCardFactory, RecruitProjectFactory, ProjectContentItemFactory
 from curriculum_tracking.models import AgileCard, ContentItem
 from activity_log.models import LogEntry
-from curriculum_tracking import activity_log_entry_creators as creators
+from curriculum_tracking import activity_log_entry_creators as creators, activity_log_entry_creators
 from curriculum_tracking.constants import COMPETENT
 from django.utils import timezone
 from mock import patch
 import datetime
 import pytz
+import mock
 
 
 class log_card_started_Tests(APITestCase, APITestCaseMixin):
@@ -168,6 +169,59 @@ class log_card_moved_to_complete_Tests(TestCase):
         log_entries = [entry.event_type.name for entry in LogEntry.objects.all()].count('CARD_MOVED_TO_COMPLETE')
         self.assertTrue(log_entries, 3)
 
+
+class log_card_moved_to_complete_api_view_Tests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+        "requires_cards",
+        "required_by_cards",
+        "project_submission_type_nice",
+        "topic_needs_review",
+        "topic_progress",
+        "due_time",
+        "complete_time",
+        "review_request_time",
+        "start_time",
+        "tag_names",
+        "can_start",
+        "can_force_start",
+        "flavour_names",
+        "open_pr_count",
+        "oldest_open_pr_updated_time",
+        "users_that_reviewed_since_last_review_request"
+    ]
+
+    def verbose_instance_factory(self):
+        project = RecruitProjectFactory()
+        card = AgileCardFactory(recruit_project=project)
+        return card
+
+    def setUp(self):
+        self.api_url = self.get_list_url()
+
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_card_moved_to_complete')
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_topic_competence_review_done')
+    @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_project_competence_review_done')
+    def test_log_project_competence_review_invoked_from_api_endpoint_for_project_review(
+            self, proj_comp_review, topic_comp_review, log_card_moved_to_complete
+    ):
+        super_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(content_item=ProjectContentItemFactory())
+        self.login(super_user)
+        response = self.client.post(
+            path=f'{self.api_url}{card.id}/add_review/',
+            data={"status": "NYC", "comments": "dammit"}
+        )
+
+        self.assertTrue(response.status_code, 200)
+        proj_comp_review.assert_called()
+        topic_comp_review.assert_not_called()
+        log_card_moved_to_complete.assert_not_called()
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
 
