@@ -32,14 +32,17 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
 }));
-
-const ReviewLineChart = ({ data, allUsersData }) => {
+const GetMinimumAndMaximumValue = ({allUsersData}) => {
   const numbersArr = [];
   for(let i in allUsersData){
     allUsersData[i].map((arrValues) => (numbersArr.push(arrValues.COMPETENCE_REVIEW_DONE)));
   }
   const minValue = Math.min(...numbersArr);
   const maxValue = Math.max(...numbersArr);
+  return [minValue, maxValue];
+}
+const ReviewLineChart = ({ data, allUsersData }) => {
+  const minAndMaxArr = GetMinimumAndMaximumValue(allUsersData={allUsersData})
   return (
     <LineChart
       width={900}
@@ -54,7 +57,7 @@ const ReviewLineChart = ({ data, allUsersData }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[minValue, maxValue]} />
+      <YAxis domain={[minAndMaxArr[0], minAndMaxArr[1]]} />
       <Tooltip />
       <Line
         type="monotone"
