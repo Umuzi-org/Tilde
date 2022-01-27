@@ -48,15 +48,8 @@ const TeamSummaryStats = ({ summaryStats }) => {
   const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
   const classes = useStyles();
 
-  const prStatusClassName = 
-  getPrStatus(summaryStats.oldestOpenPrTime) === "error" ? classes.error : 
-  getPrStatus(summaryStats.oldestOpenPrTime) === "warning" ? classes.warning : 
-  classes.default
-
-  const tildeReviewStatusClassName = 
-  getTildeReviewStatus(summaryStats.oldestCardInReviewTime) === "error" ? classes.error : 
-  getTildeReviewStatus(summaryStats.oldestCardInReviewTime) === "warning" ? classes.warning : 
-  classes.default
+  const prStatusClassName = classes[getPrStatus(summaryStats.oldestOpenPrTime)]
+  const tildeReviewStatusClassName = classes[getTildeReviewStatus(summaryStats.oldestCardInReviewTime)]
 
   return (
     <Table>
@@ -72,14 +65,14 @@ const TeamSummaryStats = ({ summaryStats }) => {
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
           <TableCell className={prStatusClassName}>
-          {getAgeString(openPrAge) ? getAgeString(openPrAge) : "-"}
+          {openPrAge ? getAgeString(openPrAge) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
           <TableCell className={tildeReviewStatusClassName}>
-          {getAgeString(tildeReviewAge) ? getAgeString(tildeReviewAge) : "-"}
+          {tildeReviewAge ? getAgeString(tildeReviewAge) : "-"}
           </TableCell>
         </TableRow>
       </TableBody>
