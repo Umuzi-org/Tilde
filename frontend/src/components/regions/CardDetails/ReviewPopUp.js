@@ -1,10 +1,15 @@
 import React from "react";
 
-import Typography from "@material-ui/core/Typography"
+// import Typography from "@material-ui/core/Typography"
 import Markdown from "react-markdown";
 import Modal from "../../widgets/Modal";
+import Card from "@material-ui/core/Card"
+import { Button, CardContent, Typography } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close"
+import { sizing } from "@material-ui/system"
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
+
   return (
     <Modal
       open={openReviewPopUp}
@@ -12,10 +17,52 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
         setOpenReviewPopUp(false);
       }}
     >
-      <Typography variant="h6" component="div">
-        {review.reviewerUserEmail}'s review:
-      </Typography>
-      <Markdown children={review.comments} />
+      <Card
+        style={{
+          display: "flex",
+          height: "90vh",
+          width: "90vw",
+          position: "relative",
+          // maxWidth: "90%"
+        }}
+
+      >
+        <CardContent>
+          <div style={{
+            // color: "blue"
+          }}
+          >
+            <Button
+              style={{
+                position: "absolute",
+                top: "5px",
+                right: "1px"
+              }}
+              onClick={() => setOpenReviewPopUp(false)}>
+              <CloseIcon fontSize="small" />
+            </Button>
+            <Typography
+              style={
+                {
+                  fontSize: "100%",
+                  fontWeight: "bold",
+                }
+              }
+            >
+              {review.reviewerUserEmail}'s review:
+            </Typography>
+            <Typography
+              style={{
+                width: "90%"
+              }}
+            >
+            <Markdown children={review.comments} />
+            </Typography>
+            
+          </div>
+        </CardContent>
+      </Card>
+
     </Modal>
   );
 };
