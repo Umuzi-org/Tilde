@@ -1,68 +1,66 @@
 import React from "react";
 
-// import Typography from "@material-ui/core/Typography"
 import Markdown from "react-markdown";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card"
-import { Button, CardContent, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close"
-import { sizing } from "@material-ui/system"
+import { Button, CardContent, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  cardStyle: {
+    diplay: "block",
+    height: "90vh",
+    width: "90vw",
+    overflow: "scroll",
+    position: "relative",
+    maxWidth: "90%"
+  },
+  cardContentStyle: {
+    maxWidth: "90%",
+  },
+  exitIcon: {
+    position: "absolute",
+    top: "5px",
+    right: "1px"
+  },
+  reviewerEmailStyle: {
+    fontSize: "100%",
+    fontWeight: "bold",
+  }
+}))
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
+
+  const classes = useStyles()
+  const closeModal = () => setOpenReviewPopUp(false)
 
   return (
     <Modal
       open={openReviewPopUp}
-      onClose={() => {
-        setOpenReviewPopUp(false);
-      }}
+      onClose={closeModal}
     >
       <Card
-        style={{
-          display: "flex",
-          height: "90vh",
-          width: "90vw",
-          position: "relative",
-          // maxWidth: "90%"
-        }}
-
+        className={classes.cardStyle}
       >
-        <CardContent>
-          <div style={{
-            // color: "blue"
-          }}
-          >
+        <CardContent
+          className={classes.cardContentStyle}
+        >
+          <div>
             <Button
-              style={{
-                position: "absolute",
-                top: "5px",
-                right: "1px"
-              }}
-              onClick={() => setOpenReviewPopUp(false)}>
+              className={classes.exitIcon}
+              onClick={closeModal}>
               <CloseIcon fontSize="small" />
             </Button>
             <Typography
-              style={
-                {
-                  fontSize: "100%",
-                  fontWeight: "bold",
-                }
-              }
+              className={classes.reviewerEmailStyle}
             >
               {review.reviewerUserEmail}'s review:⤵
             </Typography>
-            <Typography
-              style={{
-                maxWidth: "90%"
-              }}
-            >
-            <Markdown children={`${review.comments.split("\n")}`}
-              style={{
-                maxWidth: "90%"
-              }}
-            />
+            <Typography>
+              <Markdown children={review.comments}/>
             </Typography>
-            
+
           </div>
         </CardContent>
       </Card>
