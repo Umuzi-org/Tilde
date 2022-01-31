@@ -24,8 +24,6 @@ import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
 from rest_framework import filters
-from curriculum_tracking.management.helpers import get_team_cards
-from curriculum_tracking.models import AgileCard
 
 
 def _get_teams_from_topic_progress(self, request, view):

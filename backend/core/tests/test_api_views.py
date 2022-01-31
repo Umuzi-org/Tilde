@@ -4,8 +4,6 @@ from . import factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
 from django.contrib.auth.models import Group
-from curriculum_tracking.tests.factories import RecruitProjectFactory, AgileCardFactory
-from curriculum_tracking.management.helpers import get_team_cards
 
 # class TestUserViewSet(APITestCase, APITestCaseMixin):
 #     LIST_URL_NAME = "user-list"
