@@ -1,4 +1,3 @@
-import curriculum_tracking.api_views
 import long_running_request_actors
 from git_real.tests.factories import PullRequestFactory
 from git_real.constants import GITHUB_DATETIME_FORMAT
@@ -21,8 +20,7 @@ from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
-import rest_framework.response as response
-from django.http import HttpResponse
+from dramatiq.message import Message
 import mock
 
 
@@ -246,7 +244,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(project.link_submission, link_2)
 
 
-class TestLongRunningActorsCalledFromAgileCardAPIView(APITestCase, APITestCaseMixin):
+class TestRecruitProjectSetupRepositoryActorCalledFromAgileCardAPIView(APITestCase, APITestCaseMixin):
 
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
@@ -271,15 +269,16 @@ class TestLongRunningActorsCalledFromAgileCardAPIView(APITestCase, APITestCaseMi
         self.assignee = SocialProfileFactory().user
         self.card.assignees.set([self.assignee])
         self.project = self.card.recruit_project
-        self.url = f"{self.get_list_url()}{self.card.id}/setup_project_repo/"
+        self.url = f"{self.get_instance_url(pk=self.card.id)}setup_project_repo/"
 
-    @mock.patch('curriculum_tracking.api_views.Response')
     @mock.patch.object(long_running_request_actors.recruit_project_setup_repository, 'send')
-    def test_send_called_from_api_view_action_option(self, send, Response):
+    def test_send_called_from_api_view_action_option(self, send):
         self.login(self.super_user)
-        Response.return_value = HttpResponse({"status": "OK"})
+        send.return_value = Message(
+            queue_name="queue", actor_name="actor", args=(), kwargs={}, options={}
+        )
         response = self.client.post(path=self.url, data={"card_id": self.card.id})
-        send.assert_called()
+        send.assert_called_with(self.card.id)
 
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_setup_repository_called_from_long_running_actor_recruit_project_setup_repository(self, setup_repository):
