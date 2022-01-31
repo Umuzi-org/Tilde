@@ -49,14 +49,18 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
                 }
               }
             >
-              {review.reviewerUserEmail}'s review:
+              {review.reviewerUserEmail}'s review:⤵
             </Typography>
             <Typography
               style={{
-                width: "90%"
+                maxWidth: "90%"
               }}
             >
-            <Markdown children={review.comments} />
+            <Markdown children={`${review.comments.split("\n")}`}
+              style={{
+                maxWidth: "90%"
+              }}
+            />
             </Typography>
             
           </div>
