@@ -16,6 +16,20 @@ from curriculum_tracking.constants import (
 from core.tests import factories
 from curriculum_tracking.tests.factories import RecruitProjectFactory, AgileCardFactory
 from curriculum_tracking.management.helpers import get_team_cards
+from .factories import (
+    ContentItemFactory,
+    WorkshopAttendanceFactory,
+    TopicProgressFactory,
+    ReviewTrustFactory,
+    TopicReviewFactory,
+    RecruitProjectInReviewFactory,
+    RecruitProjectReviewFactory,
+    ProjectContentItemFactory,
+    AgileCardFactory,
+    ContentItemOrderFactory,
+    TagFactory,
+    BurndownSnapshotFactory
+)
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -36,10 +50,10 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def verbose_instance_factory(self):
-        project = factories.RecruitProjectFactory(
+        project = RecruitProjectFactory(
             due_time=timezone.now(), review_request_time=timezone.now()
         )
-        card = factories.AgileCardFactory(recruit_project=project)
+        card = AgileCardFactory(recruit_project=project)
         card.reviewers.add(core_factories.UserFactory())
         card.assignees.add(core_factories.UserFactory())
         return card
@@ -58,7 +72,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
 
     def verbose_instance_factory(self):
 
-        topic_progress = factories.TopicProgressFactory()
+        topic_progress = TopicProgressFactory()
         content = topic_progress.content_item
         content.topic_needs_review = True
         content.save()
@@ -108,24 +122,21 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         return card
 
     def test_set_project_card_due_time_permissions(self):
-        card = factories.AgileCardFactory(
-            content_item=factories.ProjectContentItemFactory(), recruit_project=None
+        card = AgileCardFactory(
+            content_item=ProjectContentItemFactory(), recruit_project=None
         )
         self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
     def test_set_topic_card_due_time_permissions(self):
-        card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC)
+        card = AgileCardFactory(
+            content_item=ContentItemFactory(content_type=ContentItem.TOPIC)
         )
         self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
         recruit = UserFactory()
-
         staff_member = UserFactory(is_staff=True)
-
         card.assignees.add(recruit)
-
         due_time_1 = timezone.now() + timedelta(days=7)
         due_time_2 = timezone.now() + timedelta(days=1)
 
@@ -141,7 +152,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.login(recruit)
 
         response = self.client.post(url, data={"due_time": due_time_1})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
         card.refresh_from_db()
         progress = get_progress(card)
@@ -246,14 +257,14 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["link_submission", "complete_time"]
 
     def verbose_instance_factory(self):
-        project = factories.RecruitProjectInReviewFactory(
-            content_item=factories.ProjectContentItemFactory(
+        project = RecruitProjectInReviewFactory(
+            content_item=ProjectContentItemFactory(
                 project_submission_type=ContentItem.REPOSITORY,
             )
         )
-        factories.RecruitProjectReviewFactory(recruit_project=project)
+        RecruitProjectReviewFactory(recruit_project=project)
         project.reviewer_users.add(core_factories.UserFactory())
-        factories.AgileCardFactory(recruit_project=project)
+        AgileCardFactory(recruit_project=project)
         return project
 
     def test_list_recruit_permissions_on_list(self):
@@ -300,7 +311,7 @@ class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        return factories.RecruitProjectReviewFactory(
+        return RecruitProjectReviewFactory(
             trusted=True, validated=RecruitProjectReview.CORRECT
         )
 
@@ -310,7 +321,7 @@ class RecruitTopicReviewViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        return factories.TopicReviewFactory()
+        return TopicReviewFactory()
 
 
 class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
@@ -326,10 +337,10 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def verbose_instance_factory(self):
-        item = factories.ProjectContentItemFactory(story_points=5)
-        factories.ContentItemOrderFactory(post=item)
-        factories.ContentItemOrderFactory(pre=item)
-        item.tags.add(factories.TagFactory())
+        item = ProjectContentItemFactory(story_points=5)
+        ContentItemOrderFactory(post=item)
+        ContentItemOrderFactory(pre=item)
+        item.tags.add(TagFactory())
         return item
 
 
@@ -346,8 +357,8 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        workshop = factories.ContentItemFactory(content_type=ContentItem.WORKSHOP)
-        workshop_attendance = factories.WorkshopAttendanceFactory(content_item=workshop)
+        workshop = ContentItemFactory(content_type=ContentItem.WORKSHOP)
+        workshop_attendance = WorkshopAttendanceFactory(content_item=workshop)
         content = workshop_attendance.content_item
         content.topic_needs_review = False
         content.save()
@@ -356,8 +367,8 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
     def test_get_instance_permissions(self):
 
         attendee_user = UserFactory(is_superuser=False, is_staff=False)
-        workshop_attendance = factories.WorkshopAttendanceFactory(
-            content_item=factories.ContentItemFactory(
+        workshop_attendance = WorkshopAttendanceFactory(
+            content_item=ContentItemFactory(
                 content_type=ContentItem.WORKSHOP
             ),
             timestamp=timezone.now(),
@@ -382,7 +393,7 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        review_trust_object = factories.ReviewTrustFactory()
+        review_trust_object = ReviewTrustFactory()
         review_trust_object.flavours.add(Tag.objects.create(name="anything_really"))
         return review_trust_object
 
@@ -403,7 +414,7 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
 
     def test_normal_user_cannot_view_other_user_trusted_review_objects(self):
-        review_trust_object = factories.ReviewTrustFactory()
+        review_trust_object = ReviewTrustFactory()
         recruit = UserFactory(is_superuser=False, is_staff=False)
         self.login(recruit)
         response = self.client.get(self.api_url)
@@ -411,7 +422,7 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
         self.assertNotIn(str(review_trust_object.content_item), response.data)
 
     def test_users_can_view_their_own_reviewer_trusts(self):
-        review_trust_object = factories.ReviewTrustFactory(
+        review_trust_object = ReviewTrustFactory(
             user=factories.UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(review_trust_object.user)
@@ -426,7 +437,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        return factories.BurndownSnapshotFactory()
+        return BurndownSnapshotFactory()
 
     def setUp(self):
 
@@ -444,7 +455,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_users_can_view_their_own_burndown_snapshot_objects(self):
 
-        burndown_snapshot_object = factories.BurndownSnapshotFactory(
+        burndown_snapshot_object = BurndownSnapshotFactory(
             user=UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(burndown_snapshot_object.user)
