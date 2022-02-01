@@ -25,7 +25,7 @@ def _get_teams_from_repository_filter(self, request, view):
         repo = Repository.objects.get(pk=repo_id[0])
     else:
         repo = Repository.objects.get(pk=repo_id)
-        
+
     return _get_teams_from_repository_instance(repo)
 
 class PushViewSet(viewsets.ModelViewSet):
@@ -39,4 +39,5 @@ class PushViewSet(viewsets.ModelViewSet):
         & core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_repository_filter
         )
+        & permissions.IsCardAssignee
     ]

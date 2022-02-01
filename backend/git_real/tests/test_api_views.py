@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
-from . import factories
+from .factories import RepositoryFactory
+from core.tests.factories import UserFactory
 from .utils import get_body_and_headers
 from django.urls import reverse
 from django.utils import timezone
@@ -18,16 +19,16 @@ class RepositoryViewsetTests(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        return factories.RepositoryFactory(archived=True)
+        return RepositoryFactory(archived=True)
 
 
 class PushEventTests(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
-    def test_push_event(self, has_permission):
+    def test_push_event_is_retrieved_from_api_end_point(self, has_permission):
         has_permission.return_value = True
         url = reverse(views.github_webhook)
         body, headers = get_body_and_headers("push")
-        repo = factories.RepositoryFactory(full_name=body["repository"]["full_name"])
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
 
         repository = body["repository"]
         head_commit = body["head_commit"]
@@ -42,6 +43,7 @@ class PushEventTests(APITestCase):
             int(repository["pushed_at"])
         )
 
+        # push_object = Push.create_or_update_from_github_api_data(repo, body)
         self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(Push.objects.count(), 1)
 
@@ -56,10 +58,11 @@ class PushEventTests(APITestCase):
         self.assertEqual(push.pushed_at_time, pushed_at_time)
         self.assertEqual(push.ref, ref)
 
-        @mock.patch.object(IsWebhookSignatureOk, "has_permission")
-        def test_push_event_without_permission(self, has_permission):
-            has_permission.return_value = False
-            body, headers = get_body_and_headers("push")
-            url = reverse(views.github_webhook)
-            self.client.post(url, format="json", data=body, extra=headers)
-            self.assertEqual(Push.objects.count(), 0)
+
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_push_event_without_permission(self, has_permission):
+        has_permission.return_value = False
+        body, headers = get_body_and_headers("push")
+        url = reverse(views.github_webhook)
+        response = self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(Push.objects.count(), 0)
