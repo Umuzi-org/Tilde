@@ -24,3 +24,9 @@ class IsWebhookSignatureOk(BasePermission):
             return False
 
         return correct
+
+class IsCardAssignee(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        card = view.get_object()
+        return user in card.assignees.all()
