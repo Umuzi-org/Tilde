@@ -74,40 +74,55 @@ test("cleanAndFilterTeams can deal with multiple words in any order", () => {
   expect(names).toEqual(["demo group 1 AAA", "demo group 2 aaa"]);
 });
 
-test("getPrStatus should return error when pr age is older than PR_ERROR_AGE_THRESHOLD", () => {
-  const oldDate = "2021-10-13T04:45:01Z";
-  expect(getPrStatus(oldDate)).toBe("error");
+test("getPrStatus function returns error string when the pr age is 2 days or older", () => {
+  const date = new Date();
+  const card = {
+    oldestOpenPrUpdatedTime: date.setDate(date.getDate() - 3),
+  };
+  expect(getPrStatus(card.oldestOpenPrUpdatedTime)).toBe("error");
 });
 
-test("getPrStatus should return warning when pr age is older than PR_WARNING_AGE_THRESHOLD", () => {
-  const getYesterdayDate = new Date();
-  getYesterdayDate.setDate(getYesterdayDate.getDate() - 2);
-  expect(getPrStatus(getYesterdayDate)).toBe("warning");
+test("getPrStatus function returns warning string when the pr age is 1 day or older", () => {
+  const date = new Date();
+  const card = {
+    oldestOpenPrUpdatedTime: date.setDate(date.getDate() - 2),
+  };
+  expect(getPrStatus(card.oldestOpenPrUpdatedTime)).toBe("warning");
 });
 
-test("getPrStatus should return default when pr age is younger than PR_WARNING_AGE_THRESHOLD and PR_ERROR_AGE_THRESHOLD", () => {
-  const newDate = new Date();
-  expect(getPrStatus(newDate)).toBe("default");
+test("getPrStatus function returns default string when the pr age is less than 1 day", () => {
+  const date = new Date();
+  const card = {
+    oldestOpenPrUpdatedTime: date.setDate(date.getDate()),
+  };
+  expect(getPrStatus(card.oldestOpenPrUpdatedTime)).toBe("default");
 });
 
-test("getTildeReviewStatus should return error when tilde review age is older than TILDE_ERROR_AGE_THRESHOLD", () => {
-  const oldDate = "2021-10-13T04:45:01Z";
-  expect(getTildeReviewStatus(oldDate)).toBe("error");
+test("getTildeReviewStatus function returns error string when the tilde review request age is 3 days or older", () => {
+  const date = new Date();
+  const card = {
+    oldestCardInReviewTime: date.setDate(date.getDate() - 4)
+  };
+  expect(getTildeReviewStatus(card.oldestCardInReviewTime)).toBe("error");
 });
 
-test("getTildeReviewStatus should return warning when tilde review age is less than or equal to TILDE_WARNING_AGE_THRESHOLD", () => {
-  const getYesterdayDate = new Date();
-  getYesterdayDate.setDate(getYesterdayDate.getDate() - 2);
-  expect(getTildeReviewStatus(getYesterdayDate)).toBe("warning");
+test("getTildeReviewStatus function returns warning string when the tilde review request age is 2 days or older", () => {
+  const date = new Date();
+  const card = {
+    oldestCardInReviewTime: date.setDate(date.getDate() - 3)
+  };
+  expect(getTildeReviewStatus(card.oldestCardInReviewTime)).toBe("warning");
 });
 
-test("getTildeReviewStatus should return default when tilde review age is younger than TILDE_WARNING_AGE_THRESHOLD and TILDE_ERROR_AGE_THRESHOLD", () => {
-  const newDate = new Date();
-  const hoursAgo = newDate.setHours(newDate.getHours() - 2);
-  expect(getTildeReviewStatus(hoursAgo)).toBe("default");
+test("getTildeReviewStatus function returns default string when the tilde review request age is 1 day or less", () => {
+  const date = new Date();
+  const card = {
+    oldestCardInReviewTime: date.setDate(date.getDate())
+  };
+  expect(getTildeReviewStatus(card.oldestCardInReviewTime)).toBe("default");
 });
 
-test("timeDifferenceInDays should return 5 as the difference between the current date and '5 days ago'", () => {
+test("timeDifferenceInDays function should return 5 as the difference between the current date and '5 days ago'", () => {
   const getDate = new Date();
   getDate.setDate(getDate.getDate() - 6);
   expect(timeDifferenceInDays(getDate)).toBe(5);

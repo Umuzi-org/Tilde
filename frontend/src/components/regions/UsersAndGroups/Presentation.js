@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme)=> ({
 }));
 
 const TeamSummaryStats = ({ summaryStats }) => {
-  const openPrAge = summaryStats.oldestOpenPrTime.slice(0, 10); 
-  const tildeReviewAge = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime.slice(0, 10); 
+  const dateOfOldestTildeReviewRequest = summaryStats.oldestCardInReviewTime.slice(0, 10);
   const classes = useStyles();
 
   const prStatusClassName = classes[getPrStatus(summaryStats.oldestOpenPrTime)]
@@ -65,14 +65,14 @@ const TeamSummaryStats = ({ summaryStats }) => {
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
           <TableCell className={prStatusClassName}>
-          {openPrAge ? getAgeString(openPrAge) : "-"}
+          {dateOfOldestPullRequest ? getAgeString(dateOfOldestPullRequest) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
           <TableCell className={tildeReviewStatusClassName}>
-          {tildeReviewAge ? getAgeString(tildeReviewAge) : "-"}
+          {dateOfOldestTildeReviewRequest ? getAgeString(dateOfOldestTildeReviewRequest) : "-"}
           </TableCell>
         </TableRow>
       </TableBody>
