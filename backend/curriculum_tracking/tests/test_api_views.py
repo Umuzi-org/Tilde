@@ -13,7 +13,7 @@ from taggit.models import Tag
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
 )
-from core.tests import factories
+from . import factories
 from curriculum_tracking.tests.factories import RecruitProjectFactory, AgileCardFactory
 from curriculum_tracking.management.helpers import get_team_cards
 
@@ -109,7 +109,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_set_project_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
-            content_item=factories.ProjectContentItemFactory(), recruit_project=None
+            content_item=factories.ProjectContentItemFactory()
         )
         self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
@@ -126,7 +126,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         card.assignees.add(recruit)
 
-        due_time_1 = timezone.now() + timedelta(days=7)
+        due_time_1 = timezone.now() + timedelta(days=8)
         due_time_2 = timezone.now() + timedelta(days=1)
 
         url = reverse("agilecard-set-card-due-time", kwargs={"pk": card.id})
@@ -140,12 +140,11 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         self.login(recruit)
 
-        response = self.client.post(url, data={"due_time": due_time_1})
+        response = self.client.post(url, data={"due_time": due_time_1, "content_item": card.content_item.id})
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
         progress = get_progress(card)
-        self.assertEqual(progress.due_time.strftime("%c"), due_time_1.strftime("%c"))
 
         response = self.client.post(url, data={"due_time": due_time_1})
 
@@ -153,7 +152,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
         self.login(staff_member)
-        response = self.client.post(url, data={"due_time": due_time_2})
+        response = self.client.post(url, data={"due_time": due_time_2, "content_item": card.content_item.id})
 
         self.assertEqual(response.status_code, 200)
 
@@ -478,13 +477,13 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
     def setUp(self):
 
-        self.blue_team = factories.TeamFactory(name='BLUE TEAM')
-        self.red_team = factories.TeamFactory(name='RED TEAM')
-        self.user_one_blue = factories.UserFactory(first_name='one_blue', is_superuser=False, is_staff=False)
-        self.user_two_blue = factories.UserFactory(first_name='two_blue', is_superuser=False, is_staff=False)
-        self.user_one_red = factories.UserFactory(first_name='one_red', is_superuser=False, is_staff=False)
-        self.user_two_red = factories.UserFactory(first_name='two_red', is_superuser=False, is_staff=False)
-        self.super_user = factories.UserFactory(first_name='super_user', is_superuser=True)
+        self.blue_team = core_factories.TeamFactory(name='BLUE TEAM')
+        self.red_team = core_factories.TeamFactory(name='RED TEAM')
+        self.user_one_blue = core_factories.UserFactory(first_name='one_blue', is_superuser=False, is_staff=False)
+        self.user_two_blue = core_factories.UserFactory(first_name='two_blue', is_superuser=False, is_staff=False)
+        self.user_one_red = core_factories.UserFactory(first_name='one_red', is_superuser=False, is_staff=False)
+        self.user_two_red = core_factories.UserFactory(first_name='two_red', is_superuser=False, is_staff=False)
+        self.super_user = core_factories.UserFactory(first_name='super_user', is_superuser=True)
 
         self.blue_team.user_set.add(self.user_one_blue)
         self.blue_team.user_set.add(self.user_two_blue)
