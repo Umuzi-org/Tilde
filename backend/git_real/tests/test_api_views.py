@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from .factories import RepositoryFactory
-from core.tests.factories import UserFactory
 from .utils import get_body_and_headers
 from django.urls import reverse
 from django.utils import timezone
@@ -43,10 +42,8 @@ class PushEventTests(APITestCase):
             int(repository["pushed_at"])
         )
 
-        # push_object = Push.create_or_update_from_github_api_data(repo, body)
         self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(Push.objects.count(), 1)
-
         push = Push.objects.first()
         self.assertEqual(push.repository, repo)
         self.assertEqual(push.head_commit_url, head_commit_url)
@@ -58,6 +55,8 @@ class PushEventTests(APITestCase):
         self.assertEqual(push.pushed_at_time, pushed_at_time)
         self.assertEqual(push.ref, ref)
 
+        response = self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(response.status_code, 200)
 
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_push_event_without_permission(self, has_permission):
@@ -66,3 +65,4 @@ class PushEventTests(APITestCase):
         url = reverse(views.github_webhook)
         response = self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(Push.objects.count(), 0)
+        self.assertEqual(response.status_code, 401)
