@@ -356,8 +356,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             card.finish_topic()
         else:
             raise Http404
-        log_creators.log_card_review_requested(card, card.assignees) #**** what to use as actor_user here? 
-        #card.assignee is not right
+        log_creators.log_card_review_requested(card=card, actor_user=request.user) 
         # comes from here: def log_card_review_requested(card, actor_user) in activity_log_entry_creators.py
         card.refresh_from_db()
         assert (
