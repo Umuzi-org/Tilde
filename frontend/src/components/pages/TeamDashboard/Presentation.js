@@ -67,7 +67,7 @@ const ReviewLineChart = ({ data, minCount, maxCount }) => {
 };
 
 export default ({ team, activityLogDayCounts }) => {
-  const minMaxValue = getMinimumAndMaximumValue({
+  const {minValue, maxValue} = getMinimumAndMaximumValue({
     activityLogDayCounts,
   });
   const classes = useStyles();
@@ -88,8 +88,8 @@ export default ({ team, activityLogDayCounts }) => {
                         {activityLogDayCounts ? (
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
-                            minCount={minMaxValue.minValue}
-                            maxCount={minMaxValue.maxValue}
+                            minCount={minValue}
+                            maxCount={maxValue}
                           ></ReviewLineChart>
                         ) : (
                           "Loading..."
