@@ -41,7 +41,6 @@ const ReviewLineChart = ({
   maximumDate,
 }) => {
   // TODO calculate maximum and minimum so that all the graphs have the same proportions
-
   return (
     // <ResponsiveContainer width="100%" height="100%">
     <LineChart

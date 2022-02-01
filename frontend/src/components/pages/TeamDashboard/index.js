@@ -9,10 +9,9 @@ import {
   ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
 } from "../../../constants";
 
-import {
-  getMinAndMaxDate,
-  getActivityLogCountsByDayForUsers,
-} from "../../../apiAccess/selectors/activityLogSelectors";
+import { getActivityLogCountsByDayForUsers } from "../../../apiAccess/selectors/activityLogSelectors";
+
+import { getMinAndMaxDate } from "./utils";
 
 function DashboardUnconnected({
   // authUser,
@@ -64,7 +63,9 @@ function DashboardUnconnected({
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
     ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
   ];
-  const { minimumDate, maximumDate } = getMinAndMaxDate({ activityLogDayCounts });
+  const { minimumDate, maximumDate } = getMinAndMaxDate({
+    activityLogDayCounts,
+  });
 
   const props = {
     team,
