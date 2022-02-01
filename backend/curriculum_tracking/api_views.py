@@ -246,17 +246,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
         methods=["post"],
         serializer_class=serializers.SetDueTimeSerializer,
         permission_classes=[
-            (
                 curriculum_permissions.IsCardAssignee
                 & curriculum_permissions.CardDueTimeIsNotSet
-            )
-            | IsStaffUser
-            | HasObjectPermission(
-                permissions=Team.PERMISSION_MANAGE_CARDS,
-                get_objects=_get_teams_from_card,
-            )
-        ],
-    )
+                | IsStaffUser
+                | HasObjectPermission(
+                    permissions=Team.PERMISSION_MANAGE_CARDS,
+                    get_objects=_get_teams_from_card,
+                )
+            ]
+        )
     def set_card_due_time(self, request, pk=None):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

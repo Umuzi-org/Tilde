@@ -109,7 +109,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_set_project_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
-            content_item=factories.ProjectContentItemFactory()
+            content_item=factories.ProjectContentItemFactory(),
+            recruit_project=RecruitProjectFactory(due_time=None)
         )
         self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
@@ -120,7 +121,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
-        recruit = UserFactory()
+        recruit = UserFactory(first_name="recruit")
 
         staff_member = UserFactory(is_staff=True)
 
@@ -141,6 +142,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.login(recruit)
 
         response = self.client.post(url, data={"due_time": due_time_1, "content_item": card.content_item.id})
+
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
