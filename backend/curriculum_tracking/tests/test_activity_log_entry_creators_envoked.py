@@ -208,7 +208,7 @@ class log_card_moved_to_complete_api_view_Tests(APITestCase, APITestCaseMixin):
     @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_topic_competence_review_done')
     @mock.patch.object(curriculum_tracking.activity_log_entry_creators, 'log_project_competence_review_done')
     def test_log_project_competence_review_invoked_from_api_endpoint_for_project_review(
-            self, proj_comp_review, topic_comp_review, log_card_moved_to_complete
+            self, log_project_competence_review_done, log_topic_competence_review_done, log_card_moved_to_complete
     ):
         super_user = UserFactory(is_superuser=True)
         card = AgileCardFactory(content_item=ProjectContentItemFactory())
@@ -219,8 +219,8 @@ class log_card_moved_to_complete_api_view_Tests(APITestCase, APITestCaseMixin):
         )
 
         self.assertTrue(response.status_code, 200)
-        proj_comp_review.assert_called()
-        topic_comp_review.assert_not_called()
+        log_project_competence_review_done.assert_called()
+        log_topic_competence_review_done.assert_not_called()
         log_card_moved_to_complete.assert_not_called()
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
