@@ -39,7 +39,6 @@ const TeamsTable = ({ teams, authUser }) => {
           {teams ? (
             Object.values(teams).map((team) => (
               <TableRow key={Object.values(teams).indexOf(team)}>
-                  {console.log(authUser)}
                 <TableCell>{team.name}</TableCell>
                 <TableCell>
                 {(authUser.isSuperuser ||
