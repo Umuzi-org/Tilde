@@ -9,7 +9,8 @@ from core.tests.factories import UserFactory
 from .factories import AgileCardFactory, RecruitProjectFactory, ProjectContentItemFactory
 from curriculum_tracking.models import AgileCard, ContentItem
 from activity_log.models import LogEntry
-from curriculum_tracking import activity_log_entry_creators as creators, activity_log_entry_creators
+from curriculum_tracking import activity_log_entry_creators as creators
+from curriculum_tracking import activity_log_entry_creators
 from curriculum_tracking.constants import COMPETENT
 from django.utils import timezone
 from mock import patch
