@@ -55,7 +55,13 @@ const ReviewLineChart = ({
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" domain={[minimumDate, maximumDate]} />
+      <XAxis
+        dataKey="date"
+        domain={[
+          Math.floor(new Date(minimumDate).getTime() / 1000),
+          Math.floor(new Date(maximumDate).getTime() / 1000),
+        ]}
+      />
       <YAxis domain={[minimumCount, maximumCount]} />
       <Tooltip />
       <Line
