@@ -24,6 +24,8 @@ import {
   Tooltip,
 } from "recharts";
 
+import { getMinAndMaxDate } from "./utils";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
@@ -41,6 +43,7 @@ const ReviewLineChart = ({
   maximumDate,
 }) => {
   // TODO calculate maximum and minimum so that all the graphs have the same proportions
+
   return (
     // <ResponsiveContainer width="100%" height="100%">
     <LineChart
@@ -55,13 +58,7 @@ const ReviewLineChart = ({
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="date"
-        domain={[
-          Math.floor(new Date(minimumDate).getTime() / 1000),
-          Math.floor(new Date(maximumDate).getTime() / 1000),
-        ]}
-      />
+      <XAxis dataKey="date" domain={[minimumDate, maximumDate]} />
       <YAxis domain={[minimumCount, maximumCount]} />
       <Tooltip />
       <Line
@@ -80,14 +77,11 @@ const ReviewLineChart = ({
   );
 };
 
-export default ({
-  team,
-  activityLogDayCounts,
-  eventTypes,
-  minimumDate,
-  maximumDate,
-}) => {
+export default ({ team, activityLogDayCounts, eventTypes }) => {
   const classes = useStyles();
+  const { minimumDate, maximumDate } = getMinAndMaxDate({
+    activityLogDayCounts,
+  });
   if (team)
     return (
       <React.Fragment>

@@ -11,8 +11,6 @@ import {
 
 import { getActivityLogCountsByDayForUsers } from "../../../apiAccess/selectors/activityLogSelectors";
 
-import { getMinAndMaxDate } from "./utils";
-
 function DashboardUnconnected({
   // authUser,
   teams,
@@ -63,9 +61,6 @@ function DashboardUnconnected({
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
     ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
   ];
-  const { minimumDate, maximumDate } = getMinAndMaxDate({
-    activityLogDayCounts,
-  });
 
   const props = {
     team,
@@ -74,8 +69,6 @@ function DashboardUnconnected({
       eventTypes,
       userIds: team ? team.members.map((member) => member.userId) : [],
     }),
-    minimumDate,
-    maximumDate,
   };
 
   return <Presentation {...props} />;
