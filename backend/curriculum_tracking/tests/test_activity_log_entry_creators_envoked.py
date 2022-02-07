@@ -29,12 +29,13 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
         start_url = f"{self.get_instance_url(card.id)}start_project/"
         response = self.client.post(start_url)
-        assert response.status_code == 200, response.data
+        self.assertEqual(response.status_code, 200)
+        
 
         card.refresh_from_db()
 
         # sanity check
-        assert card.assignees.count() == 1
+        self.assertEqual(card.assignees.count(), 1)
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
@@ -88,7 +89,7 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         response = self.client.post(
             start_url, data={"status": COMPETENT, "comments": "weee"}
         )
-        assert response.status_code == 200, response.data
+        self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
 
@@ -109,11 +110,11 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
 
 
 class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
-    LIST_URL_NAME = "agilecard-list"  #based on class of api-viewset
+    LIST_URL_NAME = "agilecard-list"  
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
 
-    def test_review_requested(self):
+    def test_review_requested_authorised_user(self):
         actor_user = UserFactory(is_superuser=True, is_staff=True)
         content_item=factories.ProjectContentItemFactory(
                 project_submission_type=ContentItem.LINK, template_repo=None
@@ -126,25 +127,89 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
             content_item=content_item
             
         )
-        self.login(actor_user) #do we not login first before starting project?
-        card.start_project() #means card is now IP
+        self.login(actor_user) 
+        card.start_project() 
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
 
         request_review_url = f"{self.get_instance_url(card.id)}request_review/"
         response = self.client.post(request_review_url)
-        assert response.status_code == 200, response.data
+        
+        self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.IN_REVIEW)
 
         # sanity check
-        assert card.assignees.count() == 1
+        self.assertEqual(card.assignees.count(), 1)
+        
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
 
-        self.assertEqual(entry.actor_user, actor_user) #person who pushed review request button
-        self.assertEqual(entry.effected_user, card.assignees.first()) #person whose card it is
+        self.assertEqual(entry.actor_user, actor_user) 
+        self.assertEqual(entry.effected_user, card.assignees.first()) 
         self.assertEqual(entry.object_1, card.recruit_project)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+        
+
+    def test_review_requested_assignee(self):
+        
+        content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            )
+        card = factories.AgileCardFactory(
+            status=AgileCard.READY, 
+
+            
+            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+            content_item=content_item
+            
+        )
+        self.login(card.assignees.first()) 
+        card.start_project() 
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+
+        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        response = self.client.post(request_review_url)
+        
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+
+        # sanity check
+        self.assertEqual(card.assignees.count(), 1)
+        
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        self.assertEqual(entry.actor_user, card.assignees.first()) 
+        self.assertEqual(entry.effected_user, card.assignees.first()) 
+        self.assertEqual(entry.object_1, card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+
+
+    def test_review_requested_non_authorised_user(self):
+        actor_user = UserFactory(is_superuser=False)
+        content_item=factories.ProjectContentItemFactory(
+            project_submission_type=ContentItem.LINK, template_repo=None
+        )
+        card = factories.AgileCardFactory(
+            status=AgileCard.IN_PROGRESS, 
+            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+            content_item=content_item
+            )
+        self.login(actor_user) 
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+    
+
+        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        response = self.client.post(request_review_url)
+        self.assertEqual(response.status_code, 403)
+        
+        
             
 
