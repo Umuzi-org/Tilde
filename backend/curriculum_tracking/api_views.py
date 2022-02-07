@@ -350,14 +350,16 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def request_review(self, request, pk=None):
         card: models.AgileCard = self.get_object()
+
         if card.recruit_project:
             card.recruit_project.request_review(force_timestamp=timezone.now())
         elif card.topic_progress:
             card.finish_topic()
         else:
             raise Http404
-        log_creators.log_card_review_requested(card=card, actor_user=request.user) 
-        # comes from here: def log_card_review_requested(card, actor_user) in activity_log_entry_creators.py
+
+        log_creators.log_card_review_requested(card=card, actor_user=request.user)
+
         card.refresh_from_db()
         assert (
             card.status == models.AgileCard.IN_REVIEW
