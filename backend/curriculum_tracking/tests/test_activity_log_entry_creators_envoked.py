@@ -119,11 +119,12 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
             project_submission_type=ContentItem.LINK, template_repo=None
         )
         card = factories.AgileCardFactory(
-            status=AgileCard.IN_PROGRESS,
+            status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(content_item=content_item),
             content_item=content_item,
         )
         self.login(actor_user)
+        card.start_project()
         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
 
         request_review_url = f"{self.get_instance_url(card.id)}request_review/"
@@ -152,11 +153,12 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
             project_submission_type=ContentItem.LINK, template_repo=None
         )
         card = factories.AgileCardFactory(
-            status=AgileCard.IN_PROGRESS,
+            status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(content_item=content_item),
             content_item=content_item,
         )
         self.login(card.assignees.first())
+        card.start_project()
         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
 
         request_review_url = f"{self.get_instance_url(card.id)}request_review/"
