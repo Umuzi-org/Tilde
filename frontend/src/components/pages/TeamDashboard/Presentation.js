@@ -23,6 +23,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { getMinimumAndMaximumValue } from "./utils";
 
 import { getMinAndMaxDate } from "./utils";
 
@@ -35,17 +36,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({
-  data,
-  minimumCount,
-  maximumCount,
-  minimumDate,
-  maximumDate,
-}) => {
-  // TODO calculate maximum and minimum so that all the graphs have the same proportions
+const ReviewLineChart = ({ data, minCount, maxCount, minimumDate, maximumDate, }) => {
 
   return (
-    // <ResponsiveContainer width="100%" height="100%">
     <LineChart
       width={900}
       height={100}
@@ -59,7 +52,8 @@ const ReviewLineChart = ({
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" domain={[minimumDate, maximumDate]} />
-      <YAxis domain={[minimumCount, maximumCount]} />
+      <YAxis domain={[minCount, maxCount]} />
+
       <Tooltip />
       <Line
         type="monotone"
@@ -73,11 +67,13 @@ const ReviewLineChart = ({
         stroke="#82ca9d"
       />
     </LineChart>
-    // </ResponsiveContainer>
   );
 };
 
-export default ({ team, activityLogDayCounts, eventTypes }) => {
+export default ({ team, activityLogDayCounts }) => {
+  const {minValue, maxValue} = getMinimumAndMaximumValue({
+    activityLogDayCounts,
+  });
   const classes = useStyles();
   const { minimumDate, maximumDate } = getMinAndMaxDate({
     activityLogDayCounts,
@@ -100,8 +96,11 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
                             eventTypes={eventTypes}
+                            minCount={minValue}
+                            maxCount={maxValue}
                             minimumDate={minimumDate}
                             maximumDate={maximumDate}
+
                           ></ReviewLineChart>
                         ) : (
                           "Loading..."
