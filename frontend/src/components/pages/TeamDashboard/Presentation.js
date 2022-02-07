@@ -95,7 +95,6 @@ export default ({ team, activityLogDayCounts }) => {
                         {activityLogDayCounts ? (
                           <ReviewLineChart
                             data={activityLogDayCounts[member.userId]}
-                            eventTypes={eventTypes}
                             minCount={minValue}
                             maxCount={maxValue}
                             minimumDate={minimumDate}
