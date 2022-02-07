@@ -1,6 +1,6 @@
 import React from "react";
 import TeamsTable from "../components/regions/UserDetails/TeamsTable/Presentation";
-import user from "./fixtures/user.json";
+import user from "./fixtures/authUser.json";
 
 export default {
     title: "Tilde/UserTeamsTable",

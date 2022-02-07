@@ -42,7 +42,7 @@ const TeamsTable = ({ teams, authUser }) => {
                 <TableCell>{team.name}</TableCell>
                 <TableCell>
                 {(authUser.isSuperuser ||
-                    authUser.permissions) && (
+                    authUser.permissions.teams[team.id]) && (
                     <Link
                       to={routes.groupCardSummary.route.path.replace(
                         ":teamId",
