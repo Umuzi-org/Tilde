@@ -86,9 +86,17 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        <Typography>
+
+        <div>
+        <Typography noWrap style={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+
+        }}>
           <Markdown children={trimLongReview(review.comments)} />
         </Typography>
+        </div>
+
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
