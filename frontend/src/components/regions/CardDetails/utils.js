@@ -1,3 +1,3 @@
 export const trimLongReview = (review) => {
-  return review.split("\n")[0];
+  return review.split("\n").join("");
 };
