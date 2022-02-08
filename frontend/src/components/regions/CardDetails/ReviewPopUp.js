@@ -61,7 +61,7 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
             <div style={{
               overflow: "hidden",
               textOverflow: "ellipsis",
-              width: "90%"
+              width: "100%"
             }}>
               <Typography>
                 <Markdown children={review.comments} />
