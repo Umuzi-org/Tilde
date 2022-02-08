@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from git_real.models import Push, Repository, PullRequest, PullRequestReview
 from core.permissions import RequestMethodIs
 from .permissions import IsWebhookSignatureOk
+import git_real.activity_log_creators as creators
 
 
 @api_view(["POST", "GET"])
@@ -12,10 +13,12 @@ def github_webhook(request):
     based on https://docs.github.com/en/developers/webhooks-and-events/creating-webhooks"""
 
     if request.method == "POST":
-
         event = request.headers.get("X-Github-Event") or request.data.get(
             "headers", {}
         ).get("X-Github-Event")
+        # if type(event) != str:
+        #     event = event.get("X-Github-Event")
+
         assert event, f"no event listed. headers = {request.headers}"
 
         if event in ["pull_request", "pull_request_review", "push"]:
@@ -33,15 +36,16 @@ def github_webhook(request):
 
             if event == "pull_request_review":
 
-                PullRequestReview.create_or_update_from_github_api_data(
+                pr_review = PullRequestReview.create_or_update_from_github_api_data(
                     pull_request=pr, review_data=request.data["review"]
                 )
+
+                creators.log_pr_reviewed(pr_review)
 
         elif event == "push":
             Push.create_or_update_from_github_api_data(
                 repo=repo, request_body=request.data
             )
-
         return Response({})
 
     return Response({"status": "This endpoint exists"})

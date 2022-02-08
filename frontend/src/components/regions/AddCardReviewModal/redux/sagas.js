@@ -1,11 +1,11 @@
 import { takeLatest, put, takeEvery, select } from "redux-saga/effects";
 import operations from "./operations";
-import { apiReduxApps } from "../../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import types from "./types";
 
 function* addReviewSuccessSideEffects(action) {
-  const cardId = action.data.id;
-  const projectId = action.data.recruitProject;
+  const cardId = action.responseData.id;
+  const projectId = action.responseData.recruitProject;
 
   yield put(operations.closeCardReviewForm());
   yield put(
@@ -32,7 +32,7 @@ function* addReviewSuccessSideEffects(action) {
 
 function* setOpenProjectReviewCardIdSideEffects({ cardId }) {
   if (cardId) {
-    const cards = yield select((state) => state.Entities.cards) || {};
+    const cards = yield select((state) => state.apiEntities.cards) || {};
     const card = cards[cardId];
     if (!card) {
       yield put(

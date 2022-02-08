@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import Presentation from "./Presentation";
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
 import consts from "../../../constants";
 import { useParams } from "react-router-dom";
-import { getLatestMatchingCall } from "../../../utils/ajaxRedux";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
 
 export function boardFromCards({ cards, latestCalls }) {
@@ -12,9 +12,11 @@ export function boardFromCards({ cards, latestCalls }) {
     return {
       label: columnName,
       totalCards: Object.keys(latestCalls)
-      .filter(status => consts.AGILE_COLUMNS[columnName].indexOf(status) !== -1)
-          .map(status => latestCalls[status].totalCards)
-          .reduce((a, b) => a + b),
+        .filter(
+          (status) => consts.AGILE_COLUMNS[columnName].indexOf(status) !== -1
+        )
+        .map((status) => latestCalls[status].totalCards)
+        .reduce((a, b) => a + b),
       cards: Object.values(cards)
         .filter(
           (card) => consts.AGILE_COLUMNS[columnName].indexOf(card.status) !== -1
@@ -76,7 +78,9 @@ function getAllLatestCalls({
         ? lastAssigneeCall.responseData.results.length
         : -1;
 
-   let totalCards = lastAssigneeCall.responseData ? lastAssigneeCall.responseData.count: 0;
+    let totalCards = lastAssigneeCall.responseData
+      ? lastAssigneeCall.responseData.count
+      : 0;
 
     if (consts.AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER.includes(status)) {
       const lastReviewerCall =
@@ -87,7 +91,7 @@ function getAllLatestCalls({
             status,
           },
         }) || defaultCallLogEntry;
-  
+
       totalCards = totalCards + lastReviewerCall.responseData?.count;
 
       current.anyLoading = current.anyLoading || lastReviewerCall.loading;
@@ -97,12 +101,11 @@ function getAllLatestCalls({
           ? lastReviewerCall.responseData.results.length
           : -1;
     }
-    current.totalCards = totalCards
+    current.totalCards = totalCards;
     result[status] = { ...current };
   }
   return result;
 }
-
 
 /*
 Given a bunch of info from getAllLatestCalls, return a
@@ -145,7 +148,7 @@ function AgileBoardUnconnected({
           userId,
         })
       : {};
-  
+
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];
     for (let status of statuses) {
@@ -201,7 +204,10 @@ function AgileBoardUnconnected({
   let props = {
     userId,
     cards: filteredCards,
-    board: boardFromCards({ cards: filteredCards, latestCalls: latestCallStates }),
+    board: boardFromCards({
+      cards: filteredCards,
+      latestCalls: latestCallStates,
+    }),
     columnsLoading,
     viewedUser: users[userId],
 
@@ -212,8 +218,8 @@ function AgileBoardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.Entities.users || {},
-    cards: state.Entities.cards || {},
+    users: state.apiEntities.users || {},
+    cards: state.apiEntities.cards || {},
     FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE:
       state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     authedUserId: state.App.authUser.userId,

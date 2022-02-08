@@ -133,7 +133,7 @@ export default ({
           <Tabs
             value={tabValue}
             indicatorColor="primary"
-            textColor="primary"
+            // textColor="primary"
             onChange={handleChangeTab}
             aria-label="disabled tabs example"
           >

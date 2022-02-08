@@ -3,7 +3,7 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
@@ -160,8 +160,8 @@ const mapStateToProps = (state) => {
   // const cardId = state.CardDetails.cardId;
 
   // const card =
-  //   !!cardId & (state.Entities.cards !== undefined)
-  //     ? state.Entities.cards[cardId]
+  //   !!cardId & (state.apiEntities.cards !== undefined)
+  //     ? state.apiEntities.cards[cardId]
   //     : null;
 
   // const projectId =
@@ -170,22 +170,22 @@ const mapStateToProps = (state) => {
   //   card && card.contentTypeNice === "topic" && card.topicProgress;
 
   // const project =
-  //   !!projectId & (state.Entities.projects !== undefined)
-  //     ? state.Entities.projects[projectId]
+  //   !!projectId & (state.apiEntities.projects !== undefined)
+  //     ? state.apiEntities.projects[projectId]
   //     : null;
 
   // const topicProgress =
-  //   !!topicProgressId & (state.Entities.topicProgress !== undefined)
-  //     ? state.Entities.topicProgress[topicProgressId]
+  //   !!topicProgressId & (state.apiEntities.topicProgress !== undefined)
+  //     ? state.apiEntities.topicProgress[topicProgressId]
   //     : null;
 
   // const projectReviews =
   //   (project !== null) &
   //   (project !== undefined) &
-  //   (state.Entities.projectReviews !== undefined)
+  //   (state.apiEntities.projectReviews !== undefined)
   //     ? project.projectReviews
   //         .map((reviewId) => {
-  //           return state.Entities.projectReviews[reviewId];
+  //           return state.apiEntities.projectReviews[reviewId];
   //         })
   //         .filter((review) => review !== undefined)
   //     : [];
@@ -193,10 +193,10 @@ const mapStateToProps = (state) => {
   // const topicReviews =
   //   (topicProgress !== null) &
   //   (topicProgress !== undefined) &
-  //   (state.Entities.topicReviews !== undefined)
+  //   (state.apiEntities.topicReviews !== undefined)
   //     ? topicProgress.topicReviews
   //         .map((reviewId) => {
-  //           return state.Entities.topicReviews[reviewId];
+  //           return state.apiEntities.topicReviews[reviewId];
   //         })
   //         .filter((review) => review !== undefined)
   //     : [];
@@ -210,11 +210,11 @@ const mapStateToProps = (state) => {
     // projectId,
     // projectReviews,
     // topicReviews,
-    cards: state.Entities.cards,
-    projects: state.Entities.projects,
-    topicProgressArray: state.Entities.topicProgress,
-    projectReviews: state.Entities.projectReviews,
-    topicReviews: state.Entities.topicReviews,
+    cards: state.apiEntities.cards,
+    projects: state.apiEntities.projects,
+    topicProgressArray: state.apiEntities.topicProgress,
+    projectReviews: state.apiEntities.projectReviews,
+    topicReviews: state.apiEntities.topicReviews,
 
     authUser: state.App.authUser,
   };

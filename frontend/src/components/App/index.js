@@ -8,14 +8,14 @@ import Login from "../regions/Login";
 import { routes } from "../../routes.js";
 
 import { getAuthToken } from "../../utils/authTokenStorage";
-import { apiReduxApps } from "../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../apiAccess/apiApps";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({});
 
 function shouldCallWhoAmI({ authUser }) {
-  if (authUser.userId) return false;
+  if (authUser && authUser.userId) return false;
   if (!getAuthToken()) return false;
 
   return true;
