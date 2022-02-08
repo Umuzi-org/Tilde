@@ -71,7 +71,7 @@ const Review = ({ review }) => {
               onClick={() => setOpenReviewPopUp(true)}
             >
               {review.comments.includes("\n") ? (
-                <CropFreeIcon fontSize="small" />
+                <CropFreeIcon fontSize="small" style={{color: "blue"}}/>
               ) : (
                 <React.Fragment />
               )}
@@ -88,12 +88,8 @@ const Review = ({ review }) => {
       <CardContent className={classes.cardContent}>
 
         <div>
-        <Typography noWrap style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-
-        }}>
-          <Markdown children={trimLongReview(review.comments)} />
+        <Typography noWrap>
+          {review.comments.includes("\n") ? `${trimLongReview(review.comments)}...` : review.comments}
         </Typography>
         </div>
 
