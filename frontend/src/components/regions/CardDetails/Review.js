@@ -73,7 +73,7 @@ const Review = ({ review }) => {
               {review.comments.includes("\n") ? (
                 <CropFreeIcon fontSize="small" />
               ) : (
-                React.Fragment
+                <React.Fragment />
               )}
             </Button>
           </Typography>
