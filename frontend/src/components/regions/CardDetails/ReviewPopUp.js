@@ -45,7 +45,14 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
             <Typography noWrap className={classes.reviewerEmailStyle}>
               {review.reviewerUserEmail}'s review:⤵
             </Typography>
-            <div>
+
+            <div
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                width: "100%",
+              }}
+            >
               <Typography>
                 <Markdown children={review.comments} />
               </Typography>
