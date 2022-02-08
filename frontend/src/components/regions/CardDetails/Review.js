@@ -71,7 +71,7 @@ const Review = ({ review }) => {
               onClick={() => setOpenReviewPopUp(true)}
             >
               {review.comments.includes("\n") ? (
-                <CropFreeIcon fontSize="small" style={{color: "blue"}}/>
+                <CropFreeIcon fontSize="small" style={{ color: "blue" }} />
               ) : (
                 <React.Fragment />
               )}
@@ -86,13 +86,13 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-
         <div>
-        <Typography noWrap>
-          {review.comments.includes("\n") ? `${trimLongReview(review.comments)}...` : review.comments}
-        </Typography>
+          <Typography noWrap>
+            {review.comments.includes("\n")
+              ? `${trimLongReview(review.comments)}...`
+              : review.comments}
+          </Typography>
         </div>
-
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
@@ -104,8 +104,7 @@ const Review = ({ review }) => {
         openReviewPopUp={openReviewPopUp}
         setOpenReviewPopUp={setOpenReviewPopUp}
         review={review}
-      >
-      </ReviewPopUp>
+      ></ReviewPopUp>
     </Card>
   );
 };

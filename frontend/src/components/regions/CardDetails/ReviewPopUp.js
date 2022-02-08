@@ -2,8 +2,8 @@ import React from "react";
 
 import Markdown from "react-markdown";
 import Modal from "../../widgets/Modal";
-import Card from "@material-ui/core/Card"
-import CloseIcon from "@material-ui/icons/Close"
+import Card from "@material-ui/core/Card";
+import CloseIcon from "@material-ui/icons/Close";
 import { Button, CardContent, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     width: "90vw",
     overflow: "scroll",
     position: "relative",
-    maxWidth: "90%"
+    maxWidth: "90%",
   },
   cardContentStyle: {
     maxWidth: "90%",
@@ -22,47 +22,30 @@ const useStyles = makeStyles((theme) => ({
   exitIcon: {
     position: "absolute",
     top: "5px",
-    right: "1px"
+    right: "1px",
   },
   reviewerEmailStyle: {
     fontSize: "100%",
     fontWeight: "bold",
-  }
-}))
+  },
+}));
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
-
-  const classes = useStyles()
-  const closeModal = () => setOpenReviewPopUp(false)
+  const classes = useStyles();
+  const closeModal = () => setOpenReviewPopUp(false);
 
   return (
-    <Modal
-      open={openReviewPopUp}
-      onClose={closeModal}
-    >
-      <Card
-        className={classes.cardStyle}
-      >
-        <CardContent
-          className={classes.cardContentStyle}
-        >
+    <Modal open={openReviewPopUp} onClose={closeModal}>
+      <Card className={classes.cardStyle}>
+        <CardContent className={classes.cardContentStyle}>
           <div>
-            <Button
-              className={classes.exitIcon}
-              onClick={closeModal}>
+            <Button className={classes.exitIcon} onClick={closeModal}>
               <CloseIcon fontSize="small" />
             </Button>
-            <Typography noWrap
-              className={classes.reviewerEmailStyle}
-            >
+            <Typography noWrap className={classes.reviewerEmailStyle}>
               {review.reviewerUserEmail}'s review:⤵
             </Typography>
-
-            <div style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              width: "100%"
-            }}>
+            <div>
               <Typography>
                 <Markdown children={review.comments} />
               </Typography>
@@ -70,7 +53,6 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
           </div>
         </CardContent>
       </Card>
-
     </Modal>
   );
 };
