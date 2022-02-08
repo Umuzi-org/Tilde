@@ -52,15 +52,21 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
               onClick={closeModal}>
               <CloseIcon fontSize="small" />
             </Button>
-            <Typography
+            <Typography noWrap
               className={classes.reviewerEmailStyle}
             >
               {review.reviewerUserEmail}'s review:⤵
             </Typography>
-            <Typography>
-              <Markdown children={review.comments}/>
-            </Typography>
 
+            <div style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              width: "90%"
+            }}>
+              <Typography>
+                <Markdown children={review.comments} />
+              </Typography>
+            </div>
           </div>
         </CardContent>
       </Card>
