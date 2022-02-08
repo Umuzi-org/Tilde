@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: 0,
     },
   },
+  expandButton: {
+    color: "blue"
+  }
 }));
 
 const Review = ({ review }) => {
@@ -70,7 +73,7 @@ const Review = ({ review }) => {
               onClick={() => setOpenReviewPopUp(true)}
             >
               {review.comments.includes("\n") ? (
-                <CropFreeIcon fontSize="small" style={{ color: "blue" }} />
+                <CropFreeIcon fontSize="small" className={classes.expandButton} />
               ) : (
                 <React.Fragment />
               )}

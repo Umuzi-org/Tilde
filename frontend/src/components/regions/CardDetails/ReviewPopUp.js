@@ -4,7 +4,7 @@ import Markdown from "react-markdown";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
 import CloseIcon from "@material-ui/icons/Close";
-import { Button, CardContent, Typography } from "@material-ui/core";
+import { Button, CardContent, Hidden, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "100%",
     fontWeight: "bold",
   },
+  reviewStyle: {
+    width: "100%",
+    overflow: "hidden",
+  },
 }));
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
@@ -46,13 +50,7 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
               {review.reviewerUserEmail}'s review:⤵
             </Typography>
 
-            <div
-              style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                width: "100%",
-              }}
-            >
+            <div className={classes.reviewStyle}>
               <Typography>
                 <Markdown children={review.comments} />
               </Typography>
