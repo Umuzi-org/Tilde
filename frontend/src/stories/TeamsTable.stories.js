@@ -1,6 +1,6 @@
 import React from "react";
 import TeamsTable from "../components/regions/UserDetails/TeamsTable/Presentation";
-import user from "./fixtures/authUser.json";
+import authUser from "./fixtures/authUser.json";
 
 export default {
     title: "Tilde/UserTeamsTable",
@@ -11,6 +11,6 @@ const Template = args => <TeamsTable {...args} />
 
 export const Primary = Template.bind({});
 Primary.args = {
-  teams: user.teamMemberships,
-  authUser: user
+  teams: authUser.teamMemberships,
+  authUser: authUser
 }
