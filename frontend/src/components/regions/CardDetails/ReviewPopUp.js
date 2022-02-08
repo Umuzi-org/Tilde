@@ -4,7 +4,7 @@ import Markdown from "react-markdown";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
 import CloseIcon from "@material-ui/icons/Close";
-import { Button, CardContent, Hidden, Typography } from "@material-ui/core";
+import { Button, CardContent, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
