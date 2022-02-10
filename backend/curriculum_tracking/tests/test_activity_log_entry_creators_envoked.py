@@ -181,8 +181,8 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
 
-    def test_review_requested_non_authorised_user(self):
-        actor_user = UserFactory(is_superuser=False)
+    def test_review_requested_non_assignee(self):
+        actor_user = UserFactory()
         content_item = factories.ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
