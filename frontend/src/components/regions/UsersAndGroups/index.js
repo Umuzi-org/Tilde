@@ -118,6 +118,8 @@ function UsersAndGroupsUnconnected({
       { page: 6 },
       { page: 7 },
       { page: 8 },
+      { page: 9 },
+      { page: 10 },
     ];
 
     fetchTeamsPages({
