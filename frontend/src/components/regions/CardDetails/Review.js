@@ -7,8 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-import { trimLongReview } from "./utils";
-import CropFreeIcon from "@material-ui/icons/CropFree";
+import { trimLongReview, cleanMarkdown } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
@@ -19,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
   iconAlignment: {
     position: "absolute",
     right: "10px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
   },
   timeFont: {
     fontSize: 11,
@@ -43,15 +46,15 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 0,
     paddingBottom: 0,
   },
+  readMoreStyle: {
+    textTransform: "none",
+  },
   footer: {
     paddingTop: 0,
     "&:last-child": {
       paddingTop: 0,
     },
   },
-  expandButton: {
-    color: "blue"
-  }
 }));
 
 const Review = ({ review }) => {
@@ -66,18 +69,6 @@ const Review = ({ review }) => {
         title={
           <Typography className={classes.timeFont}>
             {timestamp.toLocaleString()}
-            <Button
-              type="button"
-              size="small"
-              className={classes.iconAlignment}
-              onClick={() => setOpenReviewPopUp(true)}
-            >
-              {review.comments.includes("\n") ? (
-                <CropFreeIcon fontSize="small" className={classes.expandButton} />
-              ) : (
-                <React.Fragment />
-              )}
-            </Button>
           </Typography>
         }
         subheader={
@@ -88,13 +79,25 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        <div>
-          <Typography noWrap>
-            {review.comments.includes("\n")
-              ? `${trimLongReview(review.comments)}...`
-              : review.comments}
-          </Typography>
-        </div>
+        {review.comments.includes("\n") ? (
+          <div>
+            <Button
+              type="button"
+              size="small"
+              className={classes.iconAlignment}
+              onClick={() => setOpenReviewPopUp(true)}
+            >
+              <Typography variant="caption" className={classes.readMoreStyle}>
+                ... Read more
+              </Typography>
+            </Button>
+            <Typography noWrap>
+              {cleanMarkdown(trimLongReview(review.comments))}
+            </Typography>
+          </div>
+        ) : (
+          <React.Fragment />
+        )}
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
