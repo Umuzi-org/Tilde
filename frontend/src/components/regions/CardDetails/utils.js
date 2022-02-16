@@ -11,5 +11,6 @@ export const trimLongReview = (review) => {
 */
  
 export const cleanMarkdown = (review) => {
-  return review.replace(/[^A-Za-z;!.,:]/g, " ");
+  const removeMarkdown = review.replace(/[^A-Za-z;!.,:]/g, " ");
+  return removeMarkdown.split("  ").join(" ")
 }
