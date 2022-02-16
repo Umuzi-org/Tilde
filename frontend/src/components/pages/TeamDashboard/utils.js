@@ -1,4 +1,4 @@
-export const getMinAndMaxDate = ({ activityLogDayCounts }) => {
+export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
   const datesArray = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((activityLogDayCount) => {
@@ -6,18 +6,21 @@ export const getMinAndMaxDate = ({ activityLogDayCounts }) => {
     });
   }
 
-  const sortedActivityLogDayCounts = datesArray.sort(
-    (a, b) => new Date(a) - new Date(b)
-  );
+  const uniqueDatesArr = Array.from(new Set(datesArray));
 
-  const minimumDate = sortedActivityLogDayCounts[0];
-  const maximumDate =
-    sortedActivityLogDayCounts[sortedActivityLogDayCounts.length - 1];
+  for (let i in activityLogDayCounts) {
+    for (let uniqueDate of uniqueDatesArr) {
+      if (!activityLogDayCounts[i].some(activityLogDayCount => activityLogDayCount.date === uniqueDate)) {
+        activityLogDayCounts[i].push({
+          date: uniqueDate,
+          COMPETENCE_REVIEW_DONE: 0,
+          PR_REVIEWED: 0,
+        });
+      }
+    }
+  }
 
-  return {
-    minimumDate,
-    maximumDate,
-  };
+  return activityLogDayCounts;
 };
 
 export const getMinimumAndMaximumValue = ({ activityLogDayCounts }) => {

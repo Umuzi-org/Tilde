@@ -25,7 +25,7 @@ import {
 } from "recharts";
 import { getMinimumAndMaximumValue } from "./utils";
 
-import { getMinAndMaxDate } from "./utils";
+import { updateActivityLogDayCounts } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,8 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, minCount, maxCount, minimumDate, maximumDate, }) => {
-
+const ReviewLineChart = ({ data, minCount, maxCount }) => {
   return (
     <LineChart
       width={900}
@@ -51,7 +50,7 @@ const ReviewLineChart = ({ data, minCount, maxCount, minimumDate, maximumDate, }
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" domain={[minimumDate, maximumDate]} />
+      <XAxis dataKey="date" />
       <YAxis domain={[minCount, maxCount]} />
 
       <Tooltip />
@@ -71,13 +70,18 @@ const ReviewLineChart = ({ data, minCount, maxCount, minimumDate, maximumDate, }
 };
 
 export default ({ team, activityLogDayCounts }) => {
-  const {minValue, maxValue} = getMinimumAndMaximumValue({
+  const { minValue, maxValue } = getMinimumAndMaximumValue({
     activityLogDayCounts,
   });
+
+  const updatedActivityLogDayCounts = updateActivityLogDayCounts({
+    activityLogDayCounts,
+  });
+
+  // const paddedActivityLogDayCounts = getGate
+
   const classes = useStyles();
-  const { minimumDate, maximumDate } = getMinAndMaxDate({
-    activityLogDayCounts,
-  });
+
   if (team)
     return (
       <React.Fragment>
@@ -94,12 +98,9 @@ export default ({ team, activityLogDayCounts }) => {
                       <TableCell>
                         {activityLogDayCounts ? (
                           <ReviewLineChart
-                            data={activityLogDayCounts[member.userId]}
+                            data={updatedActivityLogDayCounts[member.userId]}
                             minCount={minValue}
                             maxCount={maxValue}
-                            minimumDate={minimumDate}
-                            maximumDate={maximumDate}
-
                           ></ReviewLineChart>
                         ) : (
                           "Loading..."
