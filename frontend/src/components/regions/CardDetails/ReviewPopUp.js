@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import {
   Button,
-  CardActions,
   CardContent,
   CardHeader,
   Typography,
@@ -29,8 +28,12 @@ const useStyles = makeStyles((theme) => ({
   },
   exitIcon: {
     position: "absolute",
-    top: "5px",
-    right: "1px",
+    top: "25px",
+    right: "10px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white"
+    }
   },
   timefont: {
     fontSize: 11,
@@ -43,17 +46,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     overflow: "hidden",
     padding: 10,
-  },
-  // footer: {
-  //   position: "absolute",
-  //   backgroundColor: "white",
-  //   bottom: 0,
-  //   left: 0,
-  // },
-  ReviewStatus: {
-    position: "absolute",
-    bottom: 0,
-    left: 0
   },
 }));
 
@@ -69,23 +61,28 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
         <CardContent className={classes.cardContentStyle}>
           <div>
             <Button className={classes.exitIcon} onClick={closeModal}>
-              <CloseIcon fontSize="small" />
+              <CloseIcon fontSize="large" />
             </Button>
 
             <CardHeader
               title={
                 <Typography className={classes.timefont}>
-                  {timestamp.toLocaleDateString()}
+                  Date: {timestamp.toLocaleDateString()}
                 </Typography>
               }
               subheader={
-                <Typography className={classes.reviewerEmailStyle}>
-                  {review.reviewerUserEmail} ⤵
+                <Typography>
+                  <div className={classes.reviewerEmailStyle}> 
+                  Reviewer: {review.reviewerUserEmail} 
+                  </div>
+                  <div className={classes.reviewerEmailStyle}>
+                    Status: <ReviewStatus status={review.status}/>
+                  </div>
                 </Typography>
               }
             />
 
-            <Divider variant="middle" />
+            <Divider variant="middle"/>
 
             <div className={classes.reviewStyle}>
               <Typography>
@@ -94,12 +91,6 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
             </div>
           </div>
         </CardContent>
-
-        <div className={classes.footer}>
-          <CardActions className={classes.ReviewStatus}>
-            <ReviewStatus status={review.status} style={{position: "fixed"}}/>
-          </CardActions>
-        </div>
       </Card>
     </Modal>
   );
