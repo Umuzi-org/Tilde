@@ -34,6 +34,10 @@ test("getPrStatus function returns default string when the pr age is less than 1
   expect(getPrStatus(date)).toBe(DEFAULT_STATUS);
 });
 
+test("getPrStatus function returns default string when pr age is undefined", () => {
+  expect(getPrStatus()).toBe(DEFAULT_STATUS);
+});
+
 test("getTildeReviewStatus function returns error string when the tilde review request age is 3 days or older", () => {
   const today = new Date();
   const date = today.setDate(today.getDate() - TILDE_ERROR_AGE_THRESHOLD)
@@ -50,6 +54,10 @@ test("getTildeReviewStatus function returns default string when the tilde review
   const today = new Date();
   const date = today.setDate(today.getDate())
   expect(getTildeReviewStatus(date)).toBe(DEFAULT_STATUS);
+});
+
+test("getTildeReviewStatus function returns default string when pr age is undefined", () => {
+  expect(getTildeReviewStatus()).toBe(DEFAULT_STATUS);
 });
 
 test("timeDifferenceInDays function should return the correct number of days", () => {
