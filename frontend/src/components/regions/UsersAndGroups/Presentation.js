@@ -44,12 +44,12 @@ const useStyles = makeStyles((theme)=> ({
 }));
 
 const TeamSummaryStats = ({ summaryStats }) => {
-  const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime.slice(0, 10); 
-  const dateOfOldestTildeReviewRequest = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime ? summaryStats.oldestOpenPrTime.slice(0, 10) : undefined; 
+  const dateOfOldestTildeReviewRequest = summaryStats.oldestCardInReviewTime ? summaryStats.oldestCardInReviewTime.slice(0, 10) : undefined;
   const classes = useStyles();
 
-  const prStatusClassName = classes[getPrStatus(summaryStats.oldestOpenPrTime)]
-  const tildeReviewStatusClassName = classes[getTildeReviewStatus(summaryStats.oldestCardInReviewTime)]
+  const prStatusClassName = classes[getPrStatus(dateOfOldestPullRequest)]
+  const tildeReviewStatusClassName = classes[getTildeReviewStatus(dateOfOldestTildeReviewRequest)]
 
   return (
     <Table>
