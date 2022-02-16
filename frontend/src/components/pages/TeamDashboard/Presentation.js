@@ -78,8 +78,6 @@ export default ({ team, activityLogDayCounts }) => {
     activityLogDayCounts,
   });
 
-  // const paddedActivityLogDayCounts = getGate
-
   const classes = useStyles();
 
   if (team)

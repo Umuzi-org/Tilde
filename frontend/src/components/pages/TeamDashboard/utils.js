@@ -10,7 +10,11 @@ export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
 
   for (let i in activityLogDayCounts) {
     for (let uniqueDate of uniqueDatesArr) {
-      if (!activityLogDayCounts[i].some(activityLogDayCount => activityLogDayCount.date === uniqueDate)) {
+      if (
+        !activityLogDayCounts[i].some(
+          (activityLogDayCount) => activityLogDayCount.date === uniqueDate
+        )
+      ) {
         activityLogDayCounts[i].push({
           date: uniqueDate,
           COMPETENCE_REVIEW_DONE: 0,
@@ -20,7 +24,16 @@ export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
     }
   }
 
-  return activityLogDayCounts;
+  const updatedActivityLogDayCounts = {};
+
+  Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
+    updatedActivityLogDayCounts[activityLogDayCount[0]] =
+      activityLogDayCount[1].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+  });
+
+  return updatedActivityLogDayCounts;
 };
 
 export const getMinimumAndMaximumValue = ({ activityLogDayCounts }) => {
