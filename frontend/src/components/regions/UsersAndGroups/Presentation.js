@@ -1,6 +1,9 @@
 import React from "react";
-import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+import { getAgeString } from "../../widgets/utils"
+import { getPrStatus, getTildeReviewStatus } from "./utils"
 import { makeStyles } from "@material-ui/core/styles";
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+
 import {
   Paper,
   Typography,
@@ -19,7 +22,8 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme)=> ({
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -27,15 +31,25 @@ const useStyles = makeStyles({
   textBoxSize: {
     width: "62%",
   },
-});
-const TeamSummaryStats = ({ summaryStats }) => {
-  const oldestOpenPrTime = summaryStats.oldestOpenPrTime
-    ? new Date(summaryStats.oldestOpenPrTime)
-    : null;
+  warning: {
+    color: theme.palette.warning.dark
+  },
+  error: {
+    color: theme.palette.error.dark
+  },
+  default: {
+    color: theme.palette.primary
+  }
 
-  const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
-    ? new Date(summaryStats.oldestCardInReviewTime)
-    : null;
+}));
+
+const TeamSummaryStats = ({ summaryStats }) => {
+  const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime.slice(0, 10); 
+  const dateOfOldestTildeReviewRequest = summaryStats.oldestCardInReviewTime.slice(0, 10);
+  const classes = useStyles();
+
+  const prStatusClassName = classes[getPrStatus(summaryStats.oldestOpenPrTime)]
+  const tildeReviewStatusClassName = classes[getTildeReviewStatus(summaryStats.oldestCardInReviewTime)]
 
   return (
     <Table>
@@ -50,17 +64,15 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell>
-            {oldestOpenPrTime ? oldestOpenPrTime.toLocaleString() : "-"}
+          <TableCell className={prStatusClassName}>
+          {dateOfOldestPullRequest ? getAgeString(dateOfOldestPullRequest) : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell>
-            {oldestCardInReviewTime
-              ? oldestCardInReviewTime.toLocaleString()
-              : "-"}
+          <TableCell className={tildeReviewStatusClassName}>
+          {dateOfOldestTildeReviewRequest ? getAgeString(dateOfOldestTildeReviewRequest) : "-"}
           </TableCell>
         </TableRow>
       </TableBody>
