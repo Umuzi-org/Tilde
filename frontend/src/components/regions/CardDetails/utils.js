@@ -1,4 +1,5 @@
-function hasPermission({ authUser, user }) {
+
+const hasPermission = ({ authUser, user }) => {
     const teamMemberships = user.teamMemberships ?
         Object.keys(user.teamMemberships) : [];
     const teams = authUser.permissions ?
