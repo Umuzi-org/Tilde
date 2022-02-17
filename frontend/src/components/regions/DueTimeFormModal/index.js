@@ -3,7 +3,7 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import operations from "./redux/operations";
 
-import { apiReduxApps } from "../../../apiAccess/redux/apiApps";
+import { apiReduxApps } from "../../../apiAccess/apiApps"
 
 function DueTimeFormModalUnconnected({
     cardId,
@@ -34,8 +34,8 @@ const mapStateToProps = (state) => {
     return {
         ...state,
         cardId: state.DueTimeFormModal.cardId || null,
-        users: state.Entities.users || {},
-        card: state.Entities.cards || {},
+        users: state.users || {},
+        card: state.cards || {},
         authUser: state.App.authUser,
     }
 }
