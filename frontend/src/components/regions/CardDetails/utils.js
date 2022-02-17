@@ -17,6 +17,6 @@ export function canSetDueTime({ card, user, authUser }) {
     if(card.dueTime) {
         return false;
     } else {
-        return user.id === authUser.userId || (user.id !== authUser.userId  && hasPermission({authUser, user}))
+        return authUser.userId || (user.id !== authUser.userId  && hasPermission({authUser, user}))
     } 
 }
