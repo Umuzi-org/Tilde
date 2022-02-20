@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "scroll",
     position: "relative",
     maxWidth: "90%",
+    overflowX: 'hidden'
   },
   cardContentStyle: {
     margin: 0,
