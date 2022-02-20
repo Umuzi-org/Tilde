@@ -7,14 +7,15 @@ import Divider from "@material-ui/core/Divider";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
-import {
-  Button,
-  CardContent,
-  CardHeader,
-  Typography,
-} from "@material-ui/core";
+import { Button, CardContent, CardHeader, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "fixed",
+    backgroundColor: "white",
+    margin: "0px",
+    width: "80%",
+  },
   cardStyle: {
     diplay: "block",
     height: "90vh",
@@ -24,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "90%",
   },
   cardContentStyle: {
+    margin: 0,
+    padding: 0,
     maxWidth: "90%",
   },
   exitIcon: {
@@ -32,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
     right: "10px",
     backgroundColor: "white",
     "&:hover": {
-      backgroundColor: "white"
-    }
+      backgroundColor: "white",
+    },
   },
   timefont: {
     fontSize: 11,
@@ -47,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     padding: 10,
   },
+  horizontalDivider: {
+    paddingTop: "20px",
+  },
+  contentStart: {
+    paddingTop: "110px"
+  }
 }));
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
@@ -60,32 +69,42 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
       <Card className={classes.cardStyle}>
         <CardContent className={classes.cardContentStyle}>
           <div>
-            <Button className={classes.exitIcon} onClick={closeModal}>
-              <CloseIcon fontSize="large" />
-            </Button>
-
             <CardHeader
+              className={classes.root}
               title={
                 <Typography className={classes.timefont}>
-                  Date: {timestamp.toLocaleDateString()}
+                  Date:{" "}
+                  {timestamp.toLocaleDateString() +
+                    " " +
+                    timestamp.toLocaleTimeString()}
+                  <Button className={classes.exitIcon} onClick={closeModal}>
+                    <CloseIcon fontSize="medium" />
+                  </Button>
                 </Typography>
               }
               subheader={
                 <Typography>
-                  <div className={classes.reviewerEmailStyle}> 
-                  Reviewer: {review.reviewerUserEmail} 
+                  <div>
+                    Reviewer:{" "}
+                    <span className={classes.reviewerEmailStyle}>
+                      {review.reviewerUserEmail}⤵
+                    </span>
                   </div>
-                  <div className={classes.reviewerEmailStyle}>
-                    Status: <ReviewStatus status={review.status}/>
+                  <div>
+                    Status:{" "}
+                    <span>
+                      <ReviewStatus status={review.status} />
+                    </span>
+                    <div className={classes.horizontalDivider}>
+                      <Divider variant="middle" />
+                    </div>
                   </div>
                 </Typography>
               }
             />
 
-            <Divider variant="middle"/>
-
             <div className={classes.reviewStyle}>
-              <Typography>
+              <Typography className={classes.contentStart}>
                 <Markdown children={review.comments} />
               </Typography>
             </div>
