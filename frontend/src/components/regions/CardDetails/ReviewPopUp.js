@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "20px",
   },
   contentStart: {
-    paddingTop: "110px"
+    paddingTop: "125px"
   }
 }));
 
