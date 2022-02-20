@@ -92,7 +92,7 @@ const Review = ({ review }) => {
               </Typography>
             </Button>
             <Typography noWrap>
-              {cleanMarkdown(trimLongReview(review.comments))}
+              {cleanMarkdown(review.comments)}
             </Typography>
           </div>
         ) : (

@@ -1,5 +1,5 @@
 export const trimLongReview = (review) => {
-  return review.split("\n").join(" ");
+  return review.replace("\n", " ").split("\n").join(" ").replace("  ", " ");
 };
 
 /*
@@ -12,5 +12,5 @@ export const trimLongReview = (review) => {
  
 export const cleanMarkdown = (review) => {
   const removeMarkdown = review.replace(/[^A-Za-z;!.,:]/g, " ");
-  return removeMarkdown.split("  ").join(" ")
+  return removeMarkdown.replace("   ", " ").split("  ").join(" ");
 }
