@@ -5,8 +5,7 @@ from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from . import factories
 from core.tests import factories as core_factories
-from django.utils.timezone import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from curriculum_tracking.models import ContentItem, RecruitProjectReview
 from django.utils import timezone
 from taggit.models import Tag
@@ -529,14 +528,16 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertIsNone(card.due_time)
         self.login(self.super_user)
         url = f'{self.get_instance_url(pk=self.blue_team.id)}bulk_set_due_dates/'
+        due_date = '2021-12-03T14:17'
         response = self.client.post(path=url, format='json', data={
-            'due_time': '2021-12-03T14:17', 'content_item': card.content_item.id, 'team': str(self.blue_team.id),
+            'due_time': due_date, 'content_item': card.content_item.id, 'team': str(self.blue_team.id),
             'flavours': [card.flavours.first().id, card.flavours.last().id]
         })
 
         self.assertEqual(response.status_code, 200)
         card.refresh_from_db()
-        self.assertTrue(card.due_time, '2021-12-03T14:17')
+        date_expected = datetime.strptime(due_date, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
+        self.assertEqual(card.due_time, date_expected)
 
     def test_bulk_set_due_date_happened_for_every_card_with_the_same_content_item_for_the_team(self):
 

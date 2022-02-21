@@ -1,4 +1,3 @@
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer, CardSummarySerializer, NoArgs
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -13,7 +12,7 @@ from core.filters import ObjectPermissionsFilter
 from core.models import Team
 from rest_framework import viewsets, status
 from core.permissions import HasObjectPermission
-from curriculum_tracking.serializers import TeamStatsSerializer
+from curriculum_tracking.serializers import TeamStatsSerializer, CardSummarySerializer, UserDetailedStatsSerializer
 from curriculum_tracking.management.helpers import get_team_cards
 
 
