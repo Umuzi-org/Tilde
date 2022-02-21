@@ -540,7 +540,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card.due_time, date_expected)
 
     def test_bulk_set_due_date_happened_for_every_card_with_the_same_content_item_for_the_team(self):
-
         """
         Three cards, two with the same content_item and one with a different content_item.  The one with the
         different content_item should not have it's due_time updated, it should be left as it is.
@@ -560,8 +559,9 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         self.login(self.super_user)
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        due_date = '2021-12-03T14:17'
         response = self.client.post(path=url, format='json', data={
-            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
+            'due_time': due_date, 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
             'flavours': [card_1.flavours.first().id]
         })
         self.assertEqual(response.status_code, 200)
@@ -573,12 +573,12 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         for card in team_cards:
             card.refresh_from_db()
-            self.assertTrue(card.due_time, '2022-01-20T12:17')
+            date_expected = datetime.strptime(due_date, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
+            self.assertTrue(card.due_time, date_expected)
 
         self.assertIsNone(card_3.due_time)
 
     def test_due_date_not_set_if_flavour_name_differs_to_request(self):
-
         """
         Three cards (1 'js' flavour & 2 'python' flavoured); the request is for team_cards with a 'js' flavour to have
         their due dates set and all other flavoured cards to not have their due dates altered.
@@ -600,8 +600,9 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.content_item, card_3.content_item)
         self.login(self.super_user)
         url = f'{self.get_instance_url(pk=self.red_team.id)}bulk_set_due_dates/'
+        due_date = '2022-01-20T12:17'
         response = self.client.post(path=url, format='json', data={
-            'due_time': '2022-01-20T12:17', 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
+            'due_time': due_date, 'content_item': card_1.content_item.id, 'team': str(self.red_team.id),
             'flavours': [card_1.flavours.first().id]
         })
         self.assertEqual(response.status_code, 200)
@@ -609,6 +610,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         card_1.refresh_from_db()
         card_2.refresh_from_db()
         card_3.refresh_from_db()
-        self.assertTrue(card_1.due_time, '2022-01-20T12:17')
+        date_expected = datetime.strptime(due_date, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
+        self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
