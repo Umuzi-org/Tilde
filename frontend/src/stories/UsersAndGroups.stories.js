@@ -26,7 +26,7 @@ Primary.args = {
       name: "team1",
       oldestOpenPrTime: "2021-10-13T04:45:01Z",
       totalOpenPrs: 9,
-      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      oldestCardInReviewTime: "2021-10-22T00:23:03.678444Z",
       totalCardsInReview: 17,
     },
     2: {

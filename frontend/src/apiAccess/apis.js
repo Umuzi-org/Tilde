@@ -200,6 +200,14 @@ async function personallyAssignedAgileCardsPage({
   return { response, responseData };
 }
 
+async function userBurndownSnapshotsPage({ userId, page }) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+  const url = `${API_BASE_URL}/api/burndown_snap_shot/?limit=${limit}&offset=${offset}&user__id=${userId}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
 async function agileCardEntity({ cardId }) {
   let url = `${API_BASE_URL}/api/agile_card/${cardId}/`;
   const { response, responseData } = await fetchAndClean({ url });
@@ -231,7 +239,6 @@ async function repositoryEntity({ repositoryId }) {
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
-
 async function repositoryCommitsPage({ repositoryId, page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
@@ -363,38 +370,39 @@ async function activityLogDayCountsPage({
 }
 
 export default {
-  whoAmI,
-  logout,
-  authenticateWithOneTimeToken,
-  teamsPage,
-  teamEntity,
-  userEntity,
-  teamsSummaryStatsPage,
-  userDetailedStatsEntity,
-  recruitProjectsPage,
-  personallyAssignedAgileCardsPage,
-  recruitProjectEntity,
-  topicProgressEntity,
-  recruitProjectReviewsPage,
-  topicProgressReviewsPage,
-  repositoryEntity,
-  repositoryCommitsPage,
-  repositoryPullRequestsPage,
-  startProject,
-  requestReview,
-  cancelReviewRequest,
-  addReview,
-  startTopic,
-  stopTopic,
-  finishTopic,
-  setProjectLinkSubmission,
-  userActionsCardsCompletedPage,
-  cohortsPage,
-  cohortRecruits,
-  markWorkshopAttendance,
-  cancelWorkshopAttendance,
-  personallyAssignedCardSummariesPage,
-  personallyAssignedCardSummaryEntity,
-  agileCardEntity,
-  activityLogDayCountsPage,
+    whoAmI,
+    logout,
+    authenticateWithOneTimeToken,
+    teamsPage,
+    teamEntity,
+    userEntity,
+    teamsSummaryStatsPage,
+    userDetailedStatsEntity,
+    recruitProjectsPage,
+    personallyAssignedAgileCardsPage,
+    userBurndownSnapshotsPage,
+    recruitProjectEntity,
+    topicProgressEntity,
+    recruitProjectReviewsPage,
+    topicProgressReviewsPage,
+    repositoryEntity,
+    repositoryCommitsPage,
+    repositoryPullRequestsPage,
+    startProject,
+    requestReview,
+    cancelReviewRequest,
+    addReview,
+    startTopic,
+    stopTopic,
+    finishTopic,
+    setProjectLinkSubmission,
+    userActionsCardsCompletedPage,
+    cohortsPage,
+    cohortRecruits,
+    markWorkshopAttendance,
+    cancelWorkshopAttendance,
+    personallyAssignedCardSummariesPage,
+    personallyAssignedCardSummaryEntity,
+    agileCardEntity,
+    activityLogDayCountsPage,
 };
