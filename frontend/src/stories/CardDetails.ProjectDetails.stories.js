@@ -21,5 +21,4 @@ export const Primary = Template.bind({});
 Primary.args = {
   project: projectObject,
   reviews: [reviewObject],
-  reviewIds: [1],
 };
