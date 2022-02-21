@@ -1,5 +1,4 @@
-import { getMinimumAndMaximumValue } from "./utils";
-import { updateActivityLogDayCounts } from "./utils";
+import { getMinimumAndMaximumValue, updateActivityLogDayCounts } from "./utils";
 
 test("updateActivityLogDayCounts returns updated activityLogDayCounts with same dates", () => {
   const activityLogDayCounts = {
@@ -66,10 +65,15 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with same 
         PR_REVIEWED: 0,
       },
       {
+        date: "2021-07-18",
+        COMPETENCE_REVIEW_DONE: 0,
+        PR_REVIEWED: 0,
+      },
+      {
         date: "2021-07-19",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 0,
-      }
+      },
     ],
 
     26: [
@@ -94,10 +98,15 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with same 
         PR_REVIEWED: 1,
       },
       {
+        date: "2021-07-18",
+        COMPETENCE_REVIEW_DONE: 0,
+        PR_REVIEWED: 0,
+      },
+      {
         date: "2021-07-19",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
-      }
+      },
     ],
 
     132: [
@@ -122,14 +131,21 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with same 
         PR_REVIEWED: 0,
       },
       {
+        date: "2021-07-18",
+        COMPETENCE_REVIEW_DONE: 0,
+        PR_REVIEWED: 0,
+      },
+      {
         date: "2021-07-19",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
-      }
+      },
     ],
-  }
+  };
 
-  expect(updateActivityLogDayCounts({activityLogDayCounts})).toEqual(sampleUpdatedActivityLogDayCounts);
+  expect(updateActivityLogDayCounts({ activityLogDayCounts })).toEqual(
+    sampleUpdatedActivityLogDayCounts
+  );
 });
 
 test("getMinimumAndMaximumValue returns the correct minimum and maximum values", () => {

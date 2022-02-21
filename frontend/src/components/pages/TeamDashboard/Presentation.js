@@ -23,9 +23,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import { getMinimumAndMaximumValue } from "./utils";
-
-import { updateActivityLogDayCounts } from "./utils";
+import { getMinimumAndMaximumValue, updateActivityLogDayCounts } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
