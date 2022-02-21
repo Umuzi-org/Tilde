@@ -6,10 +6,21 @@ export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
     });
   }
 
-  const uniqueDatesArr = Array.from(new Set(datesArray));
+  const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
+  const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
+  const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
+  const allDatesArr = [];
+
+  while (firstDate <= lastDate) {
+    allDatesArr.push(new Date(firstDate).toISOString().split("T")[0]);
+    firstDate.setDate(firstDate.getDate() + 1);
+  }
 
   for (let i in activityLogDayCounts) {
-    for (let uniqueDate of uniqueDatesArr) {
+    for (let uniqueDate of allDatesArr) {
       if (
         !activityLogDayCounts[i].some(
           (activityLogDayCount) => activityLogDayCount.date === uniqueDate
