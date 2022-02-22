@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-import { trimLongReview, cleanMarkdown } from "./utils";
+import { cleanMarkdown } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   iconAlignment: {
     position: "absolute",
-    right: "10px",
+    right: "18px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   readMoreStyle: {
     textTransform: "none",
+    paddingRight: "5px",
   },
   footer: {
     paddingTop: 0,
@@ -79,7 +80,11 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {review.comments.includes("\n") ? (
+        {/* 
+            217 is the approximate max number of chracters that can be visible before the need for
+            a scroll. As long as a review is longer than that, show "...read more"
+        */}
+        {review.comments.length > 220 ? (
           <div>
             <Button
               type="button"
@@ -92,11 +97,13 @@ const Review = ({ review }) => {
               </Typography>
             </Button>
             <Typography noWrap>
-              {cleanMarkdown(review.comments)}
+              {cleanMarkdown(review.comments.trim())}
             </Typography>
           </div>
         ) : (
-          <React.Fragment />
+          <Typography>
+            {review.comments}
+          </Typography>
         )}
       </CardContent>
       <IconButton disabled>

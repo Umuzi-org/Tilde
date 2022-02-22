@@ -1,12 +1,4 @@
-import { trimLongReview, cleanMarkdown } from "./utils";
-
-test("A long review should be shortend", () => {
-  const longReview =
-    "This is a very decriptive, long code review\nthat can become hard to read.\n We need to shorten it";
-  expect(trimLongReview(longReview)).toBe(
-    "This is a very decriptive, long code review that can become hard to read. We need to shorten it"
-  );
-});
+import { cleanMarkdown } from "./utils";
 
 test("A review with markdown should be cleaned", () => {
   const reviewWithMarkup =
@@ -21,5 +13,13 @@ test("Some special characters should be ignored", () => {
     "This! \n is a review with common english puntuation.";
   expect(cleanMarkdown(reviewWithSpecialChars)).toBe(
     "This! is a review with common english puntuation."
+  );
+});
+
+test("Some special characters should be ignored", () => {
+  const reviewWithSpecialChars =
+    "This \n is a review with common english puntuation. We want to \nclean it now";
+  expect(cleanMarkdown(reviewWithSpecialChars)).toBe(
+    "This is a review with common english puntuation. We want to clean it now"
   );
 });

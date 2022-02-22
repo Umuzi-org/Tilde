@@ -1,7 +1,3 @@
-export const trimLongReview = (review) => {
-  return review.replace("\n", " ").split("\n").join(" ").replace("  ", " ");
-};
-
 /*
   The reason markdown is removed from a short review is because we want to keep
   the "summary review" of a long review clean an streamlined (like gmail) - so we 
@@ -11,6 +7,6 @@ export const trimLongReview = (review) => {
 */
  
 export const cleanMarkdown = (review) => {
-  const removeMarkdown = review.replace(/[^A-Za-z;!.,:]/g, " ");
-  return removeMarkdown.replace("   ", " ").split("  ").join(" ");
+  const ignore = review.replace(/[^A-Za-z;!.,:]/gi, " ");
+  return ignore.replace("   ", " ").split("  ").join(" ");
 }

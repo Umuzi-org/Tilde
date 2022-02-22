@@ -1,39 +1,33 @@
 import React from "react";
 
 import Markdown from "react-markdown";
+import Box from "@material-ui/core/Box";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
-import Divider from "@material-ui/core/Divider";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
-import { Button, CardContent, CardHeader, Typography } from "@material-ui/core";
+import {
+  Button,
+  CardActions,
+  CardContent,
+  Typography,
+} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    position: "fixed",
-    backgroundColor: "white",
-    margin: "0px",
-    width: "80%",
-  },
   cardStyle: {
     diplay: "block",
     height: "90vh",
     width: "90vw",
-    overflow: "scroll",
     position: "relative",
-    maxWidth: "90%",
-    overflowX: 'hidden'
-  },
-  cardContentStyle: {
-    margin: 0,
-    padding: 0,
     maxWidth: "90%",
   },
   exitIcon: {
     position: "absolute",
-    top: "25px",
-    right: "10px",
+    top: "5px",
+    right: "5px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
@@ -46,17 +40,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "100%",
     fontWeight: "bold",
   },
-  reviewStyle: {
-    width: "100%",
-    overflow: "hidden",
-    padding: 10,
+  // reviewStyle: {
+  //   width: "100%",
+  //   padding: "12",
+  // },
+  CardContent: {
+    fontSize: "11px",
+    padding: "20px",
+    paddingRight: "30px",
+    overflowY: "scroll",
+    overflowX: "hidden",
+    height: "66vh",
   },
-  horizontalDivider: {
-    paddingTop: "20px",
+  reviewPosition: {
+    paddingLeft: "30px",
   },
-  contentStart: {
-    paddingTop: "125px"
-  }
 }));
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
@@ -68,49 +66,55 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
   return (
     <Modal open={openReviewPopUp} onClose={closeModal}>
       <Card className={classes.cardStyle}>
-        <CardContent className={classes.cardContentStyle}>
-          <div>
-            <CardHeader
-              className={classes.root}
-              title={
-                <Typography className={classes.timefont}>
-                  Date:{" "}
-                  {timestamp.toLocaleDateString() +
-                    " " +
-                    timestamp.toLocaleTimeString()}
-                  <Button className={classes.exitIcon} onClick={closeModal}>
-                    <CloseIcon fontSize="medium" />
-                  </Button>
-                </Typography>
-              }
-              subheader={
-                <Typography>
-                  <div>
-                    Reviewer:{" "}
-                    <span className={classes.reviewerEmailStyle}>
-                      {review.reviewerUserEmail}⤵
-                    </span>
-                  </div>
-                  <div>
-                    Status:{" "}
+        <Box clone pt={2} pr={1} pb={1} pl={2}>
+          <Paper elevation={3}>
+            <div>
+              <Grid container spacing={2} alignItems="center" wrap="nowrap">
+                <Grid item>
+                  <Typography>
                     <span>
-                      <ReviewStatus status={review.status} />
+                      {" "}
+                      <Typography className={classes.timefont}>
+                        Date:{" "}
+                        {timestamp.toLocaleDateString() +
+                          " " +
+                          timestamp.toLocaleTimeString()}
+                        <Button
+                          className={classes.exitIcon}
+                          onClick={closeModal}
+                        >
+                          <CloseIcon fontSize="small" />
+                        </Button>
+                      </Typography>
                     </span>
-                    <div className={classes.horizontalDivider}>
-                      <Divider variant="middle" />
+                    <div className={classes.reviewerEmailStyle}>
+                      {review.reviewerUserEmail}
                     </div>
-                  </div>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </div>
+          </Paper>
+        </Box>
+        <Box>
+          <div>
+            <CardContent
+              className={classes.CardContent}
+              children={
+                <Typography className={classes.reviewPosition}>
+                  <Markdown children={review.comments} />
                 </Typography>
               }
             />
-
-            <div className={classes.reviewStyle}>
-              <Typography className={classes.contentStart}>
-                <Markdown children={review.comments} />
-              </Typography>
-            </div>
           </div>
-        </CardContent>
+        </Box>
+        <Box>
+          <div>
+            <CardActions>
+              <ReviewStatus status={review.status} />
+            </CardActions>
+          </div>
+        </Box>
       </Card>
     </Modal>
   );
