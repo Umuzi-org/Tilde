@@ -144,7 +144,7 @@ const UserCard = ({ email, user }) => {
         className={classes.title}
         label="View"
       />
-      <div>&nbsp;</div>
+        <div>&nbsp;</div>
     </Paper>
   );
 };
