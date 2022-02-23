@@ -74,7 +74,7 @@ export async function mark({ contentItemId, repoUrl, flavours }) {
         config.marker
       }. This probably means that the configuration repo is misconfigured. Available markers are: ${Object.keys(
         markers
-      )}`,
+      )}. You can find these in: lib/markers/index.mjs`,
     };
 
   const { perfectProjectPath } = config;
