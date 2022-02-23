@@ -34,7 +34,7 @@ export async function runMarkerScript({
   return reviewOutput;
 }
 
-export function getTagInnertext(text, tagName) {
+export function getTagInnerText(text, tagName) {
   const openTag = `<${tagName}>`;
   const closeTag = `</${tagName}>`;
 

@@ -1,4 +1,4 @@
-import { runMarkerScript, getTagInnertext } from "../../utils.mjs";
+import { runMarkerScript, getTagInnerText } from "../../utils.mjs";
 import { resolve } from "path";
 import { STATUS_OK, STATUS_ERROR } from "../../../consts.mjs";
 
@@ -11,7 +11,7 @@ export async function markProject({ fullPerfectProjectPath, fullClonePath }) {
 
   const reviewStdOutput = reviewScriptAllOutput.stdout;
 
-  const miscErrors = getTagInnertext(reviewStdOutput, "error");
+  const miscErrors = getTagInnerText(reviewStdOutput, "error");
   if (miscErrors.length > 0) {
     return {
       status: STATUS_ERROR,
@@ -20,7 +20,7 @@ export async function markProject({ fullPerfectProjectPath, fullClonePath }) {
     };
   }
 
-  const theirTestOutput = getTagInnertext(reviewStdOutput, "their-tests");
+  const theirTestOutput = getTagInnerText(reviewStdOutput, "their-tests");
 
   const theirErrors = lookForPytestTestProblems(theirTestOutput);
 
@@ -32,7 +32,7 @@ export async function markProject({ fullPerfectProjectPath, fullClonePath }) {
     };
   }
 
-  const ourTestOutput = getTagInnertext(reviewStdOutput, "our-tests");
+  const ourTestOutput = getTagInnerText(reviewStdOutput, "our-tests");
   const ourErrors = lookForPytestTestProblems(ourTestOutput);
 
   if (ourErrors.length > 0) {
