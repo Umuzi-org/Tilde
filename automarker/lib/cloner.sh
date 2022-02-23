@@ -6,11 +6,7 @@
 # DIR_NAME = the name of the thing we are cloning to
 
 FULL_PATH="$CLONE_PATH/$DIR_NAME"
-HTTP_STATUS=$(curl -I ${REPO_URL:0:-4} | head -n 1)
 
-if [[ $HTTP_STATUS == *"404"* ]]; then
-  exit 404
-fi
 
 if [ ! -d "$CLONE_PATH" ]; then
   mkdir $CLONE_PATH
@@ -22,5 +18,8 @@ if [ -d "$FULL_PATH" ]; then
   git pull
 else
   git clone $REPO_URL $FULL_PATH
-  cd $FULL_PATH
+  if [  -d "$FULL_PATH" ]; then
+    cd $FULL_PATH
+  fi
 fi
+

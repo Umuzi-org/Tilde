@@ -4,7 +4,7 @@
   "description": "One cool thing about having a standard set of fundamental projects is that we can have a standard set of tests to check if they work properly.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start:dev": "nodemon app.mjs",
     "start": "app.js"
   },
@@ -15,5 +15,11 @@
     "express": "^4.17.2",
     "nodemon": "^2.0.15",
     "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "babel-jest": "^27.5.1",
+    "jest": "^27.5.1"
   }
 }
