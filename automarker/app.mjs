@@ -25,14 +25,14 @@ app.post("/mark-project", async function (req, res) {
     return;
   }
 
-  // const cloneStatus = await clone({ repoUrl });
+  const cloneStatus = await clone({ repoUrl });
 
-  // if (cloneStatus.status === STATUS_ERROR) {
-  //   res.json(cloneStatus);
-  //   return;
-  // } else if (cloneStatus.status !== STATUS_OK) {
-  //   throw Error(`Unknown status: ${cloneStatus}`);
-  // }
+  if (cloneStatus.status === STATUS_ERROR) {
+    res.json(cloneStatus);
+    return;
+  } else if (cloneStatus.status !== STATUS_OK) {
+    throw Error(`Unknown status: ${cloneStatus}`);
+  }
 
   res.json(
     await mark({

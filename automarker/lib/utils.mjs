@@ -31,11 +31,17 @@ export async function runMarkerScript({
     throw new Error(`${markerScriptPath} Permission denied :/`);
   }
 
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-  //   console.log(reviewOutput.stdout);
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  return reviewOutput;
+}
 
-  return reviewOutput.stdout;
+export function getTagInnertext(text, tagName) {
+  const openTag = `<${tagName}>`;
+  const closeTag = `</${tagName}>`;
+
+  if (text.indexOf(openTag) == -1) return "";
+
+  return text.slice(
+    text.indexOf(openTag) + openTag.length,
+    text.indexOf(closeTag)
+  );
 }
