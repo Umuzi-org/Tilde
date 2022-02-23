@@ -31,13 +31,13 @@ curl http://localhost:1313/health-check
 
 In order to review code, the automarker will need to clone that code. It expects keys to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
 
-To review code, make a json POST request to the review-code endpoint. For example:
+To review code, make a json POST request to the mark-project endpoint. For example:
 
 ```
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/something.git","contentItemId":123, "flavours": ["python", "pytest"]}' \
-http://localhost:1313/review-code
+http://localhost:1313/mark-project
 
 ```

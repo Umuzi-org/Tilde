@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import { STATUS_ERROR, STATUS_OK } from "./consts.mjs";
 import { PORT } from "./env.mjs";
-import { clone } from "./lib/index.mjs";
+import { clone, mark } from "./lib/index.mjs";
 
 const app = express();
 app.use(express.json());
@@ -12,7 +12,7 @@ app.use(cors());
 
 app.get("/health-check", (req, res) => res.json({ status: STATUS_OK }));
 
-app.post("/review-code", async function (req, res) {
+app.post("/mark-project", async function (req, res) {
   const { repoUrl, flavours, contentItemId } = req.body;
 
   if (!(repoUrl && flavours && contentItemId)) {
@@ -25,25 +25,22 @@ app.post("/review-code", async function (req, res) {
     return;
   }
 
-  const cloneStatus = await clone({ repoUrl });
+  // const cloneStatus = await clone({ repoUrl });
 
-  if (cloneStatus.status === STATUS_ERROR) {
-    res.json(cloneStatus);
-    return;
-  } else if (cloneStatus.status !== STATUS_OK) {
-    throw Error(`Unknown status: ${cloneStatus}`);
-  }
+  // if (cloneStatus.status === STATUS_ERROR) {
+  //   res.json(cloneStatus);
+  //   return;
+  // } else if (cloneStatus.status !== STATUS_OK) {
+  //   throw Error(`Unknown status: ${cloneStatus}`);
+  // }
+
+  res.json(
+    await mark({
+      contentItemId,
+      repoUrl,
+      flavours,
+    })
+  );
 });
 
-//   const contentItemIdClean = contentItemId.replace(/^\/|\/$/g, "");
-
-//   res.json(
-//     await review({
-//       contentItemId: contentItemIdClean,
-//       repoUrl,
-//       flavours,
-//     })
-//   );
-// });
-
-app.listen(PORT, () => console.log(`Automarker listening on port ${PORT}!`));
+app.listen(PORT, () => console.log(`Auto-marker listening on port ${PORT}!`));
