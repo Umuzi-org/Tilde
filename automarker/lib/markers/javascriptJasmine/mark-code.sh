@@ -1,5 +1,7 @@
 #!/bin/bash
 
+TEST_RUNNER_PATH=$PWD/lib/markers/javascriptJasmine/testRunner.js
+
 cd $CLONE_PATH
 
 
@@ -8,19 +10,21 @@ if [ -d "node_modules" ]; then
     exit 1
 fi
 
-rm package-lock.json
 npm install
-npm i jasmine-reporters
 
 if [ ! -d "node_modules" ]; then
     echo "<error>npm install didn't work</error>"
     exit 1
 fi
 
+cp $TEST_RUNNER_PATH .
+
+
 echo "<their-tests>"
 
-npm run test 2>&1
-# npx jasmine 2>&1
+node testRunner.js
+cat test_output
+
 
 echo "</their-tests>"
 
@@ -29,8 +33,8 @@ cp -r $REFERENCE_PROJECT_PATH/spec .
 
 echo "<our-tests>"
 
-# npm run test 2>&1
-npx jasmine  2>&1
+node testRunner.js
+cat test_output
 
 echo "</our-tests>"
 
