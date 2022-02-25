@@ -3,11 +3,12 @@ from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from . import factories
 from core.tests import factories as core_factories
-from datetime import datetime, timedelta
+from datetime import timedelta
 from curriculum_tracking.models import ContentItem, RecruitProjectReview
-from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from . import factories
@@ -559,9 +560,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         self.assertEqual(response.status_code, 200)
         card.refresh_from_db()
-        date_expected = datetime.strptime(due_date, "%Y-%m-%dT%H:%M").replace(
-            tzinfo=timezone.utc
-        )
+        date_expected = parse_datetime(due_date).replace(tzinfo=timezone.utc)
         self.assertEqual(card.due_time, date_expected)
 
     def test_bulk_set_due_date_happened_for_every_card_with_the_same_content_item_for_the_team(
@@ -610,9 +609,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         for card in team_cards:
             card.refresh_from_db()
-            date_expected = datetime.strptime(due_date, "%Y-%m-%dT%H:%M").replace(
-                tzinfo=timezone.utc
-            )
+            date_expected = parse_datetime(due_date).replace(tzinfo=timezone.utc)
             self.assertTrue(card.due_time, date_expected)
 
         self.assertIsNone(card_3.due_time)
@@ -657,9 +654,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         card_1.refresh_from_db()
         card_2.refresh_from_db()
         card_3.refresh_from_db()
-        date_expected = datetime.strptime(due_date, "%Y-%m-%dT%H:%M").replace(
-            tzinfo=timezone.utc
-        )
+        date_expected = parse_datetime(due_date).replace(tzinfo=timezone.utc)
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
