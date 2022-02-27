@@ -9,6 +9,7 @@ import {
   MANAGE_CARDS,
   REVIEW_CARDS,
   TRUSTED_REVIEWER,
+  VIEW_ONLY,
 } from "../../../../../constants";
 
 export function getTeamPermissions({ authUser, viewedUser }) {
@@ -33,15 +34,15 @@ export function getTeamPermissions({ authUser, viewedUser }) {
   return result;
 }
 
-function getShowAddReviewButton({ card, permissions, isReviewer }) {
+function getShowAddReviewButton({ card, permissions, isReviewer}) {
   const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-  if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1) return true;
-  if (
-    (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER]) &&
-    REVIEW_STATUSES.indexOf(card.status) !== -1
-  )
-    return true;
-
+  if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1){
+    if (
+      (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER])
+    )return true;
+    if ((permissions[VIEW_ONLY])
+      ) return false;
+  }
   return false;
 }
 
@@ -76,7 +77,7 @@ export function showButtons({ card, authUser, viewedUser }) {
   const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
   const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
   const permissions = getTeamPermissions({ authUser, viewedUser });
-
+// console.log(card.reviewers.indexOf(authUser.userId))
   let reviewRequestButtons;
   if (card.contentTypeNice === "project") {
     // PROJECT CARDS
@@ -147,7 +148,6 @@ export function showButtons({ card, authUser, viewedUser }) {
   return {
     showButtonStartProject,
     showButtonAddReview,
-
     showButtonRequestReview,
     showButtonCancelReviewRequest,
     showButtonStartTopic,
