@@ -1,4 +1,4 @@
-# Automarker
+# Auto-marker
 
 One cool thing about having a standard set of fundamental projects is that we can have a standard set of tests to check if they work properly.
 
@@ -29,7 +29,13 @@ curl http://localhost:1313/health-check
 
 ## reviewing code
 
-In order to review code, the automarker will need to clone that code. It expects keys to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
+### The setup
+
+In order to review code, you will need to have cloned the automarker configuration repo and put it somewhere sensible. Set `CONFIGURATION_REPO_PATH` to point to the configuration repo.
+
+The auto-marker will need to clone that code you are marking. It expects keys to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
+
+### The mark project endpoint
 
 To review code, make a json POST request to the mark-project endpoint. For example:
 
@@ -37,7 +43,48 @@ To review code, make a json POST request to the mark-project endpoint. For examp
 curl \
 --request POST \
 --header "Content-Type: application/json" \
---data '{"repoUrl":"git@github.com:Umuzi-org/something.git","contentItemId":123, "flavours": ["python", "pytest"]}' \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["python", "pytest"]}' \
 http://localhost:1313/mark-project
 
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-js.git","contentItemId":273, "flavours": ["javascript"]}' \
+http://localhost:1313/mark-project
+
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-java.git","contentItemId":273, "flavours": ["java"]}' \
+http://localhost:1313/mark-project
+
+
+
 ```
+
+- The repo url format needs to be: `git@github.com:{things}.git`
+- The content item id should be a number
+- The flavours should exactly match the project you are reviewing. The order doesn't matter.
+
+## Security
+
+Ok...so this is a bit sketchy. Please note that if you clone a project to mark, that project can execute arbitrary code on your computer.
+
+This is sortof ok because you should really only be using this to review code that is in the review column on Tilde. That means that PRs have been seen, reviewed and merged by people who are allocated as reviewers.
+
+That said, this is still a bit sketchy.
+
+When running this application in a production environment then the automarker will be in a docker container that is isolated through use of a cloud service provider's own isolation mechanisms. Executing arbitrary code within the container is still dangerous in that github keys can be stolen. Github keys will be the only sensitive piece of information known to the image.
+
+### How will we overcome this?
+
+Probably by having multiple containers with a shared volume.
+
+Container 1 will only be in charge of cloning repos. It will need a github key to do this.
+
+Container 2 will have access to the clone destination and nothing else. It will be in charge of actually running the tests.
+
+## Future work

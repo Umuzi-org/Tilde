@@ -84,15 +84,15 @@ class PullRequest(models.Model, Mixins):
                 pull_request_data["created_at"],
             ),
             "updated_at": pull_request_data["updated_at"]
-                          and strp_github_standard_time(
+            and strp_github_standard_time(
                 pull_request_data["updated_at"],
             ),
             "closed_at": pull_request_data["closed_at"]
-                         and strp_github_standard_time(
+            and strp_github_standard_time(
                 pull_request_data["closed_at"],
             ),
             "merged_at": pull_request_data["merged_at"]
-                         and strp_github_standard_time(
+            and strp_github_standard_time(
                 pull_request_data["merged_at"],
             ),
         }
@@ -108,7 +108,9 @@ class PullRequest(models.Model, Mixins):
 
 class PullRequestReview(models.Model, Mixins):
     html_url = models.CharField(max_length=255, unique=True)
-    pull_request = models.ForeignKey(PullRequest, on_delete=models.CASCADE)
+    pull_request = models.ForeignKey(
+        PullRequest, on_delete=models.CASCADE, related_name="reviews"
+    )
     author_github_name = models.CharField(max_length=100)
 
     submitted_at = models.DateTimeField(null=True, blank=True)
@@ -130,7 +132,7 @@ class PullRequestReview(models.Model, Mixins):
             "commit_id": review_data["commit_id"],
             "state": review_data["state"],
             "submitted_at": review_data.get("submitted_at")
-                            and strp_github_standard_time(review_data["submitted_at"]),
+            and strp_github_standard_time(review_data["submitted_at"]),
             "pull_request": pull_request,
             "author_github_name": github_name,
             "user": User.objects.filter(
@@ -178,7 +180,7 @@ class Push(models.Model, Mixins):
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
 
-        if request_body["head_commit"] is None and bool(request_body['pusher']):
+        if request_body["head_commit"] is None and bool(request_body["pusher"]):
             return None
         else:
             head_commit = request_body["head_commit"]
