@@ -138,6 +138,11 @@ router.register(
     "activitylogdaycount",
 )
 
+router.register(
+    r"activity_log_event_type",
+    activity_log_api_views.ActivityLogDayCountViewset,
+    "activitylogeventtype",
+)
 
 # router.register(
 #     r"agile_card_add_review",
