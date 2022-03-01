@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
     width: "275px",
   },
   buttonStyle: {
-    width: "300px",
     margin: theme.spacing(1),
     textTransform: "none",
     fontWeight: 600,
