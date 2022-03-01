@@ -39,7 +39,7 @@ export default () => {
   return (
     <form className={classes.root}>
       <Typography variant="h5" style={{ fontWeight: 600 }}>
-        Reset Password
+        Forgot Password
       </Typography>
 
       <Alert severity="info" className={classes.alertStyle}>
