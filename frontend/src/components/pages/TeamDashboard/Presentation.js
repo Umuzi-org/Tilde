@@ -23,7 +23,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import { getMinimumAndMaximumValue } from "./utils";
+import { getMinimumAndMaximumValue, updateActivityLogDayCounts } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,6 +50,7 @@ const ReviewLineChart = ({ data, minCount, maxCount }) => {
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
       <YAxis domain={[minCount, maxCount]} />
+
       <Tooltip />
       <Line
         type="monotone"
@@ -67,10 +68,16 @@ const ReviewLineChart = ({ data, minCount, maxCount }) => {
 };
 
 export default ({ team, activityLogDayCounts }) => {
-  const {minValue, maxValue} = getMinimumAndMaximumValue({
+  const { minValue, maxValue } = getMinimumAndMaximumValue({
     activityLogDayCounts,
   });
+
+  const updatedActivityLogDayCounts = updateActivityLogDayCounts({
+    activityLogDayCounts,
+  });
+
   const classes = useStyles();
+
   if (team)
     return (
       <React.Fragment>
@@ -87,7 +94,7 @@ export default ({ team, activityLogDayCounts }) => {
                       <TableCell>
                         {activityLogDayCounts ? (
                           <ReviewLineChart
-                            data={activityLogDayCounts[member.userId]}
+                            data={updatedActivityLogDayCounts[member.userId]}
                             minCount={minValue}
                             maxCount={maxValue}
                           ></ReviewLineChart>
