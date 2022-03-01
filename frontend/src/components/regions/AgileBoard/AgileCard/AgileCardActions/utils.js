@@ -34,15 +34,18 @@ export function getTeamPermissions({ authUser, viewedUser }) {
   return result;
 }
 
-function getShowAddReviewButton({ card, permissions, isReviewer}) {
+function getShowAddReviewButton({ card, permissions, isReviewer }) {
   const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-  if (REVIEW_STATUSES.indexOf(card.status) !== -1){
-    if(isReviewer) return true
-    if (
-      (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER])
-    )return true;
-    if (permissions[VIEW_ONLY]) return false;
+  if(isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1){
+    if(permissions[VIEW_ONLY]) return false;
+    return true
   }
+  if (
+    (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER]) &&
+    REVIEW_STATUSES.indexOf(card.status) !== -1
+  )
+    return true;
+ 
   return false;
 }
 
