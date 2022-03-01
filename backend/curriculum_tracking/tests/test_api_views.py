@@ -162,94 +162,82 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         progress.refresh_from_db()
         self.assertEqual(progress.due_time.strftime("%c"), due_time_2.strftime("%c"))
 
-    def test_request_review_permissions(self):
-
-        # test using superuser
-        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
-        content_item = factories.ProjectContentItemFactory(
+    def setUp(self):
+        # breakpoint()
+        self.content_item_test = factories.ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
-        card = factories.AgileCardFactory(
+        self.card_1 = factories.AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item_test
+            ),
+            content_item=self.content_item_test,
         )
-        self.login(superuser)
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
-        response = self.client.post(request_review_url)
-
-        self.assertEqual(response.status_code, 200)
-
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_REVIEW)
-
-        # test using the card's assignee
-        content_item = factories.ProjectContentItemFactory(
-            project_submission_type=ContentItem.LINK, template_repo=None
-        )
-        card = factories.AgileCardFactory(
+        self.card_2 = factories.AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item_test
+            ),
+            content_item=self.content_item_test,
         )
-        self.login(card.assignees.first())
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
-        response = self.client.post(request_review_url)
 
-        self.assertEqual(response.status_code, 200)
+        self.card_1.start_project()
+        self.card_2.start_project()
 
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
-        # test using non superuser staff
+    def test_request_review_permissions_non_superuser_staff(self):
+
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
-        content_item = factories.ProjectContentItemFactory(
-            project_submission_type=ContentItem.LINK, template_repo=None
-        )
-        card = factories.AgileCardFactory(
-            status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
-        )
         self.login(staff_user)
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
 
-        # test using not the cards assignee
+    def test_request_review_permissions_non_assignee(self):
+
         recruit_user_non_card_assignee = factories.UserFactory(
             is_superuser=False, is_staff=False
         )
-        content_item = factories.ProjectContentItemFactory(
-            project_submission_type=ContentItem.LINK, template_repo=None
-        )
-        card = factories.AgileCardFactory(
-            status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
-        )
         self.login(recruit_user_non_card_assignee)
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+
+    def test_request_review_permissions_superuser(self):
+        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
+        self.login(superuser)
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+
+    def test_request_review_permissions_assignee(self):
+
+        self.login(self.card_2.assignees.first())
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
     def test_list_assignees_permissions_on_list(self):
 
