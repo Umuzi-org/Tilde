@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -7,9 +8,9 @@ import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
+import ForgotPassword from "./ForgotPassword"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,10 +84,12 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           }
           label="Remember me"
         />
-
-        <Link className={classes.linkStyles} underline="always" href="#">
-          Forgot Password?
-        </Link>
+        <Router>
+          <Link to="/forgotPassword" className={classes.linkStyles}>
+            Forgot Password?
+          </Link>
+          <Route exact path="/forgotPassword" component={ForgotPassword} />
+        </Router>
       </Box>
       <div>
         <Button
