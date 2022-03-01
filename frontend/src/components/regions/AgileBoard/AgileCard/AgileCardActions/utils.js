@@ -36,12 +36,12 @@ export function getTeamPermissions({ authUser, viewedUser }) {
 
 function getShowAddReviewButton({ card, permissions, isReviewer}) {
   const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-  if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1){
+  if (REVIEW_STATUSES.indexOf(card.status) !== -1){
+    if(isReviewer) return true
     if (
       (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER])
     )return true;
-    if ((permissions[VIEW_ONLY])
-      ) return false;
+    if (permissions[VIEW_ONLY]) return false;
   }
   return false;
 }
@@ -77,7 +77,7 @@ export function showButtons({ card, authUser, viewedUser }) {
   const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
   const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
   const permissions = getTeamPermissions({ authUser, viewedUser });
-// console.log(card.reviewers.indexOf(authUser.userId))
+
   let reviewRequestButtons;
   if (card.contentTypeNice === "project") {
     // PROJECT CARDS
