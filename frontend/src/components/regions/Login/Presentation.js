@@ -104,11 +104,8 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         </Divider>
       </Box>
       <div>
-        <Button className={classes.buttonStyle} />
-        <Button type="submit" variant="contained" color="primary">
-          Login
-        </Button>
         <Button
+          className={classes.buttonStyle}
           type="submit"
           variant="contained"
           color="primary"
