@@ -97,12 +97,12 @@ const Review = ({ review }) => {
               </Typography>
             </Button>
             <Typography noWrap>
-              {cleanMarkdown(review.comments.trim())}
+              {cleanMarkdown(review.comments)}
             </Typography>
           </div>
         ) : (
           <Typography>
-            {review.comments}
+            {cleanMarkdown(review.comments)}
           </Typography>
         )}
       </CardContent>
