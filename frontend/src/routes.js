@@ -7,14 +7,33 @@ import UserDashboard from "./components/regions/UserDashboard";
 import CardDetails from "./components/regions/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
+import LoginForm from "./components/regions/Login";
+import ForgotPassword from "./components/regions/Login/ForgotPassword";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
 import TeamNavBar from "./components/regions/TeamNavBar";
+
 const exact = true;
 
 export const routes = {
+  loginRedirect: {
+    route: {
+      exact,
+      path: "/login",
+      component: LoginForm,
+    },
+  },
+
+  forgotPasswordRedirect: {
+    route: {
+      exact,
+      path: "/forgotPassword",
+      component: ForgotPassword,
+    },
+  },
+
   homeRedirect: {
     route: {
       exact,

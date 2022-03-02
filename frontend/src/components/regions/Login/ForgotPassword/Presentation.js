@@ -1,11 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
-import LoginForm from "../../Login";
+import { routes } from "../../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,18 +51,16 @@ export default () => {
       <TextField label="Email" variant="outlined" type="email" required />
 
       <div>
-        <Router>
+        <Router to={routes.loginRedirect.route.path}>
           <Button
             className={classes.buttonStyle}
             type="submit"
             variant="contained"
             color="secondary"
             component={Link}
-            to="/login"
           >
             back
           </Button>
-          <Route exact path="/login" component={LoginForm} />
         </Router>
         <Button
           className={classes.buttonStyle}
