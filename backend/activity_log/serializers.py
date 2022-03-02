@@ -29,12 +29,12 @@ class ActivityLogDayCountSerializer(serializers.Serializer):
 
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EventType
+        model = models.EventType
 
 
 class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = LogEntry
+        model = models.LogEntry
 
 
 class ActivityLogEventTypeSerializer(serializers.Serializer):
@@ -47,7 +47,7 @@ class ActivityLogEventTypeSerializer(serializers.Serializer):
     
     id = serializers.SerializerMethodField("get_id")
     event_type = EventTypeSerializer(read_only=True, many=True)
-    activity_log = ArticleSerializer(read_only=True, many=True)
+    activity_log = LogEntrySerializer(read_only=True, many=True)
 
     def get_id(self, instance):
         result = f"timestamp={str(instance['timestamp'])}"
