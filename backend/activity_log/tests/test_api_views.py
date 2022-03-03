@@ -58,3 +58,9 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
 
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.today.date()))
+
+
+class TestActivityLogEventTypeViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "activitylogdaycount-list"
+    SUPPRESS_TEST_GET_LIST = True
+    SUPPRESS_TEST_POST_TO_CREATE = True

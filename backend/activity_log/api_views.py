@@ -48,7 +48,7 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         return query
 
 
-class ActivityLogViewSet(viewsets.ModelViewSet):
+class ActivityLogEventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogEventTypeSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["event_type", "actor_user", "effected_user"]
