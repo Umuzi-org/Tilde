@@ -61,6 +61,21 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
 
 
 class TestActivityLogEventTypeViewSet(APITestCase, APITestCaseMixin):
-    LIST_URL_NAME = "activitylogdaycount-list"
+    LIST_URL_NAME = "activitylogeventtype-list"
     SUPPRESS_TEST_GET_LIST = True
     SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def setUp(self):
+        self.today = timezone.now()
+
+        self.entry1 = factories.EventTypeFactory()
+        self.entry1 = factories.LogEntryFactory()
+        self.entry1.timestamp = self.today
+        self.entry1.save()
+
+        self.entry2 = factories.EventTypeFactory()
+        self.entry2 = factories.LogEntryFactory()
+        self.entry2.timestamp = self.today
+        self.entry2.save()
+
+        
