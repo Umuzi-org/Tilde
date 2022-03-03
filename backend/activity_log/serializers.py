@@ -4,11 +4,7 @@ from rest_framework import serializers
 
 class ActivityLogDayCountSerializer(serializers.Serializer):
     class Meta:
-        fields = [
-            "id",
-            "date",
-            "total",
-        ]
+        fields = ["id", "date", "total"]
 
     id = serializers.SerializerMethodField("get_id")
     date = serializers.SerializerMethodField("get_date")
@@ -39,12 +35,8 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
 class ActivityLogEventTypeSerializer(serializers.Serializer):
     class Meta:
-        fields = [
-            "id",
-            "event_type",
-            "timestamp"
-        ]
-    
+        fields = ["id"]
+
     id = serializers.SerializerMethodField("get_id")
     event_type = EventTypeSerializer(read_only=True, many=True)
     activity_log = LogEntrySerializer(read_only=True, many=True)
@@ -54,3 +46,6 @@ class ActivityLogEventTypeSerializer(serializers.Serializer):
         if instance["filters"]:
             return f"{result}&{instance['filters']}"
         return result
+
+    def get_timestamp(self, instance):
+        return str(instance["timestamp"])
