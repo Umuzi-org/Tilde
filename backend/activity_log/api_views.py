@@ -48,17 +48,9 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         return query
 
 
-# class ActivityLogViewSet TODO
-# a normal model viewset allowing list and retrieve actions
-# default order = -timestamp
-# filter by users, event type
-
-#can be accsesd by any user
-
 class ActivityLogViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogEventTypeSerializer
     filter_backends = [DjangoFilterBackend]
-    # filter by users, event type
     filterset_fields = ["event_type", "actor_user", "effected_user"]
 
     permission_classes = [
@@ -83,13 +75,9 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
         query = models.LogEntry.objects.annotate(
             date=Cast("timestamp", output_field=DateField())
         )
-        query = query.values("timestamp").annotate(total=Count("timestamp"))
-        # default order = -timestamp
         query = query.order_by("-timestamp")        
         filters = "&".join(
             [f"{key}={value}" for key, value in self.request.GET.items()]
         )
-
         query = query.annotate(filters=Value(filters, output_field=CharField()))
-
         return query
