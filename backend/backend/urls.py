@@ -140,7 +140,7 @@ router.register(
 
 router.register(
     r"activity_log_event_type",
-    activity_log_api_views.ActivityLogDayCountViewset,
+    activity_log_api_views.ActivityLogViewSet,
     "activitylogeventtype",
 )
 
