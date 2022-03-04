@@ -48,36 +48,26 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         return query
 
 
+# a normal model viewset allowing list and retrieve actions
+# default order = -timestamp
+# filter by users, event type
 class ActivityLogEventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogEventTypeSerializer
+    queryset = models.LogEntry().objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["event_type", "actor_user", "effected_user"]
 
     permission_classes = [
-        core_permissions.ActionIs("list")
+        core_permissions.ActionIs("retrieve")
         & (
             core_permissions.IsCurrentUserInSpecificFilter("actor_user")
             | core_permissions.IsCurrentUserInSpecificFilter("effected_user")
-            | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=core_permissions.get_teams_from_user_filter("actor_user"),
-            )
-            | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=core_permissions.get_teams_from_user_filter(
-                    "effected_user"
-                ),
-            )
+            | core_permissions.IsReadOnly
+        )
+        | core_permissions.ActionIs("list")
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("actor_user")
+            | core_permissions.IsCurrentUserInSpecificFilter("effected_user")
+            | core_permissions.IsReadOnly
         )
     ]
-
-    def get_queryset(self):
-        query = models.LogEntry.objects.annotate(
-            date=Cast("timestamp", output_field=DateField())
-        )
-        query = query.order_by("-timestamp")        
-        filters = "&".join(
-            [f"{key}={value}" for key, value in self.request.GET.items()]
-        )
-        query = query.annotate(filters=Value(filters, output_field=CharField()))
-        return query
