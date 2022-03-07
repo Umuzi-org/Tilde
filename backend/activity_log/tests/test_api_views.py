@@ -78,4 +78,20 @@ class TestActivityLogEventTypeViewSet(APITestCase, APITestCaseMixin):
         self.entry2.timestamp = self.today
         self.entry2.save()
 
-        
+    def test_list_api_filter_by_event_type(self):
+        url = f"{self.get_list_url()}?event_type={self.entry1.event_type}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(self.entry1.timestamp, self.today)
+
+    def test_list_api_filter_by_effected_user(self):
+        url = f"{self.get_list_url()}?effected_user={self.entry1.effected_user.id}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(self.entry1.timestamp, self.today)
+
+    def test_list_api_filter_by_actor_user(self):
+        url = f"{self.get_list_url()}?actor_user={self.entry1.actor_user.id}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(self.entry1.timestamp, self.today)

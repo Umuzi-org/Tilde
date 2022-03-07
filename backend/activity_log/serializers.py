@@ -32,13 +32,12 @@ class EventTypeSerializer(serializers.ModelSerializer):
 class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.LogEntry
-        fields = ["id", "timestamp", "event_type", "actor_user", "effected_user"]
+        fields = ["id"]
 
 
 class ActivityLogEventTypeSerializer(serializers.Serializer):
     class Meta:
-        fields = ["event_type", "actor_user", "effected_user"]
+        fields = ["id", "timestamp"]
 
-    timestamp = serializers.DateTimeField(auto_now_add=True)
-    event_type = EventTypeSerializer(read_only=True, many=True)
-    log_entry = LogEntrySerializer(many=True)
+    id = serializers.IntegerField(read_only=True)
+    timestamp = serializers.DateTimeField()
