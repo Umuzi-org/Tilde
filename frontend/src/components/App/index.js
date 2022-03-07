@@ -21,7 +21,11 @@ function shouldCallWhoAmI({ authUser }) {
   return true;
 }
 
-function AppUnconnected({ authUser, whoAmIStart }) {
+function userNeedsToBeLoggedIn({ currentRoute }) {
+  return currentRoute === routes.loginRedirect;
+}
+
+function AppUnconnected({ authUser, whoAmIStart, currentRoute }) {
   React.useEffect(() => {
     if (
       shouldCallWhoAmI({
@@ -30,11 +34,11 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     ) {
       whoAmIStart({ authUser });
     }
-  }, [authUser, whoAmIStart]);
+  }, [authUser, whoAmIStart, currentRoute]);
 
   const token = getAuthToken();
 
-  if (token === null) {
+  if (userNeedsToBeLoggedIn(currentRoute) && token===null){
     return <Login />;
   }
 
