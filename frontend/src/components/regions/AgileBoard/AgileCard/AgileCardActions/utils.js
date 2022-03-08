@@ -9,7 +9,6 @@ import {
   MANAGE_CARDS,
   REVIEW_CARDS,
   TRUSTED_REVIEWER,
-  VIEW_ONLY,
 } from "../../../../../constants";
 
 export function getTeamPermissions({ authUser, viewedUser }) {
@@ -36,16 +35,13 @@ export function getTeamPermissions({ authUser, viewedUser }) {
 
 function getShowAddReviewButton({ card, permissions, isReviewer }) {
   const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-  if(isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1){
-    if(permissions[VIEW_ONLY]) return false;
-    return true
-  }
+  if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1) return true;
   if (
     (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER]) &&
     REVIEW_STATUSES.indexOf(card.status) !== -1
   )
     return true;
- 
+
   return false;
 }
 
@@ -151,6 +147,7 @@ export function showButtons({ card, authUser, viewedUser }) {
   return {
     showButtonStartProject,
     showButtonAddReview,
+
     showButtonRequestReview,
     showButtonCancelReviewRequest,
     showButtonStartTopic,
