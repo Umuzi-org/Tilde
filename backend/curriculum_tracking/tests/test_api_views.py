@@ -67,7 +67,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         return topic_progress
 
 
-class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
+class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
@@ -116,6 +116,15 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
+        self.login_as_superuser()
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
     def test_request_review_permissions_non_superuser_staff(self):
 
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
@@ -158,14 +167,74 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
 
     def test_request_review_permissions_assignee(self):
 
-        self.login(self.card_2.assignees.first())
-        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.login(self.card_1.assignees.first())
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_non_superuser_staff(self):
+        staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_user)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
         self.card_2.refresh_from_db()
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_non_assignee(self):
+        recruit_user_non_card_assignee = factories.UserFactory(
+            is_superuser=False, is_staff=False
+        )
+        self.login(recruit_user_non_card_assignee)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_superuser(self):
+        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
+        self.login(superuser)
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_request_review/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
+
+    def test_cancel_request_review_permissions_assignee(self):
+
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+        self.login(self.card_2.assignees.first())
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_request_review/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
 
 class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
