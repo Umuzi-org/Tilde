@@ -113,7 +113,7 @@ function CardDetailsUnconnected({
   const projectCardStatus = project && project.agileCardStatus;
 
   const showAddReviewButton =
-    (isReviewer || isStaff) &&
+    (isReviewer && isStaff) &&
     [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus) !== -1;
 
   const showUpdateProjectLinkForm =
