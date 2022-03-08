@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import * as serviceWorker from "./serviceWorker";
 import "typeface-roboto";
 
@@ -10,7 +12,9 @@ import { Provider } from "react-redux";
 ReactDOM.render(
   //   <React.StrictMode>
   <Provider store={store}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById("root")
 );

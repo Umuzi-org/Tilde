@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
@@ -84,17 +84,13 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           }
           label="Remember me"
         />
-        {/* <Router>
-          <Link to="/forgotPassword" className={classes.linkStyles}>
-            Forgot Password?
-          </Link>
-          <Route exact path="/forgotPassword" component={ForgotPassword} />
-        </Router> */}
-        <Router>
-          <Link to={routes.forgotPasswordRedirect.route.path} className={classes.linkStyles}>
-            Forgot Password?
-          </Link>
-        </Router>
+
+        <Link
+          to={routes.forgotPassword.route.path}
+          className={classes.linkStyles}
+        >
+          Forgot Password?
+        </Link>
       </Box>
       <div>
         <Button

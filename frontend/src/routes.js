@@ -18,20 +18,22 @@ import TeamNavBar from "./components/regions/TeamNavBar";
 const exact = true;
 
 export const routes = {
-  loginRedirect: {
+  login: {
     route: {
       exact,
       path: "/login",
       component: LoginForm,
     },
+    userMustBeLoggedIn: false,
   },
 
-  forgotPasswordRedirect: {
+  forgotPassword: {
     route: {
       exact,
       path: "/forgotPassword",
       component: ForgotPassword,
     },
+    userMustBeLoggedIn: false,
   },
 
   homeRedirect: {
@@ -47,6 +49,7 @@ export const routes = {
       helpText: "Your board",
     },
     show: () => true,
+    userMustBeLoggedIn: true,
   },
 
   groupNav: {
@@ -72,6 +75,7 @@ export const routes = {
         }
       }
     },
+    userMustBeLoggedIn: true,
   },
 
   userNavBar: {
@@ -80,6 +84,7 @@ export const routes = {
       path: "/users/:userId/",
       component: UserNavBar,
     },
+    userMustBeLoggedIn: true,
   },
 
   userBoard: {
@@ -88,6 +93,7 @@ export const routes = {
       path: "/users/:userId/board",
       component: AgileBoard,
     },
+    userMustBeLoggedIn: true,
   },
 
   userActions: {
@@ -96,6 +102,7 @@ export const routes = {
       path: "/users/:userId/actions",
       component: UserActions,
     },
+    userMustBeLoggedIn: true,
   },
 
   teamNavBar: {
@@ -104,6 +111,7 @@ export const routes = {
       path: "/teams/:teamId/",
       component: TeamNavBar,
     },
+    userMustBeLoggedIn: true,
   },
 
   groupCardSummary: {
@@ -114,6 +122,7 @@ export const routes = {
       component: GroupCardSummary,
     },
     show: () => true,
+    userMustBeLoggedIn: true,
   },
 
   teamDashboard: {
@@ -124,6 +133,7 @@ export const routes = {
       component: TeamDashboard,
     },
     show: () => true,
+    userMustBeLoggedIn: true,
   },
 
   profile: {
@@ -133,6 +143,7 @@ export const routes = {
       path: "/people/:id",
       component: UserProfile,
     },
+    userMustBeLoggedIn: true,
   },
 
   userDashboard: {
@@ -141,6 +152,7 @@ export const routes = {
       path: "/users/:userId/dashboard",
       component: UserDashboard,
     },
+    userMustBeLoggedIn: true,
   },
 
   cardDetails: {
@@ -151,5 +163,6 @@ export const routes = {
     },
 
     show: () => true,
+    userMustBeLoggedIn: true,
   },
 };

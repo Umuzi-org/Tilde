@@ -1,9 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Route, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
 import AppHeaderAndMenu from "../regions/AppHeaderAndMenu";
-import Login from "../regions/Login";
 
 import { routes } from "../../routes.js";
 
@@ -21,11 +20,16 @@ function shouldCallWhoAmI({ authUser }) {
   return true;
 }
 
-function userNeedsToBeLoggedIn({ currentRoute }) {
-  return currentRoute === routes.loginRedirect;
+function getCurrentRoute({ location }) {
+  for (let routeName in routes) {
+    const route = routes[routeName];
+    if (route.route.path === location.pathname) {
+      return route;
+    }
+  }
 }
 
-function AppUnconnected({ authUser, whoAmIStart, currentRoute }) {
+function AppUnconnected({ authUser, whoAmIStart }) {
   React.useEffect(() => {
     if (
       shouldCallWhoAmI({
@@ -34,12 +38,15 @@ function AppUnconnected({ authUser, whoAmIStart, currentRoute }) {
     ) {
       whoAmIStart({ authUser });
     }
-  }, [authUser, whoAmIStart, currentRoute]);
+  }, [authUser, whoAmIStart]);
 
+  const location = useLocation();
+  const currentRoute = getCurrentRoute({ location });
+  const { userMustBeLoggedIn } = currentRoute;
   const token = getAuthToken();
 
-  if (userNeedsToBeLoggedIn(currentRoute) && token===null){
-    return <Login />;
+  if (userMustBeLoggedIn && token === null) {
+    window.location = routes.login.route.path;
   }
 
   if (
@@ -48,17 +55,23 @@ function AppUnconnected({ authUser, whoAmIStart, currentRoute }) {
     })
   )
     return <div>Loading...</div>;
-
-  return (
-    <Router>
+  if (!userMustBeLoggedIn && token === null) {
+    return (
       <ThemeProvider theme={theme}>
-        <AppHeaderAndMenu>
-          {Object.keys(routes).map((key) => {
-            return <Route key={key} {...routes[key].route} />;
-          })}
-        </AppHeaderAndMenu>
+        {Object.keys(routes).map((key) => {
+          return <Route key={key} {...routes[key].route} />;
+        })}
       </ThemeProvider>
-    </Router>
+    );
+  }
+  return (
+    <ThemeProvider theme={theme}>
+      <AppHeaderAndMenu>
+        {Object.keys(routes).map((key) => {
+          return <Route key={key} {...routes[key].route} />;
+        })}
+      </AppHeaderAndMenu>
+    </ThemeProvider>
   );
 }
 

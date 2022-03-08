@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -51,17 +51,17 @@ export default () => {
       <TextField label="Email" variant="outlined" type="email" required />
 
       <div>
-        <Router to={routes.loginRedirect.route.path}>
-          <Button
-            className={classes.buttonStyle}
-            type="submit"
-            variant="contained"
-            color="secondary"
-            component={Link}
-          >
-            back
-          </Button>
-        </Router>
+        <Button
+          className={classes.buttonStyle}
+          type="submit"
+          variant="contained"
+          color="secondary"
+          component={Link}
+          to={routes.login.route.path}
+        >
+          back
+        </Button>
+
         <Button
           className={classes.buttonStyle}
           type="submit"
