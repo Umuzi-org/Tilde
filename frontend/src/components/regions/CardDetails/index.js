@@ -108,12 +108,10 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
-  const isStaff = authUser.isStaff === 1;
-
   const projectCardStatus = project && project.agileCardStatus;
 
   const showAddReviewButton =
-    (isReviewer && isStaff) &&
+    (isReviewer) &&
     [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus) !== -1;
 
   const showUpdateProjectLinkForm =
