@@ -387,8 +387,14 @@ class AgileCardViewset(viewsets.ModelViewSet):
         elif card.topic_progress:
             card.topic_progress.cancel_request_review()
 
-        # card.status = models.AgileCard.IN_PROGRESS
-        # card.save()
+        log_creators.log_card_review_request_cancelled(
+            card=card, actor_user=request.user
+        )
+        card.refresh_from_db()
+
+        assert (
+            card.status == models.AgileCard.IN_PROGRESS
+        ), f"Expected to be in progress, but got {card.status}"
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(

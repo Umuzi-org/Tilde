@@ -1,5 +1,8 @@
 """for each of the log entry creators in curriculum_tracking.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
+from curriculum_tracking.activity_log_entry_creators import (
+    CARD_REVIEW_REQUEST_CANCELLED,
+)
 from rest_framework.test import APITestCase
 
 from test_mixins import APITestCaseMixin
@@ -108,41 +111,127 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(LogEntry.objects.count(), 2)
 
 
-class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
+class log_card_review_requested_and_cancelled_Tests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
 
-    def test_review_requested(self):
-        actor_user = UserFactory(is_superuser=True, is_staff=True)
-        content_item = factories.ProjectContentItemFactory(
+    def setUp(self):
+        self.actor_user = UserFactory(is_superuser=True, is_staff=True)
+        self.content_item = factories.ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
-        card = factories.AgileCardFactory(
+        self.card = factories.AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item
+            ),
+            content_item=self.content_item,
         )
-        self.login(actor_user)
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.login(self.actor_user)
+        self.card.start_project()
+        self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
 
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+    def test_review_requested(self):
+
+        request_review_url = f"{self.get_instance_url(self.card.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
 
         # sanity check
-        self.assertEqual(card.assignees.count(), 1)
+        self.assertEqual(self.card.assignees.count(), 1)
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
 
-        self.assertEqual(entry.actor_user, actor_user)
-        self.assertEqual(entry.effected_user, card.assignees.first())
-        self.assertEqual(entry.object_1, card.recruit_project)
+        self.assertEqual(entry.actor_user, self.actor_user)
+        self.assertEqual(entry.effected_user, self.card.assignees.first())
+        self.assertEqual(entry.object_1, self.card.recruit_project)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+
+    def test_cancel_review_requested(self):
+
+        # self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+        # self.assertEqual(self.actor_user.is_superuser, True)
+
+        request_review_url = f"{self.get_instance_url(self.card.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
+
+        self.assertEqual(LogEntry.objects.count(), 2)
+        entry = LogEntry.objects.last()
+
+        self.assertEqual(entry.actor_user, self.actor_user)
+        self.assertEqual(entry.effected_user, self.card.assignees.first())
+        self.assertEqual(entry.object_1, self.card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
+
+
+# class log_card_review_request_cancelled_Tests(APITestCase, APITestCaseMixin):
+#     LIST_URL_NAME = "agilecard-list"
+#     SUPPRESS_TEST_POST_TO_CREATE = True
+#     SUPPRESS_TEST_GET_LIST = True
+
+#     def test_review_requested(self):
+#         actor_user = UserFactory(is_superuser=True, is_staff=True)
+#         content_item = factories.ProjectContentItemFactory(
+#             project_submission_type=ContentItem.LINK, template_repo=None
+#         )
+#         card = factories.AgileCardFactory(
+#             status=AgileCard.READY,
+#             recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+#             content_item=content_item,
+#         )
+#         self.login(actor_user)
+#         card.start_project()
+#         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+
+#         request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+#         response = self.client.post(request_review_url)
+
+#         self.assertEqual(response.status_code, 200)
+
+#         card.refresh_from_db()
+#         self.assertEqual(card.status, AgileCard.IN_REVIEW)
+
+#         cancel_request_review_url = (
+#             f"{self.get_instance_url(card.id)}cancel_review_request/"
+#         )
+#         response = self.client.post(cancel_request_review_url)
+
+#         self.assertEqual(response.status_code, 200)
+
+#         card.refresh_from_db()
+#         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+
+#         # sanity check
+#         self.assertEqual(card.assignees.count(), 1)
+
+#         self.assertEqual(LogEntry.objects.count(), 2)
+#         entry = LogEntry.objects.last()
+
+#         self.assertEqual(entry.actor_user, actor_user)
+#         self.assertEqual(entry.effected_user, card.assignees.first())
+#         self.assertEqual(entry.object_1, card.recruit_project)
+#         self.assertEqual(entry.object_2, None)
+#         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
