@@ -13,8 +13,8 @@ const useStyles = makeStyles({
     padding: "1rem",
   },
   exitIcon: {
-    position: "relative", 
-    top: 0, 
+    position: "relative",
+    top: 0,
     left: "200px"
   }
 });
@@ -31,9 +31,7 @@ export default ({ card, cardId, handleClose }) => {
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          <div className={classes.exitIcon}>
-            <CloseIcon onClick={handleClose} />
-          </div>
+          <CloseIcon onClick={handleClose} />
           {card ? (
             <form novalidate>
               <TextField
