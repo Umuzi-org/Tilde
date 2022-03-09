@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Grid, Paper } from "@material-ui/core";
 import Modal from "../../widgets/Modal";
-import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles({
   dueTimeButton: {
@@ -15,8 +14,8 @@ const useStyles = makeStyles({
   exitIcon: {
     position: "relative",
     top: 0,
-    left: "200px"
-  }
+    left: "200px",
+  },
 });
 
 export default ({ card, cardId, handleClose }) => {
@@ -31,7 +30,6 @@ export default ({ card, cardId, handleClose }) => {
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          <CloseIcon onClick={handleClose} />
           {card ? (
             <form novalidate>
               <TextField
