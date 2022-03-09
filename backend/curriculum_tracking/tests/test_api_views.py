@@ -92,22 +92,22 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def setUp(self):
-        self.content_item_test = factories.ProjectContentItemFactory(
+        self.content_item = factories.ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
         self.card_1 = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(
-                content_item=self.content_item_test
+                content_item=self.content_item
             ),
-            content_item=self.content_item_test,
+            content_item=self.content_item,
         )
         self.card_2 = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(
-                content_item=self.content_item_test
+                content_item=self.content_item
             ),
-            content_item=self.content_item_test,
+            content_item=self.content_item,
         )
 
         self.card_1.start_project()
@@ -126,7 +126,6 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
     def test_request_review_permissions_non_superuser_staff(self):
-
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
         self.login(staff_user)
 
@@ -140,7 +139,6 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
 
     def test_request_review_permissions_non_assignee(self):
-
         recruit_user_non_card_assignee = factories.UserFactory(
             is_superuser=False, is_staff=False
         )
@@ -166,7 +164,6 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
 
     def test_request_review_permissions_assignee(self):
-
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         self.login(self.card_1.assignees.first())
         request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
@@ -178,6 +175,7 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
 
     def test_cancel_request_review_permissions_non_superuser_staff(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
         self.login(staff_user)
 
@@ -213,7 +211,7 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         superuser = factories.UserFactory(is_superuser=True, is_staff=False)
         self.login(superuser)
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_2.id)}cancel_request_review/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
@@ -223,11 +221,10 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
     def test_cancel_request_review_permissions_assignee(self):
-
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
         self.login(self.card_2.assignees.first())
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_2.id)}cancel_request_review/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
