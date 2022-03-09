@@ -23,18 +23,6 @@ class ActivityLogDayCountSerializer(serializers.Serializer):
         return instance["total"]
 
 
-class EventTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.EventType
-        fields = ["name"]
-
-
-class LogEntrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.LogEntry
-        fields = ["id"]
-
-
 class ActivityLogEventTypeSerializer(serializers.Serializer):
     class Meta:
         fields = ["id", "timestamp"]

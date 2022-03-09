@@ -68,15 +68,12 @@ class TestActivityLogEventTypeViewSet(APITestCase, APITestCaseMixin):
     def setUp(self):
         self.today = timezone.now()
 
-        self.entry1 = factories.EventTypeFactory()
         self.entry1 = factories.LogEntryFactory()
         self.entry1.timestamp = self.today
         self.entry1.save()
 
-        self.entry2 = factories.EventTypeFactory()
-        self.entry2 = factories.LogEntryFactory()
-        self.entry2.timestamp = self.today
-        self.entry2.save()
+        self.user = factories.UserFactory(is_superuser=False, is_staff=False)
+        self.login(self.user)
 
     def test_list_api_filter_by_event_type(self):
         url = f"{self.get_list_url()}?event_type={self.entry1.event_type}"
