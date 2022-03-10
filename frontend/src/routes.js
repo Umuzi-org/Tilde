@@ -2,7 +2,7 @@ import UserProfile from "./components/regions/UserProfile";
 import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
-import UsersAndGroups from "./components/regions/UsersAndGroups";
+import UsersAndGroups from "./components/pages/UsersAndGroups";
 import UserDashboard from "./components/regions/UserDashboard";
 import CardDetails from "./components/regions/CardDetails";
 import Redirector from "./components/regions/Redirector";
