@@ -204,9 +204,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         recruit = UserFactory(is_superuser=False, is_staff=False)
 
-        card = factories.AgileCardFactory(
-            content_item=content_item
-        )
+        card = factories.AgileCardFactory(content_item=content_item)
 
         card.assignees.add(recruit)
 
@@ -645,7 +643,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
             data={
                 "due_time": due_date,
                 "content_item": card_1.content_item.id,
-                "team": str(self.red_team.id),
                 "flavours": [card_1.flavours.first().id],
             },
         )
