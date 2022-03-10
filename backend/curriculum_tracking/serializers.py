@@ -225,9 +225,6 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "flavour_names"
         ]
 
-    due_time = serializers.DateTimeField()
-    flavour_names = serializers.ChoiceField(choices=['JAVASCRIPT', 'PYTHON', 'JAVA'])
-
 
 class NoArgs(serializers.Serializer):
     class Meta:
@@ -252,7 +249,7 @@ class WorkshopAttendanceTime(serializers.ModelSerializer):
 class SetDueTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProject
-        fields = ["due_time", "content_item", "flavours"]
+        fields = ["due_time"]
 
 
 class AddReviewerUserSerializer(serializers.ModelSerializer):

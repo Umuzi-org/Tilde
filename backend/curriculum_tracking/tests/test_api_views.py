@@ -124,7 +124,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         card.assignees.add(recruit)
 
-        due_time_1 = timezone.now() + timedelta(days=8)
+        due_time_1 = timezone.now() + timedelta(days=7)
         due_time_2 = timezone.now() + timedelta(days=1)
 
         url = reverse("agilecard-set-card-due-time", kwargs={"pk": card.id})

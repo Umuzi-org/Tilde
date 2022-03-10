@@ -136,12 +136,9 @@ class BulkSetDueTimeSerializer(serializers.Serializer):
         fields = [
             "due_time"
             "flavours",
-            "content_item",
-            "team"
+            "content_item"
         ]
 
     due_time = serializers.DateTimeField()
     flavours = serializers.ListField(child=serializers.IntegerField())
     content_item = serializers.IntegerField()
-    team = serializers.IntegerField()
-

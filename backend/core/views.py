@@ -153,7 +153,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     )
     def bulk_set_due_dates(self, request, pk=None):
 
-        team: models.Team = models.Team.objects.get(pk=pk)
+        team: models.Team = self.get_object()
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
