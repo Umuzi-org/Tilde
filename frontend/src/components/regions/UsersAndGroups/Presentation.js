@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TeamSummaryStats = ({ summaryStats }) => {
+function TeamSummaryStats ({ summaryStats }) {
   const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime
     ? summaryStats.oldestOpenPrTime.slice(0, 10)
     : undefined;
@@ -91,12 +91,12 @@ const TeamSummaryStats = ({ summaryStats }) => {
   );
 };
 
-const TeamCard = ({
+function TeamCard ({
   team,
   summaryStats,
   handleUserGroupClick,
   filterUsersByGroupName,
-}) => {
+}) {
   const filterButtonVariant =
     team.name === filterUsersByGroupName ? "contained" : "outlined";
 
@@ -137,7 +137,7 @@ const TeamCard = ({
   );
 };
 
-const UserCard = ({ email, user }) => {
+function UserCard ({ email, user }) {
   const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
