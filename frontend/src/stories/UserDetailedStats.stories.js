@@ -1,6 +1,5 @@
 import React from "react";
-
-import UserDetailedStats from "../components/regions/UserDashboard/UserDetailedStats";
+import UserDetailedStats from "../components/pages/UserDashboard/UserDetailedStats";
 import detailedStats from "./fixtures/userDetailedStats.json";
 
 export default {
