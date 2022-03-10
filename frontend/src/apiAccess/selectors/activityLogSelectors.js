@@ -4,6 +4,7 @@ export const getActivityLogCountsByDayForUsers = ({
   eventTypes,
 }) => {
   let result = {};
+
   userIds.forEach(
     (userId) =>
       (result[userId] = getActivityLogCountsByDayForSingleUser({

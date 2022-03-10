@@ -4,6 +4,7 @@ from social_auth import models as social_models
 from git_real.constants import GITHUB_BASE_URL
 import requests
 from django.utils.http import urlencode
+import urllib.parse
 
 
 class Api:
@@ -13,6 +14,8 @@ class Api:
         else:
             self.token = self.get_auth_token(github_name)
         assert self.token
+
+        self.__response_cache = {}
 
     def who_am_i(self):
         response = self.request("user")
@@ -50,6 +53,7 @@ class Api:
 
     def put(self, url_end, data, headers=None, json=True):
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
+        print(f"PUT {full_url}")
 
         response = requests.put(full_url, headers=self.headers(headers), json=data)
 
@@ -59,7 +63,6 @@ class Api:
 
     def delete(self, url_end, headers=None, json=True):
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
-        print(full_url)
 
         response = requests.delete(full_url, headers=self.headers(headers))
 
@@ -98,17 +101,160 @@ class Api:
             return response.json()
         return response
 
-    def request_pages(self, url_end, response404=None, params=None):
+    def request_pages(self, url_end, response404=None, params=None, headers=None):
         params = params or {}
         params["page"] = 1
         fetched_list = []
         while fetched_list or (params["page"] == 1):
-            fetched_list = self.request(f"{url_end}?{urlencode(params)}", response404)
+            fetched_list = self.request(
+                f"{url_end}?{urlencode(params)}",
+                response404=response404,
+                headers=headers,
+            )
             if response404 and fetched_list == response404:
                 return response404
             for item in fetched_list:
                 yield item
             params["page"] += 1
 
+    def team_exists(self, organisation_name: str, team_name: str) -> bool:
+        # result = self.request(
+        #     f"orgs/{organisation_name}/teams/{team_name}",
+        #     headers={"accept": "application/vnd.github.v3+json"},
+        # ) #todo: rather just get the one team and see if it exists
+        teams = self.list_organisation_teams(organisation_name)
+
+        for team in teams:
+            if team["name"] == team_name:
+                return True
+        return False
+
+    def create_team(
+        self, organisation_name, team_name, description="Automatically generated team"
+    ):
+        if not self.team_exists(organisation_name, team_name):
+
+            result = self.post(
+                f"orgs/{organisation_name}/teams",
+                data={"description": description, "name": team_name},
+                headers={"accept": "application/vnd.github.v3+json"},
+            )
+
+            assert result["name"] == team_name, result
+
+    def clear_failed_organisation_invites(self, organisation_name: str):
+        failed_invitations = self.request_pages(
+            f"orgs/{organisation_name}/failed_invitations",
+            headers={"accept": "application/vnd.github.v3+json"},
+        )
+
+        for invitation in failed_invitations:
+            breakpoint()
+            pass
+            response = self.delete(
+                f"orgs/{organisation_name}/invitations/{invitation_id}"
+            )
+            breakpoint()
+            pass
+
+    def list_organisation_teams(self, organisation_name):
+        self.__response_cache["list_organisation_teams"] = self.__response_cache.get(
+            "list_organisation_teams", {}
+        )
+
+        teams = self.__response_cache["list_organisation_teams"].get(organisation_name)
+        if teams is None:
+            result = self.request_pages(f"orgs/{organisation_name}/teams")
+            self.__response_cache["list_organisation_teams"][organisation_name] = [
+                d for d in result
+            ]
+
+        return self.__response_cache["list_organisation_teams"][organisation_name]
+
+    def list_organisation_members(self, organisation_name):
+        self.__response_cache["list_organisation_members"] = self.__response_cache.get(
+            "list_organisation_members", {}
+        )
+
+        members = self.__response_cache["list_organisation_members"].get(
+            organisation_name
+        )
+        if members is None:
+            result = self.request_pages(f"orgs/{organisation_name}/members")
+            self.__response_cache["list_organisation_members"][organisation_name] = [
+                d for d in result
+            ]
+        return self.__response_cache["list_organisation_members"][organisation_name]
+
+    def list_pending_organisation_invitations(self, organisation_name):
+        self.__response_cache[
+            "list_pending_organisation_invitations"
+        ] = self.__response_cache.get("list_pending_organisation_invitations", {})
+
+        members = self.__response_cache["list_pending_organisation_invitations"].get(
+            organisation_name
+        )
+        if members is None:
+            result = self.request_pages(f"orgs/{organisation_name}/invitations")
+            self.__response_cache["list_pending_organisation_invitations"][
+                organisation_name
+            ] = [d for d in result]
+        return self.__response_cache["list_pending_organisation_invitations"][
+            organisation_name
+        ]
+
+    def user_is_org_member(self, organisation_name: str, github_name: str) -> bool:
+        members = self.list_organisation_members(organisation_name)
+        for member in members:
+            if member["login"] == github_name:
+                return True
+        return False
+
+    def organisation_invitation_pending(
+        self, organisation_name: str, github_name: str
+    ) -> bool:
+        invitations = self.list_pending_organisation_invitations(organisation_name)
+        for invitation in invitations:
+            if invitation["login"] == github_name:
+                return True
+        return False
+
+    def add_user_to_org_return_accepted(
+        self, organisation_name: str, github_name: str
+    ) -> bool:
+        """if the user is in the org already then return True, but if they have an invite that is not yet accepted return False"""
+        if self.user_is_org_member(organisation_name, github_name):
+            return True
+        if not self.organisation_invitation_pending(organisation_name, github_name):
+            response = self.put(
+                f"orgs/{organisation_name}/memberships/{github_name}",
+                headers={"accept": "application/vnd.github.v3+json"},
+                data={},
+            )
+            assert response["state"] in ["pending", "active"], response
+        return False
+
+    def add_user_to_team(self, organisation_name, team_name, github_name):
+        is_member = self.add_user_to_org_return_accepted(organisation_name, github_name)
+
+        if is_member:
+            response = self.put(
+                f"orgs/{organisation_name}/teams/{team_name.replace(' ','-')}/memberships/{github_name}",
+                headers={"accept": "application/vnd.github.v3+json"},
+                data={},
+            )
+            if not (response.get("state") == "active"):
+                breakpoint()
+
+            assert response["state"] == "active", response
+
+    def user_exists(self, github_name):
+        final_url = f"https://github.com/{github_name}"
+        if requests.get(final_url).status_code == 404:
+            return False
+        return True
+
 
 # TODO: no response404 args. Rather raise 404 exceptions
+# TODO: check response codes on responses. They should be 2XX or raise exceptions
+# TODO: depricate request method. It should be called `get` for get requests
