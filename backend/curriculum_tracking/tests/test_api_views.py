@@ -9,7 +9,7 @@ from django.utils.dateparse import parse_datetime
 from . import factories
 from core.tests import factories as core_factories
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview
+from curriculum_tracking.models import ContentItem, RecruitProjectReview, AgileCard
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from . import factories
@@ -547,11 +547,6 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0].get("user"), burndown_snapshot_object.user.id)
-
-    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(
-        self,
-    ):
-
 
     def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(
         self,
