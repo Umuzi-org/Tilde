@@ -28,7 +28,7 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
 
 function ignore() {}
 
-function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
+function cleanAndFilterUsers({ teams, filterBy, filterUsersByGroupName }) {
   let users = {};
 
   for (let group of Object.values(teams)) {
@@ -85,7 +85,7 @@ function UsersAndGroupsUnconnected({
   );
   ignore(formState, formErrors, dataFromState);
 
-  function handleUserGroupClick (name) {
+  function handleUserGroupClick ({ name }) {
     if (name === filterUsersByGroupName) setFilterUsersByGroupName("");
     else setFilterUsersByGroupName(name);
   };
@@ -131,14 +131,14 @@ function UsersAndGroupsUnconnected({
   return <Presentation {...props} />;
 }
 
-function mapStateToProps (state) {
+function mapStateToProps ({ state }) {
   return {
     teams: state.apiEntities.teams || {},
     teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
 };
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps ({ dispatch }) {
   function fetchTeamsPages ({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
