@@ -5,8 +5,9 @@
   The clean markdown function attempts to clean the "summary review", leaving it
   markdown free while ignoring common english puntuation marks.
 */
- 
+
 export const cleanMarkdown = (review) => {
   const ignore = review.replace(/[^A-Za-z;!.,:]/gi, " ");
-  return ignore.replace("   ", " ").split("  ").join(" ");
+  const cleanWhiteSpace = ignore.replace("   ", " ").split("  ").join(" ");
+  return cleanWhiteSpace.replace(" . ", " ");
 }
