@@ -18,9 +18,7 @@ import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
   cardStyle: {
-    diplay: "block",
-    height: "90vh",
-    width: "90vw",
+    display: "block",
     position: "relative",
     maxWidth: "90%",
   },
@@ -33,17 +31,13 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "white",
     },
   },
-  timefont: {
+  timeStyle: {
     fontSize: 11,
   },
   reviewerEmailStyle: {
     fontSize: "100%",
     fontWeight: "bold",
   },
-  // reviewStyle: {
-  //   width: "100%",
-  //   padding: "12",
-  // },
   CardContent: {
     fontSize: "11px",
     padding: "20px",
@@ -52,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     height: "66vh",
   },
-  reviewPosition: {
+  reviewCommentsPosition: {
     paddingLeft: "30px",
   },
 }));
@@ -74,7 +68,7 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
                   <Typography>
                     <span>
                       {" "}
-                      <Typography className={classes.timefont}>
+                      <Typography className={classes.timeStyle}>
                         Date:{" "}
                         {timestamp.toLocaleDateString() +
                           " " +
@@ -97,24 +91,18 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
           </Paper>
         </Box>
         <Box>
-          <div>
-            <CardContent
-              className={classes.CardContent}
-              children={
-                <Typography className={classes.reviewPosition}>
-                  <Markdown children={review.comments} />
-                </Typography>
-              }
-            />
-          </div>
+          <CardContent
+            className={classes.CardContent}
+            children={
+              <Typography className={classes.reviewCommentsPosition}>
+                <Markdown children={review.comments} />
+              </Typography>
+            }
+          />
         </Box>
-        <Box>
-          <div>
-            <CardActions>
-              <ReviewStatus status={review.status} />
-            </CardActions>
-          </div>
-        </Box>
+        <CardActions style={{ backgroundColor: "gray" }}>
+          <ReviewStatus status={review.status} />
+        </CardActions>
       </Card>
     </Modal>
   );
