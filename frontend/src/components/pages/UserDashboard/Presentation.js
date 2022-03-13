@@ -1,7 +1,6 @@
 import React from "react";
 import { Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-// import TeamsTable from "../UserDetails/TeamsTable";
 import TeamsTable from "../../regions/UserDetails/TeamsTable";
 import UserDetailedStats from "./UserDetailedStats";
 
