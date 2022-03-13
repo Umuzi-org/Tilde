@@ -13,5 +13,5 @@ function cleanMarkdown(review) {
 }
 
 export function trimReviewComments(comments) {
-  return cleanMarkdown(comments.trim().replace("\n", "").slice(0, 220));
+  return cleanMarkdown(comments.trim().replace("\n", " ").slice(0, 220));
 }
