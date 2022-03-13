@@ -10,7 +10,7 @@ test("A review with markdown should be cleaned", () => {
 
 test("Some special characters should be ignored", () => {
   const reviewWithSpecialChars =
-    "This! \n is a review with common english puntuation.";
+    "This! \n is a review with common english punctuation.";
   expect(trimReviewComments(reviewWithSpecialChars)).toBe(
     "This! is a review with common english punctuation."
   );
