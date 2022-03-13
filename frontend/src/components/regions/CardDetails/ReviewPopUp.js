@@ -22,15 +22,6 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     maxWidth: "90%",
   },
-  exitIcon: {
-    position: "absolute",
-    top: "5px",
-    right: "5px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
   timeStyle: {
     fontSize: 11,
   },
@@ -53,8 +44,6 @@ const useStyles = makeStyles((theme) => ({
 
 const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
   const classes = useStyles();
-  const closeModal = () => setOpenReviewPopUp(false);
-
   const timestamp = new Date(review.timestamp);
 
   return (
@@ -73,12 +62,6 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
                         {timestamp.toLocaleDateString() +
                           " " +
                           timestamp.toLocaleTimeString()}
-                        <Button
-                          className={classes.exitIcon}
-                          onClick={closeModal}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </Button>
                       </Typography>
                     </span>
                     <div className={classes.reviewerEmailStyle}>
