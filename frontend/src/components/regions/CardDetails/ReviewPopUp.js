@@ -100,7 +100,7 @@ const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
             }
           />
         </Box>
-        <CardActions style={{ backgroundColor: "gray" }}>
+        <CardActions>
           <ReviewStatus status={review.status} />
         </CardActions>
       </Card>
