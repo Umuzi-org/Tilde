@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-import { cleanMarkdown, trimReviewComments } from "./utils";
+import { trimReviewComments } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
@@ -80,31 +80,19 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {/* 
-            217 is the approximate max number of characters that can be visible before the need for
-            a scroll. As long as a review is longer than that, show "...read more"
-        */}
-        {review.comments.length > 220 ? (
-          <div>
-            <Button
-              type="button"
-              size="small"
-              className={classes.iconAlignment}
-              onClick={() => setOpenReviewPopUp(true)}
-            >
-              <Typography variant="caption" className={classes.readMoreStyle}>
-                ... Read more
-              </Typography>
-            </Button>
-            <Typography noWrap>
-              {trimReviewComments(review.comments)}
+        <div>
+          <Button
+            type="button"
+            size="small"
+            className={classes.iconAlignment}
+            onClick={() => setOpenReviewPopUp(true)}
+          >
+            <Typography variant="caption" className={classes.readMoreStyle}>
+              ... Read more
             </Typography>
-          </div>
-        ) : (
-          <Typography>
-            {trimReviewComments(review.comments)}
-          </Typography>
-        )}
+          </Button>
+          <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
+        </div>
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />

@@ -4,7 +4,6 @@ import Markdown from "react-markdown";
 import Box from "@material-ui/core/Box";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
-// import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import { CardActions, CardContent, Typography } from "@material-ui/core";

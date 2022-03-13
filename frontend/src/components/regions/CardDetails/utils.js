@@ -3,7 +3,7 @@
   the "summary review" of a long review clean an streamlined (like gmail) - so we 
   return a plain string instead of markdown.
   The clean markdown function attempts to clean the "summary review", leaving it
-  markdown free while ignoring common english puntuation marks.
+  markdown free while ignoring common english punctuation marks.
 */
 
 function cleanMarkdown(review) {
