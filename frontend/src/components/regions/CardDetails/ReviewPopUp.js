@@ -4,15 +4,10 @@ import Markdown from "react-markdown";
 import Box from "@material-ui/core/Box";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
-import CloseIcon from "@material-ui/icons/Close";
+// import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
-import {
-  Button,
-  CardActions,
-  CardContent,
-  Typography,
-} from "@material-ui/core";
+import { CardActions, CardContent, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
@@ -42,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewPopUp = ({ review, openReviewPopUp, setOpenReviewPopUp }) => {
+const ReviewPopUp = ({ review, openReviewPopUp, onClose }) => {
   const classes = useStyles();
   const timestamp = new Date(review.timestamp);
 
   return (
-    <Modal open={openReviewPopUp} onClose={closeModal}>
+    <Modal open={openReviewPopUp} onClose={onClose}>
       <Card className={classes.cardStyle}>
         <Box clone pt={2} pr={1} pb={1} pl={2}>
           <Paper elevation={3}>

@@ -6,8 +6,12 @@
   markdown free while ignoring common english puntuation marks.
 */
 
-export const cleanMarkdown = (review) => {
+function cleanMarkdown(review) {
   const ignore = review.replace(/[^A-Za-z;!.,:]/gi, " ");
   const cleanWhiteSpace = ignore.replace("   ", " ").split("  ").join(" ");
   return cleanWhiteSpace.replace(" . ", " ");
+}
+
+export function trimReviewComments(comments) {
+  return cleanMarkdown(comments.trim().replace("\n", "").slice(0, 220));
 }
