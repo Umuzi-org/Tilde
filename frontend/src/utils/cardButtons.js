@@ -33,7 +33,7 @@ import {
     return result;
   }
   
-  function getShowAddReviewButton({ card, permissions, isReviewer }) {
+  export function getShowAddReviewButton({ card, permissions, isReviewer }) {
     const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
     if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1) return true;
     if (

@@ -148,7 +148,7 @@ export default ({
   handleClickAddReview,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
-  showAddReviewButton,
+  getShowAddReviewButton,
   linkSubmission,
   formErrors,
   repoUrl,
@@ -168,7 +168,7 @@ export default ({
             showUpdateProjectLinkForm={showUpdateProjectLinkForm}
             linkSubmission={linkSubmission}
             formErrors={formErrors}
-            showAddReviewButton={showAddReviewButton}
+            getShowAddReviewButton={getShowAddReviewButton}
             handleClickAddReview={handleClickAddReview}
             reviews={projectReviews}
           />

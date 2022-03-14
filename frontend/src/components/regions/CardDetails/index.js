@@ -7,10 +7,9 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
+import { getShowAddReviewButton } from '../../../utils/cardButtons';
 
 import {
-  IN_REVIEW,
-  COMPLETE,
   REVIEW_FEEDBACK,
   IN_PROGRESS,
 } from "../../../constants";
@@ -102,17 +101,10 @@ function CardDetailsUnconnected({
     openReviewFormModal({ cardId: project.agileCard });
   };
 
-  const isReviewer =
-    ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
-
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
   const projectCardStatus = project && project.agileCardStatus;
-
-  const showAddReviewButton =
-    (isReviewer) &&
-    [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus) !== -1;
 
   const showUpdateProjectLinkForm =
     isAssignee &&
@@ -143,7 +135,7 @@ function CardDetailsUnconnected({
     projectReviews: currentProjectReviews,
 
     handleClickAddReview,
-    showAddReviewButton,
+    getShowAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
 
