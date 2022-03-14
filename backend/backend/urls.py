@@ -139,9 +139,9 @@ router.register(
 )
 
 router.register(
-    r"activity_log_event_type",
-    activity_log_api_views.ActivityLogEventTypeViewSet,
-    "activitylogeventtype",
+    r"event_type",
+    activity_log_api_views.EventTypeViewSet,
+    "eventtype",
 )
 
 # router.register(

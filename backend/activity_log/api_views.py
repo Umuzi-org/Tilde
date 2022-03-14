@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers
@@ -48,23 +48,9 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         return query
 
 
-class ActivityLogEventTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.ActivityLogEventTypeSerializer
-    queryset = models.LogEntry.objects.order_by("-timestamp")
+class EventTypeViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.EventTypeSerializer
+    queryset = models.EventType.objects.order_by("name")
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type", "actor_user", "effected_user"]
 
-    permission_classes = [
-        core_permissions.ActionIs("retrieve")
-        & (
-            core_permissions.IsCurrentUserInSpecificFilter("actor_user")
-            | core_permissions.IsCurrentUserInSpecificFilter("effected_user")
-            | core_permissions.IsReadOnly
-        )
-        | core_permissions.ActionIs("list")
-        & (
-            core_permissions.IsCurrentUserInSpecificFilter("actor_user")
-            | core_permissions.IsCurrentUserInSpecificFilter("effected_user")
-            | core_permissions.IsReadOnly
-        )
-    ]
+    permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
