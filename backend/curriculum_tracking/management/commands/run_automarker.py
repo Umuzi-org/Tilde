@@ -5,6 +5,7 @@ from curriculum_tracking.models import AgileCard, RecruitProjectReview
 from curriculum_tracking.constants import NOT_YET_COMPETENT, COMPETENT
 from django.utils import timezone
 import requests
+from pprint import pprint
 
 
 def get_automark_result(repo_url, content_item_id, flavours):
@@ -70,6 +71,8 @@ class Command(BaseCommand):
             if flavours and not card.flavours_match(flavours):
                 continue
 
+            print(card.assignees.first())
+
             has_review = (
                 card.recruit_project.project_reviews.filter(
                     timestamp__gt=card.recruit_project.review_request_time
@@ -78,9 +81,8 @@ class Command(BaseCommand):
                 .count()
             )
             if has_review:
+                print("... already has a review")
                 continue
-
-            print(card.assignees.all())
 
             result = get_automark_result(
                 repo_url=card.recruit_project.repository.ssh_url,
@@ -93,3 +95,6 @@ class Command(BaseCommand):
                 self.add_review(
                     card=card, status=NOT_YET_COMPETENT, comments=result["message"]
                 )
+            else:
+
+                pprint(result)
