@@ -26,6 +26,7 @@ app.post("/mark-project", async function (req, res) {
   }
 
   const config = getProjectConfig({ flavours, contentItemId });
+
   if (config === undefined) {
     res.json({
       status: STATUS_MISSING_CONFIG,

@@ -95,3 +95,9 @@ Container 1 will only be in charge of cloning repos. It will need a github key t
 Container 2 will have access to the clone destination and nothing else. It will be in charge of actually running the tests.
 
 ## Future work
+
+The production url is: https://automark-sdn7qm5gxa-ew.a.run.app
+
+curl https://automark-sdn7qm5gxa-ew.a.run.app/healthcheck
+
+https://automark-sdn7qm5gxa-ew.a.run.app/mark-project
