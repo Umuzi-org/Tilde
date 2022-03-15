@@ -43,7 +43,7 @@ To review code, make a json POST request to the mark-project endpoint. For examp
 curl \
 --request POST \
 --header "Content-Type: application/json" \
---data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["python", "pytest"]}' \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
 http://localhost:1313/mark-project
 
 
@@ -61,6 +61,13 @@ curl \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-java.git","contentItemId":273, "flavours": ["java"]}' \
 http://localhost:1313/mark-project
 
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-person-java.git","contentItemId":223, "flavours": ["java"]}' \
+http://localhost:1313/mark-project
 
 
 ```

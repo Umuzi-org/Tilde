@@ -7,6 +7,7 @@ export async function markProjectBase({
   fullClonePath,
   lookForTestProblems,
   markerName,
+  skipTheirTests,
 }) {
   const reviewScriptAllOutput = await runMarkerScript({
     markerScriptPath: resolve(`./lib/markers/${markerName}/mark-code.sh`),
@@ -25,16 +26,18 @@ export async function markProjectBase({
     };
   }
 
-  const theirTestOutput = getTagInnerText(reviewStdOutput, "their-tests");
+  if (!skipTheirTests) {
+    const theirTestOutput = getTagInnerText(reviewStdOutput, "their-tests");
 
-  const theirErrors = lookForTestProblems(theirTestOutput);
+    const theirErrors = lookForTestProblems(theirTestOutput);
 
-  if (theirErrors.length > 0) {
-    return {
-      status: STATUS_FAIL,
-      message: "There is something wrong with your tests",
-      errors: theirErrors,
-    };
+    if (theirErrors.length > 0) {
+      return {
+        status: STATUS_FAIL,
+        message: "There is something wrong with your tests",
+        errors: theirErrors,
+      };
+    }
   }
 
   const ourTestOutput = getTagInnerText(reviewStdOutput, "our-tests");
