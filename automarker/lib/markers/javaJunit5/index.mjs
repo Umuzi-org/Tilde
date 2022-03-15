@@ -9,7 +9,7 @@ export function markProject({ fullPerfectProjectPath, fullClonePath }) {
   });
 }
 
-function lookForTestProblems(testOutput) {
+export function lookForTestProblems(testOutput) {
   if (testOutput.indexOf("> Task :test FAILED") != -1) return [testOutput];
 
   if (testOutput.indexOf("> Task :test") == -1)
