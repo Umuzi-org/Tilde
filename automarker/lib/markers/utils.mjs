@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
 import shell from "shelljs";
 
 export async function markProjectBase({
@@ -19,7 +19,7 @@ export async function markProjectBase({
   const miscErrors = getTagInnerText(reviewStdOutput, "error");
   if (miscErrors.length > 0) {
     return {
-      status: STATUS_ERROR,
+      status: STATUS_FAIL,
       message: "There is something wrong with your code",
       errors: miscErrors,
     };
@@ -31,7 +31,7 @@ export async function markProjectBase({
 
   if (theirErrors.length > 0) {
     return {
-      status: STATUS_ERROR,
+      status: STATUS_FAIL,
       message: "There is something wrong with your tests",
       errors: theirErrors,
     };
@@ -42,7 +42,7 @@ export async function markProjectBase({
 
   if (ourErrors.length > 0) {
     return {
-      status: STATUS_ERROR,
+      status: STATUS_FAIL,
       message: "There is something wrong with your code",
       errors: ourErrors,
     };
