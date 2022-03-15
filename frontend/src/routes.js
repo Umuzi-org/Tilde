@@ -4,7 +4,7 @@ import UserActions from "./components/regions/UserActions";
 import GroupCardSummary from "./components/regions/GroupCardSummary";
 import UsersAndGroups from "./components/regions/UsersAndGroups";
 import UserDashboard from "./components/regions/UserDashboard";
-import CardDetails from "./components/regions/CardDetails";
+import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
 

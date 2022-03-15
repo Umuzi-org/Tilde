@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-import { addCardReviewOperations } from "../AddCardReviewModal/redux";
-
+import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import {
