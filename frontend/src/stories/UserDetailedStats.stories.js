@@ -3,7 +3,7 @@ import UserDetailedStats from "../components/pages/UserDashboard/UserDetailedSta
 import detailedStats from "./fixtures/userDetailedStats.json";
 
 export default {
-  title: "Tilde/UserDashboard/UserDetailedStats",
+  title: "Tilde/pages/UserDashboard/UserDetailedStats",
   component: UserDetailedStats,
   // argTypes: {
   //   backgroundColor: { control: 'color' },
