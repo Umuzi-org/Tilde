@@ -1,6 +1,6 @@
 import React from "react";
 
-import CardDetails from "../components/regions/CardDetails/Presentation";
+import CardDetails from "../components/pages/CardDetails/Presentation";
 import reviewObject from "./fixtures/review.json";
 import repoProjectCard from "./fixtures/repoProjectCard.json";
 
