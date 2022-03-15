@@ -6,7 +6,7 @@ import teams from "./fixtures/allTeams.json";
 import users from "./fixtures/allUsers.json";
 
 export default {
-  title: "Tilde/UsersAndGroups",
+  title: "Tilde/pages/UsersAndGroups",
   component: UsersAndGroups,
 };
 
