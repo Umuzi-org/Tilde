@@ -2,9 +2,9 @@
 
 import express from "express";
 import cors from "cors";
-import { STATUS_ERROR, STATUS_OK } from "./consts.mjs";
+import { STATUS_ERROR, STATUS_OK, STATUS_MISSING_CONFIG } from "./consts.mjs";
 import { PORT } from "./env.mjs";
-import { clone, mark } from "./lib/index.mjs";
+import { clone, mark, getProjectConfig } from "./lib/index.mjs";
 
 const app = express();
 app.use(express.json());
@@ -25,6 +25,15 @@ app.post("/mark-project", async function (req, res) {
     return;
   }
 
+  const config = getProjectConfig({ flavours, contentItemId });
+  if (config === undefined) {
+    res.json({
+      status: STATUS_MISSING_CONFIG,
+      message: "There is no matching configuration",
+    });
+    return;
+  }
+
   const cloneStatus = await clone({ repoUrl });
 
   if (cloneStatus.status === STATUS_ERROR) {
@@ -36,9 +45,8 @@ app.post("/mark-project", async function (req, res) {
 
   res.json(
     await mark({
-      contentItemId,
       repoUrl,
-      flavours,
+      config,
     })
   );
 });
