@@ -1,5 +1,5 @@
 import React from "react";
-import UsersAndGroups from "../components/pages/UsersAndGroups/Presentation";
+import UsersAndGroups from "../components/pages/UsersAndGroups/Presentation.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import teams from "./fixtures/allTeams.json";
