@@ -12,7 +12,6 @@ import {
 import { getActivityLogCountsByDayForUsers } from "../../../apiAccess/selectors/activityLogSelectors";
 
 function DashboardUnconnected({
-  // authUser,
   teams,
   activityLogDayCounts,
   fetchTeam,
@@ -22,12 +21,9 @@ function DashboardUnconnected({
 
   const teamId = parseInt(urlParams.teamId, 10);
   const team = teams[teamId];
-  //   const detailedStats = userDetailedStats[userId];
-
   React.useEffect(() => {
     if (teamId) {
       fetchTeam({ teamId });
-      //   fetchTeamDetailedStats({ userId });
     }
 
     if (team) {
@@ -36,13 +32,11 @@ function DashboardUnconnected({
           {
             eventTypeName: ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
             actorUser: member.userId,
-            // effectedUser,
             page: 1,
           },
           {
             eventTypeName: ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
             actorUser: member.userId,
-            // effectedUser,
             page: 1,
           },
         ])
@@ -52,11 +46,6 @@ function DashboardUnconnected({
     }
   }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
 
-  //   const showTeamsTable = user
-  //     ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
-  //     : false;
-
-  // console.log(activityLogDayCounts);
   const eventTypes = [
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
     ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
@@ -76,10 +65,7 @@ function DashboardUnconnected({
 
 function mapStateToProps(state) {
   return {
-    // users: state.apiEntities.users || {},
     teams: state.apiEntities.teams || {},
-    // userDetailedStats: state.apiEntities.userDetailedStats || {},
-    // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser || {},
 
     activityLogDayCounts: Object.values(
@@ -107,14 +93,6 @@ function mapDispatchToProps(dispatch) {
         )
       );
     },
-
-    // fetchTeamDetailedStats: ({ userId }) => {
-    //   dispatch(
-    //     apiReduxApps.FETCH_SINGLE_USER_DETAILED_STATS.operations.maybeStart({
-    //       data: { userId: parseInt(userId) },
-    //     })
-    //   );
-    // },
   };
 }
 
