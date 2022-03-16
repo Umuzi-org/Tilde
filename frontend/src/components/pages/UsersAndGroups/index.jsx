@@ -131,15 +131,15 @@ function UsersAndGroupsUnconnected({
   return <Presentation {...props} />;
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps (state) {
   return {
     teams: state.apiEntities.teams || {},
     teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  const fetchTeamsPages = ({ dataSequence }) => {
+function mapDispatchToProps (dispatch) {
+  function fetchTeamsPages ({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch) => {
     );
   };
 
-  const fetchTeamSummaryStatsPages = ({ dataSequence }) => {
+  function fetchTeamSummaryStatsPages ({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
         {
