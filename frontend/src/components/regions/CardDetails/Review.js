@@ -81,16 +81,20 @@ const Review = ({ review }) => {
       />
       <CardContent className={classes.cardContent}>
         <div>
-          <Button
-            type="button"
-            size="small"
-            className={classes.iconAlignment}
-            onClick={() => setOpenReviewPopUp(true)}
-          >
-            <Typography variant="caption" className={classes.readMoreStyle}>
-              ... Read more
-            </Typography>
-          </Button>
+          {review.comments.length > 220 && review.comments.includes("\n") ? (
+            <Button
+              type="button"
+              size="small"
+              className={classes.iconAlignment}
+              onClick={() => setOpenReviewPopUp(true)}
+            >
+              <Typography variant="caption" className={classes.readMoreStyle}>
+                ... Read more
+              </Typography>
+            </Button>
+          ) : (
+            <React.Fragment />
+          )}
           <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
         </div>
       </CardContent>

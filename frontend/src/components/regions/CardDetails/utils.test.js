@@ -18,7 +18,7 @@ test("Some special characters should be ignored", () => {
 
 test("Some special characters should be ignored", () => {
   const reviewWithSpecialChars =
-    "This \n is a review with common english puntuation. We want to \nclean it now";
+    "This \n is a review with common english punctuation. We want to \nclean it now";
   expect(trimReviewComments(reviewWithSpecialChars)).toBe(
     "This is a review with common english punctuation. We want to clean it now"
   );
