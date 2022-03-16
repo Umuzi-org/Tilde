@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import Presentation from "./Presentation.js";
+import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
