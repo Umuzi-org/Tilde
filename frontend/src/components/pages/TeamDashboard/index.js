@@ -74,7 +74,7 @@ function DashboardUnconnected({
   return <Presentation {...props} />;
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
   return {
     // users: state.apiEntities.users || {},
     teams: state.apiEntities.teams || {},
@@ -86,11 +86,11 @@ const mapStateToProps = (state) => {
       state.apiEntities.activityLogDayCounts || {}
     ),
   };
-};
+}
 
-const mapDispatchToProps = (dispatch) => {
+function mapDispatchToProps(dispatch) {
   return {
-    fetchTeam: ({ teamId }) => {
+    fetchTeam: function ({ teamId }) {
       dispatch(
         apiReduxApps.FETCH_SINGLE_TEAM.operations.maybeStart({
           data: { teamId: parseInt(teamId) },
@@ -98,7 +98,7 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    fetchUserActivityLogDayCountsSequence: ({ dataSequence }) => {
+    fetchUserActivityLogDayCountsSequence: function ({ dataSequence }) {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.operations.maybeStartCallSequence(
           {
@@ -116,7 +116,7 @@ const mapDispatchToProps = (dispatch) => {
     //   );
     // },
   };
-};
+}
 
 const Dashboard = connect(
   mapStateToProps,
