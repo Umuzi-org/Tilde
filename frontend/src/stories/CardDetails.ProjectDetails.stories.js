@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "../redux/store";
 
 export default {
-  title: "Tilde/CardDetails/ProjectDetails",
+  title: "Tilde/pages/CardDetails/ProjectDetails",
   component: ProjectDetails,
   argTypes: {},
 };

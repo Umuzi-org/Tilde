@@ -5,7 +5,7 @@ import Reviews from "../components/pages/CardDetails/Reviews";
 import reviewObject from "./fixtures/review.json";
 
 export default {
-  title: "Tilde/CardDetails/Reviews",
+  title: "Tilde/pages/CardDetails/Reviews",
   component: Reviews,
   argTypes: {
     //   backgroundColor: { control: 'color' },
