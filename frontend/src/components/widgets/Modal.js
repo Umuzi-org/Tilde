@@ -3,8 +3,6 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import CloseIcon from "@material-ui/icons/Close";
-// import { Typography } from "@material-ui/core";
-
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 
@@ -20,12 +18,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   exitIcon: {
-    // top: "5px",
-    // right: "1px",
-    // backgroundColor: "white",
-    // "&:hover": {
-    //   backgroundColor: "white",
-    // },
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
   },
 }));
 
