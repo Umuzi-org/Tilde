@@ -1,5 +1,5 @@
 import React from "react";
-import Presentation from "./Presentation";
+import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
