@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import Presentation from "./Presentation";
 
-const SummaryCardUnconnected = ({ card }) => {
+function SummaryCardUnconnected ({ card }) {
   if (card === undefined) return <div></div>;
 
   const props = {
