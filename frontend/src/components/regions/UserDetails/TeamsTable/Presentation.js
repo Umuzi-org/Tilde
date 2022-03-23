@@ -41,7 +41,7 @@ const TeamsTable = ({ teams, authUser }) => {
               <TableRow key={Object.values(teams).indexOf(team)}>
                 <TableCell>{team.name}</TableCell>
                 <TableCell>
-                  {(authUser.isSuperuser ||
+                {(authUser.isSuperuser ||
                     authUser.permissions.teams[team.id]) && (
                     <Link
                       to={routes.groupCardSummary.route.path.replace(

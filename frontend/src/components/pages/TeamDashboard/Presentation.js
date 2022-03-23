@@ -23,6 +23,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { getMinimumAndMaximumValue, updateActivityLogDayCounts } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,11 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, minimum, maximum }) => {
-  // TODO calculate maximum and minimum so that all the graphs have the same proportions
-
+const ReviewLineChart = ({ data, minCount, maxCount }) => {
   return (
-    // <ResponsiveContainer width="100%" height="100%">
     <LineChart
       width={900}
       height={100}
@@ -51,7 +49,8 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[minimum, maximum]} />
+      <YAxis domain={[minCount, maxCount]} />
+
       <Tooltip />
       <Line
         type="monotone"
@@ -65,12 +64,20 @@ const ReviewLineChart = ({ data, minimum, maximum }) => {
         stroke="#82ca9d"
       />
     </LineChart>
-    // </ResponsiveContainer>
   );
 };
 
-export default ({ team, activityLogDayCounts, eventTypes }) => {
+export default ({ team, activityLogDayCounts }) => {
+  const { minValue, maxValue } = getMinimumAndMaximumValue({
+    activityLogDayCounts,
+  });
+
+  const updatedActivityLogDayCounts = updateActivityLogDayCounts({
+    activityLogDayCounts,
+  });
+
   const classes = useStyles();
+
   if (team)
     return (
       <React.Fragment>
@@ -87,8 +94,9 @@ export default ({ team, activityLogDayCounts, eventTypes }) => {
                       <TableCell>
                         {activityLogDayCounts ? (
                           <ReviewLineChart
-                            data={activityLogDayCounts[member.userId]}
-                            eventTypes={eventTypes}
+                            data={updatedActivityLogDayCounts[member.userId]}
+                            minCount={minValue}
+                            maxCount={maxValue}
                           ></ReviewLineChart>
                         ) : (
                           "Loading..."

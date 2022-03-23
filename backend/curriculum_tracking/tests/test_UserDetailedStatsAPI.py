@@ -1,5 +1,5 @@
 from core.tests.factories import UserFactory
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer
+from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
@@ -18,13 +18,13 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     AgileCardFactory,
     RecruitProjectReviewFactory,
-    TopicReviewFactory
+    TopicReviewFactory,
 )
 from django.utils import timezone
 from git_real.tests.factories import PullRequestReviewFactory
 
 
-class TestingForTheStatsAPI(TestCase):
+class TestingForUserDetailedStatsAPI(TestCase):
     def setUp(self):
         self.card_1 = AgileCardFactory(
             status=AgileCard.IN_PROGRESS,
@@ -34,7 +34,7 @@ class TestingForTheStatsAPI(TestCase):
         self.user = self.card_1.assignees.first()
         self.project_1.start_time = timezone.now() - timedelta(days=5)
         self.project_1.save()
-        self.stats_serializer = UserStatsPerWeekSerializer()
+        self.stats_serializer = UserDetailedStatsSerializer()
 
         # Will use this repo card, PR, today, yesterday, two_days_before_yesterday and two_weeks_ago later on
         # in test 'test_pr_reviews_card_in_different_column_due_to_review_status'.
@@ -54,16 +54,22 @@ class TestingForTheStatsAPI(TestCase):
             updated_at=self.today,
         )
         self.pull_request.save()
+        self.serializer = UserDetailedStatsSerializer()
 
     def test_one_card_in_progress_before_any_reviews(self):
 
-        # One card, no reviews just yet, function 'get_cards_in_progress_column_as_assignee' should return one card
+        # One card, no reviews just yet, function 'get_cards_assigned_with_status_in_progress' should return one card
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         self.assertEqual(self.project_1.content_item, self.card_1.content_item)
         self.assertEqual(
             AgileCard.derive_status_from_project(self.project_1), AgileCard.IN_PROGRESS
         )
-        self.assertEqual(self.stats_serializer.get_cards_in_progress_column_as_assignee(user=self.user), 1)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_progress(
+                UserDetailedStatsSerializer, user=self.user
+            ),
+            1,
+        )
 
     def test_one_card_in_review_feedback_column(self):
 
@@ -78,7 +84,12 @@ class TestingForTheStatsAPI(TestCase):
         review_1.save()
 
         # review_1 had a status of NYC, so we should have at least one card in the 'REVIEW FEEDBACK' column
-        self.assertEqual(self.stats_serializer.get_cards_in_review_feedback_column_as_assignee(user=self.user), 1)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_review_feedback(
+                UserDetailedStatsSerializer, user=self.user
+            ),
+            1,
+        )
 
     def test_no_card_in_completed_column_after_untrusted_competent_review(self):
         time_two = self.project_1.start_time + timedelta(days=4)
@@ -91,14 +102,29 @@ class TestingForTheStatsAPI(TestCase):
 
         # review_2 had a status of COMPETENT, the reviewer is not trusted and therefore we should have zero cards in
         # the completed column
-        self.assertEqual(self.stats_serializer.get_cards_in_complete_column_as_assignee(user=self.user), 0)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_complete(
+                UserDetailedStatsSerializer, user=self.user
+            ),
+            0,
+        )
 
     def test_one_card_started_in_the_past_seven_days(self):
-        self.assertEqual(self.stats_serializer.get_cards_started_last_7_days_as_assignee(user=self.user), 1)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_started_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
+            ),
+            1,
+        )
 
     def test_no_cards_completed_in_past_seven_days(self):
 
-        self.assertEqual(self.stats_serializer.get_cards_completed_last_7_days_as_assignee(user=self.user), 0)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_completed_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=self.user
+            ),
+            0,
+        )
 
     def test_one_card_in_complete_column(self):
 
@@ -115,8 +141,18 @@ class TestingForTheStatsAPI(TestCase):
 
         # We should have at least one card in the completed column and since it went there within the last seven days
         # the function 'get_cards_completed_last_7_days_as_assignee' should also return at least one card
-        self.assertEqual(self.stats_serializer.get_cards_in_complete_column_as_assignee(user=assigned_person), 1)
-        self.assertEqual(self.stats_serializer.get_cards_completed_last_7_days_as_assignee(user=assigned_person), 1)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_complete(
+                UserDetailedStatsSerializer, user=assigned_person
+            ),
+            1,
+        )
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_completed_last_7_days_as_assignee(
+                UserDetailedStatsSerializer, user=assigned_person
+            ),
+            1,
+        )
 
     def test_cards_in_the_review_column_waiting_for_a_review(self):
 
@@ -143,7 +179,12 @@ class TestingForTheStatsAPI(TestCase):
         card_4.assignees.set([assigned_person])
 
         # We should get two cards in the review column waiting for a review
-        self.assertEqual(self.stats_serializer.get_cards_in_review_column_as_assignee(user=assigned_person), 2)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_cards_assigned_with_status_in_review(
+                UserDetailedStatsSerializer, user=assigned_person
+            ),
+            2,
+        )
 
     def test_pr_reviews_done_within_the_last_seven_days(self):
 
@@ -168,10 +209,16 @@ class TestingForTheStatsAPI(TestCase):
 
         # Three PR reviews were done but only two of them were done in the last seven days so we should get a value
         # of 2
-        self.assertEqual(self.stats_serializer.get_pr_reviews_done_last_7_days(self.repo_card_one.assignees.first()), 2)
+        self.assertEqual(
+            UserDetailedStatsSerializer.get_pr_reviews_done_last_7_days(
+                UserDetailedStatsSerializer, self.repo_card_one.assignees.first()
+            ),
+            2,
+        )
 
     def test_get_tilde_cards_reviewed_in_last_7_days(self):
         user = UserFactory()
+        serializer = self.serializer
 
         # no reviews done yet
         count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
@@ -227,6 +274,38 @@ class TestingForTheStatsAPI(TestCase):
         count = self.stats_serializer.get_tilde_cards_reviewed_in_last_7_days(user)
         self.assertEqual(count, 2)
 
+    def test_zero_cards_currently_blocked(self):
+        user = UserFactory()
+        serializer = self.serializer
+
+        count = serializer.get_cards_assigned_with_status_blocked(user)
+        self.assertEqual(count, 0)
+
+    def test_one_card_currently_blocked(self):
+
+        serializer = self.serializer
+        card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
+        user = card.assignees.first()
+
+        count = serializer.get_cards_assigned_with_status_blocked(user)
+        self.assertEqual(count, 1)
+
+    def test_one_card_currently_on_ready_status(self):
+
+        card = factories.AgileCardFactory(status=AgileCard.READY)
+        user = card.assignees.first()
+
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
+        self.assertEqual(count, 1)
+
+    def test_zero_cards_currently_on_ready_status(self):
+
+        card = self.card_1
+        user = card.assignees.first()
+
+        count = self.serializer.get_cards_assigned_with_status_ready(user)
+        self.assertEqual(count, 0)
+
     def test_no_tilde_reviews_done_in_last_7_days(self):
         user = UserFactory()
 
@@ -260,9 +339,7 @@ class TestingForTheStatsAPI(TestCase):
         AgileCardFactory(recruit_project=review2.recruit_project)
 
         # add a topic review, now the number of cards reviewed is 3
-        review3 = TopicReviewFactory(
-            timestamp=self.yesterday, reviewer_user=user
-        )
+        review3 = TopicReviewFactory(timestamp=self.yesterday, reviewer_user=user)
         review3.timestamp = self.yesterday
         review3.save()
         AgileCardFactory(topic_progress=review3.topic_progress)
@@ -296,9 +373,7 @@ class TestingForTheStatsAPI(TestCase):
         AgileCardFactory(recruit_project=review2.recruit_project)
 
         # add a topic review, now we should have 3 reviews
-        review3 = TopicReviewFactory(
-            timestamp=self.yesterday, reviewer_user=user
-        )
+        review3 = TopicReviewFactory(timestamp=self.yesterday, reviewer_user=user)
         review3.timestamp = self.yesterday
         review3.save()
         AgileCardFactory(topic_progress=review3.topic_progress)
