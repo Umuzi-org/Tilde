@@ -1,6 +1,8 @@
 from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from django.core.exceptions import ValidationError
+import re
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -53,6 +55,14 @@ class TeamSerializer(serializers.ModelSerializer):
             "active",
             "members",
         ]
+
+    def validate_team_name(self, name):
+        special_char = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+        if special_char.search(fields.get('name')) != None:
+            raise serializers.ValidationError(_('Team name invalid'))
+        return name
+        
+
 
 
 class WhoAmISerializer(serializers.ModelSerializer):
