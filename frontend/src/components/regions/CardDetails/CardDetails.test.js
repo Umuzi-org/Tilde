@@ -2,55 +2,55 @@ import { canSetDueTime } from "./utils";
 
 test(`canSetDueTime function returns true if card belongs to current 
         user and there's no due time set`, () => {
-  const user = {
+  const viewedUser = {
     id: 295,
   };
   const authUser = {
-    userId: user.id,
+    userId: viewedUser.id,
   };
   const card = {
-    assignees: [user.id],
+    assignees: [viewedUser.id],
     dueTime: null,
   };
 
-  expect(canSetDueTime({ card, user, authUser })).toBe(true);
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(true);
 });
 
 test(`canSetDueTime function returns false if card belongs to current user, 
         user has no special permissions and there is a due time set`, () => {
-  const user = {
+  const viewedUser = {
     id: 295,
   };
   const authUser = {
-    userId: user.id,
+    userId: viewedUser.id,
   };
   const card = {
-    assignees: [user.id],
+    assignees: [viewedUser.id],
     dueTime: "2021-06-14T09:58:28Z",
   };
 
-  expect(canSetDueTime({ card, user, authUser })).toBe(false);
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
 
 test(`canSetDueTime function returns false if card doesn't belongs to 
         current user and there's no due time set`, () => {
-  const user = {
+  const viewedUser = {
     id: 295,
   };
   const authUser = {
     userId: 200,
   };
   const card = {
-    assignees: [user.id],
+    assignees: [viewedUser.id],
     dueTime: null,
   };
 
-  expect(canSetDueTime({ card, user, authUser })).toBe(false);
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
 
 test(`canSetDueTime function returns true if card doesn't belongs to current user, 
         current user has management permissions and no due time set`, () => {
-  const user = {
+  const viewedUser = {
     id: 295,
     teamMemberships: {
       28: {
@@ -73,16 +73,16 @@ test(`canSetDueTime function returns true if card doesn't belongs to current use
     },
   };
   const card = {
-    assignees: [user.id],
+    assignees: [viewedUser.id],
     dueTime: null,
   };
 
-  expect(canSetDueTime({ card, user, authUser })).toBe(true);
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(true);
 });
 
 test(`canSetDueTime function returns false if card doesn't belong to current user, 
         current user doesn't have management permissions and there's no due time set`, () => {
-  const user = {
+  const viewedUser = {
     id: 295,
     teamMemberships: {
       28: {
@@ -109,5 +109,5 @@ test(`canSetDueTime function returns false if card doesn't belong to current use
     dueTime: null,
   };
 
-  expect(canSetDueTime({ card, user, authUser })).toBe(false);
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
