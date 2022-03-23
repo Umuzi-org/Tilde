@@ -1,5 +1,5 @@
 """
-python manage.py assign_repo_collab TEAM_SHUFFLE_REVIEW_SELF $TEAM_NAME $CONTENT_ITEM_TITLE 
+python manage.py assign_repo_collab TEAM_SHUFFLE_REVIEW_SELF $TEAM_NAME $CONTENT_ITEM_TITLE
 python manage.py assign_repo_collab TEAM_SHUFFLE_REVIEW_OTHER $TEAM_NAME $CONTENT_ITEM_TITLE $NAME_OF_GROUP_DOING_THE_REVIEWING
 python manage.py assign_repo_collab ADD_USER_TO_REPO_ONLY $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OR_GITHUB_NAME_OF_REVIEWER #can be used to assign people as repo collabs when they aren't Tilde users
 python manage.py assign_repo_collab ADD_USER_AS_CARD_REVIEWER $TEAM_NAME $CONTENT_ITEM_TITLE $EMAIL_OF_REVIEWER
@@ -158,7 +158,9 @@ class Command(BaseCommand):
         content_item_name = options["content_item"]
         reviewer = options["reviewer"]
 
-        content_item = ContentItem.objects.get(title=content_item_name)
+        content_item = ContentItem.objects.get(
+            title=content_item_name, content_type=ContentItem.PROJECT
+        )
 
         allowed_commands[command](
             cohort_name, content_item=content_item, reviewer=reviewer
