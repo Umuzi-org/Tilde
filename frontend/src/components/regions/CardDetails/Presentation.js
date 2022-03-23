@@ -75,8 +75,6 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
   const completeTime =
     card.completeTime && new Date(card.completeTime).toLocaleString();
 
-    console.log(user)
-
   return (
     <React.Fragment>
       <Grid container>
@@ -114,6 +112,8 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
                   <TableCell>Due Time</TableCell>
                   <TableCell>
                     {dueTime}{" "}
+                    {/* testing: expect to return false */}
+                    {user?"true":"false"} 
                     {user && canSetDueTime({ card, user, authUser }) && (
                       <Button
                         variant="outlined"
