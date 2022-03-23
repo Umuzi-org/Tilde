@@ -10,6 +10,8 @@ const LOGOUT = "LOGOUT";
 const FETCH_RECRUIT_PROJECTS_PAGE = "FETCH_RECRUIT_PROJECTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE";
+const FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE =
+  "FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE";
 const FETCH_SINGLE_PROJECT_CARD_SUMMARY = "FETCH_SINGLE_PROJECT_CARD_SUMMARY";
@@ -51,6 +53,8 @@ const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mist
 
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
+
+const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
 
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
@@ -95,6 +99,13 @@ export const apiReduxApps = {
     BASE_TYPE: LOGOUT,
     apiCaller: apiCallers.logout,
     reasonsNotToStart: [],
+  }),
+
+  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
+    apiCaller: apiCallers.activityLogDayCountsPage,
+    responseIsList: true,
+    responseEntityType: "activityLogDayCounts",
   }),
 
   FETCH_RECRUIT_PROJECTS_PAGE: createReduxApp({
@@ -175,6 +186,13 @@ export const apiReduxApps = {
     responseEntityType: "cards",
   }),
 
+  FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE,
+    apiCaller: apiCallers.userBurndownSnapshotsPage,
+    responseIsList: true,
+    responseEntityType: "burndownSnapshots",
+  }),
+
   FETCH_COHORTS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_COHORTS_PAGE,
     apiCaller: apiCallers.cohortsPage,
@@ -185,7 +203,7 @@ export const apiReduxApps = {
   FETCH_SINGLE_REPOSITORY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_REPOSITORY,
     apiCaller: apiCallers.repositoryEntity,
-    responseIsList: true,
+    responseIsList: false,
     responseEntityType: "repositories",
   }),
 

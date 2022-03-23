@@ -5,6 +5,8 @@ from activity_log.models import LogEntry, EventType
 # Card movements #
 ##################
 
+# TODO test that these are created as they should be
+
 CARD_STARTED = "CARD_STARTED"
 CARD_STOPPED = "CARD_STOPPED"
 CARD_REVIEW_REQUESTED = "CARD_REVIEW_REQUESTED"
@@ -63,6 +65,7 @@ COMPETENCE_REVIEW_DONE = "COMPETENCE_REVIEW_DONE"
 def log_project_competence_review_done(review):
     event_type, _ = EventType.objects.get_or_create(name=COMPETENCE_REVIEW_DONE)
     for user in review.recruit_project.recruit_users.all():
+
         LogEntry.debounce_create(
             actor_user=review.reviewer_user,
             effected_user=user,
@@ -70,6 +73,7 @@ def log_project_competence_review_done(review):
             object_2=review.recruit_project,
             event_type=event_type,
             debounce_seconds=False,
+            timestamp=review.timestamp,
         )
 
 
@@ -79,9 +83,10 @@ def log_topic_competence_review_done(review):
         actor_user=review.reviewer_user,
         effected_user=review.topic_progress.user,
         object_1=review,
-        object2=review.topic_progress,
+        object_2=review.topic_progress,
         event_type=event_type,
         debounce_seconds=False,
+        timestamp=review.timestamp,
     )
     # TODO test that these are created as they should be
 
@@ -116,11 +121,11 @@ def log_topic_competence_review_done(review):
 # REVIEW_TRUST_EARNED = "REVIEW_TRUST_EARNED"
 # REVIEW_TRUST_REMOVED = "REVIEW_TRUST_REMOVED"
 
-# def log_review_trust_created():
+# def log_review_trust_earned():
 #     event_type, _ = EventType.objects.get_or_create(name=REVIEW_TRUST_EARNED)
 #     todo
 
 
-# def log_review_trust_removed():
+# def log_review_trust_revoked():
 #     event_type, _ = EventType.objects.get_or_create(name=REVIEW_TRUST_REMOVED)
 #     todo

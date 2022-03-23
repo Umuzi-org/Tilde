@@ -39,7 +39,11 @@ class LogEntry(models.Model):
     )
 
     effected_user = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="log_entries_as_effected_user"
+        User,
+        on_delete=models.PROTECT,
+        related_name="log_entries_as_effected_user",
+        null=True,
+        blank=True,
     )
 
     # object_1 = models.ForeignKey(ObjectEffected)
@@ -85,6 +89,7 @@ class LogEntry(models.Model):
         object_1,
         object_2=None,
         debounce_seconds=120,
+        timestamp=None,
     ):
         """
         Create a log entry if there isn't a similar log entry that was created within the debounce period.
@@ -108,21 +113,31 @@ class LogEntry(models.Model):
         )
 
         if debounce_seconds:
+            assert not timestamp
             match = match.filter(
                 timestamp__gte=timezone.now()
                 - timezone.timedelta(seconds=debounce_seconds)
             )
 
-        match = match.first()
+        if timestamp:
+            assert not debounce_seconds
+            match = match.filter(timestamp=timestamp)
 
-        if match == None:
-            Cls.objects.create(
-                actor_user=actor_user,
-                effected_user=effected_user,
-                object_1=object_1,
-                object_2=object_2,
-                event_type=event_type,
-            )
+        match = match.first()
+        if match:
+            return match
+
+        o = Cls.objects.create(
+            actor_user=actor_user,
+            effected_user=effected_user,
+            object_1=object_1,
+            object_2=object_2,
+            event_type=event_type,
+        )
+        if timestamp:
+            o.timestamp = timestamp
+            o.save()
+        return o
 
     # def set_object(self, number,object):
     #     content_type = ContentType.objects.get_for_model(object)

@@ -1,3 +1,4 @@
+# from backend.curriculum_tracking.models import AgileCard
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
@@ -7,7 +8,12 @@ from . import factories
 from core.tests import factories as core_factories
 from django.utils.timezone import datetime
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview
+from curriculum_tracking.models import (
+    ContentItem,
+    RecruitProjectReview,
+    AgileCard,
+    ContentItem,
+)
 from django.utils import timezone
 from taggit.models import Tag
 from curriculum_tracking.constants import (
@@ -59,6 +65,107 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         content.topic_needs_review = True
         content.save()
         return topic_progress
+
+
+class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+        "requires_cards",
+        "required_by_cards",
+        "project_submission_type_nice",
+        "topic_needs_review",
+        "topic_progress",
+        "due_time",
+        "complete_time",
+        "review_request_time",
+        "start_time",
+        "tag_names",
+        "can_start",
+        "can_force_start",
+        # "open_pr_count",
+    ]
+
+    def setUp(self):
+        self.content_item_test = factories.ProjectContentItemFactory(
+            project_submission_type=ContentItem.LINK, template_repo=None
+        )
+        self.card_1 = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item_test
+            ),
+            content_item=self.content_item_test,
+        )
+        self.card_2 = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item_test
+            ),
+            content_item=self.content_item_test,
+        )
+
+        self.card_1.start_project()
+        self.card_2.start_project()
+
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
+
+    def test_request_review_permissions_non_superuser_staff(self):
+
+        staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_user)
+
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+
+    def test_request_review_permissions_non_assignee(self):
+
+        recruit_user_non_card_assignee = factories.UserFactory(
+            is_superuser=False, is_staff=False
+        )
+        self.login(recruit_user_non_card_assignee)
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+
+    def test_request_review_permissions_superuser(self):
+        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
+        self.login(superuser)
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+
+    def test_request_review_permissions_assignee(self):
+
+        self.login(self.card_2.assignees.first())
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
 
 class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
@@ -374,7 +481,7 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
 
 class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
 
-    LIST_URL_NAME = 'reviewtrust-list'
+    LIST_URL_NAME = "reviewtrust-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
@@ -411,14 +518,17 @@ class ReviewerTrustViewsetTests(APITestCase, APITestCaseMixin):
             user=factories.UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(review_trust_object.user)
-        response = self.client.get(f'{self.api_url}?user={review_trust_object.user.id}')
+        response = self.client.get(f"{self.api_url}?user={review_trust_object.user.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get('content_item_title'), review_trust_object.content_item.title)
+        self.assertEqual(
+            response.data[0].get("content_item_title"),
+            review_trust_object.content_item.title,
+        )
 
 
 class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
-    LIST_URL_NAME = 'burndownsnapshot-list'
+    LIST_URL_NAME = "burndownsnapshot-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
@@ -444,16 +554,20 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
             user=UserFactory(is_superuser=False, is_staff=False)
         )
         self.login(burndown_snapshot_object.user)
-        response = self.client.get(f'{self.api_url}?user__id={burndown_snapshot_object.user.id}')
+        response = self.client.get(
+            f"{self.api_url}?user__id={burndown_snapshot_object.user.id}"
+        )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get('user'), burndown_snapshot_object.user.id)
+        self.assertEqual(response.data[0].get("user"), burndown_snapshot_object.user.id)
 
-    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(self):
+    def test_team_members_can_view_burndown_snapshot_objects_of_fellow_team_members(
+        self,
+    ):
 
         for user in self.team1_users:
             self.login(user)
-            response = self.client.get(f'{self.api_url}?user__id={user.id}')
+            response = self.client.get(f"{self.api_url}?user__id={user.id}")
             self.assertEqual(response.status_code, 200)
 
     def test_team1_users_cannot_view_team2_burndown_snapshot_objects(self):
@@ -463,7 +577,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
         for user in self.team1_users:
             self.login(user)
-            response = self.client.get(f'{self.api_url}?user__id={[user.id for user in team2_users]}')
+            response = self.client.get(
+                f"{self.api_url}?user__id={[user.id for user in team2_users]}"
+            )
             self.assertEqual(response.status_code, 403)
-
-

@@ -1,4 +1,4 @@
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer
+from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -176,7 +176,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["GET"],
-        serializer_class=UserStatsPerWeekSerializer,
+        serializer_class=UserDetailedStatsSerializer,
         permission_classes=[
             IsAdminUser
             | core_permissions.IsMyUser
@@ -190,7 +190,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user_object = self.get_object()
-            return Response(UserStatsPerWeekSerializer(user_object).data)
+            return Response(UserDetailedStatsSerializer(user_object).data)
         else:
             return Response(serializer.errors, status="BAD_REQUEST")
 
