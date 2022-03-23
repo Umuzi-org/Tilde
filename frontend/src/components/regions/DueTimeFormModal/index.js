@@ -18,11 +18,12 @@ function DueTimeFormModalUnconnected({
     }
   }, [cardId, fetchAgileCard, card]);
 
-  console.log(card);
-  const user = card.assignees === undefined ? null : users[card.assignees[0]];
+  // console.log(card);
+  const viewedUser =
+    card.assignees === undefined ? null : users[card.assignees[0]];
 
   const props = {
-    user,
+    viewedUser,
     cardId,
     card,
     handleClose,

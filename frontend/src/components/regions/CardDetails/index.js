@@ -117,8 +117,7 @@ function CardDetailsUnconnected({
     openDueTimeFormModal({ cardId });
   };
 
-  // TODO: change user to be viewed user
-  const user = card && users[card.assignees[0]];
+  const viewedUser = card && users[card.assignees[0]];
 
   const isReviewer =
     ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
@@ -158,7 +157,7 @@ function CardDetailsUnconnected({
     cardId,
     authUser,
     card,
-    user,
+    viewedUser,
     topicProgressId,
     topicProgress,
     // topicReviews,

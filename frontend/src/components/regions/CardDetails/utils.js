@@ -1,7 +1,6 @@
-function userHasPermissionsToManageCards({ authUser, user }) {
-
-  const teamMemberships = user.teamMemberships
-    ? Object.keys(user.teamMemberships)
+function userHasPermissionsToManageCards({ authUser, viewedUser }) {
+  const teamMemberships = viewedUser.teamMemberships
+    ? Object.keys(viewedUser.teamMemberships)
     : [];
   const teams = authUser.permissions ? authUser.permissions.teams : [];
   for (let teamId of teamMemberships) {
@@ -13,14 +12,11 @@ function userHasPermissionsToManageCards({ authUser, user }) {
   return false;
 }
 
-export function canSetDueTime({ card, user, authUser }) {
-
-  console.log('CARD')
-  // user = user[card.assignees[0]]  
-  if (user.id === authUser.userId && card.dueTime === null) {
+export function canSetDueTime({ card, viewedUser, authUser }) {
+  if (viewedUser.id === authUser.userId && card.dueTime === null) {
     return true;
   }
-  if (userHasPermissionsToManageCards({ user, authUser })) {
+  if (userHasPermissionsToManageCards({ viewedUser, authUser })) {
     return true;
   }
   return false;
