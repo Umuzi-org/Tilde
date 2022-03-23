@@ -189,6 +189,7 @@ def check_email(row):
 
 
 def check_github(row):
+    # todo make use of github api user_exists function
     if GIT not in row:
         return True
     github = clean_github_username(row[GIT].strip())
@@ -219,7 +220,11 @@ def setup_user(email, first_name, last_name, github, sequence, bootcamp_name):
 
     team = get_team(sequence, bootcamp_name)
     team.user_set.add(user)
+
+    # add the user to github org
+
     print(f"User setup completed for: {user}")
+
     return user
 
 

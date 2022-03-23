@@ -1,6 +1,9 @@
 import React from "react";
-import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+import { getAgeString } from "../../widgets/utils";
+import { getPrStatus, getTildeReviewStatus } from "./utils";
 import { makeStyles } from "@material-ui/core/styles";
+import LinkToUserBoard from "../../widgets/LinkToUserBoard";
+
 import {
   Paper,
   Typography,
@@ -19,7 +22,8 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme) => ({
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -27,15 +31,32 @@ const useStyles = makeStyles({
   textBoxSize: {
     width: "62%",
   },
-});
-const TeamSummaryStats = ({ summaryStats }) => {
-  const oldestOpenPrTime = summaryStats.oldestOpenPrTime
-    ? new Date(summaryStats.oldestOpenPrTime)
-    : null;
+  warning: {
+    color: theme.palette.warning.dark,
+  },
+  error: {
+    color: theme.palette.error.dark,
+  },
+  default: {
+    color: theme.palette.primary,
+  },
+  bottomMargin: {
+    marginBottom: "8px",
+  },
+}));
 
-  const oldestCardInReviewTime = summaryStats.oldestCardInReviewTime
-    ? new Date(summaryStats.oldestCardInReviewTime)
-    : null;
+const TeamSummaryStats = ({ summaryStats }) => {
+  const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime
+    ? summaryStats.oldestOpenPrTime.slice(0, 10)
+    : undefined;
+  const dateOfOldestTildeReviewRequest = summaryStats.oldestCardInReviewTime
+    ? summaryStats.oldestCardInReviewTime.slice(0, 10)
+    : undefined;
+  const classes = useStyles();
+
+  const prStatusClassName = classes[getPrStatus(dateOfOldestPullRequest)];
+  const tildeReviewStatusClassName =
+    classes[getTildeReviewStatus(dateOfOldestTildeReviewRequest)];
 
   return (
     <Table>
@@ -50,16 +71,18 @@ const TeamSummaryStats = ({ summaryStats }) => {
         <TableRow>
           <TableCell>Pull Requests</TableCell>
           <TableCell>{summaryStats.totalOpenPrs}</TableCell>
-          <TableCell>
-            {oldestOpenPrTime ? oldestOpenPrTime.toLocaleString() : "-"}
+          <TableCell className={prStatusClassName}>
+            {dateOfOldestPullRequest
+              ? getAgeString(dateOfOldestPullRequest)
+              : "-"}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Review Cards</TableCell>
           <TableCell>{summaryStats.totalCardsInReview}</TableCell>
-          <TableCell>
-            {oldestCardInReviewTime
-              ? oldestCardInReviewTime.toLocaleString()
+          <TableCell className={tildeReviewStatusClassName}>
+            {dateOfOldestTildeReviewRequest
+              ? getAgeString(dateOfOldestTildeReviewRequest)
               : "-"}
           </TableCell>
         </TableRow>
@@ -127,11 +150,12 @@ const UserCard = ({ email, user }) => {
         {email}
       </Typography>
 
-      <LinkToUserBoard
-        userId={user.userId}
-        className={classes.title}
-        label="View"
-      />
+      <div className={classes.bottomMargin}>
+        <LinkToUserBoard
+          userId={user.userId}
+          label="View"
+        />
+      </div>
     </Paper>
   );
 };
