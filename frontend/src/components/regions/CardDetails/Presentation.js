@@ -113,7 +113,7 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
                   <TableCell>
                     {dueTime}{" "}
                     {/* testing: expect to return false */}
-                    {user?"true":"false"} 
+                    {/* {user?"true":"false"}  */}
                     {user && canSetDueTime({ card, user, authUser }) && (
                       <Button
                         variant="outlined"

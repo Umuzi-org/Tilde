@@ -14,8 +14,9 @@ function userHasPermissionsToManageCards({ authUser, user }) {
 }
 
 export function canSetDueTime({ card, user, authUser }) {
+
   console.log('CARD')
-  user = user[card.assignees[0]]  
+  // user = user[card.assignees[0]]  
   if (user.id === authUser.userId && card.dueTime === null) {
     return true;
   }
