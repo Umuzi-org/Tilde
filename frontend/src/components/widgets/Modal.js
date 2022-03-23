@@ -2,9 +2,7 @@ import React from "react";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -15,13 +13,6 @@ const useStyles = makeStyles((theme) => ({
 
   backDrop: {
     background: "rgba(0,0,0,0.15)",
-  },
-
-  exitIcon: {
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
   },
 }));
 
@@ -46,13 +37,6 @@ export default ({ open, onClose, children }) => {
     >
       <React.Fragment>
         <Fade in={open}>{children}</Fade>
-        <Button
-          variant="outlined"
-          onClick={onClose}
-          className={classes.exitIcon}
-        >
-          <CloseIcon />
-        </Button>
       </React.Fragment>
     </Modal>
   );
