@@ -80,23 +80,25 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
+        {review.comments.length > 220 ?
         <div>
-          {review.comments.length > 220 && review.comments.includes("\n") ? (
-            <Button
-              type="button"
-              size="small"
-              className={classes.iconAlignment}
-              onClick={() => setOpenReviewPopUp(true)}
-            >
-              <Typography variant="caption" className={classes.readMoreStyle}>
-                ... Read more
-              </Typography>
-            </Button>
-          ) : (
-            <React.Fragment />
-          )}
+          <Button
+            type="button"
+            size="small"
+            className={classes.iconAlignment}
+            onClick={() => setOpenReviewPopUp(true)}
+          >
+            <Typography variant="caption" className={classes.readMoreStyle}>
+              ... Read more
+            </Typography>
+          </Button>
           <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
         </div>
+        :
+        <div>
+          <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
+        </div>
+}
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
