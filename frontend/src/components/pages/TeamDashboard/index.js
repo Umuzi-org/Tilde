@@ -61,6 +61,7 @@ function DashboardUnconnected({
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
     ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
   ];
+
   const props = {
     team,
     activityLogDayCounts: getActivityLogCountsByDayForUsers({

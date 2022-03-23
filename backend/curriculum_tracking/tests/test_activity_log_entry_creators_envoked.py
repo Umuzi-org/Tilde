@@ -40,12 +40,12 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
         start_url = f"{self.get_instance_url(card.id)}start_project/"
         response = self.client.post(start_url)
-        assert response.status_code == 200, response.data
+        self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
 
         # sanity check
-        assert card.assignees.count() == 1
+        self.assertEqual(card.assignees.count(), 1)
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
@@ -99,7 +99,7 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         response = self.client.post(
             start_url, data={"status": COMPETENT, "comments": "weee"}
         )
-        assert response.status_code == 200, response.data
+        self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
 
@@ -119,6 +119,7 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(LogEntry.objects.count(), 2)
 
 
+<<<<<<< HEAD
 class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
@@ -221,3 +222,43 @@ class log_project_and_topic_competence_reviews_done_TESTS(APITestCase, APITestCa
         log_entry = LogEntry.objects.first()
         self.assertEqual(log_entry.actor_user, topic_review.reviewer_user)
         self.assertEqual(log_entry.timestamp, topic_review.timestamp)
+=======
+class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+
+    def test_review_requested(self):
+        actor_user = UserFactory(is_superuser=True, is_staff=True)
+        content_item = factories.ProjectContentItemFactory(
+            project_submission_type=ContentItem.LINK, template_repo=None
+        )
+        card = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+            content_item=content_item,
+        )
+        self.login(actor_user)
+        card.start_project()
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+
+        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+
+        # sanity check
+        self.assertEqual(card.assignees.count(), 1)
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        self.assertEqual(entry.actor_user, actor_user)
+        self.assertEqual(entry.effected_user, card.assignees.first())
+        self.assertEqual(entry.object_1, card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+>>>>>>> develop

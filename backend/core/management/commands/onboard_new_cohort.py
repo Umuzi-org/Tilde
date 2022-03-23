@@ -146,7 +146,7 @@ def setup_rocketchat_users(df):
     try:
         df.apply(
             create_rocketchat_user_and_add_to_channel(
-                client, ["ryan", "asanda", "sheena"]
+                client, ["ryan", "asanda", "jacob"]  # TODO: make this configurable
             ),
             axis=1,
         )
@@ -233,5 +233,5 @@ class Command(BaseCommand):
         df.apply(set_up_course_registrations, axis=1)
         print("setting up rocketchat users")
         setup_rocketchat_users(df)
-        print("re-reviewing cards")
+        # print("re-reviewing cards")
         # df.apply(re_review_cards, axis=1)

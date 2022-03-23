@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import Presentation from "./Presentation.js";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-// import operations from "./redux/operations.js";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
