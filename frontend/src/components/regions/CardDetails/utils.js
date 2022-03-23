@@ -8,7 +8,7 @@
 
 function cleanMarkdown(review) {
   const ignore = review.replace(/[^A-Za-z;!.,:]/gi, " ");
-  const cleanWhiteSpace = ignore.replace("   ", " ").split("  ").join(" ");
+  const cleanWhiteSpace = ignore.replace(/\s+/g, " ");
   return cleanWhiteSpace.replace(" . ", " ");
 }
 

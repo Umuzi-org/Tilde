@@ -80,8 +80,6 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {review.comments.length > 220 ?
-        <div>
           <Button
             type="button"
             size="small"
@@ -93,12 +91,6 @@ const Review = ({ review }) => {
             </Typography>
           </Button>
           <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
-        </div>
-        :
-        <div>
-          <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
-        </div>
-}
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
