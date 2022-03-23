@@ -117,7 +117,7 @@ const CardBasicDetails = ({
                   <TableCell>Due Time</TableCell>
                   <TableCell>
                     {dueTime}{" "}
-                    {viewedUser &&
+                    {viewedUser && card.dueTime === null &&
                       canSetDueTime({ card, viewedUser, authUser }) && (
                         <Button
                           variant="outlined"
