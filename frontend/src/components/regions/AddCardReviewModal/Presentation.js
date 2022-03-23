@@ -159,12 +159,12 @@ export default ({
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
         <Grid container xs={12}>
-          <Grid item xs={11}>
+          <Grid item xs={10} sm={11}>
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
             </Typography>
           </Grid>
-          <Grid item xs={1} className={classes.exitIcon}>
+          <Grid item xs={2} sm={1} className={classes.exitIcon}>
             <Button variant="outlined" onClick={closeModal}>
               <CloseIcon />
             </Button>
