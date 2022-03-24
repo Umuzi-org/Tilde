@@ -8,9 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-// import ShowMoreText from "react-show-more-text";
-// import ExpandLess from "@material-ui/icons/ExpandLess";
-// import ExpandMore from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,11 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review }) => {
+export default function Review({ review }){
   const classes = useStyles();
-
-  // const [expand, setExpand] = useState(false);
-  // const onClick = () => setExpand(!expand);
 
   const timestamp = new Date(review.timestamp);
 
@@ -68,19 +62,7 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {/* <Typography className={classes.cardFont}>
-          <ShowMoreText
-            lines={1}
-            more={<ExpandMore />}
-            less={<ExpandLess />}
-            onClick={onClick}
-            expanded={expand}
-            width={0}
-            truncatedEndingComponent={"..."}
-            > */}
         <Markdown children={review.comments} />
-        {/* </ShowMoreText> */}
-        {/* </Typography> */}
       </CardContent>
       <IconButton>
         <ReviewStatus status={review.status} />
@@ -91,5 +73,3 @@ const Review = ({ review }) => {
     </Card>
   );
 };
-
-export default Review;

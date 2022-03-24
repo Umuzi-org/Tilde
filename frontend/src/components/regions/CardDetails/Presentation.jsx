@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const TopicProgressDetails = ({ topicProgress, reviews }) => {
+function TopicProgressDetails({ topicProgress, reviews }) {
   return (
     <React.Fragment>
       {topicProgress.topicNeedsReview ? (
@@ -63,14 +63,14 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
       )}
     </React.Fragment>
   );
-};
+}
 
-const CardBasicDetails = ({
+function CardBasicDetails({
   card,
   viewedUser,
   authUser,
   handleClickSetDueTime,
-}) => {
+}) {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -117,7 +117,8 @@ const CardBasicDetails = ({
                   <TableCell>Due Time</TableCell>
                   <TableCell>
                     {dueTime}{" "}
-                    {viewedUser && card.dueTime === null &&
+                    {viewedUser &&
+                      card.dueTime === null &&
                       canSetDueTime({ card, viewedUser, authUser }) && (
                         <Button
                           variant="outlined"
@@ -154,7 +155,7 @@ const CardBasicDetails = ({
       </Grid>
     </React.Fragment>
   );
-};
+}
 
 export default ({
   card,
