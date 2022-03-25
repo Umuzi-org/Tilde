@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   cardStyle: {
     display: "block",
     position: "relative",
-    maxWidth: "90%",
+    width: "90vw",
   },
   timeStyle: {
     fontSize: 11,
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewPopUp = ({ review, openReviewPopUp, onClose }) => {
+function ReviewPopUp({ review, openReviewPopUp, onClose }) {
   const classes = useStyles();
   const timestamp = new Date(review.timestamp);
 
@@ -83,6 +83,6 @@ const ReviewPopUp = ({ review, openReviewPopUp, onClose }) => {
       </Card>
     </Modal>
   );
-};
+}
 
 export default ReviewPopUp;
