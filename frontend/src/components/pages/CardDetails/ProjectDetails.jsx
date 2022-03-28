@@ -3,7 +3,7 @@ import { Paper, Button, Grid, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewContentButton from "../../widgets/ViewContentButton";
 
-import RepositoryDetails from "../../regions/RepositoryDetails";
+import RepositoryDetails from "./RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
 
 import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
