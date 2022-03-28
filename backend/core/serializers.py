@@ -56,14 +56,25 @@ class TeamSerializer(serializers.ModelSerializer):
             "members",
         ]
 
-    def validate_team_name(self, name):
-        special_char = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
-        if special_char.search(fields.get('name')) != None:
-            raise serializers.ValidationError(_('Team name invalid'))
-        return name
+    # name = serializers.SerializerMethodField("validate_team_name")
+
+    # def validate_team_name(self, name):
+    #     special_char = r'[^a-zA-Z$]'
+    #     if re.search(special_char,name):
+    #         return name
+    #     else:
+    #         raise serializers.ValidationError('Team name invalid')
+
+    def validate_team_name(self, instance):
+
+        for team in instance.teams():
+            # serializer = TeamSerializer(data ={"name": team.name})
+            special_char = re.compile('[^a-zA-Z$]')
+            if special_char.search(instance("name")) == 0:
+                raise serializers.ValidationError('Team name invalid')
+            return name
         
-
-
+    
 
 class WhoAmISerializer(serializers.ModelSerializer):
     class Meta:
