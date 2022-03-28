@@ -44,7 +44,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-function getProjectConfig({ contentItemId, flavours }) {
+export function getProjectConfig({ contentItemId, flavours }) {
   const configFilePath = `${CONFIGURATION_REPO_PATH}/config.yaml`;
   const allConfig = yaml.load(fs.readFileSync(configFilePath, "utf8"));
 
@@ -55,16 +55,16 @@ function getProjectConfig({ contentItemId, flavours }) {
   if (matchingConfig.length === 1) return matchingConfig[0];
 }
 
-export async function mark({ contentItemId, repoUrl, flavours }) {
-  const config = getProjectConfig({ contentItemId, flavours });
+export async function mark({ config, repoUrl }) {
+  // const config = getProjectConfig({ contentItemId, flavours });
 
-  if (config === undefined) {
-    return {
-      status: STATUS_ERROR,
-      message:
-        "Configuration error. Either there is no matching configuration, or there are too many configuration entities that match",
-    };
-  }
+  // if (config === undefined) {
+  //   return {
+  //     status: STATUS_ERROR,
+  //     message:
+  //       "Configuration error. Either there is no matching configuration, or there are too many configuration entities that match",
+  //   };
+  // }
 
   const markProject = markers[config.marker];
   if (markProject === undefined)

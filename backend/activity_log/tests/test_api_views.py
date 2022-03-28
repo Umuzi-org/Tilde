@@ -58,3 +58,11 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
 
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.today.date()))
+
+
+class TestEventTypeViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "eventtype-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.EventTypeFactory(description="a party")
