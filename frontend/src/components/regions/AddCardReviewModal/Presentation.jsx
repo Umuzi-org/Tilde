@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StatusHelp = () => {
+function StatusHelp() {
   return (
     <Help buttonText="How do I choose a status?">
       <Paper>
