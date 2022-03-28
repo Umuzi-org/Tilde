@@ -8,7 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../../routes";
 import LaunchIcon from "@material-ui/icons/Launch";
 
 const useStyles = makeStyles(() => ({
