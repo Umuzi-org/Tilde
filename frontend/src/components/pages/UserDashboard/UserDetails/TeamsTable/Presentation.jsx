@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TeamsTable = ({ teams, authUser }) => {
+function TeamsTable({ teams, authUser }) {
   const classes = useStyles();
   return (
     <Table stickyHeader aria-label="sticky table">
