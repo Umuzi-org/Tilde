@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
-const arrayToObjectWithIdKeys = ({ data }) => {
+function arrayToObjectWithIdKeys({ data }) {
   let dataAsObject = {};
 
   data.forEach((element) => {
@@ -14,7 +14,7 @@ const arrayToObjectWithIdKeys = ({ data }) => {
   return dataAsObject;
 };
 
-const getColumns = ({ cards }) => {
+function getColumns({ cards }) {
   const sortedUniqueContentIds = cards
     .map((card) => card.contentItem)
     .filter((v, i, a) => a.indexOf(v) === i);
@@ -42,7 +42,7 @@ const getColumns = ({ cards }) => {
     .sort((card1, card2) => card1.order - card2.order);
 };
 
-const getRows = ({ cards, filterByUsers }) => {
+function getRows({ cards, filterByUsers }) {
   const userIds = cards
     .map((card) => card.assignees)
     .flat()
@@ -67,7 +67,7 @@ const getRows = ({ cards, filterByUsers }) => {
   return rows;
 };
 
-const filteredCardsAsArray = ({ cards, filterByUsers }) => {
+function filteredCardsAsArray({ cards, filterByUsers }) {
   return Object.values(cards).filter((card) => {
     for (let assignee of card.assignees) {
       if (filterByUsers[assignee]) return true;
@@ -76,7 +76,7 @@ const filteredCardsAsArray = ({ cards, filterByUsers }) => {
   });
 };
 
-const getStudentUserDisplayData = ({ userGroup }) => {
+function getStudentUserDisplayData({ userGroup }) {
   if (!userGroup) return {};
   let ret = {};
   userGroup.members.forEach((member) => {
@@ -102,14 +102,14 @@ function getApiCallData({
   return ret;
 }
 
-const GroupCardSummaryUnconnected = ({
+function GroupCardSummaryUnconnected({
   cards,
   teams,
   FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
   fetchSingleUserGroup,
   fetchUserGroupSummaryCards,
   fetchUserGroupSummaryCardsByDataSequence,
-}) => {
+}) {
   const { teamId } = useParams();
   const userGroup = teams[teamId];
 
