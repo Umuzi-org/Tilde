@@ -63,8 +63,6 @@ const Review = ({ review }) => {
   const classes = useStyles();
   const {openReviewPopUp, setOpenReviewPopUp} = useOpenAndCloseReviewPopUp()
 
-  console.log("open :" + openReviewPopUp, "set :" + setOpenReviewPopUp)
-
   const timestamp = new Date(review.timestamp);
 
   return (
