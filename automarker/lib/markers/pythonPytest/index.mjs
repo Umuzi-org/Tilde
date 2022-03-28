@@ -13,5 +13,8 @@ function lookForTestProblems(testOutput) {
   if (testOutput.indexOf("ERRORS") != -1) {
     return [testOutput];
   }
+  if (testOutput.indexOf("FAILURES") != -1) {
+    return [testOutput];
+  }
   return [];
 }

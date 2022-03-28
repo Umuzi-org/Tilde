@@ -7,11 +7,11 @@ const ERROR_STATUS = "error";
 const WARNING_STATUS = "warning";
 const DEFAULT_STATUS = "default";
 
-export const timeDifferenceInDays = (time) => {
+export function timeDifferenceInDays (time) {
   return Math.floor(Math.abs(new Date() - new Date(time)) / (1000 * 3600 * 24))
 };
 
-export const getPrStatus = (oldestOpenPrTime) => {
+export function getPrStatus (oldestOpenPrTime) {
   const ageInDays = timeDifferenceInDays(oldestOpenPrTime);
   if (ageInDays >= PR_ERROR_AGE_THRESHOLD) {
     return ERROR_STATUS;
@@ -22,7 +22,7 @@ export const getPrStatus = (oldestOpenPrTime) => {
   return DEFAULT_STATUS;
 };
 
-export const getTildeReviewStatus = (oldestOpenTildeReviewTime) => {
+export function getTildeReviewStatus (oldestOpenTildeReviewTime) {
   const ageInDays = timeDifferenceInDays(oldestOpenTildeReviewTime);
   if (ageInDays >= TILDE_ERROR_AGE_THRESHOLD) {
     return ERROR_STATUS;
