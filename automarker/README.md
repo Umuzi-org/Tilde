@@ -31,13 +31,25 @@ curl http://localhost:1313/health-check
 
 ### The setup
 
-In order to review code, you will need to have cloned the automarker configuration repo and put it somewhere sensible. Set `CONFIGURATION_REPO_PATH` to point to the configuration repo.
+In order to review code, you will need to have cloned the automarker configuration repo and put it somewhere sensible.
 
-The auto-marker will need to clone that code you are marking. It expects keys to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
+By default, the automarker looks for config inside `project_config` directory. Also, project_config is gitignored. So you can safely do the following:
+
+```
+git clone $THE_CONFIG_REPO project_config
+```
+
+And it will just work.
+
+You can also use a non standard location by setting the `CONFIGURATION_REPO_PATH` environmental variable.
+
+The auto-marker will need to clone that code you are marking. It expects keys and access to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
 
 ### The mark project endpoint
 
-To review code, make a json POST request to the mark-project endpoint. For example:
+To review code, make a json POST request to the mark-project endpoint.
+
+Here are a few examples of passing code:
 
 ```
 curl \
@@ -46,14 +58,11 @@ curl \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
 http://localhost:1313/mark-project
 
-
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-js.git","contentItemId":273, "flavours": ["javascript"]}' \
 http://localhost:1313/mark-project
-
-
 
 curl \
 --request POST \
@@ -61,14 +70,11 @@ curl \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-java.git","contentItemId":273, "flavours": ["java"]}' \
 http://localhost:1313/mark-project
 
-
-
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-person-java.git","contentItemId":223, "flavours": ["java"]}' \
 http://localhost:1313/mark-project
-
 
 ```
 
@@ -95,3 +101,7 @@ Container 1 will only be in charge of cloning repos. It will need a github key t
 Container 2 will have access to the clone destination and nothing else. It will be in charge of actually running the tests.
 
 ## Future work
+
+Right now things are set up so we can check if a submitted project passes a given set of tests. But we don't check to see if a submitted suite of tests is sufficient.
+
+It could be useful to run the learner's tests against code with known problems.
