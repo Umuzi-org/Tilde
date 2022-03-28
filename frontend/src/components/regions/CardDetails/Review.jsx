@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -10,6 +10,7 @@ import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 import { trimReviewComments } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
+import useOpenAndCloseReviewPopUp from "./hooks/openAndCloseReviewPopUp";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,7 +61,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Review = ({ review }) => {
   const classes = useStyles();
-  const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
+  const {openReviewPopUp, setOpenReviewPopUp} = useOpenAndCloseReviewPopUp()
+
+  console.log("open :" + openReviewPopUp, "set :" + setOpenReviewPopUp)
 
   const timestamp = new Date(review.timestamp);
 
