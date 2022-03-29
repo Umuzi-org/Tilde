@@ -37,9 +37,9 @@ router.register(r"teams", core_views.TeamViewSet, "team")
 
 
 router.register(
-    r"managment_actions",
+    r"management_actions",
     curriculum_tracking_api_views.ManagementActionsViewSet,
-    "managmentaction-list",
+    "managementaction-list",
 )
 
 router.register(
