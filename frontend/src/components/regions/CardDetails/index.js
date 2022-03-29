@@ -10,6 +10,8 @@ import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 import { getShowAddReviewButton } from '../../../utils/cardButtons';
 
 import {
+  IN_REVIEW, 
+  COMPLETE,
   REVIEW_FEEDBACK,
   IN_PROGRESS,
 } from "../../../constants";
@@ -104,7 +106,14 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
+  const isReviewer =
+    ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
+
   const projectCardStatus = project && project.agileCardStatus;
+
+  const permissions = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus);
+
+  const showAddReviewButton = getShowAddReviewButton({ card, permissions, isReviewer });
 
   const showUpdateProjectLinkForm =
     isAssignee &&
@@ -135,7 +144,7 @@ function CardDetailsUnconnected({
     projectReviews: currentProjectReviews,
 
     handleClickAddReview,
-    getShowAddReviewButton,
+    showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
 
