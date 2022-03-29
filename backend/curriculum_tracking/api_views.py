@@ -162,32 +162,6 @@ class CardSummaryViewset(viewsets.ModelViewSet):
     )
 
 
-#     def get_permissions(self):
-#         # curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
-#         #     | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
-#         breakpoint()
-#         foo
-#         o = PermissionClass()
-#         o.has_permission(view=self, request=self.request)
-#         """
-#         curl 'http://127.0.0.1:8000/api/card_summaries/3/' \
-#   -H 'Connection: keep-alive' \
-#   -H 'Pragma: no-cache' \
-#   -H 'Cache-Control: no-cache' \
-#   -H 'Authorization: Token e27297adb4c35d54f5bec3125a92cc48f783899c' \
-#   -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36' \
-#   -H 'Content-Type: application/json' \
-#   -H 'Accept: */*' \
-#   -H 'Origin: http://localhost:3000' \
-#   -H 'Sec-Fetch-Site: cross-site' \
-#   -H 'Sec-Fetch-Mode: cors' \
-#   -H 'Sec-Fetch-Dest: empty' \
-#   -H 'Accept-Language: en-US,en;q=0.9' \
-#   --compressed
-#         """
-#         return super().get_permissions()
-
-
 class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
@@ -246,15 +220,15 @@ class AgileCardViewset(viewsets.ModelViewSet):
         methods=["post"],
         serializer_class=serializers.SetDueTimeSerializer,
         permission_classes=[
-                curriculum_permissions.IsCardAssignee
-                & curriculum_permissions.CardDueTimeIsNotSet
-                | IsStaffUser
-                | HasObjectPermission(
-                    permissions=Team.PERMISSION_MANAGE_CARDS,
-                    get_objects=_get_teams_from_card,
-                )
-            ]
-        )
+            curriculum_permissions.IsCardAssignee
+            & curriculum_permissions.CardDueTimeIsNotSet
+            | IsStaffUser
+            | HasObjectPermission(
+                permissions=Team.PERMISSION_MANAGE_CARDS,
+                get_objects=_get_teams_from_card,
+            )
+        ],
+    )
     def set_card_due_time(self, request, pk=None):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

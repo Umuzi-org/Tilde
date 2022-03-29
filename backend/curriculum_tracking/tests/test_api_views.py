@@ -31,7 +31,6 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         "start_time",
         "open_pr_count",
         "oldest_open_pr_updated_time",
-        "flavour_names",
     ]
 
     def verbose_instance_factory(self):
@@ -197,7 +196,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         project.review_request_time = timezone.now() - timedelta(days=5)
         project.save()
         review = factories.RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT, recruit_project=project,
+            status=NOT_YET_COMPETENT,
+            recruit_project=project,
         )
         review.timestamp = timezone.now() - timedelta(days=1)
         review.save()
@@ -240,14 +240,14 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 
         self.login(recruit)
 
-        response = self.client.post(
-            url, data={"due_time": due_time_1, "content_item": card.content_item.id}
-        )
+        response = self.client.post(url, data={"due_time": due_time_1})
 
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
         progress = get_progress(card)
+
+        self.assertEqual(progress.due_time.strftime("%c"), due_time_1.strftime("%c"))
 
         response = self.client.post(url, data={"due_time": due_time_1})
 
@@ -255,9 +255,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
         self.login(staff_member)
-        response = self.client.post(
-            url, data={"due_time": due_time_2, "content_item": card.content_item.id}
-        )
+        response = self.client.post(url, data={"due_time": due_time_2})
 
         self.assertEqual(response.status_code, 200)
 

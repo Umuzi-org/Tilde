@@ -222,7 +222,6 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
-            "flavour_names"
         ]
 
 
