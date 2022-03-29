@@ -233,6 +233,37 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.card_2.refresh_from_db()
         self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
+    def test_cancel_request_review_card_with_review_feedback(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
+        self.login(superuser)
+        add_review_url = f"{self.get_instance_url(self.card_2.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "boooo"}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
+
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
+
 
 class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"

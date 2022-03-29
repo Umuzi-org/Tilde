@@ -391,10 +391,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
             card=card, actor_user=request.user
         )
         card.refresh_from_db()
-
-        assert (
-            card.status == models.AgileCard.IN_PROGRESS
-        ), f"Expected to be in progress, but got {card.status}"
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(
