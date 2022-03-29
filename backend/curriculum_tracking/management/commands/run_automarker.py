@@ -43,7 +43,7 @@ class Command(BaseCommand):
         if status == COMPETENT:
             full_comments = f"{base_comments} {comments}"
         else:
-            full_comments == f"{base_comments} I'm not very clever, I can't give you super detailed feedback. But I did notice that something is broken. Here's the error message I came up with:\n\n```{comments}```\n\nIf the feedback doesn't make sense please reach out to one of the humans that work here and they'll be happy to help you understand."
+            full_comments = f"{base_comments} I'm not very clever, I can't give you super detailed feedback. But I did notice that something is broken. Here's the error message I came up with:\n\n```{comments}```\n\nIf the feedback doesn't make sense please reach out to one of the humans that work here and they'll be happy to help you understand."
             breakpoint()
         RecruitProjectReview.objects.create(
             status=status,
