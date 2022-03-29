@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
 import shell from "shelljs";
 
 export async function markProjectBase({
@@ -7,6 +7,7 @@ export async function markProjectBase({
   fullClonePath,
   lookForTestProblems,
   markerName,
+  skipTheirTests,
 }) {
   const reviewScriptAllOutput = await runMarkerScript({
     markerScriptPath: resolve(`./lib/markers/${markerName}/mark-code.sh`),
@@ -19,22 +20,24 @@ export async function markProjectBase({
   const miscErrors = getTagInnerText(reviewStdOutput, "error");
   if (miscErrors.length > 0) {
     return {
-      status: STATUS_ERROR,
+      status: STATUS_FAIL,
       message: "There is something wrong with your code",
       errors: miscErrors,
     };
   }
 
-  const theirTestOutput = getTagInnerText(reviewStdOutput, "their-tests");
+  if (!skipTheirTests) {
+    const theirTestOutput = getTagInnerText(reviewStdOutput, "their-tests");
 
-  const theirErrors = lookForTestProblems(theirTestOutput);
+    const theirErrors = lookForTestProblems(theirTestOutput);
 
-  if (theirErrors.length > 0) {
-    return {
-      status: STATUS_ERROR,
-      message: "There is something wrong with your tests",
-      errors: theirErrors,
-    };
+    if (theirErrors.length > 0) {
+      return {
+        status: STATUS_FAIL,
+        message: "There is something wrong with your tests",
+        errors: theirErrors,
+      };
+    }
   }
 
   const ourTestOutput = getTagInnerText(reviewStdOutput, "our-tests");
@@ -42,7 +45,7 @@ export async function markProjectBase({
 
   if (ourErrors.length > 0) {
     return {
-      status: STATUS_ERROR,
+      status: STATUS_FAIL,
       message: "There is something wrong with your code",
       errors: ourErrors,
     };

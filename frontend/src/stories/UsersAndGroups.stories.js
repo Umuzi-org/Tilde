@@ -1,12 +1,12 @@
 import React from "react";
-import UsersAndGroups from "../components/regions/UsersAndGroups/Presentation";
+import UsersAndGroups from "../components/pages/UsersAndGroups/Presentation.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import teams from "./fixtures/allTeams.json";
 import users from "./fixtures/allUsers.json";
 
 export default {
-  title: "Tilde/UsersAndGroups",
+  title: "Tilde/pages/UsersAndGroups",
   component: UsersAndGroups,
 };
 

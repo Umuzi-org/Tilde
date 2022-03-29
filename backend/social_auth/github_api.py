@@ -1,10 +1,8 @@
 from core import models as core_models
-from git_real import models
 from social_auth import models as social_models
 from git_real.constants import GITHUB_BASE_URL
 import requests
 from django.utils.http import urlencode
-import urllib.parse
 
 
 class Api:

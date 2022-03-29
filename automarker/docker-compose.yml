@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  automarker:
+    image: eu.gcr.io/umuzi-prod/automarker:latest
+    restart: always
+    ports:
+      - "1313:8080"
+    # environment:
+    #   CLONE_PATH: todo
+    #   CONFIGURATION_REPO_PATH: todo
