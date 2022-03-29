@@ -71,7 +71,7 @@ class Command(BaseCommand):
             if flavours and not card.flavours_match(flavours):
                 continue
 
-            print(card.assignees.first())
+            print(f"{card.assignees.first()} - {card.title} {card.flavour_names}")
 
             has_review = (
                 card.recruit_project.project_reviews.filter(

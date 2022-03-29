@@ -111,7 +111,7 @@ It could be useful to run the learner's tests against code with known problems.
 ```
 cd ../backend
 
-python manage.py run_automarker "Person" ""
 python manage.py run_automarker "password-checker" ""
+python manage.py run_automarker "Person" ""
 python manage.py run_automarker "simple-calculator part 1" ""
 ```
