@@ -220,8 +220,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         methods=["post"],
         serializer_class=serializers.SetDueTimeSerializer,
         permission_classes=[
-            curriculum_permissions.IsCardAssignee
-            & curriculum_permissions.CardDueTimeIsNotSet
+            (
+                curriculum_permissions.IsCardAssignee
+                & curriculum_permissions.CardDueTimeIsNotSet
+            )
             | IsStaffUser
             | HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,

@@ -209,7 +209,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
     def test_set_project_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
             content_item=factories.ProjectContentItemFactory(),
-            recruit_project=RecruitProjectFactory(due_time=None),
+            recruit_project=None,  # things can have due dates even when not started
         )
         self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
@@ -220,7 +220,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
-        recruit = UserFactory(first_name="recruit")
+        recruit = UserFactory()
 
         staff_member = UserFactory(is_staff=True)
 
