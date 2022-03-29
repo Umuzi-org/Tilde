@@ -644,3 +644,20 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
 
     def get_content_item_title(self, review_trust: object):
         return review_trust.content_item.title
+
+
+class BulkSetDueDatesHumanFriendly(serializers.Serializer):
+    class Meta:
+        fields = [
+            "due_time",
+            "flavour_names",
+            "content_item_title",
+            "team_name",
+            "email",
+        ]
+
+    due_time = serializers.DateTimeField()
+    flavour_names = serializers.ListField(child=serializers.CharField())
+    content_item_title = serializers.CharField()
+    team_name = serializers.CharField(required=False)
+    email = serializers.CharField(required=False)

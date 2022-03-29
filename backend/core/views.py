@@ -12,7 +12,13 @@ from core.filters import ObjectPermissionsFilter
 from core.models import Team
 from rest_framework import viewsets, status
 from core.permissions import HasObjectPermission
-from curriculum_tracking.serializers import TeamStatsSerializer, CardSummarySerializer, UserDetailedStatsSerializer
+from curriculum_tracking.serializers import (
+    TeamStatsSerializer,
+    CardSummarySerializer,
+    UserDetailedStatsSerializer,
+)
+
+# TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
 
 
@@ -149,7 +155,9 @@ class TeamViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=["POST"],
         serializer_class=serializers.BulkSetDueTimeSerializer,
-        permission_classes=[HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)]
+        permission_classes=[
+            HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)
+        ],
     )
     def bulk_set_due_dates(self, request, pk=None):
 
@@ -158,11 +166,14 @@ class TeamViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
 
-            team_cards = get_team_cards(team, serializer.validated_data.get('content_item'))
-            [
-                card.set_due_time(request.data.get('due_time')) for card in team_cards if
-                card.flavour_ids_match(serializer.validated_data.get('flavours'))
-            ]
+            team_cards = get_team_cards(
+                team, serializer.validated_data.get("content_item")
+            )
+            for card in team_cards:
+                if card.flavour_ids_match(serializer.validated_data.get("flavours")):
+
+                    card.set_due_time(request.data.get("due_time"))
+
         return Response([CardSummarySerializer(card).data for card in team_cards])
 
 

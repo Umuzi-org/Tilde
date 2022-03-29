@@ -1,3 +1,4 @@
+from urllib import response
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -19,7 +20,7 @@ from core.permissions import (
     DenyAll,
     IsCurrentUserInSpecificFilter,
 )
-from core.models import Team
+from core.models import Team, User
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
@@ -820,7 +821,7 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
     ]
 
 
-class ManagmentActionsViewSet(viewsets.ViewSet):
+class ManagementActionsViewSet(viewsets.ViewSet):
 
     serializer_class = serializers.NoArgs
 
@@ -848,8 +849,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     def assign_user_as_reviewer(self, request, pk=None):
         todo
 
-    # TODO: bulk set due dates
-
     @action(
         detail=False,
         methods=["post", "get"],
@@ -859,12 +858,71 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     def auto_assign_reviewers(self, request, pk=None):
         """automatically assign qualified reviewers to cards"""
         if request.method == "GET":
-            return Response({"status": "OK"})
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
         else:
             from long_running_request_actors import auto_assign_reviewers as actor
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.BulkSetDueDatesHumanFriendly,
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+        """This is a human-friendly(ish) way to set due dates in bulk. It has more human readable input that the other mechanisms for setting due dates in bulk"""
+        # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
+        from curriculum_tracking.management.helpers import get_user_cards
+
+        if request.method == "GET":
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
+
+        serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            flavour_names = data.get("flavour_names")
+            due_time = data.get("due_time")
+            content_item_title = data.get("content_item_title")
+            team_name = data.get("team_name")
+            email = data.get("email")
+
+            if team_name and email:
+                return Response(
+                    {"email": ["You can't specify an email and a team, pick one"]}
+                )
+            try:
+                content_item = models.ContentItem.objects.get(title=content_item_title)
+            except models.ContentItem.DoesNotExist:
+                return Response(
+                    {
+                        "content_item_title": [
+                            "Content item matching title does not exist"
+                        ]
+                    }
+                )
+
+            users = User.get_users_from_identifier(email or team_name)
+            cards = get_user_cards(users, content_item)
+            for card in cards:
+                if card.flavours_match(flavour_names):
+                    card.set_due_time(due_time)
+                    card.refresh_from_db()
+
+            return Response(
+                [serializers.CardSummarySerializer(card).data for card in cards]
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
