@@ -916,7 +916,6 @@ class ManagementActionsViewSet(viewsets.ViewSet):
             for card in cards:
                 if card.flavours_match(flavour_names):
                     card.set_due_time(due_time)
-                    card.refresh_from_db()
 
             return Response(
                 [serializers.CardSummarySerializer(card).data for card in cards]
