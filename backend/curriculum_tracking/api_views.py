@@ -330,6 +330,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 log_creators.log_topic_competence_review_done(review)
 
             card.refresh_from_db()
+            if card.status == models.AgileCard.REVIEW_FEEDBACK:
+                log_creators.log_card_moved_to_review_feedback(card, request.user)
+            elif card.status == models.AgileCard.COMPLETE:
+                log_creators.log_card_moved_to_complete(card, request.user)
 
             return Response(serializers.AgileCardSerializer(card).data)
         else:
