@@ -78,7 +78,7 @@ const team = {
 const activityLogDayCounts = {
   84: [
     {
-      date: "2021-07-12",
+      date: "2020-07-12",
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
