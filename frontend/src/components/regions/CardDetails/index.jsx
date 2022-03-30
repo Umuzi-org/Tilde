@@ -232,7 +232,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchTopicProgress: ({ topicProgressId }) => {
       dispatch(
-        apiReduxApps.FETCH_SINGLE_TOPIC_PROGRESS.operations.maybeStart({
+        apiReduxApps.FETCH_SINGLE_TOPIC_PRGRESS.operations.maybeStart({
           data: {
             topicProgressId,
           },
