@@ -31,7 +31,7 @@ export default ({ card, cardId, handleClose }) => {
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
           {card ? (
-            <form novalidate>
+            <form noValidate>
               <TextField
                 id="datetime-local"
                 label="Due Date"
