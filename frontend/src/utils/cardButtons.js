@@ -35,14 +35,12 @@ import {
   
   export function getShowAddReviewButton({ card, permissions, isReviewer }) {
     const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-    if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1) return true;
-    if (
-      (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER]) &&
-      REVIEW_STATUSES.indexOf(card.status) !== -1
+    return (
+      (isReviewer ||
+        permissions[REVIEW_CARDS] ||
+        permissions[TRUSTED_REVIEWER]
+      ) && REVIEW_STATUSES.indexOf(card.status) !== -1
     )
-      return true;
-  
-    return false;
   }
   
   function getReviewRequestButtons({ card, permissions, isAssignee }) {
