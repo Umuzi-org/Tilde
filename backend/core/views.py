@@ -15,7 +15,6 @@ from core.models import Team
 from curriculum_tracking.serializers import TeamStatsSerializer
 from django.core.exceptions import ValidationError
 
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def delete_auth_token(request):
@@ -146,29 +145,29 @@ class TeamViewSet(viewsets.ModelViewSet):
     #     return Response("TODO")
 
 
-def _get_teams_from_user(self, request, view):
-    user = view.get_object()
-    return Team.get_teams_from_user_ids([user.id])
+    def _get_teams_from_user(self, request, view):
+        user = view.get_object()
+        return Team.get_teams_from_user_ids([user.id])
 
-@action(
-    detail=False,
-    methods=["post"],
-    serializer_class=TeamSerializer,
-    permission_classes=[IsAdminUser],
-)
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=serializers.TeamSerializer,
+        permission_classes=[IsAdminUser],
+    )
 
-def is_valid_name(self,name):
-    special_char = re.compile('[a-zA-Z]+')
-    if not re.search(special_char, name):
-        raise serializers.ValidationError('Team name invalid')
-    return name
+    def is_valid_name(self,name):
+        special_char = re.compile('[a-zA-Z]+')
+        if not re.search(special_char, name):
+            raise serializers.ValidationError('Team name invalid')
+        return name
 
-def add_team_name(self, request):
-    if request.method == 'POST':
-        serializer = TeamSerializer(data=request.data)
-        if serializer.is_valid_name():
-            serializer.save(name=self.request.name)
-            return data
+    def add_team_name(self, request):
+        if request.method == 'POST':
+            serializer = TeamSerializer(data=request.data)
+            if serializer.is_valid_name():
+                serializer.save(name=self.request.name)
+                return data
 
 
 class UserViewSet(viewsets.ModelViewSet):
