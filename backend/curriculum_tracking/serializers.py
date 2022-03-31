@@ -1,3 +1,4 @@
+import core.models
 from git_real.models import PullRequest, PullRequestReview
 from . import models
 from rest_framework import serializers
@@ -244,16 +245,16 @@ class WorkshopAttendanceTime(serializers.ModelSerializer):
         fields = ["timestamp"]
 
 
-class AddReviewerUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.AgileCard
-        fields = ["reviewers"]
-
-
 class SetDueTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProject
         fields = ["due_time"]
+
+
+class AddReviewerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.AgileCard
+        fields = ["reviewers"]
 
 
 class TeamField(serializers.RelatedField):
@@ -643,3 +644,20 @@ class ReviewTrustSerializer(serializers.ModelSerializer):
 
     def get_content_item_title(self, review_trust: object):
         return review_trust.content_item.title
+
+
+class BulkSetDueDatesHumanFriendly(serializers.Serializer):
+    class Meta:
+        fields = [
+            "due_time",
+            "flavour_names",
+            "content_item_title",
+            "team_name",
+            "email",
+        ]
+
+    due_time = serializers.DateTimeField()
+    flavour_names = serializers.ListField(child=serializers.CharField())
+    content_item_title = serializers.CharField()
+    team_name = serializers.CharField(required=False)
+    email = serializers.CharField(required=False)
