@@ -84,6 +84,13 @@ class CurriculumViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CurriculumSerializer
 
 
+# def is_valid_name(name):
+#     special_char = re.compile('[a-zA-Z]+')
+#     if not re.search(special_char, name):
+#         raise serializers.ValidationError('Team name invalid')
+#     return name
+
+
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TeamSerializer
     filter_backends = [
@@ -145,26 +152,21 @@ class TeamViewSet(viewsets.ModelViewSet):
     # def shuffle_reviewers(self, request, pk=None):
     #     return Response("TODO")
 
-
+ 
     @action(
     detail=False,
-    methods=["post"],
+    methods=['POST'],
     serializer_class=serializers.TeamSerializer,
     permission_classes=[IsAdminUser],
     )
-
-    def is_valid_name(self,name):
-        special_char = re.compile('[a-zA-Z]+')
-        if not re.search(special_char, name):
-            raise serializers.ValidationError('Team name invalid')
-        return name
-
     def add_team_name(self,request):
         if request.method == 'POST':
-            serializer = TeamSerializer(data=request.data)
-            if serializer.is_valid_name():
-                serializer.save(name=self.request.name)
-                return data
+            data = {'name': request.data.get('name'),}
+            serializer = TeamSerializer(data=data)
+            if serializer.clean_team_name:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _get_teams_from_user(self, request, view):
