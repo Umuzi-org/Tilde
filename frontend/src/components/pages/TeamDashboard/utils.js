@@ -35,30 +35,19 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   }
 
   const updatedActivityLogDayCounts = {};
-
+  const dateFilter = new Date();
+  dateFilter.setDate(dateFilter.getDate() - 21);
   Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
     updatedActivityLogDayCounts[
       activityLogDayCount[0]
     ] = activityLogDayCount[1].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
+    ).filter(
+      (activity) => new Date(activity.date) >= dateFilter
     );
   });
 
-  // filter data 3 weeks back
-  const dateFilter = new Date();
-  dateFilter.setDate(dateFilter.getDate() - 21);
-  const filteredActivityLogDayCounts = {};
-  Object.entries(updatedActivityLogDayCounts).forEach((updatedActivityLogDayCount) => {
-    filteredActivityLogDayCounts[
-      updatedActivityLogDayCount[0]
-    ] = updatedActivityLogDayCount[1].filter(
-      (activity) => {
-        return (new Date(activity.date) >= dateFilter);
-      }
-    )
-  });
-
-  return filteredActivityLogDayCounts;
+  return updatedActivityLogDayCounts;
 }
 
 export function getMinimumAndMaximumValue({ activityLogDayCounts }) {
