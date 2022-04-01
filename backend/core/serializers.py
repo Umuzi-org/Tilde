@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ValidationError
 import re
-
+from django.core.validators import RegexValidator
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,8 +44,8 @@ class CurriculumSerializer(serializers.ModelSerializer):
             "name",
         ]
 
-
 class TeamSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Team
         fields = [
@@ -56,24 +56,13 @@ class TeamSerializer(serializers.ModelSerializer):
             "members",
         ]
 
-    # name = serializers.SerializerMethodField("validate_team_name")
-
-    # def validate_team_name(self, name):
-    #     special_char = r'[^a-zA-Z$]'
-    #     if re.search(special_char,name):
-    #         return name
-    #     else:
-    #         raise serializers.ValidationError('Team name invalid')
+    name = serializers.SerializerMethodField("validate_team_name")
 
     def validate_team_name(self, instance):
-
-        for team in instance.teams():
-            # serializer = TeamSerializer(data ={"name": team.name})
-            special_char = re.compile('[^a-zA-Z$]')
-            if special_char.search(instance("name")) == 0:
-                raise serializers.ValidationError('Team name invalid')
-            return name
-        
+        special_char = re.compile('^[a-zA-Z]+$')
+        if not re.search(special_char, instance['name']):
+            raise serializers.ValidationError('Team name invalid')
+        return name
     
 
 class WhoAmISerializer(serializers.ModelSerializer):

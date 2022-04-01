@@ -84,13 +84,6 @@ class CurriculumViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CurriculumSerializer
 
 
-# def is_valid_name(name):
-#     special_char = re.compile('[a-zA-Z]+')
-#     if not re.search(special_char, name):
-#         raise serializers.ValidationError('Team name invalid')
-#     return name
-
-
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TeamSerializer
     filter_backends = [
@@ -163,7 +156,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             data = {'name': request.data.get('name'),}
             serializer = TeamSerializer(data=data)
-            if serializer.clean_team_name:
+            if serializer.is_valid:
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
