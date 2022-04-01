@@ -1,8 +1,4 @@
-import { SortRounded } from "@material-ui/icons";
-
 export function updateActivityLogDayCounts({ activityLogDayCounts }) {
-  const dateFilter = new Date();
-  dateFilter.setMonth(dateFilter.getMonth() - 12);
   const datesArray = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((activityLogDayCount) => {
@@ -14,11 +10,6 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
     (a, b) => new Date(a) - new Date(b)
   );
   let firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
-  let firstDateIndex = 1;
-  while(firstDate < dateFilter){
-    firstDate = new Date(new Date(uniqueDatesArr[firstDateIndex]).getTime());
-    firstDateIndex++;
-  }
   const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
   const allDatesArr = [];
 
@@ -53,7 +44,21 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
     );
   });
 
-  return updatedActivityLogDayCounts;
+  // filter data 3 weeks back
+  const dateFilter = new Date();
+  dateFilter.setDate(dateFilter.getDate() - 21);
+  const filteredActivityLogDayCounts = {};
+  Object.entries(updatedActivityLogDayCounts).forEach((updatedActivityLogDayCount) => {
+    filteredActivityLogDayCounts[
+      updatedActivityLogDayCount[0]
+    ] = updatedActivityLogDayCount[1].filter(
+      (activity) => {
+        return (new Date(activity.date) >= dateFilter);
+      }
+    )
+  });
+
+  return filteredActivityLogDayCounts;
 }
 
 export function getMinimumAndMaximumValue({ activityLogDayCounts }) {

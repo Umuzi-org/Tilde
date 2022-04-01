@@ -103,7 +103,7 @@ const activityLogDayCounts = {
       PR_REVIEWED: 0,
     },
     {
-      date: "2021-07-20",
+      date: "2022-03-20",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
