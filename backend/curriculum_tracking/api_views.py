@@ -890,7 +890,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            flavour_names = data.get("flavour_names")
+            flavour_names = data.get("flavour_names", [])
             due_time = data.get("due_time")
             content_item_title = data.get("content_item_title")
             team_name = data.get("team_name")
