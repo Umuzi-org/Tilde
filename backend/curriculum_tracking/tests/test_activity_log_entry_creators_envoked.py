@@ -108,25 +108,45 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         card.refresh_from_db()
 
         # two log entries will be created:
-        # first log_project_competence_review_done
-        # second log_card_moved_to_complete
+        # log_project_competence_review_done
+        # log_card_moved_to_complete
+
         self.assertEqual(LogEntry.objects.count(), 2)
-        entry = (
-            LogEntry.objects.first()
-        )  # meaning this is now actually the entry for log_card_moved_to_complete
 
-        self.assertEqual(entry.actor_user, actor_user)
-        self.assertEqual(entry.effected_user, card.assignees.first())
-        self.assertEqual(entry.event_type.name, creators.COMPETENCE_REVIEW_DONE)
+        # ********
+        # so use LogEntry.objects.all()[0] to get first entry
+        # and LogEntry.objects.all()[1] to get second entry
+        competence_review_entry = LogEntry.objects.all()[0]
+        card_to_complete_entry = LogEntry.objects.all()[1]
 
-        self.assertEqual(entry.object_1, card.recruit_project.project_reviews.first())
-        self.assertEqual(entry.object_2, card.recruit_project)
+        self.assertEqual(competence_review_entry.actor_user, actor_user)
+        self.assertEqual(competence_review_entry.effected_user, card.assignees.first())
+        self.assertEqual(
+            competence_review_entry.event_type.name, creators.COMPETENCE_REVIEW_DONE
+        )
+        self.assertEqual(
+            competence_review_entry.object_1,
+            card.recruit_project.project_reviews.first(),
+        )
+        self.assertEqual(competence_review_entry.object_2, card.recruit_project)
+
+        self.assertEqual(card_to_complete_entry.actor_user, actor_user)
+        self.assertEqual(card_to_complete_entry.effected_user, card.assignees.first())
+        self.assertEqual(
+            card_to_complete_entry.event_type.name, creators.CARD_MOVED_TO_COMPLETE
+        )
+        self.assertEqual(
+            card_to_complete_entry.object_1,
+            card.recruit_project,
+        )
+        self.assertEqual(card_to_complete_entry.object_2, None)
 
         response = self.client.post(
             start_url, data={"status": COMPETENT, "comments": "blah more stuff"}
         )
         # which means here there will now be 4 log entries in total
-        self.assertEqual(LogEntry.objects.count(), 2)
+        # check from here....................
+        self.assertEqual(LogEntry.objects.count(), 4)
 
 
 class log_project_vs_topic_competence_reviews_done_Tests(APITestCase, APITestCaseMixin):
