@@ -9,7 +9,7 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
     (a, b) => new Date(a) - new Date(b)
   );
-  let firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
+  const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
   const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
   const allDatesArr = [];
 

@@ -88,17 +88,17 @@ const activityLogDayCounts = {
       PR_REVIEWED: 20,
     },
     {
-      date: "2021-07-17",
+      date: "2022-02-17",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: "2021-07-18",
+      date: "2022-03-18",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: "2021-07-19",
+      date: "2022-03-19",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
@@ -150,7 +150,6 @@ export default {
   title: "Tilde/pages/TeamDashboard",
   component: TeamDashboard,
   argTypes: {
-    //   backgroundColor: { control: 'color' },
   },
 };
 
