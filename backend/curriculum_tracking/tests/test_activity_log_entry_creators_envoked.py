@@ -99,23 +99,16 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         )
         self.login(actor_user)
 
-        start_url = f"{self.get_instance_url(card.id)}add_review/"
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
         response = self.client.post(
-            start_url, data={"status": COMPETENT, "comments": "weee"}
+            add_review_url, data={"status": COMPETENT, "comments": "weee"}
         )
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
 
-        # two log entries will be created:
-        # log_project_competence_review_done
-        # log_card_moved_to_complete
-
         self.assertEqual(LogEntry.objects.count(), 2)
 
-        # ********
-        # so use LogEntry.objects.all()[0] to get first entry
-        # and LogEntry.objects.all()[1] to get second entry
         competence_review_entry = LogEntry.objects.all()[0]
         card_to_complete_entry = LogEntry.objects.all()[1]
 
@@ -142,11 +135,11 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(card_to_complete_entry.object_2, None)
 
         response = self.client.post(
-            start_url, data={"status": COMPETENT, "comments": "blah more stuff"}
+            add_review_url, data={"status": COMPETENT, "comments": "blah more stuff"}
         )
-        # which means here there will now be 4 log entries in total
-        # check from here....................
-        self.assertEqual(LogEntry.objects.count(), 4)
+        card.refresh_from_db()
+
+        self.assertEqual(LogEntry.objects.count(), 3)
 
 
 class log_project_vs_topic_competence_reviews_done_Tests(APITestCase, APITestCaseMixin):
@@ -160,7 +153,7 @@ class log_project_vs_topic_competence_reviews_done_Tests(APITestCase, APITestCas
     @mock.patch(
         "curriculum_tracking.activity_log_entry_creators.log_project_competence_review_done"
     )
-    def test_log_project_competence_review_envoked_for_project_review(
+    def test_log_project_competence_review_envoked(
         self, log_project_competence_review_done, log_topic_competence_review_done
     ):
 
@@ -182,7 +175,7 @@ class log_project_vs_topic_competence_reviews_done_Tests(APITestCase, APITestCas
     @mock.patch(
         "curriculum_tracking.activity_log_entry_creators.log_project_competence_review_done"
     )
-    def test_log_topic_competence_review_envoked_for_topic_review(
+    def test_log_topic_competence_review_envoked(
         self, log_project_competence_review_done, log_topic_competence_review_done
     ):
         super_user = UserFactory(is_superuser=True)
@@ -284,7 +277,7 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         "curriculum_tracking.activity_log_entry_creators.log_card_moved_to_complete"
     )
     def test_card_review_feedback_called(
-        self, log_card_moved_to_review_feedback, log_card_moved_to_complete
+        self, log_card_moved_to_complete, log_card_moved_to_review_feedback
     ):
         actor_user = UserFactory(is_superuser=True)
         card = factories.AgileCardFactory(
@@ -302,6 +295,35 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
-        project_review = RecruitProjectReview.objects.first()
-        log_card_moved_to_review_feedback.assert_called_with(project_review)
+
+        log_card_moved_to_review_feedback.assert_called_with(card, actor_user)
         log_card_moved_to_complete.assert_not_called()
+
+    @mock.patch(
+        "curriculum_tracking.activity_log_entry_creators.log_card_moved_to_review_feedback"
+    )
+    @mock.patch(
+        "curriculum_tracking.activity_log_entry_creators.log_card_moved_to_complete"
+    )
+    def test_card_moved_to_complete_called(
+        self, log_card_moved_to_complete, log_card_moved_to_review_feedback
+    ):
+        actor_user = UserFactory(is_superuser=True)
+        card = factories.AgileCardFactory(
+            status=AgileCard.IN_REVIEW,
+            content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+        self.login(actor_user)
+
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": COMPETENT, "comments": "woohoo"}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+        project_review = RecruitProjectReview.objects.first()
+        log_card_moved_to_complete.assert_called_with(card, actor_user)
+        log_card_moved_to_review_feedback.assert_not_called()
