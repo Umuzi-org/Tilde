@@ -35,9 +35,7 @@ export default ({ open, onClose, children }) => {
         },
       }}
     >
-      <React.Fragment>
-        <Fade in={open}>{children}</Fade>
-      </React.Fragment>
+      <Fade in={open}>{children}</Fade>
     </Modal>
   );
 };
