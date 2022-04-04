@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   cardStyle: {
     display: "block",
     position: "relative",
-    width: "90vw",
+    maxWidth: "90%",
   },
   timeStyle: {
     fontSize: 11,
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "30px",
     overflowY: "scroll",
     overflowX: "hidden",
-    height: "66vh",
+    maxHeight: "50vh",
   },
   reviewCommentsPosition: {
     paddingLeft: "30px",
