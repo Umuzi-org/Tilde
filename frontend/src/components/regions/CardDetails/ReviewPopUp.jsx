@@ -14,10 +14,11 @@ const useStyles = makeStyles((theme) => ({
   cardStyle: {
     display: "block",
     position: "relative",
-    maxWidth: "90%",
+    maxWidth: "90vw",
+    maxHeight: "90%",
   },
   timeStyle: {
-    fontSize: 11,
+    fontSize: "11px",
   },
   reviewerEmailStyle: {
     fontSize: "100%",
@@ -29,19 +30,19 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "30px",
     overflowY: "scroll",
     overflowX: "hidden",
-    maxHeight: "50vh",
+    maxHeight: "66vh",
   },
   reviewCommentsPosition: {
     paddingLeft: "30px",
   },
 }));
 
-function ReviewPopUp({ review, openReviewPopUp, onClose }) {
+function ReviewPopUp({ review, openReviewPopUp }) {
   const classes = useStyles();
   const timestamp = new Date(review.timestamp);
 
   return (
-    <Modal open={openReviewPopUp} onClose={onClose}>
+    <Modal open={openReviewPopUp}>
       <Card className={classes.cardStyle}>
         <Box clone pt={2} pr={1} pb={1} pl={2}>
           <Paper elevation={3}>

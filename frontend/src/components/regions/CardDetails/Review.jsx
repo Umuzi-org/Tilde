@@ -59,9 +59,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review }) => {
+const Review = ({ review}) => {
   const classes = useStyles();
-  const {openReviewPopUp, setOpenReviewPopUp} = useOpenAndCloseReviewPopUp()
+  const { openReviewPopUp, setOpenReviewPopUp } = useOpenAndCloseReviewPopUp();
 
   const timestamp = new Date(review.timestamp);
 
@@ -81,17 +81,17 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-          <Button
-            type="button"
-            size="small"
-            className={classes.iconAlignment}
-            onClick={() => setOpenReviewPopUp(true)}
-          >
-            <Typography variant="caption" className={classes.readMoreStyle}>
-              ... Read more
-            </Typography>
-          </Button>
-          <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
+        <Button
+          type="button"
+          size="small"
+          className={classes.iconAlignment}
+          onClick={() => setOpenReviewPopUp(true)}
+        >
+          <Typography variant="caption" className={classes.readMoreStyle}>
+            ... Read more
+          </Typography>
+        </Button>
+        <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
@@ -99,11 +99,17 @@ const Review = ({ review }) => {
       <IconButton disabled className={classes.iconColor}>
         <ReviewValidationIcons review={review} />
       </IconButton>
-      <ReviewPopUp
-        openReviewPopUp={openReviewPopUp}
-        setOpenReviewPopUp={setOpenReviewPopUp}
-        review={review}
-      ></ReviewPopUp>
+      <div
+        onClick={() => {
+          setOpenReviewPopUp(false);
+        }}
+      >
+        <ReviewPopUp
+          openReviewPopUp={openReviewPopUp}
+          setOpenReviewPopUp={setOpenReviewPopUp}
+          review={review}
+        ></ReviewPopUp>
+      </div>
     </Card>
   );
 };
