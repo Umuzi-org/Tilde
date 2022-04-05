@@ -3,10 +3,10 @@ import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
 import UsersAndGroups from "./components/pages/UsersAndGroups";
 import GroupCardSummary from "./components/pages/GroupCardSummary";
-import UserDashboard from "./components/regions/UserDashboard";
 import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
+import UserDashboard from "./components/pages/UserDashboard";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
