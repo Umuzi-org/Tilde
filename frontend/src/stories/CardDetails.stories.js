@@ -1,11 +1,11 @@
 import React from "react";
 
-import CardDetails from "../components/regions/CardDetails/Presentation";
+import CardDetails from "../components/pages/CardDetails/Presentation";
 import reviewObject from "./fixtures/review.json";
 import repoProjectCard from "./fixtures/repoProjectCard.json";
 
 export default {
-  title: "Tilde/CardDetails/CardDetails",
+  title: "Tilde/pages/CardDetails/CardDetails",
   component: CardDetails,
   argTypes: {
     //   backgroundColor: { control: 'color' },

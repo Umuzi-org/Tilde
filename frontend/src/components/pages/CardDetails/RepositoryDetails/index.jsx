@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
 
 function toLocaleString(dateTimeString) {
