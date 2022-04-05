@@ -42,4 +42,3 @@ echo "</our-tests>"
 
 rm -rf spec
 rm -rf node_modules
-git reset --hard HEAD

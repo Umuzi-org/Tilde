@@ -585,7 +585,7 @@ def _get_ordered_curriculum_items_from_page(file_stream):
 def curriculum_file_paths(curriculums_base_dir):
     for child in curriculums_base_dir.iterdir():
         if child.is_dir():
-            raise Exception(child)
+            raise Exception(f"unexpected directory: {child}")
         name = child.name
         if name.startswith("_"):
             continue

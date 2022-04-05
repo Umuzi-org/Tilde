@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-import { addCardReviewOperations } from "../AddCardReviewModal/redux";
-
+import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import {
@@ -16,15 +15,6 @@ import {
 } from "../../../constants";
 
 function CardDetailsUnconnected({
-  // project,
-  // projectId,
-  // cardId,
-  // card,
-  // topicProgressId,
-  // topicProgress,
-  // topicReviews,
-  // projectReviews,
-  // handleClose,
   cards,
   projects,
   topicProgressArray,
@@ -157,59 +147,8 @@ function CardDetailsUnconnected({
 }
 
 const mapStateToProps = (state) => {
-  // const cardId = state.CardDetails.cardId;
-
-  // const card =
-  //   !!cardId & (state.apiEntities.cards !== undefined)
-  //     ? state.apiEntities.cards[cardId]
-  //     : null;
-
-  // const projectId =
-  //   card && card.contentTypeNice === "project" && card.recruitProject;
-  // const topicProgressId =
-  //   card && card.contentTypeNice === "topic" && card.topicProgress;
-
-  // const project =
-  //   !!projectId & (state.apiEntities.projects !== undefined)
-  //     ? state.apiEntities.projects[projectId]
-  //     : null;
-
-  // const topicProgress =
-  //   !!topicProgressId & (state.apiEntities.topicProgress !== undefined)
-  //     ? state.apiEntities.topicProgress[topicProgressId]
-  //     : null;
-
-  // const projectReviews =
-  //   (project !== null) &
-  //   (project !== undefined) &
-  //   (state.apiEntities.projectReviews !== undefined)
-  //     ? project.projectReviews
-  //         .map((reviewId) => {
-  //           return state.apiEntities.projectReviews[reviewId];
-  //         })
-  //         .filter((review) => review !== undefined)
-  //     : [];
-
-  // const topicReviews =
-  //   (topicProgress !== null) &
-  //   (topicProgress !== undefined) &
-  //   (state.apiEntities.topicReviews !== undefined)
-  //     ? topicProgress.topicReviews
-  //         .map((reviewId) => {
-  //           return state.apiEntities.topicReviews[reviewId];
-  //         })
-  //         .filter((review) => review !== undefined)
-  //     : [];
 
   return {
-    // cardId,
-    // card,
-    // topicProgressId,
-    // topicProgress,
-    // project,
-    // projectId,
-    // projectReviews,
-    // topicReviews,
     cards: state.apiEntities.cards,
     projects: state.apiEntities.projects,
     topicProgressArray: state.apiEntities.topicProgress,
