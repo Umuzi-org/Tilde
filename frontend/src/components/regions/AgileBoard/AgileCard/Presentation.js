@@ -162,7 +162,7 @@ export default ({
           <Checkbox
             checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
             style={{ color: "#3f51b5" }}
-            disabled
+            onClick={() => console.log(viewedUser.email, authUser.email)}
           />
         ) : (
           <React.Fragment />
@@ -171,15 +171,6 @@ export default ({
         <Typography variant="h6" component="h2" className={classes.title}>
           {card.title}
         </Typography>
-
-        {/* {card.flavourNames.map((flavour) => (
-          <Chip
-            key={flavour}
-            className={classes.chip}
-            icon={<MoreHorizIcon />}
-            label={`flavour: ${flavour}`}
-          />
-        ))} */}
 
         {card.dueTime ? (
           <Chip
