@@ -45,7 +45,11 @@ export default ({ card, cardId, handleClose }) => {
                 <Button className={classes.dueTimeButton} variant="outlined">
                   Save
                 </Button>
-                <Button className={classes.dueTimeButton} variant="outlined">
+                <Button
+                  className={classes.dueTimeButton}
+                  variant="outlined"
+                  onClick={handleClose}
+                >
                   Cancel
                 </Button>
               </Grid>
