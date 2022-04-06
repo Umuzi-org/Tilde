@@ -158,11 +158,11 @@ export default ({
         <Typography variant="caption" className={classes.title}>
           {card.contentTypeNice} {card.projectSubmissionTypeNice}
         </Typography>
-        {checkIfCardIsInReviewColumn({ card }) ? (
+        {checkIfCardIsInReviewColumn({ card }) && (authUser.email !== viewedUser.email) ? (
           <Checkbox
             checked={userReviewedSinceLastReviewRequest({ viewedUser, card })}
             style={{ color: "#3f51b5" }}
-            onClick={() => console.log(viewedUser.email, authUser.email)}
+            disabled
           />
         ) : (
           <React.Fragment />
