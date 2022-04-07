@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
-
+# from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+import re
 # from django.template.loader import render_to_string
 # from django.utils.html import strip_tags
 # from django.core.mail import send_mail
@@ -85,11 +87,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     @classmethod
-    def get_users_from_identifier(cls, who: str):
+    def get_users_from_identifier(cls, who: str,):
         """pass in an email address or a team name"""
         if "@" in who:
             return [cls.objects.get(email=who)]
         team = Team.objects.get(name=who)
+        # special_char = re.compile('^[a-zA-Z]+$')
+        if not re.search(r'^[a-zA-Z]+$', team):
+            raise ValidationError('Team name invalid')
         return team.user_set.filter(active=True)
 
     def teams(self):
@@ -266,6 +271,7 @@ class Team(AuthGroup, Mixins):
 
     created_date = models.DateField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    # name = models.CharField(max_length=80, unique=True, validators=[RegexValidator(r'^[a-zA-Z]+$', 'Only letters allowed.')])
 
     class Meta:
         # Team._meta.permissions
