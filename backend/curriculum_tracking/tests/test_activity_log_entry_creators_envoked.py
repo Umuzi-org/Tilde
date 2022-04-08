@@ -1,7 +1,6 @@
 """for each of the log entry creators in curriculum_tracking.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 
-from . import factories
 from curriculum_tracking.models import (
     AgileCard,
     ContentItem,
@@ -33,10 +32,10 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
     def test_start_project(self):
         actor_user = UserFactory(is_superuser=True)
-        card = factories.AgileCardFactory(
+        card = AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=None,
-            content_item=factories.ProjectContentItemFactory(
+            content_item=ProjectContentItemFactory(
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
@@ -90,10 +89,10 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
 
     def test_add_multiple_reviews(self):
         actor_user = UserFactory(is_superuser=True)
-        card = factories.AgileCardFactory(
+        card = AgileCardFactory(
             status=AgileCard.IN_REVIEW,
             # recruit_project=None,
-            content_item=factories.ProjectContentItemFactory(
+            content_item=ProjectContentItemFactory(
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
@@ -129,8 +128,7 @@ class log_project_competence_review_done_Tests(APITestCase, APITestCaseMixin):
             card_to_complete_entry.event_type.name, creators.CARD_MOVED_TO_COMPLETE
         )
         self.assertEqual(
-            card_to_complete_entry.object_1,
-            card.recruit_project,
+            card_to_complete_entry.object_1, card.recruit_project,
         )
         self.assertEqual(card_to_complete_entry.object_2, None)
 
@@ -232,12 +230,12 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
 
     def test_review_requested(self):
         actor_user = UserFactory(is_superuser=True, is_staff=True)
-        content_item = factories.ProjectContentItemFactory(
+        content_item = ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
-        card = factories.AgileCardFactory(
+        card = AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(content_item=content_item),
+            recruit_project=RecruitProjectFactory(content_item=content_item),
             content_item=content_item,
         )
         self.login(actor_user)
@@ -265,7 +263,9 @@ class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
 
 
-class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMixin):
+class log_card_review_feedback_vs_log_card_move_to_complete_called_Tests(
+    APITestCase, APITestCaseMixin
+):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
@@ -280,9 +280,9 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         self, log_card_moved_to_complete, log_card_moved_to_review_feedback
     ):
         actor_user = UserFactory(is_superuser=True)
-        card = factories.AgileCardFactory(
+        card = AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=factories.ProjectContentItemFactory(
+            content_item=ProjectContentItemFactory(
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
@@ -295,7 +295,7 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
-
+        self.assertEqual(card.status, AgileCard.REVIEW_FEEDBACK)
         log_card_moved_to_review_feedback.assert_called_with(card, actor_user)
         log_card_moved_to_complete.assert_not_called()
 
@@ -309,9 +309,9 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         self, log_card_moved_to_complete, log_card_moved_to_review_feedback
     ):
         actor_user = UserFactory(is_superuser=True)
-        card = factories.AgileCardFactory(
+        card = AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=factories.ProjectContentItemFactory(
+            content_item=ProjectContentItemFactory(
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
@@ -324,6 +324,7 @@ class log_card_review_feedback_correctly_called_Tests(APITestCase, APITestCaseMi
         self.assertEqual(response.status_code, 200)
 
         card.refresh_from_db()
-        project_review = RecruitProjectReview.objects.first()
+        self.assertEqual(card.status, AgileCard.COMPLETE)
         log_card_moved_to_complete.assert_called_with(card, actor_user)
         log_card_moved_to_review_feedback.assert_not_called()
+
