@@ -40,41 +40,7 @@ function TabPanel(props) {
   );
 }
 
-// const CommitsTable = ({ commits }) => {
-//   const classes = useStyles();
-//   return (
-//     <TableContainer className={classes.container}>
-//       <Table stickyHeader aria-label="sticky table">
-//         <TableHead>
-//           <TableRow>
-//             <TableCell>Datetime</TableCell>
-//             <TableCell>Branch</TableCell>
-//             <TableCell>Author Email</TableCell>
-//             <TableCell>Author Github</TableCell>
-//             <TableCell>Message</TableCell>
-//             <TableCell>Hash</TableCell>
-//           </TableRow>
-//         </TableHead>
-//         <TableBody>
-//           {commits.map((commit) => {
-//             return (
-//               <TableRow key={commit.id}>
-//                 <TableCell>{commit.datetime}</TableCell>
-//                 <TableCell>{commit.branch}</TableCell>
-//                 <TableCell>{commit.authorEmail}</TableCell>
-//                 <TableCell>{commit.authorGithubName}</TableCell>
-//                 <TableCell>{commit.message}</TableCell>
-//                 <TableCell>{commit.commitHash}</TableCell>
-//               </TableRow>
-//             );
-//           })}
-//         </TableBody>
-//       </Table>
-//     </TableContainer>
-//   );
-// };
-
-const PullRequestsTable = ({ pullRequests, repository }) => {
+function PullRequestsTable ({ pullRequests, repository }) {
   const classes = useStyles();
   return (
     <TableContainer className={classes.container}>
@@ -102,8 +68,6 @@ const PullRequestsTable = ({ pullRequests, repository }) => {
                   </a>
                 </TableCell>
                 <TableCell>{pr.state}</TableCell>
-                {/* <TableCell>{pr.authorGithubName}</TableCell>
-                <TableCell>{pr.assignees}</TableCell> */}
                 <TableCell>{pr.body}</TableCell>
                 <TableCell>{pr.updatedAt}</TableCell>
                 <TableCell>{pr.closedAt}</TableCell>
@@ -120,7 +84,6 @@ const PullRequestsTable = ({ pullRequests, repository }) => {
 
 export default ({
   repository,
-  // currentCommits,
   currentPullRequests,
   tabValue,
   handleChangeTab,
@@ -133,12 +96,10 @@ export default ({
           <Tabs
             value={tabValue}
             indicatorColor="primary"
-            // textColor="primary"
             onChange={handleChangeTab}
             aria-label="disabled tabs example"
           >
             <Tab label="Details" />
-            {/* <Tab label="Commits" /> */}
             <Tab label="Pull Requests" />
           </Tabs>
           <TabPanel value={tabValue} index={0}>
@@ -159,10 +120,6 @@ export default ({
             <Typography variant="subtitle2">Clone url</Typography>
             <Typography>{repository.sshUrl}</Typography>
           </TabPanel>
-
-          {/* <TabPanel value={tabValue} index={1}>
-            <CommitsTable commits={currentCommits} />
-          </TabPanel> */}
           <TabPanel value={tabValue} index={1}>
             <PullRequestsTable
               pullRequests={currentPullRequests}

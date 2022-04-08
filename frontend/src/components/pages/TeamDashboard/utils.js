@@ -9,7 +9,6 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
     (a, b) => new Date(a) - new Date(b)
   );
-
   const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
   const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
   const allDatesArr = [];
@@ -36,12 +35,15 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   }
 
   const updatedActivityLogDayCounts = {};
-
+  const dateFilter = new Date();
+  dateFilter.setDate(dateFilter.getDate() - 21);
   Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
     updatedActivityLogDayCounts[
       activityLogDayCount[0]
     ] = activityLogDayCount[1].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
+    ).filter(
+      (activity) => new Date(activity.date) >= dateFilter
     );
   });
 

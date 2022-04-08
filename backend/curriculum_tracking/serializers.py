@@ -657,7 +657,7 @@ class BulkSetDueDatesHumanFriendly(serializers.Serializer):
         ]
 
     due_time = serializers.DateTimeField()
-    flavour_names = serializers.ListField(child=serializers.CharField())
+    flavour_names = serializers.ListField(child=serializers.CharField(), required=False)
     content_item_title = serializers.CharField()
     team_name = serializers.CharField(required=False)
     email = serializers.CharField(required=False)

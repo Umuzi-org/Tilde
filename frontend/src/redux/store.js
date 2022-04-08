@@ -4,7 +4,7 @@ import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
-import CardDetails from "../components/regions/CardDetails/redux";
+import CardDetails from "../components/pages/CardDetails/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
