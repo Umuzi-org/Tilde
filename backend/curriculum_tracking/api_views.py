@@ -745,7 +745,21 @@ class RepositoryViewset(viewsets.ModelViewSet):
         )
         | ActionIs("list") & (permissions.IsAdminUser)
     ]
-
+    @action(
+        detail=False,
+        methods=["GET"],
+        serializer_class=PullRequestSerializer,
+        permission_classes = [
+            curriculum_permissions.IsFilteredByRepoAttachedToProjectICanSee
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_repository_filter,
+            )
+        ]
+    )
+    def refresh_pull_requests():
+        pass
+    
 
 class CommitViewSet(viewsets.ModelViewSet):
     serializer_class = git_serializers.CommitSerializer
