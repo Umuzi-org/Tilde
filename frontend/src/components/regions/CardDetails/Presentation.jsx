@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const TopicProgressDetails = ({ topicProgress, reviews }) => {
+function TopicProgressDetails({ topicProgress, reviews }) {
   return (
     <React.Fragment>
       {topicProgress.topicNeedsReview ? (
@@ -63,9 +63,14 @@ const TopicProgressDetails = ({ topicProgress, reviews }) => {
       )}
     </React.Fragment>
   );
-};
+}
 
-const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
+function CardBasicDetails({
+  card,
+  viewedUser,
+  authUser,
+  handleClickSetDueTime,
+}) {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -112,14 +117,16 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
                   <TableCell>Due Time</TableCell>
                   <TableCell>
                     {dueTime}{" "}
-                    {canSetDueTime({ card, user, authUser }) && (
-                      <Button
-                        variant="outlined"
-                        onClick={handleClickSetDueTime}
-                      >
-                        Set Time
-                      </Button>
-                    )}
+                    {viewedUser &&
+                      card.dueTime === null &&
+                      canSetDueTime({ card, viewedUser, authUser }) && (
+                        <Button
+                          variant="outlined"
+                          onClick={handleClickSetDueTime}
+                        >
+                          Set Time
+                        </Button>
+                      )}
                   </TableCell>
                 </TableRow>
                 {card.startTime && (
@@ -148,11 +155,11 @@ const CardBasicDetails = ({ card, user, authUser, handleClickSetDueTime }) => {
       </Grid>
     </React.Fragment>
   );
-};
+}
 
 export default ({
   card,
-  user,
+  viewedUser,
   authUser,
   cardId,
   topicProgress,
@@ -177,7 +184,7 @@ export default ({
         {card ? (
           <CardBasicDetails
             card={card}
-            user={user}
+            viewedUser={viewedUser}
             authUser={authUser}
             handleClickSetDueTime={handleClickSetDueTime}
           />

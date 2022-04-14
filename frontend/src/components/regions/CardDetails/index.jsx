@@ -28,6 +28,7 @@ function CardDetailsUnconnected({
   // handleClose,
   cards,
   projects,
+  users,
   topicProgressArray,
   projectReviews,
   topicReviews,
@@ -116,6 +117,8 @@ function CardDetailsUnconnected({
     openDueTimeFormModal({ cardId });
   };
 
+  const viewedUser = card && users[card.assignees[0]];
+
   const isReviewer =
     ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
 
@@ -154,7 +157,7 @@ function CardDetailsUnconnected({
     cardId,
     authUser,
     card,
-    // user,
+    viewedUser,
     topicProgressId,
     topicProgress,
     // topicReviews,
@@ -184,6 +187,7 @@ const mapStateToProps = (state) => {
     topicReviews: state.apiEntities.topicReviews,
 
     authUser: state.App.authUser,
+    users: state.apiEntities.users,
   };
 };
 
