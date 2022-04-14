@@ -10,21 +10,11 @@ import {
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { cardColors } from "../../../colors";
 
-const renderCustomizedLabel = ({ cardStatusPieData }) => {
+function renderCustomizedLabel({ cardStatusPieData }) {
   return ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-    console.log({
-      cx,
-      cy,
-      midAngle,
-      innerRadius,
-      outerRadius,
-      percent,
-      index,
-    });
     const RADIAN = Math.PI / 180;
 
     const radius = outerRadius + (outerRadius - innerRadius) * 0.5;
-    // const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -40,23 +30,31 @@ const renderCustomizedLabel = ({ cardStatusPieData }) => {
       </text>
     );
   };
-};
+}
 
 export default ({ detailedStats }) => {
   if (!detailedStats) return <React.Fragment />;
 
-  const { 
-    cardsAssignedWithStatusComplete, 
-    cardsAssignedWithStatusInReview, 
-    cardsAssignedWithStatusReviewFeedback, 
-    cardsAssignedWithStatusInProgress, 
+  const {
+    cardsAssignedWithStatusComplete,
+    cardsAssignedWithStatusInReview,
+    cardsAssignedWithStatusReviewFeedback,
+    cardsAssignedWithStatusInProgress,
     cardsAssignedWithStatusReady,
-    cardsAssignedWithStatusBlocked 
+    cardsAssignedWithStatusBlocked,
   } = detailedStats;
 
   const cardStatusPieData = [
-    { name: `Complete (${cardsAssignedWithStatusComplete})`, value: cardsAssignedWithStatusComplete, color: cardColors.C },
-    { name: `Review (${cardsAssignedWithStatusInReview})`, value: cardsAssignedWithStatusInReview, color: cardColors.IR },
+    {
+      name: `Complete (${cardsAssignedWithStatusComplete})`,
+      value: cardsAssignedWithStatusComplete,
+      color: cardColors.C,
+    },
+    {
+      name: `Review (${cardsAssignedWithStatusInReview})`,
+      value: cardsAssignedWithStatusInReview,
+      color: cardColors.IR,
+    },
     {
       name: `Review Feedback (${cardsAssignedWithStatusReviewFeedback})`,
       value: cardsAssignedWithStatusReviewFeedback,
@@ -94,10 +92,7 @@ export default ({ detailedStats }) => {
           label={renderCustomizedLabel({ cardStatusPieData })}
         >
           {cardStatusPieData.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={entry.color}
-            ></Cell>
+            <Cell key={`cell-${index}`} fill={entry.color}></Cell>
           ))}
         </Pie>
         <Tooltip />

@@ -2,9 +2,11 @@ import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-import { addCardReviewOperations } from "../AddCardReviewModal/redux";
-import { dueTimeFormModalOperations } from "../DueTimeFormModal/redux";
+import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
+
+import { dueTimeFormModalOperations } from "../../regions/DueTimeFormModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import {

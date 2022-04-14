@@ -105,3 +105,13 @@ Container 2 will have access to the clone destination and nothing else. It will 
 Right now things are set up so we can check if a submitted project passes a given set of tests. But we don't check to see if a submitted suite of tests is sufficient.
 
 It could be useful to run the learner's tests against code with known problems.
+
+## Useful bulk
+
+```
+cd ../backend
+
+python manage.py run_automarker "password-checker" ""
+python manage.py run_automarker "Person" ""
+python manage.py run_automarker "simple-calculator part 1" ""
+```

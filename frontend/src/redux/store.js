@@ -1,13 +1,10 @@
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from "./sagas";
 import googleLogin from "./../utils/googleLogin";
-
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
 import DueTimeFormModal from "../components/regions/DueTimeFormModal/redux";
-
-import CardDetails from "../components/regions/CardDetails/redux";
-
+import CardDetails from "../components/pages/CardDetails";
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
 

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReviewLineChart = ({ data, minCount, maxCount }) => {
+function ReviewLineChart({ data, minCount, maxCount }) {
   return (
     <LineChart
       width={900}
@@ -65,9 +65,9 @@ const ReviewLineChart = ({ data, minCount, maxCount }) => {
       />
     </LineChart>
   );
-};
+}
 
-export default ({ team, activityLogDayCounts }) => {
+export default function ({ team, activityLogDayCounts }) {
   const { minValue, maxValue } = getMinimumAndMaximumValue({
     activityLogDayCounts,
   });
@@ -112,4 +112,4 @@ export default ({ team, activityLogDayCounts }) => {
       </React.Fragment>
     );
   return <React.Fragment />; // TODO: loading. update story to show this
-};
+}

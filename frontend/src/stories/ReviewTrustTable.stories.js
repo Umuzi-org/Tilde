@@ -1,8 +1,8 @@
 import React from "react";
-import ReviewTrustTable from "../components/regions/UserDetails/ReviewTrustTable/Presentation";
+import ReviewTrustTable from "../components/pages/UserDashboard/UserDetails/ReviewTrustTable/Presentation";
 
 export default {
-    title: "Tilde/ReviewTrustTable",
+    title: "Tilde/pages/UserDashboard/ReviewTrustTable",
     component: ReviewTrustTable
 }
 
