@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "100%",
     fontWeight: "bold",
   },
-  CardContent: {
+  CardContentStyle: {
     fontSize: "11px",
     padding: "20px",
-    paddingRight: "30px",
-    overflowY: "scroll",
-    overflowX: "hidden",
+    paddingRight: "20px",
+    overflowY: "auto",
+    overflowX: "auto",
     maxHeight: "66vh",
   },
   reviewCommentsPosition: {
@@ -70,7 +70,7 @@ function ReviewPopUp({ review, openReviewPopUp }) {
         </Box>
         <Box>
           <CardContent
-            className={classes.CardContent}
+            className={classes.CardContentStyle}
             children={
               <Typography className={classes.reviewCommentsPosition}>
                 <Markdown children={review.comments} />
