@@ -10,7 +10,7 @@ import { CardActions, CardContent, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   cardStyle: {
     display: "block",
     position: "relative",
@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "66vh",
   },
   reviewCommentsPosition: {
-    paddingLeft: "30px",
+    padding: "15px",
   },
 }));
 
-function ReviewPopUp({ review, openReviewPopUp }) {
+export default function ReviewPopUp({ review, openReviewPopUp }) {
   const classes = useStyles();
   const timestamp = new Date(review.timestamp);
 
@@ -85,5 +85,3 @@ function ReviewPopUp({ review, openReviewPopUp }) {
     </Modal>
   );
 }
-
-export default ReviewPopUp;
