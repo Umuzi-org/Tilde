@@ -7,9 +7,9 @@
 */
 
 function cleanMarkdown(review) {
-  const ignore = review.replace(/[^A-Za-z;!.,:]/gi, " ");
-  const cleanWhiteSpace = ignore.replace(/\s+/g, " ");
-  return cleanWhiteSpace.replace(" . ", " ");
+  const cleanMarkdownCharacters = review.replace(/[^A-Za-z;!.,:]/gi, " ");
+  const cleanRemainingWhiteSpace = cleanMarkdownCharacters.replace(/\s+/g, " ");
+  return cleanRemainingWhiteSpace.replace(" . ", " ");
 }
 
 export function trimReviewComments(comments) {
