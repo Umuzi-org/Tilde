@@ -47,5 +47,4 @@ echo "</our-tests>"
 # and put the tests back
 
 rm -rf tests
-git reset --hard HEAD
 

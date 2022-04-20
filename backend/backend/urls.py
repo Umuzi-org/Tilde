@@ -37,9 +37,9 @@ router.register(r"teams", core_views.TeamViewSet, "team")
 
 
 router.register(
-    r"managment_actions",
-    curriculum_tracking_api_views.ManagmentActionsViewSet,
-    "managmentaction-list",
+    r"management_actions",
+    curriculum_tracking_api_views.ManagementActionsViewSet,
+    "managementaction-list",
 )
 
 router.register(
@@ -138,6 +138,11 @@ router.register(
     "activitylogdaycount",
 )
 
+router.register(
+    r"event_type",
+    activity_log_api_views.EventTypeViewSet,
+    "eventtype",
+)
 
 # router.register(
 #     r"agile_card_add_review",
