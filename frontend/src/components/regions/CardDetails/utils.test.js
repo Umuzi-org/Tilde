@@ -1,6 +1,6 @@
-import {trimReviewComments } from "./utils";
+import { trimReviewComments } from "./utils";
 
-test("A review with markdown should be cleaned", () => {
+test("trimReviewComments should clean a review with markdown", () => {
   const reviewWithMarkup =
     "This is a review! with\n > characters *that one might use when #making a review*";
   expect(trimReviewComments(reviewWithMarkup)).toBe(
@@ -8,7 +8,7 @@ test("A review with markdown should be cleaned", () => {
   );
 });
 
-test("Some special characters should be ignored", () => {
+test("trimReviewComments should ignore cleaning some special characters", () => {
   const reviewWithSpecialChars =
     "This! \n is a review with common english punctuation.";
   expect(trimReviewComments(reviewWithSpecialChars)).toBe(
@@ -16,7 +16,7 @@ test("Some special characters should be ignored", () => {
   );
 });
 
-test("Some special characters should be ignored", () => {
+test("trimReviewComments should ignore cleaning some special english punctuation characters", () => {
   const reviewWithSpecialChars =
     "This \n is a review with common english punctuation. We want to \nclean it now";
   expect(trimReviewComments(reviewWithSpecialChars)).toBe(

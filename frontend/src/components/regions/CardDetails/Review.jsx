@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   timeFont: {
-    fontSize: 11,
+    fontSize: "11px",
   },
   reviewerFont: {
     fontSize: "100%",
