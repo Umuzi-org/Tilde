@@ -5,7 +5,7 @@ function userHasPermissionsToManageCards({ authUser, viewedUser }) {
   const teams = authUser.permissions ? authUser.permissions.teams : [];
   for (let teamId of teamMemberships) {
     const teamPermissions = teams[teamId] ? teams[teamId].permissions : [];
-    if (teamPermissions.includes("MANAGE_CARDS") || authUser.isSuperuser) {
+    if (teamPermissions.includes("MANAGE_CARDS")) {
       return true;
     }
   }
@@ -13,7 +13,10 @@ function userHasPermissionsToManageCards({ authUser, viewedUser }) {
 }
 
 export function canSetDueTime({ card, viewedUser, authUser }) {
-  if (viewedUser.id === authUser.userId && card.dueTime === null) {
+  if (
+    (viewedUser.id === authUser.userId && card.dueTime === null) ||
+    authUser.isSuperuser
+  ) {
     return true;
   }
   if (userHasPermissionsToManageCards({ viewedUser, authUser })) {
