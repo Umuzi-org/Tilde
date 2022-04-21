@@ -111,3 +111,36 @@ test(`canSetDueTime function returns false if card doesn't belong to current use
 
   expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
+
+test(`canSetDueTime function returns true if card doesn't belongs to current user, 
+        current user has management permissions and is a super user and card has no due time set`, () => {
+  const viewedUser = {
+    id: 295,
+    teamMemberships: {
+      28: {
+        id: 28,
+        name: "Cohort 22 web dev",
+      },
+    },
+  };
+  const authUser = {
+    userId: 200,
+    permissions: {
+      teams: {
+        28: {
+          id: 28,
+          name: "Cohort 22 web dev",
+          active: true,
+          isSuperuser: true,
+          permissions: ["MANAGE_CARDS"],
+        },
+      },
+    },
+  };
+  const card = {
+    assignees: [viewedUser.id],
+    dueTime: null,
+  };
+
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(true);
+});

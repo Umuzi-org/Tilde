@@ -5,7 +5,7 @@ function userHasPermissionsToManageCards({ authUser, viewedUser }) {
   const teams = authUser.permissions ? authUser.permissions.teams : [];
   for (let teamId of teamMemberships) {
     const teamPermissions = teams[teamId] ? teams[teamId].permissions : [];
-    if (teamPermissions.includes("MANAGE_CARDS")) {
+    if (teamPermissions.includes("MANAGE_CARDS") || authUser.isSuperuser) {
       return true;
     }
   }
