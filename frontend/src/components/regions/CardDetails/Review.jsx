@@ -11,7 +11,7 @@ import { trimReviewComments } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     maxWidth: "100%",
   },
@@ -58,9 +58,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review }) => {
+export default function Review({ review }) {
   const classes = useStyles();
-  const [openReviewPopUp, setOpenReviewPopUp ] = useState(false);
+  const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
 
   const timestamp = new Date(review.timestamp);
 
@@ -111,6 +111,4 @@ const Review = ({ review }) => {
       </div>
     </Card>
   );
-};
-
-export default Review;
+}
