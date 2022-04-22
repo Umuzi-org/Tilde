@@ -12,12 +12,12 @@ import {
   } from "../constants";
   
   export function getTeamPermissions({ authUser, viewedUser }) {
-    let result = {};
+    let results = {};
   
-    for (let permission of TEAM_PERMISSIONS) result[permission] = false;
+    for (let permission of TEAM_PERMISSIONS) results[permission] = false;
   
     if (authUser.isSuperuser) {
-      for (let permission of TEAM_PERMISSIONS) result[permission] = true;
+      for (let permission of TEAM_PERMISSIONS) results[permission] = true;
     } else {
       // we look at what teams this user belongs to. If authUser has a permission on one of those teams then they have the permission for the user
       for (let authedTeamId in authUser.permissions.teams) {
@@ -25,12 +25,12 @@ import {
           let heldPermissions =
             authUser.permissions.teams[authedTeamId].permissions;
           for (let permission of heldPermissions) {
-            result[permission] = true;
+            results[permission] = true;
           }
         }
       }
     }
-    return result;
+    return results;
   }
   
   export function getShowAddReviewButton({ card, permissions, isReviewer }) {
@@ -77,8 +77,7 @@ import {
   
     let reviewRequestButtons;
     if (card.contentTypeNice === "project") {
-      // PROJECT CARDS
-  
+      // PROJECT CARDS  
       if (isAssignee && card.canStart) showButtonStartProject = true;
       if (permissions[MANAGE_CARDS] & card.canForceStart)
         showButtonStartProject = true;
@@ -98,8 +97,7 @@ import {
         reviewRequestButtons.showButtonCancelReviewRequest;
     } else if (card.contentTypeNice === "workshop") {
       // WORKSHOP CARDS
-  
-      if (permissions[MANAGE_CARDS] & (card.status === READY))
+        if (permissions[MANAGE_CARDS] & (card.status === READY))
         showButtonNoteWorkshopAttendance = true;
       if (permissions[MANAGE_CARDS] & (card.status === BLOCKED))
         showButtonNoteWorkshopAttendance = true;
@@ -107,7 +105,6 @@ import {
         showButtonCancelWorkshopAttendance = true;
     } else if (card.contentTypeNice === "topic") {
       // TOPIC CARDS
-  
       if (isAssignee && card.canStart) showButtonStartTopic = true;
       if (permissions[MANAGE_CARDS] & card.canForceStart)
         showButtonStartTopic = true;
