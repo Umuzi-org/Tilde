@@ -138,7 +138,8 @@ class Api:
                 headers={"accept": "application/vnd.github.v3+json"},
             )
 
-            assert result["name"] == team_name, result
+            # assert "name" in result, f"result = {result}"
+            # assert result["name"] == team_name, f"result = {result}"
 
     def clear_failed_organisation_invites(self, organisation_name: str):
         failed_invitations = self.request_pages(

@@ -1,6 +1,7 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
 import { Typography, Paper, Button, Grid } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -38,9 +39,12 @@ const useStyles = makeStyles((theme) => ({
   rightButton: {
     float: "right",
   },
+  exitIcon: {
+    marginBottom: "0.5rem",
+  },
 }));
 
-const StatusHelp = () => {
+function StatusHelp() {
   return (
     <Help buttonText="How do I choose a status?">
       <Paper>
@@ -154,9 +158,18 @@ export default ({
   return (
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
-        <Typography variant="h5">
-          Add Review for {card.contentType}: {card.title}
-        </Typography>
+        <Grid container xs={12}>
+          <Grid item xs={10} sm={11}>
+            <Typography variant="h5">
+              Add Review for {card.contentType}: {card.title}
+            </Typography>
+          </Grid>
+          <Grid item xs={2} sm={1} className={classes.exitIcon}>
+            <Button variant="outlined" onClick={closeModal}>
+              <CloseIcon />
+            </Button>
+          </Grid>
+        </Grid>
 
         <Alert severity="info" className={classes.alert}>
           Whatever you writ here will be visable to staff and to the person you
