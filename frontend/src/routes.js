@@ -8,6 +8,7 @@ import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
 import LoginForm from "./components/regions/Login";
 import ForgotPassword from "./components/regions/Login/ForgotPassword";
+import ResetPassword from "./components/regions/ResetPassword";
 
 import UserDashboard from "./components/pages/UserDashboard";
 
@@ -23,26 +24,35 @@ export const routes = {
     route: {
       exact,
       path: "/login",
-      component: LoginForm,
     },
-    userMustBeLoggedIn: false,
+    component: LoginForm,
+    anonymousRoute: true, // only available if the user is not logged in
   },
 
   forgotPassword: {
     route: {
       exact,
       path: "/forgotPassword",
-      component: ForgotPassword,
     },
-    userMustBeLoggedIn: false,
+    component: ForgotPassword,
+    anonymousRoute: true, // only available if the user is not logged in
+  },
+
+  resetPassword: {
+    route: {
+      exact,
+      path: "/resetPassword",
+    },
+    component: ResetPassword,
+    anonymousRoute: true,
   },
 
   homeRedirect: {
     route: {
       exact,
       path: "/",
-      component: Redirector, // todo: fix spelling
     },
+    component: Redirector, // todo: fix spelling
     sliderNavigation: {
       //     //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
@@ -50,7 +60,6 @@ export const routes = {
       helpText: "Your board",
     },
     show: () => true,
-    userMustBeLoggedIn: true,
   },
 
   groupNav: {
@@ -58,8 +67,8 @@ export const routes = {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
       exact,
       path: "/users",
-      component: UsersAndGroups,
     },
+    component: UsersAndGroups,
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "U",
@@ -83,36 +92,32 @@ export const routes = {
     route: {
       exact: false,
       path: "/users/:userId/",
-      component: UserNavBar,
     },
-    userMustBeLoggedIn: true,
+    component: UserNavBar,
   },
 
   userBoard: {
     route: {
       exact,
       path: "/users/:userId/board",
-      component: AgileBoard,
     },
-    userMustBeLoggedIn: true,
+    component: AgileBoard,
   },
 
   userActions: {
     route: {
       exact,
       path: "/users/:userId/actions",
-      component: UserActions,
     },
-    userMustBeLoggedIn: true,
+    component: UserActions,
   },
 
   teamNavBar: {
     route: {
       exact: false,
       path: "/teams/:teamId/",
-      component: TeamNavBar,
     },
-    userMustBeLoggedIn: true,
+    component: TeamNavBar,
   },
 
   groupCardSummary: {
@@ -120,10 +125,9 @@ export const routes = {
     route: {
       exact,
       path: "/teams/:teamId/card_summary",
-      component: GroupCardSummary,
     },
+    component: GroupCardSummary,
     show: () => true,
-    userMustBeLoggedIn: true,
   },
 
   teamDashboard: {
@@ -131,10 +135,9 @@ export const routes = {
     route: {
       exact,
       path: "/teams/:teamId/dashboard",
-      component: TeamDashboard,
     },
+    component: TeamDashboard,
     show: () => true,
-    userMustBeLoggedIn: true,
   },
 
   profile: {
@@ -142,28 +145,25 @@ export const routes = {
     route: {
       exact,
       path: "/people/:id",
-      component: UserProfile,
     },
-    userMustBeLoggedIn: true,
+    component: UserProfile,
   },
 
   userDashboard: {
     route: {
       exact,
       path: "/users/:userId/dashboard",
-      component: UserDashboard,
     },
-    userMustBeLoggedIn: true,
+    component: UserDashboard,
   },
 
   cardDetails: {
     route: {
       exact,
       path: "/card/:cardId",
-      component: CardDetails,
     },
+    component: CardDetails,
 
     show: () => true,
-    userMustBeLoggedIn: true,
   },
 };
