@@ -134,6 +134,8 @@ def remove_collaborator(api, repo_full_name, github_user_name, github_auth_login
 def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
     api = api or Api(github_auth_login)
 
+    print(f"adding {github_user_name}")
+
     response = api.put(
         f"repos/{repo_full_name}/collaborators/{github_user_name}",
         # {"permission": "push"},
