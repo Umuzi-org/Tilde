@@ -72,3 +72,11 @@ def auto_assign_reviewers():
     )
 
     work()
+
+
+
+# @dramatiq.actor()
+# def attempt_automark(project_id):
+#     from curriculum_tracking.models import RecruitProject 
+#     project = RecruitProject.objects.get(pk=project_id)
+#     content_item_id = 

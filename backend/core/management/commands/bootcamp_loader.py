@@ -5,6 +5,11 @@ from social_auth.models import SocialProfile
 from curriculum_tracking.models import CourseRegistration
 import requests
 
+from social_auth.github_api import Api
+from git_real.constants import PERSONAL_GITHUB_NAME, ORGANISATION
+
+api = Api(PERSONAL_GITHUB_NAME)
+
 # from pprint import pprint
 
 FIRST_NAME = "Name"
@@ -189,6 +194,7 @@ def check_email(row):
 
 
 def check_github(row):
+    # todo make use of github api user_exists function
     if GIT not in row:
         return True
     github = clean_github_username(row[GIT].strip())
@@ -219,8 +225,36 @@ def setup_user(email, first_name, last_name, github, sequence, bootcamp_name):
 
     team = get_team(sequence, bootcamp_name)
     team.user_set.add(user)
+
+    # add the user to github org
+
     print(f"User setup completed for: {user}")
+
     return user
+
+
+def send_github_invite(row):
+    email = row[EMAIL].strip()
+    if not email:
+        return
+    sequence = row[COURSE].strip()
+    bootcamp_name = row[BOOTCAMP_NAME]
+    team = get_team(sequence, bootcamp_name)
+    api.create_team(organisation_name=ORGANISATION, team_name=team.name)
+
+    user = User.objects.get(email=email)
+    try:
+        github_name = user.social_profile.github_name
+    except SocialProfile.DoesNotExist:
+        return
+    if not github_name:
+        return
+
+    api.add_user_to_team(
+        organisation_name=ORGANISATION,
+        team_name=team.name,
+        github_name=github_name,
+    )
 
 
 def process_row(row):
@@ -249,3 +283,4 @@ class Command(BaseCommand):
         df.apply(check_email, axis=1)
         print("Emails ok")
         df.apply(process_row, axis=1)
+        df.apply(send_github_invite, axis=1)

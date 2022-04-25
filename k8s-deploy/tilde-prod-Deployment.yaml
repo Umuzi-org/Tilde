@@ -1,5 +1,3 @@
-# The bookshelf frontend replication controller ensures that at least 3
-# instances of the bookshelf app are running on the cluster.
 # For more info about Pods see:
 #   https://cloud.google.com/container-engine/docs/pods/
 # For more info about Deployments:

@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers
@@ -48,7 +48,9 @@ class ActivityLogDayCountViewset(viewsets.ModelViewSet):
         return query
 
 
-# class ActivityLogViewSet TODO
-# a normal model viewset allowing list and retrieve actions
-# default order = -timestamp
-# filter by users, event type
+class EventTypeViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.EventTypeSerializer
+    queryset = models.EventType.objects.order_by("name")
+    filter_backends = [DjangoFilterBackend]
+
+    permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
