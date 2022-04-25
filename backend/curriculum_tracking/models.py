@@ -88,6 +88,9 @@ class FlavourMixin:
     def flavours_match(self, flavour_strings: List[str]):
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
+    def flavour_ids_match(self, flavour_ids: List[int]):
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+
     @property
     def flavour_names(self):
         return [o.name for o in self.flavours.all()]
@@ -853,6 +856,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .filter(recruit_project = self.recruit_project)
             .order_by("timestamp")
             .first()
         )

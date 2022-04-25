@@ -1,12 +1,12 @@
 import React from "react";
-import UsersAndGroups from "../components/regions/UsersAndGroups/Presentation";
+import UsersAndGroups from "../components/pages/UsersAndGroups/Presentation.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import teams from "./fixtures/allTeams.json";
 import users from "./fixtures/allUsers.json";
 
 export default {
-  title: "Tilde/UsersAndGroups",
+  title: "Tilde/pages/UsersAndGroups",
   component: UsersAndGroups,
 };
 
@@ -26,7 +26,7 @@ Primary.args = {
       name: "team1",
       oldestOpenPrTime: "2021-10-13T04:45:01Z",
       totalOpenPrs: 9,
-      oldestCardInReviewTime: "2021-10-22T08:23:03.678444Z",
+      oldestCardInReviewTime: "2021-10-22T00:23:03.678444Z",
       totalCardsInReview: 17,
     },
     2: {

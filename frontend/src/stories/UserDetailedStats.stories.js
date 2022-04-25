@@ -1,10 +1,9 @@
 import React from "react";
-
-import UserDetailedStats from "../components/regions/UserDashboard/UserDetailedStats";
+import UserDetailedStats from "../components/pages/UserDashboard/UserDetailedStats";
 import detailedStats from "./fixtures/userDetailedStats.json";
 
 export default {
-  title: "Tilde/UserDashboard/UserDetailedStats",
+  title: "Tilde/pages/UserDashboard/UserDetailedStats",
   component: UserDetailedStats,
   // argTypes: {
   //   backgroundColor: { control: 'color' },
