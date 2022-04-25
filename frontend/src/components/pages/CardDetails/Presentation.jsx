@@ -15,6 +15,8 @@ import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
+import CardButton from "../../widgets/CardButton";
+import ViewContentButton from "../../widgets/ViewContentButton";
 
 import ProjectDetails from "./ProjectDetails";
 import UsersTable from "./UsersTable";
@@ -190,6 +192,14 @@ export default ({
         ) : (
           <React.Fragment />
         )}
+         <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={card.contentItemUrl}
+              contentItemId={card.contentItem}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
