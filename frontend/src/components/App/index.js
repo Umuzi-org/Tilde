@@ -1,8 +1,9 @@
 import React from "react";
-import { Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
 import AppHeaderAndMenu from "../regions/AppHeaderAndMenu";
+import Login from "../regions/Login";
 
 import { routes } from "../../routes.js";
 
@@ -20,15 +21,6 @@ function shouldCallWhoAmI({ authUser }) {
   return true;
 }
 
-function getCurrentRoute({ location }) {
-  for (let routeName in routes) {
-    const route = routes[routeName];
-    if (route.route.path === location.pathname) {
-      return route;
-    }
-  }
-}
-
 function AppUnconnected({ authUser, whoAmIStart }) {
   React.useEffect(() => {
     if (
@@ -40,13 +32,10 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     }
   }, [authUser, whoAmIStart]);
 
-  const location = useLocation();
-  const currentRoute = getCurrentRoute({ location });
-  const { userMustBeLoggedIn } = currentRoute;
   const token = getAuthToken();
 
-  if (userMustBeLoggedIn && token === null) {
-    window.location = routes.login.route.path;
+  if (token === null) {
+    return <Login />;
   }
 
   if (
@@ -55,23 +44,17 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     })
   )
     return <div>Loading...</div>;
-  if (!userMustBeLoggedIn && token === null) {
-    return (
-      <ThemeProvider theme={theme}>
-        {Object.keys(routes).map((key) => {
-          return <Route key={key} {...routes[key].route} />;
-        })}
-      </ThemeProvider>
-    );
-  }
+
   return (
-    <ThemeProvider theme={theme}>
-      <AppHeaderAndMenu>
-        {Object.keys(routes).map((key) => {
-          return <Route key={key} {...routes[key].route} />;
-        })}
-      </AppHeaderAndMenu>
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <AppHeaderAndMenu>
+          {Object.keys(routes).map((key) => {
+            return <Route key={key} {...routes[key].route} />;
+          })}
+        </AppHeaderAndMenu>
+      </ThemeProvider>
+    </Router>
   );
 }
 
