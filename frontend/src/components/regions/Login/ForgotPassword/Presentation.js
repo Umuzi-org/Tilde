@@ -1,9 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
+import { routes } from "../../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   buttonStyle: {
     width: "134px",
   },
-
 }));
 
 export default () => {
@@ -39,7 +40,7 @@ export default () => {
   return (
     <form className={classes.root}>
       <Typography variant="h5" style={{ fontWeight: 600 }}>
-        Reset Password
+        Forgot Password
       </Typography>
 
       <Alert severity="info" className={classes.alertStyle}>
@@ -55,11 +56,18 @@ export default () => {
           type="submit"
           variant="contained"
           color="secondary"
+          component={Link}
+          to={routes.login.route.path}
         >
           back
         </Button>
-  
-        <Button className={classes.buttonStyle} type="submit" variant="contained" color="primary">
+
+        <Button
+          className={classes.buttonStyle}
+          type="submit"
+          variant="contained"
+          color="primary"
+        >
           submit
         </Button>
       </div>

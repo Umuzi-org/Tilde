@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { routes } from "../../../routes";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -7,7 +9,6 @@ import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
 
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     width: "275px",
   },
   buttonStyle: {
-    width: "300px",
     margin: theme.spacing(1),
     textTransform: "none",
     fontWeight: 600,
@@ -85,7 +85,10 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           label="Remember me"
         />
 
-        <Link className={classes.linkStyles} underline="always" href="#">
+        <Link
+          to={routes.forgotPassword.route.path}
+          className={classes.linkStyles}
+        >
           Forgot Password?
         </Link>
       </Box>
@@ -105,11 +108,8 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         </Divider>
       </Box>
       <div>
-        <Button className={classes.buttonStyle} />
-        <Button type="submit" variant="contained" color="primary">
-          Login
-        </Button>
         <Button
+          className={classes.buttonStyle}
           type="submit"
           variant="contained"
           color="primary"
