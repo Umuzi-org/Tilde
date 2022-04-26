@@ -1,3 +1,10 @@
+"""
+example usage
+
+python manage.py run_automarker "simple-calculator part 1" ""
+python manage.py run_automarker "Person" ""
+python manage.py run_automarker "password-checker" ""
+"""
 from django.core.management.base import BaseCommand
 from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
 from core.models import User
@@ -14,14 +21,16 @@ def get_automark_result(repo_url, content_item_id, flavours):
     # print(flavours)
     url = "http://localhost:1313/mark-project"
     headers = {"Content-Type": "application/json"}
+    json = {
+        "repoUrl": repo_url,
+        "contentItemId": content_item_id,
+        "flavours": flavours,
+    }
+    pprint(json)
     response = requests.post(
         url,
         headers=headers,
-        json={
-            "repoUrl": repo_url,
-            "contentItemId": content_item_id,
-            "flavours": flavours,
-        },
+        json=json,
     )
     return response.json()
 
@@ -89,11 +98,15 @@ class Command(BaseCommand):
                 content_item_id=card.content_item_id,
                 flavours=card.flavour_names,
             )
+            pprint(result)
             if result["status"] == "OK":
                 self.add_review(card=card, status=COMPETENT, comments=result["message"])
             elif result["status"] == "FAIL":
+                errors = "\n".join(result["errors"])
                 self.add_review(
-                    card=card, status=NOT_YET_COMPETENT, comments=result["message"]
+                    card=card,
+                    status=NOT_YET_COMPETENT,
+                    comments=f"{result['message']}\n\n{errors}",
                 )
             else:
 
