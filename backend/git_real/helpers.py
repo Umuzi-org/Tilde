@@ -147,7 +147,12 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
     if response.status_code == 404:
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
 
+    if response.status_code == 422:
+        # user blocked us
+        return
+
     if response.status_code not in [201, 204]:
+        breakpoint()
         raise Exception(
             f"bad response code {response.status_code} \n\tcontent: '{response.content}'"
         )
