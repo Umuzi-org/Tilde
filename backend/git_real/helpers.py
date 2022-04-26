@@ -152,7 +152,6 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
         return
 
     if response.status_code not in [201, 204]:
-        breakpoint()
         raise Exception(
             f"bad response code {response.status_code} \n\tcontent: '{response.content}'"
         )
