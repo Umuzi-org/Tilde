@@ -160,6 +160,9 @@ class Curriculum(models.Model, Mixins):
         null=True,
         unique=True,
     )
+    manual_mode = models.BooleanField(
+        default=False
+    )  # was this created manually, using a wysiwyg?
 
     def __str__(self):
         return self.name

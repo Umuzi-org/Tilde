@@ -167,4 +167,5 @@ urlpatterns = [
     path("git_real/", include("git_real.urls")),
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
+    path("curriculum_designer/", include("curriculum_designer.urls")),
 ]

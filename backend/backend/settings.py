@@ -124,6 +124,8 @@ INSTALLED_APPS = [
     "dev_helpers.apps.DevHelpersConfig",
     "config.apps.ConfigConfig",
     "activity_log.apps.ActivityLogConfig",
+    "curriculum_designer.apps.CurriculumDesignerConfig",
+    "django_quill",
 ]
 
 SITE_ID = 1  # from allauth docs

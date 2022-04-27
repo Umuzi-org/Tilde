@@ -75,3 +75,4 @@ dramatiq[rabbitmq, watch]
 
 
 django-sql-utils==0.6.1
+django-quill-editor==0.1.40

@@ -1,7 +1,6 @@
 from datetime import timedelta
 from typing import List
 from django.db import models
-from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -23,6 +22,7 @@ from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
 from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+from django_quill.fields import QuillField
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,9 @@ class FlavourMixin:
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
     def flavour_ids_match(self, flavour_ids: List[int]):
-        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
+            flavour_ids
+        )
 
     @property
     def flavour_names(self):
@@ -281,6 +283,12 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
     template_repo = models.URLField(null=True, blank=True)  # should be a github repo
     link_regex = models.CharField(max_length=250, null=True, blank=True)
+
+    manual_mode = models.BooleanField(
+        default=False
+    )  # was this created manually, using a wysiwyg?
+
+    raw_content = QuillField(blank=True, null=True)
 
     class Meta:
         unique_together = [["content_type", "title"]]
@@ -856,7 +864,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
-            .filter(recruit_project = self.recruit_project)
+            .filter(recruit_project=self.recruit_project)
             .order_by("timestamp")
             .first()
         )
