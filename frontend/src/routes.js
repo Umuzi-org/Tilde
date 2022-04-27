@@ -19,8 +19,8 @@ export const routes = {
     route: {
       exact,
       path: "/",
-      component: Redirector, // todo: fix spelling
     },
+    component: Redirector, // todo: fix spelling
     sliderNavigation: {
       //     //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
@@ -35,8 +35,8 @@ export const routes = {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
       exact,
       path: "/users",
-      component: UsersAndGroups,
     },
+    component: UsersAndGroups,
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "U",
@@ -59,32 +59,32 @@ export const routes = {
     route: {
       exact: false,
       path: "/users/:userId/",
-      component: UserNavBar,
     },
+    component: UserNavBar,
   },
 
   userBoard: {
     route: {
       exact,
       path: "/users/:userId/board",
-      component: AgileBoard,
     },
+    component: AgileBoard,
   },
 
   userActions: {
     route: {
       exact,
       path: "/users/:userId/actions",
-      component: UserActions,
     },
+    component: UserActions,
   },
 
   teamNavBar: {
     route: {
       exact: false,
       path: "/teams/:teamId/",
-      component: TeamNavBar,
     },
+    component: TeamNavBar,
   },
 
   groupCardSummary: {
@@ -92,8 +92,8 @@ export const routes = {
     route: {
       exact,
       path: "/teams/:teamId/card_summary",
-      component: GroupCardSummary,
     },
+    component: GroupCardSummary,
     show: () => true,
   },
 
@@ -102,8 +102,8 @@ export const routes = {
     route: {
       exact,
       path: "/teams/:teamId/dashboard",
-      component: TeamDashboard,
     },
+    component: TeamDashboard,
     show: () => true,
   },
 
@@ -112,24 +112,24 @@ export const routes = {
     route: {
       exact,
       path: "/people/:id",
-      component: UserProfile,
     },
+    component: UserProfile,
   },
 
   userDashboard: {
     route: {
       exact,
       path: "/users/:userId/dashboard",
-      component: UserDashboard,
     },
+    component: UserDashboard,
   },
 
   cardDetails: {
     route: {
       exact,
       path: "/card/:cardId",
-      component: CardDetails,
     },
+    component: CardDetails,
 
     show: () => true,
   },

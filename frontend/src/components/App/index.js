@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { connect } from "react-redux";
 
 import AppHeaderAndMenu from "../regions/AppHeaderAndMenu";
@@ -49,9 +49,18 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     <Router>
       <ThemeProvider theme={theme}>
         <AppHeaderAndMenu>
-          {Object.keys(routes).map((key) => {
-            return <Route key={key} {...routes[key].route} />;
-          })}
+          <Routes>
+            {Object.keys(routes).map((key) => {
+              const Component = routes[key].component;
+              return (
+                <Route
+                  key={key}
+                  {...routes[key].route}
+                  element={<Component />}
+                />
+              );
+            })}
+          </Routes>
         </AppHeaderAndMenu>
       </ThemeProvider>
     </Router>

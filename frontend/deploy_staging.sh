@@ -13,4 +13,4 @@ REACT_APP_FEATURE_BACKEND_API_ON=1 \
 REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID \
 npm run build
 
-yes | gcloud app deploy --project umuzi-prod --appyaml app-prod.yaml
+yes | gcloud app deploy --project umuzi-prod --appyaml app-staging.yaml
