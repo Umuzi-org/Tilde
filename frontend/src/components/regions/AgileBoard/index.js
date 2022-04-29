@@ -128,6 +128,7 @@ function AgileBoardUnconnected({
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
   authedUserId,
   fetchInitialCards,
+  fetchUser,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -135,6 +136,10 @@ function AgileBoardUnconnected({
   useEffect(() => {
     if (userId !== undefined) fetchInitialCards({ userId });
   }, [fetchInitialCards, userId]);
+
+  useEffect(() => {
+    if (userId !== undefined) fetchUser({ userId });
+  }, [fetchUser, userId]);
 
   const filteredCards = filterCardsByUserId({
     cards,
@@ -196,6 +201,7 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
+  console.log({ users, userId });
   const viewedUser = users[userId];
   if (!viewedUser) {
     return <Loading />;
@@ -228,6 +234,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId: parseInt(userId) },
+        })
+      );
+    },
+
     fetchCardPages: ({ dataSequence }) => {
       dispatch(
         apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(
