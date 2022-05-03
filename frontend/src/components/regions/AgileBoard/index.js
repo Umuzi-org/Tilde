@@ -201,7 +201,6 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
-  console.log({ users, userId });
   const viewedUser = users[userId];
   if (!viewedUser) {
     return <Loading />;

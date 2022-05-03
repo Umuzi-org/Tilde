@@ -51,12 +51,22 @@ function AppUnconnected({ authUser, whoAmIStart }) {
         <AppHeaderAndMenu>
           <Routes>
             {Object.keys(routes).map((key) => {
-              const Component = routes[key].component;
+              const { Component, NavBarComponent } = routes[key];
+
               return (
                 <Route
                   key={key}
                   {...routes[key].route}
-                  element={<Component />}
+                  element={
+                    <React.Fragment>
+                      {NavBarComponent ? (
+                        <NavBarComponent />
+                      ) : (
+                        <React.Fragment />
+                      )}
+                      <Component />
+                    </React.Fragment>
+                  }
                 />
               );
             })}
