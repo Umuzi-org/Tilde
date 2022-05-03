@@ -115,37 +115,12 @@ test(`canSetDueTime function returns false if card doesn't belong to current use
 test(`canSetDueTime function returns true for superusers`, () => {
   const viewedUser = {
     id: 295,
-    teamMemberships: {
-      28: {
-        id: 28,
-        name: "Cohort 22 web dev",
-      },
-    },
+    teamMemberships: {},
   };
   const authUser = {
-    email: 'sbonelo.mkhize@umuzi.org',
-    token: 'c434920a0a10ae0469984f6022bd5ec20f11bf94',
-    userId: 2,
-    active: true,
-    firstName: 'Sbonelo',
-    lastName: 'Mkhize',
-    preferredName: null,
-    isStaff: 1,
     isSuperuser: 1,
-    permissions: {
-      teams: {
-        '1': {
-          id: 1,
-          name: 'demo team',
-          active: true,
-          permissions: [
-            'MANAGE_CARDS',
-            'VIEW_ALL'
-          ]
-        }
-      }
-    }
-  }
+    permissions: {},
+  };
   const card = {
     assignees: [viewedUser.id],
     dueTime: null,
