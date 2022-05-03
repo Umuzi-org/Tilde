@@ -112,8 +112,7 @@ test(`canSetDueTime function returns false if card doesn't belong to current use
   expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
 
-test(`canSetDueTime function returns true if card doesn't belongs to current user, 
-        current user has management permissions and is a super user and card has no due time set`, () => {
+test(`canSetDueTime function returns true for superusers`, () => {
   const viewedUser = {
     id: 295,
     teamMemberships: {
@@ -124,19 +123,29 @@ test(`canSetDueTime function returns true if card doesn't belongs to current use
     },
   };
   const authUser = {
-    userId: 200,
+    email: 'sbonelo.mkhize@umuzi.org',
+    token: 'c434920a0a10ae0469984f6022bd5ec20f11bf94',
+    userId: 2,
+    active: true,
+    firstName: 'Sbonelo',
+    lastName: 'Mkhize',
+    preferredName: null,
+    isStaff: 1,
+    isSuperuser: 1,
     permissions: {
       teams: {
-        28: {
-          id: 28,
-          name: "Cohort 22 web dev",
+        '1': {
+          id: 1,
+          name: 'demo team',
           active: true,
-          isSuperuser: true,
-          permissions: ["MANAGE_CARDS"],
-        },
-      },
-    },
-  };
+          permissions: [
+            'MANAGE_CARDS',
+            'VIEW_ALL'
+          ]
+        }
+      }
+    }
+  }
   const card = {
     assignees: [viewedUser.id],
     dueTime: null,
