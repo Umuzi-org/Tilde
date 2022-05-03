@@ -22,3 +22,11 @@ class log_pr_reviewed_Tests(TestCase):
         creators.log_pr_reviewed(review2)
         creators.log_pr_reviewed(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
+
+
+
+class log_pr_opened_Tests(TestCase):
+   def test_pr_opened(self):
+       pull_request = PullRequestFactory()
+       creators.log_pr_opened(pull_request)
+       self.assertEqual(LogEntry.objects.count(), 1)
