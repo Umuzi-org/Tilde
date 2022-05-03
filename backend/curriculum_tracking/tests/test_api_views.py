@@ -99,6 +99,14 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
             content_item=self.content_item,
         )
 
+        self.card_2 = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=factories.RecruitProjectFactory(
+                content_item=self.content_item
+            ),
+            content_item=self.content_item,
+        )
+
         self.card_1.start_project()
         self.card_2.start_project()
 
@@ -160,28 +168,21 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
 
     def test_cancel_request_review_permissions_non_superuser_staff(self):
-        self.login_as_superuser()
-        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
-        response = self.client.post(request_review_url)
-
-        self.assertEqual(response.status_code, 200)
-
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
         self.login(staff_user)
 
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_1.id)}cancel_review_request/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
     def test_cancel_request_review_permissions_non_assignee(self):
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
@@ -191,85 +192,72 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.login(recruit_user_non_card_assignee)
 
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_1.id)}cancel_review_request/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"].code, "permission_denied")
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
     def test_cancel_request_review_permissions_superuser(self):
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
         superuser = factories.UserFactory(is_superuser=True, is_staff=False)
         self.login(superuser)
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_1.id)}cancel_review_request/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
     def test_cancel_request_review_permissions_assignee(self):
-        self.login(self.card_1.assignees.first())
-        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+        self.login(self.card_2.assignees.first())
+        request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
-
-        cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_1.id)}cancel_review_request/"
-        )
-        response = self.client.post(cancel_request_review_url)
-        self.assertEqual(response.status_code, 200)
-
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
 
     def test_cancel_request_review_card_with_review_feedback(self):
-        self.login_as_superuser()
-        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
-        response = self.client.post(request_review_url)
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
-        self.assertEqual(response.status_code, 200)
-
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
-
-        add_review_url = f"{self.get_instance_url(self.card_1.id)}add_review/"
+        add_review_url = f"{self.get_instance_url(self.card_2.id)}add_review/"
         response = self.client.post(
             add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "boooo"}
         )
         self.assertEqual(response.status_code, 200)
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.REVIEW_FEEDBACK)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
 
-        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
 
         cancel_request_review_url = (
-            f"{self.get_instance_url(self.card_1.id)}cancel_review_request/"
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
         )
         response = self.client.post(cancel_request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        self.card_1.refresh_from_db()
-        self.assertEqual(self.card_1.status, AgileCard.REVIEW_FEEDBACK)
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
 
 
 class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
