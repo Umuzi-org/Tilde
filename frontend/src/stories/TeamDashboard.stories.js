@@ -78,7 +78,7 @@ const team = {
 const activityLogDayCounts = {
   84: [
     {
-      date: "2021-07-15",
+      date: "2021-07-12",
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
@@ -116,7 +116,7 @@ const activityLogDayCounts = {
       PR_REVIEWED: 3,
     },
     {
-      date: "2021-07-16",
+      date: "2021-07-10",
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 2,
     },
@@ -139,7 +139,7 @@ const activityLogDayCounts = {
       PR_REVIEWED: 2,
     },
     {
-      date: "2021-07-17",
+      date: "2021-07-31",
       COMPETENCE_REVIEW_DONE: 1,
       PR_REVIEWED: 1,
     },
