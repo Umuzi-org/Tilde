@@ -95,6 +95,7 @@ class PushFactory(DjangoModelFactory):
 
     repository = factory.SubFactory(RepositoryFactory)
     author_github_name = factory.Faker("first_name")
+    committer_github_name = factory.Faker("first_name")
     pusher_username = factory.Faker("first_name")
     message = "added feature x"
     head_commit_url = factory.lazy_attribute(lambda *args, **kwargs: next(_html_url_generator))
