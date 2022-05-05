@@ -1,5 +1,5 @@
 from factory.declarations import LazyAttribute
-from git_real.models import PullRequest, PullRequestReview
+from git_real.models import PullRequest, PullRequestReview, Push
 from factory.django import DjangoModelFactory
 import factory
 from django.utils import timezone
@@ -87,3 +87,17 @@ class PullRequestReviewFactory(DjangoModelFactory):
     state = "closed"
     commit_id = factory.LazyAttribute(lambda *args, **kwargs: next(_commit_id_generator))
     user = factory.SubFactory(UserFactory)
+
+
+class PushFactory(DjangoModelFactory):
+    class Meta:
+        model = "git_real.Push"
+
+    repository = factory.SubFactory(RepositoryFactory)
+    author_github_name = factory.Faker("first_name")
+    pusher_username = factory.Faker("first_name")
+    message = "added feature x"
+    head_commit_url = factory.lazy_attribute(lambda *args, **kwargs: next(_html_url_generator))
+    commit_timestamp = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    pushed_at_time = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    ref = "refs/heads/feature"
