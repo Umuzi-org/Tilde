@@ -56,16 +56,6 @@ export function getProjectConfig({ contentItemId, flavours }) {
 }
 
 export async function mark({ config, repoUrl }) {
-  // const config = getProjectConfig({ contentItemId, flavours });
-
-  // if (config === undefined) {
-  //   return {
-  //     status: STATUS_ERROR,
-  //     message:
-  //       "Configuration error. Either there is no matching configuration, or there are too many configuration entities that match",
-  //   };
-  // }
-
   const markProject = markers[config.marker];
   if (markProject === undefined)
     return {

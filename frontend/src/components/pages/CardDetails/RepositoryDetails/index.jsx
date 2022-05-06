@@ -56,7 +56,6 @@ function RepositoryDetailsUnconnected({
     handleChangeTab,
   };
 
-  console.log({ props, repositories });
   return <Presentation {...props} />;
 }
 

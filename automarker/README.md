@@ -58,6 +58,14 @@ curl \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
 http://localhost:1313/mark-project
 
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
+http://localhost:1313/mark-project
+
 curl \
 --request POST \
 --header "Content-Type: application/json" \
