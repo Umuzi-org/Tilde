@@ -1,10 +1,10 @@
 import { getMinimumAndMaximumValue, updateActivityLogDayCounts } from "./utils";
 
-test("updateActivityLogDayCounts returns updated activityLogDayCounts with same dates", () => {
+test("updateActivityLogDayCounts returns updated activityLogDayCounts with filtered dates", () => {
   const activityLogDayCounts = {
     84: [
       {
-        date: "2021-07-14",
+        date: "2022-04-14",
         COMPETENCE_REVIEW_DONE: 5,
         PR_REVIEWED: 3,
       },
@@ -143,7 +143,9 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with same 
     ],
   };
 
-  expect(updateActivityLogDayCounts({ activityLogDayCounts })).toEqual(
+  const dateFilter = new Date(2021, 7, 14);
+
+  expect(updateActivityLogDayCounts({ activityLogDayCounts }, dateFilter)).toEqual(
     sampleUpdatedActivityLogDayCounts
   );
 });

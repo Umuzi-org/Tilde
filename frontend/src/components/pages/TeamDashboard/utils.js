@@ -1,4 +1,4 @@
-export function updateActivityLogDayCounts({ activityLogDayCounts }) {
+export function updateActivityLogDayCounts({ activityLogDayCounts }, dateFilter) {
   const datesArray = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((activityLogDayCount) => {
@@ -35,7 +35,6 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   }
 
   const updatedActivityLogDayCounts = {};
-  const dateFilter = new Date();
   dateFilter.setDate(dateFilter.getDate() - 21);
   Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
     updatedActivityLogDayCounts[
