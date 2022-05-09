@@ -9,10 +9,11 @@ from git_real import views
 import mock
 
 # from git_real.models import PullRequest, PullRequestReview, Push
-from .factories import RepositoryFactory, PullRequestReview
+from .factories import RepositoryFactory, PullRequestReview,PullRequest
 from social_auth.tests.factories import SocialProfileFactory
 from activity_log.models import LogEntry
 import git_real.activity_log_creators as creators
+from git_real.tests import factories
 
 
 class log_pr_reviewed_Tests(APITestCase):
@@ -47,3 +48,28 @@ class log_pr_reviewed_Tests(APITestCase):
         self.assertEqual(entry.object_1, pr_review)
         self.assertEqual(entry.object_2, repo)
         self.assertEqual(entry.event_type.name, creators.PR_REVIEWED)
+
+
+class log_pr_opened_Tests(APITestCase):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_pr_opened(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(PullRequest.objects.all().count(), 0)
+
+        body, headers = get_body_and_headers("pull_request_opened")
+        url = reverse(views.github_webhook)
+
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        self.assertEqual(PullRequest.objects.all().count(), 1)
+        pr = PullRequest.objects.first()
+
+        
+        self.assertEqual(LogEntry.objects.count(), 0)
+        
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+        self.assertEqual(entry.event_type.name, creators.PR_OPENED)
