@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .factories import PullRequestReviewFactory
+from .factories import PullRequestReviewFactory, PullRequestFactory,UserFactory
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -23,10 +23,3 @@ class log_pr_reviewed_Tests(TestCase):
         creators.log_pr_reviewed(review2)
         self.assertEqual(LogEntry.objects.count(), 2)
 
-
-
-class log_pr_opened_Tests(TestCase):
-   def test_pr_opened(self):
-       pull_request = PullRequestFactory()
-       creators.log_pr_opened(pull_request)
-       self.assertEqual(LogEntry.objects.count(), 1)
