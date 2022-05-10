@@ -15,14 +15,7 @@ const useStyles = makeStyles(() => ({
   root: {
     maxWidth: "100%",
   },
-  iconAlignment: {
-    position: "absolute",
-    right: "18px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
+  iconAlignment: {},
   timeFont: {
     fontSize: "11px",
   },
@@ -80,6 +73,7 @@ export default function Review({ review }) {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
+        <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
         <Button
           type="button"
           size="small"
@@ -90,7 +84,6 @@ export default function Review({ review }) {
             ... Read more
           </Typography>
         </Button>
-        <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
       </CardContent>
       <IconButton disabled>
         <ReviewStatus status={review.status} />
