@@ -9,7 +9,7 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-19",
+        date: "2022-04-19",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 0,
       },
@@ -17,12 +17,12 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
 
     26: [
       {
-        date: "2021-07-15",
+        date: "2022-04-15",
         COMPETENCE_REVIEW_DONE: 5,
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-17",
+        date: "2022-04-17",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 1,
       },
@@ -30,12 +30,12 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
 
     132: [
       {
-        date: "2021-07-15",
+        date: "2022-04-15",
         COMPETENCE_REVIEW_DONE: 50,
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-16",
+        date: "2022-04-16",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 2,
       },
@@ -45,32 +45,32 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
   const sampleUpdatedActivityLogDayCounts = {
     84: [
       {
-        date: "2021-07-14",
+        date: "2022-04-14",
         COMPETENCE_REVIEW_DONE: 5,
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-15",
+        date: "2022-04-15",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-16",
+        date: "2022-04-16",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-17",
+        date: "2022-04-17",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-18",
+        date: "2022-04-18",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-19",
+        date: "2022-04-19",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 0,
       },
@@ -78,32 +78,32 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
 
     26: [
       {
-        date: "2021-07-14",
+        date: "2022-04-14",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-15",
+        date: "2022-04-15",
         COMPETENCE_REVIEW_DONE: 5,
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-16",
+        date: "2022-04-16",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-17",
+        date: "2022-04-17",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 1,
       },
       {
-        date: "2021-07-18",
+        date: "2022-04-18",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-19",
+        date: "2022-04-19",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
@@ -111,32 +111,32 @@ test("updateActivityLogDayCounts returns updated activityLogDayCounts with filte
 
     132: [
       {
-        date: "2021-07-14",
+        date: "2022-04-14",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-15",
+        date: "2022-04-15",
         COMPETENCE_REVIEW_DONE: 50,
         PR_REVIEWED: 3,
       },
       {
-        date: "2021-07-16",
+        date: "2022-04-16",
         COMPETENCE_REVIEW_DONE: 20,
         PR_REVIEWED: 2,
       },
       {
-        date: "2021-07-17",
+        date: "2022-04-17",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-18",
+        date: "2022-04-18",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
       {
-        date: "2021-07-19",
+        date: "2022-04-19",
         COMPETENCE_REVIEW_DONE: 0,
         PR_REVIEWED: 0,
       },
