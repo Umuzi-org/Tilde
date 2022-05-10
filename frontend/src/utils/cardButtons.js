@@ -74,7 +74,6 @@ export function showButtons({ card, authUser, viewedUser }) {
   const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
   const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
   const permissions = getTeamPermissions({ authUser, viewedUser });
-  console.log(permissions);
 
   let reviewRequestButtons;
   if (card.contentTypeNice === "project") {
