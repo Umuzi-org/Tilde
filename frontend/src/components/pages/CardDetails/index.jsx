@@ -6,10 +6,13 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-import { getShowAddReviewButton } from '../../../utils/cardButtons';
+import {
+  getShowAddReviewButton,
+  getTeamPermissions,
+} from "../../../utils/cardButtons";
 
 import {
-  IN_REVIEW, 
+  IN_REVIEW,
   COMPLETE,
   REVIEW_FEEDBACK,
   IN_PROGRESS,
@@ -22,6 +25,7 @@ function CardDetailsUnconnected({
   projectReviews,
   topicReviews,
   authUser,
+  viewedUser,
 
   openReviewFormModal,
   updateProjectLink,
@@ -101,10 +105,15 @@ function CardDetailsUnconnected({
 
   const projectCardStatus = project && project.agileCardStatus;
 
-  const permissions = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus);
+  const cardWithStatusOnly = { status: projectCardStatus };
 
-  const showAddReviewButton = getShowAddReviewButton({ card, permissions, isReviewer });
+  const permissions = getTeamPermissions({ authUser, viewedUser });
 
+  const showAddReviewButton = getShowAddReviewButton({
+    card: cardWithStatusOnly,
+    permissions,
+    isReviewer,
+  });
   const showUpdateProjectLinkForm =
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;

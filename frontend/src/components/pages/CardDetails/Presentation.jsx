@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function TopicProgressDetails ({ topicProgress, reviews }) {
+function TopicProgressDetails({ topicProgress, reviews }) {
   return (
     <React.Fragment>
       {topicProgress.topicNeedsReview ? (
@@ -61,9 +61,9 @@ function TopicProgressDetails ({ topicProgress, reviews }) {
       )}
     </React.Fragment>
   );
-};
+}
 
-function CardBasicDetails ({ card }) {
+function CardBasicDetails({ card }) {
   const classes = useStyles();
 
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
@@ -136,7 +136,7 @@ function CardBasicDetails ({ card }) {
       </Grid>
     </React.Fragment>
   );
-};
+}
 
 export default ({
   card,
@@ -175,7 +175,6 @@ export default ({
         ) : (
           <React.Fragment />
         )}
-
         {topicProgress ? (
           <TopicProgressDetails
             topicProgress={topicProgress}
