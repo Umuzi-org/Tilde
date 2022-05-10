@@ -146,7 +146,6 @@ function CardDetailsUnconnected({
 }
 
 const mapStateToProps = (state) => {
-
   return {
     cards: state.apiEntities.cards,
     projects: state.apiEntities.projects,
@@ -191,7 +190,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchTopicProgress: ({ topicProgressId }) => {
       dispatch(
-        apiReduxApps.FETCH_SINGLE_TOPIC_PRGRESS.operations.maybeStart({
+        apiReduxApps.FETCH_SINGLE_TOPIC_PROGRESS.operations.maybeStart({
           data: {
             topicProgressId,
           },
