@@ -1,8 +1,8 @@
 import React from "react";
-import PermissionsTable from "../components/regions/UserDetails/PermissionsTable/Presentation";
+import PermissionsTable from "../components/pages/UserDashboard/UserDetails/PermissionsTable/Presentation";
 
 export default {
-    title: "Tilde/PermissionsTable",
+    title: "Tilde/pages/UserDashboard/PermissionsTable",
     component: PermissionsTable
 }
 

@@ -10,6 +10,7 @@ const LOGOUT = "LOGOUT";
 const FETCH_RECRUIT_PROJECTS_PAGE = "FETCH_RECRUIT_PROJECTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE";
+const FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE = "FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE";
 const FETCH_SINGLE_PROJECT_CARD_SUMMARY = "FETCH_SINGLE_PROJECT_CARD_SUMMARY";
@@ -47,7 +48,7 @@ const CARD_SET_PROJECT_LINK = "CARD_SET_PROJECT_LINK";
 
 const FETCH_SINGLE_AGILE_CARD = "FETCH_SINGLE_AGILE_CARD";
 
-const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mistake. fix please
+const FETCH_SINGLE_TOPIC_PROGRESS = "FETCH_SINGLE_TOPIC_PROGRESS"; //spelling mistake. fix please
 
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
@@ -170,10 +171,10 @@ export const apiReduxApps = {
     responseEntityType: "projects",
   }),
 
-  FETCH_SINGLE_TOPIC_PRGRESS: createReduxApp({
-    BASE_TYPE: FETCH_SINGLE_TOPIC_PRGRESS,
+  FETCH_SINGLE_TOPIC_PROGRESS: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_TOPIC_PROGRESS,
     apiCaller: apiCallers.topicProgressEntity,
-    responseIsList: true,
+    responseIsList: false,
     responseEntityType: "topicProgress",
   }),
 
@@ -182,6 +183,13 @@ export const apiReduxApps = {
     apiCaller: apiCallers.personallyAssignedAgileCardsPage,
     responseIsList: true,
     responseEntityType: "cards",
+  }),
+
+  FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE,
+    apiCaller: apiCallers.userBurndownSnapshotsPage,
+    responseIsList: true,
+    responseEntityType: "burndownSnapshots",
   }),
 
   FETCH_COHORTS_PAGE: createReduxApp({

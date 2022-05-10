@@ -1,12 +1,12 @@
-import UserProfile from "./components/regions/UserProfile";
+// import UserProfile from "./components/regions/UserProfile";
 import AgileBoard from "./components/regions/AgileBoard";
 import UserActions from "./components/regions/UserActions";
-import GroupCardSummary from "./components/regions/GroupCardSummary";
-import UsersAndGroups from "./components/regions/UsersAndGroups";
-import UserDashboard from "./components/regions/UserDashboard";
-import CardDetails from "./components/regions/CardDetails";
+import UsersAndGroups from "./components/pages/UsersAndGroups";
+import GroupCardSummary from "./components/pages/GroupCardSummary";
+import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
+import UserDashboard from "./components/pages/UserDashboard";
 
 import { TEAM_PERMISSIONS } from "./constants";
 
@@ -19,8 +19,8 @@ export const routes = {
     route: {
       exact,
       path: "/",
-      component: Redirector, // todo: fix spelling
     },
+    Component: Redirector, // todo: fix spelling
     sliderNavigation: {
       //     //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
@@ -35,8 +35,8 @@ export const routes = {
       // these are the arguments for the "Route" component. Eg: <Route exact path="/" component={Home}/>
       exact,
       path: "/users",
-      component: UsersAndGroups,
     },
+    Component: UsersAndGroups,
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "U",
@@ -55,45 +55,40 @@ export const routes = {
     },
   },
 
-  userNavBar: {
-    route: {
-      exact: false,
-      path: "/users/:userId/",
-      component: UserNavBar,
-    },
-  },
-
   userBoard: {
     route: {
       exact,
       path: "/users/:userId/board",
-      component: AgileBoard,
     },
+    Component: AgileBoard,
+    NavBarComponent: UserNavBar,
   },
 
   userActions: {
     route: {
       exact,
       path: "/users/:userId/actions",
-      component: UserActions,
     },
+    Component: UserActions,
+    NavBarComponent: UserNavBar,
   },
 
-  teamNavBar: {
-    route: {
-      exact: false,
-      path: "/teams/:teamId/",
-      component: TeamNavBar,
-    },
-  },
+  // teamNavBar: {
+  //   route: {
+  //     exact: false,
+  //     path: "/teams/:teamId/",
+  //   },
+  //   Component: TeamNavBar,
+  // },
 
   groupCardSummary: {
     // todo Rename this to teamCardSummary
     route: {
       exact,
       path: "/teams/:teamId/card_summary",
-      component: GroupCardSummary,
     },
+    Component: GroupCardSummary,
+    NavBarComponent: TeamNavBar,
     show: () => true,
   },
 
@@ -102,34 +97,37 @@ export const routes = {
     route: {
       exact,
       path: "/teams/:teamId/dashboard",
-      component: TeamDashboard,
     },
+    Component: TeamDashboard,
+    NavBarComponent: TeamNavBar,
+
     show: () => true,
   },
 
-  profile: {
-    // TODO: What is in this component? Can we just delete it?
-    route: {
-      exact,
-      path: "/people/:id",
-      component: UserProfile,
-    },
-  },
+  // profile: {
+  //   // TODO: What is in this component? Can we just delete it?
+  //   route: {
+  //     exact,
+  //     path: "/people/:id",
+  //   },
+  //   Component: UserProfile,
+  // },
 
   userDashboard: {
     route: {
       exact,
       path: "/users/:userId/dashboard",
-      component: UserDashboard,
     },
+    Component: UserDashboard,
+    NavBarComponent: UserNavBar,
   },
 
   cardDetails: {
     route: {
       exact,
       path: "/card/:cardId",
-      component: CardDetails,
     },
+    Component: CardDetails,
 
     show: () => true,
   },
