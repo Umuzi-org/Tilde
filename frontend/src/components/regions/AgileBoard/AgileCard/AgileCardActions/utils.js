@@ -73,6 +73,9 @@ export function showButtons({ card, authUser, viewedUser }) {
   let showButtonRequestReview = false;
   let showButtonCancelReviewRequest = false;
 
+  // Show content button. Should the content be displayed on a blocked card ?
+  let showButtonViewContent = false;
+
   const isAssignee = card.assignees.indexOf(authUser.userId) !== -1;
   const isReviewer = card.reviewers.indexOf(authUser.userId) !== -1;
   const permissions = getTeamPermissions({ authUser, viewedUser });
