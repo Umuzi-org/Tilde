@@ -9,7 +9,7 @@ from git_real import views
 import mock
 
 # from git_real.models import PullRequest, PullRequestReview, Push
-from .factories import RepositoryFactory, PullRequestReview,PullRequest
+from .factories import RepositoryFactory, PullRequestReview,PullRequest, PullRequestFactory
 from social_auth.tests.factories import SocialProfileFactory
 from activity_log.models import LogEntry
 import git_real.activity_log_creators as creators
@@ -58,8 +58,9 @@ class log_pr_opened_Tests(APITestCase):
         self.assertEqual(PullRequest.objects.all().count(), 0)
 
         body, headers = get_body_and_headers("pull_request_opened")
+        pull_request_data=body["pull_request"]
+        social_profile = SocialProfileFactory(github_name=pull_request_data["user"]["login"])
         url = reverse(views.github_webhook)
-
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
 
         self.client.post(url, format="json", data=body, extra=headers)
@@ -67,9 +68,10 @@ class log_pr_opened_Tests(APITestCase):
         self.assertEqual(PullRequest.objects.all().count(), 1)
         pr = PullRequest.objects.first()
 
-        
-        self.assertEqual(LogEntry.objects.count(), 0)
-        
+        entry = LogEntry.objects.create()
         self.assertEqual(LogEntry.objects.count(), 1)
-        entry = LogEntry.objects.first()
+        
+        self.assertEqual(entry.actor_user, pr.user)
+        self.assertEqual(entry.effected_user, pr.user)
+        self.assertEqual(entry.object_1, pr)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
