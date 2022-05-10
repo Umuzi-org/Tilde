@@ -16,6 +16,7 @@ from .factories import (
     UserFactory,
     AgileCardFactory,
     RecruitProjectFactory,
+    ContentItemFactory,
 )
 from curriculum_tracking.tests.factories import (
     ProjectContentItemFactory,
@@ -230,14 +231,12 @@ class log_card_review_requested_and_cancelled_Tests(APITestCase, APITestCaseMixi
 
     def setUp(self):
         self.actor_user = UserFactory(is_superuser=True, is_staff=True)
-        self.content_item = factories.ProjectContentItemFactory(
+        self.content_item = ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
-        self.card = factories.AgileCardFactory(
+        self.card = AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=factories.RecruitProjectFactory(
-                content_item=self.content_item
-            ),
+            recruit_project=RecruitProjectFactory(content_item=self.content_item),
             content_item=self.content_item,
         )
         self.login(self.actor_user)
