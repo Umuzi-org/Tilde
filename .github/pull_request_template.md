@@ -11,6 +11,7 @@ What are you up to? Fill us in :)
 ## I solemnly swear that:
 
 - [ ] My code follows the style guidelines of this project
+- [ ] I have merged the develop branch into my branch and fixed the merge conflicts
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code in hard-to-understand areas
 - [ ] My changes generate no new warnings
