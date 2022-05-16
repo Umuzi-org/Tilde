@@ -13,7 +13,10 @@ function userHasPermissionsToManageCards({ authUser, viewedUser }) {
 }
 
 export function canSetDueTime({ card, viewedUser, authUser }) {
-  if (viewedUser.id === authUser.userId && card.dueTime === null) {
+  if (
+    (viewedUser.id === authUser.userId && card.dueTime === null) ||
+    authUser.isSuperuser
+  ) {
     return true;
   }
   if (userHasPermissionsToManageCards({ viewedUser, authUser })) {

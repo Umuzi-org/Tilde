@@ -111,3 +111,20 @@ test(`canSetDueTime function returns false if card doesn't belong to current use
 
   expect(canSetDueTime({ card, viewedUser, authUser })).toBe(false);
 });
+
+test(`canSetDueTime function returns true for superusers`, () => {
+  const viewedUser = {
+    id: 295,
+    teamMemberships: {},
+  };
+  const authUser = {
+    isSuperuser: 1,
+    permissions: {},
+  };
+  const card = {
+    assignees: [viewedUser.id],
+    dueTime: null,
+  };
+
+  expect(canSetDueTime({ card, viewedUser, authUser })).toBe(true);
+});
