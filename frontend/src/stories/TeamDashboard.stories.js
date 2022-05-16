@@ -1,6 +1,6 @@
 import React from "react";
 
-import TeamDashboard from "../components/pages/TeamDashboard/Presentation";
+import TeamDashboard from "../components/pages/TeamDashboard/Presentation.jsx";
 
 const team = {
   id: 29,
@@ -149,8 +149,7 @@ const activityLogDayCounts = {
 export default {
   title: "Tilde/pages/TeamDashboard",
   component: TeamDashboard,
-  argTypes: {
-  },
+  argTypes: {},
 };
 
 const Template = (args) => <TeamDashboard {...args} />;
