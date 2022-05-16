@@ -65,13 +65,14 @@ class log_pr_opened_Tests(APITestCase):
 
         self.client.post(url, format="json", data=body, extra=headers)
 
+        pull_request = PullRequest.create_or_update_from_github_api_data(repo, pull_request_data)
         self.assertEqual(PullRequest.objects.all().count(), 1)
-        pr = PullRequest.objects.first()
+         
+        entry = creators.log_pr_opened(pull_request)
 
-        entry = LogEntry.objects.create()
         self.assertEqual(LogEntry.objects.count(), 1)
-        
-        self.assertEqual(entry.actor_user, pr.user)
-        self.assertEqual(entry.effected_user, pr.user)
-        self.assertEqual(entry.object_1, pr)
+
+        self.assertEqual(entry.actor_user, pull_request.user)
+        self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertEqual(entry.object_1, pull_request)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
