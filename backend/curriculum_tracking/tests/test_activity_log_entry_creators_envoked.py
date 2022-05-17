@@ -16,6 +16,7 @@ from .factories import (
     UserFactory,
     AgileCardFactory,
     RecruitProjectFactory,
+    ContentItemFactory,
 )
 from curriculum_tracking.tests.factories import (
     ProjectContentItemFactory,
@@ -223,44 +224,75 @@ class log_project_vs_topic_competence_reviews_done_Tests(APITestCase, APITestCas
         self.assertEqual(log_entry.timestamp, topic_review.timestamp)
 
 
-class log_card_review_requested_Tests(APITestCase, APITestCaseMixin):
+class log_card_review_requested_and_cancelled_Tests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
 
-    def test_review_requested(self):
-        actor_user = UserFactory(is_superuser=True, is_staff=True)
-        content_item = ProjectContentItemFactory(
+    def setUp(self):
+        self.actor_user = UserFactory(is_superuser=True, is_staff=True)
+        self.content_item = ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
-        card = AgileCardFactory(
+        self.card = AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=RecruitProjectFactory(content_item=content_item),
-            content_item=content_item,
+            recruit_project=RecruitProjectFactory(content_item=self.content_item),
+            content_item=self.content_item,
         )
-        self.login(actor_user)
-        card.start_project()
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.login(self.actor_user)
+        self.card.start_project()
+        self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
 
-        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+    def test_review_requested(self):
+
+        request_review_url = f"{self.get_instance_url(self.card.id)}request_review/"
         response = self.client.post(request_review_url)
 
         self.assertEqual(response.status_code, 200)
 
-        card.refresh_from_db()
-        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
 
         # sanity check
-        self.assertEqual(card.assignees.count(), 1)
+        self.assertEqual(self.card.assignees.count(), 1)
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
 
-        self.assertEqual(entry.actor_user, actor_user)
-        self.assertEqual(entry.effected_user, card.assignees.first())
-        self.assertEqual(entry.object_1, card.recruit_project)
+        self.assertEqual(entry.actor_user, self.actor_user)
+        self.assertEqual(entry.effected_user, self.card.assignees.first())
+        self.assertEqual(entry.object_1, self.card.recruit_project)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUESTED)
+
+    def test_cancel_review_requested(self):
+
+        request_review_url = f"{self.get_instance_url(self.card.id)}request_review/"
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
+
+        self.assertEqual(LogEntry.objects.count(), 2)
+        entry = LogEntry.objects.last()
+
+        self.assertEqual(entry.actor_user, self.actor_user)
+        self.assertEqual(entry.effected_user, self.card.assignees.first())
+        self.assertEqual(entry.object_1, self.card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
 
 
 class log_card_review_feedback_vs_log_card_move_to_complete_called_Tests(
