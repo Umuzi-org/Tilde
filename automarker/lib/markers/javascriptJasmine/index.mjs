@@ -9,7 +9,7 @@ export function markProject({ fullPerfectProjectPath, fullClonePath }) {
   });
 }
 
-function lookForTestProblems(testOutput) {
+export function lookForTestProblems(testOutput) {
   if (testOutput.indexOf("jasmine: command not found") != -1) {
     console.error("jasmine: command not found");
     return ["jasmine: command not found"];
