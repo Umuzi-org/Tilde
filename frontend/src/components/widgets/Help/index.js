@@ -1,9 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Popover from "@material-ui/core/Popover";
-// import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import HelpIcon from "@material-ui/icons/Help";
+
+import Modal from "../Modal";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -38,22 +38,9 @@ export default function Help({ buttonText, children }) {
       >
         {buttonText ? buttonText : "help"}
       </Button>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
+      <Modal open={open} onClose={handleClose}>
         {children}
-      </Popover>
+      </Modal>
     </div>
   );
 }
