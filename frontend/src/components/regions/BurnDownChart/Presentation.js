@@ -39,18 +39,26 @@ export default ({burnDownSnapshots}) => {
         <Line
           type="monotone"
           dataKey="cardsTotalCount"
+          name="Total Cards"
           stroke={orange[400]}
           activeDot={{ r: 8 }}
         />
-        <Line type="monotone" dataKey="projectCardsTotalCount" stroke={green[400]} />
+        <Line 
+          type="monotone"
+          dataKey="projectCardsTotalCount"
+          name="Total Projects"
+          stroke={green[400]}
+        />
         <Line
           type="monotone"
           dataKey="cardsInCompleteColumnTotalCount"
+          name="Cards in Complete Status"
           stroke={blue[400]}
         />
         <Line
           type="monotone"
           dataKey="projectCardsInCompleteColumnTotalCount"
+          name="Project Cards in Complete Status"
           stroke={red[400]}
         />
       </LineChart>
