@@ -54,9 +54,8 @@ const useStyles = makeStyles(() => ({
 export default function Review({ review }) {
   const classes = useStyles();
   const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
-
-  const timestamp = new Date(review.timestamp);
   const onClose = () => setOpenReviewPopUp(false) 
+  const timestamp = new Date(review.timestamp);
 
   return (
     <Card className={classes.root} variant="outlined">
