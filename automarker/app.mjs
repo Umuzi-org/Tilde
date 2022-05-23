@@ -4,7 +4,9 @@ import express from "express";
 import cors from "cors";
 import { STATUS_ERROR, STATUS_OK, STATUS_MISSING_CONFIG } from "./consts.mjs";
 import { PORT } from "./env.mjs";
-import { clone, mark, getProjectConfig } from "./lib/index.mjs";
+import { getProjectConfig } from "./utils.mjs";
+
+import * as markers from "./markers/index.mjs";
 
 const app = express();
 app.use(express.json());
@@ -12,11 +14,11 @@ app.use(cors());
 
 app.get("/health-check", (req, res) => res.json({ status: STATUS_OK }));
 
-app.post("/mark-project", async function (req, res) {
-  const { repoUrl, flavours, contentItemId } = req.body;
+app.post("/test-config", async function (req, res) {
+  const { flavours, contentItemId } = req.body;
 
-  if (!(repoUrl && flavours && contentItemId)) {
-    // check that the arguments at least exist
+  // check that the arguments at least exist
+  if (!(flavours && contentItemId)) {
     res.json({
       status: STATUS_ERROR,
       message:
@@ -35,19 +37,61 @@ app.post("/mark-project", async function (req, res) {
     return;
   }
 
-  const cloneStatus = await clone({ repoUrl });
+  // {
+  //   contentItemId: 273,
+  //   flavours: [ 'javascript' ],
+  //   perfectProjectPath: 'projects/simple_calculator_js',
+  //   marker: 'javascriptJasmine'
+  // }
 
-  if (cloneStatus.status === STATUS_ERROR) {
-    res.json(cloneStatus);
+  const Marker = markers[config.marker];
+
+  if (!Marker) {
+    res.json({
+      status: STATUS_MISSING_CONFIG,
+      message: `No marker named ${config.marker}`,
+    });
     return;
-  } else if (cloneStatus.status !== STATUS_OK) {
-    throw Error(`Unknown status: ${cloneStatus}`);
   }
 
+  const marker = new Marker();
+
   res.json(
-    await mark({
+    await marker.mark({
+      test: true,
+      perfectProjectPath: config.perfectProjectPath,
+    })
+  );
+});
+
+app.post("/mark-project", async function (req, res) {
+  const { repoUrl, flavours, contentItemId } = req.body;
+
+  // check that the arguments at least exist
+  if (!(repoUrl && flavours && contentItemId)) {
+    res.json({
+      status: STATUS_ERROR,
+      message:
+        "Missing json arguments. API requires all of the following:\n\t- repoUrl\n\t- flavours\n\t- contentItemId",
+    });
+    return;
+  }
+
+  const config = getProjectConfig({ flavours, contentItemId });
+
+  if (config === undefined) {
+    res.json({
+      status: STATUS_MISSING_CONFIG,
+      message: "There is no matching configuration",
+    });
+    return;
+  }
+
+  const marker = getMarker();
+
+  res.json(
+    await marker.mark({
       repoUrl,
-      config,
     })
   );
 });

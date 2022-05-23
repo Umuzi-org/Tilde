@@ -45,6 +45,26 @@ You can also use a non standard location by setting the `CONFIGURATION_REPO_PATH
 
 The auto-marker will need to clone that code you are marking. It expects keys and access to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
 
+
+### Testing the configuration
+
+Every project that we want to automark is configured in a separate repo. That repo contains a perfect version of the project.
+
+Use the test-config endpoint to make sure that the test configuration works. That includes actually running the automarker against the perfect project.
+
+When introducing new configuration to the configuration repo, it's important to run this self-check!
+
+Eg api call:
+
+```
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+```
+
+
 ### The mark project endpoint
 
 To review code, make a json POST request to the mark-project endpoint.
