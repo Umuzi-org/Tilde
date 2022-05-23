@@ -62,6 +62,15 @@ curl \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":273, "flavours": ["javascript"]}' \
 http://localhost:1313/test-config
+
+
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
 ```
 
 

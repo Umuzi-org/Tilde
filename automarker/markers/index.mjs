@@ -11,6 +11,7 @@ import DoNpmInstall from "../actions/javascript/do-npm-install.mjs";
 import CopyJasmineTestRunner from "../actions/javascript/copy-jasmine-test-runner.mjs";
 import CopyOurTests from "../actions/javascript/copy-our-tests.mjs";
 import RunJasmineTests from "../actions/javascript/run-jasmine-tests.mjs";
+import DoNpmInstallJasmine from "../actions/javascript/do-npm-install-jasmine.mjs";
 
 class Step {
   constructor({ name, Action }) {
@@ -75,6 +76,18 @@ export class JavascriptJasmine extends Marker {
     new Step({ Action: DoNpmInstall }),
     new Step({ Action: CopyJasmineTestRunner }),
     new Step({ Action: RunJasmineTests, name: "running your tests" }),
+    new Step({ Action: CopyOurTests }),
+    new Step({ Action: RunJasmineTests, name: "running our tests" }),
+  ];
+}
+
+export class JavascriptJasmineOnlyOurTests extends Marker {
+  steps = [
+    new Step({ Action: Clone }),
+    new Step({ Action: CheckNodeModulesMissing }),
+    new Step({ Action: DoNpmInstall }),
+    new Step({ Action: DoNpmInstallJasmine }),
+    new Step({ Action: CopyJasmineTestRunner }),
     new Step({ Action: CopyOurTests }),
     new Step({ Action: RunJasmineTests, name: "running our tests" }),
   ];
