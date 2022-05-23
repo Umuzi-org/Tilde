@@ -1,16 +1,7 @@
 import shell from "shelljs";
 import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK } from "../../consts.mjs";
-
-class Action {
-  execute({ test, ...params }) {
-    if (test && this.testAction) {
-      return this.testAction({ ...params });
-    }
-    return this.action({ ...params });
-  }
-}
-
+import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { Action } from "../index.mjs";
 export default class Clone extends Action {
   name = "clone";
 
@@ -19,7 +10,7 @@ export default class Clone extends Action {
 
     const cloneCommand = `CLONE_PATH=${CLONE_PATH} DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} /bin/sh -c '${clonerScriptPath}'`;
 
-    const cloneOutput = await shell.exec(cloneCommand);
+    await shell.exec(cloneCommand);
 
     return {
       status: STATUS_OK,

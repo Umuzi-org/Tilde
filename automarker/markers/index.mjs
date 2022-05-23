@@ -1,7 +1,16 @@
-import Clone from "../actions/language-agnostic/clone-repo.mjs";
 import { STATUS_ERROR, STATUS_OK } from "../consts.mjs";
 import { join, basename } from "path";
 import { CLONE_PATH, CONFIGURATION_REPO_PATH } from "../env.mjs";
+
+import Clone from "../actions/language-agnostic/clone-repo.mjs";
+
+import CheckNodeModulesMissing from "../actions/javascript/check-node-modules-missing.mjs";
+import CheckPackageJsonExists from "../actions/javascript/check-package-json-exists.mjs";
+import CheckJasmineDevDependency from "../actions/javascript/check-jasmine-dev-dependency.mjs";
+import DoNpmInstall from "../actions/javascript/do-npm-install.mjs";
+import CopyJasmineTestRunner from "../actions/javascript/copy-jasmine-test-runner.mjs";
+import CopyOurTests from "../actions/javascript/copy-our-tests.mjs";
+import RunJasmineTests from "../actions/javascript/run-jasmine-tests.mjs";
 
 class Step {
   constructor({ name, Action }) {
@@ -11,7 +20,7 @@ class Step {
 }
 
 class Marker {
-  mark({ perfectProjectPath, repoUrl, test }) {
+  async mark({ perfectProjectPath, repoUrl, test }) {
     const fullPerfectProjectPath = join(
       CONFIGURATION_REPO_PATH,
       perfectProjectPath
@@ -23,19 +32,30 @@ class Marker {
 
     for (let step of this.steps) {
       const action = new step.Action();
-      const result = action.execute({
+      const result = await action.execute({
         test,
         perfectProjectPath: fullPerfectProjectPath,
         destinationPath,
         repoUrl,
       });
+      const actionName = step.name || action.name;
+
+      if (result === undefined) {
+        console.log(result);
+        throw new Error(`broken step: ${actionName}: result is undefined`);
+      }
 
       if (result.status === STATUS_ERROR) {
         return {
           status: STATUS_ERROR,
-          actionName: step.name || action.name,
+          actionName: actionName,
           result,
         };
+      }
+
+      if (result.status !== STATUS_OK) {
+        console.log(result);
+        throw new Error(`broken step: ${actionName}`);
       }
     }
 
@@ -49,14 +69,14 @@ class Marker {
 export class JavascriptJasmine extends Marker {
   steps = [
     new Step({ Action: Clone }),
-    // new Step({ Action: CheckNodeModulesMissing }),
-    // new Step({ Action: CheckPackageJsonExists }),
-    // new Step({ Action: DoNpmInstall }),
-    // new Step({ Action: CheckNodeModulesPresent }),
-    // new Step({ Action: CopyTestRunner }),
-    // new Step({ Action: RunJasmineTests, name: "running your tests" }),
-    // new Step({ Action: CopyOurTests }),
-    // new Step({ Action: RunJasmineTests, name: "running our tests" }),
+    new Step({ Action: CheckNodeModulesMissing }),
+    new Step({ Action: CheckPackageJsonExists }),
+    new Step({ Action: CheckJasmineDevDependency }),
+    new Step({ Action: DoNpmInstall }),
+    new Step({ Action: CopyJasmineTestRunner }),
+    new Step({ Action: RunJasmineTests, name: "running your tests" }),
+    new Step({ Action: CopyOurTests }),
+    new Step({ Action: RunJasmineTests, name: "running our tests" }),
   ];
 }
 

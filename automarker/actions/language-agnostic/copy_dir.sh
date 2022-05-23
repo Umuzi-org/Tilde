@@ -18,7 +18,7 @@ if [ ! -d "$CLONE_PATH" ]; then
 fi
 
 if [ -d "$DESTINATION_PATH" ]; then
-  echo "repo already exists locally, deleting"
+  echo "directory already exists, deleting"
   rm -rf $DESTINATION_PATH
 fi
 echo "cp -r $PERFECT_PROJECT_PATH $DESTINATION_PATH"
