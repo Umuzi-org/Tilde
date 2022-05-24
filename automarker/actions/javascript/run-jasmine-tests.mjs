@@ -7,7 +7,7 @@ export default class RunJasmineTests extends Action {
 
   action = async function ({ destinationPath }) {
     const scriptPath = "actions/javascript/run-jasmine-tests.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/sh -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
 
     const scriptOutput = await shell.exec(command);
     const problems = lookForTestProblems(

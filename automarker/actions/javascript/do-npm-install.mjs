@@ -6,7 +6,7 @@ export default class DoNpmInstall extends Action {
   name = "npm install";
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/javascript/do-npm-install.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/sh -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
 
     await shell.exec(command);
 

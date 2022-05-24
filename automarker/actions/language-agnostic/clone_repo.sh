@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # expects a few things to be defined:
 # CLONE_PATH = the root directory that everything gets cloned to

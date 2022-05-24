@@ -8,7 +8,7 @@ export default class Clone extends Action {
   testAction = async function ({ perfectProjectPath, destinationPath }) {
     const clonerScriptPath = "./actions/language-agnostic/copy_dir.sh";
 
-    const cloneCommand = `CLONE_PATH=${CLONE_PATH} DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} /bin/sh -c '${clonerScriptPath}'`;
+    const cloneCommand = `CLONE_PATH=${CLONE_PATH} DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} /bin/bash -c '${clonerScriptPath}'`;
 
     await shell.exec(cloneCommand);
 
@@ -20,7 +20,7 @@ export default class Clone extends Action {
   action = async function ({ repoUrl, destinationPath }) {
     const clonerScriptPath = "./lib/cloner.sh";
 
-    const cloneCommand = `CLONE_PATH=${CLONE_PATH} FULL_CLONE_PATH=${destinationPath} REPO_URL=${repoUrl} /bin/sh -c '${clonerScriptPath}'`;
+    const cloneCommand = `CLONE_PATH=${CLONE_PATH} FULL_CLONE_PATH=${destinationPath} REPO_URL=${repoUrl}  /bin/bash -c '${clonerScriptPath}'`;
 
     const cloneOutput = await shell.exec(cloneCommand);
 

@@ -6,7 +6,7 @@ export default class CheckPythonGitignore extends Action {
   name = "checking that you didn't submit auto-generated files";
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/check-python-gitignore.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/sh -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
 
     const output = await shell.exec(command);
     if (output.stdout.trim().length) {

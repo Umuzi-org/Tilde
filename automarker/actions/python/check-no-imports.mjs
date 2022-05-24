@@ -6,7 +6,7 @@ export default class CheckNoImports extends Action {
   name = "checking for import statements";
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/check-no-imports.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/sh -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
 
     await shell.exec(command);
     TODO;

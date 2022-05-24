@@ -32,13 +32,14 @@ export class Marker {
 
     for (let step of this.steps) {
       const action = new step.Action();
+      const actionName = step.name || action.name;
+      console.log(`--- ${actionName} --- `);
       const result = await action.execute({
         test,
         perfectProjectPath: fullPerfectProjectPath,
         destinationPath,
         repoUrl,
       });
-      const actionName = step.name || action.name;
 
       if (result === undefined) {
         return {
