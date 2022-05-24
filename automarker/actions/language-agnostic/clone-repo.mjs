@@ -1,6 +1,6 @@
 import shell from "shelljs";
 import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 export default class Clone extends Action {
   name = "clone";
@@ -26,7 +26,7 @@ export default class Clone extends Action {
 
     if (cloneOutput.stderr.indexOf("Repository not found.") !== -1) {
       return {
-        status: STATUS_ERROR,
+        status: STATUS_FAIL,
         message:
           "Please check that your repo URL is valid and that it is public",
       };

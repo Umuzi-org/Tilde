@@ -57,20 +57,63 @@ When introducing new configuration to the configuration repo, it's important to 
 Eg api call:
 
 ```
+# javascript
+
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":273, "flavours": ["javascript"]}' \
 http://localhost:1313/test-config
 
-
-
-
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":223, "flavours": ["javascript"]}' \
 http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":764, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+#  python
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":764, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+# java
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["java"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["java"]}' \
+http://localhost:1313/test-config
+
+
+
+
 ```
 
 

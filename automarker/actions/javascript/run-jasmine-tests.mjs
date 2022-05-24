@@ -1,4 +1,4 @@
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 import shell from "shelljs";
 
@@ -17,7 +17,7 @@ export default class RunJasmineTests extends Action {
 
     if (problems.length) {
       return {
-        status: STATUS_ERROR,
+        status: STATUS_FAIL,
         message: "Jasmine test errors",
         errors: problems,
       };
