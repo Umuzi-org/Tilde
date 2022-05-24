@@ -83,27 +83,27 @@ const activityLogDayCounts = {
       PR_REVIEWED: 3,
     },
     {
-      date: "2021-07-16",
+      date: "2021-07-20",
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 20,
     },
     {
-      date: "2022-02-17",
+      date: "2022-04-21",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: "2022-03-18",
+      date: "2022-04-22",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: "2022-03-19",
+      date: "2022-04-23",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: "2022-03-20",
+      date: "2022-05-18",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
