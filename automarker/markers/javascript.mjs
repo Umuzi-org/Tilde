@@ -9,6 +9,7 @@ import CopyJasmineTestRunner from "../actions/javascript/copy-jasmine-test-runne
 import CopyOurJasmineTests from "../actions/javascript/copy-our-tests.mjs";
 import RunJasmineTests from "../actions/javascript/run-jasmine-tests.mjs";
 import DoNpmInstallJasmine from "../actions/javascript/do-npm-install-jasmine.mjs";
+import CheckNoImports from "../actions/javascript/check-no-imports.mjs";
 
 export class JavascriptJasmine extends Marker {
   steps = [
