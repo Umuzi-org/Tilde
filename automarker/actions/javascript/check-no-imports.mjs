@@ -9,10 +9,15 @@ export default class CheckNoImports extends Action {
     const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
 
     const output = await shell.exec(command).stdout;
-    console.log("-----------------");
-    console.log(output);
-    console.log("-----------------");
-    TODO;
+
+    if (output.length) {
+      return {
+        status: STATUS_FAIL,
+        message:
+          "You are using require or import statements in your code. For this project you shouldn't be importing anything",
+      };
+    }
+
     //grep -r './' -e 'import'
     return {
       status: STATUS_OK,
