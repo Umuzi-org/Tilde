@@ -195,3 +195,109 @@ python manage.py run_automarker "password-checker" ""
 python manage.py run_automarker "Person" ""
 python manage.py run_automarker "simple-calculator part 1" ""
 ```
+
+
+
+
+
+
+## TODO
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":756, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":764, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":760, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":759, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":763, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":758, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":765, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":762, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":761, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":754, "flavours": ["javascript"]}' \
+http://localhost:1313/test-config
+
+
+
+
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":758, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":765, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":762, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":761, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":754, "flavours": ["python"]}' \
+http://localhost:1313/test-config
+
+
+
+

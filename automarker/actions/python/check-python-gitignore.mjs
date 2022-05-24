@@ -13,7 +13,7 @@ export default class CheckPythonGitignore extends Action {
       return {
         status: STATUS_FAIL,
         message:
-          "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ directory",
+          "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ or .pytest_cache directory",
       };
     }
 

@@ -40,6 +40,7 @@ export class PythonPytestOnlyOurTests extends Marker {
 export class PythonPytestKatas extends Marker {
   steps = [
     new Step({ Action: Clone }),
+    new Step({ Action: CheckPythonGitignore }),
     new Step({ Action: CheckNoImports }),
     new Step({ Action: CreateVirtualEnv }),
     new Step({ Action: DoInstallPytest }),
