@@ -4,6 +4,7 @@ import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
 
 export default class CreateVirtualEnv extends Action {
   name = "creating a virtual env";
+
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/create-virtual-env.sh";
     const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
