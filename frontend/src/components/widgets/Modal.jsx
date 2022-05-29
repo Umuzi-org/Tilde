@@ -1,5 +1,7 @@
 import React from "react";
 import Modal from "@material-ui/core/Modal";
+import { Typography, Button, Grid } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default ({ open, onClose, children }) => {
   const classes = useStyles();
-
   return (
     <Modal
       aria-labelledby="transition-modal-title"

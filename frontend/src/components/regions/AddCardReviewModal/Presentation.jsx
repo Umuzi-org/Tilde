@@ -1,6 +1,7 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
 import { Typography, Paper, Button, Grid } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -168,10 +169,15 @@ export default ({
               Add Review for {card.contentType}: {card.title}
             </Typography>
           </Grid>
+          <Grid item xs={2} sm={1} className={classes.exitIcon}>
+            <Button variant="outlined" onClick={closeModal}>
+              <CloseIcon />
+            </Button>
+          </Grid>
         </Grid>
 
         <Alert severity="info" className={classes.alert}>
-          Whatever you writ here will be visable to staff and to the person you
+          Whatever you type here will be visible to staff and to the person you
           are reviewing. Take the time to give an accurate and useful review
         </Alert>
 
