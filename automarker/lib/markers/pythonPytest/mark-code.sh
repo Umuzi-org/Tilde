@@ -34,18 +34,12 @@ pip install -r requirements.txt 2>&1
 # run their tests
 
 echo "<their-tests>"
-pytest 2>&1
+python -m pytest 2>&1
 echo "</their-tests>"
 
 # replace their tests with the reference project tests and make sure it all still works
 
 cp -r  $REFERENCE_PROJECT_PATH/tests .
 echo "<our-tests>"
-pytest  2>&1
+python -m pytest  2>&1
 echo "</our-tests>"
-
-# and put the tests back
-
-rm -rf tests
-git reset --hard HEAD
-

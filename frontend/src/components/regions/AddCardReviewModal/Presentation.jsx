@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
 import { Typography, Paper, Button, Grid } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -42,16 +41,21 @@ const useStyles = makeStyles((theme) => ({
   exitIcon: {
     marginBottom: "0.5rem",
   },
+  paperStyle: {
+    maxHeight: "80vh",
+    maxWidth: "80vw",
+    overflow: "auto",
+    padding: "5px",
+  },
 }));
-
 function StatusHelp() {
+  const classes = useStyles();
   return (
     <Help buttonText="How do I choose a status?">
-      <Paper>
+      <Paper className={classes.paperStyle}>
         <Typography variant="subtitle2">
           <SentimentSatisfiedIcon /> Competent
         </Typography>
-
         <ul>
           <li>
             <Typography>
@@ -137,7 +141,7 @@ function StatusHelp() {
       </Paper>
     </Help>
   );
-};
+}
 
 export default ({
   card,
@@ -163,11 +167,6 @@ export default ({
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
             </Typography>
-          </Grid>
-          <Grid item xs={2} sm={1} className={classes.exitIcon}>
-            <Button variant="outlined" onClick={closeModal}>
-              <CloseIcon />
-            </Button>
           </Grid>
         </Grid>
 

@@ -1,9 +1,9 @@
 import React from "react";
-import Review from "../components/regions/CardDetails/Review";
+import Review from "../components/pages/CardDetails/Review";
 import review from "./fixtures/review.json";
 
 export default {
-  title: "Tilde/CardDetails/Review",
+  title: "Tilde/pages/CardDetails/Review",
   component: Review,
 };
 

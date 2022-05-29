@@ -1,0 +1,19 @@
+steps:
+  # Deploy an image from Container Registry to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "automark",
+        "--image",
+        "eu.gcr.io/umuzi-prod/automarker:latest",
+        "--memory",
+        "1G",
+        "--region",
+        europe-west1,
+        "--platform",
+        "managed",
+        "--allow-unauthenticated",
+      ]
+  #   args: ['run', 'deploy', '[SERVICE_NAME]', '--image', 'gcr.io/[PROJECT_ID]/[IMAGE]', '--region', [REGION], '--platform', 'managed', '--allow-unauthenticated']

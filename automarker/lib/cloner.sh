@@ -13,14 +13,9 @@ if [ ! -d "$CLONE_PATH" ]; then
 fi
 
 if [ -d "$FULL_CLONE_PATH" ]; then
-  echo "repo already exists locally, pulling changes"
-  cd $FULL_CLONE_PATH
-  git pull
-else
-  git clone $REPO_URL $FULL_CLONE_PATH
-  if [  -d "$FULL_CLONE_PATH" ]; then
-    cd $FULL_CLONE_PATH
-    git reset --hard HEAD
-  fi
+  echo "repo already exists locally, deleting"
+  rm -rf $FULL_CLONE_PATH
 fi
+
+git clone $REPO_URL $FULL_CLONE_PATH
 

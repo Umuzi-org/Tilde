@@ -1,4 +1,4 @@
-export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
+export function updateActivityLogDayCounts({ activityLogDayCounts, filterStartDate }) {
   const datesArray = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((activityLogDayCount) => {
@@ -9,7 +9,6 @@ export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
   const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
     (a, b) => new Date(a) - new Date(b)
   );
-
   const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
   const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
   const allDatesArr = [];
@@ -36,18 +35,19 @@ export const updateActivityLogDayCounts = ({ activityLogDayCounts }) => {
   }
 
   const updatedActivityLogDayCounts = {};
-
   Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
-    updatedActivityLogDayCounts[activityLogDayCount[0]] =
-      activityLogDayCount[1].sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
-      );
+    updatedActivityLogDayCounts[
+      activityLogDayCount[0]
+    ] = activityLogDayCount[1].sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    ).filter(
+      (activity) => new Date(activity.date) >= filterStartDate
+    );
   });
-
   return updatedActivityLogDayCounts;
-};
+}
 
-export const getMinimumAndMaximumValue = ({ activityLogDayCounts }) => {
+export function getMinimumAndMaximumValue({ activityLogDayCounts }) {
   const numbersArr = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((arrValues) => {
@@ -57,4 +57,4 @@ export const getMinimumAndMaximumValue = ({ activityLogDayCounts }) => {
   const minValue = Math.min(...numbersArr);
   const maxValue = Math.max(...numbersArr);
   return { minValue, maxValue };
-};
+}
