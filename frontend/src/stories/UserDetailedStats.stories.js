@@ -5,9 +5,6 @@ import detailedStats from "./fixtures/userDetailedStats.json";
 export default {
   title: "Tilde/pages/UserDashboard/UserDetailedStats",
   component: UserDetailedStats,
-  // argTypes: {
-  //   backgroundColor: { control: 'color' },
-  // },
 };
 
 const Template = (args) => <UserDetailedStats {...args} />;
