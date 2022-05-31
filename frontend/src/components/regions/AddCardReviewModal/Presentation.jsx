@@ -42,12 +42,19 @@ const useStyles = makeStyles((theme) => ({
   exitIcon: {
     marginBottom: "0.5rem",
   },
+  paperStyle: {
+    maxHeight: "80vh", 
+    maxWidth: "80vw", 
+    overflow: "auto", 
+    padding: "5px"
+  }
 }));
 
 function StatusHelp() {
+  const classes = useStyles();
   return (
     <Help buttonText="How do I choose a status?">
-      <Paper>
+      <Paper className={classes.paperStyle}>
         <Typography variant="subtitle2">
           <SentimentSatisfiedIcon /> Competent
         </Typography>
@@ -137,7 +144,7 @@ function StatusHelp() {
       </Paper>
     </Help>
   );
-};
+}
 
 export default ({
   card,

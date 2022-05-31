@@ -9,15 +9,15 @@ import {
   MANAGE_CARDS,
   REVIEW_CARDS,
   TRUSTED_REVIEWER,
-} from "../../../../../constants";
+} from "../constants";
 
 export function getTeamPermissions({ authUser, viewedUser }) {
-  let result = {};
+  let results = {};
 
-  for (let permission of TEAM_PERMISSIONS) result[permission] = false;
+  for (let permission of TEAM_PERMISSIONS) results[permission] = false;
 
   if (authUser.isSuperuser) {
-    for (let permission of TEAM_PERMISSIONS) result[permission] = true;
+    for (let permission of TEAM_PERMISSIONS) results[permission] = true;
   } else {
     // we look at what teams this user belongs to. If authUser has a permission on one of those teams then they have the permission for the user
     for (let authedTeamId in authUser.permissions.teams) {
@@ -25,24 +25,22 @@ export function getTeamPermissions({ authUser, viewedUser }) {
         let heldPermissions =
           authUser.permissions.teams[authedTeamId].permissions;
         for (let permission of heldPermissions) {
-          result[permission] = true;
+          results[permission] = true;
         }
       }
     }
   }
-  return result;
+  return results;
 }
 
-function getShowAddReviewButton({ card, permissions, isReviewer }) {
+export function getShowAddReviewButton({ card, permissions, isReviewer }) {
   const REVIEW_STATUSES = [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK];
-  if (isReviewer && REVIEW_STATUSES.indexOf(card.status) !== -1) return true;
-  if (
-    (permissions[REVIEW_CARDS] || permissions[TRUSTED_REVIEWER]) &&
+  return (
+    (isReviewer ||
+      permissions[REVIEW_CARDS] ||
+      permissions[TRUSTED_REVIEWER]) &&
     REVIEW_STATUSES.indexOf(card.status) !== -1
-  )
-    return true;
-
-  return false;
+  );
 }
 
 function getReviewRequestButtons({ card, permissions, isAssignee }) {
@@ -80,7 +78,6 @@ export function showButtons({ card, authUser, viewedUser }) {
   let reviewRequestButtons;
   if (card.contentTypeNice === "project") {
     // PROJECT CARDS
-
     if (isAssignee && card.canStart) showButtonStartProject = true;
     if (permissions[MANAGE_CARDS] & card.canForceStart)
       showButtonStartProject = true;
@@ -100,7 +97,6 @@ export function showButtons({ card, authUser, viewedUser }) {
       reviewRequestButtons.showButtonCancelReviewRequest;
   } else if (card.contentTypeNice === "workshop") {
     // WORKSHOP CARDS
-
     if (permissions[MANAGE_CARDS] & (card.status === READY))
       showButtonNoteWorkshopAttendance = true;
     if (permissions[MANAGE_CARDS] & (card.status === BLOCKED))
@@ -109,7 +105,6 @@ export function showButtons({ card, authUser, viewedUser }) {
       showButtonCancelWorkshopAttendance = true;
   } else if (card.contentTypeNice === "topic") {
     // TOPIC CARDS
-
     if (isAssignee && card.canStart) showButtonStartTopic = true;
     if (permissions[MANAGE_CARDS] & card.canForceStart)
       showButtonStartTopic = true;
