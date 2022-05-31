@@ -74,7 +74,7 @@ http://localhost:1313/test-config
 curl \
 --request POST \
 --header "Content-Type: application/json" \
---data '{"contentItemId":764, "flavours": ["javascript"]}' \
+--data '{"contentItemId":756, "flavours": ["javascript"]}' \
 http://localhost:1313/test-config
 
 #  python
@@ -94,7 +94,7 @@ http://localhost:1313/test-config
 curl \
 --request POST \
 --header "Content-Type: application/json" \
---data '{"contentItemId":764, "flavours": ["python"]}' \
+--data '{"contentItemId":756, "flavours": ["python"]}' \
 http://localhost:1313/test-config
 
 # java
@@ -111,11 +111,13 @@ curl \
 --data '{"contentItemId":223, "flavours": ["java"]}' \
 http://localhost:1313/test-config
 
-
-
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":756, "flavours": ["java"]}' \
+http://localhost:1313/test-config
 
 ```
-
 
 ### The mark project endpoint
 
@@ -129,8 +131,6 @@ curl \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
 http://localhost:1313/mark-project
-
-
 
 curl \
 --request POST \
