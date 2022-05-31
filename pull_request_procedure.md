@@ -16,14 +16,15 @@ Once your PR has been opened, link it to the relevant issue and move the issue i
 ### Addressing feedback on your Pull Request
 When addressing an existing PR that has some feedback on it, it is vitally important to address said feedback before moving the card back into review. The important thing to remember is that its not enough to just address it in code. 
 
-For this, we will be using the github conversation as a way to provide feedback as well as show that a person has addressed the feedback. On an existing Pull Request, you will be receiving feedback on the “Conversation” tab as well as the “Files Changed” tab. If you are done addressing the feedback, you need to make the reviewer aware that you have done so. If you click the “Resolve Conversation” button, you acknowledge that you have addressed the feedback provided on that part of the conversation. PRs that don’t have all conversations resolved will be pushed back into the review column.
+For this, we will be using the github conversation as a way to provide feedback as well as show that a person has addressed the feedback. On an existing Pull Request, you will be receiving feedback on the “Conversation” tab as well as the “Files Changed” tab. If you are done addressing the feedback, you need to make the reviewer aware that you have done so. If you click the “Resolve Conversation” button, you acknowledge that you have addressed the feedback provided on that part of the conversation. PRs that don’t have all conversations resolved will be pushed back into the review feedback column
 
-If you have addressed the feedback in the form of a chat outside of github, please mention it regardless. Eg “Khalid has made a change and Sheena has provided feedback on why this piece of code is here. They have a conversation offline and agree that Khalid has done the right thing. Khalid needs to make sure that the rest of the team knows that this conversation happened.”
+If you have addressed the feedback in the form of a chat outside of github, please mention it regardless. Eg “Khalid has made a change and Sheena has provided feedback on why this piece of code is here. They had a conversation offline and agree that Khalid has done the right thing". Khalid needs to make sure that the rest of the team knows that this conversation happened.
 
 
 ### Reviewing a Pull Request
-When reviewing a Pull request there are a couple of things to keep in mind. You need to understand the requirements of the issue first and make sure that the code solves said issue. Run the code on your local machine and test using various test cases to make sure it works.
+When reviewing a Pull request there are a couple of things to keep in mind:
 
-The second thing to make sure of is that all previous feedback needs to be addressed in this PR. There may be a long conversation that took place on the same PR and you need to be aware of this change
+• You need to understand the requirements of the issue first and make sure that the code solves said issue. Run the code on your local machine and test using various test cases to make sure it works.
+• The second thing to make sure of is that all previous feedback needs to be addressed in this PR. There may be a long conversation that took place on the same PR and you need to be aware of this change
 
 
