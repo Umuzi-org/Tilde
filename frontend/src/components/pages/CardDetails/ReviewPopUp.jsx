@@ -37,12 +37,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function ReviewPopUp({ review, openReviewPopUp }) {
+export default function ReviewPopUp({ review, openReviewPopUp, onClose }) {
   const classes = useStyles();
   const timestamp = new Date(review.timestamp);
 
   return (
-    <Modal open={openReviewPopUp}>
+    <Modal open={openReviewPopUp} onClose={onClose}>
       <Card className={classes.cardStyle}>
         <Box clone pt={2} pr={1} pb={1} pl={2}>
           <Paper elevation={3}>
