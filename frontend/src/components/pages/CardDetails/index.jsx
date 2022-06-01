@@ -11,12 +11,7 @@ import {
   getTeamPermissions,
 } from "../../../utils/cardButtons";
 
-import {
-  IN_REVIEW,
-  COMPLETE,
-  REVIEW_FEEDBACK,
-  IN_PROGRESS,
-} from "../../../constants";
+import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
 function CardDetailsUnconnected({
   cards,
