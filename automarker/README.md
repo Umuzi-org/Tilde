@@ -14,7 +14,7 @@ npm install
 # set up your environmental variables:
 # eg you can set the PORT like this
 
-export AUTO_MARKER_PORT=1313
+export AUTO_MARKER_PORT=1337
 
 # take a look at env.mjs to see the other environmental variables
 
@@ -24,7 +24,7 @@ npm run start:dev
 
 # To check if it is alive:
 
-curl http://localhost:1313/health-check
+curl http://localhost:1337/health-check
 ```
 
 ## reviewing code
@@ -63,19 +63,19 @@ curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":273, "flavours": ["javascript"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":223, "flavours": ["javascript"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":756, "flavours": ["javascript"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 #  python
 
@@ -83,19 +83,19 @@ curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":273, "flavours": ["python"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":223, "flavours": ["python"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":756, "flavours": ["python"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 # java
 
@@ -103,19 +103,19 @@ curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":273, "flavours": ["java"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":223, "flavours": ["java"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"contentItemId":756, "flavours": ["java"]}' \
-http://localhost:1313/test-config
+http://localhost:1337/test-config
 
 ```
 
@@ -130,31 +130,31 @@ curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-js.git","contentItemId":273, "flavours": ["javascript"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-java.git","contentItemId":273, "flavours": ["java"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-person-java.git","contentItemId":223, "flavours": ["java"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 ```
 
