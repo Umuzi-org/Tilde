@@ -100,15 +100,15 @@ function CardDetailsUnconnected({
 
   const projectCardStatus = project && project.agileCardStatus;
 
-  const cardWithStatusOnly = { status: projectCardStatus };
+  // const cardWithStatusOnly = { status: projectCardStatus };
 
-  const permissions = getTeamPermissions({ authUser, viewedUser });
+  // const permissions = getTeamPermissions({ authUser, viewedUser });
 
-  const showAddReviewButton = getShowAddReviewButton({
-    card: cardWithStatusOnly,
-    permissions,
-    isReviewer,
-  });
+  // const showAddReviewButton = getShowAddReviewButton({   // TODO: fix
+  //   card: cardWithStatusOnly,
+  //   permissions,
+  //   isReviewer,
+  // });
   const showUpdateProjectLinkForm =
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
@@ -138,7 +138,7 @@ function CardDetailsUnconnected({
     projectReviews: currentProjectReviews,
 
     handleClickAddReview,
-    showAddReviewButton,
+    // showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
 
