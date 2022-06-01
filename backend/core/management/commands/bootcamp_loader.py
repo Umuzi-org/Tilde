@@ -101,8 +101,8 @@ SEQUENCE_COURSES = {
         TILDE_INTRO,
         BOOTCAMP_INTRO,
         "Web development boot camp - quick wins",
-        COMMON_TECH_BOOT_REQUIREMENTS,
-        "Web development boot camp",
+        # COMMON_TECH_BOOT_REQUIREMENTS,
+        "Web development boot camp (Automarked katas)",
         POST_BOOTCAMP_SOFT_SKILLS,
     ],
     SEQUENCE_DPD: [
