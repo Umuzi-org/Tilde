@@ -1,4 +1,3 @@
-from factory import declarations
 from core.models import Curriculum
 from django.core.management.base import BaseCommand
 from curriculum_tracking import models
@@ -12,7 +11,6 @@ import requests
 from typing import List, Dict
 from pathlib import Path
 import yaml
-from curriculum_tracking import helpers
 
 # these constants are keys in the hugo page frontmatter
 STORY_POINTS = "story_points"
@@ -26,9 +24,9 @@ TODO = "todo"
 PREREQUISITES = "prerequisites"
 HARD = "hard"
 SOFT = "soft"
+PROTECT_MAIN_BRANCH = 'protect_main_branch'
 
 DB_ID = "_db_id"
-
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
@@ -172,6 +170,8 @@ class Helper:
             "project_submission_type": project_submission_type,
             "continue_from_repo": continue_from_repo,
             "template_repo": meta.get("template_repo"),
+
+            "protect_main_branch":meta.get(PROTECT_MAIN_BRANCH, True)
         }
 
         print(f"saving {defaults['title']}")
