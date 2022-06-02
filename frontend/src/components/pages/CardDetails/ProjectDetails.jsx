@@ -88,7 +88,7 @@ export default ({
   linkSubmission,
   formErrors,
   // showAddReviewButton,
-  // handleClickAddReview,
+  handleClickAddReview,
   reviews,
 }) => {
   const classes = useStyles();
@@ -122,11 +122,14 @@ export default ({
         contentUrl={project.contentUrl}
       />
 
+      <CardButton
+        label="Add Review"
+        startIcon={<RateReviewRoundedIcon />}
+        onClick={handleClickAddReview}
+      />
+
       {/* {showAddReviewButton && (  // TODO FIX
-        <CardButton
-          label="Add Review"
-          startIcon={<RateReviewRoundedIcon />}
-          onClick={handleClickAddReview}
+
         />
       )} */}
     </React.Fragment>
