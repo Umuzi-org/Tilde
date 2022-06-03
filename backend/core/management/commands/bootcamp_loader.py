@@ -102,7 +102,7 @@ SEQUENCE_COURSES = {
         BOOTCAMP_INTRO,
         "Web development boot camp - quick wins",
         # COMMON_TECH_BOOT_REQUIREMENTS,
-        "Web development boot camp (Automarked katas)",
+        "Web development boot camp (with automarked katas)",
         POST_BOOTCAMP_SOFT_SKILLS,
     ],
     SEQUENCE_DPD: [
