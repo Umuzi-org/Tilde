@@ -8,6 +8,7 @@ function* addReviewSuccessSideEffects(action) {
   const projectId = action.responseData.recruitProject;
 
   yield put(operations.closeCardReviewForm());
+
   yield put(
     apiReduxApps.FETCH_SINGLE_PROJECT_CARD_SUMMARY.operations.start({
       data: { cardId },

@@ -47,6 +47,8 @@ const CARD_REMOVE_WORKSHOP_ATTENDANCE = "CARD_REMOVE_WORKSHOP_ATTENDANCE";
 const CARD_SET_PROJECT_LINK = "CARD_SET_PROJECT_LINK";
 
 const FETCH_SINGLE_AGILE_CARD = "FETCH_SINGLE_AGILE_CARD";
+const FETCH_AGILE_CARDS_THAT_REQUIRE_CARD =
+  "FETCH_AGILE_CARDS_THAT_REQUIRE_CARD";
 
 const FETCH_SINGLE_TOPIC_PROGRESS = "FETCH_SINGLE_TOPIC_PROGRESS"; //spelling mistake. fix please
 
@@ -181,6 +183,13 @@ export const apiReduxApps = {
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     apiCaller: apiCallers.personallyAssignedAgileCardsPage,
+    responseIsList: true,
+    responseEntityType: "cards",
+  }),
+
+  FETCH_AGILE_CARDS_THAT_REQUIRE_CARD: createReduxApp({
+    BASE_TYPE: FETCH_AGILE_CARDS_THAT_REQUIRE_CARD,
+    apiCaller: apiCallers.agileCardsThatRequireCard,
     responseIsList: true,
     responseEntityType: "cards",
   }),
