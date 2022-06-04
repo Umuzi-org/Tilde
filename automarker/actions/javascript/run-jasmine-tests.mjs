@@ -39,7 +39,7 @@ function lookForTestProblems(testOutput) {
 
   if (specCount === 0) {
     return [
-      "Something went wrong while running the tests. Are you sure you initialised jasmine properly? And are you sure the file names are as they should be? Double check the project instructions to make sure.",
+      "Something went wrong while running the tests. Are you sure the file and function names are as they should be? Did you remember to `export` all the things you were supposed to? Double check the project instructions to make sure.",
     ];
   }
 

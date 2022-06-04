@@ -33,7 +33,7 @@ export class Marker {
     for (let step of this.steps) {
       const action = new step.Action();
       const actionName = step.name || action.name;
-      console.log(`--- ${actionName} --- `);
+      console.log(`\n--- ACTION: ${actionName} --- `);
       const result = await action.execute({
         test,
         perfectProjectPath: fullPerfectProjectPath,

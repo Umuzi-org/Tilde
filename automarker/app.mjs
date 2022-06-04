@@ -65,10 +65,10 @@ app.post("/test-config", async function (req, res) {
 });
 
 app.post("/mark-project", async function (req, res) {
-  const { repoUrl, flavours, contentItemId } = req.body;
+  const { flavours, contentItemId, repoUrl } = req.body;
 
   // check that the arguments at least exist
-  if (!(repoUrl && flavours && contentItemId)) {
+  if (!(flavours && contentItemId)) {
     res.json({
       status: STATUS_ERROR,
       message:
@@ -87,13 +87,57 @@ app.post("/mark-project", async function (req, res) {
     return;
   }
 
-  const marker = getMarker();
+  const Marker = markers[config.marker];
+
+  if (!Marker) {
+    res.json({
+      status: STATUS_MISSING_CONFIG,
+      message: `No marker named ${config.marker}`,
+    });
+    return;
+  }
+
+  const marker = new Marker();
 
   res.json(
     await marker.mark({
+      test: false,
+      perfectProjectPath: config.perfectProjectPath,
       repoUrl,
     })
   );
 });
+
+// app.post("/mark-project", async function (req, res) {
+//   const { repoUrl, flavours, contentItemId } = req.body;
+
+//   // check that the arguments at least exist
+//   if (!(repoUrl && flavours && contentItemId)) {
+//     res.json({
+//       status: STATUS_ERROR,
+//       message:
+//         "Missing json arguments. API requires all of the following:\n\t- repoUrl\n\t- flavours\n\t- contentItemId",
+//     });
+//     return;
+//   }
+
+//   const config = getProjectConfig({ flavours, contentItemId });
+
+//   if (config === undefined) {
+//     res.json({
+//       status: STATUS_MISSING_CONFIG,
+//       message: "There is no matching configuration",
+//     });
+//     return;
+//   }
+
+//   const marker = getMarker();
+
+//   res.json(
+//     await marker.mark({
+//       repoUrl,
+//     })
+//   );
+// });
 
 app.listen(PORT, () => console.log(`Auto-marker listening on port ${PORT}!`));

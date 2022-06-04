@@ -1,7 +1,9 @@
 import shell from "shelljs";
 import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK, STATUS_FAIL, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
 import { Action } from "../index.mjs";
+import fs from "fs";
+
 export default class Clone extends Action {
   name = "clone";
 
@@ -24,7 +26,7 @@ export default class Clone extends Action {
   };
 
   action = async function ({ repoUrl, destinationPath }) {
-    const clonerScriptPath = "./lib/cloner.sh";
+    const clonerScriptPath = "./actions/language-agnostic/clone_repo.sh";
 
     const cloneCommand = `CLONE_PATH=${CLONE_PATH} FULL_CLONE_PATH=${destinationPath} REPO_URL=${repoUrl}  /bin/bash -c '${clonerScriptPath}'`;
 
@@ -37,6 +39,13 @@ export default class Clone extends Action {
           "Please check that your repo URL is valid and that it is public",
       };
     }
+
+    if (!fs.existsSync(destinationPath))
+      return {
+        status: STATUS_ERROR,
+        message:
+          "CLone didn't work, the directory isn't where we expect it to be ",
+      };
 
     return {
       status: STATUS_OK,

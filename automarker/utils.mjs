@@ -4,6 +4,8 @@ import fs from "fs";
 import { CONFIGURATION_REPO_PATH } from "./env.mjs";
 
 export function getProjectConfig({ contentItemId, flavours }) {
+  console.log("getProjectConfig");
+  console.log({ contentItemId, flavours });
   const configFilePath = `${CONFIGURATION_REPO_PATH}/config.yaml`;
   const allConfig = yaml.load(fs.readFileSync(configFilePath, "utf8"));
 
