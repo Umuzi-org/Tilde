@@ -48,8 +48,6 @@ function* cardStateChangeSideEffects(action) {
       );
     }
   }
-
-  yield;
 }
 
 function* watchCardStateChange() {
