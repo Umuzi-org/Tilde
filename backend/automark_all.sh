@@ -23,3 +23,5 @@ while true
     echo "Coding aptitude assessment challenge: Task 10"
     python manage.py run_automarker "Coding aptitude assessment challenge: Task 10" ""
 done
+
+

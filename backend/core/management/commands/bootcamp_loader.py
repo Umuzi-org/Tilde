@@ -283,4 +283,4 @@ class Command(BaseCommand):
         df.apply(check_email, axis=1)
         print("Emails ok")
         df.apply(process_row, axis=1)
-        df.apply(send_github_invite, axis=1)
+        # df.apply(send_github_invite, axis=1)
