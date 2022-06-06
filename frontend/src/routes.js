@@ -12,15 +12,46 @@ import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
 import TeamNavBar from "./components/regions/TeamNavBar";
+import ForgotPassword from "./components/pages/ForgotPassword";
+import ForgotPasswordConfirm from "./components/pages/ForgotPasswordConfirm";
+import LoginForm from "./components/pages/Login";
+
 const exact = true;
 
 export const routes = {
+  login: {
+    route: {
+      exact,
+      path: "/login",
+    },
+    component: LoginForm,
+    anonymousRoute: true, // only available if the user is not logged in
+  },
+
+  forgotPassword: {
+    route: {
+      exact,
+      path: "/forgot_password",
+    },
+    component: ForgotPassword,
+    anonymousRoute: true, // only available if the user is not logged in
+  },
+
+  forgotPasswordConfirm: {
+    route: {
+      exact,
+      path: "/forgot_password_confirm",
+    },
+    component: ForgotPasswordConfirm,
+    anonymousRoute: true,
+  },
+
   homeRedirect: {
     route: {
       exact,
       path: "/",
     },
-    Component: Redirector, // todo: fix spelling
+    component: Redirector, // todo: fix spelling
     sliderNavigation: {
       //     //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
@@ -36,7 +67,7 @@ export const routes = {
       exact,
       path: "/users",
     },
-    Component: UsersAndGroups,
+    component: UsersAndGroups,
     sliderNavigation: {
       //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "U",
@@ -53,6 +84,15 @@ export const routes = {
         }
       }
     },
+    userMustBeLoggedIn: true,
+  },
+
+  userNavBar: {
+    route: {
+      exact: false,
+      path: "/users/:userId/",
+    },
+    component: UserNavBar,
   },
 
   userBoard: {
@@ -60,8 +100,7 @@ export const routes = {
       exact,
       path: "/users/:userId/board",
     },
-    Component: AgileBoard,
-    NavBarComponent: UserNavBar,
+    component: AgileBoard,
   },
 
   userActions: {
@@ -69,17 +108,16 @@ export const routes = {
       exact,
       path: "/users/:userId/actions",
     },
-    Component: UserActions,
-    NavBarComponent: UserNavBar,
+    component: UserActions,
   },
 
-  // teamNavBar: {
-  //   route: {
-  //     exact: false,
-  //     path: "/teams/:teamId/",
-  //   },
-  //   Component: TeamNavBar,
-  // },
+  teamNavBar: {
+    route: {
+      exact: false,
+      path: "/teams/:teamId/",
+    },
+    component: TeamNavBar,
+  },
 
   groupCardSummary: {
     // todo Rename this to teamCardSummary
@@ -87,8 +125,7 @@ export const routes = {
       exact,
       path: "/teams/:teamId/card_summary",
     },
-    Component: GroupCardSummary,
-    NavBarComponent: TeamNavBar,
+    component: GroupCardSummary,
     show: () => true,
   },
 
@@ -98,9 +135,7 @@ export const routes = {
       exact,
       path: "/teams/:teamId/dashboard",
     },
-    Component: TeamDashboard,
-    NavBarComponent: TeamNavBar,
-
+    component: TeamDashboard,
     show: () => true,
   },
 
@@ -110,7 +145,7 @@ export const routes = {
   //     exact,
   //     path: "/people/:id",
   //   },
-  //   Component: UserProfile,
+  //   component: UserProfile,
   // },
 
   userDashboard: {
@@ -118,8 +153,7 @@ export const routes = {
       exact,
       path: "/users/:userId/dashboard",
     },
-    Component: UserDashboard,
-    NavBarComponent: UserNavBar,
+    component: UserDashboard,
   },
 
   cardDetails: {
@@ -127,7 +161,7 @@ export const routes = {
       exact,
       path: "/card/:cardId",
     },
-    Component: CardDetails,
+    component: CardDetails,
 
     show: () => true,
   },

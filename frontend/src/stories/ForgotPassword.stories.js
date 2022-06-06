@@ -1,9 +1,9 @@
-import React from "react"
-import ForgotPassword from "../components/regions/Login/ForgotPassword/Presentation"
+import React from "react";
+import ForgotPassword from "../components/pages/ForgotPassword/Presentation";
 
 export default {
-  title: "Tilde/ForgotPassword",
-  component: ForgotPassword
-}
+  title: "Tilde/pages/ForgotPassword",
+  component: ForgotPassword,
+};
 
-export const Primary = () => <ForgotPassword />
+export const Primary = () => <ForgotPassword />;

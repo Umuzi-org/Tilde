@@ -4,6 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
+import { Link } from "react-router-dom";
+import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   buttonStyle: {
     width: "134px",
   },
-
 }));
 
 export default () => {
@@ -50,16 +51,23 @@ export default () => {
       <TextField label="Email" variant="outlined" type="email" required />
 
       <div>
+        <Link to={routes.login.route.path}>
+          <Button
+            className={classes.buttonStyle}
+            type="submit"
+            variant="contained"
+            color="secondary"
+          >
+            back
+          </Button>
+        </Link>
+
         <Button
           className={classes.buttonStyle}
           type="submit"
           variant="contained"
-          color="secondary"
+          color="primary"
         >
-          back
-        </Button>
-  
-        <Button className={classes.buttonStyle} type="submit" variant="contained" color="primary">
           submit
         </Button>
       </div>

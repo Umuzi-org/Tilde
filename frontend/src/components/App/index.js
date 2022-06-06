@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import AppHeaderAndMenu from "../regions/AppHeaderAndMenu";
-import Login from "../regions/Login";
 
 import { routes } from "../../routes.js";
 
@@ -32,10 +32,26 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     }
   }, [authUser, whoAmIStart]);
 
+  const location = useLocation();
+
   const token = getAuthToken();
+  const anonymousRoutes = Object.values(routes)
+    .filter((route) => route.anonymousRoute)
+    .map((route) => route.route.path);
+
+  const pathname = location.pathname;
+  const currentlyAtAnonymousRoute = anonymousRoutes.indexOf(pathname) !== -1;
 
   if (token === null) {
-    return <Login />;
+    if (!currentlyAtAnonymousRoute) {
+      // this route requires login
+      console.log(routes.login.route.path);
+      window.location = routes.login.route.path;
+      return <React.Fragment />;
+    }
+  } else {
+    // we are logged in
+    if (currentlyAtAnonymousRoute) window.location = "/";
   }
 
   if (
@@ -46,34 +62,28 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     return <div>Loading...</div>;
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <AppHeaderAndMenu>
-          <Routes>
-            {Object.keys(routes).map((key) => {
-              const { Component, NavBarComponent } = routes[key];
-
-              return (
-                <Route
-                  key={key}
-                  {...routes[key].route}
-                  element={
-                    <React.Fragment>
-                      {NavBarComponent ? (
-                        <NavBarComponent />
-                      ) : (
-                        <React.Fragment />
-                      )}
-                      <Component />
-                    </React.Fragment>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </AppHeaderAndMenu>
-      </ThemeProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Routes>
+        {Object.keys(routes).map((key) => {
+          const Component = routes[key].component;
+          return (
+            <Route
+              key={key}
+              {...routes[key].route}
+              element={
+                currentlyAtAnonymousRoute ? (
+                  <Component />
+                ) : (
+                  <AppHeaderAndMenu>
+                    <Component />
+                  </AppHeaderAndMenu>
+                )
+              }
+            />
+          );
+        })}
+      </Routes>
+    </ThemeProvider>
   );
 }
 

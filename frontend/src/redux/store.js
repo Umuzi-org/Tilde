@@ -22,7 +22,7 @@ import { apiReduxReducers } from "../apiAccess/apiApps";
 
 import apiEntities from "@prelude/redux-api-toolbox/src/apiEntities";
 import utilities from "@prelude/redux-api-toolbox/src/utilities";
-
+import { apiReduxReducers as authReducers } from "@prelude/redux-api-toolbox/src/djRestAuth";
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =
@@ -42,6 +42,7 @@ export const store = createStore(
     ...apiReduxReducers,
     utilities,
     apiEntities,
+    ...authReducers,
   }),
   // composeEnhancers(applyMiddleware(sagaMiddleware, logger))
   composeEnhancers(applyMiddleware(sagaMiddleware))

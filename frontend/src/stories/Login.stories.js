@@ -1,5 +1,5 @@
 import React from "react";
-import LoginForm from "../components/regions/Login/Presentation";
+import LoginForm from "../components/pages/Login/Presentation";
 
 export default {
   title: "Tilde/Login",
@@ -11,4 +11,4 @@ Primary.args = {
   loading: false,
   error: "",
   handleLoginWithGoogle: () => {},
-}
+};

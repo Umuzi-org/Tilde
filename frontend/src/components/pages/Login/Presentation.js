@@ -5,11 +5,11 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
+
+import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
     width: "275px",
   },
   buttonStyle: {
-    width: "300px",
     margin: theme.spacing(1),
     textTransform: "none",
     fontWeight: 600,
@@ -52,8 +51,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
+const LoginForm = ({
+  googleLoginLoading,
+  error,
+  handleLoginWithGoogle,
+
+  handleInputChange,
+  formErrors,
+  handleSubmitLoginForm,
+  loginFormLoading,
+}) => {
   const classes = useStyles();
+  console.log(formErrors);
 
   return (
     <form className={classes.root}>
@@ -71,21 +80,48 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         </Alert>
       )}
       <LockRoundedIcon />
-      <TextField label="Email" variant="outlined" type="email" required />
-      <TextField label="Password" variant="outlined" type="password" required />
-      <Box m={0}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              className={classes.checkBoxStyles}
-              name="checkedB"
-              color="primary"
-            />
-          }
-          label="Remember me"
-        />
 
-        <Link className={classes.linkStyles} underline="always" href="#">
+      {formErrors["nonFieldErrors"] && (
+        <Alert severity="error" className={classes.alert}>
+          {formErrors["nonFieldErrors"]}
+        </Alert>
+      )}
+
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        type="email"
+        variant="outlined"
+        autoFocus
+        onChange={handleInputChange}
+        error={Boolean(formErrors.email)}
+        helperText={formErrors.email}
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        variant="outlined"
+        onChange={handleInputChange}
+        error={Boolean(formErrors.password)}
+        helperText={formErrors.password}
+      />
+      <Box m={0}>
+        <Link
+          className={classes.linkStyles}
+          underline="always"
+          href={routes.forgotPassword.route.path}
+        >
           Forgot Password?
         </Link>
       </Box>
@@ -94,7 +130,9 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
           className={classes.buttonStyle}
           type="submit"
           variant="contained"
-          color="default"
+          color="primary"
+          onClick={handleSubmitLoginForm}
+          disabled={loginFormLoading}
         >
           Login
         </Button>
@@ -105,15 +143,13 @@ const LoginForm = ({ loading, error, handleLoginWithGoogle }) => {
         </Divider>
       </Box>
       <div>
-        <Button className={classes.buttonStyle} />
-        <Button type="submit" variant="contained" color="primary">
-          Login
-        </Button>
         <Button
           type="submit"
           variant="contained"
           color="primary"
           onClick={handleLoginWithGoogle}
+          className={classes.buttonStyle}
+          disabled={googleLoginLoading}
         >
           Login with Google
         </Button>
