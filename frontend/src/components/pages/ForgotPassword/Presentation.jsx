@@ -34,7 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+export default ({
+  handleSubmit,
+  handleInputChange,
+  loading,
+  formErrors,
+  formLastSentTo,
+}) => {
   const classes = useStyles();
 
   return (
@@ -48,13 +54,39 @@ export default () => {
         with instructions to reset your password
       </Alert>
 
-      <TextField label="Email" variant="outlined" type="email" required />
+      {formLastSentTo && (
+        <Alert severity="info" className={classes.alertStyle}>
+          Password reset email has been sent to {formLastSentTo}. Please check
+          your inbox. If you typed in the wrong email address then you can use
+          the form below to send another email.
+        </Alert>
+      )}
+
+      {formErrors.nonFieldErrors && (
+        <Alert severity="error" className={classes.alertStyle}>
+          <Typography>{formErrors.nonFieldErrors}</Typography>
+        </Alert>
+      )}
+
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        onChange={handleInputChange}
+        autoFocus
+        error={Boolean(formErrors.email)}
+        helperText={formErrors.email}
+        variant="outlined"
+      />
 
       <div>
         <Link to={routes.login.route.path}>
           <Button
             className={classes.buttonStyle}
-            type="submit"
             variant="contained"
             color="secondary"
           >
@@ -67,6 +99,8 @@ export default () => {
           type="submit"
           variant="contained"
           color="primary"
+          disabled={loading}
+          onClick={handleSubmit}
         >
           submit
         </Button>

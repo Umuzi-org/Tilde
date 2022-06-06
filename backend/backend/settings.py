@@ -365,3 +365,16 @@ CURRICULUM_TRACKING_REVIEW_BOT_EMAIL = "reviewbot@noreply.org"
 CURRICULUM_TRACKING_TRUST_STREAK_LENGTH = 4
 
 OLD_PASSWORD_FIELD_ENABLED = True  # this means that when changing a password via dj-rest-auth, the old password is required
+
+
+
+
+REST_AUTH_SERIALIZERS = {
+    "PASSWORD_RESET_SERIALIZER": "core.serializers.PasswordResetSerializer",
+}
+
+
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = "gitignore/sent-emails"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")

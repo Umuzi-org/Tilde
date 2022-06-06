@@ -1,6 +1,34 @@
 from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from django.conf import settings
+
+from dj_rest_auth.serializers import (
+    PasswordResetSerializer as PasswordResetSerializerBase,
+)
+
+class PasswordResetSerializer(PasswordResetSerializerBase):
+    def get_email_options(self):
+
+        return {"domain_override": settings.FRONTEND_URL}
+
+    def save(self):
+        from django.contrib.auth.tokens import default_token_generator
+
+        request = self.context.get('request')
+        # Set some values to trigger the send_email method.
+        # Default templates at:
+        # https://github.com/mozilla/captain/blob/master/vendor/lib/python/django/contrib/admin/templates/registration/password_reset_email.html
+        opts = {
+            'use_https': request.is_secure(),
+            'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
+            'request': request,
+            'token_generator': default_token_generator,
+            'html_email_template_name': 'registration/password_reset_email.html'  # Default template
+        }
+        opts.update(self.get_email_options())
+        self.reset_form.save(**opts)
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
