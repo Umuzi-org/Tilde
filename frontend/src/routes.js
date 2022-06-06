@@ -40,8 +40,9 @@ export const routes = {
   forgotPasswordConfirm: {
     route: {
       exact,
-      path: "/forgot_password_confirm",
+      path: "/password_reset_confirm/:uid/:token",
     },
+    matchPattern: "/password_reset_confirm/",
     component: ForgotPasswordConfirm,
     anonymousRoute: true,
   },

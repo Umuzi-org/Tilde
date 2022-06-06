@@ -1,7 +1,6 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
 
 import AppHeaderAndMenu from "../regions/AppHeaderAndMenu";
 
@@ -35,12 +34,22 @@ function AppUnconnected({ authUser, whoAmIStart }) {
   const location = useLocation();
 
   const token = getAuthToken();
+  const pathname = location.pathname;
+
   const anonymousRoutes = Object.values(routes)
     .filter((route) => route.anonymousRoute)
-    .map((route) => route.route.path);
+    .map((route) => route.matchPattern || route.route.path)
+    .map((path) => pathname.match(path))
+    .filter((x) => x);
+  const currentlyAtAnonymousRoute = anonymousRoutes.length > 0;
 
-  const pathname = location.pathname;
-  const currentlyAtAnonymousRoute = anonymousRoutes.indexOf(pathname) !== -1;
+  // console.log(
+  //   anonymousRoutes.map((path) => {
+  //     return pathname.match(path);
+  //   })
+  // );
+
+  // const currentlyAtAnonymousRoute = anonymousRoutes.indexOf(pathname) !== -1;
 
   if (token === null) {
     if (!currentlyAtAnonymousRoute) {

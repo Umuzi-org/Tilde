@@ -36,35 +36,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ email }) => {
+export default ({ handleSubmit, handleInputChange, loading, formErrors }) => {
   const classes = useStyles();
   return (
     <form className={classes.containerStyles}>
       <Typography variant="h5" style={{ fontWeight: 600 }}>
-        Change Password
+        Reset Password
       </Typography>
-      <Alert severity="info" className={classes.alert}>
-        Please change your password below and make sure that your new password
-        does not match the previous one
-      </Alert>
+      {/* <Alert severity="info" className={classes.alert}>
+        Reset your password with the form below
+      </Alert> */}
 
-      <p className={classes.emailAddress}>Email: {email}</p>
       <TextField
-        className={classes.textInput}
+        margin="normal"
+        required
+        fullWidth
+        name="newPassword1"
         label="New password"
-        variant="outlined"
         type="password"
-        required
+        onChange={handleInputChange}
+        error={Boolean(formErrors.newPassword1)}
+        helperText={formErrors.newPassword1}
+        variant="outlined"
       />
+
       <TextField
-        className={classes.textInput}
-        label="Confirm new password"
-        variant="outlined"
-        type="password"
+        margin="normal"
         required
+        fullWidth
+        name="newPassword2"
+        label="Confirm password"
+        type="password"
+        onChange={handleInputChange}
+        error={Boolean(formErrors.newPassword2)}
+        helperText={formErrors.newPassword2}
+        variant="outlined"
       />
-      <Button variant="contained" className={classes.buttonStyle}>
-        Submit
+      <Button
+        type="submit"
+        variant="contained"
+        className={classes.buttonStyle}
+        disabled={loading}
+        onClick={handleSubmit}
+      >
+        Update Password
       </Button>
     </form>
   );
