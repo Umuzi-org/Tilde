@@ -67,7 +67,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     active = models.BooleanField(default=True)
-    is_active = models.BooleanField(default=True)   # TODO: fix this. need to keep is_active
+    # is_active = models.BooleanField(default=True)   # TODO: fix this. need to keep is_active
 
     first_name = models.CharField(max_length=25, blank=True)
     last_name = models.CharField(max_length=25, blank=True)
@@ -139,9 +139,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return {"teams": team_permissions}
 
-    # @property
-    # def is_active(self):
-    #     return self.active
+    @property
+    def is_active(self):
+        return self.active
 
     @property
     def github_name(self):
