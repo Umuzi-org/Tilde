@@ -13,10 +13,12 @@ import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
-export default ({burnDownSnapshots}) => {
+export default ({ burnDownSnapshots }) => {
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
-      (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp).toISOString().slice(0, 10))
+      (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
+        .toISOString()
+        .slice(0, 10))
   );
   return (
     <div>
@@ -39,18 +41,26 @@ export default ({burnDownSnapshots}) => {
         <Line
           type="monotone"
           dataKey="cardsTotalCount"
+          name="Total Cards"
           stroke={orange[400]}
           activeDot={{ r: 8 }}
         />
-        <Line type="monotone" dataKey="projectCardsTotalCount" stroke={green[400]} />
+        <Line
+          type="monotone"
+          dataKey="projectCardsTotalCount"
+          name="Total Project Cards"
+          stroke={green[400]}
+        />
         <Line
           type="monotone"
           dataKey="cardsInCompleteColumnTotalCount"
+          name="Completed Cards"
           stroke={blue[400]}
         />
         <Line
           type="monotone"
           dataKey="projectCardsInCompleteColumnTotalCount"
+          name="Completed Project Cards"
           stroke={red[400]}
         />
       </LineChart>
