@@ -34,41 +34,5 @@
         "userActive": true
       }
     ]
-  },
-  {
-    "id": 1,
-    "name": "team 1",
-    "active": true,
-    "members": [
-      {
-        "userId": 1,
-        "userEmail": "someone1@umuzi.org",
-        "userActive": true
-      },
-
-      {
-        "userId": 2,
-        "userEmail": "someone2@umuzi.org",
-        "userActive": true
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "name": "team 2",
-    "active": true,
-    "members": [
-      {
-        "userId": 3,
-        "userEmail": "someone3@umuzi.org",
-        "userActive": true
-      },
-
-      {
-        "userId": 4,
-        "userEmail": "someone4@umuzi.org",
-        "userActive": true
-      }
-    ]
   }
 ]
