@@ -10,49 +10,49 @@
   {
     "user": 1,
     "timestamp": "2019-08-10T13:49:31Z",
-    "cardsTotalCount": 35,
-    "projectCardsTotalCount": 21,
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
     "cardsInCompleteColumnTotalCount": 14,
     "projectCardsInCompleteColumnTotalCount": 11
   },
   {
     "user": 1,
     "timestamp": "2019-08-11T13:49:31Z",
-    "cardsTotalCount": 39,
-    "projectCardsTotalCount": 26,
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
     "cardsInCompleteColumnTotalCount": 17,
     "projectCardsInCompleteColumnTotalCount": 14
   },
   {
     "user": 1,
     "timestamp": "2019-08-12T13:49:31Z",
-    "cardsTotalCount": 44,
-    "projectCardsTotalCount": 30,
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
     "cardsInCompleteColumnTotalCount": 22,
     "projectCardsInCompleteColumnTotalCount": 18
   },
   {
     "user": 1,
     "timestamp": "2019-08-13T13:49:31Z",
-    "cardsTotalCount": 47,
-    "projectCardsTotalCount": 35,
-    "cardsInCompleteColumnTotalCount": 27,
-    "projectCardsInCompleteColumnTotalCount": 24
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 23,
+    "projectCardsInCompleteColumnTotalCount": 19
   },
   {
     "user": 1,
     "timestamp": "2019-08-14T13:49:31Z",
-    "cardsTotalCount": 50,
-    "projectCardsTotalCount": 41,
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
     "cardsInCompleteColumnTotalCount": 32,
-    "projectCardsInCompleteColumnTotalCount": 29
+    "projectCardsInCompleteColumnTotalCount": 25
   },
   {
     "user": 2,
     "timestamp": "2019-08-15T13:49:31Z",
-    "cardsTotalCount": 63,
-    "projectCardsTotalCount": 50,
-    "cardsInCompleteColumnTotalCount": 37,
-    "projectCardsInCompleteColumnTotalCount": 35
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 32,
+    "projectCardsInCompleteColumnTotalCount": 25
   }
 ]

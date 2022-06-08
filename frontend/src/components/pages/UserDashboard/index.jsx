@@ -6,25 +6,30 @@ import { useParams } from "react-router-dom";
 
 import { hasPermissionOnUser } from "../../../utils/permissions";
 import { TEAM_PERMISSIONS } from "../../../constants";
+import burnDownData from "../../../stories/fixtures/burnDownData.json";
 
 function DashboardUnconnected({
   authUser,
   users,
   userDetailedStats,
+  userBurndownStats,
   fetchUser,
   fetchUserDetailedStats,
+  fetchUserBurndownStats,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const detailedStats = userDetailedStats[userId];
+  const burndownStats = burnDownData;
 
   React.useEffect(() => {
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
+      fetchUserBurndownStats({ userId });
     }
-  }, [userId, fetchUser, fetchUserDetailedStats]);
+  }, [userId, fetchUser, fetchUserDetailedStats, fetchUserBurndownStats]);
 
   const showTeamsTable = user
     ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
@@ -33,6 +38,7 @@ function DashboardUnconnected({
   const props = {
     user,
     detailedStats,
+    burndownStats,
     showTeamsTable,
     authUser,
   };
@@ -44,6 +50,7 @@ const mapStateToProps = (state) => {
   return {
     users: state.apiEntities.users || {},
     userDetailedStats: state.apiEntities.userDetailedStats || {},
+    fetchUserBurndownStats: state.apiEntities.userBurndownStats || {},
     // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser || {},
   };
@@ -62,6 +69,13 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserDetailedStats: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER_DETAILED_STATS.operations.maybeStart({
+          data: { userId: parseInt(userId) },
+        })
+      );
+    },
+    fetchUserBurndownStats: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
           data: { userId: parseInt(userId) },
         })
       );
