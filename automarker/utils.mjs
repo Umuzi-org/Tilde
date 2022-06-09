@@ -15,6 +15,7 @@ export function getProjectConfig({ contentItemId, flavours }) {
 
   if (matchingConfig.length === 1) {
     const config = matchingConfig[0];
+    console.log(config);
     return config;
   }
 }

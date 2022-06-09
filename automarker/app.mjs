@@ -43,7 +43,7 @@ app.post("/test-config", async function (req, res) {
   //   perfectProjectPath: 'projects/simple_calculator_js',
   //   marker: 'javascriptJasmine'
   // }
-
+  console.log(markers);
   const Marker = markers[config.marker];
 
   if (!Marker) {
