@@ -1,23 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import Markdown from "react-markdown";
 import ReviewStatus from "../../widgets/ReviewStatus";
 import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
-// import ShowMoreText from "react-show-more-text";
-// import ExpandLess from "@material-ui/icons/ExpandLess";
-// import ExpandMore from "@material-ui/icons/ExpandMore";
+import { trimReviewComments } from "./utils";
+import Button from "@material-ui/core/Button";
+import ReviewPopUp from "./ReviewPopUp";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     maxWidth: "100%",
   },
+  iconAlignment: {},
   timeFont: {
-    fontSize: 11,
+    fontSize: "11px",
   },
   reviewerFont: {
     fontSize: "100%",
@@ -32,9 +32,16 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: 0,
     },
   },
+  iconColor: {
+    color: "black",
+  },
   cardContent: {
     paddingTop: 0,
     paddingBottom: 0,
+  },
+  readMoreStyle: {
+    textTransform: "none",
+    paddingRight: "5px",
   },
   footer: {
     paddingTop: 0,
@@ -44,12 +51,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Review = ({ review }) => {
+export default function Review({ review }) {
   const classes = useStyles();
-
-  // const [expand, setExpand] = useState(false);
-  // const onClick = () => setExpand(!expand);
-
+  const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
+  const onClose = () => setOpenReviewPopUp(false) 
   const timestamp = new Date(review.timestamp);
 
   return (
@@ -68,28 +73,30 @@ const Review = ({ review }) => {
         className={classes.cardHeader}
       />
       <CardContent className={classes.cardContent}>
-        {/* <Typography className={classes.cardFont}>
-          <ShowMoreText
-            lines={1}
-            more={<ExpandMore />}
-            less={<ExpandLess />}
-            onClick={onClick}
-            expanded={expand}
-            width={0}
-            truncatedEndingComponent={"..."}
-            > */}
-        <Markdown children={review.comments} />
-        {/* </ShowMoreText> */}
-        {/* </Typography> */}
+        <Typography noWrap>{trimReviewComments(review.comments)}</Typography>
+        <Button
+          type="button"
+          size="small"
+          className={classes.iconAlignment}
+          onClick={() => setOpenReviewPopUp(true)}
+        >
+          <Typography variant="caption" className={classes.readMoreStyle}>
+            ... Read more
+          </Typography>
+        </Button>
       </CardContent>
-      <IconButton>
+      <IconButton disabled>
         <ReviewStatus status={review.status} />
       </IconButton>
-      <IconButton>
+      <IconButton disabled className={classes.iconColor}>
         <ReviewValidationIcons review={review} />
       </IconButton>
+        <ReviewPopUp
+          onClose={onClose}
+          openReviewPopUp={openReviewPopUp}
+          setOpenReviewPopUp={setOpenReviewPopUp}
+          review={review}
+        ></ReviewPopUp>
     </Card>
   );
-};
-
-export default Review;
+}

@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 import { hasPermissionOnUser } from "../../../utils/permissions";
 import { TEAM_PERMISSIONS } from "../../../constants";
-import burnDownData from "../../../stories/fixtures/burnDownData.json";
 
 function DashboardUnconnected({
   authUser,
@@ -20,8 +19,8 @@ function DashboardUnconnected({
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
-  const detailedStats = userDetailedStats[userId];
-  const burndownStats = burnDownData;
+  const currentUserDetailedStats = userDetailedStats[userId];
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
 
   React.useEffect(() => {
     if (userId) {
@@ -37,8 +36,8 @@ function DashboardUnconnected({
 
   const props = {
     user,
-    detailedStats,
-    burndownStats,
+    currentUserDetailedStats,
+    currentUserBurndownStats,
     showTeamsTable,
     authUser,
   };
@@ -50,7 +49,7 @@ const mapStateToProps = (state) => {
   return {
     users: state.apiEntities.users || {},
     userDetailedStats: state.apiEntities.userDetailedStats || {},
-    fetchUserBurndownStats: state.apiEntities.userBurndownStats || {},
+    userBurndownStats: state.apiEntities.burndownSnapshots || {},
     // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser || {},
   };
@@ -73,10 +72,14 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+    //TODO Implement Page check
     fetchUserBurndownStats: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: { userId: parseInt(userId) },
+          data: { 
+            userId: parseInt(userId),
+            page: 1,
+           },
         })
       );
     },

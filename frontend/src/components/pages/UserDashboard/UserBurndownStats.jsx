@@ -8,37 +8,38 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
+const useStyles = makeStyles((theme) => ({
+  legend: {
+    padding: theme.spacing(1),
+  },
+}));
+
 export default ({ burnDownSnapshots }) => {
-  console.log( burnDownSnapshots );
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
         .toISOString()
         .slice(0, 10))
   );
+  const classes = useStyles();
   return (
     <div>
-      <LineChart
-        width={1000}
-        height={500}
-        data={burnDownSnapshots}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 100,
-          bottom: 5,
-        }}
-      >
+      <Typography variant="h6" component="h2">
+        Performace Burndown
+      </Typography>
+      <LineChart width={1000} height={835} data={burnDownSnapshots}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="timestamp" interval="preserveEnd" />
         <YAxis />
         <Tooltip />
-        <Legend />
+        <Legend className={classes.legend}/>
         <Line
           type="monotone"
           dataKey="cardsTotalCount"

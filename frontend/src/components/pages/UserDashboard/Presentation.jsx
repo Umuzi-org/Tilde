@@ -14,24 +14,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user, detailedStats, burndownStats, showTeamsTable, authUser }) => {
+export default ({
+  user,
+  currentUserDetailedStats,
+  currentUserBurndownStats,
+  showTeamsTable,
+  authUser,
+}) => {
   const classes = useStyles();
   const teams = user ? user.teamMemberships : {};
-  console.log(burndownStats);
   if (user)
     return (
       <React.Fragment>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid item xs={5}>
             <Paper className={classes.paper}>
-              <UserDetailedStats detailedStats={detailedStats} />
+              <UserDetailedStats detailedStats={currentUserDetailedStats} />
             </Paper>
           </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <UserBurnDownChart burnDownSnapshots={burndownStats} />
-            </Paper>
-          </Grid>
+          {currentUserBurndownStats && (
+            <Grid item xs={7}>
+              <Paper className={classes.paper}>
+                <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
+              </Paper>
+            </Grid>
+          )}
           {showTeamsTable && (
             <Grid item xs={12}>
               <Paper className={classes.paper}>

@@ -167,7 +167,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "reviewers", "status"]
+    filterset_fields = ["assignees", "reviewers", "status","requires_cards"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
