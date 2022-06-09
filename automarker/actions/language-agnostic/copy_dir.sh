@@ -13,7 +13,7 @@
 
 
 if [ ! -d "$CLONE_PATH" ]; then
-  mkdir $CLONE_PATH
+  mkdir -p $CLONE_PATH
 fi
 
 if [ -d "$DESTINATION_PATH" ]; then
