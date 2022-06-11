@@ -8,6 +8,8 @@ import {
   TableCell,
   Typography,
 } from "@material-ui/core";
+import CardButton from "../../widgets/CardButton";
+import ViewContentButton from "../../widgets/ViewContentButton";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
@@ -134,6 +136,16 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
+      {card.canStart === false && (
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={card.contentItemUrl}
+              contentItemId={card.contentItem}
+            />
+          }
+        />
+      )}
     </React.Fragment>
   );
 }
@@ -151,7 +163,6 @@ export default ({
   // showAddReviewButton,
   linkSubmission,
   formErrors,
-  repoUrl,
 }) => {
   const classes = useStyles();
 
