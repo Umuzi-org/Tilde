@@ -65,6 +65,16 @@ spec:
                   name: gitrealwebhook
                   key: GIT_REAL_WEBHOOK_SECRET
 
+            # [START reset password and email config]
+            - name: FRONTEND_URL
+              value: https://tilde-front-dot-umuzi-prod.nw.r.appspot.com
+
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid
+                  key: SENDGRID_API_KEY
+
             # [START git misc config]
 
             - name: STATIC_URL
