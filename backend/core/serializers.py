@@ -54,7 +54,8 @@ class PasswordResetSerializer(PasswordResetSerializerBase):
             'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
             'request': request,
             'token_generator': default_token_generator,
-            'html_email_template_name': 'registration/password_reset_email.html'  # Default template
+            'html_email_template_name': 'core/emails/password_reset.html',
+            'email_template_name': 'core/emails/password_reset.txt'
         }
         opts.update(self.get_email_options())
         self.reset_form.save(**opts)

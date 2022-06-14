@@ -366,24 +366,18 @@ CURRICULUM_TRACKING_TRUST_STREAK_LENGTH = 4
 
 OLD_PASSWORD_FIELD_ENABLED = True  # this means that when changing a password via dj-rest-auth, the old password is required
 
-
-
-
 REST_AUTH_SERIALIZERS = {
     "PASSWORD_RESET_SERIALIZER": "core.serializers.PasswordResetSerializer",
 }
 
 
-
-FRONTEND_URL = os.getenv("FRONTEND_URL", "localhost:3000")
-
-
-
-
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 DEFAULT_FROM_EMAIL = "noreply@umuzi.org"
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', None)
+
 if SENDGRID_API_KEY:
+
     EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
