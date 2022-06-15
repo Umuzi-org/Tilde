@@ -43,14 +43,6 @@ function AppUnconnected({ authUser, whoAmIStart }) {
     .filter((x) => x);
   const currentlyAtAnonymousRoute = anonymousRoutes.length > 0;
 
-  // console.log(
-  //   anonymousRoutes.map((path) => {
-  //     return pathname.match(path);
-  //   })
-  // );
-
-  // const currentlyAtAnonymousRoute = anonymousRoutes.indexOf(pathname) !== -1;
-
   if (token === null) {
     if (!currentlyAtAnonymousRoute) {
       // this route requires login
@@ -75,6 +67,7 @@ function AppUnconnected({ authUser, whoAmIStart }) {
       <Routes>
         {Object.keys(routes).map((key) => {
           const Component = routes[key].component;
+          const NavbarComponent = routes[key].navBarComponent;
           return (
             <Route
               key={key}
@@ -84,6 +77,7 @@ function AppUnconnected({ authUser, whoAmIStart }) {
                   <Component />
                 ) : (
                   <AppHeaderAndMenu>
+                    {NavbarComponent && <NavbarComponent />}
                     <Component />
                   </AppHeaderAndMenu>
                 )

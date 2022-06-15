@@ -25,23 +25,16 @@ const useStyles = makeStyles((theme) => {
       left: 0,
       zIndex: 1,
 
+      // eslint-disable-next-line no-useless-computed-key
       ["@media (max-width:780px)"]: {
-        // eslint-disable-line no-useless-computed-key
         background: "none",
       },
     },
-    title: {
-      marginLeft: "8px",
-      ["@media (max-width:780px)"]: {
-        // eslint-disable-line no-useless-computed-key
-        fontSize: "1.5rem",
-        marginLeft: "8px",
-      },
-    },
+
     subTitle: {
       marginLeft: "8px",
+      // eslint-disable-next-line no-useless-computed-key
       ["@media (max-width:780px)"]: {
-        // eslint-disable-line no-useless-computed-key
         marginLeft: "8px",
       },
     },
@@ -63,10 +56,6 @@ export default ({
 
   return (
     <React.Fragment>
-      <Typography className={classes.title} variant="h4">
-        {userGroup.name}
-      </Typography>
-
       <div className={classes.container} onScroll={handleScroll}>
         <Table>
           <TableHead>
