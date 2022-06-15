@@ -1,4 +1,4 @@
-runtime: nodejs14
+runtime: nodejs12
 service: tilde-front
 env: standard
 
