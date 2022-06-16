@@ -2,7 +2,6 @@
 # echo REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
 
 # REACT_APP_API_BASE_URL="https://tilde-dot-umuzi-prod.nw.r.appspot.com" \
-nvm use
 npm i
 
 
