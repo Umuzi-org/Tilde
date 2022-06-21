@@ -54,7 +54,7 @@ export const routes = {
     },
     component: Redirector, // todo: fix spelling
     sliderNavigation: {
-      //     //these get used to draw buttons in the left hand side slider/hamburger menu
+      //these get used to draw buttons in the left hand side slider/hamburger menu
       icon: () => "B",
       label: "Your Board",
       helpText: "Your board",
@@ -88,20 +88,13 @@ export const routes = {
     userMustBeLoggedIn: true,
   },
 
-  userNavBar: {
-    route: {
-      exact: false,
-      path: "/users/:userId/",
-    },
-    component: UserNavBar,
-  },
-
   userBoard: {
     route: {
       exact,
       path: "/users/:userId/board",
     },
     component: AgileBoard,
+    navBarComponent: UserNavBar,
   },
 
   userActions: {
@@ -110,14 +103,7 @@ export const routes = {
       path: "/users/:userId/actions",
     },
     component: UserActions,
-  },
-
-  teamNavBar: {
-    route: {
-      exact: false,
-      path: "/teams/:teamId/",
-    },
-    component: TeamNavBar,
+    navBarComponent: UserNavBar,
   },
 
   groupCardSummary: {
@@ -127,6 +113,8 @@ export const routes = {
       path: "/teams/:teamId/card_summary",
     },
     component: GroupCardSummary,
+    navBarComponent: TeamNavBar,
+
     show: () => true,
   },
 
@@ -137,6 +125,7 @@ export const routes = {
       path: "/teams/:teamId/dashboard",
     },
     component: TeamDashboard,
+    navBarComponent: TeamNavBar,
     show: () => true,
   },
 
@@ -155,6 +144,7 @@ export const routes = {
       path: "/users/:userId/dashboard",
     },
     component: UserDashboard,
+    navBarComponent: UserNavBar,
   },
 
   cardDetails: {
