@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  Button,
 } from "@material-ui/core";
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
@@ -51,6 +52,7 @@ export default ({
   displayUsers,
   apiCallData,
   handleScroll,
+  fetchNextPages,
 }) => {
   const classes = useStyles();
 
@@ -64,19 +66,12 @@ export default ({
               {columns.map((column) => {
                 return (
                   <TableCell key={column.id} className={classes.cell}>
-                    {/* <Typography variant="caption">
-                  [order:{column.order}]
-                </Typography> */}
                     <Typography
                       className={classes.subTitle}
                       variant="subtitle1"
                     >
                       {column.label}
                     </Typography>
-                    {/* <ViewContentButtonSmall
-                    contentUrl={column.url}
-                    contentItemId={column.id}
-                  /> */}
                   </TableCell>
                 );
               })}
@@ -115,6 +110,16 @@ export default ({
                           <Loading />
                         </TableCell>
                       )}
+
+                    {index === 0 && (
+                      <TableCell rowSpan={Object.keys(rows).length}>
+                        {apiCallData[userId].loading ? (
+                          ""
+                        ) : (
+                          <Button onClick={fetchNextPages}>Load More</Button>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
