@@ -136,7 +136,7 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {card.canStart === false && (
+      {card.status === "B" && (
         <CardButton
           widget={
             <ViewContentButton
