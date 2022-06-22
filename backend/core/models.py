@@ -296,16 +296,7 @@ class Team(AuthGroup, Mixins):
     def active_users(self):
         return self.user_set.filter(active=True)
 
-    @property
-    def members(self):
-        """return a dictionary describing the group members. This is exposed via the api. See serialisers.TeamSerializer"""
-        # TODO put this in the TeamSerialiser instead
-        for user in self.user_set.all():
-            yield {
-                "user_id": user.id,
-                "user_email": user.email,
-                "user_active": user.active,
-            }
+
 
     @classmethod
     def get_teams_from_user_ids(cls, user_ids):

@@ -2,6 +2,7 @@ from . import models
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
@@ -36,10 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class CurriculumSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Curriculum
-        fields = [
-            "id",
-            "name",
-        ]
+        fields = ["id", "name"]
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -52,6 +50,17 @@ class TeamSerializer(serializers.ModelSerializer):
             "active",
             "members",
         ]
+
+    members = serializers.SerializerMethodField("get_members")
+
+    def get_members(self, instance):
+        """return a dictionary describing the group members. This is exposed via the api. See serialisers.TeamSerializer"""
+        for user in instance.user_set.filter(active=True):
+            yield {
+                "user_id": user.id,
+                "user_email": user.email,
+                "user_active": user.active,
+            }
 
 
 class WhoAmISerializer(serializers.ModelSerializer):
@@ -133,11 +142,7 @@ class UserErrorSerialiser(serializers.Serializer):
 
 class BulkSetDueTimeSerializer(serializers.Serializer):
     class Meta:
-        fields = [
-            "due_time"
-            "flavours",
-            "content_item"
-        ]
+        fields = ["due_time" "flavours", "content_item"]
 
     due_time = serializers.DateTimeField()
     flavours = serializers.ListField(child=serializers.IntegerField())

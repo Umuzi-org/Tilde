@@ -14,7 +14,7 @@ class TeamAdmin(GuardedModelAdmin):
     def deactivate_team_members(self, request, queryset: object):
         for team in queryset:
             for team_member in team.active_users:
-                team_member.delete
+                team_member.active = False
                 team_member.save()
 
     list_display = ["name", "active"]
