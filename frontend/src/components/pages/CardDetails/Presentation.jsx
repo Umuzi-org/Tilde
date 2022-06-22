@@ -136,7 +136,6 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {console.log(card)}
       {card.startTime === null && (
         <CardButton
           widget={
