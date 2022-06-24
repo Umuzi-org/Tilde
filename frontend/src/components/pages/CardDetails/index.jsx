@@ -6,10 +6,10 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-import {
-  getShowAddReviewButton,
-  getTeamPermissions,
-} from "../../../utils/cardButtons";
+// import {
+//   getShowAddReviewButton,
+//   getTeamPermissions,
+// } from "../../../utils/cardButtons";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
@@ -20,7 +20,7 @@ function CardDetailsUnconnected({
   projectReviews,
   topicReviews,
   authUser,
-  viewedUser,
+  // viewedUser,
 
   openReviewFormModal,
   updateProjectLink,
@@ -95,8 +95,8 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
-  const isReviewer =
-    ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
+  // const isReviewer =
+  //   ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
 
   const projectCardStatus = project && project.agileCardStatus;
 

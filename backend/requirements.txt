@@ -75,3 +75,6 @@ dramatiq[rabbitmq, watch]
 
 
 django-sql-utils==0.6.1
+
+django-sendgrid-v5==1.2.0
+sendgrid==6.9.7

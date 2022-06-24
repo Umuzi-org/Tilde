@@ -10,7 +10,7 @@ import AgileCard from "./AgileCard";
 import Loading from "../../widgets/Loading";
 
 // import MarkSingleCardAttendanceModal from "../MarkSingleCardAttendanceModal";
-import { Divider } from "@material-ui/core";
+import { Button, Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -41,6 +41,7 @@ export default ({
   userId,
   viewedUser,
   columnsLoading,
+  loadMoreCards,
 }) => {
   const classes = useStyles();
   return (
@@ -74,7 +75,13 @@ export default ({
                         />
                       );
                     })}
-                    {columnsLoading.includes(column.label) && <Loading />}
+                    {columnsLoading.includes(column.label) ? (
+                      <Loading />
+                    ) : (
+                      <Button onClick={loadMoreCards({ column })}>
+                        Load more
+                      </Button>
+                    )}
                     <Divider />
                   </div>
                 </Paper>

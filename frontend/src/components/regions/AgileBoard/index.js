@@ -201,12 +201,19 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
+  function loadMoreCards({ column }) {
+    function _loadMoreCards() {
+      fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
+    }
+    return _loadMoreCards;
+  }
+
   const viewedUser = users[userId];
   if (!viewedUser) {
     return <Loading />;
   }
 
-  let props = {
+  const props = {
     userId,
     cards: filteredCards,
     board: boardFromCards({
@@ -217,6 +224,7 @@ function AgileBoardUnconnected({
     viewedUser: users[userId],
 
     handleColumnScroll,
+    loadMoreCards,
   };
   return <Presentation {...props} />;
 }
