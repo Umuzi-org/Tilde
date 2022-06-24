@@ -27,18 +27,20 @@ export default ({
     return (
       <React.Fragment>
         <Grid container spacing={1}>
-          <Grid item xs={5}>
+          {currentUserBurndownStats && (
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <UserBurnDownChart
+                  burnDownSnapshots={currentUserBurndownStats}
+                />
+              </Paper>
+            </Grid>
+          )}
+          <Grid item xs={12}>
             <Paper className={classes.paper}>
               <UserDetailedStats detailedStats={currentUserDetailedStats} />
             </Paper>
           </Grid>
-          {currentUserBurndownStats && (
-            <Grid item xs={7}>
-              <Paper className={classes.paper}>
-                <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
-              </Paper>
-            </Grid>
-          )}
           {showTeamsTable && (
             <Grid item xs={12}>
               <Paper className={classes.paper}>

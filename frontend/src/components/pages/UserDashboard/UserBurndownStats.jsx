@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,42 +31,45 @@ export default ({ burnDownSnapshots }) => {
   );
   const classes = useStyles();
   return (
-    <div>
+    <React.Fragment>
       <Typography variant="h6" component="h2">
-        Performace Burndown
+        Burndown
       </Typography>
-      <LineChart width={1000} height={835} data={burnDownSnapshots}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="timestamp" interval="preserveEnd" />
-        <YAxis />
-        <Tooltip />
-        <Legend className={classes.legend}/>
-        <Line
-          type="monotone"
-          dataKey="cardsTotalCount"
-          name="Total Cards"
-          stroke={orange[400]}
-          activeDot={{ r: 8 }}
-        />
-        <Line
-          type="monotone"
-          dataKey="projectCardsTotalCount"
-          name="Total Project Cards"
-          stroke={green[400]}
-        />
-        <Line
-          type="monotone"
-          dataKey="cardsInCompleteColumnTotalCount"
-          name="Completed Cards"
-          stroke={blue[400]}
-        />
-        <Line
-          type="monotone"
-          dataKey="projectCardsInCompleteColumnTotalCount"
-          name="Completed Project Cards"
-          stroke={red[400]}
-        />
-      </LineChart>
-    </div>
+      <ResponsiveContainer height={500} width="100%">
+        <LineChart data={burnDownSnapshots}>
+          {/* <LineChart width={1024} height={835} data={burnDownSnapshots}> */}
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="timestamp" interval="preserveEnd" />
+          <YAxis />
+          <Tooltip />
+          <Legend className={classes.legend} />
+          <Line
+            type="monotone"
+            dataKey="cardsTotalCount"
+            name="Total Cards"
+            stroke={orange[400]}
+            activeDot={{ r: 8 }}
+          />
+          <Line
+            type="monotone"
+            dataKey="projectCardsTotalCount"
+            name="Total Project Cards"
+            stroke={green[400]}
+          />
+          <Line
+            type="monotone"
+            dataKey="cardsInCompleteColumnTotalCount"
+            name="Completed Cards"
+            stroke={blue[400]}
+          />
+          <LineChart
+            type="monotone"
+            dataKey="projectCardsInCompleteColumnTotalCount"
+            name="Completed Project Cards"
+            stroke={red[400]}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </React.Fragment>
   );
 };
