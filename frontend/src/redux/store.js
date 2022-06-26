@@ -4,7 +4,7 @@ import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
 import AgileBoard from "../components/regions/AgileBoard/redux";
-import CardDetails from "../components/regions/CardDetails/redux";
+import CardDetails from "../components/pages/CardDetails/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
@@ -22,7 +22,7 @@ import { apiReduxReducers } from "../apiAccess/apiApps";
 
 import apiEntities from "@prelude/redux-api-toolbox/src/apiEntities";
 import utilities from "@prelude/redux-api-toolbox/src/utilities";
-
+import { apiReduxReducers as authReducers } from "@prelude/redux-api-toolbox/src/djRestAuth";
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =
@@ -42,6 +42,7 @@ export const store = createStore(
     ...apiReduxReducers,
     utilities,
     apiEntities,
+    ...authReducers,
   }),
   // composeEnhancers(applyMiddleware(sagaMiddleware, logger))
   composeEnhancers(applyMiddleware(sagaMiddleware))

@@ -1,6 +1,6 @@
 import React from "react";
 
-import TeamDashboard from "../components/pages/TeamDashboard/Presentation";
+import TeamDashboard from "../components/pages/TeamDashboard/Presentation.jsx";
 
 const team = {
   id: 29,
@@ -75,12 +75,81 @@ const team = {
   ],
 };
 
+const activityLogDayCounts = {
+  84: [
+    {
+      date: "2020-07-12",
+      COMPETENCE_REVIEW_DONE: 5,
+      PR_REVIEWED: 3,
+    },
+    {
+      date: "2021-07-20",
+      COMPETENCE_REVIEW_DONE: 6,
+      PR_REVIEWED: 20,
+    },
+    {
+      date: "2022-04-21",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 0,
+    },
+    {
+      date: "2022-04-22",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 0,
+    },
+    {
+      date: "2022-04-23",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 0,
+    },
+    {
+      date: "2022-05-18",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 0,
+    },
+  ],
+
+  26: [
+    {
+      date: "2021-07-15",
+      COMPETENCE_REVIEW_DONE: 5,
+      PR_REVIEWED: 3,
+    },
+    {
+      date: "2021-07-10",
+      COMPETENCE_REVIEW_DONE: 6,
+      PR_REVIEWED: 2,
+    },
+    {
+      date: "2021-07-17",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 1,
+    },
+  ],
+
+  132: [
+    {
+      date: "2021-07-15",
+      COMPETENCE_REVIEW_DONE: 50,
+      PR_REVIEWED: 3,
+    },
+    {
+      date: "2021-07-16",
+      COMPETENCE_REVIEW_DONE: 20,
+      PR_REVIEWED: 2,
+    },
+    {
+      date: "2021-07-31",
+      COMPETENCE_REVIEW_DONE: 1,
+      PR_REVIEWED: 1,
+    },
+  ],
+};
+
 export default {
   title: "Tilde/pages/TeamDashboard",
   component: TeamDashboard,
-  argTypes: {
-    //   backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 };
 
 const Template = (args) => <TeamDashboard {...args} />;
@@ -88,4 +157,5 @@ const Template = (args) => <TeamDashboard {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
   team,
+  activityLogDayCounts,
 };

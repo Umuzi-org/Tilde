@@ -4,10 +4,11 @@ import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import types from "./types";
 
 function* addReviewSuccessSideEffects(action) {
-  const cardId = action.data.id;
-  const projectId = action.data.recruitProject;
+  const cardId = action.responseData.id;
+  const projectId = action.responseData.recruitProject;
 
   yield put(operations.closeCardReviewForm());
+
   yield put(
     apiReduxApps.FETCH_SINGLE_PROJECT_CARD_SUMMARY.operations.start({
       data: { cardId },

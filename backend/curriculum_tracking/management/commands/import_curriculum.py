@@ -30,10 +30,11 @@ def save_curriculum_to_db(json_file):
     # keys in dictionary `data` (4) `content_item_orders`, `content_items`, `curriculum`, `curriculum_content_requirements`
     create_content_items(data["content_items"])
     create_content_item_orders(data["content_item_orders"])
-    create_curriculum(data["curriculum"])
+    curriculum = create_curriculum(data["curriculum"])
     create_curriculum_content_requirements(
         data["curriculum_content_requirements"], data["curriculum"]["name"]
     )
+    return curriculum
 
 
 def get_content_item_from_url(url):
@@ -78,6 +79,7 @@ def create_curriculum(data):
     curriculum, created = Curriculum.objects.get_or_create(
         name=data["name"],
     )
+    return curriculum
 
 
 def create_curriculum_content_requirements(data, curriculum_name):

@@ -37,9 +37,9 @@ router.register(r"teams", core_views.TeamViewSet, "team")
 
 
 router.register(
-    r"managment_actions",
-    curriculum_tracking_api_views.ManagmentActionsViewSet,
-    "managmentaction-list",
+    r"management_actions",
+    curriculum_tracking_api_views.ManagementActionsViewSet,
+    "managementaction-list",
 )
 
 router.register(
@@ -138,6 +138,11 @@ router.register(
     "activitylogdaycount",
 )
 
+router.register(
+    r"event_type",
+    activity_log_api_views.EventTypeViewSet,
+    "eventtype",
+)
 
 # router.register(
 #     r"agile_card_add_review",
@@ -162,4 +167,10 @@ urlpatterns = [
     path("git_real/", include("git_real.urls")),
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
+
+    path(
+        "password_reset_confirm/<uidb64>/<token>/",
+        lambda *a, **k: None,  # we don't actually need a view here. We redirect to the frontend
+        name="password_reset_confirm",
+    ),
 ]

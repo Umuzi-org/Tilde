@@ -1,4 +1,3 @@
-from curriculum_tracking.serializers import UserStatsPerWeekSerializer
 from . import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -11,8 +10,16 @@ from rest_framework import permissions as drf_permissions
 from core import permissions as core_permissions
 from core.filters import ObjectPermissionsFilter
 from core.models import Team
+from rest_framework import viewsets, status
+from core.permissions import HasObjectPermission
+from curriculum_tracking.serializers import (
+    TeamStatsSerializer,
+    CardSummarySerializer,
+    UserDetailedStatsSerializer,
+)
 
-from curriculum_tracking.serializers import TeamStatsSerializer
+# TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
+from curriculum_tracking.management.helpers import get_team_cards
 
 
 @api_view(["POST"])
@@ -144,6 +151,31 @@ class TeamViewSet(viewsets.ModelViewSet):
     # def shuffle_reviewers(self, request, pk=None):
     #     return Response("TODO")
 
+    @action(
+        detail=True,
+        methods=["POST"],
+        serializer_class=serializers.BulkSetDueTimeSerializer,
+        permission_classes=[
+            HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)
+        ],
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+
+        team: models.Team = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            team_cards = get_team_cards(
+                team, serializer.validated_data.get("content_item")
+            )
+            for card in team_cards:
+                if card.flavour_ids_match(serializer.validated_data.get("flavours")):
+
+                    card.set_due_time(request.data.get("due_time"))
+
+        return Response([CardSummarySerializer(card).data for card in team_cards])
+
 
 def _get_teams_from_user(self, request, view):
     user = view.get_object()
@@ -176,7 +208,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["GET"],
-        serializer_class=UserStatsPerWeekSerializer,
+        serializer_class=UserDetailedStatsSerializer,
         permission_classes=[
             IsAdminUser
             | core_permissions.IsMyUser
@@ -190,7 +222,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user_object = self.get_object()
-            return Response(UserStatsPerWeekSerializer(user_object).data)
+            return Response(UserDetailedStatsSerializer(user_object).data)
         else:
             return Response(serializer.errors, status="BAD_REQUEST")
 

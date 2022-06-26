@@ -134,7 +134,19 @@ class Command(BaseCommand):
             downloader = MediaIoBaseDownload(fh, request)
             done = False
             while done is False:
-                status, done = downloader.next_chunk()
+                try:
+                    status, done = downloader.next_chunk()
+                except HttpError as e:
+                    if json.loads(e.content)["error"]["code"] == 403:
+                        self.add_review(
+                            card,
+                            RED_FLAG,
+                            "There is something wrong with your file. Please try again. Make sure that you\n- created a docx file on your local computer\n- uploaded the file to google drive\n- made the file public\n- gave us the correct link",
+                        )
+                        return
+                    else:
+                        raise
+
                 # print("Download %d%%." % int(status.progress() * 100))
 
         has_review = (

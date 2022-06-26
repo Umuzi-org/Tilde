@@ -1,4 +1,4 @@
-from re import A
+from urllib import response
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -20,7 +20,7 @@ from core.permissions import (
     DenyAll,
     IsCurrentUserInSpecificFilter,
 )
-from core.models import Team
+from core.models import Team, User
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
@@ -163,37 +163,11 @@ class CardSummaryViewset(viewsets.ModelViewSet):
     )
 
 
-#     def get_permissions(self):
-#         # curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
-#         #     | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
-#         breakpoint()
-#         foo
-#         o = PermissionClass()
-#         o.has_permission(view=self, request=self.request)
-#         """
-#         curl 'http://127.0.0.1:8000/api/card_summaries/3/' \
-#   -H 'Connection: keep-alive' \
-#   -H 'Pragma: no-cache' \
-#   -H 'Cache-Control: no-cache' \
-#   -H 'Authorization: Token e27297adb4c35d54f5bec3125a92cc48f783899c' \
-#   -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36' \
-#   -H 'Content-Type: application/json' \
-#   -H 'Accept: */*' \
-#   -H 'Origin: http://localhost:3000' \
-#   -H 'Sec-Fetch-Site: cross-site' \
-#   -H 'Sec-Fetch-Mode: cors' \
-#   -H 'Sec-Fetch-Dest: empty' \
-#   -H 'Accept-Language: en-US,en;q=0.9' \
-#   --compressed
-#         """
-#         return super().get_permissions()
-
-
 class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "reviewers", "status"]
+    filterset_fields = ["assignees", "reviewers", "status","requires_cards"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
@@ -300,7 +274,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def add_review(self, request, pk=None):
         card = self.get_object()
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             if card.content_item.content_type == models.ContentItem.PROJECT:
@@ -314,6 +287,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     recruit_project=card.recruit_project,
                     reviewer_user=request.user,
                 )
+                log_creators.log_project_competence_review_done(review)
 
             elif card.content_item.content_type == models.ContentItem.TOPIC:
                 if card.topic_progress == None:
@@ -327,9 +301,13 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     reviewer_user=request.user,
                 )
 
-            log_creators.log_project_competence_review_done(review)
+                log_creators.log_topic_competence_review_done(review)
 
             card.refresh_from_db()
+            if card.status == models.AgileCard.REVIEW_FEEDBACK:
+                log_creators.log_card_moved_to_review_feedback(card, request.user)
+            elif card.status == models.AgileCard.COMPLETE:
+                log_creators.log_card_moved_to_complete(card, request.user)
 
             return Response(serializers.AgileCardSerializer(card).data)
         else:
@@ -349,12 +327,16 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def request_review(self, request, pk=None):
         card: models.AgileCard = self.get_object()
+
         if card.recruit_project:
             card.recruit_project.request_review(force_timestamp=timezone.now())
         elif card.topic_progress:
             card.finish_topic()
         else:
             raise Http404
+
+        log_creators.log_card_review_requested(card=card, actor_user=request.user)
+
         card.refresh_from_db()
         assert (
             card.status == models.AgileCard.IN_REVIEW
@@ -382,8 +364,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         elif card.topic_progress:
             card.topic_progress.cancel_request_review()
 
-        # card.status = models.AgileCard.IN_PROGRESS
-        # card.save()
+        log_creators.log_card_review_request_cancelled(
+            card=card, actor_user=request.user
+        )
+        card.refresh_from_db()
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(
@@ -842,7 +826,8 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
     ]
 
 
-class ManagmentActionsViewSet(viewsets.ViewSet):
+class ManagementActionsViewSet(viewsets.ViewSet):
+
     serializer_class = serializers.NoArgs
 
     def list(self, request):
@@ -869,8 +854,6 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     def assign_user_as_reviewer(self, request, pk=None):
         todo
 
-    # TODO: bulk set due dates
-
     @action(
         detail=False,
         methods=["post", "get"],
@@ -880,12 +863,70 @@ class ManagmentActionsViewSet(viewsets.ViewSet):
     def auto_assign_reviewers(self, request, pk=None):
         """automatically assign qualified reviewers to cards"""
         if request.method == "GET":
-            return Response({"status": "OK"})
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
         else:
             from long_running_request_actors import auto_assign_reviewers as actor
 
             response = actor.send()
             return Response({"status": "OK", "data": response.asdict()})
+
+    @action(
+        detail=False,
+        methods=["post", "get"],
+        serializer_class=serializers.BulkSetDueDatesHumanFriendly,
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+        """This is a human-friendly(ish) way to set due dates in bulk. It has more human readable input that the other mechanisms for setting due dates in bulk"""
+        # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
+        from curriculum_tracking.management.helpers import get_user_cards
+
+        if request.method == "GET":
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
+
+        serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            flavour_names = data.get("flavour_names", [])
+            due_time = data.get("due_time")
+            content_item_title = data.get("content_item_title")
+            team_name = data.get("team_name")
+            email = data.get("email")
+
+            if team_name and email:
+                return Response(
+                    {"email": ["You can't specify an email and a team, pick one"]}
+                )
+            try:
+                content_item = models.ContentItem.objects.get(title=content_item_title)
+            except models.ContentItem.DoesNotExist:
+                return Response(
+                    {
+                        "content_item_title": [
+                            "Content item matching title does not exist"
+                        ]
+                    }
+                )
+
+            users = User.get_users_from_identifier(email or team_name)
+            cards = get_user_cards(users, content_item)
+            for card in cards:
+                if card.flavours_match(flavour_names):
+                    card.set_due_time(due_time)
+
+            return Response(
+                [serializers.CardSummarySerializer(card).data for card in cards]
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):

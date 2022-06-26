@@ -1,5 +1,10 @@
 from django.core.management.base import BaseCommand
-from curriculum_tracking.constants import RED_FLAG, NOT_YET_COMPETENT
+from curriculum_tracking.constants import (
+    EXCELLENT,
+    RED_FLAG,
+    NOT_YET_COMPETENT,
+    COMPETENT,
+)
 from curriculum_tracking.models import AgileCard, RecruitProjectReview
 from django.utils import timezone
 
@@ -8,22 +13,36 @@ from django.db.models import Q
 from django.db.models import Count
 from pathlib import Path
 import csv
+from django.db.models import Sum, F
+from sql_util.utils import SubqueryAggregate
 
+# from git_real.models import PullRequestReview
+BOUNCEY_CARD_MIN_BOUNCES = 2
 
 def get_assessment_cards():
     incomplete_assessment_cards = (
         AgileCard.objects.filter(content_item__title__startswith="Assessment:")
+        # .annotate(
+        #     positive_review_count=Sum(
+        #         F("recruit_project__code_review_competent_since_last_review_request"),
+        #         F("recruit_project__code_review_excellent_since_last_review_request"),
+        #     )
+        # )
+        # .extra(
+        #     select={
+        #         "positive_review_count": "code_review_competent_since_last_review_request + code_review_excellent_since_last_review_request"
+        #     }
+        # )
         .filter(~Q(status=AgileCard.COMPLETE))
         .filter(~Q(status=AgileCard.BLOCKED))
         .filter(assignees__active__in=[True])
+        .order_by("recruit_project__code_review_competent_since_last_review_request")
     )
 
     return incomplete_assessment_cards
 
 
 def get_cards_ordered_by_review():
-
-    from sql_util.utils import SubqueryAggregate
 
     return (
         AgileCard.objects.filter(~Q(status=AgileCard.COMPLETE))
@@ -36,47 +55,73 @@ def get_cards_ordered_by_review():
                 aggregate=Count,
             )
         )
-        .filter(negative_review_count__gt=2)
+        .filter(negative_review_count__gt=BOUNCEY_CARD_MIN_BOUNCES)
         .order_by("-negative_review_count")
     )
 
 
-headings = [
-    "email",
-    "teams",
-    "card title",
-    "flavours",
-    "card status",
-    "negative review count",
-    "positive reviews since last review request",
-    "negative reviews since last review request",
-    "board url",
-    "card url",
-]
+def get_cards_ordered_by_pr_change_requests():
+    return (
+        AgileCard.objects.filter(
+            Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK)
+        )
+        .filter(assignees__active__in=[True])
+        .annotate(
+            pr_change_requests=SubqueryAggregate(
+                "recruit_project__repository__pull_requests__reviews",
+                filter=Q(state="CHANGES_REQUESTED"),
+                aggregate=Count,
+            )
+        )
+        .filter(pr_change_requests__gte=3)
+        .order_by("pr_change_requests")
+    )
 
 
-def make_row(card):
+def make_row(card, reason):
     negative_review_count = (
         RecruitProjectReview.objects.filter(recruit_project__agile_card=card)
         .filter(Q(status=NOT_YET_COMPETENT) | Q(status=RED_FLAG))
         .count()
     )
 
+    positive_review_count = (
+        RecruitProjectReview.objects.filter(recruit_project__agile_card=card)
+        .filter(Q(status=COMPETENT) | Q(status=EXCELLENT))
+        .count()
+    )
+
+    if card.status == AgileCard.IN_REVIEW:
+        project = card.recruit_project
+        reviews = project.project_reviews.filter(
+            timestamp__gt=project.review_request_time
+        ).filter(Q(status=COMPETENT) | Q(status=EXCELLENT))
+        staff_who_think_its_competent = [
+            review.reviewer_user.email
+            for review in reviews
+            if review.reviewer_user.is_staff
+        ]
+    else:
+        staff_who_think_its_competent = []
+
     assignee = card.assignees.first()
-    return [
-        assignee.email,
-        [team.name for team in assignee.teams()],
-        card.content_item.title,
-        card.flavour_names,
-        card.status,
-        negative_review_count,
-        card.code_review_competent_since_last_review_request
+    return {
+        "reason": reason,
+        "email": assignee.email,
+        "teams": [team.name for team in assignee.teams()],
+        "card title": card.content_item.title,
+        "flavours": card.flavour_names,
+        "card status": card.status,
+        "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
+        "total negative review count": negative_review_count,
+        "total positive review count": positive_review_count,
+        "positive reviews since last review request": card.code_review_competent_since_last_review_request
         + card.code_review_excellent_since_last_review_request,
-        card.code_review_red_flag_since_last_review_request
+        "negative reviews since last review request": card.code_review_red_flag_since_last_review_request
         + card.code_review_ny_competent_since_last_review_request,
-        f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{assignee.id}/board",
-        f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}",
-    ]
+        "board url": f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{assignee.id}/board",
+        "card url": f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}",
+    }
 
 
 class Command(BaseCommand):
@@ -91,14 +136,25 @@ class Command(BaseCommand):
             "w",
         ) as f:
             writer = csv.writer(f)
+            assessment_cards = get_assessment_cards()
+            headings = list(make_row(assessment_cards.first(), "").keys())
             writer.writerow(headings)
 
-            total = get_assessment_cards().count()
-            for i, card in enumerate(get_assessment_cards()):
+            cards_ordered_by_pr_changes_requested = (
+                get_cards_ordered_by_pr_change_requests()
+            )
+
+            total = cards_ordered_by_pr_changes_requested.count()
+            for i, card in enumerate(cards_ordered_by_pr_changes_requested):
+                print(f"pr card {i+1}/{total}")
+                writer.writerow(list(make_row(card, "pr change requested").values()))
+
+            total = assessment_cards.count()
+            for i, card in enumerate(assessment_cards):
                 print(f"assessment card {i+1}/{total}")
-                writer.writerow(make_row(card))
+                writer.writerow(list(make_row(card, "Assessment sessions").values()))
 
             total = get_cards_ordered_by_review().count()
             for i, card in enumerate(get_cards_ordered_by_review()):
-                print(f"bouncey card {i+1}/{total}")
-                writer.writerow(make_row(card))
+                print(f"bouncy card {i+1}/{total}")
+                writer.writerow(list(make_row(card, "bouncy card").values()))

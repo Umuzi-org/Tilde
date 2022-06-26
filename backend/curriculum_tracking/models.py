@@ -88,6 +88,9 @@ class FlavourMixin:
     def flavours_match(self, flavour_strings: List[str]):
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
+    def flavour_ids_match(self, flavour_ids: List[int]):
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+
     @property
     def flavour_names(self):
         return [o.name for o in self.flavours.all()]
@@ -146,6 +149,10 @@ class ContentItemProxyMixin:
     @property
     def topic_needs_review(self):
         return self.content_item.topic_needs_review
+
+    @property
+    def protect_main_branch(self):
+        return self.content_item.protect_main_branch
 
 
 class TagMixin:
@@ -278,6 +285,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     )
     template_repo = models.URLField(null=True, blank=True)  # should be a github repo
     link_regex = models.CharField(max_length=250, null=True, blank=True)
+
+
+    protect_main_branch = models.BooleanField(default=True) # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
 
     class Meta:
         unique_together = [["content_type", "title"]]
@@ -657,14 +667,17 @@ class RecruitProject(
         api = Api(github_auth_login)
 
         repo = self._get_or_create_repo(api)
-        assert repo.user == recruit_user
+        # assert (
+        #     repo.user == recruit_user
+        # ), f"RecruitProject {self.id}: {repo.user} != {recruit_user}"
 
         assert (
             repo != None
         ), f"repo not created for project: {self.id} {self.content_item.title} {self.flavour_names} {self.recruit_users}"
 
         upload_readme(api=api, repo_full_name=repo.full_name, readme_text=readme_text)
-        protect_master(api, repo.full_name)
+        if self.protect_main_branch:
+            protect_master(api, repo.full_name)
         self.repository = repo
         self.save()
         if add_collaborators:
@@ -851,6 +864,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
+            .filter(recruit_project = self.recruit_project)
             .order_by("timestamp")
             .first()
         )
