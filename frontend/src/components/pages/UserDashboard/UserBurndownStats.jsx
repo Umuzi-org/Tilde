@@ -29,6 +29,8 @@ export default ({ burnDownSnapshots }) => {
         .toISOString()
         .slice(0, 10))
   );
+
+  // console.log({ burnDownSnapshots });
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -37,7 +39,6 @@ export default ({ burnDownSnapshots }) => {
       </Typography>
       <ResponsiveContainer height={500} width="100%">
         <LineChart data={burnDownSnapshots}>
-          {/* <LineChart width={1024} height={835} data={burnDownSnapshots}> */}
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="timestamp" interval="preserveEnd" />
           <YAxis />
