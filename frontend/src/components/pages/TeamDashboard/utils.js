@@ -1,4 +1,4 @@
-export function updateActivityLogDayCounts({ activityLogDayCounts }) {
+export function updateActivityLogDayCounts({ activityLogDayCounts, filterStartDate }) {
   const datesArray = [];
   for (let i in activityLogDayCounts) {
     activityLogDayCounts[i].forEach((activityLogDayCount) => {
@@ -35,18 +35,15 @@ export function updateActivityLogDayCounts({ activityLogDayCounts }) {
   }
 
   const updatedActivityLogDayCounts = {};
-  const dateFilter = new Date();
-  dateFilter.setDate(dateFilter.getDate() - 21);
   Object.entries(activityLogDayCounts).forEach((activityLogDayCount) => {
     updatedActivityLogDayCounts[
       activityLogDayCount[0]
     ] = activityLogDayCount[1].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
     ).filter(
-      (activity) => new Date(activity.date) >= dateFilter
+      (activity) => new Date(activity.date) >= filterStartDate
     );
   });
-
   return updatedActivityLogDayCounts;
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Presentation from "./Presentation";
-import { showButtons } from "./utils";
+import { showButtons } from "../../../../../utils/cardButtons";
 
 export default ({
   authUser,

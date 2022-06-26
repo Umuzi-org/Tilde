@@ -87,7 +87,7 @@ export default ({
   showUpdateProjectLinkForm,
   linkSubmission,
   formErrors,
-  showAddReviewButton,
+  // showAddReviewButton,
   handleClickAddReview,
   reviews,
 }) => {
@@ -122,13 +122,16 @@ export default ({
         contentUrl={project.contentUrl}
       />
 
-      {showAddReviewButton && (
-        <CardButton
-          label="Add Review"
-          startIcon={<RateReviewRoundedIcon />}
-          onClick={handleClickAddReview}
+      <CardButton
+        label="Add Review"
+        startIcon={<RateReviewRoundedIcon />}
+        onClick={handleClickAddReview}
+      />
+
+      {/* {showAddReviewButton && (  // TODO FIX
+
         />
-      )}
+      )} */}
     </React.Fragment>
   );
 };

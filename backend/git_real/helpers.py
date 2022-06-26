@@ -134,6 +134,8 @@ def remove_collaborator(api, repo_full_name, github_user_name, github_auth_login
 def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=None):
     api = api or Api(github_auth_login)
 
+    print(f"adding {github_user_name}")
+
     response = api.put(
         f"repos/{repo_full_name}/collaborators/{github_user_name}",
         # {"permission": "push"},
@@ -144,6 +146,10 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
 
     if response.status_code == 404:
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
+
+    if response.status_code == 422:
+        # user blocked us
+        return
 
     if response.status_code not in [201, 204]:
         raise Exception(

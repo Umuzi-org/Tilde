@@ -8,13 +8,12 @@ import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux"
 
 import { dueTimeFormModalOperations } from "../../regions/DueTimeFormModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
+// import {
+//   getShowAddReviewButton,
+//   getTeamPermissions,
+// } from "../../../utils/cardButtons";
 
-import {
-  IN_REVIEW,
-  COMPLETE,
-  REVIEW_FEEDBACK,
-  IN_PROGRESS,
-} from "../../../constants";
+import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
 function CardDetailsUnconnected({
   cards,
@@ -24,6 +23,7 @@ function CardDetailsUnconnected({
   projectReviews,
   topicReviews,
   authUser,
+  // viewedUser,
 
   openReviewFormModal,
   updateProjectLink,
@@ -116,14 +116,20 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
-  const isStaff = authUser.isStaff === 1;
+  // const isReviewer =
+  //   ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
 
   const projectCardStatus = project && project.agileCardStatus;
 
-  const showAddReviewButton =
-    (isReviewer || isStaff) &&
-    [IN_REVIEW, COMPLETE, REVIEW_FEEDBACK].indexOf(projectCardStatus) !== -1;
+  // const cardWithStatusOnly = { status: projectCardStatus };
 
+  // const permissions = getTeamPermissions({ authUser, viewedUser });
+
+  // const showAddReviewButton = getShowAddReviewButton({   // TODO: fix
+  //   card: cardWithStatusOnly,
+  //   permissions,
+  //   isReviewer,
+  // });
   const showUpdateProjectLinkForm =
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
@@ -158,7 +164,7 @@ function CardDetailsUnconnected({
     projectReviews: currentProjectReviews,
 
     handleClickAddReview,
-    showAddReviewButton,
+    // showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
     linkSubmission,
@@ -223,7 +229,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchTopicProgress: ({ topicProgressId }) => {
       dispatch(
-        apiReduxApps.FETCH_SINGLE_TOPIC_PRGRESS.operations.maybeStart({
+        apiReduxApps.FETCH_SINGLE_TOPIC_PROGRESS.operations.maybeStart({
           data: {
             topicProgressId,
           },

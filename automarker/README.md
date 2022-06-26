@@ -14,7 +14,7 @@ npm install
 # set up your environmental variables:
 # eg you can set the PORT like this
 
-export AUTO_MARKER_PORT=1313
+export AUTO_MARKER_PORT=1337
 
 # take a look at env.mjs to see the other environmental variables
 
@@ -24,7 +24,7 @@ npm run start:dev
 
 # To check if it is alive:
 
-curl http://localhost:1313/health-check
+curl http://localhost:1337/health-check
 ```
 
 ## reviewing code
@@ -45,6 +45,80 @@ You can also use a non standard location by setting the `CONFIGURATION_REPO_PATH
 
 The auto-marker will need to clone that code you are marking. It expects keys and access to be set up correctly, when cloning a private repo you will not be given the chance to input your github email and password or anything like that.
 
+
+### Testing the configuration
+
+Every project that we want to automark is configured in a separate repo. That repo contains a perfect version of the project.
+
+Use the test-config endpoint to make sure that the test configuration works. That includes actually running the automarker against the perfect project.
+
+When introducing new configuration to the configuration repo, it's important to run this self-check!
+
+Eg api call:
+
+```
+# javascript
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["javascript"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["javascript"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":756, "flavours": ["javascript"]}' \
+http://localhost:1337/test-config
+
+#  python
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["python"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["python"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":756, "flavours": ["python"]}' \
+http://localhost:1337/test-config
+
+# java
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":273, "flavours": ["java"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":223, "flavours": ["java"]}' \
+http://localhost:1337/test-config
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"contentItemId":756, "flavours": ["java"]}' \
+http://localhost:1337/test-config
+
+```
+
 ### The mark project endpoint
 
 To review code, make a json POST request to the mark-project endpoint.
@@ -56,25 +130,31 @@ curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
+
+curl \
+--request POST \
+--header "Content-Type: application/json" \
+--data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-python.git","contentItemId":273, "flavours": ["pytest","python"]}' \
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-js.git","contentItemId":273, "flavours": ["javascript"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-simple-calculator-java.git","contentItemId":273, "flavours": ["java"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 curl \
 --request POST \
 --header "Content-Type: application/json" \
 --data '{"repoUrl":"git@github.com:Umuzi-org/perfect-person-java.git","contentItemId":223, "flavours": ["java"]}' \
-http://localhost:1313/mark-project
+http://localhost:1337/mark-project
 
 ```
 

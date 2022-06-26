@@ -9,6 +9,8 @@ import {
   TableCell,
   Typography,
 } from "@material-ui/core";
+import CardButton from "../../widgets/CardButton";
+import ViewContentButton from "../../widgets/ViewContentButton";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
@@ -153,6 +155,16 @@ function CardBasicDetails({
           </Paper>
         </Grid>
       </Grid>
+      {card.canStart === false && (
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={card.contentItemUrl}
+              contentItemId={card.contentItem}
+            />
+          }
+        />
+      )}
     </React.Fragment>
   );
 }
@@ -170,10 +182,9 @@ export default ({
   handleClickSetDueTime,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
-  showAddReviewButton,
+  // showAddReviewButton,
   linkSubmission,
   formErrors,
-  repoUrl,
 }) => {
   const classes = useStyles();
 
@@ -199,14 +210,13 @@ export default ({
             showUpdateProjectLinkForm={showUpdateProjectLinkForm}
             linkSubmission={linkSubmission}
             formErrors={formErrors}
-            showAddReviewButton={showAddReviewButton}
+            // showAddReviewButton={showAddReviewButton}
             handleClickAddReview={handleClickAddReview}
             reviews={projectReviews}
           />
         ) : (
           <React.Fragment />
         )}
-
         {topicProgress ? (
           <TopicProgressDetails
             topicProgress={topicProgress}

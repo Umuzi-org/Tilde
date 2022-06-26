@@ -101,8 +101,8 @@ SEQUENCE_COURSES = {
         TILDE_INTRO,
         BOOTCAMP_INTRO,
         "Web development boot camp - quick wins",
-        COMMON_TECH_BOOT_REQUIREMENTS,
-        "Web development boot camp",
+        # COMMON_TECH_BOOT_REQUIREMENTS,
+        "Web development boot camp (with automarked katas)",
         POST_BOOTCAMP_SOFT_SKILLS,
     ],
     SEQUENCE_DPD: [
@@ -283,4 +283,4 @@ class Command(BaseCommand):
         df.apply(check_email, axis=1)
         print("Emails ok")
         df.apply(process_row, axis=1)
-        df.apply(send_github_invite, axis=1)
+        # df.apply(send_github_invite, axis=1)

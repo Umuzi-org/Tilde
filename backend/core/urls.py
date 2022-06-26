@@ -8,4 +8,8 @@ urlpatterns = [
     path("logout/", views.delete_auth_token),
     path("test_logs/", views.test_logs),
     path("test_long_running_request/", views.test_long_running_request),
+
 ]
+
+
+

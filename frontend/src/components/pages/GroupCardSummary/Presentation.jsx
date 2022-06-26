@@ -25,28 +25,21 @@ const useStyles = makeStyles((theme) => {
       left: 0,
       zIndex: 1,
 
-     ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
+      // eslint-disable-next-line no-useless-computed-key
+      ["@media (max-width:780px)"]: {
         background: "none",
-      }, 
+      },
     },
-    title: {
+
+    subTitle: {
       marginLeft: "8px",
-      ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
-        fontSize: "1.5rem",
+      // eslint-disable-next-line no-useless-computed-key
+      ["@media (max-width:780px)"]: {
         marginLeft: "8px",
-      }, 
-    },
-      subTitle: {
-        marginLeft: "8px",
-        ['@media (max-width:780px)']: { // eslint-disable-line no-useless-computed-key
-          marginLeft: "8px",
-        }, 
+      },
     },
     container: {
-      // width: 912 - 200,
-      // height: 976 - 300,
-      // height: `calc(100% - {theme.spacing(20)px})`,
-      overflow: "auto",
+      overflowBottom: "auto",
     },
   };
 });
@@ -63,8 +56,6 @@ export default ({
 
   return (
     <React.Fragment>
-      <Typography className={classes.title} variant="h4">{userGroup.name}</Typography>
-
       <div className={classes.container} onScroll={handleScroll}>
         <Table>
           <TableHead>
@@ -76,7 +67,12 @@ export default ({
                     {/* <Typography variant="caption">
                   [order:{column.order}]
                 </Typography> */}
-                    <Typography className={classes.subTitle} variant="subtitle1">{column.label}</Typography>
+                    <Typography
+                      className={classes.subTitle}
+                      variant="subtitle1"
+                    >
+                      {column.label}
+                    </Typography>
                     {/* <ViewContentButtonSmall
                     contentUrl={column.url}
                     contentItemId={column.id}

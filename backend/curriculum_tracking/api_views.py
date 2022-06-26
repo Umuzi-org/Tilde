@@ -167,7 +167,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "reviewers", "status"]
+    filterset_fields = ["assignees", "reviewers", "status","requires_cards"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
@@ -274,7 +274,6 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def add_review(self, request, pk=None):
         card = self.get_object()
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             if card.content_item.content_type == models.ContentItem.PROJECT:
@@ -305,6 +304,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
                 log_creators.log_topic_competence_review_done(review)
 
             card.refresh_from_db()
+            if card.status == models.AgileCard.REVIEW_FEEDBACK:
+                log_creators.log_card_moved_to_review_feedback(card, request.user)
+            elif card.status == models.AgileCard.COMPLETE:
+                log_creators.log_card_moved_to_complete(card, request.user)
 
             return Response(serializers.AgileCardSerializer(card).data)
         else:
@@ -361,8 +364,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         elif card.topic_progress:
             card.topic_progress.cancel_request_review()
 
-        # card.status = models.AgileCard.IN_PROGRESS
-        # card.save()
+        log_creators.log_card_review_request_cancelled(
+            card=card, actor_user=request.user
+        )
+        card.refresh_from_db()
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(
