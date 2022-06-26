@@ -17,7 +17,6 @@ from curriculum_tracking.serializers import (
     CardSummarySerializer,
     UserDetailedStatsSerializer,
 )
-
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
 
@@ -225,6 +224,76 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(UserDetailedStatsSerializer(user_object).data)
         else:
             return Response(serializer.errors, status="BAD_REQUEST")
+
+    @action(
+        detail=True,
+        methods=["DELETE"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[
+            IsAdminUser]
+    )
+    def danger_delete_all_progress(self, request,pk=None):
+        from curriculum_tracking.models import AgileCard, RecruitProject,TopicProgress,WorkshopAttendance
+
+        user = self.get_object()
+
+        AgileCard.objects.filter(assignees__in=[user]).delete()
+        RecruitProject.objects.filter(recruit_users__in=[user]).delete()
+        TopicProgress.objects.filter(user=user).delete()
+        WorkshopAttendance.objects.filter(attendee_user=user).delete()
+
+        return Response({'status': 'OK'})
+
+    @action(
+        detail=True,
+        methods=["POST","GET"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[
+            IsAdminUser]
+    )
+    def danger_delete_and_recreate_user_board(self, request,pk=None):
+        if request.method == "GET":
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
+        else:
+            from long_running_request_actors import delete_and_recreate_user_cards as actor
+
+            user = self.get_object()
+            response = actor.send_with_options(kwargs={
+                'user_id': user.id
+            })
+            return Response({"status": "OK", "data": response.asdict()})
+
+
+    @action(detail=True,
+    methods=["POST","GET"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[
+            IsAdminUser]
+
+    )
+    def invite_to_github_org(self,request,pk=None):
+        if request.method == "GET":
+            return Response(
+                {
+                    "status": "OK",
+                }
+            )
+        else:
+            from long_running_request_actors import invite_user_to_github_org as actor
+
+            user = self.get_object()
+            response = actor.send_with_options(kwargs={
+                'user_id': user.id
+            })
+            return Response({"status": "OK", "data": response.asdict()})
+
+
+
+
 
     # @action(
     #     detail=False,

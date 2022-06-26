@@ -328,6 +328,7 @@ class Stream(models.Model):
     """a collection of curriculums. Eg someone might need to do a soft skills curriculum and then a web dev part 1 curriculum"""
 
     name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -335,8 +336,8 @@ class Stream(models.Model):
 
 class StreamCurriculum(models.Model):
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
-    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE, related_name="stream_curriculums")
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE,related_name="stream_curriculums")
 
     class Meta(object):
         ordering = ["order"]
