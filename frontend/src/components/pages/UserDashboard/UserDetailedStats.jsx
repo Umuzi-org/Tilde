@@ -6,6 +6,7 @@ import {
   TableCell,
   TableRow,
   Typography,
+  Grid,
 } from "@material-ui/core";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { cardColors } from "../../../colors";
@@ -77,73 +78,82 @@ export default ({ detailedStats }) => {
     },
   ].filter((element) => element.value);
   return (
-    <React.Fragment>
-      <Typography variant="h6" component="h2">
-        Assigned card statuses
-      </Typography>
-      <PieChart width={600} height={400}>
-        <Pie
-          data={cardStatusPieData}
-          dataKey="value"
-          cx="50%"
-          cy="50%"
-          innerRadius={20}
-          outerRadius={90}
-          label={renderCustomizedLabel({ cardStatusPieData })}
-        >
-          {cardStatusPieData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color}></Cell>
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
+    <Grid container spacing={1}>
+      <Grid item xs={6}>
+        <Typography variant="h6" component="h2">
+          Assigned card statuses
+        </Typography>
+        <PieChart width={600} height={400}>
+          <Pie
+            data={cardStatusPieData}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={20}
+            outerRadius={90}
+            label={renderCustomizedLabel({ cardStatusPieData })}
+          >
+            {cardStatusPieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color}></Cell>
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </Grid>
+      <Grid item xs={6}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Typography variant="h6" component="h2">
+                  Performance
+                </Typography>
+              </TableCell>
+            </TableRow>
 
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              <Typography variant="h6" component="h2">
-                Performance
-              </Typography>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell>Cards completed in the last 7 days</TableCell>
-            <TableCell>
-              {detailedStats.cardsCompletedLast_7DaysAsAssignee}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Cards started in the last 7 days as assignee</TableCell>
-            <TableCell>
-              {detailedStats.cardsStartedLast_7DaysAsAssignee}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total competence reviews done</TableCell>
-            <TableCell>{detailedStats.totalTildeReviewsDone}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total competence reviews done in last 7 days</TableCell>
-            <TableCell>{detailedStats.tildeReviewsDoneLast_7Days}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total pull request reviews done</TableCell>
-            <TableCell>{detailedStats.totalPrReviewsDone}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total pull request reviews done in last 7 day</TableCell>
-            <TableCell>{detailedStats.prReviewsDoneLast_7Days}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Tilde cards reviewed in last 7 days</TableCell>
-            <TableCell>
-              {detailedStats.tildeCardsReviewedInLast_7Days}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </React.Fragment>
+            <TableRow>
+              <TableCell>Cards completed in the last 7 days</TableCell>
+              <TableCell>
+                {detailedStats.cardsCompletedLast_7DaysAsAssignee}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                Cards started in the last 7 days as assignee
+              </TableCell>
+              <TableCell>
+                {detailedStats.cardsStartedLast_7DaysAsAssignee}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Total competence reviews done</TableCell>
+              <TableCell>{detailedStats.totalTildeReviewsDone}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                Total competence reviews done in last 7 days
+              </TableCell>
+              <TableCell>{detailedStats.tildeReviewsDoneLast_7Days}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Total pull request reviews done</TableCell>
+              <TableCell>{detailedStats.totalPrReviewsDone}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                Total pull request reviews done in last 7 day
+              </TableCell>
+              <TableCell>{detailedStats.prReviewsDoneLast_7Days}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Tilde cards reviewed in last 7 days</TableCell>
+              <TableCell>
+                {detailedStats.tildeCardsReviewedInLast_7Days}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Grid>
+    </Grid>
   );
 };
