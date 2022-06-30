@@ -201,3 +201,13 @@ class BulkSetDueTimeSerializer(serializers.Serializer):
     due_time = serializers.DateTimeField()
     flavours = serializers.ListField(child=serializers.IntegerField())
     content_item = serializers.IntegerField()
+
+
+class StreamRegistrationSerialiser(serializers.ModelSerializer):
+    class Meta:
+        fields = [
+            'id',
+            'name',
+            'user',
+            'stream'
+        ]

@@ -156,6 +156,12 @@ router.register(
 #     "user-recrtuitprojects",
 # )
 
+router.register(
+    r"stream_registration",
+    core_views.StreamRegistrationViewset,
+    "streamregistration",
+)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),

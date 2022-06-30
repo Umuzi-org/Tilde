@@ -283,3 +283,18 @@ class UserViewSet(viewsets.ModelViewSet):
 #             result[team.id]["permissions"].append(permission)
 
 #     return Response(result)
+
+
+class StreamRegistrationViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.StreamRegistrationSerialiser
+    permission_classes = [
+        IsAdminUser
+        | core_permissions.ActionIs("retrieve")
+        & (
+            core_permissions.IsMyUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.s,
+                get_objects=_get_teams_from_user,
+            )
+        )
+    ]
