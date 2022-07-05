@@ -205,9 +205,19 @@ class BulkSetDueTimeSerializer(serializers.Serializer):
 
 class StreamRegistrationSerialiser(serializers.ModelSerializer):
     class Meta:
+        model = models.StreamRegistration
         fields = [
             'id',
             'name',
             'user',
             'stream'
         ]
+
+    user = serializers.SerializerMethodField("get_user_name")
+    stream = serializers.SerializerMethodField("get_stream_name")
+
+    def get_user_name(self, instance):
+        return instance.user.email
+
+    def get_stream_name(self, instance):
+        return instance.stream.name
