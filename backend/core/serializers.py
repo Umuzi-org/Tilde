@@ -208,6 +208,7 @@ class StreamRegistrationSerialiser(serializers.ModelSerializer):
         model = models.StreamRegistration
         fields = [
             'id',
+            'active',
             'name',
             'user',
             'stream'
