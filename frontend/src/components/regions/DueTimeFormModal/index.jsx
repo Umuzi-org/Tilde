@@ -11,6 +11,7 @@ function DueTimeFormModalUnconnected({
   card,
   handleClose,
   fetchAgileCard,
+  setDueTime,
 }) {
   React.useEffect(() => {
     if (cardId && (card === undefined || card === null || card === {})) {
@@ -46,7 +47,6 @@ const mapDispatchToProps = (dispatch) => {
     handleClose: () => {
       dispatch(operations.closeDueTimeFormModal());
     },
-
     fetchAgileCard: ({ cardId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({
@@ -54,6 +54,16 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+    setDueTime: ({ cardId, dueTime }) => {
+      dispatch(
+        apiReduxApps.CARD_SET_DUE_TIME.operations.start({
+          data: {
+            cardId,
+            dueTime,
+          },
+        })
+      );
+    }
   };
 };
 

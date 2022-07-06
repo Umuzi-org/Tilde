@@ -38,6 +38,7 @@ const CARD_START_PROJECT = "CARD_START_PROJECT";
 const CARD_REQUEST_REVIEW = "CARD_REQUEST_REVIEW";
 const CARD_CANCEL_REVIEW_REQUEST = "CARD_CANCEL_REVIEW_REQUEST";
 const CARD_ADD_REVIEW = "CARD_ADD_REVIEW";
+const CARD_SET_DUE_TIME = "CARD_SET_DUE_TIME";
 const CARD_START_TOPIC = "CARD_START_TOPIC";
 const CARD_STOP_TOPIC = "CARD_STOP_TOPIC";
 const CARD_FINISH_TOPIC = "CARD_FINISH_TOPIC";
@@ -257,6 +258,12 @@ export const apiReduxApps = {
   CARD_ADD_REVIEW: createReduxApp({
     BASE_TYPE: CARD_ADD_REVIEW,
     apiCaller: apiCallers.addReview,
+    responseEntityType: "cards",
+    responseIsList: false,
+  }),
+  CARD_SET_DUE_TIME: createReduxApp({
+    BASE_TYPE: CARD_SET_DUE_TIME,
+    apiCaller: apiCallers.setDueTime,
     responseEntityType: "cards",
     responseIsList: false,
   }),

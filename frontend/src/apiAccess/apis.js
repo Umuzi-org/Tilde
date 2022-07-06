@@ -299,6 +299,16 @@ async function addReview({ cardId, status, comments }) {
   return { response, responseData };
 }
 
+async function setDueTime({ cardId, dueTime }) {
+  const url = `${API_BASE_URL}/api/agile_card/${cardId}/set_card_due_time/`;
+  const { response, responseData } = await fetchAndClean({
+    url,
+    method: "POST",
+    data: { dueTime },
+  });
+  return { response, responseData };
+}
+
 async function startTopic({ cardId }) {
   const url = `${API_BASE_URL}/api/agile_card/${cardId}/start_topic/`;
   const { response, responseData } = await fetchAndClean({
@@ -403,6 +413,7 @@ export default {
   requestReview,
   cancelReviewRequest,
   addReview,
+  setDueTime,
   startTopic,
   stopTopic,
   finishTopic,

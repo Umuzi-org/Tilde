@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Button, Grid, Paper } from "@material-ui/core";
+import { Button, Grid, Paper } from "@material-ui/core";
+import DateTimePicker from 'react-datetime-picker';
 import Modal from "../../widgets/Modal";
 
 const useStyles = makeStyles({
@@ -20,29 +21,21 @@ const useStyles = makeStyles({
 
 export default ({ card, cardId, handleClose }) => {
   const classes = useStyles();
-  const dueTime = card.dueTime;
+  const [dueTime, setDueTime] = useState(card.dueTime);
 
   /* dueTime is either null or something like this: "2021-06-14T09:58:28Z".
      If dueTime has a value, then we strip out the seconds, 
      hence dueTime.split('').slice(0, 16).join('') is used */
-  const defaultValue = dueTime ? dueTime.split("").slice(0, 16).join("") : "";
+  // const defaultValue = dueTime ? dueTime.split("").slice(0, 16).join("") : "";
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
           {card ? (
             <form noValidate>
-              <TextField
-                id="datetime-local"
-                label="Due Date"
-                type="datetime-local"
-                defaultValue={defaultValue}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
+              <DateTimePicker onChange={setDueTime} value={dueTime} disableClock/>
               <Grid container>
-                <Button className={classes.dueTimeButton} variant="outlined">
+                <Button className={classes.dueTimeButton} variant="outlined" onClick={() => console.log(dueTime)}>
                   Save
                 </Button>
                 <Button
