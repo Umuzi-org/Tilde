@@ -70,7 +70,7 @@ function LoginUnconnected({
   return <Presentation {...props} />;
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     AUTHENTICATE_WITH_ONE_TIME_TOKEN: state.AUTHENTICATE_WITH_ONE_TIME_TOKEN,
     googleLogin: state.googleLogin,
