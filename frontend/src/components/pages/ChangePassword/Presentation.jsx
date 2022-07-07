@@ -28,11 +28,11 @@ const useStyles = makeStyles((theme) => ({
     width: "275px",
   },
   button: {
-    width: "300px"
-  }
+    width: "300px",
+  },
 }));
 
-export default () => {
+export default function () {
   const classes = useStyles();
 
   return (
@@ -43,8 +43,18 @@ export default () => {
       <Alert severity="info" className={classes.alert}>
         Your new password must be different from previous used passwords
       </Alert>
-      <TextField label="Current password" variant="outlined" type="password" required />
-      <TextField label="New password" variant="outlined" type="password" required />
+      <TextField
+        label="Current password"
+        variant="outlined"
+        type="password"
+        required
+      />
+      <TextField
+        label="New password"
+        variant="outlined"
+        type="password"
+        required
+      />
       <TextField
         label="Confirm Password"
         variant="outlined"
@@ -52,10 +62,15 @@ export default () => {
         required
       />
       <div>
-        <Button type="submit" variant="contained" color="primary" className={classes.button}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className={classes.button}
+        >
           Reset Password
         </Button>
       </div>
     </form>
   );
-};
+}

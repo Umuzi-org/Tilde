@@ -78,7 +78,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       ),
   };
-};
+}
 
 const PasswordResetConfirm = connect(
   mapStateToProps,

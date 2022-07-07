@@ -49,7 +49,7 @@ const mapStateToProps = (state) => {
       BASE_TYPE: "API_REQUEST_PASSWORD_RESET",
     }),
   };
-};
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
   };
-};
+}
 
 const ForgotPassword = connect(
   mapStateToProps,

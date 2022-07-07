@@ -35,7 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ handleSubmit, handleInputChange, loading, formErrors }) => {
+export default function ({
+  handleSubmit,
+  handleInputChange,
+  loading,
+  formErrors,
+}) {
   const classes = useStyles();
   return (
     <form className={classes.containerStyles}>
@@ -82,4 +87,4 @@ export default ({ handleSubmit, handleInputChange, loading, formErrors }) => {
       </Button>
     </form>
   );
-};
+}

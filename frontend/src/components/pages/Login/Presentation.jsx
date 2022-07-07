@@ -1,12 +1,11 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Box } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
 import Link from "@material-ui/core/Link";
-import { Box } from "@material-ui/core";
 import Divider from "./Divider";
 
 import { routes } from "../../../routes";
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginForm = ({
+export default function LoginForm({
   googleLoginLoading,
   error,
   handleLoginWithGoogle,
@@ -60,7 +59,7 @@ const LoginForm = ({
   formErrors,
   handleSubmitLoginForm,
   loginFormLoading,
-}) => {
+}) {
   const classes = useStyles();
   // console.log(formErrors);
 
@@ -157,5 +156,3 @@ const LoginForm = ({
     </form>
   );
 };
-
-export default LoginForm;

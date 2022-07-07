@@ -13,7 +13,7 @@ import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntitie
 
 import { useState } from "react";
 
-const LoginUnconnected = ({
+function LoginUnconnected({
   // google login
   initialiseGoogleAuthStart,
   AUTHENTICATE_WITH_ONE_TIME_TOKEN,
@@ -22,7 +22,7 @@ const LoginUnconnected = ({
   // email password login
   emailPassLoginLastCall,
   doEmailPassLogin,
-}) => {
+}) {
   const loginWithGoogleButtonClick = (e) => {
     e.preventDefault();
     if (!googleLogin.loading) initialiseGoogleAuthStart(googleLogin);
@@ -70,7 +70,7 @@ const LoginUnconnected = ({
   return <Presentation {...props} />;
 };
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
   return {
     AUTHENTICATE_WITH_ONE_TIME_TOKEN: state.AUTHENTICATE_WITH_ONE_TIME_TOKEN,
     googleLogin: state.googleLogin,
