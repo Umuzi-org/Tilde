@@ -8,8 +8,8 @@ import {
   TableCell,
   Typography,
 } from "@material-ui/core";
-// import CardButton from "../../widgets/CardButton";
-// import ViewContentButton from "../../widgets/ViewContentButton";
+import CardButton from "../../widgets/CardButton";
+import ViewContentButton from "../../widgets/ViewContentButton";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
@@ -136,7 +136,7 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {/* {card.canStart === false && (
+      {card.startTime === null && (
         <CardButton
           widget={
             <ViewContentButton
@@ -145,7 +145,7 @@ function CardBasicDetails({ card }) {
             />
           }
         />
-      )} */}
+      )}
     </React.Fragment>
   );
 }
