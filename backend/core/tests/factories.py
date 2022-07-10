@@ -49,3 +49,20 @@ class CurriculumFactory(DjangoModelFactory):
         model = "core.Curriculum"
 
     name = "hello"
+
+
+
+class StreamFactory(DjangoModelFactory):
+    class Meta:
+        model = "core.Stream"
+
+    name = "Data Science"
+
+
+class StreamRegistrationFactory(DjangoModelFactory):
+    class Meta:
+        model = "core.StreamRegistration"
+
+    user = factory.SubFactory(UserFactory)
+    stream = factory.SubFactory(StreamFactory)
+    active = True
