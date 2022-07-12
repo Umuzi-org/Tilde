@@ -128,6 +128,7 @@ function AgileBoardUnconnected({
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
   authedUserId,
   fetchInitialCards,
+  fetchUser,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -135,6 +136,10 @@ function AgileBoardUnconnected({
   useEffect(() => {
     if (userId !== undefined) fetchInitialCards({ userId });
   }, [fetchInitialCards, userId]);
+
+  useEffect(() => {
+    if (userId !== undefined) fetchUser({ userId });
+  }, [fetchUser, userId]);
 
   const filteredCards = filterCardsByUserId({
     cards,
@@ -196,12 +201,19 @@ function AgileBoardUnconnected({
     return eventHandler;
   }
 
+  function loadMoreCards({ column }) {
+    function _loadMoreCards() {
+      fetchNextColumnPage({ columnLabel: column.label, latestCallStates });
+    }
+    return _loadMoreCards;
+  }
+
   const viewedUser = users[userId];
   if (!viewedUser) {
     return <Loading />;
   }
 
-  let props = {
+  const props = {
     userId,
     cards: filteredCards,
     board: boardFromCards({
@@ -212,6 +224,7 @@ function AgileBoardUnconnected({
     viewedUser: users[userId],
 
     handleColumnScroll,
+    loadMoreCards,
   };
   return <Presentation {...props} />;
 }
@@ -228,6 +241,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId: parseInt(userId) },
+        })
+      );
+    },
+
     fetchCardPages: ({ dataSequence }) => {
       dispatch(
         apiReduxApps.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE.operations.maybeStartCallSequence(

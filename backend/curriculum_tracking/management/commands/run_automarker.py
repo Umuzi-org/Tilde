@@ -1,3 +1,10 @@
+"""
+example usage
+
+python manage.py run_automarker "simple-calculator part 1" ""
+python manage.py run_automarker "Person" ""
+python manage.py run_automarker "password-checker" ""
+"""
 from django.core.management.base import BaseCommand
 from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
 from core.models import User
@@ -12,16 +19,18 @@ def get_automark_result(repo_url, content_item_id, flavours):
     # print(repo_url)
     # print(content_item_id)
     # print(flavours)
-    url = "http://localhost:1313/mark-project"
+    url = "http://localhost:1337/mark-project"
     headers = {"Content-Type": "application/json"}
+    json = {
+        "repoUrl": repo_url,
+        "contentItemId": content_item_id,
+        "flavours": flavours,
+    }
+    pprint(json)
     response = requests.post(
         url,
         headers=headers,
-        json={
-            "repoUrl": repo_url,
-            "contentItemId": content_item_id,
-            "flavours": flavours,
-        },
+        json=json,
     )
     return response.json()
 
@@ -41,10 +50,10 @@ class Command(BaseCommand):
     def add_review(self, card, status, comments):
         base_comments = "Hello! I'm a robot 🤖\n\nI'm here to give you quick feedback about your code."
         if status == COMPETENT:
-            full_comments = f"{base_comments} {comments}"
+            full_comments = f"{base_comments} {comments}." if comments else base_comments
+            full_comments = f"{full_comments} Keep up the good work :)"
         else:
-            full_comments = f"{base_comments} I'm not very clever, I can't give you super detailed feedback. But I did notice that something is broken. Here's the error message I came up with:\n\n```{comments}```\n\nIf the feedback doesn't make sense please reach out to one of the humans that work here and they'll be happy to help you understand."
-            breakpoint()
+            full_comments = f"{base_comments} Something went wrong when I marked your code. Most people don't get things right on the first try, just keep trying, I'm sure you'll figure it out! \n\nHere are some details:\n\n{comments}\n\nIf the feedback doesn't make sense please reach out to one of the humans that work here and they'll be happy to help you understand. Humans are great like that"
         RecruitProjectReview.objects.create(
             status=status,
             timestamp=timezone.now(),
@@ -89,11 +98,23 @@ class Command(BaseCommand):
                 content_item_id=card.content_item_id,
                 flavours=card.flavour_names,
             )
+            pprint(result)
             if result["status"] == "OK":
-                self.add_review(card=card, status=COMPETENT, comments=result["message"])
+
+                self.add_review(card=card, status=COMPETENT, comments="All our checks passed")
             elif result["status"] == "FAIL":
+
+                # step_name = result['actionName']
+                result = result['result']
+
+                comments = f"*{result['message']}*"
+                if errors:=result.get("errors"):
+                    errors = '\n'.join([f"- {s}" for s in errors])
+                    comments = f"{comments}\n{errors}"
                 self.add_review(
-                    card=card, status=NOT_YET_COMPETENT, comments=result["message"]
+                    card=card,
+                    status=NOT_YET_COMPETENT,
+                    comments=comments,
                 )
             else:
 

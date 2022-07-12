@@ -12,7 +12,7 @@ function arrayToObjectWithIdKeys({ data }) {
     dataAsObject[element.id] = element;
   });
   return dataAsObject;
-};
+}
 
 function getColumns({ cards }) {
   const sortedUniqueContentIds = cards
@@ -40,7 +40,7 @@ function getColumns({ cards }) {
       };
     })
     .sort((card1, card2) => card1.order - card2.order);
-};
+}
 
 function getRows({ cards, filterByUsers }) {
   const userIds = cards
@@ -65,7 +65,7 @@ function getRows({ cards, filterByUsers }) {
   }
 
   return rows;
-};
+}
 
 function filteredCardsAsArray({ cards, filterByUsers }) {
   return Object.values(cards).filter((card) => {
@@ -74,7 +74,7 @@ function filteredCardsAsArray({ cards, filterByUsers }) {
     }
     return false;
   });
-};
+}
 
 function getStudentUserDisplayData({ userGroup }) {
   if (!userGroup) return {};
@@ -83,7 +83,7 @@ function getStudentUserDisplayData({ userGroup }) {
     ret[member.userId] = member.userEmail;
   });
   return ret;
-};
+}
 
 function getApiCallData({
   userGroup,
@@ -155,6 +155,7 @@ function GroupCardSummaryUnconnected({
 
     fetchUserGroupSummaryCardsByDataSequence({ dataSequence });
   }
+
   function handleScroll(e) {
     const atRight =
       e.target.scrollLeft + e.target.clientWidth >= e.target.scrollWidth;
@@ -171,10 +172,11 @@ function GroupCardSummaryUnconnected({
     userGroup: userGroup || {},
     displayUsers: studentUsers,
     handleScroll,
+    fetchNextPages,
   };
 
   return <Presentation {...props} />;
-};
+}
 
 const mapStateToProps = (state) => {
   const cards = state.apiEntities.projectSummaryCards || {};

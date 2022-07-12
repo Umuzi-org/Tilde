@@ -661,3 +661,26 @@ class BulkSetDueDatesHumanFriendly(serializers.Serializer):
     content_item_title = serializers.CharField()
     team_name = serializers.CharField(required=False)
     email = serializers.CharField(required=False)
+
+
+
+
+
+
+class RegisterNewLearnerSerializer(serializers.Serializer):
+    class Meta:
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'github_name',
+            'stream_name',
+            'team_name'
+        ]
+
+    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    github_name = serializers.CharField(required=True)
+    stream_name = serializers.CharField(required=True)
+    team_name = serializers.CharField(required=True)
