@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Grid, Paper } from "@material-ui/core";
-import DateTimePicker from 'react-datetime-picker';
+import { Paper } from "@material-ui/core";
+import DateTimePicker from "react-datetime-picker";
 import Modal from "../../widgets/Modal";
+import CardButton from "../../widgets/CardButton";
 
 const useStyles = makeStyles({
   dueTimeButton: {
-    marginTop: "0.3rem",
-    marginRight: "0.3rem",
+    marginRight: "0.3rem"
   },
   paper: {
     padding: "1rem",
@@ -17,35 +17,46 @@ const useStyles = makeStyles({
     top: 0,
     left: "200px",
   },
+  dateTimePicker: {
+    width: "100%",
+  },
 });
 
-export default ({ card, cardId, handleClose }) => {
+export default ({ card, cardId, handleClose, handleSubmit, loading }) => {
   const classes = useStyles();
   const [dueTime, setDueTime] = useState(card.dueTime);
-
-  /* dueTime is either null or something like this: "2021-06-14T09:58:28Z".
-     If dueTime has a value, then we strip out the seconds, 
-     hence dueTime.split('').slice(0, 16).join('') is used */
-  // const defaultValue = dueTime ? dueTime.split("").slice(0, 16).join("") : "";
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
           {card ? (
             <form noValidate>
-              <DateTimePicker onChange={setDueTime} value={dueTime} disableClock/>
-              <Grid container>
-                <Button className={classes.dueTimeButton} variant="outlined" onClick={() => console.log(dueTime)}>
+              <DateTimePicker
+                onChange={setDueTime}
+                value={dueTime}
+                disableClock
+                className={classes.dateTimePicker}
+              />
+              <p>
+                <CardButton
+                  className={classes.dueTimeButton}
+                  variant="outlined"
+                  onClick={() => handleSubmit(dueTime)}
+                  loading={loading}
+                  label="Save"
+                >
                   Save
-                </Button>
-                <Button
+                </CardButton>
+                <CardButton
                   className={classes.dueTimeButton}
                   variant="outlined"
                   onClick={handleClose}
+                  loading={false}
+                  label="Cancel"
                 >
-                  Cancel
-                </Button>
-              </Grid>
+                  Close
+                </CardButton>
+              </p>
             </form>
           ) : (
             <div>Loading...</div>

@@ -23,10 +23,6 @@ const useStyles = makeStyles((theme) => ({
     // margin: theme.spacing(1),
     minWidth: 120,
   },
-  selectEmpty: {
-    // marginTop: theme.spacing(2),
-    // paddingTop: theme.spacing(2),
-  },
   alert: {
     marginBottom: theme.spacing(1),
   },
@@ -179,7 +175,7 @@ export default ({
         </Grid>
 
         <Alert severity="info" className={classes.alert}>
-          Whatever you writ here will be visable to staff and to the person you
+          Whatever you write here will be visable to staff and to the person you
           are reviewing. Take the time to give an accurate and useful review
         </Alert>
 
