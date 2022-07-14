@@ -209,10 +209,10 @@ class StreamRegistrationSerialiser(serializers.ModelSerializer):
         fields = [
             'id',
             'active',
-            'name',
             'user',
-            'stream'
-        ]
+            'stream',
+            'active'
+            ]
 
     user = serializers.SerializerMethodField("get_user_name")
     stream = serializers.SerializerMethodField("get_stream_name")
@@ -222,3 +222,4 @@ class StreamRegistrationSerialiser(serializers.ModelSerializer):
 
     def get_stream_name(self, instance):
         return instance.stream.name
+
