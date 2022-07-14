@@ -124,3 +124,12 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
+
+
+class TestStreamRegistrationViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "streamregistration-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        stream_registration = factories.StreamRegistrationFactory()
+        return stream_registration
