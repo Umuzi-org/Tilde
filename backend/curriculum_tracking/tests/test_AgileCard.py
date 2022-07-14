@@ -706,6 +706,24 @@ class WorkshopMovementTests(TestCase):
         self.assertEqual(self.card.status, AgileCard.READY)
 
 
+class ProjectMovementTestCase(TestCase):
+    def setUp(self):
+        self.card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=ContentItem.LINK,
+                ),
+            status=AgileCard.READY,
+        )
+        self.card.assignees.set([UserFactory()])
+
+    def test_start(self):
+        card = self.card
+        card.start_project()
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.assertEqual(card.recruit_project.recruit_users, card.assignees.first())
+
+
 class ReviewerIdsSinceLatestReviewRequest(TestCase):
     def setUp(self):
         self.card_1 = factories.AgileCardFactory(
