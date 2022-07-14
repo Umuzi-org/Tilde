@@ -223,3 +223,6 @@ class StreamRegistrationSerialiser(serializers.ModelSerializer):
     def get_stream_name(self, instance):
         return instance.stream.name
 
+class NoArgs(serializers.Serializer):
+    class Meta:
+        fields = []

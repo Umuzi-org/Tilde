@@ -20,11 +20,15 @@ from core.permissions import (
     DenyAll,
     IsCurrentUserInSpecificFilter,
 )
-from core.models import Team, User
+from core.models import Team, User, Stream
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from django.db.models import Q
 
 from rest_framework import filters
+from social_auth.models import SocialProfile
+
+
+
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -841,7 +845,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     )
     def team_review_by_other(self, request, pk=None):
         """grab users from another group and randomise them as reviewers for this group"""
-        serialiser = get_Serialiser(data=request.post)
+        serialiser = get_serialiser(data=request.post)
         if serialiser.is_valid:
             serialiser.reviewer_group
 
@@ -927,6 +931,68 @@ class ManagementActionsViewSet(viewsets.ViewSet):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=serializers.RegisterNewLearnerSerializer,
+        permission_classes=[permissions.IsAdminUser],
+    )
+    def register_new_learner(self, request, pk=None):
+        serializer = serializers.RegisterNewLearnerSerializer(data=request.data)
+        if serializer.is_valid():
+
+            email = serializer.data['email']
+            first_name = serializer.data['first_name']
+            last_name = serializer.data['last_name']
+            github_name = serializer.data['github_name']
+            stream_name = serializer.data['stream_name']
+            team_name = serializer.data['team_name']
+
+            try:
+                stream = Stream.objects.get(name=stream_name)
+            except Stream.DoesNotExist:
+                return Response({'stream_name': f'Stream matching name "{stream_name}" does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if stream.stream_curriculums.count() == 0:
+                return Response({'stream_name': f'Stream matching name "{stream_name}" does not have any courses. Please make sure it is set up correctly'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects.get_or_create(
+                email=email, defaults={"first_name": first_name, "last_name": last_name}
+            )[0]
+            user.active = True
+            user.save()
+
+            profile =  SocialProfile.objects.get_or_create(user=user)[0]
+            profile.github_name = github_name
+            profile.save()
+
+            team = Team.objects.get_or_create(name=team_name)[0]
+            team.user_set.add(user)
+
+            curriculum_ids =  [o.curriculum_id for o in  stream.stream_curriculums.order_by('order')]
+            existing = models.CourseRegistration.objects.filter(user=user)
+            for o in existing:
+                if o.curriculum_id not in curriculum_ids:
+                    o.delete()
+            for i, curriculum_id in enumerate(curriculum_ids):
+                o, created = models.CourseRegistration.objects.get_or_create(
+                    user=user, curriculum_id=curriculum_id, defaults={"order": i}
+                )
+                if not created:
+                    o.order = i
+                    o.save()
+
+            return Response({'user_id':user.id})  # TODO: use a serializer rather
+
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
