@@ -18,10 +18,18 @@ def _team_name_generator():
         yield f"GROUP NAME {i}"
         i += 1
 
+def _organisation_name_generator():
+    i = 1
+    while True:
+        yield f"GROUP NAME {i}"
+        i += 1
+
 
 _email_iterator = _email_generator()
 
 _team_name_iterator = _team_name_generator()
+
+_organisation_name_generator = _organisation_name_generator()
 
 
 class UserFactory(DjangoModelFactory):
@@ -58,6 +66,12 @@ class StreamFactory(DjangoModelFactory):
 
     name = "Data Science"
 
+class OrganisationFactory(DjangoModelFactory):
+    class Meta:
+        model = "core.Organisation"
+
+    name = factory.lazy_attribute(lambda *args, **kwargs: next(_organisation_name_generator))
+
 
 class StreamRegistrationFactory(DjangoModelFactory):
     class Meta:
@@ -65,4 +79,9 @@ class StreamRegistrationFactory(DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     stream = factory.SubFactory(StreamFactory)
+    employer_partner = factory.SubFactory(OrganisationFactory)
+    name = 'C 20'
+    start_date  = "2021-12-03"
+    ideal_end_date = "2022-11-03"
+    latest_end_date = "2022-12-03"     
     active = True
