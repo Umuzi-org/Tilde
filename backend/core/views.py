@@ -286,10 +286,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class StreamRegistrationViewset(viewsets.ModelViewSet):
-    queryset = models.StreamRegistration.objects.all().order_by("name")
+    queryset = models.StreamRegistration.objects.all().order_by("user")
     serializer_class = serializers.StreamRegistrationSerialiser
     permission_classes = [
-        IsAdminUser
-        | core_permissions.ActionIs("retrieve")
-        | core_permissions.IsReadOnly
+        drf_permissions.IsAuthenticated
+        and (core_permissions.IsReadOnly | core_permissions.ActionIs("retrieve"))
     ]
