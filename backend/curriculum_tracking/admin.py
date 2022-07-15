@@ -14,10 +14,14 @@ class ContentItemOrderPreAdmin(admin.TabularInline):
     fk_name = "pre"
 
 
+
+class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
+    model = models.ContentItemAutoMarkerConfig
+
 @admin.register(models.ContentItem)
 class ContentItemAdmin(admin.ModelAdmin):
 
-    inlines = (ContentItemOrderPostAdmin, ContentItemOrderPreAdmin)
+    inlines = (ContentItemOrderPostAdmin, ContentItemOrderPreAdmin, ContentItemAutoMarkerConfigAdmin)
 
     list_display = ["content_type", "title", "tag_list"]
     search_fields = ["title"]

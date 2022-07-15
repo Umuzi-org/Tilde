@@ -114,12 +114,13 @@ class propagate_trust_signal_Tests(TestCase):
             validated=RecruitProjectReview.CORRECT,
         )
         trust_count = ReviewTrust.objects.all().count()
-        self.assertEqual(trust_count, 1)
+        self.assertEqual(trust_count, 0)   # turned trust propagation off
+        # self.assertEqual(trust_count, 1)
 
-        trust = ReviewTrust.objects.first()
-        self.assertEqual(trust.content_item, content_item)
-        self.assertEqual(trust.user, user)
-        self.assertTrue(trust.flavours_match(["js"]))
+        # trust = ReviewTrust.objects.first()
+        # self.assertEqual(trust.content_item, content_item)
+        # self.assertEqual(trust.user, user)
+        # self.assertTrue(trust.flavours_match(["js"]))
 
 
 class get_validated_streak_Tests(TestCase):

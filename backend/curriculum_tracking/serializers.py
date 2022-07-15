@@ -22,7 +22,7 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "project_reviews",
             "title",
             "content_url",
-            "story_points",
+            # "story_points",
             "tag_names",
             "recruit_users",
             "recruit_user_names",
@@ -125,7 +125,7 @@ class ContentItemSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "url",
-            "story_points",
+            # "story_points",
             "tag_names",
             "post_ordered_content",
             "pre_ordered_content",
@@ -161,7 +161,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "title",
             "content_type",
             "content_type_nice",
-            "story_points",
+            # "story_points", TODO: get story points from agile weight rather
             "tag_names",
             "order",
             "code_review_competent_since_last_review_request",
@@ -684,3 +684,14 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     github_name = serializers.CharField(required=True)
     stream_name = serializers.CharField(required=True)
     team_name = serializers.CharField(required=True)
+
+
+class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ContentItemAgileWeight
+        fields = [
+            "id",
+            "flavour_names",
+            "weight",
+            "content_item",
+        ]

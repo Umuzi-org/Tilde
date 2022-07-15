@@ -850,3 +850,9 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
+
+
+
+
+class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "cardsummary-list"

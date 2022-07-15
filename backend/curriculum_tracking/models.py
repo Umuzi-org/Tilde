@@ -253,10 +253,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         unique=True,
     )
 
-    story_points = models.SmallIntegerField(
-        choices=((i, i) for i in [1, 2, 3, 5, 8, 13, 21, 34, 56, 89]), null=True
-    )
-
     prerequisites = models.ManyToManyField(
         "ContentItem",
         related_name="unlocks",
@@ -378,6 +374,21 @@ class CurriculumContentRequirement(
         ordering = ["order"]
 
 
+
+class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT, related_name="agile_weights")
+    flavours = TaggableManager(blank=True)
+    weight = models.IntegerField()
+
+
+
+class ContentItemAutoMarkerConfig(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT, related_name="automarker_configs")
+    flavours = TaggableManager(blank=True)
+    trigger_marker_when_card_in_review = models.BooleanField(default=False)
+
+
+
 class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
     content_item = models.ForeignKey(ContentItem, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -388,6 +399,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 
     def update_previous_reviews(self):
         if self.content_item.content_type == ContentItem.TOPIC:
+            print(f"This is a topic: {self.content_item.title}")
             raise NotImplementedError()
 
         previous_untrusted_reviews = RecruitProjectReview.objects.filter(

@@ -5,6 +5,7 @@ python manage.py run_automarker "simple-calculator part 1" ""
 python manage.py run_automarker "Person" ""
 python manage.py run_automarker "password-checker" ""
 """
+from xmlrpc.client import Boolean, boolean
 from django.core.management.base import BaseCommand
 from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
 from core.models import User
@@ -46,6 +47,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("content_item", type=str)
         parser.add_argument("flavours", type=str, default="")
+        parser.add_argument("debug", type=int, default=1)
 
     def add_review(self, card, status, comments):
         base_comments = "Hello! I'm a robot 🤖\n\nI'm here to give you quick feedback about your code."
@@ -65,6 +67,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         content_item = options["content_item"]
         flavours = [s.strip() for s in options["flavours"].split(",") if s]
+        debug_mode =  bool(options['debug'])
+
+
 
         self.bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
@@ -104,18 +109,21 @@ class Command(BaseCommand):
                 self.add_review(card=card, status=COMPETENT, comments="All our checks passed")
             elif result["status"] == "FAIL":
 
-                # step_name = result['actionName']
+
                 result = result['result']
 
                 comments = f"*{result['message']}*"
                 if errors:=result.get("errors"):
                     errors = '\n'.join([f"- {s}" for s in errors])
                     comments = f"{comments}\n{errors}"
+                if debug_mode:
+                    print(f"comments:\n\n{comments}")
+                    breakpoint()
+
                 self.add_review(
                     card=card,
                     status=NOT_YET_COMPETENT,
                     comments=comments,
                 )
             else:
-
-                pprint(result)
+                raise Exception(f"Unexpected status: {result['status']}")
