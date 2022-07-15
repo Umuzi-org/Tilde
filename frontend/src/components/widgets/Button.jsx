@@ -3,21 +3,14 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+  button: {
+    color: "red",
+    border: "2px grey",
   },
 }));
 
-export default ({ className }) => {
+export default () => {
   const classes = useStyles();
-
-  return (
-    <a href={contentUrl} target="_blank" rel="noopener noreferrer">
-      <Button variant="" color="" size="" className={className}>
-        {/*  */}
-      </Button>
-    </a>
-  );
+  console.log(Button);
+  return <Button className={classes.button} displayName={"display"}></Button>;
 };
