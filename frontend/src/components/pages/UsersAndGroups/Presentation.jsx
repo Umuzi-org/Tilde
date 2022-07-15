@@ -214,7 +214,6 @@ export default function Presentation({
           >
             Users here
           </Typography>
-          <Button className={classes.jer}>{"HERR"}</Button>
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"

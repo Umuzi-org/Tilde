@@ -5,12 +5,17 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   button: {
     color: "red",
-    border: "2px grey",
+    border: "1px solid grey",
+    borderRadius: theme.spacing(0.5),
+    borderColor: theme.palette.grey[500],
   },
 }));
 
-export default () => {
+export default ({ children }) => {
   const classes = useStyles();
-  console.log(Button);
-  return <Button className={classes.button} displayName={"display"}></Button>;
+  return (
+    <Button className={classes.button} displayName={"display"}>
+      {children}
+    </Button>
+  );
 };
