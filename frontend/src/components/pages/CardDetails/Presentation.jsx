@@ -87,7 +87,7 @@ function CardBasicDetails({ card }) {
         <Grid item xs={12} sm={12} md={12}>
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
-          <StoryPoints storyPoints={card.storyPoints} />
+          {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
