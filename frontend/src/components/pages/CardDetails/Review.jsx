@@ -53,8 +53,9 @@ const useStyles = makeStyles(() => ({
 
 export default function Review({ review }) {
   const classes = useStyles();
+
   const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
-  const onClose = () => setOpenReviewPopUp(false) 
+  const onClose = () => setOpenReviewPopUp(false);
   const timestamp = new Date(review.timestamp);
 
   return (
@@ -91,12 +92,12 @@ export default function Review({ review }) {
       <IconButton disabled className={classes.iconColor}>
         <ReviewValidationIcons review={review} />
       </IconButton>
-        <ReviewPopUp
-          onClose={onClose}
-          openReviewPopUp={openReviewPopUp}
-          setOpenReviewPopUp={setOpenReviewPopUp}
-          review={review}
-        ></ReviewPopUp>
+      <ReviewPopUp
+        onClose={onClose}
+        openReviewPopUp={openReviewPopUp}
+        setOpenReviewPopUp={setOpenReviewPopUp}
+        review={review}
+      ></ReviewPopUp>
     </Card>
   );
 }

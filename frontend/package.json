@@ -4,13 +4,10 @@
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.6.2",
-    "@date-io/moment": "^2.14.0",
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.54",
     "@material-ui/pickers": "^3.2.10",
-    "@mui/material": "^5.8.7",
-    "@mui/x-date-pickers": "^5.0.0-alpha.7",
     "@prelude/redux-api-toolbox": "file:gitmodules/redux-api-toolbox",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

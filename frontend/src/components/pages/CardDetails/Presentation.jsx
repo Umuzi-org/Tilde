@@ -155,7 +155,7 @@ function CardBasicDetails({
           </Paper>
         </Grid>
       </Grid>
-      {card.canStart === false && (
+      {card.startTime === null && (
         <CardButton
           widget={
             <ViewContentButton
