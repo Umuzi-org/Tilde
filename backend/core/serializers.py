@@ -211,7 +211,6 @@ class StreamRegistrationSerialiser(serializers.ModelSerializer):
             'active',
             'user',
             'stream',
-            'active'
             ]
 
     user = serializers.SerializerMethodField("get_user_name")
