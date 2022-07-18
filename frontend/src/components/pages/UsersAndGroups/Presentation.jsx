@@ -3,7 +3,6 @@ import { getAgeString } from "../../widgets/utils";
 import { getPrStatus, getTildeReviewStatus } from "./utils";
 import { makeStyles } from "@material-ui/core/styles";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
-// import Button from "../../widgets/Button";
 
 import {
   Paper,
