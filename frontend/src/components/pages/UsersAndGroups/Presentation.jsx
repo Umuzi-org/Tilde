@@ -43,12 +43,9 @@ const useStyles = makeStyles((theme) => ({
   bottomMargin: {
     marginBottom: "8px",
   },
-  jer: {
-    color: "black",
-  },
 }));
 
-function TeamSummaryStats({ summaryStats }) {
+function TeamSummaryStats ({ summaryStats }) {
   const dateOfOldestPullRequest = summaryStats.oldestOpenPrTime
     ? summaryStats.oldestOpenPrTime.slice(0, 10)
     : undefined;
@@ -92,9 +89,9 @@ function TeamSummaryStats({ summaryStats }) {
       </TableBody>
     </Table>
   );
-}
+};
 
-function TeamCard({
+function TeamCard ({
   team,
   summaryStats,
   handleUserGroupClick,
@@ -138,9 +135,9 @@ function TeamCard({
       {summaryStats ? <TeamSummaryStats summaryStats={summaryStats} /> : ""}
     </Paper>
   );
-}
+};
 
-function UserCard({ email, user }) {
+function UserCard ({ email, user }) {
   const classes = useStyles();
   return (
     <Paper variant="outlined" elevation={2}>
@@ -154,11 +151,14 @@ function UserCard({ email, user }) {
       </Typography>
 
       <div className={classes.bottomMargin}>
-        <LinkToUserBoard userId={user.userId} label="View" />
+        <LinkToUserBoard 
+          userId={user.userId} 
+          label="View" 
+          />
       </div>
     </Paper>
   );
-}
+};
 
 export default function Presentation({
   teams,
@@ -211,7 +211,7 @@ export default function Presentation({
             component="div"
             className={classes.marginsAlignment}
           >
-            Users here
+            Users
           </Typography>
           <TextField
             label={`${filterUsersByGroupName} Users`}
