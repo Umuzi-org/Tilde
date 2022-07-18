@@ -151,10 +151,10 @@ function UserCard ({ email, user }) {
       </Typography>
 
       <div className={classes.bottomMargin}>
-        <LinkToUserBoard 
-          userId={user.userId} 
-          label="View" 
-          />
+        <LinkToUserBoard
+          userId={user.userId}
+          label="View"
+        />
       </div>
     </Paper>
   );
