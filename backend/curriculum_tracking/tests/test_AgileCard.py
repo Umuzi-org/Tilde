@@ -9,6 +9,7 @@ from curriculum_tracking.models import (
     ContentItem,
     TopicReview,
     BurndownSnapshot,
+    RecruitProjectReview,
 )
 from . import factories
 from core.tests.factories import UserFactory
@@ -708,6 +709,7 @@ class WorkshopMovementTests(TestCase):
 
 class ProjectMovementTestCase(TestCase):
     def setUp(self):
+        
         self.card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
                 content_type=ContentItem.PROJECT,
@@ -720,8 +722,39 @@ class ProjectMovementTestCase(TestCase):
     def test_start(self):
         card = self.card
         card.start_project()
+        # self.assertEqual(card.recruit_project.recruit_users, card.assignees.first())
+        card_assignees = sorted([o.id for o in card.assignees.all()])
+        project_assignees = sorted([o.id for o in card.recruit_project.recruit_users.all()])
+
         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        self.assertEqual(card.recruit_project.recruit_users, card.assignees.first())
+        self.assertEqual(card_assignees, project_assignees)
+
+    def test_request_review(self):
+        self.card.start_project()
+        self.card.recruit_project.request_review()
+
+        self.assertIsNone(self.card.recruit_project.complete_time)
+        self.assertIsNotNone(self.card.recruit_project.review_request_time)
+        self.assertIsNotNone(self.card.recruit_project.start_time)
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+    def test_add_COMPETENT_review(self):
+        self.card.start_project()
+        self.card.recruit_project.request_review()
+        trust = factories.ReviewTrustFactory(
+            content_item=self.card.recruit_project.content_item,
+        )
+
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+        review = RecruitProjectReview.objects.create(
+            status=COMPETENT,
+            recruit_project=self.card.recruit_project,
+            reviewer_user=trust.user,
+        )
+        self.card.refresh_from_db()
+        self.assertTrue(review.trusted)
+        self.assertEqual(self.card.status, AgileCard.COMPLETE)
 
 
 class ReviewerIdsSinceLatestReviewRequest(TestCase):
