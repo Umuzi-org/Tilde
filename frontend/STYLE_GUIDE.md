@@ -1,6 +1,6 @@
 # Style Guide
 
-This is largely based on https://github.com/airbnb/javascript/tree/master/react
+This is largely based on [Airbnb's React/JSX Style Guide](https://github.com/airbnb/javascript/tree/master/react)
 
 Here are a few things that are a little different or more explicit:
 
