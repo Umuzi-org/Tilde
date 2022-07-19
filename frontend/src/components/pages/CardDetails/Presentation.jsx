@@ -160,7 +160,6 @@ export default ({
   handleClickAddReview,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
-  // showAddReviewButton,
   linkSubmission,
   formErrors,
 }) => {
@@ -179,7 +178,6 @@ export default ({
             showUpdateProjectLinkForm={showUpdateProjectLinkForm}
             linkSubmission={linkSubmission}
             formErrors={formErrors}
-            // showAddReviewButton={showAddReviewButton}
             handleClickAddReview={handleClickAddReview}
             reviews={projectReviews}
           />
@@ -195,7 +193,6 @@ export default ({
           <React.Fragment />
         )}
         {workshopAttendance ? (
-          // <WorkshopAttendanceDetails />
           <div>TODO: Workshop attendance details</div>
         ) : (
           <React.Fragment />

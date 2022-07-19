@@ -1,6 +1,6 @@
 import React from "react";
 
-import UserActions from "../components/regions/UserActions/Presentation";
+import UserActions from "../components/pages/UserActions/Presentation";
 import actionLogByDate from "./fixtures/userActionLogsByDate.json";
 
 const orderedDates = [
@@ -13,18 +13,14 @@ const orderedDates = [
 ];
 
 export default {
-  title: "Tilde/UserActions",
+  title: "Tilde/pages/UserActions",
   component: UserActions,
-  // argTypes: {
-  //   backgroundColor: { control: 'color' },
-  // },
 };
 
 const Template = (args) => <UserActions {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  //   activityLog,
   orderedDates,
   actionLogByDate,
   anyLoading: true,
