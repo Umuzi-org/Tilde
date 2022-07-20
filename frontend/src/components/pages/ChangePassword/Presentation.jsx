@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function () {
+export default function Presentation() {
   const classes = useStyles();
 
   return (
