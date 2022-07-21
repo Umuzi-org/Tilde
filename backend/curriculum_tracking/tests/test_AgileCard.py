@@ -756,6 +756,61 @@ class ProjectMovementTestCase(TestCase):
         self.assertTrue(review.trusted)
         self.assertEqual(self.card.status, AgileCard.COMPLETE)
 
+    def test_add_nyc_review_to_complete_card(self):
+        self.card.start_project()
+        self.card.recruit_project.request_review()
+        trust = factories.ReviewTrustFactory(
+            content_item=self.card.recruit_project.content_item,
+        )
+
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+        review = RecruitProjectReview.objects.create(
+            status=COMPETENT,
+            recruit_project=self.card.recruit_project,
+            reviewer_user=trust.user,
+        )
+        self.card.refresh_from_db()
+        self.assertTrue(review.trusted)
+        self.assertEqual(self.card.status, AgileCard.COMPLETE)
+
+        review = RecruitProjectReview.objects.create(
+            status=NOT_YET_COMPETENT,
+            recruit_project=self.card.recruit_project,
+            reviewer_user=trust.user,
+        )
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
+        
+    def test_add_move_previously_trusted_competent_reviewed_card_from_review_feedback_to_review(self):
+        self.card.start_project()
+        self.card.recruit_project.request_review()
+        trust = factories.ReviewTrustFactory(
+            content_item=self.card.recruit_project.content_item,
+        )
+
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+
+        review = RecruitProjectReview.objects.create(
+            status=COMPETENT,
+            recruit_project=self.card.recruit_project,
+            reviewer_user=trust.user,
+        )
+        self.card.refresh_from_db()
+        self.assertTrue(review.trusted)
+        self.assertEqual(self.card.status, AgileCard.COMPLETE)
+
+        review = RecruitProjectReview.objects.create(
+            status=NOT_YET_COMPETENT,
+            recruit_project=self.card.recruit_project,
+            reviewer_user=trust.user,
+        )
+        self.card.refresh_from_db()
+        self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
+
+        self.card.recruit_project.request_review()
+        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
+        
 
 class ReviewerIdsSinceLatestReviewRequest(TestCase):
     def setUp(self):
