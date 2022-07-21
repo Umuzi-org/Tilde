@@ -11,7 +11,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ children }) => {
+export default ({ children, onClick }) => {
   const classes = useStyles();
-  return <Button className={classes.button}>{children}</Button>;
+  return (
+    <Button className={classes.button} onClick={onClick}>
+      {children}
+    </Button>
+  );
 };
