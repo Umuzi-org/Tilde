@@ -1,7 +1,6 @@
 import React from "react";
 import { Paper, Button, Grid, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ViewContentButton from "../../widgets/ViewContentButton";
 
 import RepositoryDetails from "./RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
@@ -90,6 +89,7 @@ export default ({
   // showAddReviewButton,
   handleClickAddReview,
   reviews,
+  test,
 }) => {
   const classes = useStyles();
 
@@ -117,10 +117,10 @@ export default ({
 
       <Reviews reviewIds={project.projectReviews} reviews={reviews} />
 
-      <ViewContentButton
+      {/* <ViewContentButton // This prohibits the view content button from always showing
         contentItemId={project.contentItem}
         contentUrl={project.contentUrl}
-      />
+      /> */}
 
       <CardButton
         label="Add Review"

@@ -136,16 +136,6 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {card.startTime === "B" && (
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={card.contentItemUrl}
-              contentItemId={card.contentItem}
-            />
-          }
-        />
-      )}
     </React.Fragment>
   );
 }
@@ -200,6 +190,16 @@ export default ({
         ) : (
           <React.Fragment />
         )}
+        {console.log(card)}
+          {/* TODO: Figure out a way to get content link and id */}
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={"customURL"}
+              contentItemId={"customID"}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
