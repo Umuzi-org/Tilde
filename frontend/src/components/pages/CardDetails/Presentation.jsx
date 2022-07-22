@@ -136,7 +136,7 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {card.startTime === null && (
+      {card.startTime === "B" && (
         <CardButton
           widget={
             <ViewContentButton
