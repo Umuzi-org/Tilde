@@ -23,7 +23,13 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
       return true;
     });
   }
-  return ret;
+  const filterByActiveUser = () => {
+    for (const index in teams) {
+      if (!teams[index].members[0].userActive) return false;
+    }
+    return true;
+  }
+  return ret.filter(filterByActiveUser);
 }
 
 function ignore() {}
