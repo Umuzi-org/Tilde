@@ -89,7 +89,6 @@ export default ({
   // showAddReviewButton,
   handleClickAddReview,
   reviews,
-  test,
 }) => {
   const classes = useStyles();
 
