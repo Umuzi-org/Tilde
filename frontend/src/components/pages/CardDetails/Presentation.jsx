@@ -156,6 +156,12 @@ export default ({
 }) => {
   const classes = useStyles();
 
+  let contentLink, contentItemId;
+  if (card !== undefined) { // sometimes card is undefined
+    contentLink = card.contentItemUrl;
+    contentItemId = card.contentItem;
+  }
+
   const workshopAttendance = false;
   if (cardId)
     return (
@@ -190,13 +196,17 @@ export default ({
         ) : (
           <React.Fragment />
         )}
-        {console.log(card)}
-          {/* TODO: Figure out a way to get content link and id */}
+
+        {/* 
+      We make the view content button default in this view, this makes it's position change 
+      to being always at the bottom - which isn't bad because it's the button 
+      with the most text.
+      */}
         <CardButton
           widget={
             <ViewContentButton
-              contentUrl={"customURL"}
-              contentItemId={"customID"}
+              contentUrl={contentLink}
+              contentItemId={contentItemId}
             />
           }
         />
