@@ -140,7 +140,7 @@ function CardBasicDetails({ card }) {
   );
 }
 
-export default function Presentation ({
+export default function Presentation({
   card,
   cardId,
   topicProgress,
@@ -157,7 +157,8 @@ export default function Presentation ({
   const classes = useStyles();
 
   let contentLink, contentItemId;
-  if (card !== undefined) { // sometimes card is undefined
+  // sometimes card is undefined
+  if (card !== undefined) {
     contentLink = card.contentItemUrl;
     contentItemId = card.contentItem;
   }
@@ -198,9 +199,9 @@ export default function Presentation ({
         )}
 
         {/* 
-      We make the view content button default in this view, this makes it's position change 
-      to being always at the bottom - which isn't bad because it's the button 
-      with the most text.
+      We make the view content button default in this view. This slightly changes the order of the
+      buttons that are to be rendered in this page("view content button" will always be at the bottom of the other buttons)
+      The issue of this button having duplicates is resolved.
       */}
         <CardButton
           widget={
@@ -213,4 +214,4 @@ export default function Presentation ({
       </Paper>
     );
   return <React.Fragment />;
-};
+}
