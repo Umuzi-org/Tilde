@@ -80,7 +80,7 @@ function LinkToYourWork({
   );
 }
 
-export default ({
+export default function Presentation({
   project,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
@@ -89,7 +89,7 @@ export default ({
   // showAddReviewButton,
   handleClickAddReview,
   reviews,
-}) => {
+}) {
   const classes = useStyles();
 
   return (

@@ -140,7 +140,7 @@ function CardBasicDetails({ card }) {
   );
 }
 
-export default ({
+export default function Presentation ({
   card,
   cardId,
   topicProgress,
@@ -153,7 +153,7 @@ export default ({
   // showAddReviewButton,
   linkSubmission,
   formErrors,
-}) => {
+}) {
   const classes = useStyles();
 
   let contentLink, contentItemId;
