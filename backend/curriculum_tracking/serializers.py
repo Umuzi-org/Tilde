@@ -684,3 +684,26 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     github_name = serializers.CharField(required=True)
     stream_name = serializers.CharField(required=True)
     team_name = serializers.CharField(required=True)
+
+
+
+class CourseRegistrationSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = curriculum_models.CourseRegistration
+        fields = [
+            'id',
+            'active',
+            'user',
+            'curriculum',
+            ]
+
+    user = serializers.SerializerMethodField("get_user_name")
+    curriculum = serializers.SerializerMethodField("get_curriculum_name")
+    users = {query.curriculum.name for query in curriculum_models.CourseRegistration.objects.all()}
+
+    def get_user_name(self, instance):
+        return instance.user.email
+
+    def get_curriculum_name(self, instance):
+        # return instance.curriculum.name
+        return [instance.curriculum.name for _ in curriculum_models.CourseRegistration.objects.filter(user=instance.user)]

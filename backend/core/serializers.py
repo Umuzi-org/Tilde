@@ -202,25 +202,7 @@ class BulkSetDueTimeSerializer(serializers.Serializer):
     flavours = serializers.ListField(child=serializers.IntegerField())
     content_item = serializers.IntegerField()
 
-
-class StreamRegistrationSerialiser(serializers.ModelSerializer):
-    class Meta:
-        model = models.StreamRegistration
-        fields = [
-            'id',
-            'active',
-            'user',
-            'stream',
-            ]
-
-    user = serializers.SerializerMethodField("get_user_name")
-    stream = serializers.SerializerMethodField("get_stream_name")
-
-    def get_user_name(self, instance):
-        return instance.user.email
-
-    def get_stream_name(self, instance):
-        return instance.stream.name
+    
 
 class NoArgs(serializers.Serializer):
     class Meta:
