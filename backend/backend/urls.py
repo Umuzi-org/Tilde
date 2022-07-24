@@ -157,9 +157,9 @@ router.register(
 # )
 
 router.register(
-    r"stream_registration",
-    core_views.StreamRegistrationViewset,
-    "streamregistration",
+    r"course_registration",
+    curriculum_tracking_api_views.CourseRegistrationViewset,
+    "courseregistration",
 )
 
 
