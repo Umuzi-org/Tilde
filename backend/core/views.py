@@ -353,12 +353,3 @@ class UserViewSet(viewsets.ModelViewSet):
 
 #     return Response(result)
 
-
-class StreamRegistrationViewset(viewsets.ModelViewSet):
-    queryset = models.StreamRegistration.objects.all().order_by("user")
-    serializer_class = serializers.StreamRegistrationSerialiser
-    filter_backends = [DjangoFilterBackend]
-    permission_classes = [
-        drf_permissions.IsAuthenticated
-        and (core_permissions.IsReadOnly | core_permissions.ActionIs("retrieve"))
-    ]
