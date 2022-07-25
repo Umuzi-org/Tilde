@@ -23,13 +23,7 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
       return true;
     });
   }
-  const filterByActiveUser = () => {
-    for (const index in teams) {
-      if (!teams[index].members[0].userActive) return false;
-    }
-    return true;
-  }
-  return ret.filter(filterByActiveUser);
+  return ret;
 }
 
 function ignore() {}
@@ -37,7 +31,18 @@ function ignore() {}
 function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
-  for (let group of Object.values(teams)) {
+  const filtered = Object.entries(teams).filter(([key, _]) => {
+    const mem = teams[key].members;
+    for (let i in mem) {
+      if(mem[i].activeUser)
+      console.log("member", mem[i]);
+      return mem[i].userActive !== false
+    }
+  });
+  const active = Object.fromEntries(filtered);
+  console.log(active);
+
+  for (let group of Object.values(active)) {
     for (let member of group.members) {
       const email = member.userEmail;
 
@@ -51,13 +56,20 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
         ...users[email],
         userId: member.userId,
       };
-      users[email].groups = {
-        ...users[email].groups,
-        [group.name]: {
-          teamId: group.id,
-          ...member,
-        },
-      };
+      {
+        users[email].groups = {
+          ...users[email].groups,
+          [group.name]: {
+            teamId: group.id,
+            ...member,
+          },
+        };
+      }
+      // console.log("KEYS",Object.keys(users))
+      // console.log("VALUES",Object.values(users))
+      // const filterByActive = Object.entries(users).filter(([key, value]) => console.log("KEY", key, "VALUE", value) )
+      // console.log(member);
+      // console.log(users[email].groups[group.name].userActive)
     }
   }
   if (filterUsersByGroupName) {
@@ -68,6 +80,7 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
+
   return users;
 }
 
@@ -137,23 +150,23 @@ function UsersAndGroupsUnconnected({
   return <Presentation {...props} />;
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams || {},
     teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
-};
+}
 
-function mapDispatchToProps (dispatch) {
-  function fetchTeamsPages ({ dataSequence }) {
+function mapDispatchToProps(dispatch) {
+  function fetchTeamsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
       })
     );
-  };
+  }
 
-  function fetchTeamSummaryStatsPages ({ dataSequence }) {
+  function fetchTeamSummaryStatsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
         {
@@ -161,13 +174,13 @@ function mapDispatchToProps (dispatch) {
         }
       )
     );
-  };
+  }
 
   return {
     fetchTeamsPages,
     fetchTeamSummaryStatsPages,
   };
-};
+}
 
 const UsersAndGroups = connect(
   mapStateToProps,
