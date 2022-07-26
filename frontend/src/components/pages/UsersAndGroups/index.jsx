@@ -31,24 +31,14 @@ function ignore() {}
 function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
-  const filtered = Object.entries(teams).filter(([key, _]) => {
-    const mem = teams[key].members;
-    for (let i in mem) {
-      if(mem[i].activeUser)
-      console.log("member", mem[i]);
-      return mem[i].userActive !== false
-    }
-  });
-  const active = Object.fromEntries(filtered);
-  console.log(active);
-
-  for (let group of Object.values(active)) {
+  for (let group of Object.values(teams)) {
     for (let member of group.members) {
       const email = member.userEmail;
 
       if (
         filterBy &&
-        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1
+        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1 ||
+        member.userActive === false
       )
         continue;
 
@@ -65,11 +55,6 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
           },
         };
       }
-      // console.log("KEYS",Object.keys(users))
-      // console.log("VALUES",Object.values(users))
-      // const filterByActive = Object.entries(users).filter(([key, value]) => console.log("KEY", key, "VALUE", value) )
-      // console.log(member);
-      // console.log(users[email].groups[group.name].userActive)
     }
   }
   if (filterUsersByGroupName) {
