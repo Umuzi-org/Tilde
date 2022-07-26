@@ -28,9 +28,6 @@ from rest_framework import filters
 from social_auth.models import SocialProfile
 
 
-
-
-
 def _get_teams_from_topic_progress(self, request, view):
     topic_progress = view.get_object()
     return _get_teams_from_topic_progress_instance(topic_progress)
@@ -148,7 +145,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
         | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
             get_objects=core_permissions.get_teams_from_user_filter("assignees"),
-        ),
+        )
     ]
     serializer_class = serializers.CardSummarySerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -171,7 +168,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "reviewers", "status","requires_cards"]
+    filterset_fields = ["assignees", "reviewers", "status", "requires_cards"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
@@ -185,8 +182,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             & (
                 curriculum_permissions.CardBelongsToRequestingUser
                 | core_permissions.HasObjectPermission(
-                    permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_card,
+                    permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
                 )
             )
         )
@@ -389,13 +385,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_project(self, request, pk=None):
         card: models.AgileCard = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         card.start_project()
 
@@ -417,8 +412,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def set_project_link(self, request, pk=None):
         card = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         content_item = card.content_item
         assert (
@@ -450,7 +444,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_topic(self, request, pk=None):
@@ -748,8 +742,7 @@ class RepositoryViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_repository,
+                permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_repository
             )
         )
         | ActionIs("list") & (permissions.IsAdminUser)
@@ -867,11 +860,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     def auto_assign_reviewers(self, request, pk=None):
         """automatically assign qualified reviewers to cards"""
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
         else:
             from long_running_request_actors import auto_assign_reviewers as actor
 
@@ -890,11 +879,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         from curriculum_tracking.management.helpers import get_user_cards
 
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
 
         serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
         if serializer.is_valid():
@@ -932,7 +917,6 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     @action(
         detail=False,
         methods=["post"],
@@ -943,20 +927,30 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         serializer = serializers.RegisterNewLearnerSerializer(data=request.data)
         if serializer.is_valid():
 
-            email = serializer.data['email']
-            first_name = serializer.data['first_name']
-            last_name = serializer.data['last_name']
-            github_name = serializer.data['github_name']
-            stream_name = serializer.data['stream_name']
-            team_name = serializer.data['team_name']
+            email = serializer.data["email"]
+            first_name = serializer.data["first_name"]
+            last_name = serializer.data["last_name"]
+            github_name = serializer.data["github_name"]
+            stream_name = serializer.data["stream_name"]
+            team_name = serializer.data["team_name"]
 
             try:
                 stream = Stream.objects.get(name=stream_name)
             except Stream.DoesNotExist:
-                return Response({'stream_name': f'Stream matching name "{stream_name}" does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "stream_name": f'Stream matching name "{stream_name}" does not exist'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             if stream.stream_curriculums.count() == 0:
-                return Response({'stream_name': f'Stream matching name "{stream_name}" does not have any courses. Please make sure it is set up correctly'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "stream_name": f'Stream matching name "{stream_name}" does not have any courses. Please make sure it is set up correctly'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             user = User.objects.get_or_create(
                 email=email, defaults={"first_name": first_name, "last_name": last_name}
@@ -964,14 +958,16 @@ class ManagementActionsViewSet(viewsets.ViewSet):
             user.active = True
             user.save()
 
-            profile =  SocialProfile.objects.get_or_create(user=user)[0]
+            profile = SocialProfile.objects.get_or_create(user=user)[0]
             profile.github_name = github_name
             profile.save()
 
             team = Team.objects.get_or_create(name=team_name)[0]
             team.user_set.add(user)
 
-            curriculum_ids =  [o.curriculum_id for o in  stream.stream_curriculums.order_by('order')]
+            curriculum_ids = [
+                o.curriculum_id for o in stream.stream_curriculums.order_by("order")
+            ]
             existing = models.CourseRegistration.objects.filter(user=user)
             for o in existing:
                 if o.curriculum_id not in curriculum_ids:
@@ -984,15 +980,10 @@ class ManagementActionsViewSet(viewsets.ViewSet):
                     o.order = i
                     o.save()
 
-            return Response({'user_id':user.id})  # TODO: use a serializer rather
-
+            return Response({"user_id": user.id})  # TODO: use a serializer rather
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
@@ -1036,10 +1027,7 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
 
 
 class CourseRegistrationViewset(viewsets.ModelViewSet):
-    queryset = curriculum_models.CourseRegistration.objects.all().order_by("user")
+    queryset = models.CourseRegistration.objects.all().order_by("user")
     serializer_class = serializers.CourseRegistrationSerialiser
     filter_backends = [DjangoFilterBackend]
-    permission_classes = [
-        drf_permissions.IsAuthenticated
-        and (core_permissions.IsReadOnly | core_permissions.ActionIs("retrieve"))
-    ]
+    permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]

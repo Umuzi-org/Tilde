@@ -233,10 +233,7 @@ class NoArgs(serializers.Serializer):
 class NewReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProjectReview
-        fields = [
-            "status",
-            "comments",
-        ]
+        fields = ["status", "comments"]
 
 
 class WorkshopAttendanceTime(serializers.ModelSerializer):
@@ -333,12 +330,7 @@ class ProjectSubmitLink(serializers.ModelSerializer):
 class WorkshopAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.WorkshopAttendance
-        fields = [
-            "id",
-            "timestamp",
-            "content_item",
-            "attendee_user",
-        ]
+        fields = ["id", "timestamp", "content_item", "attendee_user"]
 
 
 class UserDetailedStatsSerializer(serializers.ModelSerializer):
@@ -427,11 +419,9 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
         return cards_assigned_with_status_in_review_amount
 
     def get_cards_assigned_with_status_review_feedback(self, user):
-        cards_assigned_with_status_review_feedback_amount = (
-            models.AgileCard.objects.filter(
-                status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
-            ).count()
-        )
+        cards_assigned_with_status_review_feedback_amount = models.AgileCard.objects.filter(
+            status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
+        ).count()
 
         return cards_assigned_with_status_review_feedback_amount
 
@@ -489,16 +479,12 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
 
     def get_tilde_cards_reviewed_in_last_7_days(self, user):
 
-        tilde_project_reviews_done_in_past_seven_days = (
-            models.RecruitProjectReview.objects.filter(
-                reviewer_user_id=user.id,
-                timestamp__gte=timezone.now() - timedelta(days=7),
-            )
+        tilde_project_reviews_done_in_past_seven_days = models.RecruitProjectReview.objects.filter(
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         )
 
         tilde_topic_reviews_done_in_past_seven_days = models.TopicReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         )
 
         return (
@@ -516,13 +502,11 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
 
     def get_tilde_reviews_done_last_7_days(self, user):
         project_reviews_done_last_7_days = models.RecruitProjectReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         ).count()
 
         topic_reviews_done_last_7_days = models.TopicReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         ).count()
 
         return project_reviews_done_last_7_days + topic_reviews_done_last_7_days
@@ -632,13 +616,7 @@ class BurnDownSnapShotSerializer(serializers.ModelSerializer):
 class ReviewTrustSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewTrust
-        fields = [
-            "id",
-            "content_item",
-            "content_item_title",
-            "flavour_names",
-            "user",
-        ]
+        fields = ["id", "content_item", "content_item_title", "flavour_names", "user"]
 
     content_item_title = serializers.SerializerMethodField("get_content_item_title")
 
@@ -663,19 +641,15 @@ class BulkSetDueDatesHumanFriendly(serializers.Serializer):
     email = serializers.CharField(required=False)
 
 
-
-
-
-
 class RegisterNewLearnerSerializer(serializers.Serializer):
     class Meta:
         fields = [
-            'email',
-            'first_name',
-            'last_name',
-            'github_name',
-            'stream_name',
-            'team_name'
+            "email",
+            "first_name",
+            "last_name",
+            "github_name",
+            "stream_name",
+            "team_name",
         ]
 
     email = serializers.EmailField(required=True)
@@ -686,24 +660,16 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     team_name = serializers.CharField(required=True)
 
 
-
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
     class Meta:
-        model = curriculum_models.CourseRegistration
-        fields = [
-            'id',
-            'active',
-            'user',
-            'curriculum',
-            ]
+        model = models.CourseRegistration
+        fields = ["id", "active", "user", "curriculum"]
 
     user = serializers.SerializerMethodField("get_user_name")
     curriculum = serializers.SerializerMethodField("get_curriculum_name")
-    users = {query.curriculum.name for query in curriculum_models.CourseRegistration.objects.all()}
 
     def get_user_name(self, instance):
         return instance.user.email
 
     def get_curriculum_name(self, instance):
-        # return instance.curriculum.name
-        return [instance.curriculum.name for _ in curriculum_models.CourseRegistration.objects.filter(user=instance.user)]
+        return instance.curriculum.name
