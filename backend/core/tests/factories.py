@@ -19,18 +19,9 @@ def _team_name_generator():
         i += 1
 
 
-def _organisation_name_generator():
-    i = 1
-    while True:
-        yield f"GROUP NAME {i}"
-        i += 1
-
-
 _email_iterator = _email_generator()
 
 _team_name_iterator = _team_name_generator()
-
-_organisation_name_generator = _organisation_name_generator()
 
 
 class UserFactory(DjangoModelFactory):
