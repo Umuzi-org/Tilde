@@ -36,8 +36,8 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
       const email = member.userEmail;
 
       if (
-        filterBy &&
-        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1 ||
+        (filterBy &&
+          email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) ||
         member.userActive === false
       )
         continue;
