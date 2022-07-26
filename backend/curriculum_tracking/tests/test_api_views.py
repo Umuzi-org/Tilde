@@ -850,3 +850,12 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
+
+
+class TestCourseRegistrationViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "courseregistration-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        course_registration = factories.CourseRegistrationFactory()
+        return course_registration
