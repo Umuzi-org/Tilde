@@ -718,29 +718,10 @@ class ProjectMovementTestCase(TestCase):
             status=AgileCard.READY,
         )
         self.card.assignees.set([UserFactory()])
-
-    def test_start(self):
-        card = self.card
-        card.start_project()
-        # self.assertEqual(card.recruit_project.recruit_users, card.assignees.first())
-        card_assignees = sorted([o.id for o in card.assignees.all()])
-        project_assignees = sorted([o.id for o in card.recruit_project.recruit_users.all()])
-
-        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
-        self.assertEqual(card_assignees, project_assignees)
-
-    def test_request_review(self):
         self.card.start_project()
         self.card.recruit_project.request_review()
-
-        self.assertIsNone(self.card.recruit_project.complete_time)
-        self.assertIsNotNone(self.card.recruit_project.review_request_time)
-        self.assertIsNotNone(self.card.recruit_project.start_time)
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
 
     def test_add_COMPETENT_review(self):
-        self.card.start_project()
-        self.card.recruit_project.request_review()
         trust = factories.ReviewTrustFactory(
             content_item=self.card.recruit_project.content_item,
         )
@@ -757,8 +738,6 @@ class ProjectMovementTestCase(TestCase):
         self.assertEqual(self.card.status, AgileCard.COMPLETE)
 
     def test_add_nyc_review_to_complete_card(self):
-        self.card.start_project()
-        self.card.recruit_project.request_review()
         trust = factories.ReviewTrustFactory(
             content_item=self.card.recruit_project.content_item,
         )
@@ -783,8 +762,6 @@ class ProjectMovementTestCase(TestCase):
         self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
         
     def test_add_move_previously_trusted_competent_reviewed_card_from_review_feedback_to_review(self):
-        self.card.start_project()
-        self.card.recruit_project.request_review()
         trust = factories.ReviewTrustFactory(
             content_item=self.card.recruit_project.content_item,
         )
