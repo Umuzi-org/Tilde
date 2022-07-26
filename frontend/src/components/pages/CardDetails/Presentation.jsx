@@ -157,7 +157,6 @@ export default function Presentation({
   const classes = useStyles();
 
   let contentItemUrl, contentItem;
-  // sometimes card is undefined
   if (card !== undefined) {
     contentItemUrl = card.contentItemUrl;
     contentItem = card.contentItem;
