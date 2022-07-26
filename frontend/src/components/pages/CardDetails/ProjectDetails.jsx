@@ -116,11 +116,6 @@ export default function Presentation({
 
       <Reviews reviewIds={project.projectReviews} reviews={reviews} />
 
-      {/* <ViewContentButton // This code prohibits the view content button from always showing when it needs to
-        contentItemId={project.contentItem}
-        contentUrl={project.contentUrl}
-      /> */}
-
       <CardButton
         label="Add Review"
         startIcon={<RateReviewRoundedIcon />}

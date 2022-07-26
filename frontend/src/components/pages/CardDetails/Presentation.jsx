@@ -156,11 +156,11 @@ export default function Presentation({
 }) {
   const classes = useStyles();
 
-  let contentLink, contentItemId;
+  let contentItemUrl, contentItem;
   // sometimes card is undefined
   if (card !== undefined) {
-    contentLink = card.contentItemUrl;
-    contentItemId = card.contentItem;
+    contentItemUrl = card.contentItemUrl;
+    contentItem = card.contentItem;
   }
 
   const workshopAttendance = false;
@@ -198,16 +198,11 @@ export default function Presentation({
           <React.Fragment />
         )}
 
-        {/* 
-      We make the view content button default in this view. This slightly changes the order of the
-      buttons that are to be rendered in this page("view content button" will always be at the bottom of the other buttons)
-      The issue of this button having duplicates is resolved.
-      */}
         <CardButton
           widget={
             <ViewContentButton
-              contentUrl={contentLink}
-              contentItemId={contentItemId}
+              contentUrl={contentItemUrl}
+              contentItemId={contentItem}
             />
           }
         />
