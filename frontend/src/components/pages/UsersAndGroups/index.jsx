@@ -46,15 +46,13 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
         ...users[email],
         userId: member.userId,
       };
-      {
-        users[email].groups = {
-          ...users[email].groups,
-          [group.name]: {
-            teamId: group.id,
-            ...member,
-          },
-        };
-      }
+      users[email].groups = {
+        ...users[email].groups,
+        [group.name]: {
+          teamId: group.id,
+          ...member,
+        },
+      };
     }
   }
   if (filterUsersByGroupName) {
