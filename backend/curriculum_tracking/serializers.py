@@ -663,7 +663,7 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = models.CourseRegistration
-        fields = ["id", "active", "user", "curriculum"]
+        fields = ["id", "user", "curriculum"]
 
     user = serializers.SerializerMethodField("get_user_name")
     curriculum = serializers.SerializerMethodField("get_curriculum_name")
