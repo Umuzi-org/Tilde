@@ -136,21 +136,11 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
       </Grid>
-      {card.startTime === null && (
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={card.contentItemUrl}
-              contentItemId={card.contentItem}
-            />
-          }
-        />
-      )}
     </React.Fragment>
   );
 }
 
-export default ({
+export default function Presentation({
   card,
   cardId,
   topicProgress,
@@ -163,8 +153,14 @@ export default ({
   // showAddReviewButton,
   linkSubmission,
   formErrors,
-}) => {
+}) {
   const classes = useStyles();
+
+  let contentItemUrl, contentItem;
+  if (card !== undefined) {
+    contentItemUrl = card.contentItemUrl;
+    contentItem = card.contentItem;
+  }
 
   const workshopAttendance = false;
   if (cardId)
@@ -200,7 +196,16 @@ export default ({
         ) : (
           <React.Fragment />
         )}
+
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={contentItemUrl}
+              contentItemId={contentItem}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
-};
+}
