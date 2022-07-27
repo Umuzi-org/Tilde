@@ -9,7 +9,12 @@ from django.utils.dateparse import parse_datetime
 from . import factories
 from core.tests import factories as core_factories
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview, AgileCard
+from curriculum_tracking.models import (
+    ContentItem,
+    RecruitProjectReview,
+    AgileCard,
+    ContentItemAgileWeight,
+)
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from . import factories
@@ -292,7 +297,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         project.review_request_time = timezone.now() - timedelta(days=5)
         project.save()
         review = factories.RecruitProjectReviewFactory(
-            status=NOT_YET_COMPETENT, recruit_project=project,
+            status=NOT_YET_COMPETENT,
+            recruit_project=project,
         )
         review.timestamp = timezone.now() - timedelta(days=1)
         review.save()
@@ -516,7 +522,7 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def verbose_instance_factory(self):
-        item = factories.ProjectContentItemFactory(story_points=5)
+        item = factories.ProjectContentItemFactory()
         factories.ContentItemOrderFactory(post=item)
         factories.ContentItemOrderFactory(pre=item)
         item.tags.add(factories.TagFactory())
@@ -850,3 +856,25 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
+
+
+class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "contentitemagileweight-list"
+
+    def verbose_instance_factory(self):
+        return factories.ContentItemAgileWeightFactory(flavours=["python"])
+
+    def generate_post_create_data(self):
+        item = factories.ContentItemFactory(flavours=["python","javascript","ts"])
+        return {"content_item": item.id, "flavour_names": ["python","ts"], "weight": 123}
+
+    def test_attributes_set_on_post(self):
+        data = self.generate_post_create_data()
+        self.login_as_superuser()
+        url = self.get_list_url()
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code,201)
+        new_instance = ContentItemAgileWeight.objects.first()
+        self.assertEqual(new_instance.content_item.id, data["content_item"])
+        self.assertEqual(new_instance.weight, data["weight"])
+        self.assertEqual(new_instance.flavour_names, data["flavour_names"])

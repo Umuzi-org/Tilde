@@ -13,20 +13,18 @@ from pathlib import Path
 import yaml
 
 # these constants are keys in the hugo page frontmatter
-STORY_POINTS = "story_points"
-
 TITLE = "title"
 READY = "ready"
-STORY_POINTS = "story_points"
 TAGS = "tags"
 TODO = "todo"
 
 PREREQUISITES = "prerequisites"
 HARD = "hard"
 SOFT = "soft"
-PROTECT_MAIN_BRANCH = 'protect_main_branch'
+PROTECT_MAIN_BRANCH = "protect_main_branch"
 
 DB_ID = "_db_id"
+
 
 class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
@@ -163,15 +161,13 @@ class Helper:
         defaults = {
             "content_type": actual_content_type,
             "title": meta["title"],
-            "story_points": int(meta.get("story_points", 1)),
             "url": url,
             # "flavours": meta.get("flavours"),
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,
             "continue_from_repo": continue_from_repo,
             "template_repo": meta.get("template_repo"),
-
-            "protect_main_branch":meta.get(PROTECT_MAIN_BRANCH, True)
+            "protect_main_branch": meta.get(PROTECT_MAIN_BRANCH, True),
         }
 
         print(f"saving {defaults['title']}")
@@ -433,7 +429,7 @@ def add_all_prereq():
 
 
 def user_prompt(question: str) -> bool:
-    """ Prompt the yes/no-*question* to the user. """
+    """Prompt the yes/no-*question* to the user."""
     from distutils.util import strtobool
 
     while True:

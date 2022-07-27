@@ -1,3 +1,4 @@
+dontuse
 from django.core.management.base import BaseCommand
 from core.models import TeamMembership
 from curriculum_tracking.models import RecruitProjectReview

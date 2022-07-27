@@ -144,6 +144,13 @@ router.register(
     "eventtype",
 )
 
+router.register(
+    r"content_item_agile_weight",
+    curriculum_tracking_api_views.ContentItemAgileWeightViewSet,
+    "contentitemagileweight",
+)
+
+
 # router.register(
 #     r"agile_card_add_review",
 #     curriculum_tracking_api_views.AgileCardInteractionAddReview,
@@ -167,7 +174,6 @@ urlpatterns = [
     path("git_real/", include("git_real.urls")),
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
-
     path(
         "password_reset_confirm/<uidb64>/<token>/",
         lambda *a, **k: None,  # we don't actually need a view here. We redirect to the frontend
