@@ -13,7 +13,7 @@ import CardBadges from "../../../widgets/CardBadges";
 import { BLOCKED } from "../../../../constants";
 
 import Checkbox from "@material-ui/core/Checkbox";
-import StoryPoints from "../../../widgets/StoryPoints";
+// import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
@@ -196,7 +196,7 @@ export default ({
 
         <TagChips tagNames={card.tagNames} />
         <FlavourChips flavourNames={card.flavourNames} />
-        <StoryPoints storyPoints={card.storyPoints} />
+        {/* <StoryPoints storyPoints={card.storyPoints} /> */}
 
         <Typography variant="subtitle2" className={classes.title}>
           Assignees:

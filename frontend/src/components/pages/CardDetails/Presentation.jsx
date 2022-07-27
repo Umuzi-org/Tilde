@@ -15,7 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
-import StoryPoints from "../../widgets/StoryPoints";
+// import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
 
 import ProjectDetails from "./ProjectDetails";
@@ -87,7 +87,7 @@ function CardBasicDetails({ card }) {
         <Grid item xs={12} sm={12} md={12}>
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
-          <StoryPoints storyPoints={card.storyPoints} />
+          {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
