@@ -163,6 +163,12 @@ router.register(
 #     "user-recrtuitprojects",
 # )
 
+router.register(
+    r"curriculum_content_requirement",
+    curriculum_tracking_api_views.CurriculumContentRequirementViewset,
+    'curriculumcontentrequirement'
+)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -1045,3 +1045,10 @@ class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ContentItemAgileWeightSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["content_item", "weight"]
+
+
+class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
+    queryset = models.CurriculumContentRequirement.objects.all().order_by("curriculum_id")
+    serializer_class = serializers.CurriculumContentRequirementSerializer
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
