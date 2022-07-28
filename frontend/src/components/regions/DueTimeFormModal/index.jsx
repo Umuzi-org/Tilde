@@ -53,10 +53,15 @@ function DueTimeFormModalUnconnected({
 const mapStateToProps = (state) => {
   return {
     ...state,
+    latestApiCallStatus: getLatestMatchingCall({
+      callLog: state.CARD_SET_DUE_TIME,
+      requestData: {},
+    }),
     cardId: state.DueTimeFormModal.cardId || null,
     users: state.apiEntities.user || {},
     card: state.apiEntities.cards || {},
     authUser: state.apiEntities.authUser,
+    CARD_SET_DUE_TIME: state.CARD_SET_DUE_TIME,
   };
 };
 
