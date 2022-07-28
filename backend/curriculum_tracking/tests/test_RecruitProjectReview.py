@@ -91,35 +91,35 @@ class update_recent_validation_flags_for_project_Tests(TestCase):
         self.assertEqual(review_3.validated, None)
 
 
-class propagate_trust_signal_Tests(TestCase):
-    def test(self):
-        user = UserFactory()
-        content_item = ContentItemFactory(flavours=["js"])
+# class propagate_trust_signal_Tests(TestCase):
+#     def test(self):
+#         user = UserFactory()
+#         content_item = ContentItemFactory(flavours=["js"])
 
-        for i in range(CURRICULUM_TRACKING_TRUST_STREAK_LENGTH - 1):
-            project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
-            RecruitProjectReviewFactory(
-                recruit_project=project,
-                reviewer_user=user,
-                validated=RecruitProjectReview.CORRECT,
-            )
-            trust_count = ReviewTrust.objects.all().count()
-            self.assertEqual(trust_count, 0)
+#         for i in range(CURRICULUM_TRACKING_TRUST_STREAK_LENGTH - 1):
+#             project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
+#             RecruitProjectReviewFactory(
+#                 recruit_project=project,
+#                 reviewer_user=user,
+#                 validated=RecruitProjectReview.CORRECT,
+#             )
+#             trust_count = ReviewTrust.objects.all().count()
+#             self.assertEqual(trust_count, 0)
 
-        # add one more and the user should be trusted
-        project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
-        RecruitProjectReviewFactory(
-            recruit_project=project,
-            reviewer_user=user,
-            validated=RecruitProjectReview.CORRECT,
-        )
-        trust_count = ReviewTrust.objects.all().count()
-        self.assertEqual(trust_count, 1)
+#         # add one more and the user should be trusted
+#         project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
+#         RecruitProjectReviewFactory(
+#             recruit_project=project,
+#             reviewer_user=user,
+#             validated=RecruitProjectReview.CORRECT,
+#         )
+#         trust_count = ReviewTrust.objects.all().count()
+#         self.assertEqual(trust_count, 1)
 
-        trust = ReviewTrust.objects.first()
-        self.assertEqual(trust.content_item, content_item)
-        self.assertEqual(trust.user, user)
-        self.assertTrue(trust.flavours_match(["js"]))
+#         trust = ReviewTrust.objects.first()
+#         self.assertEqual(trust.content_item, content_item)
+#         self.assertEqual(trust.user, user)
+#         self.assertTrue(trust.flavours_match(["js"]))
 
 
 class get_validated_streak_Tests(TestCase):

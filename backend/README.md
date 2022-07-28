@@ -41,6 +41,20 @@ Now if you run the development server (`python manage.py runserver`), you'll be 
 
 ##  creating data to play with
 
+You have multiple options. An easy way to create data to play with is through the create_demo_data command:
+
+```
+python manage.py create_demo_data
+```
+
+You can see how this command works by looking here:
+
+curriculum_tracking/management/commands/create_demo_data.py
+
+
+Alternatively you can make use of individual commands if you want fioner grain control of what data gets created.
+
+
 You can create some curriculums in the database like this:
 
 ```
@@ -78,7 +92,7 @@ python manage.py command_name --help
 - `add_team_permission` Example usage: `python manage.py add_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 - `remove_team_permission` Example usage: `python manage.py remove_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 
-You can see all the team permissions here: `core/models.py`. L:ook at the metaclass inside the `Team` model.
+You can see all the team permissions here: `core/models.py`. Look at the metaclass inside the `Team` model.
 
 ## Getting a picture of the model relationships
 

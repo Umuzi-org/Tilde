@@ -81,21 +81,21 @@ def set_trusted_on_create(sender, instance, **kwargs):
         )
 
 
-@receiver([post_save], sender=models.RecruitProjectReview)
-def propagate_trust(sender, instance, **kwargs):
-    from backend.settings import (
-        CURRICULUM_TRACKING_TRUST_STREAK_LENGTH,
-    )
+# @receiver([post_save], sender=models.RecruitProjectReview)
+# def propagate_trust(sender, instance, **kwargs):
+#     from backend.settings import (
+#         CURRICULUM_TRACKING_TRUST_STREAK_LENGTH,
+#     )
 
-    if instance.trusted:
-        return
-    if instance.get_validated_streak() >= CURRICULUM_TRACKING_TRUST_STREAK_LENGTH:
-        models.ReviewTrust.add_specific_trust_instances(
-            who=instance.reviewer_user.email,
-            content_item_title=instance.recruit_project.content_item.title,
-            flavours=instance.recruit_project.flavour_names,
-            update_previous_reviews=False,
-        )
+#     if instance.trusted:
+#         return
+#     if instance.get_validated_streak() >= CURRICULUM_TRACKING_TRUST_STREAK_LENGTH:
+#         models.ReviewTrust.add_specific_trust_instances(
+#             who=instance.reviewer_user.email,
+#             content_item_title=instance.recruit_project.content_item.title,
+#             flavours=instance.recruit_project.flavour_names,
+#             update_previous_reviews=False,
+#         )
 
 
 @receiver([post_save], sender=models.AgileCard)
