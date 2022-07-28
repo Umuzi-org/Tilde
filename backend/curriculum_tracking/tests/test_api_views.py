@@ -878,3 +878,11 @@ class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
         self.assertEqual(new_instance.content_item.id, data["content_item"])
         self.assertEqual(new_instance.weight, data["weight"])
         self.assertEqual(new_instance.flavour_names, data["flavour_names"])
+
+
+class CurriculumContentRequirementViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "curriculumcontentrequirement-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.CurriculumContentRequirementFactory()
