@@ -1,6 +1,9 @@
 import React from "react";
 
-import { Typography, Paper, Grid } from "@material-ui/core";
+// import { Typography, Paper, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import {
   ActionReviewedCard,
   ActionCardCompleted,
@@ -70,13 +73,13 @@ function DayLog({ date, actions, handleClickOpenProjectDetails }) {
   );
 };
 
-export default ({
+export default function({
   orderedDates,
   actionLogByDate,
   handleClickOpenProjectDetails,
   handleScroll,
   anyLoading,
-}) => {
+}){
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>

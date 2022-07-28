@@ -141,7 +141,7 @@ function UserActionsUnconnected({
   return <Presentation {...props} />;
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state){
   return {
     users: state.apiEntities.users || {},
     projectReviews: state.apiEntities.projectReviews || {},
@@ -154,7 +154,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+function mapDispatchToProps(dispatch){
   return {
     fetchProjectReviewsPages: ({ dataSequence }) => {
       dispatch(
