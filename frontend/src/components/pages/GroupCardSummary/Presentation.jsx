@@ -8,11 +8,11 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Button,
 } from "@material-ui/core";
 import CellContent from "./CellContent";
 import LinkToUserBoard from "../../widgets/LinkToUserBoard";
 import Loading from "../../widgets/Loading";
+import Button from "../../widgets/Button";
 
 const useStyles = makeStyles((theme) => {
   return {

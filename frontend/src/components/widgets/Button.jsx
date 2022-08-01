@@ -4,17 +4,17 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    textTransform: "lowercase",
-    // border: "1px solid grey",
+    // textTransform: "lowercase",
+    border: "1px solid grey",
     // borderRadius: theme.spacing(0.5),
     // borderColor: theme.palette.grey[500],
   },
 }));
 
-export default ({ children, onClick }) => {
+export default ({ children, onClick, startIcon }) => {
   const classes = useStyles();
   return (
-    <Button className={classes.button} onClick={onClick}>
+    <Button className={classes.button} onClick={onClick} startIcon={startIcon}>
       {children}
     </Button>
   );
