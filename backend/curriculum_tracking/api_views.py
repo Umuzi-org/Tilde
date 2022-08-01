@@ -1026,6 +1026,15 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
     filterset_fields = ["user"]
 
 
+class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+
+    queryset = models.ContentItemAgileWeight.objects.order_by("content_item").all()
+    serializer_class = serializers.ContentItemAgileWeightSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["content_item", "weight"]
+
+
 class CourseRegistrationViewset(viewsets.ModelViewSet):
     queryset = models.CourseRegistration.objects.all().order_by("user")
     serializer_class = serializers.CourseRegistrationSerialiser

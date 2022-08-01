@@ -1,5 +1,5 @@
 # python manage.py propogate_staff_trust "Staff Tech Education"
-
+dont use
 
 from django.core.management.base import BaseCommand
 from django.db.models.query_utils import Q

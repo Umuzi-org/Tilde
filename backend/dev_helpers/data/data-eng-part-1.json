@@ -124,7 +124,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "solo-learn-python-module-1-basic-concepts",
-      "story_points": 1,
       "tags": [
         "python"
       ],
@@ -140,7 +139,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "solo-learn-python-module-2-control-statements",
-      "story_points": 1,
       "tags": [
         "python"
       ],
@@ -156,7 +154,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "solo-learn-python-module-3-functions-modules",
-      "story_points": 1,
       "tags": [
         "python"
       ],
@@ -172,7 +169,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "solo-learn-python-module-4-exceptions-and-files",
-      "story_points": 1,
       "tags": [
         "python"
       ],
@@ -188,7 +184,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "solo-learn-python-module-5-more-types",
-      "story_points": 1,
       "tags": [
         "python"
       ],
@@ -204,7 +199,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "agile-scrum",
-      "story_points": 1,
       "tags": [
         "agile",
         "scrum"
@@ -221,7 +215,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "general-clean-code-guidelines",
-      "story_points": 1,
       "tags": [
         "clean-code"
       ],
@@ -237,7 +230,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "clean-code-for-python",
-      "story_points": 1,
       "tags": [
         "python",
         "clean-code"
@@ -254,7 +246,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "how-to-ask-for-help-with-your-code",
-      "story_points": 1,
       "tags": [
         "communication",
         "soft-skills"
@@ -271,7 +262,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "big-picture-of-web-dev",
-      "story_points": 1,
       "tags": [
         "todo",
         "internet"
@@ -296,7 +286,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "level-1-programming-katas",
-      "story_points": 3,
       "tags": [
         "algrithms",
         "clean-code"
@@ -321,7 +310,6 @@
       "link_regex": null,
       "project_submission_type": "C",
       "slug": "level-2-coding-challenges",
-      "story_points": 3,
       "tags": [
         "algrithms",
         "clean-code"
@@ -338,7 +326,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "problem-decomposition",
-      "story_points": 1,
       "tags": [
         "problem solving"
       ],
@@ -362,7 +349,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "get-started-with-hackerrank",
-      "story_points": 1,
       "tags": [
         "data structures",
         "algorithms",
@@ -380,7 +366,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "clean-code-language-agnostic",
-      "story_points": 1,
       "tags": [],
       "template_repo": null,
       "title": "Clean Code (language agnostic)",
@@ -394,7 +379,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "automated-testing-in-python",
-      "story_points": 1,
       "tags": [],
       "template_repo": null,
       "title": "Automated Testing in Python",
@@ -408,7 +392,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "introduction-to-assertive-programming",
-      "story_points": 1,
       "tags": [
         "defensive-programming"
       ],
@@ -432,7 +415,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "assertive-programming-kata",
-      "story_points": 3,
       "tags": [
         "data structures",
         "problem solving",
@@ -450,7 +432,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "unit-testing-language-agnostic-concepts",
-      "story_points": 1,
       "tags": [
         "unit testing"
       ],
@@ -466,7 +447,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "test-driven-development",
-      "story_points": 1,
       "tags": [
         "tdd"
       ],
@@ -490,7 +470,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "simple-calculator-part-1",
-      "story_points": 2,
       "tags": [
         "tdd"
       ],
@@ -514,7 +493,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "validate-a-south-african-id-number",
-      "story_points": 1,
       "tags": [
         "tdd",
         "problem-solving",
@@ -540,7 +518,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "password-checker",
-      "story_points": 3,
       "tags": [
         "tdd",
         "error-checking"
@@ -557,7 +534,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "intro-oopobject-oriented-programming-for-python",
-      "story_points": 1,
       "tags": [
         "oop"
       ],
@@ -573,7 +549,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "virtual-environments",
-      "story_points": 1,
       "tags": [],
       "template_repo": null,
       "title": "Virtual Environments",
@@ -595,7 +570,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "person",
-      "story_points": 2,
       "tags": [
         "oop"
       ],
@@ -619,7 +593,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "animals-part-1-oop-basics",
-      "story_points": 3,
       "tags": [
         "oop"
       ],
@@ -643,7 +616,6 @@
       "link_regex": null,
       "project_submission_type": "C",
       "slug": "animals-part-2-adding-tests",
-      "story_points": 3,
       "tags": [
         "oop",
         "unit-testing"
@@ -662,7 +634,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "interacting-with-files",
-      "story_points": 1,
       "tags": [
         "todo",
         "fileio"
@@ -679,7 +650,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "introduction-to-bash-and-the-terminal",
-      "story_points": 1,
       "tags": [
         "linux",
         "bash"
@@ -696,7 +666,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "environmental-variables",
-      "story_points": 1,
       "tags": [
         "bash",
         "environmental variables"
@@ -713,7 +682,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "intro-to-docker-and-docker-compose",
-      "story_points": 1,
       "tags": [
         "docker-compose",
         "postgres"
@@ -730,7 +698,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "contentitem",
-      "story_points": 1,
       "tags": [
         "sql"
       ],
@@ -746,7 +713,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "contentitem",
-      "story_points": 1,
       "tags": [
         "sql"
       ],
@@ -762,7 +728,6 @@
       "link_regex": null,
       "project_submission_type": null,
       "slug": "contentitem",
-      "story_points": 1,
       "tags": [
         "sql"
       ],
@@ -778,7 +743,6 @@
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "contentitem",
-      "story_points": 1,
       "tags": [
         "sql"
       ],
@@ -794,7 +758,6 @@
       "link_regex": null,
       "project_submission_type": "R",
       "slug": "sql",
-      "story_points": 3,
       "tags": [
         "sql"
       ],
