@@ -28,7 +28,7 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
 
 function ignore() {}
 
-function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
+export function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
   for (let group of Object.values(teams)) {
