@@ -1,5 +1,5 @@
 import React from "react";
-import AgileCard from "../components/regions/AgileBoard/AgileCard/Presentation"; 
+import AgileCard from "../components/pages/AgileBoard/AgileCard/Presentation"; 
 
 import agileCard from "./fixtures/agileCard.json";
 import assigneeCard from "./fixtures/AgileCards/assigneeCard.json";
@@ -15,7 +15,7 @@ import user from "./fixtures/user.json";
 import authUser from "./fixtures/authUser.json";
 
 export default {
-    title: "Tilde/AgileCard",
+    title: "Tilde/pages/AgileCard",
     component: AgileCard,
 }
 

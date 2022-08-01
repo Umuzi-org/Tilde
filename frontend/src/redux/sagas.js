@@ -4,7 +4,7 @@ import { authSagas as googleSagas } from "../utils/googleLogin";
 
 import { apiReduxWatchers } from "../apiAccess/apiApps";
 import { appSagas } from "../components/App/redux";
-import { agileBoardSagas } from "../components/regions/AgileBoard/redux";
+import { agileBoardSagas } from "../components/pages/AgileBoard/redux";
 import { cardDetailsSagas } from "../components/pages/CardDetails/redux";
 
 import { addCardReviewSagas } from "../components/regions/AddCardReviewModal/redux";

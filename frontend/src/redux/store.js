@@ -3,7 +3,7 @@ import { rootSaga } from "./sagas";
 import googleLogin from "./../utils/googleLogin";
 
 import App from "../components/App/redux";
-import AgileBoard from "../components/regions/AgileBoard/redux";
+import AgileBoard from "../components/pages/AgileBoard/redux";
 import CardDetails from "../components/pages/CardDetails/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
