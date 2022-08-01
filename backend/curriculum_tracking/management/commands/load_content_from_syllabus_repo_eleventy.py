@@ -225,7 +225,6 @@ class Command(BaseCommand):
         defaults = {
             "content_type": actual_content_type,
             "title": title,
-            "story_points": int(meta.get("story_points", 1)),
             "url": url,
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,

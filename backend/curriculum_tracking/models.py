@@ -89,7 +89,9 @@ class FlavourMixin:
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
     def flavour_ids_match(self, flavour_ids: List[int]):
-        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
+            flavour_ids
+        )
 
     @property
     def flavour_names(self):
@@ -125,10 +127,6 @@ class ContentItemProxyMixin:
     @property
     def content_url(self):
         return self.content_item.url
-
-    @property
-    def story_points(self):
-        return self.content_item.story_points
 
     @property
     def tag_names(self):
@@ -253,10 +251,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         unique=True,
     )
 
-    story_points = models.SmallIntegerField(
-        choices=((i, i) for i in [1, 2, 3, 5, 8, 13, 21, 34, 56, 89]), null=True
-    )
-
     prerequisites = models.ManyToManyField(
         "ContentItem",
         related_name="unlocks",
@@ -286,8 +280,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     template_repo = models.URLField(null=True, blank=True)  # should be a github repo
     link_regex = models.CharField(max_length=250, null=True, blank=True)
 
-
-    protect_main_branch = models.BooleanField(default=True) # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
+    protect_main_branch = models.BooleanField(
+        default=True
+    )  # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
 
     class Meta:
         unique_together = [["content_type", "title"]]
@@ -864,7 +859,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
-            .filter(recruit_project = self.recruit_project)
+            .filter(recruit_project=self.recruit_project)
             .order_by("timestamp")
             .first()
         )
@@ -1503,3 +1498,19 @@ class BurndownSnapshot(models.Model):
             cards_in_complete_column_total_count=complete_cards.count(),
             project_cards_in_complete_column_total_count=complete_project_cards.count(),
         )
+
+
+class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(
+        ContentItem, on_delete=models.PROTECT, related_name="agile_weights"
+    )
+    flavours = TaggableManager(blank=True)
+    weight = models.IntegerField()
+
+
+class ContentItemAutoMarkerConfig(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(
+        ContentItem, on_delete=models.PROTECT, related_name="automarker_configs"
+    )
+    flavours = TaggableManager(blank=True)
+    trigger_marker_when_card_in_review = models.BooleanField(default=False)

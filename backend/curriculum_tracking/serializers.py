@@ -1,3 +1,4 @@
+from django.forms import CharField
 import core.models
 from git_real.models import PullRequest, PullRequestReview
 from . import models
@@ -22,7 +23,6 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "project_reviews",
             "title",
             "content_url",
-            "story_points",
             "tag_names",
             "recruit_users",
             "recruit_user_names",
@@ -125,7 +125,6 @@ class ContentItemSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "url",
-            "story_points",
             "tag_names",
             "post_ordered_content",
             "pre_ordered_content",
@@ -161,7 +160,6 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "title",
             "content_type",
             "content_type_nice",
-            "story_points",
             "tag_names",
             "order",
             "code_review_competent_since_last_review_request",
@@ -663,19 +661,15 @@ class BulkSetDueDatesHumanFriendly(serializers.Serializer):
     email = serializers.CharField(required=False)
 
 
-
-
-
-
 class RegisterNewLearnerSerializer(serializers.Serializer):
     class Meta:
         fields = [
-            'email',
-            'first_name',
-            'last_name',
-            'github_name',
-            'stream_name',
-            'team_name'
+            "email",
+            "first_name",
+            "last_name",
+            "github_name",
+            "stream_name",
+            "team_name",
         ]
 
     email = serializers.EmailField(required=True)
@@ -684,3 +678,32 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     github_name = serializers.CharField(required=True)
     stream_name = serializers.CharField(required=True)
     team_name = serializers.CharField(required=True)
+
+from rest_framework.exceptions import ValidationError
+
+
+
+class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ContentItemAgileWeight
+        fields = [
+            "id",
+            "flavour_names",
+            "weight",
+            "content_item",
+        ]
+
+    flavour_names = serializers.ListField(CharField)
+
+
+    def save(self,**kwargs):
+        content_item = self.validated_data['content_item']
+        available_flavours = content_item.flavour_names
+        flavour_names = self.initial_data.getlist('flavour_names')
+        for flavour in flavour_names:
+            if flavour not in available_flavours:
+                raise ValidationError(f"flavour '{flavour}' not allowed. Choose from {available_flavours}")
+        instance = super(ContentItemAgileWeightSerializer,self).save()
+        instance.set_flavours(flavour_names)
+        return instance
+
