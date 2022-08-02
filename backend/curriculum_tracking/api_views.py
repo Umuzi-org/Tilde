@@ -1037,6 +1037,7 @@ class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
 
 class CourseRegistrationViewset(viewsets.ModelViewSet):
     queryset = models.CourseRegistration.objects.all().order_by("user")
+    filterset_fields = ['user','curriculum']
     serializer_class = serializers.CourseRegistrationSerialiser
     filter_backends = [DjangoFilterBackend]
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]

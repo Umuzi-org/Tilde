@@ -164,7 +164,7 @@ router.register(
 # )
 
 router.register(
-    r"course_registration",
+    r"course_registrations",
     curriculum_tracking_api_views.CourseRegistrationViewset,
     "courseregistration",
 )

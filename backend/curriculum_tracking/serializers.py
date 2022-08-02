@@ -689,15 +689,22 @@ class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
 
 
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
+
+    user_name = serializers.CharField(required=False)
+    curriculum_name = serializers.CharField(required=False)
+    
     class Meta:
         model = models.CourseRegistration
-        fields = ["id", "user", "curriculum"]
+        fields = ["id", "user", "user_name", "curriculum_name","curriculum"]
 
-    user = serializers.SerializerMethodField("get_user_name")
-    curriculum = serializers.SerializerMethodField("get_curriculum_name")
 
-    def get_user_name(self, instance):
-        return instance.user.email
+    user = serializers.SerializerMethodField("get_user")
+    curriculum = serializers.SerializerMethodField("get_curriculum")
 
-    def get_curriculum_name(self, instance):
-        return instance.curriculum.name
+    def get_user(self, instance):
+        return instance.user.id
+
+    def get_curriculum(self, instance):
+        return instance.curriculum.id
+
+   
