@@ -4,10 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    // textTransform: "lowercase",
+    textTransform: "!important",
     border: "1px solid grey",
-    // borderRadius: theme.spacing(0.5),
-    // borderColor: theme.palette.grey[500],
   },
 }));
 
