@@ -145,7 +145,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
         | core_permissions.HasObjectPermission(
             permissions=Team.PERMISSION_VIEW,
             get_objects=core_permissions.get_teams_from_user_filter("assignees"),
-        )
+        ),
     ]
     serializer_class = serializers.CardSummarySerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -1037,7 +1037,17 @@ class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
 
 class CourseRegistrationViewset(viewsets.ModelViewSet):
     queryset = models.CourseRegistration.objects.all().order_by("user")
-    filterset_fields = ['user','curriculum']
+    filterset_fields = ["user", "curriculum"]
     serializer_class = serializers.CourseRegistrationSerialiser
     filter_backends = [DjangoFilterBackend]
-    permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAdminUser
+        | ActionIs("list")
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
+            )
+        )
+    ]
