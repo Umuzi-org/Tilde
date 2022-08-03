@@ -164,7 +164,7 @@ router.register(
 # )
 
 router.register(
-    r"curriculum_content_requirement",
+    r"curriculum_content_requirements",
     curriculum_tracking_api_views.CurriculumContentRequirementViewset,
     'curriculumcontentrequirement'
 )
