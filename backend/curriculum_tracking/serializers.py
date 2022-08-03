@@ -661,50 +661,50 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
 from rest_framework.exceptions import ValidationError
 
 
-
 class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ContentItemAgileWeight
-        fields = [
-            "id",
-            "flavour_names",
-            "weight",
-            "content_item",
-        ]
+        fields = ["id", "flavour_names", "weight", "content_item"]
 
     flavour_names = serializers.ListField(CharField)
 
-
-    def save(self,**kwargs):
-        content_item = self.validated_data['content_item']
+    def save(self, **kwargs):
+        content_item = self.validated_data["content_item"]
         available_flavours = content_item.flavour_names
-        flavour_names = self.initial_data.getlist('flavour_names')
+        flavour_names = self.initial_data.getlist("flavour_names")
         for flavour in flavour_names:
             if flavour not in available_flavours:
-                raise ValidationError(f"flavour '{flavour}' not allowed. Choose from {available_flavours}")
-        instance = super(ContentItemAgileWeightSerializer,self).save()
+                raise ValidationError(
+                    f"flavour '{flavour}' not allowed. Choose from {available_flavours}"
+                )
+        instance = super(ContentItemAgileWeightSerializer, self).save()
         instance.set_flavours(flavour_names)
         return instance
-
 
 
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     user_name = serializers.CharField(required=False)
     curriculum_name = serializers.CharField(required=False)
-    
+
     class Meta:
         model = models.CourseRegistration
-        fields = ["id", "user", "user_name", "curriculum_name","curriculum"]
-
+        fields = ["id", "user", "user_name", "curriculum_name", "curriculum"]
 
     user = serializers.SerializerMethodField("get_user")
-    curriculum = serializers.SerializerMethodField("get_curriculum")
+    user_name = serializers.SerializerMethodField("get_user_email")
+
+    user = serializers.SerializerMethodField("get_curriculum")
+    curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
 
     def get_user(self, instance):
         return instance.user.id
 
+    def get_user_email(self, instance):
+        return instance.user.email
+
     def get_curriculum(self, instance):
         return instance.curriculum.id
 
-   
+    def get_curriculum_name(self, instance):
+        return instance.curriculum.name
