@@ -417,9 +417,11 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
         return cards_assigned_with_status_in_review_amount
 
     def get_cards_assigned_with_status_review_feedback(self, user):
-        cards_assigned_with_status_review_feedback_amount = models.AgileCard.objects.filter(
-            status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
-        ).count()
+        cards_assigned_with_status_review_feedback_amount = (
+            models.AgileCard.objects.filter(
+                status=models.AgileCard.REVIEW_FEEDBACK, assignees=user.id
+            ).count()
+        )
 
         return cards_assigned_with_status_review_feedback_amount
 
@@ -477,8 +479,11 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
 
     def get_tilde_cards_reviewed_in_last_7_days(self, user):
 
-        tilde_project_reviews_done_in_past_seven_days = models.RecruitProjectReview.objects.filter(
-            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
+        tilde_project_reviews_done_in_past_seven_days = (
+            models.RecruitProjectReview.objects.filter(
+                reviewer_user_id=user.id,
+                timestamp__gte=timezone.now() - timedelta(days=7),
+            )
         )
 
         tilde_topic_reviews_done_in_past_seven_days = models.TopicReview.objects.filter(
@@ -694,7 +699,7 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
     user = serializers.SerializerMethodField("get_user")
     user_name = serializers.SerializerMethodField("get_user_email")
 
-    user = serializers.SerializerMethodField("get_curriculum")
+    curriculum = serializers.SerializerMethodField("get_curriculum")
     curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
 
     def get_user(self, instance):
