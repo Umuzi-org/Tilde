@@ -32,8 +32,9 @@ function CardDetailsUnconnected({
   fetchTopicReviews,
   fetchAgileCard,
   fetchUser,
-
-  openReviewFormModal,
+  dueTimeFormModalOperations,
+  openDueTimeFormModal,
+  // openReviewFormModal,
 }) {
   let urlParams = useParams() || {};
   const { cardId } = urlParams;
