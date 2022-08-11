@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 
-import { dueTimeFormModalOperations } from "../../regions/DueTimeFormModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 // import {
 //   getShowAddReviewButton,
@@ -18,7 +17,7 @@ import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 function CardDetailsUnconnected({
   cards,
   projects,
-  users,
+  users, //added
   topicProgressArray,
   projectReviews,
   topicReviews,
@@ -34,7 +33,7 @@ function CardDetailsUnconnected({
   fetchAgileCard,
   fetchUser,
 
-  openDueTimeFormModal,
+  openReviewFormModal,
 }) {
   let urlParams = useParams() || {};
   const { cardId } = urlParams;
@@ -62,7 +61,6 @@ function CardDetailsUnconnected({
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
     }
-
     if (cardId && (card === undefined || card === null || card === {})) {
       fetchAgileCard({ cardId });
     }
@@ -159,7 +157,6 @@ function CardDetailsUnconnected({
     topicProgress,
     // topicReviews,
     // projectReviews,
-
     topicReviews: currentTopicReviews,
     projectReviews: currentProjectReviews,
 
@@ -167,6 +164,7 @@ function CardDetailsUnconnected({
     // showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
+
     linkSubmission,
     formErrors,
     handleClickSetDueTime,
@@ -205,7 +203,6 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-
     fetchProject: ({ projectId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_RECRUIT_PROJECT.operations.maybeStart({
