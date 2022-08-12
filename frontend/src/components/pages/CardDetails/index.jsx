@@ -18,7 +18,7 @@ import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 function CardDetailsUnconnected({
   cards,
   projects,
-  users,
+  users, //users
   topicProgressArray,
   projectReviews,
   topicReviews,
