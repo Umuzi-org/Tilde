@@ -130,6 +130,7 @@ function AgileBoardUnconnected({
   fetchInitialCards,
   fetchUser,
 }) {
+  console.log("xxxxxxxxxx");
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
 
