@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from . import factories
 from django.utils import timezone
+from curriculum_tracking.tests.factories import AgileCardFactory
 
 
 class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
@@ -68,7 +69,7 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data[0]["date"], str(self.today.date()))
 
     def test_list_api_filter_by_event_type(self):
-        url = f"{self.get_list_url()}?event_type__name={self.entry_yesterday_1.event_type.name}"
+        url = f"{self.get_list_url()}?event_type={self.entry_yesterday_1.event_type.id}"
         response = self.client.get(url)
         self.assertEqual(len(response.data), 1)
 
@@ -82,3 +83,16 @@ class TestEventTypeViewSet(APITestCase, APITestCaseMixin):
 
     def verbose_instance_factory(self):
         return factories.EventTypeFactory(description="a party")
+
+
+class TestLogEntryViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "logentry-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        card = AgileCardFactory()
+        log_entry = factories.LogEntryFactory()
+        log_entry.object_1 = card
+        log_entry.object_2 = card
+        log_entry.save()
+        return log_entry

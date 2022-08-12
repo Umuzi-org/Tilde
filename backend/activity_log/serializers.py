@@ -51,3 +51,18 @@ class EventTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EventType
         fields = ["id", "name", "description"]
+
+
+class LogEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.LogEntry
+        fields = [
+            "id",
+            "event_type",
+            "actor_user",
+            "effected_user",
+            "object_1_content_type",
+            "object_1_id",
+            "object_2_content_type",
+            "object_2_id",
+        ]

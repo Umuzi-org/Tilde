@@ -9,10 +9,10 @@ from core.models import Team
 from . import models
 
 
-class ActivityLogDayCountViewset(viewsets.ModelViewSet):
+class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogDayCountSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type__name", "actor_user", "effected_user"]
+    filterset_fields = ["event_type", "actor_user", "effected_user"]
 
     permission_classes = [
         core_permissions.ActionIs("list")
@@ -57,3 +57,36 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
+
+
+class ActivityLogEntryViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.LogEntrySerializer
+    queryset = models.LogEntry.objects.order_by("-timestamp")
+    filter_backends = [DjangoFilterBackend]
+
+    permission_classes = [
+        core_permissions.IsReadOnly
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("actor_user")
+            | core_permissions.IsCurrentUserInSpecificFilter("effected_user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter("actor_user"),
+            )
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "effected_user"
+                ),
+            )
+        )
+    ]
+    filterset_fields = [
+        "event_type",
+        "actor_user",
+        "effected_user",
+        "object_1_content_type",
+        "object_1_id",
+        "object_2_content_type",
+        "object_2_id",
+    ]
