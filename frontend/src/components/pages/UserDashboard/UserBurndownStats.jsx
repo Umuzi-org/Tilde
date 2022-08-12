@@ -63,7 +63,7 @@ export default ({ burnDownSnapshots }) => {
             name="Completed Cards"
             stroke={blue[400]}
           />
-          <LineChart
+          <Line
             type="monotone"
             dataKey="projectCardsInCompleteColumnTotalCount"
             name="Completed Project Cards"

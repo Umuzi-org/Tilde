@@ -16,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
-import StoryPoints from "../../widgets/StoryPoints";
+// import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
 
 import ProjectDetails from "./ProjectDetails";
@@ -94,7 +94,7 @@ function CardBasicDetails({
         <Grid item xs={12} sm={12} md={12}>
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
-          <StoryPoints storyPoints={card.storyPoints} />
+          {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
@@ -155,21 +155,11 @@ function CardBasicDetails({
           </Paper>
         </Grid>
       </Grid>
-      {card.startTime === null && (
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={card.contentItemUrl}
-              contentItemId={card.contentItem}
-            />
-          }
-        />
-      )}
     </React.Fragment>
   );
 }
 
-export default ({
+export default function Presentation({
   card,
   viewedUser,
   authUser,
@@ -185,8 +175,14 @@ export default ({
   // showAddReviewButton,
   linkSubmission,
   formErrors,
-}) => {
+}) {
   const classes = useStyles();
+
+  let contentItemUrl, contentItem;
+  if (card !== undefined) {
+    contentItemUrl = card.contentItemUrl;
+    contentItem = card.contentItem;
+  }
 
   const workshopAttendance = false;
   if (cardId)
@@ -231,7 +227,16 @@ export default ({
         ) : (
           <React.Fragment />
         )}
+
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={contentItemUrl}
+              contentItemId={contentItem}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
-};
+}

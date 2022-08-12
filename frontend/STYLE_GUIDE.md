@@ -1,6 +1,6 @@
 # Style Guide
 
-This is largely based on https://github.com/airbnb/javascript/tree/master/react
+This is largely based on [Airbnb's React/JSX Style Guide](https://github.com/airbnb/javascript/tree/master/react)
 
 Here are a few things that are a little different or more explicit:
 
@@ -134,3 +134,20 @@ export default function Foo {
     return (<div {...props} />);
 }
 ```
+
+## Importing things
+
+**Use path imports**(whenever possible) for importing components, icons, etc. from external libraries. This is so the bundle size remains small because we won't be loading the whole library.
+
+```
+// No
+
+import { Button, TextField } from "@mui/material";
+
+// Yes
+
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+```
+
+Note: In some cases it won't matter since most bundlers support [tree shaking](https://en.wikipedia.org/wiki/Tree_shaking) out of the box.
