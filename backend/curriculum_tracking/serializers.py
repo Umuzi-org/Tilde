@@ -696,20 +696,12 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
         model = models.CourseRegistration
         fields = ["id", "user", "curriculum", "user_name", "curriculum_name"]
 
-    user = serializers.SerializerMethodField("get_user")
     user_name = serializers.SerializerMethodField("get_user_email")
 
-    curriculum = serializers.SerializerMethodField("get_curriculum")
     curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
-
-    def get_user(self, instance):
-        return instance.user.id
 
     def get_user_email(self, instance):
         return instance.user.email
-
-    def get_curriculum(self, instance):
-        return instance.curriculum.id
 
     def get_curriculum_name(self, instance):
         return instance.curriculum.name
