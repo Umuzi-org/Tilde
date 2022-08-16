@@ -110,9 +110,6 @@ function CardDetailsUnconnected({
 
   const viewedUser = card && users[card.assignees[0]];
 
-  const isReviewer =
-    ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
-
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
