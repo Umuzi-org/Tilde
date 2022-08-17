@@ -5,6 +5,10 @@ export default {
   title: "Tilde/UserAvatarLink",
   component: UserAvatarLink,
 };
-const Template = () => <UserAvatarLink />;
+const Template = (args) => <UserAvatarLink {...args} />;
 
 export const Default = Template.bind({});
+Default.args = {
+  email: "ngoako.ramokgopa@umuzi.org",
+  userId: 5,
+};
