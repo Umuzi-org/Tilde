@@ -1,0 +1,6 @@
+{
+  "active": "green",
+  "offline": "grey",
+  "viewedHoursAgo": "orange",
+  "viewedOverADayAgo": "red"
+}
