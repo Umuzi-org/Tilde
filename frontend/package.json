@@ -20,7 +20,7 @@
     "react-markdown": "^4.3.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "5.0.0",
     "recharts": "^2.1.6",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
