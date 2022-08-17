@@ -1,6 +1,6 @@
 {
-  "reviewed": "green",
-  "completedCard": "yellow",
-  "startedCard": "orange",
-  "movedCardToReview": "red"
+  "startCard": "green",
+  "moveCardToReview": "red",
+  "completeCard": "yellow",
+  "review": "orange"
 }
