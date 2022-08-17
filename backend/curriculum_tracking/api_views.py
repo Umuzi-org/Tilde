@@ -1052,3 +1052,4 @@ class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
     filterset_fields = ["curriculum", "content_item"]
     serializer_class = serializers.CurriculumContentRequirementSerializer
     filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAdminUser]
