@@ -694,7 +694,7 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = models.CourseRegistration
-        fields = ["id", "user", "curriculum", "user_name", "curriculum_name"]
+        fields = ["id", "user", "curriculum", "user_email", "curriculum_name"]
 
     user_email = serializers.SerializerMethodField("get_user_email")
 
