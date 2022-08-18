@@ -395,7 +395,6 @@ async function listEventTypes({ name, description, page }) {
   const { response, responseData } = await fetchAndClean({
     url,
   });
-  console.log({ response, responseData });
   return { response, responseData };
 }
 
