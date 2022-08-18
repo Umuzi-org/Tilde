@@ -16,10 +16,10 @@ const useStyles = makeStyles({
   },
 });
 
-function getAvatarTextInitials(email) {
+export function getAvatarTextInitials(email) {
   if (email.endsWith("umuzi.org")) {
-    const [name, surname] = email.split(".");
-    return (name[0] + surname[0]).toUpperCase();
+    const [firstname, lastname] = email.split(".");
+    return (firstname[0] + lastname[0]).toUpperCase();
   }
   const firstTwoLetters = email.match(/^[A-Za-z]{2}/);
   return firstTwoLetters && firstTwoLetters.join("").toUpperCase();
