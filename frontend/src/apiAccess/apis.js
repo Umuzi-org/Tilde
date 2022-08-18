@@ -379,6 +379,31 @@ async function activityLogDayCountsPage({
   return { response, responseData };
 }
 
+async function activityLogEntries({
+  eventTypeName,
+  effectedUser,
+  actorUser,
+  page,
+}) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+  let params = {
+    limit,
+    offset,
+  };
+
+  if (eventTypeName) params["event_type__name"] = eventTypeName;
+  if (actorUser) params["actor_user"] = actorUser;
+  if (effectedUser) params["effected_user"] = effectedUser;
+  const getParams = objectToGetQueryString(params);
+
+  const url = `${API_BASE_URL}/api/activity_log_entry/?${getParams}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
 export default {
   whoAmI,
   logout,
@@ -416,4 +441,5 @@ export default {
   personallyAssignedCardSummaryEntity,
   agileCardEntity,
   activityLogDayCountsPage,
+  activityLogEntries,
 };
