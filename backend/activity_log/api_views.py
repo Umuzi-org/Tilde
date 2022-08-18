@@ -12,7 +12,7 @@ from . import models
 class ActivityLogDayCountViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogDayCountSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type__name", "actor_user", "effected_user"]
+    filterset_fields = ["event_type__name", "actor_user", "effected_user", "timestamp"]
 
     permission_classes = [
         core_permissions.ActionIs("list")
@@ -52,5 +52,20 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
     queryset = models.EventType.objects.order_by("name")
     filter_backends = [DjangoFilterBackend]
-
+    filterset_fields = ["timestamp"]
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        query = models.LogEntry.objects.annotate(
+            date=Cast("timestamp", output_field=DateField())
+        )
+        query = query.values("date").annotate(total=Count("date"))
+        query = query.order_by("-date")
+
+        filters = "&".join(
+            [f"{key}={value}" for key, value in self.request.GET.items()]
+        )
+
+        query = query.annotate(filters=Value(filters, output_field=CharField()))
+
+        return query
