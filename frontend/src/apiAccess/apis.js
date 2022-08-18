@@ -379,17 +379,7 @@ async function activityLogDayCountsPage({
   return { response, responseData };
 }
 
-async function listEventTypes({ name, description, page }) {
-  const limit = 20;
-  const offset = calculateOffset({ page, limit });
-  let params = {
-    limit,
-    offset,
-  };
-
-  if (name) params["name"] = name;
-  if (description) params["description"] = description;
-
+async function listEventTypes() {
   const url = `${API_BASE_URL}/api/event_type/`;
 
   const { response, responseData } = await fetchAndClean({
