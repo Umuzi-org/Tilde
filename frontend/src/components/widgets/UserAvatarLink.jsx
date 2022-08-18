@@ -16,18 +16,21 @@ const useStyles = makeStyles({
   },
 });
 
-// TODO: helper for getting the two letters for avatar
-// - if the user has an umuzi email:
-//      - use get the first letter in the firstname and lastname of the email
-// - else:
-//      - use first two characters of the email
+function getAvatarTextInitials(email) {
+  if (email.endsWith("umuzi.org")) {
+    const [name, surname] = email.split(".");
+    return (name[0] + surname[0]).toUpperCase();
+  }
+  const firstTwoLetters = email.match(/^[A-Za-z]{2}/);
+  return firstTwoLetters && firstTwoLetters.join("").toUpperCase();
+}
 
 function UserAvatarLink({ email, userId }) {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
-        <Avatar>{email.slice(0, 2).toUpperCase()}</Avatar>
+        <Avatar>{getAvatarTextInitials(email)}</Avatar>
       </Link>
       <Typography>{email}</Typography>
     </div>
