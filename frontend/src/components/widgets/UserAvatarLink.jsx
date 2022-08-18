@@ -21,7 +21,7 @@ export function getAvatarTextInitials(email) {
     const [firstname, lastname] = email.split(".");
     return (firstname[0] + lastname[0]).toUpperCase();
   }
-  const firstTwoLetters = email.match(/^[A-Za-z]{2}/);
+  const firstTwoLetters = email.match(/[A-Za-z]{2}/);
   return firstTwoLetters && firstTwoLetters.join("").toUpperCase();
 }
 
