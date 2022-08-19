@@ -134,7 +134,7 @@ router.register(
 
 router.register(
     r"activity_log_day_count",
-    activity_log_api_views.ActivityLogDayCountViewset,
+    activity_log_api_views.ActivityLogEntryDayCountViewset,
     "activitylogdaycount",
 )
 
@@ -142,6 +142,12 @@ router.register(
     r"event_type",
     activity_log_api_views.EventTypeViewSet,
     "eventtype",
+)
+
+router.register(
+    r"activity_log_entry",
+    activity_log_api_views.ActivityLogEntryViewSet,
+    "logentry",
 )
 
 router.register(
