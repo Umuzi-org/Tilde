@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
+    "@iconify/react": "^3.2.2",
     "@storybook/addon-actions": "^6.1.21",
     "@storybook/addon-essentials": "^6.1.21",
     "@storybook/addon-links": "^6.0.28",

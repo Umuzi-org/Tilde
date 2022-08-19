@@ -26,6 +26,7 @@ export default function UserProfileButton() {
 
   return (
     <div className={classes.root}>
+      
       <ButtonGroup
         orientation={`${mobile ? "horizontal" : "vertical"}`}
         color="primary"
@@ -33,21 +34,23 @@ export default function UserProfileButton() {
         variant="text"
         size={`${mobile ? "large" : "small"}`}
       >
-        <div>
+      
           <Button className={classes.textStyle}>
-            {/* <Icon icon="logos:rocket-chat-icon" /> */}
-            Sbonelo
+           
+            rocketchat name
+            <Icon icon="logos:rocket-chat-icon" />
           </Button>
           <Button className={classes.textStyle}>
-            {" "}
-            {/* <GitHubIcon /> */}
-            Sbonelo01
+            
+            github name
+            <GitHubIcon />
           </Button>
           <Button className={classes.textStyle}>
-            {/* <MailIcon /> */}
-            sbonelo.mkhize@umuzi.org
+           
+            email address
+            <MailIcon />
           </Button>
-        </div>
+    
       </ButtonGroup>
     </div>
   );
