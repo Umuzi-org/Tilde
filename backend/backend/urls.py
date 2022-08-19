@@ -133,19 +133,19 @@ router.register(
 )
 
 router.register(
-    r"activity_log_day_count",
+    r"activity_log_day_counts",
     activity_log_api_views.ActivityLogEntryDayCountViewset,
     "activitylogdaycount",
 )
 
 router.register(
-    r"event_type",
+    r"event_types",
     activity_log_api_views.EventTypeViewSet,
     "eventtype",
 )
 
 router.register(
-    r"activity_log_entry",
+    r"activity_log_entries",
     activity_log_api_views.ActivityLogEntryViewSet,
     "logentry",
 )

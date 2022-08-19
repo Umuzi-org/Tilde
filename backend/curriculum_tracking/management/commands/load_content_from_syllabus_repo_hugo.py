@@ -12,6 +12,11 @@ from typing import List, Dict
 from pathlib import Path
 import yaml
 
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 # these constants are keys in the hugo page frontmatter
 TITLE = "title"
 READY = "ready"
@@ -52,18 +57,20 @@ class Helper:
 
     @classmethod
     def process_available_learning_outcomes(cls):
+        print("Processing available learning outcomes")
         full_path = Helper.repo_base_dir / "learning_outcomes.yaml"
 
         if not full_path.exists():
             return
 
         with open(full_path, "r") as f:
-            raw_learning_outcomes = yaml.load(f)
+            raw_learning_outcomes = yaml.load(f, Loader=Loader)
 
         outcome_names = list(raw_learning_outcomes.keys())
         assert len(outcome_names) == len(set(outcome_names)), "names must be unique"
 
         all_outcomes = []
+        print("... with ids")
 
         # first deal with the outcomes with ids
         for name, info in raw_learning_outcomes.items():
@@ -73,6 +80,8 @@ class Helper:
                     id=info[DB_ID], overrides=defaults, defaults=defaults
                 )
                 all_outcomes.append(o)
+
+        print("... without ids")
 
         # then the outcomes without ids
         for name, info in raw_learning_outcomes.items():
@@ -88,15 +97,17 @@ class Helper:
         final_structure = {
             o.name: {"description": o.description, DB_ID: o.id} for o in all_outcomes
         }
+        print("...saving")
 
         with open(full_path, "w") as f:
-            yaml.dump(final_structure, f)
+            yaml.dump(final_structure, f, Dumper=Dumper)
+        print("...DONE!")
 
     @classmethod
     def load_available_content_flavours(cls):
         full_path = Helper.repo_base_dir / "flavours.yaml"
         with open(full_path, "r") as f:
-            cls.available_content_flavours = yaml.load(f)
+            cls.available_content_flavours = yaml.load(f, Loader=Loader)
 
     @classmethod
     def save_content(cls, file_path):
@@ -172,13 +183,23 @@ class Helper:
 
         print(f"saving {defaults['title']}")
 
-        if DB_ID in meta:
-            content_item, created = models.ContentItem.get_or_create_or_update(
-                pk=meta[DB_ID], defaults=defaults, overrides=defaults
-            )
+        if DB_ID in meta and meta[DB_ID]:
+            pk = meta[DB_ID]
+
+            try:
+                content_item = models.ContentItem.objects.get(pk=meta[DB_ID])
+                content_item.update(**defaults)
+                content_item.save()
+            except models.ContentItem.DoesNotExist:
+                breakpoint()
+                content_item, created = models.ContentItem.get_or_create_or_update(
+                    pk=meta[DB_ID], defaults=defaults, overrides=defaults
+                )
         else:
             try:
                 content_item = models.ContentItem.objects.get(url=url)
+                content_item.update(**defaults)
+                content_item.save()
             except models.ContentItem.DoesNotExist:
                 content_item = models.ContentItem.objects.create(
                     id=models.ContentItem.get_next_available_id(), url=url
