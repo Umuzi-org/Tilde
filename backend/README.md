@@ -1,13 +1,20 @@
 ## Prerequisite knowledge 
 
-
 If you are new to Python or Django it would be good for you to learn a few things before digging in here.
 
 - Python
 - Django 
-- Virtual environments - this is seriously good practice
+- Virtual environments - this is seriously good practice. 
 - Django Rest Framework - this is how we make our web apis
 - Dramatiq - this is worth understanding if you want to do anything with long running requests
+
+## Why virtual environments 
+
+The short version is: virtual environments allow you to isolate your base system from your project dependencies. Eg if you have 2 different python projects and they require 2 different versions of package X then you would need to have some kind of isolation between those projects. 
+
+Whenever you make a new Python project, if it has any dependencies at all you should create a virtualenv.
+
+You should not need to use `sudo` or any special flags to install things into your virtual environment. Just activate the environment then install whatever you need to. 
 
 ## Getting started
 
