@@ -36,10 +36,12 @@ while true
     echo "Person"
     python manage.py run_automarker "Person" "" 1
 
-    echo "password-checker"
-    python manage.py run_automarker "password-checker" "javascript" 1
+    # echo "password-checker"
+    # python manage.py run_automarker "password-checker" "javascript" 1
 
     # echo "semitone difference - basic algorithm" 1
     # python manage.py run_automarker "semitone difference - basic algorithm" "" 1
+
+    animals_part2_js
 
 done

@@ -132,7 +132,6 @@ class Command(BaseCommand):
                     message +=f"review comments:\n\n{comments}"
 
                     if confirm_continue(message):
-                        breakpoint()
                         self.add_review(
                             card=card,
                             status=NOT_YET_COMPETENT,

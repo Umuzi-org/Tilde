@@ -565,7 +565,7 @@ def _get_ordered_curriculum_items_from_page(file_stream):
 
             # l = [s.strip() for s in match.split('"') if s.strip()]
             # assert len(l) in [1, 2], f"malformed content link {match}"
-            hard_requirement = bool(int(params.get("optional", 0)))
+            hard_requirement = not (bool(int(params.get("optional", 0))))
             # url = helpers.get_full_url_from_content_link_param(params["path"])
             url = Helper.get_full_url_from_partial(params["path"])
 
@@ -601,11 +601,11 @@ def _get_ordered_curriculum_items_from_page(file_stream):
 
 def curriculum_file_paths(curriculums_base_dir):
     for child in curriculums_base_dir.iterdir():
-        if child.is_dir():
-            raise Exception(f"unexpected directory: {child}")
         name = child.name
         if name.startswith("_"):
             continue
+        if child.is_dir():
+            raise Exception(f"unexpected directory: {child}")
         if not name.endswith(".md"):
             continue
         print(child)
