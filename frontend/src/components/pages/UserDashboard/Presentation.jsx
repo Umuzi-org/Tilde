@@ -23,6 +23,7 @@ export default ({
 }) => {
   const classes = useStyles();
   const teams = user ? user.teamMemberships : {};
+  //burndown chart 
   if (user)
     return (
       <React.Fragment>
