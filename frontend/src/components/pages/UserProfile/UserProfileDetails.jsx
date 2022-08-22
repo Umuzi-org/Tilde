@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import GitHubIcon from "@material-ui/icons/GitHub";
@@ -26,7 +27,6 @@ export default function UserProfileButton() {
 
   return (
     <div className={classes.root}>
-      
       <ButtonGroup
         orientation={`${mobile ? "horizontal" : "vertical"}`}
         color="primary"
@@ -34,23 +34,18 @@ export default function UserProfileButton() {
         variant="text"
         size={`${mobile ? "large" : "small"}`}
       >
-      
-          <Button className={classes.textStyle}>
-           
-            rocketchat name
-            <Icon icon="logos:rocket-chat-icon" />
-          </Button>
-          <Button className={classes.textStyle}>
-            
-            github name
-            <GitHubIcon />
-          </Button>
-          <Button className={classes.textStyle}>
-           
-            email address
-            <MailIcon />
-          </Button>
-    
+        <Button className={classes.textStyle}>
+          rocketchat name
+          <Icon icon="logos:rocket-chat-icon" />
+        </Button>
+        <Button className={classes.textStyle}>
+          github name
+          <GitHubIcon />
+        </Button>
+        <Button className={classes.textStyle}>
+          email address
+          <MailIcon />
+        </Button>
       </ButtonGroup>
     </div>
   );

@@ -1,59 +1,32 @@
 import React, {useState} from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
+import ChangeNickName from "./NickNameChange"
 
 export default function NickName() {
-  const [open, setOpen] = useState(false);
+  const [nickName, setNickName] = useState([
+    {
+     name: "nick_name"
+    }
+  ]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleChange = (event, index) => {
+    const value = event.target.value;
+    setNickName(state => [
+      ...state.slice(0, index),
+      { ...state[index], name: value },
+      ...state.slice(index + 1)
+    ])
+  }
 
   return (
     <div>
-        Nickname
-      <Button href="#text-buttons" color="primary" onClick={handleClickOpen}>
-        <EditTwoToneIcon />
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Change nick name</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            You are about to change your nick name. Please note that you can
-            only do this once a month
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="New nick name"
-            type="email"
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Change
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {nickName.map((element, index) => {
+        return(
+          <ChangeNickName 
+           name={element.name}
+           onChange={e => handleChange(e, index)}
+           />
+        );
+      })}
     </div>
-  );
+  )
 }

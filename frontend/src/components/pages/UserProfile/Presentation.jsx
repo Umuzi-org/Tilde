@@ -1,20 +1,20 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography"
 
-import ProfilePicture from "./ProfilePicture"
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
+import NickName from "./NickName";
+import ProfilePicture from "./ProfilePicture";
 import UserProfileDetails from "./UserProfileDetails";
-import NickName from "./NickName"
 
 const useStyles = makeStyles((theme) => ({
   root: {
     maxHeight: "90vh",
     maxWidth: "90vw",
     display: "flex",
-     flexFlow: "row nowrap",
+    flexFlow: "row nowrap",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -35,21 +35,40 @@ export default function UserProfile() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      
-      <Grid container spacing={0} direction="row" justifyContent="center" alignItems="center">
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper className={classes.paper}>
-            <ProfilePicture />
-          </Paper>
+      <div
+        className={classes.root}
+      >
+        <Grid
+          style={{width: "70%", height: "70%"}}
+          container="true"
+          spacing={0}
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={classes.paper} elevation={6}>
+              <ProfilePicture />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper
+              className={classes.paper}
+              elevation={6}
+              style={{ position: "relative" }}
+            >
+              <div style={{ position: "absolute", top: 30 }}>
+                <Typography variant="h3">
+                  First Name
+                  <Typography variant="h5">
+                    <NickName/>
+                  </Typography>
+                </Typography>
+              </div>
+              <UserProfileDetails />
+            </Paper>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper className={classes.paper}>
-            <UserProfileDetails />
-          </Paper>
-        </Grid>
-      </Grid>
-      
-    </div>
+      </div>
   );
 }
