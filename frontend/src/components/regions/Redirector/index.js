@@ -1,7 +1,11 @@
 import { connect } from "react-redux";
+import { useTraceUpdate } from "../../../hooks.js";
 import { routes } from "../../../routes.js";
 
 const RedirectorUnconnected = ({ authUser }) => {
+
+  useTraceUpdate({authUser});
+
   window.location = routes.userBoard.route.path.replace(
     ":userId",
     authUser.userId
