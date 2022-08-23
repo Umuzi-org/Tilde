@@ -687,6 +687,10 @@ class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
         return instance
 
 class CurriculumContentRequirementSerializer(serializers.ModelSerializer):
+
+    curriculum_name = serializers.CharField(read_only=True)
+    content_item_title = serializers.CharField(read_only=True)
+
     class Meta:
         model = models.CurriculumContentRequirement
         fields = ["id", "curriculum", "curriculum_name","content_item", "content_item_title"]
