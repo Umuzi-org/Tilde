@@ -6,35 +6,12 @@ import {
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
 import Loading from "../../widgets/Loading";
+import UserBurnDownChart from "./UserBurndownStats";
 
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
 
-
-import { makeStyles } from "@material-ui/core/styles";
-import TeamsTable from "./UserDetails/TeamsTable";
-import UserDetailedStats from "./UserDetailedStats";
-import UserBurnDownChart from "./UserBurndownStats";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
-
-export default ({
-  user,
-  currentUserDetailedStats,
-  currentUserBurndownStats,
-  showTeamsTable,
-  authUser,
-}) => {
-  const classes = useStyles();
-  const teams = user ? user.teamMemberships : {}; 
 const useStyles = makeStyles((theme) => ({
   calendarIcon: {
     margin: theme.spacing(1),
@@ -49,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     // marginTop: theme.spacing(0),
     // paddingTop: theme.spacing(0),
   },
-
   column: {
     height: "85%", // TODO. Fit viewport
     overflowY: "scroll",
@@ -60,17 +36,6 @@ const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Grid container spacing={1}>
-          {currentUserBurndownStats && (
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <UserBurnDownChart
-                  burnDownSnapshots={currentUserBurndownStats}
-                />
-              </Paper>
-            </Grid>
-          )}
-          </Grid>
       <Paper>
         <Typography variant="h6" className={classes.dateTypography}>
           <TodayIcon className={classes.calendarIcon} /> {date} [count:{" "}
@@ -114,12 +79,24 @@ export default ({
   handleClickOpenProjectDetails,
   handleScroll,
   anyLoading,
+  currentUserBurndownStats,
 }) => {
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
         <Grid>
+        {currentUserBurndownStats && (
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+              <UserBurnDownChart
+                        burnDownSnapshots={currentUserBurndownStats}
+                      />
+              </Paper>
+            </Grid>
+          )}
+
+
           <Paper>
             {orderedDates.map((date) => (
               <DayLog
