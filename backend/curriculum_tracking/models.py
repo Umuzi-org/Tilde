@@ -1477,13 +1477,17 @@ class BurndownSnapshot(models.Model):
     def create_snapshot(Cls, user):
         match = Cls.objects.filter(
             user=user,
-            timestamp__gte=timezone.now()
+            timestamp__gte=timezone.now()  
             - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
         ).first()
 
-        if match:
+        # if match:
             # there was a snapshot taken recently, no need to store another one
-            return match
+            # match = Cls.objects.filter(
+            #     user=user,
+            #     timestamp__gte=timezone.now(),
+            # ).first()
+            # return match
 
         cards = AgileCard.objects.filter(assignees=user)
         project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)

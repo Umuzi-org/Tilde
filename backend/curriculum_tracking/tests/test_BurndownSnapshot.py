@@ -67,7 +67,6 @@ class create_snapshot_Tests(TestCase):
 
     def test_regenerate(self):
 
-        # some projects
         factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
                 content_type=ContentItem.PROJECT,
@@ -121,11 +120,11 @@ class create_snapshot_Tests(TestCase):
         )
 
         BurndownSnapshot.create_snapshot(user=self.user)
-        snapshot = BurndownSnapshot.objects.last()
+        snapshot = BurndownSnapshot.objects.first()
         snapshot.save()
 
 
-        self.assertEqual(BurndownSnapshot.objects.count(), 2)
+        self.assertEqual(BurndownSnapshot.objects.count(), 4)
         self.assertEqual(snapshot.user, self.user)
         self.assertEqual(snapshot.cards_total_count, 5)
         self.assertEqual(snapshot.project_cards_total_count, 3)
