@@ -64,3 +64,70 @@ class create_snapshot_Tests(TestCase):
         self.assertEqual(snapshot.project_cards_total_count, 2)
         self.assertEqual(snapshot.cards_in_complete_column_total_count, 2)
         self.assertEqual(snapshot.project_cards_in_complete_column_total_count, 1)
+
+    def test_regenerate(self):
+
+        # some projects
+        factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=ContentItem.LINK,
+            ),
+            assignees=[self.user],
+        )
+        factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=ContentItem.LINK,
+            ),
+            assignees=[self.user],
+            status=AgileCard.COMPLETE,
+        )
+
+        BurndownSnapshot.create_snapshot(user=self.user)
+        snapshot = BurndownSnapshot.objects.first()
+
+        snapshot.timestamp = snapshot.timestamp - timedelta(
+            hours=BurndownSnapshot.MIN_HOURS_BETWEEN_SNAPSHOTS + 1
+        )
+        snapshot.save()
+
+        self.assertEqual(snapshot.user, self.user)
+        self.assertEqual(snapshot.cards_total_count, 2)
+        self.assertEqual(snapshot.project_cards_total_count, 2)
+        self.assertEqual(snapshot.cards_in_complete_column_total_count, 1)
+        self.assertEqual(snapshot.project_cards_in_complete_column_total_count, 1)
+
+        BurndownSnapshot.create_snapshot(user=self.user)
+        BurndownSnapshot.create_snapshot(user=self.user)
+        snapshot = BurndownSnapshot.objects.first()
+
+        factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
+            assignees=[self.user],
+        )
+        factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
+            assignees=[self.user],
+            status=AgileCard.COMPLETE,
+        )
+        factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=ContentItem.LINK,
+            ),
+            assignees=[self.user],
+            status=AgileCard.COMPLETE,
+        )
+
+        BurndownSnapshot.create_snapshot(user=self.user)
+        snapshot = BurndownSnapshot.objects.last()
+        snapshot.save()
+
+
+        self.assertEqual(BurndownSnapshot.objects.count(), 2)
+        self.assertEqual(snapshot.user, self.user)
+        self.assertEqual(snapshot.cards_total_count, 5)
+        self.assertEqual(snapshot.project_cards_total_count, 3)
+        self.assertEqual(snapshot.cards_in_complete_column_total_count, 3)
+        self.assertEqual(snapshot.project_cards_in_complete_column_total_count, 2)
