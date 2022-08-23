@@ -182,8 +182,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             & (
                 curriculum_permissions.CardBelongsToRequestingUser
                 | core_permissions.HasObjectPermission(
-                    permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_card,
+                    permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
                 )
             )
         )
@@ -386,13 +385,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_project(self, request, pk=None):
         card: models.AgileCard = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         card.start_project()
 
@@ -414,8 +412,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def set_project_link(self, request, pk=None):
         card = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         content_item = card.content_item
         assert (
@@ -447,7 +444,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_topic(self, request, pk=None):
@@ -745,8 +742,7 @@ class RepositoryViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_repository,
+                permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_repository
             )
         )
         | ActionIs("list") & (permissions.IsAdminUser)
@@ -864,11 +860,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     def auto_assign_reviewers(self, request, pk=None):
         """automatically assign qualified reviewers to cards"""
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
         else:
             from long_running_request_actors import auto_assign_reviewers as actor
 
@@ -887,11 +879,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         from curriculum_tracking.management.helpers import get_user_cards
 
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
 
         serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
         if serializer.is_valid():
@@ -1045,6 +1033,24 @@ class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ContentItemAgileWeightSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["content_item", "weight"]
+
+
+class CourseRegistrationViewset(viewsets.ModelViewSet):
+    queryset = models.CourseRegistration.objects.all().order_by("user")
+    filterset_fields = ["user", "curriculum"]
+    serializer_class = serializers.CourseRegistrationSerialiser
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [
+        permissions.IsAdminUser
+        | ActionIs("list")
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
+            )
+        )
+    ]
 
 
 class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
