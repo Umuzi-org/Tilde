@@ -103,4 +103,8 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
         "object_1_id",
         "object_2_content_type",
         "object_2_id",
+        "timestamp",
     ]
+
+
+
