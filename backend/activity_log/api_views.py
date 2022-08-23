@@ -12,7 +12,7 @@ from . import models
 class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogDayCountSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type__name", "actor_user", "effected_user", "timestamp"]
+    filterset_fields = ["event_type", "actor_user", "effected_user", "timestamp"]
     permission_classes = [
         core_permissions.ActionIs("list")
         & (
@@ -104,4 +104,3 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
         "object_2_content_type",
         "object_2_id",
     ]
-

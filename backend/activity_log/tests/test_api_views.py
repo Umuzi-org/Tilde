@@ -76,13 +76,35 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
 
+    def test_list_api_filter_by_timestamp(self):
+        url = f"{self.get_list_url()}?timestamp={self.entry_yesterday_1.timestamp}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
+
+        self.assertEqual(response.data[0]["total"], 1)
+        self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
+
 
 class TestEventTypeViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "eventtype-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+
+    def setUp(self):
+        self.today = timezone.datetime(year=2022, month=10, day=3, hour=11, minute=1)
+
+        self.yesterday = self.today - timedelta(days=1)
+        self.entry_yesterday_1 = factories.LogEntryFactory()
+        self.entry_yesterday_1.timestamp = self.yesterday
+        self.entry_yesterday_1.save()
 
     def verbose_instance_factory(self):
         return factories.EventTypeFactory(description="a party")
+
+    def test_list_api_filter_by_timestamp(self):
+        url = f"{self.get_list_url()}?timestamp={self.entry_yesterday_1.timestamp}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 1)
 
 
 class TestLogEntryViewSet(APITestCase, APITestCaseMixin):
