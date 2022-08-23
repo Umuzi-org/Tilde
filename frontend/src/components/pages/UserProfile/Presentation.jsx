@@ -35,40 +35,38 @@ export default function UserProfile() {
   const classes = useStyles();
 
   return (
-      <div
-        className={classes.root}
+    <div className={classes.root}>
+      <Grid
+        style={{ width: "70%", height: "70%", position: "relative", top: 90 }}
+        container="true"
+        spacing={0}
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
-        <Grid
-          style={{width: "70%", height: "70%"}}
-          container="true"
-          spacing={0}
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Grid item xs={12} md={6} lg={6}>
-            <Paper className={classes.paper} elevation={6}>
-              <ProfilePicture />
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            <Paper
-              className={classes.paper}
-              elevation={6}
-              style={{ position: "relative" }}
-            >
-              <div style={{ position: "absolute", top: 30 }}>
-                <Typography variant="h3">
-                  First Name
-                  <Typography variant="h5">
-                    <NickName/>
-                  </Typography>
-                </Typography>
-              </div>
-              <UserProfileDetails />
-            </Paper>
-          </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper className={classes.paper} elevation={6}>
+            <ProfilePicture />
+          </Paper>
         </Grid>
-      </div>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper
+            className={classes.paper}
+            elevation={6}
+            style={{ position: "relative" }}
+          >
+            <div style={{ position: "absolute", top: 30 }}>
+              <Typography variant="h3">
+                First Name
+                <Typography variant="h5">
+                  <NickName />
+                </Typography>
+              </Typography>
+            </div>
+            <UserProfileDetails style={{ position: "relative", top: 60 }} />
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 }

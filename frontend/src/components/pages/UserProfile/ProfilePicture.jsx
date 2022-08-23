@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import Button from "@material-ui/core/Button";
-import UploadButton from "./UploadButton";
+// import UploadButton from "./UploadButton";
 
 export default function ProfilePicture() {
   const uploadedImage = useRef(null);
@@ -51,10 +51,11 @@ export default function ProfilePicture() {
             ref={uploadedImage}
             style={{
               position: "relative",
-              width: "25em",
-              height: "25em",
+              width: "15em",
+              height: "15em",
             }}
           />
+          Upload
         </Button>
       </div>
     </div>
