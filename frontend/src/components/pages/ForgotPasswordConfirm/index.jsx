@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "@prelude/redux-api-toolbox/src/djRestAuth";
-import { useApiCallbacks } from "../../../hooks";
+import { useApiCallbacks, useTraceUpdate } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../../routes";
 
@@ -19,10 +19,14 @@ function PasswordResetConfirmUnconnected({
   // mapDispatchToProps
   confirmResetPassword,
 }) {
+
+  useTraceUpdate({lastCall, confirmResetPassword})
+
   const [formData, setFormData] = useState({
     newPassword1: "",
     newPassword2: "",
   });
+
   const params = useParams();
   const navigate = useNavigate();
 

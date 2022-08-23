@@ -7,6 +7,8 @@ import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntitie
 import { apiReduxApps } from "@prelude/redux-api-toolbox/src/djRestAuth";
 import { REST_AUTH_BASE_URL } from "../../../config";
 
+import { useTraceUpdate } from "../../../hooks.js";
+
 import { useState } from "react";
 
 function ForgotPasswordUnconnected({
@@ -16,6 +18,9 @@ function ForgotPasswordUnconnected({
   // mapDispatchToProps
   resetPassword,
 }) {
+
+  useTraceUpdate({lastCall, resetPassword});
+
   const [formData, setFormData] = useState({
     email: "",
   });

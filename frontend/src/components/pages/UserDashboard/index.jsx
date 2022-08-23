@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { hasPermissionOnUser } from "../../../utils/permissions";
+import { useTraceUpdate } from "../../../hooks"
 import { TEAM_PERMISSIONS } from "../../../constants";
 
 function DashboardUnconnected({
@@ -16,11 +17,24 @@ function DashboardUnconnected({
   fetchUserDetailedStats,
   fetchUserBurndownStats,
 }) {
+  useTraceUpdate({
+    authUser,
+    users,
+    userDetailedStats,
+    userBurndownStats,
+    fetchUser,
+    fetchUserDetailedStats,
+    fetchUserBurndownStats,
+  });
+  // console.log("xxxxxxx");
+
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const currentUserDetailedStats = userDetailedStats[userId];
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter(
+    (snapshot) => snapshot.user === userId
+  );
 
   React.useEffect(() => {
     if (userId) {
@@ -76,10 +90,10 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserBurndownStats: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: { 
+          data: {
             userId: parseInt(userId),
             page: 1,
-           },
+          },
         })
       );
     },
