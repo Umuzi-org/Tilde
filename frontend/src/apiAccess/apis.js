@@ -365,7 +365,7 @@ async function activityLogDayCountsPage({ eventTypeName, actorUser, page }) {
   if (actorUser) params["actor_user"] = actorUser;
   const getParams = objectToGetQueryString(params);
 
-  const url = `${API_BASE_URL}/api/activity_log_day_count/?${getParams}`;
+  const url = `${API_BASE_URL}/api/activity_log_day_counts/?${getParams}`;
 
   const { response, responseData } = await fetchAndClean({
     url,
