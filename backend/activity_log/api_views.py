@@ -48,7 +48,7 @@ class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
             )
 
         return query
-
+from django.utils import timezone
 
 class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
@@ -58,6 +58,8 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
 
     def get_queryset(self):
+        hour_ago = timezone.now()-timezone.timedelta(hours=1)
+        query = models.EventType.objects.filter(timestamp__gte=hour_ago,timestamp__lte=timezone.now)
         query = models.LogEntry.objects.annotate(
             date=Cast("timestamp", output_field=DateField())
         )
