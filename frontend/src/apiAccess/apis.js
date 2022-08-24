@@ -353,12 +353,7 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
   return { response, responseData };
 }
 
-async function activityLogDayCountsPage({
-  eventTypeName,
-  actorUser,
-  effectedUser,
-  page,
-}) {
+async function activityLogDayCountsPage({ eventTypeName, actorUser, page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
   let params = {
@@ -368,7 +363,6 @@ async function activityLogDayCountsPage({
 
   if (eventTypeName) params["event_type__name"] = eventTypeName;
   if (actorUser) params["actor_user"] = actorUser;
-  if (effectedUser) params["effected_user"] = effectedUser;
   const getParams = objectToGetQueryString(params);
 
   const url = `${API_BASE_URL}/api/activity_log_day_count/?${getParams}`;
