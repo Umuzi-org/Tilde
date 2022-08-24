@@ -16,13 +16,16 @@ const useStyles = makeStyles({
   },
 });
 
-export function getAvatarTextInitials(email) {
+function getAvatarTextInitials(email) {
+  // For Umuzi emails - take the first letters of the name and surname
   if (email.endsWith("umuzi.org")) {
     const [firstname, lastname] = email.split(".");
     return (firstname[0] + lastname[0]).toUpperCase();
   }
-  const firstTwoLetters = email.match(/[A-Za-z]{2}/);
-  return firstTwoLetters && firstTwoLetters.join("").toUpperCase();
+  // Other emails - take first two consecutive letters or null if no letters
+  const customPartOfAnEmail = email.substr(0, email.indexOf("@"));
+  const firstTwoLetters = customPartOfAnEmail.match(/[A-Za-z]{2}/);
+  return firstTwoLetters ? firstTwoLetters.join("").toUpperCase() : null;
 }
 
 function UserAvatarLink({ email, userId }) {
