@@ -9,9 +9,9 @@ import { routes } from "../../routes.js";
 import { getAuthToken } from "../../utils/authTokenStorage";
 import { apiReduxApps } from "../../apiAccess/apiApps";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
-const theme = createMuiTheme({});
+const theme = createTheme({});
 
 function shouldCallWhoAmI({ authUser }) {
   if (authUser && authUser.userId) return false;
