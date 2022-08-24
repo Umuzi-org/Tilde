@@ -29,6 +29,31 @@ function AgileCardUnconnected({
   CARD_REMOVE_WORKSHOP_ATTENDANCE,
   CARD_ADD_WORKSHOP_ATTENDANCE,
 }) {
+  // console.log("hello");
+  // useTraceUpdate({
+  //   card,
+  //   repoUrl,
+  //   authUser,
+  //   viewedUser,
+  //   startProject,
+  //   requestReview,
+  //   cancelReviewRequest,
+  //   startTopic,
+  //   stopTopic,
+  //   finishTopic,
+  //   removeWorkshopAttendance,
+  //   addWorkshopAttendance,
+  //   openReviewFormModal,
+  //   filterUserId,
+  //   CARD_START_PROJECT,
+  //   CARD_REQUEST_REVIEW,
+  //   CARD_CANCEL_REVIEW_REQUEST,
+  //   CARD_START_TOPIC,
+  //   CARD_STOP_TOPIC,
+  //   CARD_FINISH_TOPIC,
+  //   CARD_REMOVE_WORKSHOP_ATTENDANCE,
+  //   CARD_ADD_WORKSHOP_ATTENDANCE,
+  // });
   const cardId = card.id;
 
   const handleClickOpenWorkshopAttendanceForm = () => {

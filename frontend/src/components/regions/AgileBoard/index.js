@@ -6,6 +6,7 @@ import consts from "../../../constants";
 import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
+import { useTraceUpdate } from "../../../hooks";
 
 export function boardFromCards({ cards, latestCalls }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
@@ -130,29 +131,47 @@ function AgileBoardUnconnected({
   fetchInitialCards,
   fetchUser,
 }) {
+  // console.log("hello");
+
+  // cards = cards || {};
+  // users = users || {};
+  // FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
+  //   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE || {};
+
+  useTraceUpdate({
+    cards,
+    users,
+    fetchCardPages,
+    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    authedUserId,
+    fetchInitialCards,
+    fetchUser,
+  });
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
-
+  if (!userId) return <Loading />;
   useEffect(() => {
     if (userId !== undefined) fetchInitialCards({ userId });
-  }, [fetchInitialCards, userId]);
+  }, [userId]);
 
   useEffect(() => {
     if (userId !== undefined) fetchUser({ userId });
-  }, [fetchUser, userId]);
+  }, [userId]);
 
+  // if (!userId) return <Loading />;
+
+  if (!users) return <Loading />;
+  if (!cards) return <Loading />;
   const filteredCards = filterCardsByUserId({
-    cards,
+    cards: cards || {},
     userId,
   });
 
-  const latestCallStates =
-    userId !== undefined
-      ? getAllLatestCalls({
-          FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-          userId,
-        })
-      : {};
+  if (!FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE) return <Loading />;
+  const latestCallStates = getAllLatestCalls({
+    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    userId,
+  });
 
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];
@@ -231,8 +250,8 @@ function AgileBoardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.apiEntities.users || {},
-    cards: state.apiEntities.cards || {},
+    users: state.apiEntities.users,
+    cards: state.apiEntities.cards,
     FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE:
       state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     authedUserId: state.App.authUser.userId,
