@@ -175,6 +175,12 @@ router.register(
     "courseregistration",
 )
 
+router.register(
+    r"competence_review_queue",
+    curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
+    r"competencereviewqueue",
+)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
