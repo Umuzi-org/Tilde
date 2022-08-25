@@ -3,6 +3,7 @@ import React from "react";
 import UserActions from "../components/regions/UserActions/Presentation";
 import actionLogByDate from "./fixtures/userActionLogsByDate.json";
 import EntryListEndpoint from "../components/widgets/EntryListEndpoint";
+import apis from "../apiAccess/apis";
 
 const orderedDates = [
   "Sunday 21/03/2021",
@@ -25,7 +26,7 @@ const Template = (args) => <EntryListEndpoint {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  //   activityLog,
+  activityLog: apis.activityLogDayCountsPage,
   orderedDates,
   actionLogByDate,
   anyLoading: true,
