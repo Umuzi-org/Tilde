@@ -6,7 +6,6 @@ import consts from "../../../constants";
 import { useParams } from "react-router-dom";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
-import { useTraceUpdate } from "../../../hooks";
 
 export function boardFromCards({ cards, latestCalls }) {
   return Object.keys(consts.AGILE_COLUMNS).map((columnName) => {
@@ -131,43 +130,30 @@ function AgileBoardUnconnected({
   fetchInitialCards,
   fetchUser,
 }) {
-  // console.log("hello");
-
-  // cards = cards || {};
-  // users = users || {};
-  // FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
-  //   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE || {};
-
-  useTraceUpdate({
-    cards,
-    users,
-    fetchCardPages,
-    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-    authedUserId,
-    fetchInitialCards,
-    fetchUser,
-  });
-  let urlParams = useParams() || {};
-  const userId = parseInt(urlParams.userId || authedUserId || 0);
-  if (!userId) return <Loading />;
-  useEffect(() => {
-    if (userId !== undefined) fetchInitialCards({ userId });
-  }, [userId]);
+  let urlParams = useParams();
+  const userId = parseInt(urlParams.userId || authedUserId);
 
   useEffect(() => {
     if (userId !== undefined) fetchUser({ userId });
-  }, [userId]);
+  }, [fetchUser, userId]);
 
-  // if (!userId) return <Loading />;
+  useEffect(() => {
+    if (userId !== undefined) fetchInitialCards({ userId });
+  }, [fetchInitialCards, userId]);
 
-  if (!users) return <Loading />;
-  if (!cards) return <Loading />;
+  if (
+    !userId ||
+    !cards ||
+    !users ||
+    !FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE
+  )
+    return <Loading />;
+
   const filteredCards = filterCardsByUserId({
-    cards: cards || {},
+    cards,
     userId,
   });
 
-  if (!FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE) return <Loading />;
   const latestCallStates = getAllLatestCalls({
     FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     userId,
