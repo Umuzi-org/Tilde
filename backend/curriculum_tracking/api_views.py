@@ -1,4 +1,3 @@
-from urllib import response
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -26,6 +25,7 @@ from django.db.models import Q
 
 from rest_framework import filters
 from social_auth.models import SocialProfile
+from guardian.shortcuts import get_objects_for_user
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -1072,24 +1072,26 @@ class CompetenceReviewQueueViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompetenceReviewQueueSerializer
     filter_backends = [DjangoFilterBackend]
 
-    permission_classes = [
-        IsReadOnly,
-        permissions.IsAdminUser
-        | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
-        | core_permissions.IsCurrentUserInSpecificFilter("reviewer_users")
-        | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=core_permissions.get_teams_from_user_filter("reviewer_users"),
-        )
-        | core_permissions.HasObjectPermission(
-            permissions=Team.PERMISSION_VIEW,
-            get_objects=core_permissions.get_teams_from_user_filter("recruit_users"),
-        ),
-    ]
+    permission_classes = [IsReadOnly]
 
     def get_queryset(self, *args, **kwargs):
+        user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
-        if self.request.user.is_superuser:
+        if user.is_superuser:
             return queryset
 
-        TODO
+        filter = Q(recruit_users__in=[user]) | Q(reviewer_users__in=[user])
+
+        for PERMISSION in Team.PERMISSION_VIEW:
+
+            teams = get_objects_for_user(user, PERMISSION, Team)
+            for team in teams:
+                team_users = team.user_set.all()
+                filter = (
+                    filter
+                    | Q(recruit_users__in=team_users)
+                    | Q(reviewer_users__in=team_users)
+                )
+
+        queryset = queryset.filter(filter)
+        return queryset

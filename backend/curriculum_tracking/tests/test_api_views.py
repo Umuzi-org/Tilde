@@ -1,6 +1,7 @@
 # from backend.curriculum_tracking.models import AgileCard
 from git_real.tests.factories import PullRequestFactory
 from rest_framework.test import APITestCase
+from guardian.shortcuts import assign_perm
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
@@ -24,6 +25,7 @@ from curriculum_tracking.tests.factories import (
     TagFactory,
 )
 from curriculum_tracking.management.helpers import get_team_cards
+from core.models import Team
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -919,24 +921,57 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
 
         return project
 
-    def test_non_superusers_only_see_projects_where_they_have_team_view_access(self):
-        cards = [AgileCardFactory() for _ in range(5)]
-        teams = [TeamFactory() for _ in range(4)]
+    def test_list_filters_by_what_the_user_is_meant_to_see(self):
+        cards = [AgileCardFactory() for _ in range(10)]
+        for card in cards:
+            project = card.recruit_project
+            project.reviewer_users.add(UserFactory())
+            project.request_review()
 
-        teams[0].user_set.add(cards[0].assignees.first())
-        teams[1].user_set.add(cards[1].assignees.first())
-        teams[2].user_set.add(cards[3].reviewers.first())
-        teams[3].user_set.add(cards[4].reviewers.first())
+        teams = [TeamFactory() for _ in range(5)]
+
+        teams[0].user_set.add(cards[0].recruit_project.recruit_users.first())
+        teams[1].user_set.add(cards[1].recruit_project.recruit_users.first())
+        teams[2].user_set.add(cards[2].recruit_project.reviewer_users.first())
+        teams[3].user_set.add(cards[3].recruit_project.reviewer_users.first())
+        teams[4].user_set.add(cards[4].recruit_project.reviewer_users.first())
+
+        manager_user = UserFactory()
+
+        assign_perm(Team.PERMISSION_MANAGE_CARDS, manager_user, teams[0])
+        assign_perm(Team.PERMISSION_VIEW_ALL, manager_user, teams[1])
+        assign_perm(Team.PERMISSION_REVIEW_CARDS, manager_user, teams[2])
+        assign_perm(Team.PERMISSION_TRUSTED_REVIEWER, manager_user, teams[3])
 
         url = self.get_list_url()
 
+        # superusers can see everything
         self.login_as_superuser()
         response = self.client.get(url)
-        TODO
+        queue = response.data
+        self.assertEqual(len(queue), 10)
+        self.assertEqual(
+            [d["id"] for d in queue], [card.recruit_project.id for card in cards]
+        )
 
+        # random users can't see anything
+        self.login(UserFactory())
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 0)
+
+        # users can see their own projects
+        self.login(cards[5].recruit_project.reviewer_users.first())
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 1)
+        self.assertEqual(queue[0]["id"], cards[5].recruit_project.id)
+
+        # if you have any kind of view access over a team then you can see those projects
         self.login(manager_user)
         response = self.client.get(url)
-        TODO
-
-        self.login(learner)
-        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 4)
+        self.assertEqual(
+            [d["id"] for d in queue], [card.recruit_project.id for card in cards[:4]]
+        )
