@@ -18,7 +18,11 @@ from curriculum_tracking.models import (
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from . import factories
-from curriculum_tracking.tests.factories import RecruitProjectFactory, AgileCardFactory
+from curriculum_tracking.tests.factories import (
+    RecruitProjectFactory,
+    AgileCardFactory,
+    TagFactory,
+)
 from curriculum_tracking.management.helpers import get_team_cards
 
 
@@ -858,7 +862,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertIsNone(card_3.due_time)
 
 
-
 class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "contentitemagileweight-list"
 
@@ -866,15 +869,19 @@ class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
         return factories.ContentItemAgileWeightFactory(flavours=["python"])
 
     def generate_post_create_data(self):
-        item = factories.ContentItemFactory(flavours=["python","javascript","ts"])
-        return {"content_item": item.id, "flavour_names": ["python","ts"], "weight": 123}
+        item = factories.ContentItemFactory(flavours=["python", "javascript", "ts"])
+        return {
+            "content_item": item.id,
+            "flavour_names": ["python", "ts"],
+            "weight": 123,
+        }
 
     def test_attributes_set_on_post(self):
         data = self.generate_post_create_data()
         self.login_as_superuser()
         url = self.get_list_url()
         response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code,201)
+        self.assertEqual(response.status_code, 201)
         new_instance = ContentItemAgileWeight.objects.first()
         self.assertEqual(new_instance.content_item.id, data["content_item"])
         self.assertEqual(new_instance.weight, data["weight"])
@@ -888,3 +895,48 @@ class TestCourseRegistrationViewSet(APITestCase, APITestCaseMixin):
     def verbose_instance_factory(self):
         course_registration = factories.CourseRegistrationFactory()
         return course_registration
+
+
+class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "competencereviewqueue-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        RecruitProjectFactory()
+        RecruitProjectFactory()
+        card = AgileCardFactory()
+
+        project = card.recruit_project
+        project.request_review()
+        project.set_flavours(["foo"])
+        project.content_item.tags.add(TagFactory())
+        project.code_review_competent_since_last_review_request = 12
+        project.code_review_excellent_since_last_review_request = 12
+        project.code_review_red_flag_since_last_review_request = 12
+        project.code_review_ny_competent_since_last_review_request = 12
+        project.reviewer_users.add(UserFactory())
+        project.save()
+
+        return project
+
+    def test_non_superusers_only_see_projects_where_they_have_team_view_access(self):
+        cards = [AgileCardFactory() for _ in range(5)]
+        teams = [TeamFactory() for _ in range(4)]
+
+        teams[0].user_set.add(cards[0].assignees.first())
+        teams[1].user_set.add(cards[1].assignees.first())
+        teams[2].user_set.add(cards[3].reviewers.first())
+        teams[3].user_set.add(cards[4].reviewers.first())
+
+        url = self.get_list_url()
+
+        self.login_as_superuser()
+        response = self.client.get(url)
+        TODO
+
+        self.login(manager_user)
+        response = self.client.get(url)
+        TODO
+
+        self.login(learner)
+        response = self.client.get(url)

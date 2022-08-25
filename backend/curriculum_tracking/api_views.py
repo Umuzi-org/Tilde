@@ -1051,3 +1051,45 @@ class CourseRegistrationViewset(viewsets.ModelViewSet):
             )
         )
     ]
+
+
+class CompetenceReviewQueueViewSet(viewsets.ModelViewSet):
+    queryset = (
+        models.RecruitProject.objects.filter(
+            agile_card__status=models.AgileCard.IN_REVIEW
+        )
+        .filter(recruit_users__active__in=[True])
+        .order_by("review_request_time")
+    )
+    filterset_fields = [
+        "recruit_users",
+        "reviewer_users",
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+    ]
+    serializer_class = serializers.CompetenceReviewQueueSerializer
+    filter_backends = [DjangoFilterBackend]
+
+    permission_classes = [
+        IsReadOnly,
+        permissions.IsAdminUser
+        | core_permissions.IsCurrentUserInSpecificFilter("recruit_users")
+        | core_permissions.IsCurrentUserInSpecificFilter("reviewer_users")
+        | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=core_permissions.get_teams_from_user_filter("reviewer_users"),
+        )
+        | core_permissions.HasObjectPermission(
+            permissions=Team.PERMISSION_VIEW,
+            get_objects=core_permissions.get_teams_from_user_filter("recruit_users"),
+        ),
+    ]
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        if self.request.user.is_superuser:
+            return queryset
+
+        TODO
