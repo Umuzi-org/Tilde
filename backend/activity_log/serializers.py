@@ -56,6 +56,10 @@ class EventTypeSerializer(serializers.ModelSerializer):
 
 
 class LogEntrySerializer(serializers.ModelSerializer):
+    review_id = serializers.PositiveIntegerField(null=True, blank=True)
+    recruit_project_id = serializers.PositiveIntegerField(null=True, blank=True)
+    review = serializers.CharField(read_only=True)
+    recruit_project = serializers.CharField(read_only=True)
     class Meta:
         model = models.LogEntry
         fields = [
@@ -63,17 +67,29 @@ class LogEntrySerializer(serializers.ModelSerializer):
             "event_type",
             "actor_user",
             "effected_user",
-            "object_1_content_type_name",
-            "object_1_id",
-            "object_2_content_type_name",
-            "object_2_id",
+            # "object_1_content_type_name",
+            # "object_1_id",
+            # "object_2_content_type_name",
+            # "object_2_id",
+            "review",
+            "review_id",
+            "recruit_project",
+            "recruit_project_id",
         ]
 
-    object_1_content_type_name = serializers.SerializerMethodField(
+    review = serializers.SerializerMethodField(
         "get_object_1_content_type_name"
     )
-    object_2_content_type_name = serializers.SerializerMethodField(
+    recruit_project = serializers.SerializerMethodField(
         "get_object_2_content_type_name"
+    )
+
+
+    review_id= serializers.SerializerMethodField(
+        "get_object_1_content_type_id"
+    )
+    recruit_project_id = serializers.SerializerMethodField(
+        "get_object_2_content_type_id"
     )
 
     def get_object_1_content_type_name(self, instance):
@@ -84,6 +100,20 @@ class LogEntrySerializer(serializers.ModelSerializer):
         )
 
     def get_object_2_content_type_name(self, instance):
+        return (
+            instance.object_2_content_type.app_labeled_name
+            if instance.object_2_content_type
+            else None
+        )
+
+    def get_object_1_content_type_id(self, instance):
+        return (
+            instance.object_1_content_type.app_labeled_name
+            if instance.object_1_content_type
+            else None
+        )
+
+    def get_object_2_content_type_id(self, instance):
         return (
             instance.object_2_content_type.app_labeled_name
             if instance.object_2_content_type
