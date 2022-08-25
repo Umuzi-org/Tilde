@@ -7,6 +7,7 @@ from django.db.models import DateField, Count, Value, CharField
 import core.permissions as core_permissions
 from core.models import Team
 from . import models
+from django.utils import timezone
 
 
 class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
@@ -48,7 +49,7 @@ class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
             )
 
         return query
-from django.utils import timezone
+
 
 class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
