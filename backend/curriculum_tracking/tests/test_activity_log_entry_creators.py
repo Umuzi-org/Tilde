@@ -141,8 +141,35 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
 
-    # def test_start_topic(self):
-    # TODO
+    def test_start_topic(self):
+        actor_user = UserFactory(is_superuser=True)
+
+        card = AgileCardFactory(
+            content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
+            assignees=AgileCardFactory.assignees,
+            status=AgileCard.READY,
+        )
+
+        self.login(actor_user)
+
+        start_url = f"{self.get_instance_url(card.id)}start_topic/"
+        response = self.client.post(start_url)
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+
+        self.assertEqual(card.assignees.count(), 1)
+        creators.log_card_started(card, actor_user)
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        self.assertEqual(entry.actor_user, actor_user)
+        self.assertEqual(entry.effected_user, card.assignees.first())
+        self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
+
+
+        
 
 
 # class log_card_stopped_Tests(TestCase):
