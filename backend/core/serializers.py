@@ -7,14 +7,14 @@ from dj_rest_auth.serializers import (
     PasswordResetSerializer as PasswordResetSerializerBase,
 )
 from django.contrib.auth import (
-     get_user_model,
+    get_user_model,
 )
-from django.contrib.auth.forms import PasswordResetForm,_unicode_ci_compare
+from django.contrib.auth.forms import PasswordResetForm, _unicode_ci_compare
 
 User = get_user_model()
 
-class _PasswordResetForm(PasswordResetForm):
 
+class _PasswordResetForm(PasswordResetForm):
     def get_users(self, email):
         """Given an email, return matching user(s) who should receive a reset.
 
@@ -23,15 +23,19 @@ class _PasswordResetForm(PasswordResetForm):
         resetting their password.
         """
         email_field_name = User.get_email_field_name()
-        active_users = User._default_manager.filter(**{
-            '%s__iexact' % email_field_name: email,
-            'active': True,
-        })
-        return (
-            u for u in active_users
-            if u.has_usable_password() and
-            _unicode_ci_compare(email, getattr(u, email_field_name))
+        active_users = User._default_manager.filter(
+            **{
+                "%s__iexact" % email_field_name: email,
+                "active": True,
+            }
         )
+        return (
+            u
+            for u in active_users
+            if u.has_usable_password()
+            and _unicode_ci_compare(email, getattr(u, email_field_name))
+        )
+
 
 class PasswordResetSerializer(PasswordResetSerializerBase):
     def get_email_options(self):
@@ -45,17 +49,17 @@ class PasswordResetSerializer(PasswordResetSerializerBase):
     def save(self):
         from django.contrib.auth.tokens import default_token_generator
 
-        request = self.context.get('request')
+        request = self.context.get("request")
         # Set some values to trigger the send_email method.
         # Default templates at:
         # https://github.com/mozilla/captain/blob/master/vendor/lib/python/django/contrib/admin/templates/registration/password_reset_email.html
         opts = {
-            'use_https': request.is_secure(),
-            'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
-            'request': request,
-            'token_generator': default_token_generator,
-            'html_email_template_name': 'core/emails/password_reset.html',
-            'email_template_name': 'core/emails/password_reset.txt'
+            "use_https": request.is_secure(),
+            "from_email": getattr(settings, "DEFAULT_FROM_EMAIL"),
+            "request": request,
+            "token_generator": default_token_generator,
+            "html_email_template_name": "core/emails/password_reset.html",
+            "email_template_name": "core/emails/password_reset.txt",
         }
         opts.update(self.get_email_options())
         self.reset_form.save(**opts)
@@ -192,11 +196,7 @@ class UserErrorSerialiser(serializers.Serializer):
 
 class BulkSetDueTimeSerializer(serializers.Serializer):
     class Meta:
-        fields = [
-            "due_time"
-            "flavours",
-            "content_item"
-        ]
+        fields = ["due_time" "flavours", "content_item"]
 
     due_time = serializers.DateTimeField()
     flavours = serializers.ListField(child=serializers.IntegerField())

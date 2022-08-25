@@ -133,19 +133,19 @@ router.register(
 )
 
 router.register(
-    r"activity_log_day_count",
+    r"activity_log_day_counts",
     activity_log_api_views.ActivityLogEntryDayCountViewset,
     "activitylogdaycount",
 )
 
 router.register(
-    r"event_type",
+    r"event_types",
     activity_log_api_views.EventTypeViewSet,
     "eventtype",
 )
 
 router.register(
-    r"activity_log_entry",
+    r"activity_log_entries",
     activity_log_api_views.ActivityLogEntryViewSet,
     "logentry",
 )
@@ -173,6 +173,12 @@ router.register(
     r"course_registrations",
     curriculum_tracking_api_views.CourseRegistrationViewset,
     "courseregistration",
+)
+
+router.register(
+    r"competence_review_queue",
+    curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
+    r"competencereviewqueue",
 )
 
 

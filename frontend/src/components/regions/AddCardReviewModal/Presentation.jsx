@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
-import { Typography, Paper, Button, Grid } from "@material-ui/core";
+import { Typography, Paper, Grid } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Alert from "@material-ui/lab/Alert";
 
+import Button from "../../widgets/Button";
 import Help from "../../widgets/Help";
 import CardButton from "../../widgets/CardButton";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
@@ -43,11 +44,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "0.5rem",
   },
   paperStyle: {
-    maxHeight: "80vh", 
-    maxWidth: "80vw", 
-    overflow: "auto", 
-    padding: "5px"
-  }
+    maxHeight: "80vh",
+    maxWidth: "80vw",
+    overflow: "auto",
+    padding: "5px",
+  },
 }));
 
 function StatusHelp() {
