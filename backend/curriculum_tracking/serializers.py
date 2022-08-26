@@ -722,3 +722,41 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     def get_curriculum_name(self, instance):
         return instance.curriculum.name
+
+
+class CompetenceReviewQueueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProject
+        fields = [
+            "id",
+            "agile_card",
+            "content_item_title",
+            "review_request_time",
+            "start_time",
+            "due_time",
+            "flavour_names",
+            "tag_names",
+            "code_review_competent_since_last_review_request",
+            "code_review_excellent_since_last_review_request",
+            "code_review_red_flag_since_last_review_request",
+            "code_review_ny_competent_since_last_review_request",
+            "recruit_users",
+            "reviewer_users",
+            "recruit_user_emails",
+            "reviewer_user_emails",
+        ]
+
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    recruit_user_emails = serializers.SerializerMethodField("get_recruit_user_emails")
+
+    reviewer_user_emails = serializers.SerializerMethodField("get_reviewer_user_emails")
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+
+    def get_recruit_user_emails(self, instance):
+        return [o.email for o in instance.recruit_users.all()]
+
+    def get_reviewer_user_emails(self, instance):
+        return [o.email for o in instance.reviewer_users.all()]

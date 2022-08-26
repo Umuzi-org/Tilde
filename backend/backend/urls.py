@@ -176,6 +176,12 @@ router.register(
 )
 
 router.register(
+    r"competence_review_queue",
+    curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
+    r"competencereviewqueue",
+)
+
+router.register(
     r"curriculum_content_requirements",
     curriculum_tracking_api_views.CurriculumContentRequirementViewset,
     'curriculumcontentrequirement'
