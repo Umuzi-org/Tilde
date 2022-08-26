@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+
+import Loading from "../../widgets/Loading";
 
 import {
   ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
@@ -21,7 +23,7 @@ function DashboardUnconnected({
 
   const teamId = parseInt(urlParams.teamId, 10);
   const team = teams[teamId];
-  React.useEffect(() => {
+  useEffect(() => {
     if (teamId) {
       fetchTeam({ teamId });
     }
@@ -45,6 +47,8 @@ function DashboardUnconnected({
       fetchUserActivityLogDayCountsSequence({ dataSequence });
     }
   }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
+
+  if (!teams || !activityLogDayCounts) return <Loading />;
 
   const eventTypes = [
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
