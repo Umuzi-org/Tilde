@@ -155,8 +155,31 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 # class log_card_review_request_cancelled_Tests(TestCase):
 
 
-# class log_card_moved_to_complete_Tests(TestCase):
+class log_card_moved_to_complete_Tests(TestCase):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
 
+    def test_card_moved_to_complete_called(
+        self, log_card_moved_to_complete):
+        actor_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(
+            status=AgileCard.IN_REVIEW,
+            content_item=ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+        self.login(actor_user)
+
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": COMPETENT, "comments": "woohoo"}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.COMPLETE)
+        log_card_moved_to_complete.assert_called_with(card, actor_user)
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
 
