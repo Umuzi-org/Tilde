@@ -291,6 +291,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "tag_names",
         "can_start",
         "can_force_start",
+        "project_link_submission",
         # "open_pr_count",
     ]
 
@@ -899,9 +900,39 @@ class TestCourseRegistrationViewSet(APITestCase, APITestCaseMixin):
         return course_registration
 
 
+class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "pullrequestreviewqueue-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    FIELDS_THAT_CAN_BE_FALSEY = ["review_request_time"]
+
+    def verbose_instance_factory(self):
+        card = AgileCardFactory()
+        project = card.recruit_project
+        project.set_flavours(["foo"])
+        project.content_item.tags.add(TagFactory())
+        project.code_review_competent_since_last_review_request = 12
+        project.code_review_excellent_since_last_review_request = 12
+        project.code_review_red_flag_since_last_review_request = 12
+        project.code_review_ny_competent_since_last_review_request = 12
+        project.reviewer_users.add(UserFactory())
+
+        pr = PullRequestFactory(state="open")
+        project.repository = pr.repository
+        project.save()
+
+        pr = PullRequestFactory(state="closed")
+        card = AgileCardFactory()
+        card.recruit_project.repository = pr.repository
+
+        return project
+
+
 class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "competencereviewqueue-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
+
+    FIELDS_THAT_CAN_BE_FALSEY = ["open_pr_count", "oldest_open_pr_updated_time"]
 
     def verbose_instance_factory(self):
         RecruitProjectFactory()

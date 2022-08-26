@@ -707,7 +707,7 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
         return instance.curriculum.name
 
 
-class CompetenceReviewQueueSerializer(serializers.ModelSerializer):
+class ProjectReviewQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProject
         fields = [
@@ -727,6 +727,9 @@ class CompetenceReviewQueueSerializer(serializers.ModelSerializer):
             "reviewer_users",
             "recruit_user_emails",
             "reviewer_user_emails",
+            "open_pr_count",
+            "oldest_open_pr_updated_time",
+            "repo_url",
         ]
 
     content_item_title = serializers.SerializerMethodField("get_content_item_title")
