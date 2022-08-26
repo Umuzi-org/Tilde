@@ -30,14 +30,15 @@ function UserActionsUnconnected({
   userBurndownStats,
   fetchUserBurndownStats,
 
-
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter(
+    (snapshot) => snapshot.user === userId
+  );
 
   React.useEffect(() => {
     fetchProjectReviewsPages({
@@ -51,8 +52,7 @@ function UserActionsUnconnected({
   React.useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
     fetchUserBurndownStats({ userId });
-  }, [fetchCardCompletions, userId]);
-
+  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
 
   const latestProjectReviewsCall = getLatestMatchingCall({
     callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
@@ -150,7 +150,6 @@ function UserActionsUnconnected({
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
-
   };
   return <Presentation {...props} />;
 }
@@ -165,8 +164,7 @@ const mapStateToProps = (state) => {
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-      userBurndownStats: state.apiEntities.burndownSnapshots || {},
-
+    userBurndownStats: state.apiEntities.burndownSnapshots || {},
   };
 };
 
@@ -179,18 +177,17 @@ const mapDispatchToProps = (dispatch) => {
         )
       );
     },
-        //TODO Implement Page check
-        fetchUserBurndownStats: ({ userId }) => {
-          dispatch(
-            apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-              data: { 
-                userId: parseInt(userId),
-                page: 1,
-               },
-            })
-          );
-        },
-    
+    //TODO Implement Page check
+    fetchUserBurndownStats: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
+          data: {
+            userId: parseInt(userId),
+            page: 1,
+          },
+        })
+      );
+    },
 
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(

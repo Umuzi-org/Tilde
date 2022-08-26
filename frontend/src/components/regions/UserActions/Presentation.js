@@ -18,10 +18,11 @@ const useStyles = makeStyles((theme) => ({
   },
   dateTypography: {
     marginTop: theme.spacing(2),
-
-    ['@media (max-width:620px)']: { // eslint-disable-line no-useless-computed-key
+    // eslint-disable-next-line
+    ["@media (max-width:620px)"]: {
+      // eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
-    }, 
+    },
     // marginLeft: theme.spacing(2),
     // marginTop: theme.spacing(0),
     // paddingTop: theme.spacing(0),
@@ -85,18 +86,16 @@ export default ({
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
-        <Grid>
-        {currentUserBurndownStats && (
-            <Grid item xs={12}>
+        <Grid item xs={12}>
+          {currentUserBurndownStats && (
+            <Grid>
               <Paper className={classes.paper}>
-              <UserBurnDownChart
-                        burnDownSnapshots={currentUserBurndownStats}
-                      />
+                <UserBurnDownChart
+                  burnDownSnapshots={currentUserBurndownStats}
+                />
               </Paper>
             </Grid>
           )}
-
-
           <Paper>
             {orderedDates.map((date) => (
               <DayLog
@@ -106,7 +105,6 @@ export default ({
                 handleClickOpenProjectDetails={handleClickOpenProjectDetails}
               />
             ))}
-
             {anyLoading && <Loading />}
           </Paper>
         </Grid>
