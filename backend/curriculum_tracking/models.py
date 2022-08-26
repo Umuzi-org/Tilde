@@ -507,6 +507,16 @@ class RecruitProject(
     #         ["content_item", "repository"],
     #     ]
 
+    def users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
+
+        reviews = RecruitProjectReview.objects.filter(recruit_project=self)
+
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
+
+        return [review.reviewer_user for review in reviews]
+
     @property
     def repo_url(self):
         if not self.repository:

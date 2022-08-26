@@ -747,6 +747,8 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
+            "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
         ]
 
     content_item_title = serializers.SerializerMethodField("get_content_item_title")
@@ -754,6 +756,16 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
     recruit_user_emails = serializers.SerializerMethodField("get_recruit_user_emails")
 
     reviewer_user_emails = serializers.SerializerMethodField("get_reviewer_user_emails")
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email for o in instance.users_that_reviewed_since_last_review_request()
+        ]
 
     def get_content_item_title(self, instance):
         return instance.content_item.title

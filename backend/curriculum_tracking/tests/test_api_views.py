@@ -904,7 +904,11 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "pullrequestreviewqueue-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
-    FIELDS_THAT_CAN_BE_FALSEY = ["review_request_time"]
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "review_request_time",
+        "users_that_reviewed_since_last_review_request",
+        "users_that_reviewed_since_last_review_request_emails",
+    ]
 
     def verbose_instance_factory(self):
         card = AgileCardFactory()
@@ -932,7 +936,12 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "competencereviewqueue-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
 
-    FIELDS_THAT_CAN_BE_FALSEY = ["open_pr_count", "oldest_open_pr_updated_time"]
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "open_pr_count",
+        "oldest_open_pr_updated_time",
+        "users_that_reviewed_since_last_review_request",
+        "users_that_reviewed_since_last_review_request_emails",
+    ]
 
     def verbose_instance_factory(self):
         RecruitProjectFactory()
