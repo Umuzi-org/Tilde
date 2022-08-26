@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
+import Loading from "../../widgets/Loading"
+
 function arrayToObjectWithIdKeys({ data }) {
   let dataAsObject = {};
 
@@ -120,6 +122,9 @@ function GroupCardSummaryUnconnected({
       fetchUserGroupSummaryCards({ userGroup });
     }
   }, [userGroup, fetchSingleUserGroup, teamId, fetchUserGroupSummaryCards]);
+
+  if (!cards || !teams || !FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE)
+    return <Loading />;
 
   const apiCallData = userGroup
     ? getApiCallData({
