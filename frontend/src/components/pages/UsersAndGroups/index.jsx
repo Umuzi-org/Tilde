@@ -5,6 +5,8 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
+import Loading from "../../widgets/Loading";
+
 export function cleanAndFilterTeams({ teams, filterBy }) {
   let ret = Object.values(teams);
   ret.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -80,9 +82,9 @@ function UsersAndGroupsUnconnected({
     filterByGroup: {},
     filterByUser: {},
   });
-  const [filterUsersByGroupName, setFilterUsersByGroupName] = React.useState(
-    ""
-  );
+
+  const [filterUsersByGroupName, setFilterUsersByGroupName] =
+    React.useState("");
   ignore(formState, formErrors, dataFromState);
 
   const handleUserGroupClick = (name) => {
@@ -128,26 +130,30 @@ function UsersAndGroupsUnconnected({
     fetchTeamSummaryStatsPages({ dataSequence });
   }, [fetchTeamsPages, fetchTeamSummaryStatsPages]);
 
+  if (props.teams.length < 1 || props.teamSummaryStats.length < 1) {
+    return <Loading />;
+  }
+
   return <Presentation {...props} />;
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams || {},
     teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
-};
+}
 
-function mapDispatchToProps (dispatch) {
-  function fetchTeamsPages ({ dataSequence }) {
+function mapDispatchToProps(dispatch) {
+  function fetchTeamsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
       })
     );
-  };
+  }
 
-  function fetchTeamSummaryStatsPages ({ dataSequence }) {
+  function fetchTeamSummaryStatsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
         {
@@ -155,13 +161,13 @@ function mapDispatchToProps (dispatch) {
         }
       )
     );
-  };
+  }
 
   return {
     fetchTeamsPages,
     fetchTeamSummaryStatsPages,
   };
-};
+}
 
 const UsersAndGroups = connect(
   mapStateToProps,
