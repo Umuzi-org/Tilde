@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 
 import Presentation from "./Presentation";
 
-function SummaryCardUnconnected ({ card }) {
-  if (card === undefined) return <div></div>;
-
+function SummaryCardUnconnected({ card }) {
+  
   const props = {
     card,
   };
-  return <Presentation {...props} />;
-};
+
+  if (card) return <Presentation {...props} />;
+}
 
 const mapStateToProps = (state) => {
   return {};
