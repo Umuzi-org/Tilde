@@ -12,6 +12,8 @@ import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 // } from "../../../utils/cardButtons";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
+import { useTraceUpdate } from "../../../hooks";
+import Loading from "../../widgets/Loading";
 
 function CardDetailsUnconnected({
   cards,
@@ -71,16 +73,12 @@ function CardDetailsUnconnected({
     card,
   ]);
 
-  const [
-    formState,
-    { linkSubmission },
-    formErrors,
-    dataFromState,
-  ] = useMaterialUiFormState({
-    linkSubmission: {
-      required: true,
-    },
-  });
+  const [formState, { linkSubmission }, formErrors, dataFromState] =
+    useMaterialUiFormState({
+      linkSubmission: {
+        required: true,
+      },
+    });
 
   const handleClickUpdateProjectLink = (e) => {
     e.preventDefault();
@@ -146,6 +144,13 @@ function CardDetailsUnconnected({
     formErrors,
   };
 
+  if (
+    cards === undefined &&
+    projects === undefined &&
+    projectReviews === undefined
+  ) {
+    return <Loading />;
+  }
   return <Presentation {...props} />;
 }
 
