@@ -7,6 +7,10 @@ import { useParams } from "react-router-dom";
 import { hasPermissionOnUser } from "../../../utils/permissions";
 import { TEAM_PERMISSIONS } from "../../../constants";
 
+import Loading from "../../widgets/Loading";
+
+import { useTraceUpdate } from "../../../hooks";
+
 function DashboardUnconnected({
   authUser,
   users,
@@ -20,7 +24,9 @@ function DashboardUnconnected({
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const currentUserDetailedStats = userDetailedStats[userId];
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter(
+    (snapshot) => snapshot.user === userId
+  );
 
   React.useEffect(() => {
     if (userId) {
@@ -42,6 +48,13 @@ function DashboardUnconnected({
     authUser,
   };
 
+  if (
+    Object.keys(users).length < 1 &&
+    Object.keys(userDetailedStats).length < 1 &&
+    Object.keys(userBurndownStats).length < 1
+  ) {
+    return <Loading />;
+  }
   return <Presentation {...props} />;
 }
 
@@ -76,10 +89,10 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserBurndownStats: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: { 
+          data: {
             userId: parseInt(userId),
             page: 1,
-           },
+          },
         })
       );
     },
