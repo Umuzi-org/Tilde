@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Presentation from "./Presentation";
 
 import { authOperations } from "../../../utils/googleLogin";
@@ -11,9 +11,9 @@ import { REST_AUTH_BASE_URL } from "../../../config";
 import { utilityOperations } from "@prelude/redux-api-toolbox/src/utilities";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
-import { useState } from "react";
+import {useTraceUpdate} from "../../../hooks"
 
-const LoginUnconnected = ({
+function LoginUnconnected({
   // google login
   initialiseGoogleAuthStart,
   AUTHENTICATE_WITH_ONE_TIME_TOKEN,
@@ -22,11 +22,13 @@ const LoginUnconnected = ({
   // email password login
   emailPassLoginLastCall,
   doEmailPassLogin,
-}) => {
+}){
   const loginWithGoogleButtonClick = (e) => {
     e.preventDefault();
     if (!googleLogin.loading) initialiseGoogleAuthStart(googleLogin);
   };
+  useTraceUpdate({initialiseGoogleAuthStart, AUTHENTICATE_WITH_ONE_TIME_TOKEN, googleLogin, emailPassLoginLastCall, doEmailPassLogin})
+  console.log("xxxxxxx")
 
   let error = "";
   if (
@@ -42,6 +44,7 @@ const LoginUnconnected = ({
   });
 
   const handleSubmitLoginForm = (e) => {
+    console.log("e", e)
     e.preventDefault();
     doEmailPassLogin(formData);
   };
