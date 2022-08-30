@@ -28,7 +28,7 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
 
 function ignore() {}
 
-function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
+export function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
   for (let group of Object.values(teams)) {
@@ -36,8 +36,9 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
       const email = member.userEmail;
 
       if (
-        filterBy &&
-        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1
+        (filterBy &&
+          email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) ||
+        member.userActive === false
       )
         continue;
 
@@ -62,6 +63,7 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
+
   return users;
 }
 
@@ -131,23 +133,23 @@ function UsersAndGroupsUnconnected({
   return <Presentation {...props} />;
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams || {},
     teamSummaryStats: state.apiEntities.teamSummaryStats || {},
   };
-};
+}
 
-function mapDispatchToProps (dispatch) {
-  function fetchTeamsPages ({ dataSequence }) {
+function mapDispatchToProps(dispatch) {
+  function fetchTeamsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
         dataSequence,
       })
     );
-  };
+  }
 
-  function fetchTeamSummaryStatsPages ({ dataSequence }) {
+  function fetchTeamSummaryStatsPages({ dataSequence }) {
     dispatch(
       apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
         {
@@ -155,13 +157,13 @@ function mapDispatchToProps (dispatch) {
         }
       )
     );
-  };
+  }
 
   return {
     fetchTeamsPages,
     fetchTeamSummaryStatsPages,
   };
-};
+}
 
 const UsersAndGroups = connect(
   mapStateToProps,
