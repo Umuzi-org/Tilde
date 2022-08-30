@@ -37,7 +37,7 @@ function ForgotPasswordUnconnected({
     formLastSentTo:
       (lastCall && lastCall.responseOk && lastCall.requestData.email) || "",
   };
-  // TODO
+  
   return <Presentation {...props} />;
 }
 
