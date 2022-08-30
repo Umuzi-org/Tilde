@@ -507,6 +507,31 @@ class RecruitProject(
     #         ["content_item", "repository"],
     #     ]
 
+    @property
+    def repo_url(self):
+        if not self.repository:
+            return None
+        return self.repository.ssh_url
+
+    @property
+    def open_pr_count(self):
+        repo = self.repository
+        if repo:
+            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
+        return 0
+
+    @property
+    def oldest_open_pr_updated_time(self):
+        repo = self.repository
+        if repo:
+            pr = (
+                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
+                .order_by("updated_at")
+                .first()
+            )
+            if pr:
+                return pr.updated_at
+
     def get_users_with_permission(self, permissions):
         from guardian.shortcuts import get_users_with_perms
 
@@ -1047,9 +1072,7 @@ class AgileCard(
     def repo_url(self):
         if not self.recruit_project:
             return None
-        if not self.recruit_project.repository:
-            return None
-        return self.recruit_project.repository.ssh_url
+        return self.recruit_project.repo_url
 
     @property
     def due_time(self):
@@ -1085,7 +1108,7 @@ class AgileCard(
 
     @property
     def project_link_submission(self):
-        return self.project.link_submission
+        return self.recruit_project.link_submission
 
     def __str__(self):
         return f"{self.status}:{self.content_item}"
@@ -1358,26 +1381,20 @@ class AgileCard(
 
     @property
     def open_pr_count(self):
-        repo = self.repository
-        if repo:
-            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
-        return 0
+        if not self.recruit_project:
+            return None
+        return self.recruit_project.open_pr_count
 
     @property
     def oldest_open_pr_updated_time(self):
-
-        repo = self.repository
-        if repo:
-            pr = (
-                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
-                .order_by("updated_at")
-                .first()
-            )
-            if pr:
-                return pr.updated_at
+        if not self.recruit_project:
+            return None
+        return self.recruit_project.oldest_open_pr_updated_time
 
     @property
     def repository(self):
+        if not self.recruit_project:
+            return None
         return self.recruit_project.repository
 
     @property
