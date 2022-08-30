@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
@@ -8,8 +8,6 @@ import { hasPermissionOnUser } from "../../../utils/permissions";
 import { TEAM_PERMISSIONS } from "../../../constants";
 
 import Loading from "../../widgets/Loading";
-
-import { useTraceUpdate } from "../../../hooks";
 
 function DashboardUnconnected({
   authUser,
@@ -28,7 +26,7 @@ function DashboardUnconnected({
     (snapshot) => snapshot.user === userId
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
