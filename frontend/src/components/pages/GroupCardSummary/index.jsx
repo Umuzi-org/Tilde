@@ -82,7 +82,7 @@ function getStudentUserDisplayData({ userGroup }) {
   if (!userGroup) return {};
   let ret = {};
   userGroup.members.forEach((member) => {
-    ret[member.userId] = member.userEmail;
+    if (member.userActive === true) ret[member.userId] = member.userEmail;
   });
   return ret;
 }
