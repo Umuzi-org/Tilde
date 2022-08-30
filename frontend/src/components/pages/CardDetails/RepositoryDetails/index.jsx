@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
-import Loading from "../../../widgets/Loading";
 
 function toLocaleString(dateTimeString) {
   if (dateTimeString) {
@@ -56,9 +55,8 @@ function RepositoryDetailsUnconnected({
     tabValue,
     handleChangeTab,
   };
-  console.log("Mumbo")
-  return <Loading />;
-  // return <Presentation {...props} />;
+  
+  return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
