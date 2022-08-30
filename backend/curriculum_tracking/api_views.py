@@ -1116,3 +1116,11 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
         "recruit_users",
         "reviewer_users",
     ]
+
+
+class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
+    queryset = models.CurriculumContentRequirement.objects.all().order_by("curriculum_id")
+    filterset_fields = ["curriculum", "content_item"]
+    serializer_class = serializers.CurriculumContentRequirementSerializer
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAdminUser]

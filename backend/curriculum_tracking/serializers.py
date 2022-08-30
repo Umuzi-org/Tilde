@@ -686,7 +686,24 @@ class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
         instance.set_flavours(flavour_names)
         return instance
 
+class CurriculumContentRequirementSerializer(serializers.ModelSerializer):
 
+    curriculum_name = serializers.CharField(read_only=True)
+    content_item_title = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = models.CurriculumContentRequirement
+        fields = ["id", "curriculum", "curriculum_name","content_item", "content_item_title"]
+
+    curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    def get_curriculum_name(self, instance):
+        return instance.curriculum.name
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+        
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     user_email = serializers.CharField(read_only=True)

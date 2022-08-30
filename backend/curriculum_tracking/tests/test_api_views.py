@@ -1006,3 +1006,11 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
         self.assertEqual(
             [d["id"] for d in queue], [card.recruit_project.id for card in cards[:4]]
         )
+
+
+class CurriculumContentRequirementViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "curriculumcontentrequirement-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.CurriculumContentRequirementFactory()
