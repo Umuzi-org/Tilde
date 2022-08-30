@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
-import Loading from "../../widgets/Loading"
+import Loading from "../../widgets/Loading";
 
 function arrayToObjectWithIdKeys({ data }) {
   let dataAsObject = {};
