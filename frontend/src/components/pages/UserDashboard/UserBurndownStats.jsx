@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
 }));
-
+// fix date duplication issue
 export default ({ burnDownSnapshots }) => {
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
