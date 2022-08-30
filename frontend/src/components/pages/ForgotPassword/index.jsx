@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+
 import Presentation from "./Presentation.jsx";
 
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
-
 import { apiReduxApps } from "@prelude/redux-api-toolbox/src/djRestAuth";
+
 import { REST_AUTH_BASE_URL } from "../../../config";
-import { useTraceUpdate } from "../../../hooks.js";
-import Loading from "../../widgets/Loading";
 
 function ForgotPasswordUnconnected({
   // mapStateToProps
@@ -19,9 +18,6 @@ function ForgotPasswordUnconnected({
   const [formData, setFormData] = useState({
     email: "",
   });
-
-  useTraceUpdate({ lastCall, resetPassword });
-  console.log("xxxxx");
 
   const handleSubmit = (e) => {
     e.preventDefault();
