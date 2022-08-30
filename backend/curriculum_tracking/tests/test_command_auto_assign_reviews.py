@@ -1,3 +1,4 @@
+from unittest import mock
 from django.utils import timezone
 from guardian.shortcuts import assign_perm
 from curriculum_tracking.models import AgileCard, ContentItem
@@ -60,8 +61,9 @@ def setup_config():
     # REQUIRED_TRUSTED_PERMISSIONED_REVIEWERS_PER_CARD
 
 
+@mock.patch("git_real.helpers.github_user_exists", return_value=True)
 class get_reviewer_users_by_permission_Tests(TestCase):
-    def test_only_returns_explicitly_permissioned_users(self):
+    def test_only_returns_explicitly_permissioned_users(self, _):
         team_managed = TeamFactory()
 
         PERMISSION_ONE = PERMISSION_REVIEW_CARDS
@@ -100,6 +102,7 @@ class get_reviewer_users_by_permission_Tests(TestCase):
         self.assertIn(user_super, result_two)
 
 
+@mock.patch("git_real.helpers.github_user_exists", return_value=True)
 class get_cards_needing_competent_reviewers_Tests(TestCase):
     def setUp(self):
 
@@ -128,15 +131,14 @@ class get_cards_needing_competent_reviewers_Tests(TestCase):
         ]
         self.assertGreater(len(self.project_cards_needing_review), 0)
 
-    def test_counts_work(self):
-
+    def test_counts_work(self, _):
         result = get_cards_needing_competent_reviewers()
         self.assertEqual(
             sorted([o.id for o in result]),
             sorted([o.id for o in self.project_cards_needing_review]),
         )
 
-    def test_skip_inactive_users(self):
+    def test_skip_inactive_users(self, _):
         for card in self.project_cards_needing_review:
             user = card.assignees.first()
             user.active = False
@@ -145,7 +147,7 @@ class get_cards_needing_competent_reviewers_Tests(TestCase):
         result = get_cards_needing_competent_reviewers()
         self.assertEqual(list(result), [])
 
-    def test_exclude_teams(self):
+    def test_exclude_teams(self, _):
 
         config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
@@ -159,11 +161,12 @@ class get_cards_needing_competent_reviewers_Tests(TestCase):
         )
 
 
+@mock.patch("git_real.helpers.github_user_exists", return_value=True)
 class get_possible_competent_reviewers_Tests(TestCase):
     def setUp(self):
         setup_config()
 
-    def test_that_only_competent_people_get_returned(self):
+    def test_that_only_competent_people_get_returned(self, _):
         config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[JAVASCRIPT]
@@ -185,7 +188,7 @@ class get_possible_competent_reviewers_Tests(TestCase):
         result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [])
 
-    def test_that_only_competent_people_get_returned(self):
+    def test_that_only_competent_people_get_returned(self, _):
 
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[JAVASCRIPT]
@@ -215,7 +218,7 @@ class get_possible_competent_reviewers_Tests(TestCase):
         result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [competent_project.recruit_users.first()])
 
-    def test_that_it_works_with_flavourless_projects(self):
+    def test_that_it_works_with_flavourless_projects(self, _):
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[]
         )
@@ -237,7 +240,7 @@ class get_possible_competent_reviewers_Tests(TestCase):
         result = list(get_possible_competent_reviewers(card))
         self.assertEqual(result, [competent_project.recruit_users.first()])
 
-    def test_that_reviewers_returned_in_order(self):
+    def test_that_reviewers_returned_in_order(self, _):
         content_item = ContentItemFactory()
         competent_projects = [
             RecruitProjectFactory(

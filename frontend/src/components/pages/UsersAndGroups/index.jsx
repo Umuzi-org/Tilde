@@ -30,7 +30,7 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
 
 function ignore() {}
 
-function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
+export function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
   for (let group of Object.values(teams)) {
@@ -38,8 +38,9 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
       const email = member.userEmail;
 
       if (
-        filterBy &&
-        email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1
+        (filterBy &&
+          email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) ||
+        member.userActive === false
       )
         continue;
 
@@ -64,6 +65,7 @@ function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
     }
     return usersFilteredByGroup;
   }
+
   return users;
 }
 
