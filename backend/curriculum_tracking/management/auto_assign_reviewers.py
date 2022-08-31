@@ -79,6 +79,34 @@ If someone has earned trust should they be added at Step 1 or Step 3 If they are
 # )
 
 
+def card_team_not_excluded(card):
+    config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
+
+    for user in card.assignees.all():
+        for team in user.teams():
+            if not team.active:
+                continue
+            for name in config.EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP:
+                if name.lower() in team.name.lower():
+                    # print(f"team = {team.name}")
+                    # print("noop")
+                    return
+    # print("card ok")
+    return True
+
+
+def card_github_users_ok(card):
+    from git_real.helpers import github_user_exists  # imported here so mock.patch works
+
+    for user in card.assignees.all():
+        if not github_user_exists(user.github_name):
+            return False
+    for user in card.reviewers.all():
+        if not github_user_exists(user.github_name):
+            return False
+    return True
+
+
 def get_cards_needing_competent_reviewers() -> Iterable[AgileCard]:
     """
     cards need reviewers if:
@@ -86,21 +114,7 @@ def get_cards_needing_competent_reviewers() -> Iterable[AgileCard]:
     - they belong to active users
     - they don't have enough reviewers added
     """
-
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
-
-    def card_team_check(card):
-        for user in card.assignees.all():
-            for team in user.teams():
-                if not team.active:
-                    continue
-                for name in config.EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP:
-                    if name.lower() in team.name.lower():
-                        # print(f"team = {team.name}")
-                        # print("noop")
-                        return
-        # print("card ok")
-        return True
 
     for card in (
         AgileCard.objects.filter(assignees__active__in=[True])
@@ -114,7 +128,7 @@ def get_cards_needing_competent_reviewers() -> Iterable[AgileCard]:
             | Q(status=AgileCard.REVIEW_FEEDBACK)
         )
     ):
-        if card_team_check(card):
+        if card_team_not_excluded(card) and card_github_users_ok(card):
             yield card
 
 
@@ -135,6 +149,8 @@ def get_possible_competent_reviewers(card):
 
     count the number of cards with the same content_item and flavours where a user is the reviewer. Order = count ascending
     """
+    from git_real.helpers import github_user_exists  # imported here so mock.patch works
+
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
     projects: RecruitProject = RecruitProject.objects.filter(
@@ -160,11 +176,13 @@ def get_possible_competent_reviewers(card):
     # TODO: check teams. Order stuff so that we don't end up with 2 users in a row who have the same team
 
     for user in competent_users:
-        assert user_is_competent_for_card_project(card, user)
-        yield user
+        if github_user_exists(user.github_name):
+            assert user_is_competent_for_card_project(card, user)
+            yield user
 
 
 def auto_assign_competent_reviewers():
+
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
     cards = list(get_cards_needing_competent_reviewers())
@@ -203,6 +221,8 @@ def get_user_current_review_duty_count(user):
 
 
 def get_reviewer_users_by_permission(team, permission):
+    from git_real.helpers import github_user_exists  # imported here so mock.patch works
+
     user_permissions = get_users_with_perms(
         team, attach_perms=True, with_superusers=False
     )
@@ -212,7 +232,7 @@ def get_reviewer_users_by_permission(team, permission):
         for u in reviewer_users
         if team in get_objects_for_user(u, permission, Team, with_superuser=False)
     ]
-    return reviewer_users
+    return [user for user in reviewer_users if github_user_exists(user.github_name)]
 
 
 def get_cards_needing_trusted_reviewer_allocation(team):
@@ -222,7 +242,7 @@ def get_cards_needing_trusted_reviewer_allocation(team):
         days=config.TRUSTED_REVIEW_WAIT_TIME
     )
 
-    return (
+    result = (
         AgileCard.objects.filter(assignees__active__in=[True])
         .filter(content_item__content_type=ContentItem.PROJECT)
         .annotate(
@@ -242,10 +262,12 @@ def get_cards_needing_trusted_reviewer_allocation(team):
         .filter(status=AgileCard.IN_REVIEW)
     )
 
+    return [card for card in result if card_github_users_ok(card)]
+
 
 def get_cards_needing_reviewer_allocation(team):
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
-    return (
+    result = (
         AgileCard.objects.filter(assignees__active__in=[True])
         .filter(content_item__content_type=ContentItem.PROJECT)
         .exclude(content_item__tags__name__in=config.SKIP_CARD_TAGS_ALL_STEPS)
@@ -256,6 +278,7 @@ def get_cards_needing_reviewer_allocation(team):
             | Q(status=AgileCard.REVIEW_FEEDBACK)
         )
     )
+    return [card for card in result if card_github_users_ok(card)]
 
 
 def auto_assign_reviewers_based_on_reviewer_team_permission():
