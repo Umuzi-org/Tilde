@@ -62,7 +62,6 @@ const LoginForm = ({
   loginFormLoading,
 }) => {
   const classes = useStyles();
-  // console.log(formErrors);
 
   return (
     <form className={classes.root}>

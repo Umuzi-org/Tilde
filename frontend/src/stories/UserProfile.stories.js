@@ -1,9 +1,12 @@
 import React from "react";
-import Presentation from "../components/pages/UserProfile/Presentation";
+import UserProfile from "../components/pages/UserProfile/Presentation";
 
 export default {
-    title: "Tilde/Pages/UserProfile",
-    component: Presentation,
+  title: "Tilde/Pages/UserProfile",
+  component: UserProfile,
 };
 
-export const Primary = () => <Presentation />;
+export const Primary = (args) => <UserProfile {...args} />;
+Primary.args = {
+  nameTag: "Some name",
+};

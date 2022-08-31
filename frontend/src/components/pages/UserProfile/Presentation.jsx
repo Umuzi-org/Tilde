@@ -6,8 +6,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import NickName from "./NickName";
-import ProfilePicture from "./ProfilePicture";
 import UserProfileDetails from "./UserProfileDetails";
+
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import AddAPhotoOutlinedIcon from "@material-ui/icons/AddAPhotoOutlined";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,10 +31,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     textTransform: "none",
+    position: "relative",
   },
 }));
 
-export default function UserProfile() {
+export default function UserProfile({ nameTag }) {
   const classes = useStyles();
 
   return (
@@ -46,15 +50,34 @@ export default function UserProfile() {
       >
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={classes.paper} elevation={6}>
-            <ProfilePicture />
+            <Avatar
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE0C0c1iCMuK9Lds3ew0ZSIwW_bASXVfS82w&usqp=CAU"
+              alt="profile picture"
+              variant="rounded"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+            <div>
+            <Button
+              onClick={this}
+              style={{
+                color: "black",
+                backgroundColor: "white",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                zIndex: "100",
+              }}
+            >
+              <AddAPhotoOutlinedIcon />
+            </Button>
+            </div>
           </Paper>
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
-          <Paper
-            className={classes.paper}
-            elevation={6}
-            style={{ position: "relative" }}
-          >
+          <Paper className={classes.paper} elevation={6}>
             <div style={{ position: "absolute", top: 30 }}>
               <Typography variant="h3">
                 First Name
