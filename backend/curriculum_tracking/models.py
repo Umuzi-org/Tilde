@@ -1477,7 +1477,7 @@ class AgileCard(
 
         reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
-        return [review.reviewer_user_id for review in reviews]
+        return [review.reviewer_user for review in reviews]
 
 
 # class ExtraTeamConfig(models.Model, Mixins):

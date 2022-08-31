@@ -249,6 +249,7 @@ async function repositoryEntity({ repositoryId }) {
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
+
 async function repositoryCommitsPage({ repositoryId, page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
@@ -257,6 +258,7 @@ async function repositoryCommitsPage({ repositoryId, page }) {
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
+
 async function repositoryPullRequestsPage({ repositoryId, page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
@@ -379,7 +381,7 @@ async function activityLogDayCountsPage({
   return { response, responseData };
 }
 
-async function activityLogEntries({
+async function fetchActivityLogEntries({
   eventTypeName,
   effectedUser,
   actorUser,
@@ -410,6 +412,24 @@ async function activityLogEntries({
   const { response, responseData } = await fetchAndClean({
     url,
   });
+  return { response, responseData };
+}
+
+async function pullRequestReviewQueue({ page }) {
+  const limit = 10;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/pull_request_review_queue/?limit=${limit}&offset=${offset}`;
+  const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
+async function competenceReviewQueue({ page }) {
+  const limit = 10;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/competence_review_queue/?limit=${limit}&offset=${offset}`;
+  const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
 
@@ -450,5 +470,7 @@ export default {
   personallyAssignedCardSummaryEntity,
   agileCardEntity,
   activityLogDayCountsPage,
-  activityLogEntries,
+  fetchActivityLogEntries,
+  pullRequestReviewQueue,
+  competenceReviewQueue,
 };

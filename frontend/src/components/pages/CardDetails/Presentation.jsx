@@ -19,7 +19,8 @@ import FlavourChips from "../../widgets/FlavourChips";
 import CardBadges from "../../widgets/CardBadges";
 
 import ProjectDetails from "./ProjectDetails";
-import UsersTable from "./UsersTable";
+import AssigneesList from "../../widgets/AssigneesList";
+import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => {
@@ -93,14 +94,20 @@ function CardBasicDetails({ card }) {
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
-            <UsersTable
+            <AssigneesList
               userNames={card.assigneeNames}
               userIds={card.assignees}
             />
             <Typography variant="subtitle2">Reviewers:</Typography>
-            <UsersTable
-              userNames={card.reviewerNames}
-              userIds={card.reviewers}
+            <ReviewersTable
+              reviewerUserEmails={card.reviewerNames}
+              reviewerUsers={card.reviewers}
+              usersThatReviewedSinceLastReviewRequestEmails={
+                card.usersThatReviewedSinceLastReviewRequestEmails
+              }
+              usersThatReviewedSinceLastReviewRequest={
+                card.usersThatReviewedSinceLastReviewRequest
+              }
             />
           </Paper>
         </Grid>

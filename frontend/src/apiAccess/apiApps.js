@@ -59,6 +59,10 @@ const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
 
 const FETCH_ACTIVITY_LOG_ENTRIES = "FETCH_ACTIVITY_LOG_ENTRIES";
 
+const FETCH_COMPETENCE_REVIEW_QUEUE_PAGE = "FETCH_COMPETENCE_REVIEW_QUEUE_PAGE";
+const FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE =
+  "FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE";
+
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
     BASE_TYPE: WHO_AM_I,
@@ -328,9 +332,23 @@ export const apiReduxApps = {
 
   FETCH_ACTIVITY_LOG_ENTRIES: createReduxApp({
     BASE_TYPE: FETCH_ACTIVITY_LOG_ENTRIES,
-    apiCaller: apiCallers.activityLogEntries,
+    apiCaller: apiCallers.fetchActivityLogEntries,
     responseIsList: true,
-    responseEntityType: "activityLogEntries",
+    responseEntityType: "fetchActivityLogEntries",
+  }),
+
+  FETCH_COMPETENCE_REVIEW_QUEUE_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
+    apiCaller: apiCallers.competenceReviewQueue,
+    responseIsList: true,
+    responseEntityType: "competenceReviewQueueProject",
+  }),
+
+  FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+    apiCaller: apiCallers.pullRequestReviewQueue,
+    responseIsList: true,
+    responseEntityType: "pullRequestReviewQueueProject",
   }),
 };
 
