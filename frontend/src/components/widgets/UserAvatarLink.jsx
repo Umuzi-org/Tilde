@@ -19,12 +19,10 @@ const useStyles = makeStyles({
 export function getAvatarInitials(email) {
   const alphanumerals = /[a-zA-Z0-9]/;
   const emailUsername = email.substr(0, email.indexOf("@"));
-  // For Umuzi emails - take the first letters of the firstname and lastname
   if (email.endsWith("umuzi.org")) {
     const [firstname, lastname] = emailUsername.split(".");
     return (firstname[0] + lastname[0]).toUpperCase();
   }
-  // Other emails - take first two letters/digits
   let firstTwoLetters = "";
   for (let i = 0; i < emailUsername.length; i++) {
     if (alphanumerals.test(emailUsername[i]))
