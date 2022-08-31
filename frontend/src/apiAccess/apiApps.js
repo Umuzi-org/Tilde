@@ -56,7 +56,7 @@ const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
 
 const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
-const LIST_EVENT_TYPES = "LIST_EVENT_TYPES";
+const FETCH_LIST_EVENT_TYPES = "FETCH_LIST_EVENT_TYPES";
 
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
@@ -324,8 +324,8 @@ export const apiReduxApps = {
     responseEntityType: "cards",
     responseIsList: false,
   }),
-  LIST_EVENT_TYPES: createReduxApp({
-    BASE_TYPE: LIST_EVENT_TYPES,
+  FETCH_LIST_EVENT_TYPES: createReduxApp({
+    BASE_TYPE: FETCH_LIST_EVENT_TYPES,
     apiCaller: apiCallers.listEventTypes,
     responseIsList: true,
     responseEntityType: "listEventTypes",
