@@ -183,14 +183,29 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
 
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email
+            for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
+
     def get_users_that_reviewed_since_last_review_request(self, instance):
-        return instance.get_users_that_reviewed_since_last_review_request()
+        return [
+            o.id for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
 
 
 class CardSummarySerializer(serializers.ModelSerializer):
