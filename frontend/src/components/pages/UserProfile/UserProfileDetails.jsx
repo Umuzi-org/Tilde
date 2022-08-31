@@ -7,7 +7,7 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import MailIcon from "@material-ui/icons/Mail";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 // You can read more about iconify here: https://docs.iconify.design/icon-components/react/
-// import { Icon } from "@iconify/react";
+import { Icon } from "@iconify/react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,10 +33,11 @@ export default function UserProfileButton() {
         aria-label="text primary button group"
         variant="text"
         size={`${mobile ? "large" : "small"}`}
+        disabled
       >
         <Button className={classes.textStyle}>
           rocketchat name
-          {/* <Icon icon="logos:rocket-chat-icon" /> */}
+          <Icon icon="logos:rocket-chat-icon" />
         </Button>
         <Button className={classes.textStyle}>
           github name

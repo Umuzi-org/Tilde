@@ -1,12 +1,7 @@
 import React from "react";
 import Presentation from "./Presentation";
 
-export default ({ nameTag }) => {
-  let nameTag = "some name";
-
-  const props = {
-    nameTag,
-  };
-
+export default () => {
+  
   return <Presentation {...prop} />;
 };

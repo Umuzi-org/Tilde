@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserProfile({ nameTag }) {
+export default function UserProfile() {
   const classes = useStyles();
 
   return (
@@ -60,19 +60,19 @@ export default function UserProfile({ nameTag }) {
               }}
             />
             <div>
-            <Button
-              onClick={this}
-              style={{
-                color: "black",
-                backgroundColor: "white",
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                zIndex: "100",
-              }}
-            >
-              <AddAPhotoOutlinedIcon />
-            </Button>
+              <Button
+                onClick={this}
+                style={{
+                  color: "black",
+                  backgroundColor: "white",
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  zIndex: "100",
+                }}
+              >
+                <AddAPhotoOutlinedIcon />
+              </Button>
             </div>
           </Paper>
         </Grid>
@@ -87,6 +87,7 @@ export default function UserProfile({ nameTag }) {
               </Typography>
             </div>
             <UserProfileDetails style={{ position: "relative", top: 60 }} />
+            <div>TODO</div>
           </Paper>
         </Grid>
       </Grid>
