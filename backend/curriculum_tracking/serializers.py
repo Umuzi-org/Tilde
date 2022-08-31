@@ -183,14 +183,29 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
 
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email
+            for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
+
     def get_users_that_reviewed_since_last_review_request(self, instance):
-        return instance.get_users_that_reviewed_since_last_review_request()
+        return [
+            o.id for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
 
 
 class CardSummarySerializer(serializers.ModelSerializer):
@@ -687,6 +702,31 @@ class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
         return instance
 
 
+class CurriculumContentRequirementSerializer(serializers.ModelSerializer):
+
+    curriculum_name = serializers.CharField(read_only=True)
+    content_item_title = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = models.CurriculumContentRequirement
+        fields = [
+            "id",
+            "curriculum",
+            "curriculum_name",
+            "content_item",
+            "content_item_title",
+        ]
+
+    curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    def get_curriculum_name(self, instance):
+        return instance.curriculum.name
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+
+
 class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     user_email = serializers.CharField(read_only=True)
@@ -705,3 +745,64 @@ class CourseRegistrationSerialiser(serializers.ModelSerializer):
 
     def get_curriculum_name(self, instance):
         return instance.curriculum.name
+
+
+class ProjectReviewQueueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProject
+        fields = [
+            "id",
+            "agile_card",
+            "content_item_title",
+            "review_request_time",
+            "start_time",
+            "due_time",
+            "flavour_names",
+            "tag_names",
+            "code_review_competent_since_last_review_request",
+            "code_review_excellent_since_last_review_request",
+            "code_review_red_flag_since_last_review_request",
+            "code_review_ny_competent_since_last_review_request",
+            "open_pr_count",
+            "oldest_open_pr_updated_time",
+            "repo_url",
+            "recruit_users",
+            "reviewer_users",
+            "recruit_user_emails",
+            "reviewer_user_emails",
+            "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
+        ]
+
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    recruit_user_emails = serializers.SerializerMethodField("get_recruit_user_emails")
+
+    reviewer_user_emails = serializers.SerializerMethodField("get_reviewer_user_emails")
+
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
+        "get_users_that_reviewed_since_last_review_request"
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email for o in instance.users_that_reviewed_since_last_review_request()
+        ]
+
+    def get_users_that_reviewed_since_last_review_request(self, instance):
+        return [o.id for o in instance.users_that_reviewed_since_last_review_request()]
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+
+    def get_recruit_user_emails(self, instance):
+        return [o.email for o in instance.recruit_users.all()]
+
+    def get_reviewer_user_emails(self, instance):
+        return [o.email for o in instance.reviewer_users.all()]
