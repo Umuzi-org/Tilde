@@ -16,19 +16,19 @@ const useStyles = makeStyles({
   },
 });
 
-export function getAvatarTextInitials(email) {
-  const customPartOfAnEmail = email.substr(0, email.indexOf("@"));
+export function getAvatarInitials(email) {
+  const alphanumerals = /[a-zA-Z0-9]/;
+  const emailUsername = email.substr(0, email.indexOf("@"));
   // For Umuzi emails - take the first letters of the firstname and lastname
   if (email.endsWith("umuzi.org")) {
-    const [firstname, lastname] = customPartOfAnEmail.split(".");
+    const [firstname, lastname] = emailUsername.split(".");
     return (firstname[0] + lastname[0]).toUpperCase();
   }
   // Other emails - take first two letters/digits
   let firstTwoLetters = "";
-  const alphanumerals = /[a-zA-Z0-9]/;
-  for (let i = 0; i < customPartOfAnEmail.length; i++) {
-    if (alphanumerals.test(customPartOfAnEmail[i]))
-      firstTwoLetters += customPartOfAnEmail[i];
+  for (let i = 0; i < emailUsername.length; i++) {
+    if (alphanumerals.test(emailUsername[i]))
+      firstTwoLetters += emailUsername[i];
     if (firstTwoLetters.length === 2) return firstTwoLetters.toUpperCase();
   }
 }
@@ -38,7 +38,7 @@ function UserAvatarLink({ email, userId }) {
   return (
     <div className={classes.container}>
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
-        <Avatar>{getAvatarTextInitials(email)}</Avatar>
+        <Avatar>{getAvatarInitials(email)}</Avatar>
       </Link>
       <Typography>{email}</Typography>
     </div>
