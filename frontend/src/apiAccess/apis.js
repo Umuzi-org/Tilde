@@ -381,7 +381,7 @@ async function activityLogDayCountsPage({
   return { response, responseData };
 }
 
-async function fetchActivityLogEntries({
+async function activityLogEntries({
   eventTypeName,
   effectedUser,
   actorUser,
@@ -470,7 +470,7 @@ export default {
   personallyAssignedCardSummaryEntity,
   agileCardEntity,
   activityLogDayCountsPage,
-  fetchActivityLogEntries,
+  activityLogEntries,
   pullRequestReviewQueue,
   competenceReviewQueue,
 };

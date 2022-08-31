@@ -332,9 +332,9 @@ export const apiReduxApps = {
 
   FETCH_ACTIVITY_LOG_ENTRIES: createReduxApp({
     BASE_TYPE: FETCH_ACTIVITY_LOG_ENTRIES,
-    apiCaller: apiCallers.fetchActivityLogEntries,
+    apiCaller: apiCallers.activityLogEntries,
     responseIsList: true,
-    responseEntityType: "fetchActivityLogEntries",
+    responseEntityType: "activityLogEntries",
   }),
 
   FETCH_COMPETENCE_REVIEW_QUEUE_PAGE: createReduxApp({
