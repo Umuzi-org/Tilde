@@ -130,8 +130,8 @@ function AgileBoardUnconnected({
   fetchInitialCards,
   fetchUser,
 }) {
-  let urlParams = useParams();
-  const userId = parseInt(urlParams.userId || authedUserId);
+  let urlParams = useParams() || {};
+  const userId = parseInt(urlParams.userId || authedUserId || 0);
 
   useEffect(() => {
     if (userId !== undefined) fetchUser({ userId });
