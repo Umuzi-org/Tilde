@@ -399,6 +399,18 @@ async function competenceReviewQueue({ page }) {
   return { response, responseData };
 }
 
+async function fetchEventTypes({ page }) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/event_type/?limit=${limit}&offset=${offset}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
+
 export default {
   whoAmI,
   logout,
@@ -438,4 +450,5 @@ export default {
   activityLogDayCountsPage,
   pullRequestReviewQueue,
   competenceReviewQueue,
+  fetchEventTypes,
 };
