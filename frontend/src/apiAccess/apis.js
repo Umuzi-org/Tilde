@@ -357,6 +357,10 @@ async function activityLogDayCountsPage({
   eventTypeName,
   actorUser,
   effectedUser,
+  // object1ContentType,
+  // object1Id,
+  // object2ContentType,
+  // object2Id,
   page,
 }) {
   const limit = 20;
@@ -369,9 +373,14 @@ async function activityLogDayCountsPage({
   if (eventTypeName) params["event_type__name"] = eventTypeName;
   if (actorUser) params["actor_user"] = actorUser;
   if (effectedUser) params["effected_user"] = effectedUser;
+  // if (object1ContentType) params["object_1_content_type"] = object1ContentType;
+  // if (object1Id) params["object_1_id"] = object1Id;
+  // if (object2ContentType) params["object_2_content_type"] = object2ContentType;
+  // if (object2Id) params["object_2_id"] = object2Id;
+
   const getParams = objectToGetQueryString(params);
 
-  const url = `${API_BASE_URL}/api/activity_log_day_count/?${getParams}`;
+  const url = `${API_BASE_URL}/api/activity_log_day_counts/?${getParams}`;
 
   const { response, responseData } = await fetchAndClean({
     url,
