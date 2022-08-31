@@ -1,12 +1,12 @@
 import React from "react";
-
-import { Typography, Paper, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import {
   ActionReviewedCard,
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
 import Loading from "../../widgets/Loading";
-
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
@@ -17,15 +17,10 @@ const useStyles = makeStyles((theme) => ({
   },
   dateTypography: {
     marginTop: theme.spacing(2),
-
-    ['@media (max-width:620px)']: { // eslint-disable-line no-useless-computed-key
+    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
-    }, 
-    // marginLeft: theme.spacing(2),
-    // marginTop: theme.spacing(0),
-    // paddingTop: theme.spacing(0),
+    },
   },
-
   column: {
     height: "85%", // TODO. Fit viewport
     overflowY: "scroll",
@@ -102,7 +97,3 @@ export default ({
     </div>
   );
 };
-
-// {actionLog.map((action) => {
-
-//   })}

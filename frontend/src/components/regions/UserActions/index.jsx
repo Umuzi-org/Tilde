@@ -111,7 +111,6 @@ function UserActionsUnconnected({
       return {
         ...card,
         ...timeFields,
-
         actionType: ACTION_NAMES.CARD_COMPLETED,
       };
     });
