@@ -1,4 +1,3 @@
-from urllib import response
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -22,10 +21,10 @@ from core.permissions import (
 )
 from core.models import Team, User, Stream
 import curriculum_tracking.activity_log_entry_creators as log_creators
-from django.db.models import Q
-
 from rest_framework import filters
 from social_auth.models import SocialProfile
+from guardian.shortcuts import get_objects_for_user
+from django.db.models import Q, Max
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -1051,3 +1050,77 @@ class CourseRegistrationViewset(viewsets.ModelViewSet):
             )
         )
     ]
+
+
+class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
+    serializer_class = serializers.ProjectReviewQueueSerializer
+    filter_backends = [DjangoFilterBackend]
+
+    permission_classes = [IsReadOnly]
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        queryset = super().get_queryset(*args, **kwargs)
+        if user.is_superuser:
+            return queryset
+
+        filter = Q(recruit_users__in=[user]) | Q(reviewer_users__in=[user])
+
+        for PERMISSION in Team.PERMISSION_VIEW:
+
+            teams = get_objects_for_user(user, PERMISSION, Team)
+            for team in teams:
+                team_users = team.user_set.all()
+                filter = (
+                    filter
+                    | Q(recruit_users__in=team_users)
+                    | Q(reviewer_users__in=team_users)
+                )
+
+        queryset = queryset.filter(filter)
+        return queryset
+
+
+class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
+    queryset = (
+        models.RecruitProject.objects.filter(
+            agile_card__status=models.AgileCard.IN_REVIEW
+        )
+        .filter(recruit_users__active__in=[True])
+        .order_by("review_request_time")
+    )
+    filterset_fields = [
+        "recruit_users",
+        "reviewer_users",
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+    ]
+
+
+class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
+    queryset = (
+        models.RecruitProject.objects.filter(recruit_users__active__in=[True])
+        .filter(
+            repository__pull_requests__in=git_models.PullRequest.objects.filter(
+                state="open"
+            )
+        )
+        .annotate(
+            pr_time=Max("repository__pull_requests__updated_at"),
+        )
+        .order_by("pr_time")
+    )
+    filterset_fields = [
+        "recruit_users",
+        "reviewer_users",
+    ]
+
+
+class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
+    queryset = models.CurriculumContentRequirement.objects.all().order_by("curriculum_id")
+    filterset_fields = ["curriculum", "content_item"]
+    serializer_class = serializers.CurriculumContentRequirementSerializer
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAdminUser]
