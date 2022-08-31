@@ -11,7 +11,7 @@ import { Icon } from "@iconify/react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: "block",
     "& > *": {
       margin: theme.spacing(1),
     },
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserProfileButton() {
+export default function UserProfileDetails() {
   const classes = useStyles();
   const mobile = useMediaQuery("(min-width:600px)");
 
@@ -36,16 +36,28 @@ export default function UserProfileButton() {
         disabled
       >
         <Button className={classes.textStyle}>
-          rocketchat name
-          <Icon icon="logos:rocket-chat-icon" />
+          <div>
+            <div>rocketchat name</div>
+            <div>
+              <Icon icon="logos:rocket-chat-icon" />
+            </div>
+          </div>
         </Button>
         <Button className={classes.textStyle}>
-          github name
-          <GitHubIcon />
+          <div>
+            <div>github name</div>
+            <div>
+              <GitHubIcon />
+            </div>
+          </div>
         </Button>
         <Button className={classes.textStyle}>
-          email address
-          <MailIcon />
+          <div>
+            <div>email address</div>
+            <div>
+              <MailIcon />
+            </div>
+          </div>
         </Button>
       </ButtonGroup>
     </div>

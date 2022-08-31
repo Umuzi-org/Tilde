@@ -63,12 +63,12 @@ export default function UserProfile() {
               <Button
                 onClick={this}
                 style={{
-                  color: "black",
-                  backgroundColor: "white",
+                  color: "white",
+                  backgroundColor: "#ff9800",
                   position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  zIndex: "100",
+                  bottom: 10,
+                  right: 10,
+                  zIndex: "2",
                 }}
               >
                 <AddAPhotoOutlinedIcon />
@@ -87,7 +87,9 @@ export default function UserProfile() {
               </Typography>
             </div>
             <UserProfileDetails style={{ position: "relative", top: 60 }} />
-            <div>TODO</div>
+            <div style={{ position: "absolute", bottom: 10, right: 10 }}>
+              <a hre="#">forgot password ?</a>
+            </div>
           </Paper>
         </Grid>
       </Grid>
