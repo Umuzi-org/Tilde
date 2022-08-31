@@ -8,6 +8,7 @@ const TeamNavBarUnconnected = ({ fetchTeam, teams, authUserId }) => {
   let urlParams = useParams() || {};
 
   const teamId = urlParams.teamId;
+  teams = teams || {};
   const team = teams[teamId];
   const authUser = teams[authUserId];
 
@@ -17,7 +18,6 @@ const TeamNavBarUnconnected = ({ fetchTeam, teams, authUserId }) => {
   }, [fetchTeam, team, teamId, authUser]);
 
   const url = window.location.href;
-
   const teamCardSummarySelected = url.endsWith("/card_summary"); // these match the urls in routes.js. Also the UserNavBar, could definately be more DRY
   const teamDashboardSelected = url.endsWith("/dashboard");
 
@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    teams: state.apiEntities.teams || {},
+    teams: state.apiEntities.teams,
     authteamId: state.App.authUser.teamId,
   };
 };
