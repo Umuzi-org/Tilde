@@ -28,12 +28,6 @@ import {
   ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
 } from "../../constants";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    // color: theme.palette.text.secondary,
-  },
-}));
-
 const activityLogDayCounts = [
   {
     id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=236",
@@ -51,7 +45,32 @@ const activityLogDayCounts = [
     total: 3,
   },
 ];
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    // color: theme.palette.text.secondary,
+  },
+  containerStyles: {
+    height: 20,
+    width: "100%",
+    backgroundColor: "#e0e0de",
+    borderRadius: 50,
+    margin: 50,
+  },
 
+  fillerStyles: {
+    height: "100%",
+    // width: `${completed}%`,
+    // backgroundColor: `${bgcolor}`,
+    borderRadius: "inherit",
+    textAlign: "right",
+  },
+
+  labelStyles: {
+    padding: 5,
+    color: "white",
+    fontWeight: "bold",
+  },
+}));
 const result = getActivityLogCountsByDayForSingleUser({
   activityLogDayCounts,
   userId: 236,
@@ -61,25 +80,54 @@ const result = getActivityLogCountsByDayForSingleUser({
   ],
 });
 
+function Activity(props) {
+  const classes = useStyles();
+  const { bgColor, completed } = props; // fix names
+
+  return (
+    <div className={classes.containerStyles}>
+      <div
+        className={classes.fillerStyles}
+        backgroundColor={bgColor}
+        width={completed}
+      >
+        <span className={classes.labelStyles}>{completed}</span>
+      </div>
+    </div>
+  );
+}
+
 console.log("hello", result);
 
 export default ({ args }) => {
   const classes = useStyles();
-
+  const testData = [
+    { bgcolor: "#6a1b9a", completed: 60 },
+    { bgcolor: "#00695c", completed: 30 },
+    { bgcolor: "#ef6c00", completed: 53 },
+  ];
   return (
     <div>
       {/* <BarChart width={150} height={40} data={result}>
         <Bar dataKey="COMPETENCE_REVIEW_DONE" fill="#8884d8" />
       </BarChart> */}
-      <div>
-        {/* new */}
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
+      <div className="App">
+        {testData.map((item, idx) => (
+          <Activity
+            key={idx}
+            bgcolor={item.bgcolor}
+            completed={item.completed}
+          />
+        ))}
       </div>
+      {/* <div>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+      </div> */}
     </div>
   );
 };
