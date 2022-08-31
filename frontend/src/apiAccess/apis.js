@@ -412,6 +412,7 @@ async function activityLogEntries({
   });
   return { response, responseData };
 }
+
 export default {
   whoAmI,
   logout,
