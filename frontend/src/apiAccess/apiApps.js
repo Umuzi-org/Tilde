@@ -57,7 +57,7 @@ const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
 
 const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
 
-const ACTIVITY_LOG_ENTRIES = "ACTIVITY_LOG_ENTRIES";
+const FETCH_ACTIVITY_LOG_ENTRIES = "FETCH_ACTIVITY_LOG_ENTRIES";
 
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
@@ -326,8 +326,8 @@ export const apiReduxApps = {
     responseIsList: false,
   }),
 
-  ACTIVITY_LOG_ENTRIES: createReduxApp({
-    BASE_TYPE: ACTIVITY_LOG_ENTRIES,
+  FETCH_ACTIVITY_LOG_ENTRIES: createReduxApp({
+    BASE_TYPE: FETCH_ACTIVITY_LOG_ENTRIES,
     apiCaller: apiCallers.activityLogEntries,
     responseIsList: true,
     responseEntityType: "activityLogEntries",
