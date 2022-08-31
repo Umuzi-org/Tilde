@@ -398,7 +398,7 @@ async function competenceReviewQueue({ page }) {
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
-async function fetchEventTypes({ page }) {
+async function eventTypes({ page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
 
@@ -448,5 +448,5 @@ export default {
   activityLogDayCountsPage,
   pullRequestReviewQueue,
   competenceReviewQueue,
-  fetchEventTypes,
+  eventTypes,
 };
