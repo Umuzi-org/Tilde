@@ -1,26 +1,39 @@
 import React from "react";
-import { Typography, Paper, Grid } from "@material-ui/core";
+import { Paper, Grid } from "@material-ui/core";
 import {
   BarChart,
   Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
+  // Cell,
+  // XAxis,
+  // YAxis,
+  // CartesianGrid,
+  // Tooltip,
+  // Legend,
+  // ResponsiveContainer,
 } from "recharts";
-
 import { makeStyles } from "@material-ui/core/styles";
-
-// import UserActions from "../regions/UserActions/Presentation";
-// import apis from "../../apiAccess/apis";
+import {
+  CARD_MOVED_TO_COMPLETE,
+  CARD_MOVED_TO_REVIEW_FEEDBACK,
+  CARD_REVIEW_REQUEST_CANCELLED,
+  CARD_REVIEW_REQUESTED,
+  CARD_STARTED,
+  COMPETENCE_REVIEW_DONE,
+  PR_REVIEWED,
+} from "../../constants";
+import { eventTypeColors } from "../../colors";
 import { getActivityLogCountsByDayForSingleUser } from "../../apiAccess/selectors/activityLogSelectors";
 import {
   ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
   ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
 } from "../../constants";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    // color: theme.palette.text.secondary,
+  },
+}));
+
 const activityLogDayCounts = [
   {
     id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=236",
@@ -32,7 +45,13 @@ const activityLogDayCounts = [
     date: "2020-04-29",
     total: 1,
   },
+  {
+    id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=2360",
+    date: "2020-04-30",
+    total: 3,
+  },
 ];
+
 const result = getActivityLogCountsByDayForSingleUser({
   activityLogDayCounts,
   userId: 236,
@@ -41,65 +60,49 @@ const result = getActivityLogCountsByDayForSingleUser({
     ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
   ],
 });
-const useStyles = makeStyles((theme) => ({}));
-const data = [
-  {
-    s: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    s: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    s: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    s: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    s: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    s: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    s: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
 
-console.log("hello", data);
+console.log("hello", result);
 
 export default ({ args }) => {
   const classes = useStyles();
-  // console.log("hello", UserActions({ args }));
-  // return <Grid>hello</Grid>;
+
   return (
     <div>
-      {/* <ResponsiveContainer> */}
-      <BarChart width={150} height={40} data={data}>
-        <Bar dataKey="uv" fill="#8884d8" />
-      </BarChart>
-      {/* </ResponsiveContainer> */}
+      {/* <BarChart width={150} height={40} data={result}>
+        <Bar dataKey="COMPETENCE_REVIEW_DONE" fill="#8884d8" />
+      </BarChart> */}
+      <div>
+        {/* new */}
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+        <Paper className={classes.paper}>log here</Paper>
+      </div>
     </div>
   );
 };
+
+// const realData = [
+//   {
+//     id: 42,
+//     event_type: 5,
+//     actor_user: 18,
+//     effected_user: 18,
+//     object_1_content_type_name: "curriculum_tracking | recruit project",
+//     object_1_id: 1,
+//     object_2_content_type_name: null,
+//     object_2_id: null,
+//   },
+//   {
+//     id: 41,
+//     event_type: 4,
+//     actor_user: 18,
+//     effected_user: 18,
+//     object_1_content_type_name: "curriculum_tracking | recruit project review",
+//     object_1_id: 14,
+//     object_2_content_type_name: "curriculum_tracking | recruit project",
+//     object_2_id: 1,
+//   },
+// ];
