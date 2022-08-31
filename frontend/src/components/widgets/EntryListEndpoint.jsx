@@ -28,30 +28,13 @@ import {
   ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
 } from "../../constants";
 
-const activityLogDayCounts = [
-  {
-    id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=236",
-    date: "2020-04-28",
-    total: 1,
-  },
-  {
-    id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=2360",
-    date: "2020-04-29",
-    total: 1,
-  },
-  {
-    id: "date=2020-04-28&limit=20&offset=0&event_type__name=COMPETENCE_REVIEW_DONE&actor_user=2360",
-    date: "2020-04-30",
-    total: 3,
-  },
-];
 const useStyles = makeStyles((theme) => ({
   paper: {
     // color: theme.palette.text.secondary,
   },
   containerStyles: {
     height: 20,
-    width: "100%",
+    width: "50%",
     backgroundColor: "#e0e0de",
     borderRadius: 50,
     margin: 50,
@@ -67,67 +50,59 @@ const useStyles = makeStyles((theme) => ({
 
   labelStyles: {
     padding: 5,
-    color: "white",
+    color: "red",
     fontWeight: "bold",
   },
 }));
-const result = getActivityLogCountsByDayForSingleUser({
-  activityLogDayCounts,
-  userId: 236,
-  eventTypes: [
-    ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
-    ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
-  ],
-});
 
 function Activity(props) {
   const classes = useStyles();
   const { bgColor, completed } = props; // fix names
-
+  const fillerStyles = {
+    height: "100%",
+    width: `${completed}%`,
+    backgroundColor: bgColor,
+    borderRadius: "inherit",
+    textAlign: "right",
+  };
   return (
     <div className={classes.containerStyles}>
       <div
-        className={classes.fillerStyles}
-        backgroundColor={bgColor}
-        width={completed}
+        className={fillerStyles}
+        // background-color={bgColor}
+        // width={completed}
       >
-        <span className={classes.labelStyles}>{completed}</span>
+        <span className={classes.labelStyles}>{`${completed}%`}</span>
       </div>
     </div>
   );
 }
 
-console.log("hello", result);
+const testData = [
+  { bgColor: "#6a1b9a", completed: 60 },
+  { bgColor: "#00695c", completed: 30 },
+  { bgColor: "#ef6c00", completed: 53 },
+  { bgColor: "#ef6c00", completed: 53 },
+  { bgColor: "#ef6c00", completed: 53 },
+];
 
 export default ({ args }) => {
   const classes = useStyles();
-  const testData = [
-    { bgcolor: "#6a1b9a", completed: 60 },
-    { bgcolor: "#00695c", completed: 30 },
-    { bgcolor: "#ef6c00", completed: 53 },
-  ];
+
   return (
     <div>
       {/* <BarChart width={150} height={40} data={result}>
         <Bar dataKey="COMPETENCE_REVIEW_DONE" fill="#8884d8" />
       </BarChart> */}
-      <div className="App">
+      <div>
         {testData.map((item, idx) => (
           <Activity
             key={idx}
-            bgcolor={item.bgcolor}
+            bgColor={item.bgColor}
             completed={item.completed}
           />
         ))}
       </div>
-      {/* <div>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-        <Paper className={classes.paper}>log here</Paper>
-      </div> */}
     </div>
   );
 };
