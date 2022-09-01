@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
@@ -7,7 +7,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 // TODO: refactor this. Rather make use of EntityNavBar.
 // look at how the team nav bar works
 
-const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
+function UserNavBarUnconnected({ fetchUser, users, authUserId }) {
   let urlParams = useParams() || {};
 
   const userId = urlParams.userId;
@@ -15,7 +15,7 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   const user = users[userId];
   const authUser = users[authUserId];
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!authUser) return;
     if ((userId !== 0) & !user) fetchUser({ userId });
   }, [fetchUser, user, userId, authUser]);
@@ -43,7 +43,7 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   };
 
   return <Presentation {...props} />;
-};
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
