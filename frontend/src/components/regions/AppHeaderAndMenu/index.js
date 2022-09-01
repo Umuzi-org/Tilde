@@ -1,18 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-
 import Presentation from "./Presentation.js";
-
 import { routes } from "../../../routes";
-
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 function AppMenuUnconnected({ children, LOGOUT, logoutStart, authUser }) {
-  const [openSlider, setOpenSlider] = React.useState(false);
-  const [
-    anchorElementProfileMenu,
-    setAnchorElementProfileMenu,
-  ] = React.useState(null);
+  const [openSlider, setOpenSlider] = useState(false);
+  const [anchorElementProfileMenu, setAnchorElementProfileMenu] =
+    useState(null);
 
   let sliderMenuRoutes = {};
   if (authUser !== undefined) {
@@ -37,20 +32,18 @@ function AppMenuUnconnected({ children, LOGOUT, logoutStart, authUser }) {
     logoutStart({ callStatus: LOGOUT });
   };
 
-  return (
-    <Presentation
-      openSlider={openSlider}
-      handleOpenSlider={handleOpenSlider}
-      handleCloseSlider={handleCloseSlider}
-      sliderMenuRoutes={sliderMenuRoutes}
-      anchorElementProfileMenu={anchorElementProfileMenu}
-      setAnchorElementProfileMenu={setAnchorElementProfileMenu}
-      handleLogoutClick={handleLogoutClick}
-      authUser={authUser}
-    >
-      {children}
-    </Presentation>
-  );
+  const props = {
+    openSlider,
+    handleOpenSlider,
+    handleCloseSlider,
+    sliderMenuRoutes,
+    anchorElementProfileMenu,
+    setAnchorElementProfileMenu,
+    handleLogoutClick,
+    authUser,
+  };
+
+  return <Presentation {...props}>{children}</Presentation>;
 }
 
 const mapStateToProps = (state) => {
