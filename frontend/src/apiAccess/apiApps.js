@@ -343,7 +343,7 @@ export const apiReduxApps = {
     responseIsList: true,
     responseEntityType: "pullRequestReviewQueueProject",
   }),
-  FETCH_LIST_EVENT_TYPES: createReduxApp({
+  FETCH_EVENT_TYPES: createReduxApp({
     BASE_TYPE: FETCH_EVENT_TYPES,
     apiCaller: apiCallers.eventTypes,
     responseIsList: true,
