@@ -1,16 +1,4 @@
 import React from "react";
-import { Paper, Grid } from "@material-ui/core";
-import {
-  BarChart,
-  Bar,
-  // Cell,
-  // XAxis,
-  // YAxis,
-  // CartesianGrid,
-  // Tooltip,
-  // Legend,
-  // ResponsiveContainer,
-} from "recharts";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   CARD_MOVED_TO_COMPLETE,
@@ -22,6 +10,7 @@ import {
   PR_REVIEWED,
 } from "../../constants";
 import { eventTypeColors } from "../../colors";
+import { apiReduxWatchers } from "../../apiAccess/apiApps";
 
 const useStyles = makeStyles((theme) => ({
   containerStyles: {
@@ -62,44 +51,6 @@ const ProgressBar = ({ bgColor, progress }) => {
   );
 };
 
-const mockData = [
-  {
-    id: "date=2022-09-01&event_type=2&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 3,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 2,
-    color: "#6a1b9a",
-  },
-  {
-    id: "date=2022-09-01&event_type=4&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 5,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 4,
-    color: "#6a1b9a",
-  },
-  {
-    id: "date=2022-09-01&event_type=6&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 4,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 6,
-    color: "#ef6c00",
-  },
-  {
-    id: "date=2022-08-31&event_type=2&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-08-31",
-    total: 5,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 2,
-    color: "#6a1b9a",
-  },
-];
 const events = {
   CARD_MOVED_TO_COMPLETE,
   CARD_MOVED_TO_REVIEW_FEEDBACK,
@@ -122,6 +73,37 @@ const sortData = ({ eventTypes, eventTypeColors }) => {
   }
   return arr;
 };
+
+const one = [
+  {
+    id: "date=2022-09-01&event_type=2&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 3,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 2,
+    color: "red",
+  },
+  {
+    id: "date=2022-09-01&event_type=4&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 5,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 4,
+    color: "blue",
+  },
+  {
+    id: "date=2022-09-01&event_type=6&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 4,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 6,
+    color: "pink",
+  },
+];
+
 console.log("hello", sortData({ eventTypes: events, eventTypeColors }));
 const test = sortData({ eventTypes: events, eventTypeColors });
 // console.log("hello", eventTypeColors);
@@ -129,12 +111,8 @@ export default ({ args }) => {
   return (
     <div>
       <div>
-        {test.map((item, idx) => (
-          <ProgressBar
-            key={idx}
-            progress={item.total}
-            bgColor={item.eventColor}
-          />
+        {one.map((item, idx) => (
+          <ProgressBar key={idx} progress={item.total} bgColor={item.color} />
         ))}
       </div>
     </div>
