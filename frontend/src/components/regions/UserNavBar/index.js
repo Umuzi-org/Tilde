@@ -11,6 +11,7 @@ const UserNavBarUnconnected = ({ fetchUser, users, authUserId }) => {
   let urlParams = useParams() || {};
 
   const userId = urlParams.userId;
+  users = users || {};
   const user = users[userId];
   const authUser = users[authUserId];
 
@@ -58,7 +59,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.apiEntities.users || {},
+    users: state.apiEntities.users,
     authUserId: state.App.authUser.userId,
   };
 };
