@@ -24,21 +24,16 @@ import {
 import { eventTypeColors } from "../../colors";
 
 const useStyles = makeStyles((theme) => ({
-  // paper: {
-  //   // color: theme.palette.text.secondary,
-  // },
   containerStyles: {
     height: "100%",
-    width: "100%",
-    backgroundColor: "whitesmoke",
+    width: "50%",
+    backgroundColor: "#D3D3D3",
     borderRadius: 40,
     margin: 50,
   },
 
   fillerStyles: {
     height: "100%",
-    // width: `${progress}%`,
-    // backgroundColor: bgColor,
     borderRadius: 40,
     textAlign: "right",
   },
@@ -59,20 +54,13 @@ const ProgressBar = ({ bgColor, progress }) => {
   };
 
   return (
-    <div className={classes.containerStyles} style={adjustStyle}>
-      <div className={classes.fillerStyles}>
+    <div className={classes.containerStyles}>
+      <div className={classes.fillerStyles} style={adjustStyle}>
         <span className={classes.labelStyles} />
       </div>
     </div>
   );
 };
-const testData = [
-  { bgColor: "#6a1b9a", completed: 60 },
-  { bgColor: "#00695c", completed: 30 },
-  { bgColor: "#ef6c00", completed: 53 },
-  { bgColor: "#ef6c00", completed: 53 },
-  { bgColor: "#ef6c00", completed: 53 },
-];
 
 const mockData = [
   {
@@ -112,45 +100,43 @@ const mockData = [
     color: "#6a1b9a",
   },
 ];
-export default ({ args }) => {
-  const classes = useStyles();
+const events = {
+  CARD_MOVED_TO_COMPLETE,
+  CARD_MOVED_TO_REVIEW_FEEDBACK,
+  CARD_REVIEW_REQUEST_CANCELLED,
+  CARD_REVIEW_REQUESTED,
+  CARD_STARTED,
+  COMPETENCE_REVIEW_DONE,
+  PR_REVIEWED,
+};
+// console.log(eventTypeColors);
 
+const sortData = ({ eventTypes, eventTypeColors }) => {
+  const arr = [];
+  for (const type in eventTypes) {
+    arr.push({
+      event: type,
+      eventColor: eventTypeColors[type],
+      total: 10,
+    });
+  }
+  return arr;
+};
+console.log("hello", sortData({ eventTypes: events, eventTypeColors }));
+const test = sortData({ eventTypes: events, eventTypeColors });
+// console.log("hello", eventTypeColors);
+export default ({ args }) => {
   return (
     <div>
       <div>
-        {mockData.map((item, idx) => (
+        {test.map((item, idx) => (
           <ProgressBar
             key={idx}
-            max="100"
             progress={item.total}
-            height="100"
-            bgColor={item.color}
+            bgColor={item.eventColor}
           />
         ))}
       </div>
     </div>
   );
 };
-
-// const realData = [
-//   {
-//     id: 42,
-//     event_type: 5,
-//     actor_user: 18,
-//     effected_user: 18,
-//     object_1_content_type_name: "curriculum_tracking | recruit project",
-//     object_1_id: 1,
-//     object_2_content_type_name: null,
-//     object_2_id: null,
-//   },
-//   {
-//     id: 41,
-//     event_type: 4,
-//     actor_user: 18,
-//     effected_user: 18,
-//     object_1_content_type_name: "curriculum_tracking | recruit project review",
-//     object_1_id: 14,
-//     object_2_content_type_name: "curriculum_tracking | recruit project",
-//     object_2_id: 1,
-//   },
-// ];
