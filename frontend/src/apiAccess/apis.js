@@ -407,7 +407,7 @@ async function activityLogEntries({
   if (object2Id) params["object_2_id"] = object2Id;
   const getParams = objectToGetQueryString(params);
 
-  const url = `${API_BASE_URL}/api/activity_log_entry/?${getParams}`;
+  const url = `${API_BASE_URL}/api/activity_log_entries/?${getParams}`;
 
   const { response, responseData } = await fetchAndClean({
     url,
