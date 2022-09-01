@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import Presentation from "./Presentation.js";
+import Presentation from "./Presentation.jsx";
 import { routes } from "../../../routes";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
