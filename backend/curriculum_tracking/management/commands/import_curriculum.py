@@ -51,7 +51,6 @@ def create_content_items(data):
             link_regex=content["link_regex"],
             project_submission_type=content["project_submission_type"],
             slug=content["slug"],
-            story_points=content["story_points"],
             # tags = ','.join(content['tags']),
             template_repo=content["template_repo"],
             title=content["title"],
@@ -62,8 +61,8 @@ def create_content_items(data):
         for tag in content["tags"]:
             content_item.tags.add(tag)
 
-        if content['flavours']:
-            content_item.set_flavours(content['flavours'])
+        if content["flavours"]:
+            content_item.set_flavours(content["flavours"])
 
 
 def create_content_item_orders(data):

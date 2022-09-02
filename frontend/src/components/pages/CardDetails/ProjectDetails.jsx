@@ -1,7 +1,6 @@
 import React from "react";
 import { Paper, Button, Grid, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ViewContentButton from "../../widgets/ViewContentButton";
 
 import RepositoryDetails from "./RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
@@ -81,7 +80,7 @@ function LinkToYourWork({
   );
 }
 
-export default ({
+export default function Presentation({
   project,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
@@ -90,7 +89,7 @@ export default ({
   // showAddReviewButton,
   handleClickAddReview,
   reviews,
-}) => {
+}) {
   const classes = useStyles();
 
   return (
@@ -116,11 +115,6 @@ export default ({
       )}
 
       <Reviews reviewIds={project.projectReviews} reviews={reviews} />
-
-      <ViewContentButton
-        contentItemId={project.contentItem}
-        contentUrl={project.contentUrl}
-      />
 
       <CardButton
         label="Add Review"

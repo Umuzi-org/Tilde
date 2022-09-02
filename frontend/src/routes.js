@@ -7,7 +7,7 @@ import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
 import UserDashboard from "./components/pages/UserDashboard";
-
+import GlobalCodeReviewDashboard from "./components/pages/GlobalCodeReviewDashboard";
 import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
@@ -74,6 +74,31 @@ export const routes = {
       icon: () => "U",
       label: "Users",
       helpText: "User and Team navigation",
+    },
+    show: ({ authUser }) => {
+      if (authUser.isSuperuser) return true;
+
+      for (let teamId in authUser.permissions.teams) {
+        for (let permission of authUser.permissions.teams[teamId].permissions) {
+          if (TEAM_PERMISSIONS.includes(permission)) return true;
+          throw new Error(`Team permission not implemented: ${permission}`);
+        }
+      }
+    },
+    userMustBeLoggedIn: true,
+  },
+
+  globalCodeReviewDashboard: {
+    route: {
+      exact,
+      path: "/code_review_dashboard",
+    },
+    component: GlobalCodeReviewDashboard,
+    sliderNavigation: {
+      //these get used to draw buttons in the left hand side slider/hamburger menu
+      icon: () => "R",
+      label: "Code Review Dash",
+      helpText: "Code review dashboard",
     },
     show: ({ authUser }) => {
       if (authUser.isSuperuser) return true;

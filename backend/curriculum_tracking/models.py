@@ -1,7 +1,6 @@
 from datetime import timedelta
 from typing import List
 from django.db import models
-from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -18,7 +17,6 @@ from .constants import (
     EXCELLENT,
     REVIEW_STATUS_CHOICES,
 )
-
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
@@ -89,7 +87,9 @@ class FlavourMixin:
         return sorted(self.flavour_names) == sorted(flavour_strings)
 
     def flavour_ids_match(self, flavour_ids: List[int]):
-        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(flavour_ids)
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
+            flavour_ids
+        )
 
     @property
     def flavour_names(self):
@@ -125,10 +125,6 @@ class ContentItemProxyMixin:
     @property
     def content_url(self):
         return self.content_item.url
-
-    @property
-    def story_points(self):
-        return self.content_item.story_points
 
     @property
     def tag_names(self):
@@ -253,10 +249,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         unique=True,
     )
 
-    story_points = models.SmallIntegerField(
-        choices=((i, i) for i in [1, 2, 3, 5, 8, 13, 21, 34, 56, 89]), null=True
-    )
-
     prerequisites = models.ManyToManyField(
         "ContentItem",
         related_name="unlocks",
@@ -286,8 +278,9 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
     template_repo = models.URLField(null=True, blank=True)  # should be a github repo
     link_regex = models.CharField(max_length=250, null=True, blank=True)
 
-
-    protect_main_branch = models.BooleanField(default=True) # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
+    protect_main_branch = models.BooleanField(
+        default=True
+    )  # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
 
     class Meta:
         unique_together = [["content_type", "title"]]
@@ -511,6 +504,41 @@ class RecruitProject(
     #     unique_together = [
     #         ["content_item", "repository"],
     #     ]
+
+    def users_that_reviewed_since_last_review_request(self):
+        if self.review_request_time is None:
+            return []
+
+        reviews = RecruitProjectReview.objects.filter(recruit_project=self)
+
+        reviews = reviews.filter(timestamp__gte=self.review_request_time)
+
+        return [review.reviewer_user for review in reviews]
+
+    @property
+    def repo_url(self):
+        if not self.repository:
+            return None
+        return self.repository.ssh_url
+
+    @property
+    def open_pr_count(self):
+        repo = self.repository
+        if repo:
+            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
+        return 0
+
+    @property
+    def oldest_open_pr_updated_time(self):
+        repo = self.repository
+        if repo:
+            pr = (
+                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
+                .order_by("updated_at")
+                .first()
+            )
+            if pr:
+                return pr.updated_at
 
     def get_users_with_permission(self, permissions):
         from guardian.shortcuts import get_users_with_perms
@@ -864,7 +892,7 @@ class RecruitProjectReview(models.Model, Mixins):
             return False
         first_review = (
             RecruitProjectReview.objects.filter(timestamp__gte=request_time)
-            .filter(recruit_project = self.recruit_project)
+            .filter(recruit_project=self.recruit_project)
             .order_by("timestamp")
             .first()
         )
@@ -1052,9 +1080,7 @@ class AgileCard(
     def repo_url(self):
         if not self.recruit_project:
             return None
-        if not self.recruit_project.repository:
-            return None
-        return self.recruit_project.repository.ssh_url
+        return self.recruit_project.repo_url
 
     @property
     def due_time(self):
@@ -1090,7 +1116,7 @@ class AgileCard(
 
     @property
     def project_link_submission(self):
-        return self.project.link_submission
+        return self.recruit_project.link_submission
 
     def __str__(self):
         return f"{self.status}:{self.content_item}"
@@ -1363,26 +1389,20 @@ class AgileCard(
 
     @property
     def open_pr_count(self):
-        repo = self.repository
-        if repo:
-            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
-        return 0
+        if not self.recruit_project:
+            return None
+        return self.recruit_project.open_pr_count
 
     @property
     def oldest_open_pr_updated_time(self):
-
-        repo = self.repository
-        if repo:
-            pr = (
-                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
-                .order_by("updated_at")
-                .first()
-            )
-            if pr:
-                return pr.updated_at
+        if not self.recruit_project:
+            return None
+        return self.recruit_project.oldest_open_pr_updated_time
 
     @property
     def repository(self):
+        if not self.recruit_project:
+            return None
         return self.recruit_project.repository
 
     @property
@@ -1455,7 +1475,7 @@ class AgileCard(
 
         reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
-        return [review.reviewer_user_id for review in reviews]
+        return [review.reviewer_user for review in reviews]
 
 
 # class ExtraTeamConfig(models.Model, Mixins):
@@ -1503,3 +1523,19 @@ class BurndownSnapshot(models.Model):
             cards_in_complete_column_total_count=complete_cards.count(),
             project_cards_in_complete_column_total_count=complete_project_cards.count(),
         )
+
+
+class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(
+        ContentItem, on_delete=models.PROTECT, related_name="agile_weights"
+    )
+    flavours = TaggableManager(blank=True)
+    weight = models.IntegerField()
+
+
+class ContentItemAutoMarkerConfig(models.Model, FlavourMixin, ContentItemProxyMixin):
+    content_item = models.ForeignKey(
+        ContentItem, on_delete=models.PROTECT, related_name="automarker_configs"
+    )
+    flavours = TaggableManager(blank=True)
+    trigger_marker_when_card_in_review = models.BooleanField(default=False)
