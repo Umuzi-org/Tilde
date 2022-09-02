@@ -8,58 +8,57 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { colors } from "../../../colors";
 
-console.log("BIG", colors);
+// import { cardColors } from "../../../colors";
 
 const data = [
   {
     name: "Date",
-    C: 4000,
-    RF: 2400,
-    IR: 1000,
+    topicCardsCompleted: 4000,
+    projectCardsCompleted: 2400,
+    reviewsCompleted: 1000,
     amt: 2400,
   },
   {
     name: "Date",
-    C: 3000,
-    RF: 1398,
-    IR: 3000,
+    topicCardsCompleted: 3000,
+    projectCardsCompleted: 1398,
+    reviewsCompleted: 3000,
     amt: 2210,
   },
   {
     name: "Date",
-    C: 2000,
-    RF: 9800,
-    IR: 1040,
+    topicCardsCompleted: 2000,
+    projectCardsCompleted: 9800,
+    reviewsCompleted: 1040,
     amt: 2290,
   },
   {
     name: "Date",
-    C: 2780,
-    RF: 3908,
-    IR: 1100,
+    topicCardsCompleted: 2780,
+    projectCardsCompleted: 3908,
+    reviewsCompleted: 1100,
     amt: 2000,
   },
   {
     name: "Date",
-    C: 1890,
-    RF: 4800,
-    IR: 2100,
+    topicCardsCompleted: 1890,
+    projectCardsCompleted: 4800,
+    reviewsCompleted: 2100,
     amt: 2181,
   },
   {
     name: "Date",
-    C: 2390,
-    RF: 3800,
-    IR: 1050,
+    topicCardsCompleted: 2390,
+    projectCardsCompleted: 3800,
+    reviewsCompleted: 1050,
     amt: 2500,
   },
   {
     name: "Date",
-    C: 3490,
-    RF: 4300,
-    IR: 1001,
+    topicCardsCompleted: 3490,
+    projectCardsCompleted: 4300,
+    reviewsCompleted: 1001,
     amt: 2100,
   },
 ];
@@ -82,9 +81,17 @@ export default function ActivityDashboardBarGraph() {
       <YAxis />
       <Tooltip />
       <Legend />
-      <Bar dataKey="RF" fill="#FF0000" />
-      <Bar dataKey="C" fill="#00FF00" />
-      <Bar dataKey="IR" fill="#FFFF00" />
+      <Bar
+        dataKey="projectCardsCompleted"
+        fill="#FF0000"
+        name="Project Cards Completed"
+      />
+      <Bar
+        dataKey="topicCardsCompleted"
+        fill="#00FF00"
+        name="Topic Cards Completed"
+      />
+      <Bar dataKey="reviewsCompleted" fill="#F6BE00" name="Reviews Completed" />
     </BarChart>
   );
 }
