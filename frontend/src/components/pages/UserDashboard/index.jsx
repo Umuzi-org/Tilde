@@ -20,7 +20,7 @@ function DashboardUnconnected({
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const currentUserDetailedStats = userDetailedStats[userId];
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === parseInt(authUser.userId));
 
   React.useEffect(() => {
     if (userId) {
