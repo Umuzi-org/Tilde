@@ -83,33 +83,19 @@ class log_push_event_Tests(APITestCase):
     def test_pushing(self, has_permission):
         has_permission.return_value = True
 
+        self.assertEqual(Push.objects.all().count(), 0)     
 
-        # self.assertEqual(PullRequest.objects.all().count(), 0)
-        self.assertEqual(Push.objects.all().count(), 0)
-
-        body, headers = get_body_and_headers("push")
-        review_data = body["pusher"]
-        social_profile = SocialProfileFactory(github_name=review_data["name"])
-
-        url = reverse(views.github_webhook)
-
-        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
-
-        # self.client.post(url, format="json", data=body, extra=headers)
         push = PushFactory()
         creators.log_push_event(push)
 
-        # self.assertEqual(PullRequest.objects.all().count(), 1)
         self.assertEqual(Push.objects.all().count(), 1)
 
-        # pr = PullRequest.objects.first()
         push = Push.objects.first()
 
-        # self.assertEqual(LogEntry.objects.count(), 1)
+        self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
 
-        # self.assertEqual(entry.actor_user, social_profile.user)
-        # self.assertEqual(entry.effected_user, repo.user)
-        # self.assertEqual(entry.object_1, push)
+        self.assertEqual(entry.effected_user, push.repository.user)
+        self.assertEqual(entry.object_1, push)
         self.assertEqual(entry.object_2, push.repository)
         self.assertEqual(entry.event_type.name, creators.GIT_PUSH)
