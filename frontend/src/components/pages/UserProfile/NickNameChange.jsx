@@ -13,6 +13,8 @@ export default function ChangeNickName({ name, onChange, onClick }) {
     }
   };
 
+  console.log("test", handleClick)
+
   return (
     <React.Fragment>
       {isEditing ? (
@@ -22,6 +24,8 @@ export default function ChangeNickName({ name, onChange, onClick }) {
           onChange={onChange}
           onKeyPress={handleKeyPress}
           type="text"
+          // style={{display: "inline-block";
+          //   border: "1px solid #ccc";}}
         />
       ) : (
         <span onClick={handleClick}>{name}</span>

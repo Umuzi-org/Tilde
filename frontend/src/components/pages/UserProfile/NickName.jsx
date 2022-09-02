@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import ChangeNickName from "./NickNameChange";
+
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 
-export default function NickName() {
+import ChangeNickName from "./NickNameChange";
+
+export default function NickName({handleClick}) {
   const [nickName, setNickName] = useState([
     {
       name: "nick_name",
     },
   ]);
+
+  console.log("else",handleClick)
 
   const handleChange = (event, index) => {
     const value = event.target.value;
