@@ -20,7 +20,17 @@ function DashboardUnconnected({
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const currentUserDetailedStats = userDetailedStats[userId];
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === parseInt(authUser.userId));
+  const currentUserBurndownStatsWithDuplicates = Object.values(
+    userBurndownStats
+  ).filter((snapshot) => snapshot.user === userId);
+  const ids = currentUserBurndownStatsWithDuplicates.map(
+    (o) => o.cardsInCompleteColumnTotalCount
+  );
+  const currentUserBurndownStats =
+    currentUserBurndownStatsWithDuplicates.filter(
+      ({ cardsInCompleteColumnTotalCount }, index) =>
+        !ids.includes(cardsInCompleteColumnTotalCount, index + 1)
+    );
 
   React.useEffect(() => {
     if (userId) {
@@ -76,10 +86,10 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserBurndownStats: ({ userId }) => {
       dispatch(
         apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: { 
+          data: {
             userId: parseInt(userId),
             page: 1,
-           },
+          },
         })
       );
     },
