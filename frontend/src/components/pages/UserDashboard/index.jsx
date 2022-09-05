@@ -24,12 +24,12 @@ function DashboardUnconnected({
     userBurndownStats
   ).filter((snapshot) => snapshot.user === userId);
   const ids = currentUserBurndownStatsWithDuplicates.map(
-    (o) => o.cardsInCompleteColumnTotalCount
+    (o) => o.timestamp
   );
   const currentUserBurndownStats =
     currentUserBurndownStatsWithDuplicates.filter(
-      ({ cardsInCompleteColumnTotalCount }, index) =>
-        !ids.includes(cardsInCompleteColumnTotalCount, index + 1)
+      ({ timestamp }, index) =>
+        !ids.includes(timestamp, index + 1)
     );
 
   React.useEffect(() => {
