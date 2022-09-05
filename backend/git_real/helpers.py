@@ -198,6 +198,8 @@ import time
 
 @lru_cache(maxsize=None)
 def github_user_exists(github_name):
+    return True  # this causes other api calls to timeout. We need a better solution
+
     def inner(attempt=1):
         url = f"https://github.com/{github_name}"
         response = requests.get(url)
