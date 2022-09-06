@@ -1,7 +1,6 @@
 from datetime import timedelta
 from typing import List
 from django.db import models
-from django.db.models.query_utils import select_related_descend
 from core.models import Curriculum, User, Team
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -18,7 +17,6 @@ from .constants import (
     EXCELLENT,
     REVIEW_STATUS_CHOICES,
 )
-
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
@@ -1477,7 +1475,7 @@ class AgileCard(
 
         reviews = reviews.filter(timestamp__gte=self.review_request_time)
 
-        return [review.reviewer_user_id for review in reviews]
+        return [review.reviewer_user for review in reviews]
 
 
 # class ExtraTeamConfig(models.Model, Mixins):
