@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
+import Button from "../widgets/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Loading from "./Loading";

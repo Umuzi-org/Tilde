@@ -352,3 +352,4 @@ class UserViewSet(viewsets.ModelViewSet):
 #             result[team.id]["permissions"].append(permission)
 
 #     return Response(result)
+

@@ -183,14 +183,29 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "oldest_open_pr_updated_time",
             "repo_url",
             "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
         "get_users_that_reviewed_since_last_review_request"
     )
 
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email
+            for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
+
     def get_users_that_reviewed_since_last_review_request(self, instance):
-        return instance.get_users_that_reviewed_since_last_review_request()
+        return [
+            o.id for o in instance.get_users_that_reviewed_since_last_review_request()
+        ]
 
 
 class CardSummarySerializer(serializers.ModelSerializer):
@@ -231,10 +246,7 @@ class NoArgs(serializers.Serializer):
 class NewReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProjectReview
-        fields = [
-            "status",
-            "comments",
-        ]
+        fields = ["status", "comments"]
 
 
 class WorkshopAttendanceTime(serializers.ModelSerializer):
@@ -331,12 +343,7 @@ class ProjectSubmitLink(serializers.ModelSerializer):
 class WorkshopAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.WorkshopAttendance
-        fields = [
-            "id",
-            "timestamp",
-            "content_item",
-            "attendee_user",
-        ]
+        fields = ["id", "timestamp", "content_item", "attendee_user"]
 
 
 class UserDetailedStatsSerializer(serializers.ModelSerializer):
@@ -495,8 +502,7 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
         )
 
         tilde_topic_reviews_done_in_past_seven_days = models.TopicReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         )
 
         return (
@@ -514,13 +520,11 @@ class UserDetailedStatsSerializer(serializers.ModelSerializer):
 
     def get_tilde_reviews_done_last_7_days(self, user):
         project_reviews_done_last_7_days = models.RecruitProjectReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         ).count()
 
         topic_reviews_done_last_7_days = models.TopicReview.objects.filter(
-            reviewer_user_id=user.id,
-            timestamp__gte=timezone.now() - timedelta(days=7),
+            reviewer_user_id=user.id, timestamp__gte=timezone.now() - timedelta(days=7)
         ).count()
 
         return project_reviews_done_last_7_days + topic_reviews_done_last_7_days
@@ -630,13 +634,7 @@ class BurnDownSnapShotSerializer(serializers.ModelSerializer):
 class ReviewTrustSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewTrust
-        fields = [
-            "id",
-            "content_item",
-            "content_item_title",
-            "flavour_names",
-            "user",
-        ]
+        fields = ["id", "content_item", "content_item_title", "flavour_names", "user"]
 
     content_item_title = serializers.SerializerMethodField("get_content_item_title")
 
@@ -679,31 +677,132 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     stream_name = serializers.CharField(required=True)
     team_name = serializers.CharField(required=True)
 
-from rest_framework.exceptions import ValidationError
 
+from rest_framework.exceptions import ValidationError
 
 
 class ContentItemAgileWeightSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ContentItemAgileWeight
-        fields = [
-            "id",
-            "flavour_names",
-            "weight",
-            "content_item",
-        ]
+        fields = ["id", "flavour_names", "weight", "content_item"]
 
     flavour_names = serializers.ListField(CharField)
 
-
-    def save(self,**kwargs):
-        content_item = self.validated_data['content_item']
+    def save(self, **kwargs):
+        content_item = self.validated_data["content_item"]
         available_flavours = content_item.flavour_names
-        flavour_names = self.initial_data.getlist('flavour_names')
+        flavour_names = self.initial_data.getlist("flavour_names")
         for flavour in flavour_names:
             if flavour not in available_flavours:
-                raise ValidationError(f"flavour '{flavour}' not allowed. Choose from {available_flavours}")
-        instance = super(ContentItemAgileWeightSerializer,self).save()
+                raise ValidationError(
+                    f"flavour '{flavour}' not allowed. Choose from {available_flavours}"
+                )
+        instance = super(ContentItemAgileWeightSerializer, self).save()
         instance.set_flavours(flavour_names)
         return instance
 
+
+class CurriculumContentRequirementSerializer(serializers.ModelSerializer):
+
+    curriculum_name = serializers.CharField(read_only=True)
+    content_item_title = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = models.CurriculumContentRequirement
+        fields = [
+            "id",
+            "curriculum",
+            "curriculum_name",
+            "content_item",
+            "content_item_title",
+        ]
+
+    curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    def get_curriculum_name(self, instance):
+        return instance.curriculum.name
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+
+
+class CourseRegistrationSerialiser(serializers.ModelSerializer):
+
+    user_email = serializers.CharField(read_only=True)
+    curriculum_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = models.CourseRegistration
+        fields = ["id", "user", "curriculum", "user_email", "curriculum_name"]
+
+    user_email = serializers.SerializerMethodField("get_user_email")
+
+    curriculum_name = serializers.SerializerMethodField("get_curriculum_name")
+
+    def get_user_email(self, instance):
+        return instance.user.email
+
+    def get_curriculum_name(self, instance):
+        return instance.curriculum.name
+
+
+class ProjectReviewQueueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProject
+        fields = [
+            "id",
+            "agile_card",
+            "content_item_title",
+            "review_request_time",
+            "start_time",
+            "due_time",
+            "flavour_names",
+            "tag_names",
+            "code_review_competent_since_last_review_request",
+            "code_review_excellent_since_last_review_request",
+            "code_review_red_flag_since_last_review_request",
+            "code_review_ny_competent_since_last_review_request",
+            "open_pr_count",
+            "oldest_open_pr_updated_time",
+            "repo_url",
+            "recruit_users",
+            "reviewer_users",
+            "recruit_user_emails",
+            "reviewer_user_emails",
+            "users_that_reviewed_since_last_review_request",
+            "users_that_reviewed_since_last_review_request_emails",
+        ]
+
+    content_item_title = serializers.SerializerMethodField("get_content_item_title")
+
+    recruit_user_emails = serializers.SerializerMethodField("get_recruit_user_emails")
+
+    reviewer_user_emails = serializers.SerializerMethodField("get_reviewer_user_emails")
+
+    users_that_reviewed_since_last_review_request_emails = (
+        serializers.SerializerMethodField(
+            "get_users_that_reviewed_since_last_review_request_emails"
+        )
+    )
+
+    users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
+        "get_users_that_reviewed_since_last_review_request"
+    )
+
+    def get_users_that_reviewed_since_last_review_request_emails(self, instance):
+        return [
+            o.email for o in instance.users_that_reviewed_since_last_review_request()
+        ]
+
+    def get_users_that_reviewed_since_last_review_request(self, instance):
+        return [o.id for o in instance.users_that_reviewed_since_last_review_request()]
+
+    def get_content_item_title(self, instance):
+        return instance.content_item.title
+
+    def get_recruit_user_emails(self, instance):
+        return [o.email for o in instance.recruit_users.all()]
+
+    def get_reviewer_user_emails(self, instance):
+        return [o.email for o in instance.reviewer_users.all()]

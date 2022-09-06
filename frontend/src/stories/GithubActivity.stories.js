@@ -1,6 +1,6 @@
 import React from "react";
 
-import GithubAcivity from "../components/regions/UserActions/GithubAcivity";
+import GithubActivity from "../components/regions/UserActions/GithubActivity";
 // import activityLog from "./assets/githubUserActivity.json"
 
 const dates = [
@@ -76,14 +76,14 @@ const activityLog = eventTypes.map((eventType) => {
 // ]
 
 export default {
-  title: "Tilde/GithubAcivity",
-  component: GithubAcivity,
+  title: "Tilde/GithubActivity",
+  component: GithubActivity,
   // argTypes: {
   //   backgroundColor: { control: 'color' },
   // },
 };
 
-const Template = (args) => <GithubAcivity {...args} />;
+const Template = (args) => <GithubActivity {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {

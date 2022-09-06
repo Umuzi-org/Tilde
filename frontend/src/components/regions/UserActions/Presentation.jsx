@@ -1,15 +1,21 @@
 import React from "react";
-
-import { Typography, Paper, Grid } from "@material-ui/core";
+<<<<<<< HEAD
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import TodayIcon from "@material-ui/icons/Today";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   ActionReviewedCard,
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
+<<<<<<<< HEAD:frontend/src/components/regions/UserActions/Presentation.jsx
 import Loading from "../../widgets/Loading";
 import UserBurnDownChart from "./UserBurndownStats";
 
 import TodayIcon from "@material-ui/icons/Today";
 import { makeStyles } from "@material-ui/core/styles";
+========
+>>>>>>>> develop:frontend/src/components/regions/UserActions/DayLog.jsx
 import { ACTION_NAMES } from "./constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   dateTypography: {
     marginTop: theme.spacing(2),
+<<<<<<<< HEAD:frontend/src/components/regions/UserActions/Presentation.jsx
     // eslint-disable-next-line
     ["@media (max-width:620px)"]: {
       // eslint-disable-line no-useless-computed-key
@@ -30,10 +37,19 @@ const useStyles = makeStyles((theme) => ({
   column: {
     height: "85%", // TODO. Fit viewport
     overflowY: "scroll",
+========
+    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
+      fontSize: "1rem",
+    },
+>>>>>>>> develop:frontend/src/components/regions/UserActions/DayLog.jsx
   },
 }));
 
-const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
+export default function DayLog({
+  date,
+  actions,
+  handleClickOpenProjectDetails,
+}) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -72,20 +88,42 @@ const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
       })}
     </React.Fragment>
   );
+<<<<<<<< HEAD:frontend/src/components/regions/UserActions/Presentation.jsx
 };
 
 export default ({
+=======
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Loading from "../../widgets/Loading";
+import { makeStyles } from "@material-ui/core/styles";
+import DayLog from "./DayLog";
+
+const useStyles = makeStyles((theme) => ({
+  column: {
+    height: "85%", // TODO. Fit viewport
+    overflowY: "scroll",
+  },
+}));
+
+export default function Presentation({
+>>>>>>> develop
   orderedDates,
   actionLogByDate,
   handleClickOpenProjectDetails,
   handleScroll,
   anyLoading,
+<<<<<<< HEAD
   currentUserBurndownStats,
 }) => {
+=======
+}) {
+>>>>>>> develop
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
+<<<<<<< HEAD
         <Grid item xs={12}>
           {currentUserBurndownStats && (
             <Grid>
@@ -96,6 +134,9 @@ export default ({
               </Paper>
             </Grid>
           )}
+=======
+        <Grid>
+>>>>>>> develop
           <Paper>
             {orderedDates.map((date) => (
               <DayLog
@@ -105,14 +146,25 @@ export default ({
                 handleClickOpenProjectDetails={handleClickOpenProjectDetails}
               />
             ))}
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
             {anyLoading && <Loading />}
           </Paper>
         </Grid>
       </Grid>
     </div>
   );
+<<<<<<< HEAD
 };
 
 // {actionLog.map((action) => {
 
 //   })}
+========
+}
+>>>>>>>> develop:frontend/src/components/regions/UserActions/DayLog.jsx
+=======
+}
+>>>>>>> develop

@@ -6,10 +6,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Button } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { routes } from "../../../../../routes";
 import LaunchIcon from "@material-ui/icons/Launch";
+import Button from "../../../../widgets/Button";
 
 const useStyles = makeStyles(() => ({
   tableHead: {
@@ -41,7 +42,7 @@ function TeamsTable({ teams, authUser }) {
               <TableRow key={Object.values(teams).indexOf(team)}>
                 <TableCell>{team.name}</TableCell>
                 <TableCell>
-                {(authUser.isSuperuser ||
+                  {(authUser.isSuperuser ||
                     authUser.permissions.teams[team.id]) && (
                     <Link
                       to={routes.groupCardSummary.route.path.replace(
@@ -71,7 +72,7 @@ function TeamsTable({ teams, authUser }) {
       }
     </Table>
   );
-};
+}
 
 TeamsTable.propTypes = {
   teams: PropTypes.object,
