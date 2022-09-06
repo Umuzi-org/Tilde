@@ -30,7 +30,6 @@ function UserActionsUnconnected({
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
-
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
@@ -55,7 +54,12 @@ function UserActionsUnconnected({
     fetchUserBurndownStats({ userId });
   }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
 
-  if (!userId || !fetchProjectReviewsPages || !fetchCardCompletions)
+  if (
+    !userId ||
+    !fetchProjectReviewsPages ||
+    !fetchCardCompletions ||
+    !fetchUserBurndownStats
+  )
     return <Loading />;
 
   const latestProjectReviewsCall = getLatestMatchingCall({
@@ -190,7 +194,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-
+    
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(
         apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
