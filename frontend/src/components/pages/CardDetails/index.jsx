@@ -13,8 +13,6 @@ import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
-import Loading from "../../widgets/Loading";
-
 function CardDetailsUnconnected({
   cards,
   projects,
@@ -144,13 +142,6 @@ function CardDetailsUnconnected({
     formErrors,
   };
 
-  if (
-    cards === undefined &&
-    projects === undefined &&
-    projectReviews === undefined
-  ) {
-    return <Loading />;
-  }
   return <Presentation {...props} />;
 }
 
