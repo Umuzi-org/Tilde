@@ -1479,10 +1479,15 @@ class BurndownSnapshot(models.Model):
             user=user,
             timestamp__gte=timezone.now()  
             - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
-        ).last()
+        ).first()
 
         if match:
             # there was a snapshot taken recently, no need to store another one
+            match = Cls.objects.filter(
+                user=user,
+                timestamp__gte=timezone.now()  
+                + timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
+            ).first()
             return match
 
         cards = AgileCard.objects.filter(assignees=user)
