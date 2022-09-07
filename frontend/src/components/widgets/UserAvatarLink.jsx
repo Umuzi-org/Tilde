@@ -8,11 +8,11 @@ import { getUrl as getUserBoardUrl } from "./LinkToUserBoard";
 const useStyles = makeStyles({
   avatarLink: {
     textDecoration: "none",
+    marginRight: 8,
   },
   container: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
   },
 });
 
