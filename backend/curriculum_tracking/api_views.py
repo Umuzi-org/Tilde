@@ -1119,8 +1119,18 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
 
 
 class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
-    queryset = models.CurriculumContentRequirement.objects.all().order_by("curriculum_id")
+    queryset = models.CurriculumContentRequirement.objects.all().order_by(
+        "curriculum_id"
+    )
     filterset_fields = ["curriculum", "content_item"]
     serializer_class = serializers.CurriculumContentRequirementSerializer
     filter_backends = [DjangoFilterBackend]
     permission_classes = [permissions.IsAdminUser]
+
+
+# from curriculum_tracking.models import *
+# from django.utils import timezone
+# from django.db.models import  F
+# from django.contrib.postgres.aggregates import *
+# # class UserReviewPerformance(viewsets.ModelViewSet):
+#     RecruitProjectReview.objects.filter(reviewer_user__email="vuyisanani.meteni@umuzi.org").filter(timestamp__gte = timezone.now() - timezone.timedelta(days=7)).annotate(flavour_names=StringAgg('recruit_project__flavours__name',delimiter=",", ordering= 'recruit_project__flavours__name')).values('id','flavour_names','recruit_project__content_item_id')
