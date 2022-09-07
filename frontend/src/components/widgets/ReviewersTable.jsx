@@ -61,7 +61,7 @@ function ReviewersTable({
       <TableBody>
         {allUsers.map((user) => {
           return (
-            <TableRow>
+            <TableRow key={user.userId}>
               <TableCell padding="none">
                 <Checkbox
                   checked={usersThatReviewedSinceLastReviewRequest.includes(

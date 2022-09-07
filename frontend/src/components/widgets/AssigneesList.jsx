@@ -10,7 +10,7 @@ export default function AssigneesList({ userNames, userIds }) {
     <Table size="small">
       <TableBody>
         {userNames.map((name) => (
-          <TableRow>
+          <TableRow key={userIds}>
             <TableCell padding="none">
               <UserAvatarLink email={name} userId={userIds} />
             </TableCell>
