@@ -12,6 +12,7 @@ import {
 
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
+import UserAvatarLink from "./UserAvatarLink";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -80,7 +81,9 @@ function ReviewersTable({
                   </Tooltip>
                 )}
               </TableCell>
-              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <UserAvatarLink email={user.email} userId={user.userId} />
+              </TableCell>
             </TableRow>
           );
         })}
