@@ -6,6 +6,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
 import Loading from "../../widgets/Loading";
+import { useTraceUpdate } from "../../../hooks";
 
 function arrayToObjectWithIdKeys({ data }) {
   let dataAsObject = {};
@@ -112,8 +113,15 @@ function GroupCardSummaryUnconnected({
   fetchUserGroupSummaryCards,
   fetchUserGroupSummaryCardsByDataSequence,
 }) {
+  useTraceUpdate({
+    cards,
+    teams,
+    FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE,
+  });
+  console.log("xxxxxxx");
   const { teamId } = useParams();
   const userGroup = teams[teamId];
+
 
   useEffect(() => {
     if (userGroup === undefined) {
@@ -123,8 +131,10 @@ function GroupCardSummaryUnconnected({
     }
   }, [userGroup, fetchSingleUserGroup, teamId, fetchUserGroupSummaryCards]);
 
-  if (!cards || !teams || !FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE)
-    return <Loading />;
+  console.log("Teams", teams);
+  if (cards === undefined) return <Loading />;
+  if (teams === undefined) return <Loading />;
+
 
   const apiCallData = userGroup
     ? getApiCallData({
@@ -184,8 +194,8 @@ function GroupCardSummaryUnconnected({
 }
 
 const mapStateToProps = (state) => {
-  const cards = state.apiEntities.projectSummaryCards || {};
-  const teams = state.apiEntities.teams || {};
+  const cards = state.apiEntities.projectSummaryCards;
+  const teams = state.apiEntities.teams;
   const { FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE } = state;
 
   return {
