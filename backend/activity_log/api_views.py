@@ -55,17 +55,15 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
     queryset = models.EventType.objects.order_by("name")
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["timestamp"]
+    filterset_fields = {"timestamp":["gte", "lte"]}
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
 
     def get_queryset(self):
-        hour_ago = timezone.now()-timezone.timedelta(hours=1)
         query = models.LogEntry.objects.annotate(
             date=Cast("timestamp", output_field=DateField())
         )
         query = query.values("date").annotate(total=Count("date"))
         query = query.order_by("-date")
-        query = query.filter(timestamp__gte=hour_ago,timestamp__lte=timezone.now())
         filters = "&".join(
             [f"{key}={value}" for key, value in self.request.GET.items()]
         )
