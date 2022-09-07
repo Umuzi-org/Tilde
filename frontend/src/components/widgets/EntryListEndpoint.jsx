@@ -50,7 +50,6 @@ const ProgressBar = ({ bgColor, progress }) => {
     </div>
   );
 };
-
 const events = {
   CARD_MOVED_TO_COMPLETE,
   CARD_MOVED_TO_REVIEW_FEEDBACK,
@@ -60,7 +59,65 @@ const events = {
   COMPETENCE_REVIEW_DONE,
   PR_REVIEWED,
 };
-// console.log(eventTypeColors);
+const eventTypesWithIds = [
+  {
+    id: 5,
+    name: "CARD_MOVED_TO_COMPLETE",
+  },
+  {
+    id: 6,
+    name: "CARD_MOVED_TO_REVIEW_FEEDBACK",
+  },
+  {
+    id: 3,
+    name: "CARD_REVIEW_REQUEST_CANCELLED",
+  },
+  {
+    id: 2,
+    name: "CARD_REVIEW_REQUESTED",
+  },
+  {
+    id: 1,
+    name: "CARD_STARTED",
+  },
+  {
+    id: 4,
+    name: "COMPETENCE_REVIEW_DONE",
+  },
+];
+const activity = [
+  {
+    id: "date=2022-09-01&event_type=2&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 3,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 2,
+  },
+  {
+    id: "date=2022-09-01&event_type=4&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 5,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 4,
+  },
+  {
+    id: "date=2022-09-01&event_type=6&filter_by_actor_user=None&filter_by_effected_user=None",
+    date: "2022-09-01",
+    total: 4,
+    filter_by_actor_user: null,
+    filter_by_effected_user: null,
+    event_type: 6,
+  },
+];
+
+const newData = eventTypesWithIds.map((item, index) => {
+  return {
+    ...item,
+    name: activity.find((elem) => elem.event_type === item.id) ? item.name : "",
+  };
+});
 
 const sortData = ({ eventTypes, eventTypeColors }) => {
   const arr = [];
@@ -73,45 +130,24 @@ const sortData = ({ eventTypes, eventTypeColors }) => {
   }
   return arr;
 };
-
-const one = [
-  {
-    id: "date=2022-09-01&event_type=2&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 3,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 2,
-    color: "red",
-  },
-  {
-    id: "date=2022-09-01&event_type=4&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 5,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 4,
-    color: "blue",
-  },
-  {
-    id: "date=2022-09-01&event_type=6&filter_by_actor_user=None&filter_by_effected_user=None",
-    date: "2022-09-01",
-    total: 4,
-    filter_by_actor_user: null,
-    filter_by_effected_user: null,
-    event_type: 6,
-    color: "pink",
-  },
-];
-
-console.log("hello", sortData({ eventTypes: events, eventTypeColors }));
 const test = sortData({ eventTypes: events, eventTypeColors });
-// console.log("hello", eventTypeColors);
+
+const two = test.map((item, index) => {
+  const result = {
+    ...item,
+    color: newData.find((elem) => elem.eventTypes === item.eventTypes)
+      ? item.eventColor
+      : "",
+  };
+  return result;
+});
+console.log("hello", two);
+
 export default ({ args }) => {
   return (
     <div>
       <div>
-        {one.map((item, idx) => (
+        {two.map((item, idx) => (
           <ProgressBar key={idx} progress={item.total} bgColor={item.color} />
         ))}
       </div>
