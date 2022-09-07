@@ -1,9 +1,11 @@
 import React from "react";
-// import { Typography } from "@material-ui/core";
-import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
 import UserAvatarLink from "../widgets/UserAvatarLink";
 
-export default ({ userNames, userIds }) => {
+export default function AssigneesList({ userNames, userIds }) {
   return (
     <Table size="small">
       <TableBody>
@@ -17,5 +19,4 @@ export default ({ userNames, userIds }) => {
       </TableBody>
     </Table>
   );
-  // return <Typography>{userNames.join(", ")}</Typography>;
-};
+}
