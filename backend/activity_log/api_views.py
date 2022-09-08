@@ -8,6 +8,9 @@ import core.permissions as core_permissions
 from core.models import Team
 from . import models
 from django.utils import timezone
+from datetime import date, timedelta, datetime
+from django.db.models import Q
+
 
 
 class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
@@ -55,6 +58,8 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
     queryset = models.EventType.objects.order_by("name")
     filter_backends = [DjangoFilterBackend]
+    gte = datetime.now() + timedelta(days=7)
+    lte = datetime.now() 
     filterset_fields = {"timestamp":["gte", "lte"]}
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
 
@@ -67,9 +72,7 @@ class EventTypeViewSet(viewsets.ModelViewSet):
         filters = "&".join(
             [f"{key}={value}" for key, value in self.request.GET.items()]
         )
-
         query = query.annotate(filters=Value(filters, output_field=CharField()))
-
         return query
 
 
