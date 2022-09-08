@@ -69,4 +69,5 @@ const Template = (args) => <ActivityLog {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
   activity,
+  eventTypesWithIds,
 };
