@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function TimesTable ({ card }) {
+function TimesTable({ card }) {
   const classes = useStyles();
   const nice = (dateTime) => {
     if (dateTime) {
@@ -62,9 +62,9 @@ function TimesTable ({ card }) {
       </TableBody>
     </Table>
   );
-};
+}
 
-export default ({ card, handleClickOpenCardDetails }) => {
+export default ({ card }) => {
   const classes = useStyles();
   const title = `${card.title} - ${card.assigneeNames.join(", ")}`;
   return (
