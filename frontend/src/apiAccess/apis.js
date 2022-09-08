@@ -432,29 +432,19 @@ async function competenceReviewQueue({ page }) {
   const { response, responseData } = await fetchAndClean({ url });
   return { response, responseData };
 }
-async function eventTypes({ page }) {
-  const limit = 20;
-  const offset = calculateOffset({ page, limit });
 
-<<<<<<< HEAD
 async function fetchEventTypes({ page }) {
   const limit = 20;
   const offset = calculateOffset({ page, limit });
 
-  const url = `${API_BASE_URL}/api/event_type/?limit=${limit}&offset=${offset}`;
-=======
   const url = `${API_BASE_URL}/api/event_types/?limit=${limit}&offset=${offset}`;
->>>>>>> f26e9e3c298c14ccbd222a11ad97c5cbecb4072f
 
   const { response, responseData } = await fetchAndClean({
     url,
   });
   return { response, responseData };
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> f26e9e3c298c14ccbd222a11ad97c5cbecb4072f
 export default {
   whoAmI,
   logout,

@@ -354,15 +354,9 @@ export const apiReduxApps = {
   }),
   FETCH_EVENT_TYPES: createReduxApp({
     BASE_TYPE: FETCH_EVENT_TYPES,
-<<<<<<< HEAD
-    apiCaller: apiCallers.fetchEventTypes,
-    responseIsList: true,
-    responseEntityType: "fetchEventTypes",
-=======
     apiCaller: apiCallers.eventTypes,
     responseIsList: true,
     responseEntityType: "eventTypes",
->>>>>>> f26e9e3c298c14ccbd222a11ad97c5cbecb4072f
   }),
 };
 
