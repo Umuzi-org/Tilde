@@ -30,11 +30,6 @@ function GlobalCodeReviewDashboardUnconnected({
     callLog: FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
   }) || { loading: true };
 
-  console.log({
-    fetchPullRequestQueueLastCall,
-    fetchCompetenceReviewQueueLastCall,
-  });
-
   const competenceReviewQueueProjects = Object.values(
     competenceReviewQueueProjectsObject || {}
   );

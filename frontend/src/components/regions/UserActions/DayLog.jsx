@@ -1,14 +1,12 @@
 import React from "react";
-
-import { Typography, Paper, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import TodayIcon from "@material-ui/icons/Today";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   ActionReviewedCard,
   ActionCardCompleted,
 } from "../../widgets/ActionLogCards";
-import Loading from "../../widgets/Loading";
-
-import TodayIcon from "@material-ui/icons/Today";
-import { makeStyles } from "@material-ui/core/styles";
 import { ACTION_NAMES } from "./constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,22 +15,17 @@ const useStyles = makeStyles((theme) => ({
   },
   dateTypography: {
     marginTop: theme.spacing(2),
-
-    ['@media (max-width:620px)']: { // eslint-disable-line no-useless-computed-key
+    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
-    }, 
-    // marginLeft: theme.spacing(2),
-    // marginTop: theme.spacing(0),
-    // paddingTop: theme.spacing(0),
-  },
-
-  column: {
-    height: "85%", // TODO. Fit viewport
-    overflowY: "scroll",
+    },
   },
 }));
 
-const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
+export default function DayLog({
+  date,
+  actions,
+  handleClickOpenProjectDetails,
+}) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -71,38 +64,4 @@ const DayLog = ({ date, actions, handleClickOpenProjectDetails }) => {
       })}
     </React.Fragment>
   );
-};
-
-export default ({
-  orderedDates,
-  actionLogByDate,
-  handleClickOpenProjectDetails,
-  handleScroll,
-  anyLoading,
-}) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.column} onScroll={handleScroll}>
-      <Grid container>
-        <Grid>
-          <Paper>
-            {orderedDates.map((date) => (
-              <DayLog
-                date={date}
-                key={date}
-                actions={actionLogByDate[date]}
-                handleClickOpenProjectDetails={handleClickOpenProjectDetails}
-              />
-            ))}
-
-            {anyLoading && <Loading />}
-          </Paper>
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
-
-// {actionLog.map((action) => {
-
-//   })}
+}
