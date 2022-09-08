@@ -8,7 +8,6 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.54",
     "@material-ui/pickers": "^3.2.10",
-    "@material/linear-progress": "^14.0.0",
     "@prelude/redux-api-toolbox": "file:gitmodules/redux-api-toolbox",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

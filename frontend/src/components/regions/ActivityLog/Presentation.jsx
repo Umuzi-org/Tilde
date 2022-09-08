@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import ActivityLog from "./ActivityLog";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -33,21 +32,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LogBar({ colors, orderedDates, actionLogByDate }) {
+function LogBar({ colors, props }) {
   const classes = useStyles();
   const adjustStyle = {
     backgroundColor: colors,
   };
   return (
-    <div className={classes.containerStyles}>
-      <div className={classes.fillerStyles}>
+    <Grid className={classes.containerStyles}>
+      <Grid className={classes.fillerStyles}>
         <span className={classes.labelStyles} style={adjustStyle} />
         <div className={classes.content}>
           this is where all content goes. All of it here. even more more more
           content. right here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         </div>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 }
 
