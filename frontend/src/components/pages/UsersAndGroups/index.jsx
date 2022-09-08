@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
@@ -6,8 +6,11 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import Loading from "../../widgets/Loading";
+import { useTraceUpdate } from "../../../hooks";
 
 export function cleanAndFilterTeams({ teams, filterBy }) {
+  if (teams === undefined) return <Loading />;
+
   let ret = Object.values(teams);
   ret.sort((a, b) => (a.name > b.name ? 1 : -1));
 
@@ -33,28 +36,30 @@ function ignore() {}
 export function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
 
-  for (let group of Object.values(teams)) {
-    for (let member of group.members) {
-      const email = member.userEmail;
+  if (teams) {
+    for (let group of Object.values(teams)) {
+      for (let member of group.members) {
+        const email = member.userEmail;
 
-      if (
-        (filterBy &&
-          email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) ||
-        member.userActive === false
-      )
-        continue;
+        if (
+          (filterBy &&
+            email.toLowerCase().indexOf(filterBy.toLowerCase()) === -1) ||
+          member.userActive === false
+        )
+          continue;
 
-      users[email] = {
-        ...users[email],
-        userId: member.userId,
-      };
-      users[email].groups = {
-        ...users[email].groups,
-        [group.name]: {
-          teamId: group.id,
-          ...member,
-        },
-      };
+        users[email] = {
+          ...users[email],
+          userId: member.userId,
+        };
+        users[email].groups = {
+          ...users[email].groups,
+          [group.name]: {
+            teamId: group.id,
+            ...member,
+          },
+        };
+      }
     }
   }
   if (filterUsersByGroupName) {
@@ -85,8 +90,15 @@ function UsersAndGroupsUnconnected({
     filterByUser: {},
   });
 
-  const [filterUsersByGroupName, setFilterUsersByGroupName] =
-    React.useState("");
+  useTraceUpdate({
+    teams,
+    teamSummaryStats,
+    fetchTeamsPages,
+    fetchTeamSummaryStatsPages,
+  });
+  console.log("xxxxxxx");
+
+  const [filterUsersByGroupName, setFilterUsersByGroupName] = useState("");
   ignore(formState, formErrors, dataFromState);
 
   const handleUserGroupClick = (name) => {
@@ -111,7 +123,7 @@ function UsersAndGroupsUnconnected({
     handleUserGroupClick,
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const dataSequence = [
       { page: 1 },
       { page: 2 },
@@ -132,17 +144,15 @@ function UsersAndGroupsUnconnected({
     fetchTeamSummaryStatsPages({ dataSequence });
   }, [fetchTeamsPages, fetchTeamSummaryStatsPages]);
 
-  if (props.teams.length < 1 || props.teamSummaryStats.length < 1) {
-    return <Loading />;
-  }
+  if (teams === undefined || teamSummaryStats === undefined) return <Loading />;
 
   return <Presentation {...props} />;
 }
 
 function mapStateToProps(state) {
   return {
-    teams: state.apiEntities.teams || {},
-    teamSummaryStats: state.apiEntities.teamSummaryStats || {},
+    teams: state.apiEntities.teams,
+    teamSummaryStats: state.apiEntities.teamSummaryStats,
   };
 }
 
