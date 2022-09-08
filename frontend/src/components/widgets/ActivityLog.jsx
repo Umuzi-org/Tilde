@@ -10,42 +10,37 @@ import {
   PR_REVIEWED,
 } from "../../constants";
 import { eventTypeColors } from "../../colors";
-import { apiReduxWatchers } from "../../apiAccess/apiApps";
 
 const useStyles = makeStyles((theme) => ({
   containerStyles: {
-    height: "100%",
     width: "50%",
     backgroundColor: "#D3D3D3",
-    borderRadius: 40,
     margin: 50,
   },
 
   fillerStyles: {
     height: "100%",
-    borderRadius: 40,
     textAlign: "right",
+    width: "10%",
   },
 
   labelStyles: {
+    height: "100%",
     padding: 10,
     color: "black",
     fontWeight: 900,
   },
 }));
 
-const ProgressBar = ({ bgColor, progress }) => {
+const ActionList = ({ bgColor, totalNumberOfActions }) => {
   const classes = useStyles();
-
-  const adjustStyle = {
-    width: `${progress}%`,
-    backgroundColor: bgColor,
-  };
+  const specificColor = { backgroundColor: bgColor };
 
   return (
     <div className={classes.containerStyles}>
-      <div className={classes.fillerStyles} style={adjustStyle}>
-        <span className={classes.labelStyles} />
+      <div className={classes.fillerStyles} style={specificColor}>
+        <div className={classes.labelStyles} />
+        <div>{totalNumberOfActions}</div>
       </div>
     </div>
   );
@@ -148,7 +143,11 @@ export default ({ args }) => {
     <div>
       <div>
         {two.map((item, idx) => (
-          <ProgressBar key={idx} progress={item.total} bgColor={item.color} />
+          <ActionList
+            key={idx}
+            // totalNumberOfActions={item.total}
+            bgColor={item.color}
+          />
         ))}
       </div>
     </div>

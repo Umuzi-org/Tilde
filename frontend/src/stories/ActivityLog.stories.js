@@ -1,7 +1,7 @@
 import React from "react";
 
 import actionLogByDate from "./fixtures/userActionLogsByDate.json";
-import EntryListEndpoint from "../components/widgets/EntryListEndpoint";
+import ActivityLog from "../components/widgets/ActivityLog";
 import apis from "../apiAccess/apis";
 
 // const orderedDates = [
@@ -14,11 +14,11 @@ import apis from "../apiAccess/apis";
 // ];
 
 export default {
-  title: "Tilde/EntryListEndpoint",
-  component: EntryListEndpoint,
+  title: "Tilde/ActivityLog",
+  component: ActivityLog,
 };
 
-const Template = (args) => <EntryListEndpoint {...args} />;
+const Template = (args) => <ActivityLog {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
