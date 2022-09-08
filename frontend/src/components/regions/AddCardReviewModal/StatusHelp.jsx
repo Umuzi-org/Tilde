@@ -35,7 +35,7 @@ export default function StatusHelp() {
           </li>
           <li>
             <Typography>
-              All the relevent code is in the master branch - The master branch
+              All the relevant code is in the master branch - The master branch
               has to work!
             </Typography>
           </li>
