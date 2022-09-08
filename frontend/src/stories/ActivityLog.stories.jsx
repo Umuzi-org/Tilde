@@ -67,4 +67,6 @@ export default {
 const Template = (args) => <ActivityLog {...args} />;
 
 export const Primary = Template.bind({});
-Primary.args = {};
+Primary.args = {
+  activity,
+};
