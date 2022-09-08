@@ -14,6 +14,9 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
   },
+  emailText: {
+    color: "#000",
+  },
 });
 
 export function getAvatarInitials(email) {
@@ -38,7 +41,7 @@ function UserAvatarLink({ email, userId }) {
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
         <Avatar>{getAvatarInitials(email)}</Avatar>
       </Link>
-      <Typography>{email}</Typography>
+      <Typography className={classes.emailText}>{email}</Typography>
     </div>
   );
 }
