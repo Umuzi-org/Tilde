@@ -11,11 +11,21 @@ import {
 } from "../../constants";
 import { eventTypeColors } from "../../colors";
 
+const events = {
+  CARD_MOVED_TO_COMPLETE,
+  CARD_MOVED_TO_REVIEW_FEEDBACK,
+  CARD_REVIEW_REQUEST_CANCELLED,
+  CARD_REVIEW_REQUESTED,
+  CARD_STARTED,
+  COMPETENCE_REVIEW_DONE,
+  PR_REVIEWED,
+};
+
 const useStyles = makeStyles((theme) => ({
   containerStyles: {
     width: "50%",
-    backgroundColor: "#D3D3D3",
-    margin: 50,
+    margin: 10,
+    border: "1px black solid",
   },
 
   fillerStyles: {
@@ -45,15 +55,7 @@ const ActionList = ({ bgColor, totalNumberOfActions }) => {
     </div>
   );
 };
-const events = {
-  CARD_MOVED_TO_COMPLETE,
-  CARD_MOVED_TO_REVIEW_FEEDBACK,
-  CARD_REVIEW_REQUEST_CANCELLED,
-  CARD_REVIEW_REQUESTED,
-  CARD_STARTED,
-  COMPETENCE_REVIEW_DONE,
-  PR_REVIEWED,
-};
+
 const eventTypesWithIds = [
   {
     id: 5,
@@ -127,7 +129,7 @@ const sortData = ({ eventTypes, eventTypeColors }) => {
 };
 const test = sortData({ eventTypes: events, eventTypeColors });
 
-const two = test.map((item, index) => {
+const mapColorsWithEventTypes = test.map((item, index) => {
   const result = {
     ...item,
     color: newData.find((elem) => elem.eventTypes === item.eventTypes)
@@ -136,13 +138,12 @@ const two = test.map((item, index) => {
   };
   return result;
 });
-console.log("hello", two);
 
 export default ({ args }) => {
   return (
     <div>
       <div>
-        {two.map((item, idx) => (
+        {mapColorsWithEventTypes.map((item, idx) => (
           <ActionList
             key={idx}
             // totalNumberOfActions={item.total}
