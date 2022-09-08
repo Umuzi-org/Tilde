@@ -6,7 +6,6 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import Loading from "../../widgets/Loading";
-import { useTraceUpdate } from "../../../hooks";
 
 export function cleanAndFilterTeams({ teams, filterBy }) {
   if (teams === undefined) return <Loading />;
@@ -89,14 +88,6 @@ function UsersAndGroupsUnconnected({
     filterByGroup: {},
     filterByUser: {},
   });
-
-  useTraceUpdate({
-    teams,
-    teamSummaryStats,
-    fetchTeamsPages,
-    fetchTeamSummaryStatsPages,
-  });
-  console.log("xxxxxxx");
 
   const [filterUsersByGroupName, setFilterUsersByGroupName] = useState("");
   ignore(formState, formErrors, dataFromState);
