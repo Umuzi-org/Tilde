@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Loading from "../../widgets/Loading";
+import { useTraceUpdate } from "../../../hooks";
 
 import {
   ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
@@ -20,9 +21,15 @@ function DashboardUnconnected({
   fetchUserActivityLogDayCountsSequence,
 }) {
   let urlParams = useParams() || {};
-
+  useTraceUpdate({
+    teams,
+    activityLogDayCounts,
+    fetchTeam,
+    fetchUserActivityLogDayCountsSequence,
+  });
   const teamId = parseInt(urlParams.teamId, 10);
-  const team = teams[teamId];
+  const team = teams && teams[teamId];
+
   useEffect(() => {
     if (teamId) {
       fetchTeam({ teamId });
@@ -48,7 +55,8 @@ function DashboardUnconnected({
     }
   }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
 
-  if (!teams || !activityLogDayCounts) return <Loading />;
+  if (teams === undefined || !activityLogDayCounts)
+    return <Loading />;
 
   const eventTypes = [
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
@@ -63,13 +71,19 @@ function DashboardUnconnected({
       userIds: team ? team.members.map((member) => member.userId) : [],
     }),
   };
-
+  if (activityLogDayCounts.length === 0)
+    getActivityLogCountsByDayForUsers({
+      activityLogDayCounts,
+      eventTypes,
+      userIds: team ? team.members.map((member) => member.userId) : [],
+    });
+ 
   return <Presentation {...props} />;
 }
 
 function mapStateToProps(state) {
   return {
-    teams: state.apiEntities.teams || {},
+    teams: state.apiEntities.teams,
     authUser: state.App.authUser || {},
 
     activityLogDayCounts: Object.values(
