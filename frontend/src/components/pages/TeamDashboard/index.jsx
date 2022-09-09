@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Loading from "../../widgets/Loading";
-import { useTraceUpdate } from "../../../hooks";
 
 import {
   ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
@@ -21,12 +20,7 @@ function DashboardUnconnected({
   fetchUserActivityLogDayCountsSequence,
 }) {
   let urlParams = useParams() || {};
-  useTraceUpdate({
-    teams,
-    activityLogDayCounts,
-    fetchTeam,
-    fetchUserActivityLogDayCountsSequence,
-  });
+
   const teamId = parseInt(urlParams.teamId, 10);
   const team = teams && teams[teamId];
 
