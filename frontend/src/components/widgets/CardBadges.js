@@ -107,6 +107,7 @@ export default ({ card }) => {
             href={repoUrlCleaner(repoUrl)}
             target="_blank"
             rel="noreferrer noopener"
+            // TODO: add hover effect, this should look clickable
           >
             <Badge badgeContent={openPrCount} color="primary">
               {oldestOpenPrUpdatedTime === null ? (

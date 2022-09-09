@@ -1,16 +1,12 @@
 import React from "react";
-
 import { makeStyles } from "@material-ui/core/styles";
-
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-
 import AgileCard from "./AgileCard";
 import Loading from "../../widgets/Loading";
-
-// import MarkSingleCardAttendanceModal from "../MarkSingleCardAttendanceModal";
-import { Button, Divider } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -23,18 +19,16 @@ const useStyles = makeStyles((theme) => ({
       // height: "calc(100vh - 20rem)",
     },
   },
-
   paper: {
     height: "calc(100vh - 6rem)",
   },
-
   column: {
     height: "calc(100% - 2.5rem)",
     overflowY: "scroll",
   },
 }));
 
-export default ({
+export default function Presentation({
   board,
   cards,
   handleColumnScroll,
@@ -42,7 +36,7 @@ export default ({
   viewedUser,
   columnsLoading,
   loadMoreCards,
-}) => {
+}) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -92,4 +86,4 @@ export default ({
       </Grid>
     </React.Fragment>
   );
-};
+}
