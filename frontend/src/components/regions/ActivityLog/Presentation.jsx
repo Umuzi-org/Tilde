@@ -71,7 +71,7 @@ const activity = [
   },
   {
     id: 116282,
-    event_type: 1,
+    eventType: 1,
     actorUser: 132,
     effectedUser: 896,
     object1ContentTypeName: "curriculum_tracking | recruit project review",
@@ -81,7 +81,7 @@ const activity = [
   },
   {
     id: 116281,
-    event_type: 1,
+    eventType: 1,
     actorUser: 132,
     effectedUser: 1023,
     object1ContentTypeName: "curriculum_tracking | recruit project review",
@@ -93,7 +93,7 @@ const activity = [
 
 const two = activity.map((item, index) => {
   let matchingIds = eventTypesWithIds.find(
-    (elem) => elem.id === item.event_type
+    (elem) => elem.id === item.eventType
   );
   const result = {
     ...item,
@@ -101,8 +101,6 @@ const two = activity.map((item, index) => {
   };
   return result;
 });
-
-// console.log(two);
 
 const v = () => {
   const arr = [];
@@ -112,11 +110,10 @@ const v = () => {
   return arr;
 };
 const eventTypesWithColors = v();
-console.log(eventTypesWithColors);
-console.log(two);
-const three = activity.map((item, index) => {
+
+const three = two.map((item, index) => {
   let matchingIds = eventTypesWithColors.find(
-    (elem) => elem.eventName === item.event
+    (elem) => elem.event === item.eventName
   );
   const result = {
     ...item,
@@ -125,8 +122,7 @@ const three = activity.map((item, index) => {
   return result;
 });
 
-console.log(three);
-function LogBar({ color, two, three }) {
+function LogBar({ color, event, object1ContentTypeName }) {
   const classes = useStyles();
   const adjustStyle = {
     backgroundColor: color,
@@ -135,18 +131,24 @@ function LogBar({ color, two, three }) {
     <Grid className={classes.containerStyles}>
       <Grid className={classes.fillerStyles}>
         <span className={classes.labelStyles} style={adjustStyle} />
-        <div className={classes.content}>{two.id}</div>
+        <div className={classes.content}>
+          <div>{event}</div>
+          <div>{object1ContentTypeName}</div>
+        </div>
       </Grid>
     </Grid>
   );
 }
-
 export default function Presentation() {
   return (
     <div>
-      {/* {eventTypeColors.map((color) => ( */}
-      <LogBar color={"red"} two={two} three={three} />
-      {/* ))} */}
+      {three.map((item) => (
+        <LogBar
+          color={item.eventColor}
+          event={item.eventName}
+          object1ContentTypeName={item.object1ContentTypeName}
+        />
+      ))}
     </div>
   );
 }
