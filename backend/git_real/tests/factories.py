@@ -98,7 +98,5 @@ class PushFactory(DjangoModelFactory):
     committer_github_name = factory.Faker("first_name")
     pusher_username = factory.Faker("first_name")
     message = "message"
-    # head_commit_url = models.CharField(max_length=255)
     commit_timestamp = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
     pushed_at_time = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
-    # ref = 
