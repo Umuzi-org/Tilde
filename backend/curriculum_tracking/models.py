@@ -1483,18 +1483,25 @@ class BurndownSnapshot(models.Model):
 
         if match:
             # there was a snapshot taken recently, no need to store another one
-            match = Cls.objects.filter(
-                user=user,
-                timestamp__gte=timezone.now()  
-                + timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
-            ).first()
-            return match
-
+            # print(f'Match: {match}')
+            # match_1 = Cls.objects.filter(
+            #     user=user,
+            #     timestamp__gte=timezone.now()  
+            #     - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
+            # ).all()
+            # print(f'Match 1: {match_1}')
+            # if match_1 == match:
+            #     return match
+            Cls.objects.delete(user=user)
+    
+        print(f'MATCH: {match}')
         cards = AgileCard.objects.filter(assignees=user)
         project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)
 
         complete_cards = cards.filter(status=AgileCard.COMPLETE)
         complete_project_cards = project_cards.filter(status=AgileCard.COMPLETE)
+
+        
 
         return Cls.objects.create(
             user=user,
