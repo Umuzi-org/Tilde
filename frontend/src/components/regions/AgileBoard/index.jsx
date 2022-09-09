@@ -134,25 +134,30 @@ function AgileBoardUnconnected({
   const userId = parseInt(urlParams.userId || authedUserId || 0);
 
   useEffect(() => {
+    if (userId !== undefined) fetchUser({ userId });
+  }, [fetchUser, userId]);
+
+  useEffect(() => {
     if (userId !== undefined) fetchInitialCards({ userId });
   }, [fetchInitialCards, userId]);
 
-  useEffect(() => {
-    if (userId !== undefined) fetchUser({ userId });
-  }, [fetchUser, userId]);
+  if (
+    !userId ||
+    !cards ||
+    !users ||
+    !FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE
+  )
+    return <Loading />;
 
   const filteredCards = filterCardsByUserId({
     cards,
     userId,
   });
 
-  const latestCallStates =
-    userId !== undefined
-      ? getAllLatestCalls({
-          FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
-          userId,
-        })
-      : {};
+  const latestCallStates = getAllLatestCalls({
+    FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
+    userId,
+  });
 
   function fetchNextColumnPage({ columnLabel, latestCallStates }) {
     const statuses = consts.AGILE_COLUMNS[columnLabel];
@@ -231,8 +236,8 @@ function AgileBoardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.apiEntities.users || {},
-    cards: state.apiEntities.cards || {},
+    users: state.apiEntities.users,
+    cards: state.apiEntities.cards,
     FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE:
       state.FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     authedUserId: state.App.authUser.userId,
