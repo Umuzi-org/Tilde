@@ -16,6 +16,16 @@ import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 const useStyles = makeStyles((theme) => ({
   legend: {
     padding: theme.spacing(1),
@@ -23,6 +33,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default ({ burnDownSnapshots }) => {
+  burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
+    if (!unique.some((obj) => obj.timestamp === o.timestamp)) {
+      unique.push(o);
+    }
+    return unique;
+  }, []);
+  
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
@@ -30,7 +47,7 @@ export default ({ burnDownSnapshots }) => {
         .slice(0, 10))
   );
 
-  // console.log({ burnDownSnapshots });
+  console.log({ burnDownSnapshots });
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -40,7 +57,7 @@ export default ({ burnDownSnapshots }) => {
       <ResponsiveContainer height={500} width="100%">
         <LineChart data={burnDownSnapshots}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" interval="preserveEnd" />
+          <XAxis BaseA dataKey="timestamp" interval="preserveEnd" />
           <YAxis />
           <Tooltip />
           <Legend className={classes.legend} />
