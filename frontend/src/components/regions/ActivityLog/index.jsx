@@ -1,36 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+import Presentation from "./Presentation";
 
-import { eventTypeColors } from "../../../colors";
-
-const useStyles = makeStyles((theme) => ({
-  containerStyles: {
-    width: "50%",
-    margin: 10,
-    border: "1px black solid",
-  },
-
-  fillerStyles: {
-    height: "100%",
-    textAlign: "right",
-    // width: "10%",
-    display: "flex",
-    flexDirection: "row",
-  },
-  labelStyles: {
-    // height: "100%",
-    width: 20,
-    color: "black",
-    // fontWeight: 900,
-  },
-  content: {
-    // height: "100%",
-    // padding: 10,
-    width: "90%",
-  },
-}));
+const eventTypeColors = {
+  CARD_MOVED_TO_COMPLETE: "colors.yellow600",
+  CARD_MOVED_TO_REVIEW_FEEDBACK: "colors.red600",
+  CARD_REVIEW_REQUESTED: "colors.orange600",
+  CARD_REVIEW_REQUEST_CANCELLED: "colors.grey600",
+  CARD_STARTED: "colors.green600",
+  PR_REVIEWED: "colors.purple600",
+  COMPETENCE_REVIEW_DONE: "colors.blue600",
+};
 
 const eventTypesWithIds = [
   {
@@ -126,27 +105,11 @@ const three = activity.map((item, index) => {
 });
 
 console.log(three);
-function LogBar({ color, two, three }) {
-  const classes = useStyles();
-  const adjustStyle = {
-    backgroundColor: color,
-  };
-  return (
-    <Grid className={classes.containerStyles}>
-      <Grid className={classes.fillerStyles}>
-        <span className={classes.labelStyles} style={adjustStyle} />
-        <div className={classes.content}>{two.id}</div>
-      </Grid>
-    </Grid>
-  );
-}
 
-export default function Presentation() {
-  return (
-    <div>
-      {/* {eventTypeColors.map((color) => ( */}
-      <LogBar color={"red"} two={two} three={three} />
-      {/* ))} */}
-    </div>
-  );
-}
+export default () => {
+  const props = {
+    two,
+    three,
+  };
+  return <Presentation {...props} />;
+};
