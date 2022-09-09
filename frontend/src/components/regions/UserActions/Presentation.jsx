@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
-import ActivityDashboardBarGraph from "../../pages/UserDashboard/ActivityDashboardBarGraph";
+import ActivityDashboardBarGraph from "./ActivityDashboardBarGraph";
 
 const useStyles = makeStyles((theme) => ({
   column: {
