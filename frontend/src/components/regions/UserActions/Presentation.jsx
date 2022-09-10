@@ -25,16 +25,14 @@ export default function Presentation({
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
+        {currentUserBurndownStats && (
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
+            </Paper>
+          </Grid>
+        )}
         <Grid item xs={12}>
-          {currentUserBurndownStats && (
-            <Grid>
-              <Paper className={classes.paper}>
-                <UserBurnDownChart
-                  burnDownSnapshots={currentUserBurndownStats}
-                />
-              </Paper>
-            </Grid>
-          )}
           <Paper>
             {orderedDates.map((date) => (
               <DayLog
