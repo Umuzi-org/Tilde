@@ -30,8 +30,9 @@ export default class RunPytests extends Action {
   };
 }
 
-function lookForTestProblems(testOutput) {
-  //E   ModuleNotFoundError: No module named 'task1'
+/*These are things that would stop the tests from running at all, eg the function we are trying to test doesn't exist */
+function lookForSeriousErrors(testOutput) {
+  // E   ModuleNotFoundError: No module named 'task1'
   // E   ImportError: cannot import name 'task1' from 'task1' (/home/sheena/workspace/acn-automarker-config/projects/coding_aptitude_mini_course/task1_python/task1.py)
   const lines = testOutput.split("\n");
 
@@ -45,31 +46,95 @@ function lookForTestProblems(testOutput) {
       problems.push(
         `${
           line.split("(")[0]
-        }. Are you sure you named everything according to the instructions?`
+        }. Are you sure you named everything according to the instructions? Make sure all files, functions, and everything are named accurately. If you don't follow the instructions EXACTLY then your code will not pass`
       );
   }
 
-  if (problems.length > 0) return problems;
+  return problems;
+}
 
+function lookForFailures(testOutput) {
+  if (testOutput.indexOf("FAILED") === -1) return [];
+
+  const stripped = testOutput
+    .split("=== short test summary info =====")[0]
+    .split("=== FAILURES ===")[1]
+    .split("==== warnings summary ====")[0];
+
+  const lines = stripped.split("\n");
+  lines.pop();
+  lines.shift();
+
+  return lines.map((line) => {
+    if (line.indexOf("TypeError:") !== -1) {
+      return `${
+        line.split("TypeError: ")[1]
+      } - please make sure you are following the instructions. Pay close attention to function arguments`;
+    }
+
+    // if (line.indexOf("Failed:") !== -1) {
+    //   return line.split("Failed: ")[1];
+    // }
+
+    if (line.indexOf("AssertionError:") === -1) {
+      console.log("==============================");
+      console.log("==============================");
+      console.log(lines);
+      console.log("==============================");
+      console.log("==============================");
+      throw new Error(`Unknown error type:\n \'\'\'\n\t${line}\n\`\`\``);
+    }
+    return line.split("AssertionError: ")[1];
+  });
+}
+
+function lookForWarnings(testOutput) {
+  if (testOutput.indexOf("==== warnings summary ====") === -1) return [];
+
+  const stripped = testOutput
+    .split("==== warnings summary ====")[1]
+    .split("=== short test summary info =====")[0];
+
+  const lines = stripped.split("\n");
+  lines.pop();
+  lines.shift();
+
+  return lines
+    .map((line) => {
+      const match = line.match(/(\w*\.py:\d+:.*)/g);
+      if (match === null) return;
+
+      if (match.length === 1) {
+        const warning = match[0];
+        if (warning.match(/DeprecationWarning/)) {
+          return `${warning}. If something is deprecated then it means that it is old school. Try to use modern best practices`;
+        }
+        return warning;
+      }
+      if (match.length > 1) {
+        console.log("==========================");
+        console.log("==========================");
+        console.log(lines);
+        console.log("==========================");
+        console.log("==========================");
+        throw new Error(`unexpected line format:\n\`\`\`${line}\`\`\``);
+      }
+    })
+    .filter((line) => line !== undefined);
+}
+
+function lookForTestProblems(testOutput) {
+  const errors = lookForSeriousErrors(testOutput);
+  if (errors.length > 0) return errors;
+
+  // Just a sanity check. We should have found all the ERRORs in the last step
   if (testOutput.indexOf("ERRORS") != -1) {
     console.log({ testOutput });
     throw new Error("wtf");
   }
 
-  if (testOutput.indexOf("FAILED") != -1) {
-    const stripped = testOutput
-      .split("=== short test summary info =====")[0]
-      .split("=== FAILURES ===")[1];
-    const lines = stripped.split("\n");
-    lines.pop();
-    lines.shift();
+  const failures = lookForFailures(testOutput);
+  const warnings = lookForWarnings(testOutput);
 
-    return lines.map((line) => {
-      if (line.indexOf("AssertionError:") === -1)
-        throw new Error(`Unknown error type:\n${line}`);
-
-      return line.split("AssertionError: ")[1];
-    });
-  }
-  return [];
+  return [...failures, ...warnings];
 }
