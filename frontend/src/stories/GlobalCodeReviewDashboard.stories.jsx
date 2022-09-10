@@ -15,11 +15,11 @@ export const Primary = Template.bind({});
 Primary.args = {
   competenceReviewQueueProjects: codeReviewQueueProjects,
   pullRequestReviewQueueProjects: codeReviewQueueProjects,
-  filterIncludeTags: ["clustering"],
+  // filterIncludeTags: ["clustering"],
   // filterExcludeTags: ["data structures"],
 
   // filterIncludeFlavours: ["python"],
-  filterExcludeFlavours: ["python"],
+  // filterExcludeFlavours: ["python"],
 
   handleChangeFlavourFilter: () => {},
   handleChangeTagFilter: () => {},
