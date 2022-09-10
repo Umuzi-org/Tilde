@@ -3,7 +3,6 @@ import { Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import TeamsTable from "./UserDetails/TeamsTable";
 import UserDetailedStats from "./UserDetailedStats";
-import UserBurnDownChart from "./UserBurndownStats";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -17,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 export default ({
   user,
   currentUserDetailedStats,
-  currentUserBurndownStats,
   showTeamsTable,
   authUser,
 }) => {
@@ -27,15 +25,6 @@ export default ({
     return (
       <React.Fragment>
         <Grid container spacing={1}>
-          {currentUserBurndownStats && (
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <UserBurnDownChart
-                  burnDownSnapshots={currentUserBurndownStats}
-                />
-              </Paper>
-            </Grid>
-          )}
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <UserDetailedStats detailedStats={currentUserDetailedStats} />
