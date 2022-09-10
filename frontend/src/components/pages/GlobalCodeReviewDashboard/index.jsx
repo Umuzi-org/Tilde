@@ -29,7 +29,7 @@ function GlobalCodeReviewDashboardUnconnected({
 }) {
   const [filterIncludeTags, setFilterIncludeTags] = useState([]);
   const [filterExcludeTags, setFilterExcludeTags] = useState([
-    // "technical-assessment",
+    "technical-assessment",
   ]);
 
   const [filterIncludeFlavours, setFilterIncludeFlavours] = useState([]);

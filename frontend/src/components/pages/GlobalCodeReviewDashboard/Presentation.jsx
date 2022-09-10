@@ -273,9 +273,15 @@ function Presentation({
         <Typography variant="h5">Competence Review Queue</Typography>
         {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
 
-        {competenceReviewQueueProjects.filter(applyFilters).map((project) => (
-          <CompetenceReviewQueueEntry project={project} />
-        ))}
+        {competenceReviewQueueProjects
+          .filter(applyFilters)
+          .sort(
+            (a, b) =>
+              new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
+          )
+          .map((project) => (
+            <CompetenceReviewQueueEntry project={project} />
+          ))}
 
         <Paper elevation={3} className={classes.project} variant="outlined">
           {competenceReviewQueueLoading ? (
@@ -292,9 +298,16 @@ function Presentation({
         <Typography variant="h5">Pull Request Review Queue</Typography>
         {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
 
-        {pullRequestReviewQueueProjects.filter(applyFilters).map((project) => (
-          <PullRequestReviewQueueEntry project={project} />
-        ))}
+        {pullRequestReviewQueueProjects
+          .filter(applyFilters)
+          .sort(
+            (a, b) =>
+              new Date(b.oldestOpenPrUpdatedTime) -
+              new Date(a.oldestOpenPrUpdatedTime)
+          )
+          .map((project) => (
+            <PullRequestReviewQueueEntry project={project} />
+          ))}
 
         <Paper elevation={3} className={classes.project} variant="outlined">
           {pullRequestReviewQueueLoading ? (
