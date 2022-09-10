@@ -41,17 +41,24 @@ while true
     python manage.py run_automarker "Coding aptitude assessment challenge: Task 10" "javascript" 1
 
     echo "simple-calculator part 1"
-    python manage.py run_automarker "simple-calculator part 1" "" 1
+    python manage.py run_automarker "simple-calculator part 1" "javascript" 1
+    python manage.py run_automarker "simple-calculator part 1" "python" 1
+    python manage.py run_automarker "simple-calculator part 1" "python,pytest" 1
 
     echo "Person"
-    python manage.py run_automarker "Person" "" 1
+    python manage.py run_automarker "Person" "python" 1
+    python manage.py run_automarker "Person" "javascript" 1
 
-    # echo "password-checker"
-    # python manage.py run_automarker "password-checker" "javascript" 1
+    echo "password checker"
+    # python manage.py run_automarker "password-checker" "python" 1
+    
+    echo "semitone difference - basic algorithm"
+    python manage.py run_automarker "semitone difference - basic algorithm" "javascript" 1
 
-    # echo "semitone difference - basic algorithm" 1
-    # python manage.py run_automarker "semitone difference - basic algorithm" "" 1
+    echo "Animals Part 2. Adding Tests"
+    python manage.py run_automarker "Animals Part 2. Adding Tests" "javascript" 1
 
-    # animals_part2_js
-
+    echo "Level 1 coding challenges"
+    python manage.py run_automarker "Level 1 coding challenges" "javascript" 1
 done
+
