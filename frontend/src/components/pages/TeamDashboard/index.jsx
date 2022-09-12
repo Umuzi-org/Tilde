@@ -48,9 +48,8 @@ function DashboardUnconnected({
       fetchUserActivityLogDayCountsSequence({ dataSequence });
     }
   }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
-
-  if (teams === undefined || !activityLogDayCounts)
-    return <Loading />;
+ 
+  if (teams === undefined) return <Loading />;
 
   const eventTypes = [
     ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
