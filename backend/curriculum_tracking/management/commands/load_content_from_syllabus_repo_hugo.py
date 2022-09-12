@@ -11,6 +11,7 @@ import requests
 from typing import List, Dict
 from pathlib import Path
 import yaml
+import django
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -190,11 +191,14 @@ class Helper:
                 content_item = models.ContentItem.objects.get(pk=meta[DB_ID])
                 content_item.update(**defaults)
                 content_item.save()
-            except models.ContentItem.DoesNotExist:
+            except models.ContentItem.DoesNotExist as e:
                 breakpoint()
                 content_item, created = models.ContentItem.get_or_create_or_update(
                     pk=meta[DB_ID], defaults=defaults, overrides=defaults
                 )
+            except django.core.exceptions.ValidationError as e:
+                breakpoint()
+                what
         else:
             try:
                 content_item = models.ContentItem.objects.get(url=url)
@@ -684,11 +688,11 @@ class Command(BaseCommand):
         Helper.set_url_template(url_template)
         Helper.set_repo_base_dir(path_to_repo)
         Helper.load_available_content_flavours()
-        Helper.process_available_learning_outcomes()
 
         curriculums_base_dir = Helper.repo_base_dir / "content/syllabuses"
         if process_content:
             print("Processing Content....")
+            Helper.process_available_learning_outcomes()
             # first we make sure that if something has an id, it gets saved first
             # this is because we generate the next available id based on what is already in the db. This stops id conflicts
             load_all_content_items_with_known_ids()

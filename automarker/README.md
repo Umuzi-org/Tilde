@@ -13,6 +13,7 @@ When it comes to code projects, the automarker basically does the following:
 ## Architecture
 
 This is a lil express app with a few endpoints. Since the Tilde repo is public and plagiarism is lame, we store the automarker configuration in a separate repo. That repo contains a bunch of "perfect" projects that line up with our syllabus.
+
 ## get it to run on your computer
 
 This is an express app. To get it up and running:
@@ -42,6 +43,7 @@ curl http://localhost:1337/health-check
 ## Configuration
 
 If you add/edit any configuration in the config repo, then you'll want to test it out before runnin it against ny learner code.
+
 ### Testing the configuration
 
 Every project that we want to automark is configured in a separate repo. That repo contains a perfect version of the project.
@@ -183,4 +185,3 @@ Right now things are set up so we can check if a submitted project passes a give
 It could be useful to run the learner's tests against code with known problems.
 
 We could do this by creating a bunch of imperfect projects. We would expect the learner's tests to fail when run against the imperfect projects.
-
