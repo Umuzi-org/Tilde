@@ -60,6 +60,7 @@ class LogEntrySerializer(serializers.ModelSerializer):
         model = models.LogEntry
         fields = [
             "id",
+            "timestamp",
             "event_type",
             "actor_user",
             "effected_user",

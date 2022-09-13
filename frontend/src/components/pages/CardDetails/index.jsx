@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -46,7 +46,7 @@ function CardDetailsUnconnected({
       ? topicProgressArray[topicProgressId]
       : null;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (projectId) {
       fetchProject({ projectId });
       fetchProjectReviews({ projectId });
@@ -71,16 +71,12 @@ function CardDetailsUnconnected({
     card,
   ]);
 
-  const [
-    formState,
-    { linkSubmission },
-    formErrors,
-    dataFromState,
-  ] = useMaterialUiFormState({
-    linkSubmission: {
-      required: true,
-    },
-  });
+  const [formState, { linkSubmission }, formErrors, dataFromState] =
+    useMaterialUiFormState({
+      linkSubmission: {
+        required: true,
+      },
+    });
 
   const handleClickUpdateProjectLink = (e) => {
     e.preventDefault();
