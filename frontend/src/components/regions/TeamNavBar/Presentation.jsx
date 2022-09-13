@@ -1,10 +1,9 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
-
+import Typography from "@material-ui/core/Typography";
 import EntityNavBar from "../../widgets/EntityNavBar";
 import { routes } from "../../../routes";
 
-export default ({ team, selectedTab, teamId }) => {
+export default function Presentation({ team, selectedTab, teamId }) {
   const toolbarContents = (
     <React.Fragment>
       {team && <Typography>{team.name}</Typography>}
@@ -29,4 +28,4 @@ export default ({ team, selectedTab, teamId }) => {
       selectedTab={selectedTab}
     />
   );
-};
+}
