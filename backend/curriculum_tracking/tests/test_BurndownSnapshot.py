@@ -122,7 +122,7 @@ class create_snapshot_Tests(TestCase):
         )
 
         BurndownSnapshot.create_snapshot(user=self.user)
-        snapshot = BurndownSnapshot.objects.last()
+        snapshot = BurndownSnapshot.objects.first()
         snapshot.save()
 
 
