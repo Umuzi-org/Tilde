@@ -129,8 +129,21 @@ function lookForTestProblems(testOutput) {
 
   // Just a sanity check. We should have found all the ERRORs in the last step
   if (testOutput.indexOf("ERRORS") != -1) {
-    console.log({ testOutput });
-    throw new Error("wtf");
+    const lines = testOutput
+      .split("==== ERRORS ====")[1]
+      .split("=== short test summary info =====")[0]
+      .split("\n");
+
+    lines.shift();
+
+    if (lines[0][0] !== "_") {
+      console.log({ testOutput });
+      throw new Error("wtf");
+    }
+
+    lines.shift();
+    lines.pop();
+    return lines;
   }
 
   const failures = lookForFailures(testOutput);
