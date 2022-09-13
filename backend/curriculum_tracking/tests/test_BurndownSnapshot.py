@@ -109,8 +109,6 @@ class create_snapshot_Tests(TestCase):
         )
 
         BurndownSnapshot.create_snapshot(user=self.user)
-        snapshot = BurndownSnapshot.objects.first()
-        snapshot.save()
 
         factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
