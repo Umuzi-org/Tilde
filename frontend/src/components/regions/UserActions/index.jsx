@@ -31,6 +31,7 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -163,6 +164,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+
     fetchProjectReviewsPages: ({ dataSequence }) => {
       dispatch(
         apiReduxApps.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE.operations.startCallSequence(
