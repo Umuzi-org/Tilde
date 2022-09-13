@@ -28,6 +28,8 @@ function UserActionsUnconnected({
   cardSummaries,
   fetchProjectReviewsPages,
   fetchCardCompletions,
+  userBurndownStats,
+  fetchUserBurndownStats,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
@@ -35,6 +37,9 @@ function UserActionsUnconnected({
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter(
+    (snapshot) => snapshot.user === userId
+  );
 
   useEffect(() => {
     fetchProjectReviewsPages({
@@ -47,9 +52,15 @@ function UserActionsUnconnected({
 
   useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
-  }, [fetchCardCompletions, userId]);
+    fetchUserBurndownStats({ userId });
+  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
 
-  if (!userId || !fetchProjectReviewsPages || !fetchCardCompletions)
+  if (
+    !userId ||
+    !fetchProjectReviewsPages ||
+    !fetchCardCompletions ||
+    !fetchUserBurndownStats
+  )
     return <Loading />;
 
   const latestProjectReviewsCall = getLatestMatchingCall({
@@ -146,6 +157,7 @@ function UserActionsUnconnected({
     actionLogByDate,
     anyLoading,
     handleScroll,
+    currentUserBurndownStats,
   };
   return <Presentation {...props} />;
 }
@@ -159,6 +171,7 @@ const mapStateToProps = (state) => {
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    userBurndownStats: state.apiEntities.burndownSnapshots || {},
   };
 };
 
@@ -173,7 +186,18 @@ const mapDispatchToProps = (dispatch) => {
         )
       );
     },
-
+    //TODO Implement Page check
+    fetchUserBurndownStats: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
+          data: {
+            userId: parseInt(userId),
+            page: 1,
+          },
+        })
+      );
+    },
+    
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(
         apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
