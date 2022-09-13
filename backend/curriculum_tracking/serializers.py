@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.utils import timezone
 from config.models import NameSpace
 from taggit.models import Tag
+from activity_log.models import LogEntry
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -773,6 +774,7 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             "reviewer_user_emails",
             "users_that_reviewed_since_last_review_request",
             "users_that_reviewed_since_last_review_request_emails",
+            "total_number_of_negative_reviews",
         ]
 
     content_item_title = serializers.SerializerMethodField("get_content_item_title")
@@ -792,6 +794,8 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
     )
 
     status = serializers.SerializerMethodField("get_status")
+
+    total_number_of_negative_reviews = serializers.SerializerMethodField("get_total_number_of_negative_reviews")
 
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [
@@ -813,3 +817,10 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
     def get_status(self, instance):
         if instance.agile_card:
             return instance.agile_card.status
+
+    def get_total_number_of_negative_reviews(self, instance):
+        # pass
+        total_number_of_negative_reviews = LogEntry.objects.filter(effected_user=5)#, event_type="CARD_MOVED_TO_REVIEW_FEEDBACK")
+        # return 4
+        return total_number_of_negative_reviews
+        
