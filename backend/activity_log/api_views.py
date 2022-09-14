@@ -11,12 +11,36 @@ from django.utils import timezone
 from datetime import date, timedelta, datetime
 from django.db.models import Q
 
+import django_filters 
+# import FilterSet, DateTimeFilter
+# from rest_framework import filters
+# from rest_framework import viewsets
+
+class LogEntryFilter(django_filters.FilterSet):
+    timestamp__gte = django_filters.DateFilter(field_name='timestamp', lookup_expr='date__gte')
+    timestamp__lte = django_filters.DateFilter(field_name='timestamp', lookup_expr='date__lte')
+    class Meta:
+        model = models.LogEntry
+        fields = ['event_type',
+        "actor_user",
+        "effected_user",
+        "object_1_content_type",
+        "object_1_id",
+        "object_2_content_type",
+        "object_2_id",
+        "timestamp",
+        'timestamp__gte',
+        'timestamp__lte',
+    ]
+
+
 
 
 class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
+    filter_class = LogEntryFilter
     serializer_class = serializers.ActivityLogDayCountSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type", "actor_user", "effected_user", "timestamp"]
+    filterset_fields = ["event_type", "actor_user", "effected_user", 'timestamp__gte','timestamp__lte']
     permission_classes = [
         core_permissions.ActionIs("list")
         & (
@@ -58,25 +82,13 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventTypeSerializer
     queryset = models.EventType.objects.order_by("name")
     filter_backends = [DjangoFilterBackend]
-    gte = datetime.now() + timedelta(days=7)
-    lte = datetime.now() 
-    filterset_fields = {"timestamp":["gte", "lte"]}
+
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        query = models.LogEntry.objects.annotate(
-            date=Cast("timestamp", output_field=DateField())
-        )
-        query = query.values("date").annotate(total=Count("date"))
-        query = query.order_by("-date")
-        filters = "&".join(
-            [f"{key}={value}" for key, value in self.request.GET.items()]
-        )
-        query = query.annotate(filters=Value(filters, output_field=CharField()))
-        return query
 
 
 class ActivityLogEntryViewSet(viewsets.ModelViewSet):
+    filter_class = LogEntryFilter
     serializer_class = serializers.LogEntrySerializer
     queryset = models.LogEntry.objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
@@ -106,8 +118,8 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
         "object_1_id",
         "object_2_content_type",
         "object_2_id",
-        "timestamp",
-    ]
+        'timestamp__gte',
+        'timestamp__lte']
 
 
 
