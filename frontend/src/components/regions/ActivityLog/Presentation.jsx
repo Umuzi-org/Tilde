@@ -38,12 +38,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const timestampArray = ["2022-09-02T13:46:16.295020Z", "2022-09-05T10:46:16.221191Z", "2022-09-01T13:18:03.743668Z"];
-
 function LogBar({ color, event, timestamp }) {
   const classes = useStyles();
-  console.log(timestamp);
-  const date = new Date(timestamp);
 
   const colorStyleAccordingToEventType = {
     backgroundColor: color,
@@ -64,17 +60,16 @@ function LogBar({ color, event, timestamp }) {
   );
 }
 
-function SortBarAccordingToDate({ eventList }) {
-  eventList.sort((action1, action2) =>
-    action2.timestamp.localeCompare(action1.timestamp)
-  );
+export default ({ eventList, sortedTimestampArray }) => {
   const classes = useStyles();
+
   return (
     <div>
-      {timestampArray.map((timestamp) => (
+      {sortedTimestampArray.map((timestamp) => (
         <>
           <Typography variant="h6" className={classes.dateTypography}>
-            <TodayIcon className={classes.calendarIcon} /> {timestamp}
+            <TodayIcon className={classes.calendarIcon} />
+            {new Date(timestamp).toDateString()}
           </Typography>
           {eventList.map((item) => (
             <>
@@ -89,14 +84,6 @@ function SortBarAccordingToDate({ eventList }) {
           ))}
         </>
       ))}
-    </div>
-  );
-}
-
-export default ({ eventList }) => {
-  return (
-    <div>
-      <SortBarAccordingToDate eventList={eventList} />
     </div>
   );
 };
