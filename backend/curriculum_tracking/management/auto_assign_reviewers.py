@@ -118,6 +118,7 @@ def get_cards_needing_competent_reviewers() -> Iterable[AgileCard]:
 
     for card in (
         AgileCard.objects.filter(assignees__active__in=[True])
+        .filter(content_item__protect_main_branch=True)
         .exclude(content_item__tags__name__in=config.SKIP_CARD_TAGS_ALL_STEPS)
         .annotate(reviewer_count=Count("reviewers"))
         .filter(content_item__content_type=ContentItem.PROJECT)
@@ -269,6 +270,7 @@ def get_cards_needing_reviewer_allocation(team):
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
     result = (
         AgileCard.objects.filter(assignees__active__in=[True])
+        .filter(content_item__protect_main_branch=True)
         .filter(content_item__content_type=ContentItem.PROJECT)
         .exclude(content_item__tags__name__in=config.SKIP_CARD_TAGS_ALL_STEPS)
         .filter(assignees__in=team.active_users)
