@@ -1,9 +1,9 @@
 import React from "react";
 
-import ActivityDashboardBarGraph from "../components/pages/UserDashboard/ActivityDashboardBarGraph";
+import ActivityDashboardBarGraph from "../components/regions/UserActions/ActivityDashboardBarGraph";
 
 export default {
-  title: "Tilde/pages/UserDashboard/ActivityDashboardBarGraph",
+  title: "Tilde/regions/UserDashboard/ActivityDashboardBarGraph",
   components: ActivityDashboardBarGraph,
   args: {},
 };
