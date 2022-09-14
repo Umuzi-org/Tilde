@@ -55,7 +55,7 @@ export default function Presentation({
   return (
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
-        <Grid container xs={12}>
+        <Grid container>
           <Grid item xs={10} sm={11}>
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
@@ -107,7 +107,7 @@ export default function Presentation({
               <TextareaAutosize
                 className={classes.textArea}
                 aria-label="your comments"
-                rowsMin={5}
+                minRows={5}
                 placeholder="Your comments*"
                 {...comments}
               />
