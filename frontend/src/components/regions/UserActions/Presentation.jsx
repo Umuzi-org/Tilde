@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
+import UserBurnDownChart from "./UserBurndownStats";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -18,12 +19,20 @@ export default function Presentation({
   handleClickOpenProjectDetails,
   handleScroll,
   anyLoading,
+  currentUserBurndownStats,
 }) {
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
-        <Grid>
+        {currentUserBurndownStats && (
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
+            </Paper>
+          </Grid>
+        )}
+        <Grid item xs={12}>
           <Paper>
             {orderedDates.map((date) => (
               <DayLog

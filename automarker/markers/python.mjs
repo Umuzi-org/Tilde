@@ -7,6 +7,7 @@ import CheckPytestInRequirements from "../actions/python/check-pytest-in-require
 import DoRequirementsInstall from "../actions/python/do-requirements-install.mjs";
 import CheckPythonGitignore from "../actions/python/check-python-gitignore.mjs";
 import CheckNoImports from "../actions/python/check-no-imports.mjs";
+import CheckNoInputCalls from "../actions/python/check-no-input-calls.mjs";
 import DoInstallPytest from "../actions/python/do-install-pytest.mjs";
 import CopyOurPytests from "../actions/python/copy-our-tests.mjs";
 import RunPytests from "../actions/python/run-pytests.mjs";
@@ -42,6 +43,7 @@ export class PythonPytestKatas extends Marker {
     new Step({ Action: Clone }),
     new Step({ Action: CheckPythonGitignore }),
     new Step({ Action: CheckNoImports }),
+    new Step({ Action: CheckNoInputCalls }),
     new Step({ Action: CreateVirtualEnv }),
     new Step({ Action: DoInstallPytest }),
     new Step({ Action: CopyOurPytests }),
