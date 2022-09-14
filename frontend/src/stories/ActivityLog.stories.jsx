@@ -1,6 +1,6 @@
 import React from "react";
 
-import ActivityLog from "../components/regions/ActivityLog/Presentation";
+import ActivityLog from "../components/regions/UserActions/ActivityLog";
 import ActivityLogList from "./fixtures/activityLogList.json";
 
 const sortedTimestampArray = [
