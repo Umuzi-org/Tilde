@@ -46,6 +46,14 @@ const useStyles = makeStyles((theme) => {
     flexContainer: {
       display: "flex",
     },
+    mainSection: {
+      width: "100%",
+    },
+    queueContainer: {
+      minHeight: "calc(100vh - 64px)",
+      margin: 0,
+    },
+    queueItem: {},
   };
 });
 
@@ -246,8 +254,8 @@ function Presentation({
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item sx={3}>
+    <Grid container spacing={3} className={classes.mainSection}>
+      <Grid item xs={2}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper>
           <FilterByNames
@@ -268,55 +276,63 @@ function Presentation({
           />
         </Paper>
       </Grid>
-      <Grid item sx={3}>
-        {/* TODO center headings*/}
-        <Typography variant="h5">Competence Review Queue</Typography>
-        {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
+      <Grid
+        item
+        xs={10}
+        container
+        spacing={1}
+        className={classes.queueContainer}
+      >
+        <Grid item xs={6}>
+          {/* TODO center headings*/}
+          <Typography variant="h5">Competence Review Queue</Typography>
+          {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
 
-        {competenceReviewQueueProjects
-          .filter(applyFilters)
-          .sort(
-            (a, b) =>
-              new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
-          )
-          .map((project) => (
-            <CompetenceReviewQueueEntry project={project} />
-          ))}
+          {competenceReviewQueueProjects
+            .filter(applyFilters)
+            .sort(
+              (a, b) =>
+                new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
+            )
+            .map((project) => (
+              <CompetenceReviewQueueEntry project={project} />
+            ))}
 
-        <Paper elevation={3} className={classes.project} variant="outlined">
-          {competenceReviewQueueLoading ? (
-            <Loading />
-          ) : (
-            <Button onClick={fetchNextCompetenceReviewQueuePage}>
-              Load more
-            </Button>
-          )}
-          {/* TODO Center the button or spinner*/}
-        </Paper>
-      </Grid>
-      <Grid item sx={3}>
-        <Typography variant="h5">Pull Request Review Queue</Typography>
-        {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
+          <Paper elevation={3} className={classes.project} variant="outlined">
+            {competenceReviewQueueLoading ? (
+              <Loading />
+            ) : (
+              <Button onClick={fetchNextCompetenceReviewQueuePage}>
+                Load more
+              </Button>
+            )}
+            {/* TODO Center the button or spinner*/}
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="h5">Pull Request Review Queue</Typography>
+          {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
 
-        {pullRequestReviewQueueProjects
-          .filter(applyFilters)
-          .sort(
-            (a, b) =>
-              new Date(b.oldestOpenPrUpdatedTime) -
-              new Date(a.oldestOpenPrUpdatedTime)
-          )
-          .map((project) => (
-            <PullRequestReviewQueueEntry project={project} />
-          ))}
+          {pullRequestReviewQueueProjects
+            .filter(applyFilters)
+            .sort(
+              (a, b) =>
+                new Date(b.oldestOpenPrUpdatedTime) -
+                new Date(a.oldestOpenPrUpdatedTime)
+            )
+            .map((project) => (
+              <PullRequestReviewQueueEntry project={project} />
+            ))}
 
-        <Paper elevation={3} className={classes.project} variant="outlined">
-          {pullRequestReviewQueueLoading ? (
-            <Loading />
-          ) : (
-            <Button onClick={fetchNextPullRequestQueuePage}>Load more</Button>
-          )}
-          {/* TODO Center the button or spinner*/}
-        </Paper>
+          <Paper elevation={3} className={classes.project} variant="outlined">
+            {pullRequestReviewQueueLoading ? (
+              <Loading />
+            ) : (
+              <Button onClick={fetchNextPullRequestQueuePage}>Load more</Button>
+            )}
+            {/* TODO Center the button or spinner*/}
+          </Paper>
+        </Grid>
       </Grid>
     </Grid>
   );
