@@ -5,7 +5,6 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
 
-import ActivityDashboardBarGraph from "./ActivityDashboardBarGraph";
 import UserBurnDownChart from "./UserBurndownStats";
 
 
@@ -26,14 +25,6 @@ export default function Presentation({
 }) {
   const classes = useStyles();
   return (
-
-    <div
-      className={classes.column}
-      onScroll={handleScroll}
-      style={{ position: "relative" }}
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4} lg={4}>
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
         {currentUserBurndownStats && (
@@ -55,14 +46,6 @@ export default function Presentation({
             ))}
 
             {anyLoading && <Loading />}
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper
-            elevation="false"
-            style={{ position: "fixed", top: "46%", width: "100%" }}
-          >
-            <ActivityDashboardBarGraph />
           </Paper>
         </Grid>
       </Grid>
