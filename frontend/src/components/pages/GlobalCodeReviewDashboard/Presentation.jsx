@@ -50,8 +50,22 @@ const useStyles = makeStyles((theme) => {
       width: "100%",
     },
     queueContainer: {
-      minHeight: "calc(100vh - 64px)",
       margin: 0,
+      width: "100%",
+    },
+    queueItem1: {
+      maxHeight: "90vh",
+      minHeight: "500px",
+      overflowY: "scroll",
+    },
+    queueItem2: {
+      maxHeight: "90vh",
+      minHeight: "500px",
+      overflowY: "scroll",
+    },
+    queueContainerHeading: {
+      position: "sticky",
+      top: 0,
     },
   };
 });
@@ -282,12 +296,13 @@ function Presentation({
         spacing={1}
         className={classes.queueContainer}
       >
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} className={classes.queueItem1}>
           {/* TODO center headings*/}
-          <Typography variant="h5">Competence Review Queue</Typography>
+          <Typography variant="h5" className={classes.queueContainerHeading}>
+            Competence Review Queue
+          </Typography>
           {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
-
-          {competenceReviewQueueProjects
+          {/* {competenceReviewQueueProjects
             .filter(applyFilters)
             .sort(
               (a, b) =>
@@ -295,7 +310,11 @@ function Presentation({
             )
             .map((project) => (
               <CompetenceReviewQueueEntry project={project} />
-            ))}
+            ))} */}
+
+          {[...Array(40)].map(() => (
+            <p>hello world!</p>
+          ))}
 
           <Paper elevation={3} className={classes.project} variant="outlined">
             {competenceReviewQueueLoading ? (
@@ -308,11 +327,15 @@ function Presentation({
             {/* TODO Center the button or spinner*/}
           </Paper>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h5">Pull Request Review Queue</Typography>
+        <Grid item xs={12} md={6} className={classes.queueItem2}>
+          <Typography variant="h5" className={classes.queueContainerHeading}>
+            Pull Request Review Queue
+          </Typography>
           {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
-
-          {pullRequestReviewQueueProjects
+          {[...Array(40)].map(() => (
+            <p>hello world!</p>
+          ))}
+          {/* {pullRequestReviewQueueProjects
             .filter(applyFilters)
             .sort(
               (a, b) =>
@@ -321,7 +344,7 @@ function Presentation({
             )
             .map((project) => (
               <PullRequestReviewQueueEntry project={project} />
-            ))}
+            ))} */}
 
           <Paper elevation={3} className={classes.project} variant="outlined">
             {pullRequestReviewQueueLoading ? (
