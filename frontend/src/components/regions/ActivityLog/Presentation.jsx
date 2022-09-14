@@ -38,9 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const timestampArray = ["2022-09-02T13:46:16.295020Z", "2022-09-05T10:46:16.221191Z", "2022-09-01T13:18:03.743668Z"];
+
 function LogBar({ color, event, timestamp }) {
   const classes = useStyles();
-
+  console.log(timestamp);
   const date = new Date(timestamp);
 
   const colorStyleAccordingToEventType = {
@@ -49,9 +51,6 @@ function LogBar({ color, event, timestamp }) {
 
   return (
     <Grid>
-      <Typography variant="h6" className={classes.dateTypography}>
-        <TodayIcon className={classes.calendarIcon} /> {date.toDateString()}
-      </Typography>
       <Grid className={classes.containerStyles}>
         <Grid className={classes.fillerStyles}>
           <span
@@ -69,15 +68,26 @@ function SortBarAccordingToDate({ eventList }) {
   eventList.sort((action1, action2) =>
     action2.timestamp.localeCompare(action1.timestamp)
   );
-
+  const classes = useStyles();
   return (
     <div>
-      {eventList.map((item) => (
-        <LogBar
-          color={item.eventColor}
-          event={item.eventName}
-          timestamp={item.timestamp}
-        ></LogBar>
+      {timestampArray.map((timestamp) => (
+        <>
+          <Typography variant="h6" className={classes.dateTypography}>
+            <TodayIcon className={classes.calendarIcon} /> {timestamp}
+          </Typography>
+          {eventList.map((item) => (
+            <>
+              {item.timestamp === timestamp && (
+                <LogBar
+                  color={item.eventColor}
+                  event={item.eventName}
+                  timestamp={item.timestamp}
+                ></LogBar>
+              )}
+            </>
+          ))}
+        </>
       ))}
     </div>
   );
