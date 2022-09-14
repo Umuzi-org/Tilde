@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => {
       minHeight: "calc(100vh - 64px)",
       margin: 0,
     },
-    queueItem: {},
   };
 });
 
@@ -255,7 +254,7 @@ function Presentation({
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
-      <Grid item xs={2}>
+      <Grid item xs={2} spacing={1}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper>
           <FilterByNames
@@ -283,7 +282,7 @@ function Presentation({
         spacing={1}
         className={classes.queueContainer}
       >
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           {/* TODO center headings*/}
           <Typography variant="h5">Competence Review Queue</Typography>
           {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
@@ -309,7 +308,7 @@ function Presentation({
             {/* TODO Center the button or spinner*/}
           </Paper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <Typography variant="h5">Pull Request Review Queue</Typography>
           {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
 
