@@ -20,6 +20,9 @@ import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
 import Loading from "../../widgets/Loading";
 
+// TODO: update files and code to match styleguide
+// TODO: test solution with real data/ identical dummy data
+// TODO: get rid of the overflow at the top when scrolling
 const useStyles = makeStyles((theme) => {
   return {
     row: {
