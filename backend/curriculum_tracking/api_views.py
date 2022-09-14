@@ -1086,6 +1086,9 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
         models.RecruitProject.objects.filter(
             agile_card__status=models.AgileCard.IN_REVIEW
         )
+        .exclude(
+            content_item__tags__name="technical-assessment"
+        )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
         .filter(recruit_users__active__in=[True])
         .order_by("review_request_time")
     )

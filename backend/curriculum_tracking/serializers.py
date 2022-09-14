@@ -753,6 +753,7 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "agile_card",
+            "status",
             "content_item_title",
             "review_request_time",
             "start_time",
@@ -790,6 +791,8 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         "get_users_that_reviewed_since_last_review_request"
     )
 
+    status = serializers.SerializerMethodField("get_status")
+
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [
             o.email for o in instance.users_that_reviewed_since_last_review_request()
@@ -806,3 +809,7 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
 
     def get_reviewer_user_emails(self, instance):
         return [o.email for o in instance.reviewer_users.all()]
+
+    def get_status(self, instance):
+        if instance.agile_card:
+            return instance.agile_card.status

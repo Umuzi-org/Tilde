@@ -1,6 +1,34 @@
 [
   {
+    "id": 1592,
+    "status": "IR",
+    "agileCard": 1,
+    "contentItemTitle": "Node & File IO",
+    "reviewRequestTime": "2020-09-08T07:50:58.244280Z",
+    "startTime": "2019-08-02T10:06:32Z",
+    "dueTime": null,
+    "flavourNames": ["javascript"],
+    "tagNames": ["node", "fileio"],
+    "codeReviewCompetentSinceLastReviewRequest": 0,
+    "codeReviewExcellentSinceLastReviewRequest": 0,
+    "codeReviewRedFlagSinceLastReviewRequest": 0,
+    "codeReviewNyCompetentSinceLastReviewRequest": 0,
+    "openPrCount": 1,
+    "oldestOpenPrUpdatedTime": "2019-08-09T13:49:31Z",
+    "repoUrl": "git@github.com:asradebe/NODE-PART-1.git",
+    "recruitUsers": [53, 231],
+    "reviewerUsers": [],
+    "recruitUserEmails": [
+      "sephula.mokoena@umuzi.org",
+      "asanda.radebe@umuzi.org"
+    ],
+    "reviewerUserEmails": [],
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": []
+  },
+  {
     "id": 9079,
+    "status": "IR",
     "agileCard": 199576,
     "contentItemTitle": "Morse code",
     "reviewRequestTime": "2021-11-09T08:38:01.311968Z",
@@ -31,33 +59,8 @@
     ]
   },
   {
-    "id": 1592,
-    "agileCard": 1,
-    "contentItemTitle": "Node & File IO",
-    "reviewRequestTime": null,
-    "startTime": "2019-08-02T10:06:32Z",
-    "dueTime": null,
-    "flavourNames": ["javascript"],
-    "tagNames": ["node", "fileio"],
-    "codeReviewCompetentSinceLastReviewRequest": 0,
-    "codeReviewExcellentSinceLastReviewRequest": 0,
-    "codeReviewRedFlagSinceLastReviewRequest": 0,
-    "codeReviewNyCompetentSinceLastReviewRequest": 0,
-    "openPrCount": 1,
-    "oldestOpenPrUpdatedTime": "2019-08-09T13:49:31Z",
-    "repoUrl": "git@github.com:asradebe/NODE-PART-1.git",
-    "recruitUsers": [53, 231],
-    "reviewerUsers": [],
-    "recruitUserEmails": [
-      "sephula.mokoena@umuzi.org",
-      "asanda.radebe@umuzi.org"
-    ],
-    "reviewerUserEmails": [],
-    "usersThatReviewedSinceLastReviewRequest": [],
-    "usersThatReviewedSinceLastReviewRequestEmails": []
-  },
-  {
     "id": 1880,
+    "status": "IR",
     "agileCard": 2,
     "contentItemTitle": "K-Means Clustering Assignment",
     "reviewRequestTime": "2020-09-08T07:50:58.244280Z",
@@ -81,6 +84,7 @@
   },
   {
     "id": 2122,
+    "status": "IR",
     "agileCard": 3,
     "contentItemTitle": "Node & SQL assignment",
     "reviewRequestTime": "2020-06-29T08:37:05.466242Z",

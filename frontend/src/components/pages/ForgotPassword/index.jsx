@@ -19,7 +19,7 @@ function ForgotPasswordUnconnected({
   const [formData, setFormData] = useState({
     email: "",
   });
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     resetPassword(formData);
