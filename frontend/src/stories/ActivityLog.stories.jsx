@@ -41,11 +41,11 @@ const activity = [
   {
     actorUser: 352,
     effectedUser: 802,
-    eventColor: "#fb8c00",
-    eventName: "CARD_REVIEW_REQUESTED",
+    eventColor: "#8e24aa",
+    eventName: "Pull request review",
     eventType: 2,
     id: 116283,
-    timestamp: "2022-09-07T13:46:16.295020Z",
+    timestamp: "2022-09-02T13:46:16.295020Z",
     object1ContentTypeName: "git_real | pull request review",
     object1Id: 53534,
     object2ContentTypeName: "git_real | repository",
@@ -54,11 +54,11 @@ const activity = [
   {
     actorUser: 132,
     effectedUser: 896,
-    eventColor: "#43a047",
-    eventName: "CARD_STARTED",
+    eventColor: "#e53935",
+    eventName: "Recruit project review",
     eventType: 1,
     id: 116282,
-    timestamp: "2022-09-07T13:46:16.221191Z",
+    timestamp: "2022-09-05T10:46:16.221191Z",
     object1ContentTypeName: "curriculum_tracking | recruit project review",
     object1Id: 45489,
     object2ContentTypeName: "curriculum_tracking | recruit project",
@@ -67,11 +67,11 @@ const activity = [
   {
     actorUser: 132,
     effectedUser: 1023,
-    eventColor: "#43a047",
+    eventColor: "#e53935",
     eventType: 1,
     id: 116281,
     timestamp: "2022-09-01T13:18:03.743668Z",
-    eventName: "CARD_STARTED",
+    eventName: "Recruit project review",
     object1ContentTypeName: "curriculum_tracking | recruit project review",
     object1Id: 45488,
     object2ContentTypeName: "curriculum_tracking | recruit project",
@@ -87,7 +87,7 @@ const Template = (args) => <ActivityLog {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  three: activity,
+  eventList: activity,
   orderedDates,
   eventTypesWithIds,
 };

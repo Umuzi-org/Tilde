@@ -2,8 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
-import { eventTypeColors } from "../../../colors";
-
 const useStyles = makeStyles((theme) => ({
   containerStyles: {
     width: "50%",
@@ -26,18 +24,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function sortByDates(data) {
-  data.sort((action1, action2) => action2.timestamp - action1.timestamp);
-}
 function LogBar({ color, event, timestamp }) {
   const classes = useStyles();
-  const adjustStyle = {
+  const colorStyleAccordingToEventType = {
     backgroundColor: color,
   };
+
   return (
     <Grid className={classes.containerStyles}>
       <Grid className={classes.fillerStyles}>
-        <span className={classes.labelStyles} style={adjustStyle} />
+        <span
+          className={classes.labelStyles}
+          style={colorStyleAccordingToEventType}
+        />
         <div className={classes.content}>
           <div>{event}</div>
           <div>{timestamp}</div>
@@ -46,15 +45,15 @@ function LogBar({ color, event, timestamp }) {
     </Grid>
   );
 }
-export default ({ three }) => {
-  // console.log(sortByDates("xx", three));
+export default ({ eventList }) => {
+  eventList.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  console.log("xx", eventList);
   return (
     <div>
-      {three.map((item) => (
+      {eventList.map((item) => (
         <LogBar
           color={item.eventColor}
           event={item.eventName}
-          // object1ContentTypeName={item.object1ContentTypeName}
           timestamp={item.timestamp}
         />
       ))}
