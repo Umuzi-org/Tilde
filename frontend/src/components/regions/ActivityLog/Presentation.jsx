@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 function sortByDates(data) {
   data.sort((action1, action2) => action2.timestamp - action1.timestamp);
 }
-function LogBar({ color, event }) {
+function LogBar({ color, event, timestamp }) {
   const classes = useStyles();
   const adjustStyle = {
     backgroundColor: color,
@@ -40,7 +40,7 @@ function LogBar({ color, event }) {
         <span className={classes.labelStyles} style={adjustStyle} />
         <div className={classes.content}>
           <div>{event}</div>
-          {/* <div>{object1ContentTypeName}</div> */}
+          <div>{timestamp}</div>
         </div>
       </Grid>
     </Grid>
@@ -54,7 +54,8 @@ export default ({ three }) => {
         <LogBar
           color={item.eventColor}
           event={item.eventName}
-          object1ContentTypeName={item.object1ContentTypeName}
+          // object1ContentTypeName={item.object1ContentTypeName}
+          timestamp={item.timestamp}
         />
       ))}
     </div>
