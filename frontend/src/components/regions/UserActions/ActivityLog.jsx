@@ -38,28 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LogBar({ color, event }) {
-  const classes = useStyles();
-
-  const colorStyleAccordingToEventType = {
-    backgroundColor: color,
-  };
-
-  return (
-    <Grid>
-      <Grid className={classes.containerStyles}>
-        <Grid className={classes.fillerStyles}>
-          <span
-            className={classes.labelStyles}
-            style={colorStyleAccordingToEventType}
-          />
-          <div className={classes.content}>{event}</div>
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-}
-
 export default ({ eventList, sortedTimestampArray }) => {
   const classes = useStyles();
 
@@ -74,11 +52,21 @@ export default ({ eventList, sortedTimestampArray }) => {
           {eventList.map((item) => (
             <>
               {item.timestamp === timestamp && (
-                <LogBar
-                  color={item.eventColor}
-                  event={item.eventName}
-                  timestamp={item.timestamp}
-                ></LogBar>
+                <Grid>
+                  <Grid
+                    className={classes.containerStyles}
+                    colors={item.eventColor}
+                    timestamp={item.timestamp}
+                  >
+                    <Grid className={classes.fillerStyles}>
+                      <span
+                        className={classes.labelStyles}
+                        style={{ backgroundColor: item.eventColor }}
+                      />
+                      <span className={classes.content}>{item.eventName}</span>
+                    </Grid>
+                  </Grid>
+                </Grid>
               )}
             </>
           ))}
