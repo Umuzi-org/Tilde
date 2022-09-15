@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ eventList, sortedTimestampArray }) => {
+export default function ActivityLog({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
 
   return (
@@ -74,4 +74,4 @@ export default ({ eventList, sortedTimestampArray }) => {
       ))}
     </div>
   );
-};
+}
