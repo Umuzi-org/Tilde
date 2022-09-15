@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LogBar({ color, event, timestamp }) {
+function LogBar({ color, event }) {
   const classes = useStyles();
 
   const colorStyleAccordingToEventType = {
