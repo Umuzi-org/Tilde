@@ -3,7 +3,7 @@ import React from "react";
 import ActivityDashboardBarGraph from "../components/regions/UserActions/ActivityDashboardBarGraph";
 
 export default {
-  title: "Tilde/regions/UserDashboard/ActivityDashboardBarGraph",
+  title: "Tilde/UserActions/ActivityDashboardBarGraph",
   components: ActivityDashboardBarGraph,
   args: {},
 };
