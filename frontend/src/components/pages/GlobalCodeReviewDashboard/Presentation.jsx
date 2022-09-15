@@ -28,47 +28,41 @@ const useStyles = makeStyles((theme) => {
     row: {
       padding: 5,
     },
-
     queue: {
       padding: theme.spacing(1),
     },
-
     project: {
       marginTop: theme.spacing(1),
       padding: theme.spacing(1),
     },
-
     left: {
       float: "left",
     },
-
     right: {
       // float: "right",
     },
-
     flexContainer: {
       display: "flex",
     },
     mainSection: {
       width: "100%",
+      paddingTop: 0,
+      height: "calc(100vh - 64px)",
     },
     queueContainer: {
       margin: 0,
       width: "100%",
     },
-    queueItem1: {
+    queueItem: {
       maxHeight: "90vh",
-      minHeight: "500px",
       overflowY: "scroll",
-    },
-    queueItem2: {
-      maxHeight: "90vh",
-      minHeight: "500px",
-      overflowY: "scroll",
+      padding: "0px 10px",
     },
     queueContainerHeading: {
       position: "sticky",
-      top: 0,
+      top: -5,
+      padding: "10px 0px",
+      backgroundColor: theme.palette.background.default,
     },
   };
 });
@@ -271,7 +265,7 @@ function Presentation({
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
-      <Grid item xs={2} spacing={1}>
+      <Grid item xs={2}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper>
           <FilterByNames
@@ -292,33 +286,24 @@ function Presentation({
           />
         </Paper>
       </Grid>
-      <Grid
-        item
-        xs={10}
-        container
-        spacing={1}
-        className={classes.queueContainer}
-      >
-        <Grid item xs={12} md={6} className={classes.queueItem1}>
+      <Grid item xs={10} container className={classes.queueContainer}>
+        <Grid item xs={12} md={6} className={classes.queueItem}>
           {/* TODO center headings*/}
-          <Typography variant="h5" className={classes.queueContainerHeading}>
-            Competence Review Queue
-          </Typography>
-          {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
-          {/* {competenceReviewQueueProjects
-            .filter(applyFilters)
-            .sort(
-              (a, b) =>
-                new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
-            )
-            .map((project) => (
-              <CompetenceReviewQueueEntry project={project} />
-            ))} */}
-
-          {[...Array(40)].map(() => (
-            <p>hello world!</p>
-          ))}
-
+          <Grid className={classes.queueContainerHeading}>
+            <Typography variant="h5">Competence Review Queue</Typography>
+          </Grid>
+          <Grid>
+            {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
+            {competenceReviewQueueProjects
+              .filter(applyFilters)
+              .sort(
+                (a, b) =>
+                  new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
+              )
+              .map((project) => (
+                <CompetenceReviewQueueEntry project={project} />
+              ))}
+          </Grid>
           <Paper elevation={3} className={classes.project} variant="outlined">
             {competenceReviewQueueLoading ? (
               <Loading />
@@ -330,24 +315,22 @@ function Presentation({
             {/* TODO Center the button or spinner*/}
           </Paper>
         </Grid>
-        <Grid item xs={12} md={6} className={classes.queueItem2}>
-          <Typography variant="h5" className={classes.queueContainerHeading}>
-            Pull Request Review Queue
-          </Typography>
-          {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
-          {[...Array(40)].map(() => (
-            <p>hello world!</p>
-          ))}
-          {/* {pullRequestReviewQueueProjects
-            .filter(applyFilters)
-            .sort(
-              (a, b) =>
-                new Date(b.oldestOpenPrUpdatedTime) -
-                new Date(a.oldestOpenPrUpdatedTime)
-            )
-            .map((project) => (
-              <PullRequestReviewQueueEntry project={project} />
-            ))} */}
+        <Grid item xs={12} md={6} className={classes.queueItem}>
+          <Grid className={classes.queueContainerHeading}>
+            <Typography variant="h5">Pull Request Review Queue</Typography>
+          </Grid>
+          <Grid>
+            {pullRequestReviewQueueProjects
+              .filter(applyFilters)
+              .sort(
+                (a, b) =>
+                  new Date(b.oldestOpenPrUpdatedTime) -
+                  new Date(a.oldestOpenPrUpdatedTime)
+              )
+              .map((project) => (
+                <PullRequestReviewQueueEntry project={project} />
+              ))}
+          </Grid>
 
           <Paper elevation={3} className={classes.project} variant="outlined">
             {pullRequestReviewQueueLoading ? (
