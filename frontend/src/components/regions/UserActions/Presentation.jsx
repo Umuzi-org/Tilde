@@ -5,6 +5,7 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
 import UserBurnDownChart from "./UserBurndownStats";
+// import ActivityLog from "./ActivityLog"; Activity LOg will be imported when merged
 
 const useStyles = makeStyles((theme) => ({
   column: {
