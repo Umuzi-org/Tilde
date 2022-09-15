@@ -77,42 +77,15 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
 
-    def test_list_api_filter_by_timestamp(self):
-        url = f"{self.get_list_url()}?timestamp={self.entry_yesterday_1.timestamp}"
-        response = self.client.get(url)
-        self.assertEqual(len(response.data), 1)
-
-        self.assertEqual(response.data[0]["total"], 1)
-        self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
-
 
 class TestEventTypeViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "eventtype-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
-    SUPPRESS_TEST_GET_LIST = True
-
-    def setUp(self):
-        self.end_date = timezone.datetime.now()
-
-        self.start_date = self.end_date - timedelta(days=7)
-        self.entry_start_date_1 = factories.LogEntryFactory()
-        self.entry_start_date_1.timestamp = self.start_date
-        self.entry_start_date_1.save()
 
     def verbose_instance_factory(self):
         return factories.EventTypeFactory(description="a party")
 
-    def test_list_api_filter_by_timestamp_greater_than(self):
-        url = f"{self.get_list_url()}?timestamp_gte{self.entry_start_date_1.timestamp}"
-        response = self.client.get(url)
-        self.assertEqual(len(response.data), 1)
-        self.assertGreaterEqual(self.end_date,self.start_date)
-
-    def test_list_api_filter_by_timestamp_less_than(self):
-        url = f"{self.get_list_url()}?timestamp_lte{self.end_date.timestamp}"
-        response = self.client.get(url)
-        self.assertEqual(len(response.data), 1)
-        self.assertLessEqual(self.start_date, self.end_date)
+  
 
 
 class TestLogEntryViewSet(APITestCase, APITestCaseMixin):
