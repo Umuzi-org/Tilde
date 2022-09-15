@@ -1,49 +1,16 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  IconButton,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-} from "@material-ui/core";
 import React from "react";
-
-import CardBadges from "../../widgets/CardBadges";
-import MoreIcon from "@material-ui/icons/More";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import TagChips from "../../widgets/TagChips";
-import FlavourChips from "../../widgets/FlavourChips";
-import { routes } from "../../../routes";
 import Button from "../../widgets/Button";
-import AssigneesList from "../../widgets/AssigneesList";
-import ReviewersTable from "../../widgets/ReviewersTable";
 import Loading from "../../widgets/Loading";
+import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
+import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
+import FilterByNames from "./FilterByNames";
 
-// TODO: update files and code to match styleguide
-// TODO: test solution with real data/ identical dummy data
-// TODO: get rid of the overflow at the top when scrolling
 const useStyles = makeStyles((theme) => {
   return {
-    row: {
-      padding: 5,
-    },
-    queue: {
-      padding: theme.spacing(1),
-    },
-    project: {
-      marginTop: theme.spacing(1),
-      padding: theme.spacing(1),
-    },
-    left: {
-      float: "left",
-    },
-    right: {
-      // float: "right",
-    },
-    flexContainer: {
-      display: "flex",
-    },
     mainSection: {
       width: "100%",
       paddingTop: 0,
@@ -67,130 +34,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-// function TimesTable({ project }) {
-//   const classes = useStyles();
-//   const nice = (dateTime) => {
-//     if (dateTime) {
-//       const date = new Date(Date.parse(dateTime));
-//       return new Intl.DateTimeFormat().format(date);
-//     }
-//   };
-
-//   return (
-//     <Table size="small">
-//       <TableBody>
-//         <TableRow className={classes.row}>
-//           <TableCell>Start time</TableCell>
-//           <TableCell>{nice(project.startTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Due time</TableCell>
-//           <TableCell>{nice(project.dueTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Review Request time</TableCell>
-//           <TableCell>{nice(project.reviewRequestTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Oldest PR update time</TableCell>
-//           <TableCell>{nice(project.oldestOpenPrUpdatedTime)}</TableCell>
-//         </TableRow>
-//       </TableBody>
-//     </Table>
-//   );
-// }
-
-function BaseReviewQueueEntry({ project, showAllocatedReviewers }) {
-  const classes = useStyles();
-  return (
-    <Paper elevation={3} className={classes.project} variant="outlined">
-      <div className={classes.flexContainer}>
-        {/* TODO: replace with a stack once MUI is upgraded */}
-        <div className={classes.left}>
-          <Typography>{project.contentItemTitle}</Typography>
-        </div>
-        <div className={classes.left}>
-          <FlavourChips flavourNames={project.flavourNames} />
-        </div>
-        <div className={classes.left}>
-          <CardBadges card={project} />
-        </div>
-        <div className={classes.right}>
-          <a
-            href={routes.cardDetails.route.path.replace(
-              ":cardId",
-              project.agileCard
-            )}
-          >
-            <IconButton>
-              <MoreIcon />
-            </IconButton>
-          </a>
-        </div>
-      </div>
-
-      <TagChips tagNames={project.tagNames} />
-
-      {/* <TimesTable project={project} /> */}
-
-      <Typography>Assignees</Typography>
-      <AssigneesList
-        userIds={project.recruitUsers}
-        userNames={project.recruitUserEmails}
-      />
-
-      {showAllocatedReviewers && (
-        <React.Fragment>
-          <Typography>Reviewers</Typography>
-          <ReviewersTable
-            reviewerUsers={project.reviewerUsers}
-            reviewerUserEmails={project.reviewerUserEmails}
-            usersThatReviewedSinceLastReviewRequest={
-              project.usersThatReviewedSinceLastReviewRequest
-            }
-            usersThatReviewedSinceLastReviewRequestEmails={
-              project.usersThatReviewedSinceLastReviewRequestEmails
-            }
-          />
-        </React.Fragment>
-      )}
-    </Paper>
-  );
-}
-
-function PullRequestReviewQueueEntry({ project }) {
-  return BaseReviewQueueEntry({ project });
-}
-
-function CompetenceReviewQueueEntry({ project }) {
-  return BaseReviewQueueEntry({ project, showAllocatedReviewers: true });
-}
-
-function FilterByNames({ allNames, filterInclude, filterExclude, onChange }) {
-  const allFilters = [...filterInclude, ...filterExclude];
-
-  return (
-    <React.Fragment>
-      {allNames.map((name) => (
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                color={filterExclude.includes(name) ? "secondary" : "primary"}
-                onChange={onChange(name)}
-              />
-            }
-            label={name}
-            checked={allFilters.includes(name)}
-          />
-        </FormGroup>
-      ))}
-    </React.Fragment>
-  );
-}
-
-function Presentation({
+export default function Presentation({
   competenceReviewQueueProjects,
   pullRequestReviewQueueProjects,
 
@@ -345,5 +189,3 @@ function Presentation({
     </Grid>
   );
 }
-
-export default Presentation;
