@@ -15,6 +15,7 @@ import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
+import {updateBurnDownSnapshots} from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   legend: {
@@ -37,7 +38,14 @@ export default ({ burnDownSnapshots }) => {
         .slice(0, 10))
   );
 
-
+  const filterStartDate = new Date();
+  filterStartDate.setDate(filterStartDate.getDate() - 21);
+  
+  const updatedBurnDownSnapshots = updateBurnDownSnapshots({
+    burnDownSnapshots,
+    filterStartDate,
+  });
+ 
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -45,7 +53,7 @@ export default ({ burnDownSnapshots }) => {
         Burndown
       </Typography>
       <ResponsiveContainer height={500} width="100%">
-        <LineChart data={burnDownSnapshots}>
+        <LineChart data={updatedBurnDownSnapshots}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="timestamp" interval="preserveEnd" />
           <YAxis />
