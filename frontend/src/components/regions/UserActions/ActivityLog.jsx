@@ -63,7 +63,9 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
                         className={classes.labelStyles}
                         style={{ backgroundColor: item.eventColor }}
                       />
-                      <span className={classes.content}>{item.eventName}</span>
+                      <Typography className={classes.content}>
+                        {item.title}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
