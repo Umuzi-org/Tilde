@@ -29,15 +29,13 @@ export function updateBurnDownSnapshots({
       )
     ) {
       burnDownSnapshots.push({
-        cardsInCompleteColumnTotalCount:
-          burnDownSnapshots.cardsInCompleteColumnTotalCount,
-        cardsTotalCount: burnDownSnapshots.cardsTotalCount,
+        cardsInCompleteColumnTotalCount:150,
+        cardsTotalCount: 160,
         id: burnDownSnapshots.id,
-        projectCardsInCompleteColumnTotalCount:
-          burnDownSnapshots.projectCardsInCompleteColumnTotalCount,
-        projectCardsTotalCount: burnDownSnapshots.projectCardsTotalCount,
+        projectCardsInCompleteColumnTotalCount: 150,
+        projectCardsTotalCount: 160,
         timestamp: uniqueDate,
-        user: burnDownSnapshots.user,
+        user: 425,
       });
     }
   }
@@ -50,6 +48,11 @@ export function updateBurnDownSnapshots({
     }
     return unique;
   }, []);
+  burnDownSnapshots = burnDownSnapshots.sort(function(a, b) {
+    var c = new Date(a.timestamp);
+    var d = new Date(b.timestamp);
+    return c-d;
+});
   console.log(burnDownSnapshots);
   return burnDownSnapshots;
   
