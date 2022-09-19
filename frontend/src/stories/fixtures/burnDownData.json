@@ -50,9 +50,9 @@
   {
     "user": 2,
     "timestamp": "2019-08-15T13:49:31Z",
-    "cardsTotalCount": 32,
-    "projectCardsTotalCount": 25,
-    "cardsInCompleteColumnTotalCount": 32,
-    "projectCardsInCompleteColumnTotalCount": 25
+    "cardsTotalCount": 40,
+    "projectCardsTotalCount": 30,
+    "cardsInCompleteColumnTotalCount": 38,
+    "projectCardsInCompleteColumnTotalCount": 29
   }
 ]
