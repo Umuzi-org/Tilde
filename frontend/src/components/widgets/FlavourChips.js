@@ -18,7 +18,7 @@ export default ({ flavourNames, variant }) => {
     <React.Fragment>
       {flavourNames.map((flavour) => {
         const props = {};
-        if (variant == "small") {
+        if (variant === "small") {
           props.label = flavour;
           props.size = "small";
         } else {
