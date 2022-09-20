@@ -20,8 +20,73 @@ export function updateBurnDownSnapshots({
     allDatesArr.push(new Date(firstDate).toISOString().split("T")[0]);
     firstDate.setDate(firstDate.getDate() + 1);
   }
-  //console.log(datesArray);
+  console.log(datesArray);
 
+  // for (let i = 0; i < allDatesArr.length; i++) {
+  //   if (
+  //     !(burnDownSnapshots.timestamp === uniqueDatesArr[i])
+  //     )
+  //   {
+  //     burnDownSnapshots.push({
+  //       cardsInCompleteColumnTotalCount:burnDownSnapshots[i].cardsInCompleteColumnTotalCount,
+  //       cardsTotalCount: burnDownSnapshots[i].cardsTotalCount,
+  //       id: burnDownSnapshots[i].id,
+  //       projectCardsInCompleteColumnTotalCount: burnDownSnapshots[i].projectCardsInCompleteColumnTotalCount,
+  //       projectCardsTotalCount: burnDownSnapshots[i].projectCardsTotalCount,
+  //       timestamp: uniqueDatesArr[i],
+  //       user: burnDownSnapshots[i].user,
+  //     });
+  //   }
+  // }
+  // for (let i in burnDownSnapshots) {
+  //     for (let uniqueDate of allDatesArr) {
+  //       if (
+  //         !burnDownSnapshots[i].some(
+  //           (burnDownSnapshot) => burnDownSnapshot.timestamp === uniqueDate
+  //         )
+  //       ) {
+  //         burnDownSnapshots[i].push({
+  //           cardsInCompleteColumnTotalCount:
+  //             burnDownSnapshots[i].cardsInCompleteColumnTotalCount,
+  //           cardsTotalCount: burnDownSnapshots[i].cardsTotalCount,
+  //           id: burnDownSnapshots.id,
+  //           projectCardsInCompleteColumnTotalCount:
+  //             burnDownSnapshots[i].projectCardsInCompleteColumnTotalCount,
+  //           projectCardsTotalCount: burnDownSnapshots[i].projectCardsTotalCount,
+  //           timestamp: uniqueDate,
+  //           user: burnDownSnapshots[i].user,
+  //         });
+  //       }
+  //     }
+  //   }
+  // const res = [];
+  // while (datesArray.length > 0) {
+  //   const chunk = datesArray.splice(0, 2);
+  //   res.push(chunk);
+  // }
+  //console.log(res);
+  var getDaysArray = function (start, end) {
+    for (
+      var arr = [], dt = new Date(start);
+      dt <= new Date(end);
+      dt.setDate(dt.getDate() + 1)
+    ) {
+      arr.push(new Date(dt).toISOString().split("T")[0]);
+    }
+    return arr;
+  };
+  let z = [];
+  for (let i = 0; i < datesArray.length; i++) {
+    z.push(getDaysArray(datesArray[i], datesArray[i + 1]));
+  }
+
+  console.log(z);
+  //console.log(getDaysArray(res[0][0], res[0][1]));
+
+  //console.log(res);
+  //   return  burnDownSnapshots;
+  // }
+  //const updatedBurnDownSnapshots = {};
   for (let uniqueDate of allDatesArr) {
     if (
       !burnDownSnapshots.some(
@@ -29,7 +94,7 @@ export function updateBurnDownSnapshots({
       )
     ) {
       burnDownSnapshots.push({
-        cardsInCompleteColumnTotalCount:150,
+        cardsInCompleteColumnTotalCount: 150,
         cardsTotalCount: 160,
         id: burnDownSnapshots.id,
         projectCardsInCompleteColumnTotalCount: 150,
@@ -39,21 +104,18 @@ export function updateBurnDownSnapshots({
       });
     }
   }
-  //   return  burnDownSnapshots;
-  // }
-  //const updatedBurnDownSnapshots = {};
-    burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
+
+  burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
     if (!unique.some((obj) => obj.timestamp === o.timestamp)) {
       unique.push(o);
     }
     return unique;
   }, []);
-  burnDownSnapshots = burnDownSnapshots.sort(function(a, b) {
+  burnDownSnapshots = burnDownSnapshots.sort(function (a, b) {
     var c = new Date(a.timestamp);
     var d = new Date(b.timestamp);
-    return c-d;
-});
-  console.log(burnDownSnapshots);
+    return c - d;
+  });
+  //console.log(burnDownSnapshots);
   return burnDownSnapshots;
-  
 }
