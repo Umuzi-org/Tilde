@@ -156,9 +156,6 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 
 
 class log_card_moved_to_complete_Tests(TestCase):
-    LIST_URL_NAME = "agilecard-list"
-    SUPPRESS_TEST_POST_TO_CREATE = True
-    SUPPRESS_TEST_GET_LIST = True
 
     def test_card_moved_to_complete_called(
         self, log_card_moved_to_complete):
