@@ -1,0 +1,609 @@
+[
+  {
+    "content_item": 266,
+    "content_item_agile_weight": 58,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59560,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-20T08:30:54Z",
+    "title": "string-calculator part 1"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59558,
+    "state": "approved",
+    "submitted_at": "2022-09-20T08:20:07Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59557,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-20T08:16:11Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 705,
+    "content_item_agile_weight": 30,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59555,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-20T08:07:39Z",
+    "title": "Shopping cart calculations"
+  },
+  {
+    "content_item": 538,
+    "content_item_agile_weight": 29,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59554,
+    "state": "approved",
+    "submitted_at": "2022-09-20T07:58:44Z",
+    "title": "Redux Saga Intro"
+  },
+  {
+    "content_item": 186,
+    "content_item_agile_weight": 38,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59547,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-20T07:29:33Z",
+    "title": "Consume Github API"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59501,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T13:18:13Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59496,
+    "state": "dismissed",
+    "submitted_at": "2022-09-19T13:10:17Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 269,
+    "content_item_agile_weight": 47,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59494,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T12:58:17Z",
+    "title": "password-checker"
+  },
+  {
+    "content_item": 186,
+    "content_item_agile_weight": 38,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59486,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T12:04:03Z",
+    "title": "Consume Github API"
+  },
+  {
+    "content_item": 269,
+    "content_item_agile_weight": 47,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59483,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T11:42:51Z",
+    "title": "password-checker"
+  },
+  {
+    "content_item": 269,
+    "content_item_agile_weight": 47,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59481,
+    "state": "approved",
+    "submitted_at": "2022-09-19T11:31:28Z",
+    "title": "password-checker"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59443,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T07:42:53Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 184,
+    "content_item_agile_weight": 66,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59433,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T07:12:17Z",
+    "title": "Morse code"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59429,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T06:59:36Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59427,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-19T06:52:50Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59425,
+    "state": "approved",
+    "submitted_at": "2022-09-19T06:48:48Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59404,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-17T04:36:56Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59403,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-17T04:30:00Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 538,
+    "content_item_agile_weight": 29,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59402,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-17T04:14:49Z",
+    "title": "Redux Saga Intro"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59401,
+    "state": "approved",
+    "submitted_at": "2022-09-17T03:58:27Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59400,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-17T03:53:51Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 625,
+    "content_item_agile_weight": 64,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59399,
+    "state": "approved",
+    "submitted_at": "2022-09-17T03:46:20Z",
+    "title": "Validate a South African ID number"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59392,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:29:05Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59391,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:26:40Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59390,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:26:21Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59389,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:25:16Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59388,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:23:37Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59387,
+    "state": "approved",
+    "submitted_at": "2022-09-16T12:22:55Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 223,
+    "content_item_agile_weight": 45,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59373,
+    "state": "approved",
+    "submitted_at": "2022-09-16T09:19:54Z",
+    "title": "Person"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59144,
+    "state": "dismissed",
+    "submitted_at": "2022-09-13T14:58:39Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59142,
+    "state": "dismissed",
+    "submitted_at": "2022-09-13T14:54:10Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 625,
+    "content_item_agile_weight": 64,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59124,
+    "state": "approved",
+    "submitted_at": "2022-09-13T11:59:10Z",
+    "title": "Validate a South African ID number"
+  },
+  {
+    "content_item": 269,
+    "content_item_agile_weight": 47,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59106,
+    "state": "dismissed",
+    "submitted_at": "2022-09-13T09:57:35Z",
+    "title": "password-checker"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 50,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59103,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-13T09:09:28Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59096,
+    "state": "approved",
+    "submitted_at": "2022-09-13T08:39:44Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59008,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-12T10:15:35Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59007,
+    "state": "dismissed",
+    "submitted_at": "2022-09-12T10:09:46Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 269,
+    "content_item_agile_weight": 47,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59003,
+    "state": "dismissed",
+    "submitted_at": "2022-09-12T10:04:00Z",
+    "title": "password-checker"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 59001,
+    "state": "dismissed",
+    "submitted_at": "2022-09-12T09:56:43Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 219,
+    "content_item_agile_weight": 59,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58998,
+    "state": "approved",
+    "submitted_at": "2022-09-12T09:44:19Z",
+    "title": "Level 1 coding challenges"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58988,
+    "state": "approved",
+    "submitted_at": "2022-09-12T08:07:21Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58985,
+    "state": "approved",
+    "submitted_at": "2022-09-12T08:01:55Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 199,
+    "content_item_agile_weight": 33,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58980,
+    "state": "dismissed",
+    "submitted_at": "2022-09-12T07:36:52Z",
+    "title": "semitone difference - basic algorithm"
+  },
+  {
+    "content_item": 200,
+    "content_item_agile_weight": 45,
+    "flavour_names": [],
+    "id": 58976,
+    "state": "approved",
+    "submitted_at": "2022-09-12T07:21:46Z",
+    "title": "Shop Database using sql"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 36,
+    "flavour_names": [
+      "javascript",
+      "react",
+      "redux"
+    ],
+    "id": 58944,
+    "state": "approved",
+    "submitted_at": "2022-09-09T13:21:27Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 222,
+    "content_item_agile_weight": 36,
+    "flavour_names": [
+      "javascript",
+      "react",
+      "redux"
+    ],
+    "id": 58943,
+    "state": "dismissed",
+    "submitted_at": "2022-09-09T13:09:48Z",
+    "title": "Memory game web app"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58942,
+    "state": "approved",
+    "submitted_at": "2022-09-09T13:01:07Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 186,
+    "content_item_agile_weight": 38,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58941,
+    "state": "approved",
+    "submitted_at": "2022-09-09T12:59:03Z",
+    "title": "Consume Github API"
+  },
+  {
+    "content_item": 224,
+    "content_item_agile_weight": 39,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58929,
+    "state": "approved",
+    "submitted_at": "2022-09-09T10:53:13Z",
+    "title": "Animals Part 1. OOP basics"
+  },
+  {
+    "content_item": 532,
+    "content_item_agile_weight": 29,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58715,
+    "state": "dismissed",
+    "submitted_at": "2022-09-06T14:04:12Z",
+    "title": "React and Redux recipe search: Part 1. Presenting the form"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58714,
+    "state": "approved",
+    "submitted_at": "2022-09-06T14:02:25Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 625,
+    "content_item_agile_weight": 64,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58711,
+    "state": "approved",
+    "submitted_at": "2022-09-06T13:11:37Z",
+    "title": "Validate a South African ID number"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58710,
+    "state": "changes_requested",
+    "submitted_at": "2022-09-06T13:03:33Z",
+    "title": "Node & File IO"
+  },
+  {
+    "content_item": 280,
+    "content_item_agile_weight": 44,
+    "flavour_names": [
+      "javascript"
+    ],
+    "id": 58708,
+    "state": "approved",
+    "submitted_at": "2022-09-06T12:50:39Z",
+    "title": "Node & File IO"
+  }
+]

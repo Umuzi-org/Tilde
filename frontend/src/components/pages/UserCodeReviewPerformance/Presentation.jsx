@@ -24,6 +24,9 @@ import { reviewValidatedColors, trustedColor } from "../../../colors";
 
 import { makeStyles } from "@material-ui/core/styles";
 
+const COMPETENCE_REVIEW = "competence";
+const PR_REVIEW = "pr";
+
 const useStyles = makeStyles((theme) => {
   const avatar = {
     float: "left",
@@ -51,14 +54,14 @@ function formatTime(timestamp) {
   return new Intl.DateTimeFormat().format(date);
 }
 
-function Presentation({ reviews }) {
+function Presentation({ competenceReviews }) {
   const classes = useStyles();
 
-  reviews = reviews || [];
+  competenceReviews = competenceReviews || [];
 
   const grouped = {};
 
-  for (let review of reviews) {
+  for (let review of competenceReviews) {
     const { contentItem, flavourNames, title, contentItemAgileWeight } = review;
 
     const key = JSON.stringify({
@@ -68,7 +71,7 @@ function Presentation({ reviews }) {
       contentItemAgileWeight,
     });
     grouped[key] = grouped[key] || [];
-    grouped[key].push(review);
+    grouped[key].push({ ...review, type: COMPETENCE_REVIEW });
   }
 
   function getClassName({ review }) {
@@ -79,108 +82,98 @@ function Presentation({ reviews }) {
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item sx={4}>
-        <Typography variant="h6">Competence Reviews</Typography>
-        <Paper>
-          <Table size="small">
-            <TableBody>
-              {Object.keys(grouped)
-                .sort((a, b) => {
-                  const weightA = JSON.parse(a).contentItemAgileWeight;
-                  const weightB = JSON.parse(b).contentItemAgileWeight;
-                  return weightB - weightA;
-                })
-                .map((key) => {
-                  const {
-                    contentItem,
-                    flavourNames,
-                    title,
-                    contentItemAgileWeight,
-                  } = JSON.parse(key);
-                  const reviews = grouped[key];
-                  return (
-                    <TableRow key={key}>
-                      <TableCell>
-                        {title}
-                        <FlavourChips
-                          flavourNames={flavourNames}
-                          variant="small"
-                        />
-                        <StoryPoints
-                          storyPoints={contentItemAgileWeight}
-                          variant="small"
-                        />
-                      </TableCell>
+    <Paper>
+      {/* <Table size="small">
+        <TableBody>
+          {Object.keys(grouped)
+            .sort((a, b) => {
+              const weightA = JSON.parse(a).contentItemAgileWeight;
+              const weightB = JSON.parse(b).contentItemAgileWeight;
+              return weightB - weightA;
+            })
+            .map((key) => {
+              const {
+                // contentItem,
+                flavourNames,
+                title,
+                contentItemAgileWeight,
+              } = JSON.parse(key);
+              const reviews = grouped[key];
+              return (
+                <TableRow key={key}>
+                  <TableCell>
+                    {title}
+                    <FlavourChips flavourNames={flavourNames} variant="small" />
+                    <StoryPoints
+                      storyPoints={contentItemAgileWeight}
+                      variant="small"
+                    />
+                  </TableCell>
+                  <TableCell>{reviews.length}</TableCell>
 
-                      <TableCell>
-                        {reviews
-                          .sort(
-                            (a, b) =>
-                              new Date(a.timestamp) - new Date(b.timestamp)
-                          )
-                          .map((review) => (
-                            <Link
-                              to={routes.cardDetails.route.path.replace(
-                                ":cardId",
-                                review.agileCard
-                              )}
-                            >
-                              <Tooltip
-                                title={
-                                  <React.Fragment>
-                                    <Typography>
-                                      {REVIEW_STATUS_CHOICES[review.status]}
-                                    </Typography>
-                                    <em>Timestamp:</em>{" "}
-                                    {formatTime(review.timestamp)}
-                                    <br />
-                                    <em>Validated:</em>{" "}
-                                    <span
-                                      style={{
-                                        color:
-                                          reviewValidatedColors[
-                                            review.validated
-                                          ],
-                                      }}
-                                    >
-                                      {
-                                        REVIEW_VALIDATED_STATUS_CHOICES[
-                                          review.validated
-                                        ]
-                                      }
-                                    </span>
-                                    <br />
-                                    {review.trusted && (
-                                      <span
-                                        style={{
-                                          color: trustedColor,
-                                        }}
-                                      >
-                                        Trusted
-                                      </span>
-                                    )}
-                                  </React.Fragment>
-                                }
-                              >
-                                <Avatar
-                                  className={getClassName({ review })}
-                                  variant="rounded"
+                  <TableCell>
+                    {reviews
+                      .sort(
+                        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+                      )
+                      .map((review) => (
+                        <Link
+                          to={routes.cardDetails.route.path.replace(
+                            ":cardId",
+                            review.agileCard
+                          )}
+                        >
+                          <Tooltip
+                            title={
+                              <React.Fragment>
+                                <Typography>
+                                  {REVIEW_STATUS_CHOICES[review.status]}
+                                </Typography>
+                                <em>Timestamp:</em>{" "}
+                                {formatTime(review.timestamp)}
+                                <br />
+                                <em>Validated:</em>{" "}
+                                <span
+                                  style={{
+                                    color:
+                                      reviewValidatedColors[review.validated],
+                                  }}
                                 >
-                                  {review.status}
-                                </Avatar>
-                              </Tooltip>
-                            </Link>
-                          ))}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </Paper>
-      </Grid>
-    </Grid>
+                                  {
+                                    REVIEW_VALIDATED_STATUS_CHOICES[
+                                      review.validated
+                                    ]
+                                  }
+                                </span>
+                                <br />
+                                {review.trusted && (
+                                  <span
+                                    style={{
+                                      color: trustedColor,
+                                    }}
+                                  >
+                                    Trusted
+                                  </span>
+                                )}
+                              </React.Fragment>
+                            }
+                          >
+                            <Avatar
+                              className={getClassName({ review })}
+                              variant="rounded"
+                            >
+                              {review.status}
+                            </Avatar>
+                          </Tooltip>
+                        </Link>
+                      ))}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </Table> */}
+    </Paper>
   );
 }
 

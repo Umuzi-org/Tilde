@@ -1,6 +1,6 @@
 import React from "react";
 import UserCodeReviewPerformance from "../components/pages/UserCodeReviewPerformance/Presentation";
-import reviews from "./fixtures/codeReviewQualityList.json";
+import competenceReviews from "./fixtures/codeReviewQualityList.json";
 import { BrowserRouter as Router } from "react-router-dom";
 
 export default {
@@ -17,5 +17,5 @@ const Template = (args) => (
 export const Primary = Template.bind({});
 
 Primary.args = {
-  reviews,
+  competenceReviews,
 };
