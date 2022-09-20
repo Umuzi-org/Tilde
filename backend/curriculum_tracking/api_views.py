@@ -25,6 +25,8 @@ from rest_framework import filters
 from social_auth.models import SocialProfile
 from guardian.shortcuts import get_objects_for_user
 from django.db.models import Q, Max
+from django.db.models import Count
+from sql_util.utils import SubqueryAggregate
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -665,6 +667,47 @@ class TopicReviewViewset(viewsets.ModelViewSet):
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_topic_review,
+            )
+        )
+    ]
+
+
+class PullRequestReviewQualityViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.PullRequestReviewQualitySerializer
+    queryset = (
+        git_models.PullRequestReview.objects.order_by("-submitted_at")
+        .annotate(
+            project_count=SubqueryAggregate(
+                "pull_request__repository__recruit_projects", aggregate=Count
+            )
+        )
+        .filter(project_count__gte=1)
+    )
+
+    # .filter_by(repository__recruit_projects)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        "submitted_at": ["gte", "lte"],
+        "user": ["exact"],
+    }
+    permission_classes = [
+        ActionIs("list")
+        & (
+            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
+            )
+        )
+        | ActionIs("retrieve")
+        & (
+            core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_review,
             )
         )
     ]

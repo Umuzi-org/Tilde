@@ -61,6 +61,13 @@ router.register(
 )
 
 router.register(
+    r"pull_request_review_qualities",
+    curriculum_tracking_api_views.PullRequestReviewQualityViewset,
+    "pullrequestreviewquality",
+)
+
+
+router.register(
     r"content_item",
     curriculum_tracking_api_views.ContentItemViewset,
     "contentitem",
@@ -162,18 +169,6 @@ router.register(
     "contentitemagileweight",
 )
 
-
-# router.register(
-#     r"agile_card_add_review",
-#     curriculum_tracking_api_views.AgileCardInteractionAddReview,
-#     "agilecardaddreview",
-# )
-
-# router.register(
-#     r"/user/<int:user_id>/projects",
-#     curriculum_tracking_api_views.RecruitProjectList,
-#     "user-recrtuitprojects",
-# )
 
 router.register(
     r"course_registrations",
