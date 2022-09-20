@@ -16,11 +16,13 @@ from .constants import (
     RED_FLAG,
     EXCELLENT,
     REVIEW_STATUS_CHOICES,
+    POSITIVE_REVIEW_STATUS_CHOICES,
+    NEGATIVE_REVIEW_STATUS_CHOICES,
 )
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
-from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -801,6 +803,11 @@ class RecruitProjectReview(models.Model, Mixins):
         choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
     )
 
+    # if a user leaves a negative review and then another review is requested then two things can happen:
+    # either the next review is negative (meaning the previous review was incomplete or incompletely implemented) or
+    # the card is closed (meaning the previous negative review was complete and completely implemented)
+    complete_review_cycle = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
@@ -814,36 +821,75 @@ class RecruitProjectReview(models.Model, Mixins):
         reviews = RecruitProjectReview.objects.filter(
             recruit_project=self.recruit_project
         ).filter(timestamp__lt=self.timestamp)
-        since_time = self.recruit_project.review_request_time
-        if since_time:
-            reviews = reviews.filter(timestamp__gte=since_time)
 
-        for review in reviews:
+        last_review_request_time = self.recruit_project.review_request_time
+
+        # take a look at all the reviews that happened since the last review request
+
+        recent_reviews = (
+            reviews.filter(timestamp__gte=last_review_request_time)
+            if last_review_request_time
+            else reviews
+        )
+
+        for review in recent_reviews:
             if review.id != self.id:
-                review.update_validated_from(self)
+                review._update_validated_from(self)
 
-    def update_validated_from(self, other):
+        # now grab all the negative reviews that happened before the last review request (if any)
+        # update the flag to say if the review was an incomplete review cycle
+
+        if last_review_request_time:
+
+            previous_negative_reviews = reviews.filter(
+                timestamp__lte=last_review_request_time
+            ).filter(Q(status=NOT_YET_COMPETENT) | Q(status=RED_FLAG))
+            # breakpoint()
+
+            for review in previous_negative_reviews:
+                review._update_incomplete_cycle_from(self)
+
+    def _update_incomplete_cycle_from(self, other):
         """other is a review that happened after self"""
-        positive = [COMPETENT, EXCELLENT]
-        negative = [NOT_YET_COMPETENT, RED_FLAG]
+
+        # sanity checks
+
+        assert self.timestamp < other.timestamp
+        assert self.recruit_project == other.recruit_project
+        assert self.timestamp <= self.recruit_project.review_request_time
+        assert self.status in NEGATIVE_REVIEW_STATUS_CHOICES
+
+        if other.status in POSITIVE_REVIEW_STATUS_CHOICES and other.trusted:
+            # the feedback given was sufficient because the next time a review was requested, the card got closed off
+            self.complete_review_cycle = True
+            self.save()
+
+        if other.status in NEGATIVE_REVIEW_STATUS_CHOICES:
+            # the feedback given was insufficient or only partially applied because the next time a review was requested, the card got bounced back
+            self.complete_review_cycle = False
+            self.save()
+
+    def _update_validated_from(self, other):
+        """other is a review that happened after self"""
 
         # sanity checks
         assert self.timestamp < other.timestamp
         assert self.recruit_project == other.recruit_project
         assert self.timestamp > self.recruit_project.review_request_time
-        if self.status in positive:
-            if other.status in positive:
+
+        if self.status in POSITIVE_REVIEW_STATUS_CHOICES:
+            if other.status in POSITIVE_REVIEW_STATUS_CHOICES:
                 if other.trusted:
                     self.validated = RecruitProjectReview.CORRECT
             else:
-                assert other.status in negative
+                assert other.status in NEGATIVE_REVIEW_STATUS_CHOICES
                 if other.trusted:
                     self.validated = RecruitProjectReview.INCORRECT
                 else:
                     self.validated = RecruitProjectReview.CONTRADICTED
 
-        if self.status in negative:
-            if other.status in positive:
+        if self.status in NEGATIVE_REVIEW_STATUS_CHOICES:
+            if other.status in POSITIVE_REVIEW_STATUS_CHOICES:
                 if other.trusted:
                     self.validated = RecruitProjectReview.INCORRECT
                 else:

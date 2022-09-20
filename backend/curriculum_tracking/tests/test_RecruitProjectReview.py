@@ -1,330 +1,339 @@
-# import datetime
-# from django.utils import timezone
-# from core.tests.factories import TeamFactory, UserFactory
-# from django.test import TestCase
-# from curriculum_tracking.models import ReviewTrust, RecruitProjectReview
-# from curriculum_tracking.tests.factories import (
-#     ContentItemFactory,
-#     RecruitProjectFactory,
-#     RecruitProjectReviewFactory,
-# )
+from django.test import TestCase
+from .factories import (
+    AgileCardFactory,
+    ContentItemFactory,
+    RecruitProjectReviewFactory,
+    ReviewTrustFactory,
+)
+from core.tests.factories import UserFactory
+from curriculum_tracking.models import AgileCard, ContentItem, RecruitProjectReview
 
-# # from backend.settings import (
-# #     CURRICULUM_TRACKING_TRUST_STREAK_LENGTH,
-# # )
-# from curriculum_tracking.constants import COMPETENT
-
-
-# class is_first_review_after_request_Tests(TestCase):
-#     def test_all(self):
-
-#         time_1 = timezone.now() - datetime.timedelta(days=1)
-#         time_2 = time_1 + datetime.timedelta(hours=1)
-#         time_3 = time_1 + datetime.timedelta(hours=2)
-#         time_4 = time_1 + datetime.timedelta(hours=3)
-
-#         project = RecruitProjectFactory()
-#         project.review_request_time = time_2
-#         review_1 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_1
-#         )
-#         review_1.timestamp = time_1
-#         review_1.save()
-#         review_2 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_3
-#         )
-#         review_2.timestamp = time_3
-#         review_2.save()
-#         review_3 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_4
-#         )
-#         review_3.timestamp = time_4
-#         review_3.save()
-
-#         # assert review_1.timestamp == time_1, review_1.timestamp
-#         # assert project.review_request_time == time_2
-#         # assert review_2.timestamp == time_3
-#         # assert review_3.timestamp == time_4
-#         # assert time_1 < time_2
-#         # assert time_2 < time_3
-#         # assert time_3 < time_4
-
-#         self.assertFalse(review_1.is_first_review_after_request())
-#         self.assertTrue(review_2.is_first_review_after_request())
-#         self.assertFalse(review_3.is_first_review_after_request())
+from curriculum_tracking.constants import (
+    RED_FLAG,
+    NOT_YET_COMPETENT,
+    COMPETENT,
+    EXCELLENT,
+)
 
 
-# class update_recent_validation_flags_for_project_Tests(TestCase):
-#     def test_updates_only_fist_one(self):
-#         time_1 = timezone.now() - datetime.timedelta(days=1)
-#         time_2 = time_1 + datetime.timedelta(hours=1)
-#         time_3 = time_1 + datetime.timedelta(hours=2)
-#         time_4 = time_1 + datetime.timedelta(hours=3)
+def make_card_and_review(
+    reviewer_user, flavours=None, content_item=None, status=COMPETENT
+):
+    content_item = content_item or ContentItemFactory(
+        content_type=ContentItem.PROJECT,
+        project_submission_type=ContentItem.LINK,
+    )
+    flavours = flavours or []
+    card = AgileCardFactory(
+        content_item=content_item,
+        status=AgileCard.READY,
+        recruit_project=None,
+        flavours=flavours,
+    )
+    card.assignees.set([UserFactory()])
+    card.start_project()
+    card.recruit_project.request_review()
 
-#         project = RecruitProjectFactory()
-#         project.review_request_time = time_1
+    review = RecruitProjectReviewFactory(
+        status=status,
+        recruit_project=card.recruit_project,
+        reviewer_user=reviewer_user,
+    )
 
-#         review_1 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_1, status=COMPETENT
-#         )
-#         review_1.timestamp = time_2
-#         review_1.save()
-#         review_2 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_3, status=COMPETENT
-#         )
-#         review_2.timestamp = time_3
-#         review_2.save()
-#         review_3 = RecruitProjectReviewFactory(
-#             recruit_project=project, timestamp=time_4, status=COMPETENT
-#         )
-#         review_3.timestamp = time_4
-#         review_3.trusted = True
-#         review_3.save()
-
-#         review_3.update_recent_validation_flags_for_project()
-
-#         review_1.refresh_from_db()
-#         review_2.refresh_from_db()
-#         review_3.refresh_from_db()
-
-#         self.assertEqual(review_1.validated, RecruitProjectReview.CORRECT)
-#         self.assertEqual(review_2.validated, RecruitProjectReview.CORRECT)
-#         self.assertEqual(review_3.validated, RecruitProjectReview.CORRECT)
+    return card, review
 
 
-# class propagate_trust_signal_Tests(TestCase):
-#     def test(self):
-#         user = UserFactory()
-#         content_item = ContentItemFactory(flavours=["js"])
+class ReviewTrust_update_previous_reviews_Tests(TestCase):
+    def setUp(self):
+        self.user = UserFactory()
 
-#         for i in range(CURRICULUM_TRACKING_TRUST_STREAK_LENGTH - 1):
-#             project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
-#             RecruitProjectReviewFactory(
-#                 recruit_project=project,
-#                 reviewer_user=user,
-#                 validated=RecruitProjectReview.CORRECT,
-#             )
-#             trust_count = ReviewTrust.objects.all().count()
-#             self.assertEqual(trust_count, 0)
+    def test_that_recent_competent_reviews_become_trusted_and_cards_move(self):
+        card, review = make_card_and_review(reviewer_user=self.user)
+        self.assertEqual(card.status, AgileCard.IN_REVIEW)
 
-#         # add one more and the user should be trusted
-#         project = RecruitProjectFactory(content_item=content_item, flavours=["js"])
-#         RecruitProjectReviewFactory(
-#             recruit_project=project,
-#             reviewer_user=user,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
-#         trust_count = ReviewTrust.objects.all().count()
-#         self.assertEqual(trust_count, 1)
+        self.assertFalse(review.trusted)
 
-#         trust = ReviewTrust.objects.first()
-#         self.assertEqual(trust.content_item, content_item)
-#         self.assertEqual(trust.user, user)
-#         self.assertTrue(trust.flavours_match(["js"]))
+        trust = ReviewTrustFactory(user=self.user, content_item=card.content_item)
+        trust.update_previous_reviews()
+
+        review.refresh_from_db()
+        card.refresh_from_db()
+
+        self.assertTrue(review.trusted)
+        self.assertEqual(card.status, AgileCard.COMPLETE)
+
+    def test_works_on_cards_of_correct_flavour(self):
+        TYPESCRIPT = "ts"
+        JAVASCRIPT = "js"
+
+        content_item = ContentItemFactory(
+            content_type=ContentItem.PROJECT,
+            project_submission_type=ContentItem.LINK,
+            flavours=[TYPESCRIPT, JAVASCRIPT],
+        )
+
+        card_none, review_none = make_card_and_review(
+            reviewer_user=self.user, content_item=content_item, flavours=[]
+        )
+        card_js, review_js = make_card_and_review(
+            reviewer_user=self.user, content_item=content_item, flavours=[JAVASCRIPT]
+        )
+        card_ts, review_ts = make_card_and_review(
+            reviewer_user=self.user, content_item=content_item, flavours=[TYPESCRIPT]
+        )
+
+        trust = ReviewTrustFactory(user=self.user, content_item=content_item)
+        trust.update_previous_reviews()
+
+        card_none.refresh_from_db()
+        review_none.refresh_from_db()
+        card_js.refresh_from_db()
+        review_js.refresh_from_db()
+        card_ts.refresh_from_db()
+        review_ts.refresh_from_db()
+
+        self.assertEqual(card_none.status, AgileCard.COMPLETE)
+        self.assertTrue(review_none.trusted)
+
+        self.assertEqual(card_js.status, AgileCard.IN_REVIEW)
+        self.assertFalse(review_js.trusted)
+
+        self.assertEqual(card_ts.status, AgileCard.IN_REVIEW)
+        self.assertFalse(review_ts.trusted)
+
+        trust = ReviewTrustFactory(
+            user=self.user, content_item=content_item, flavours=[JAVASCRIPT]
+        )
+        trust.update_previous_reviews()
+
+        card_none.refresh_from_db()
+        review_none.refresh_from_db()
+        card_js.refresh_from_db()
+        review_js.refresh_from_db()
+        card_ts.refresh_from_db()
+        review_ts.refresh_from_db()
+
+        self.assertEqual(card_none.status, AgileCard.COMPLETE)
+        self.assertTrue(review_none.trusted)
+
+        self.assertEqual(card_js.status, AgileCard.COMPLETE)
+        self.assertTrue(review_js.trusted)
+
+        self.assertEqual(card_ts.status, AgileCard.IN_REVIEW)
+        self.assertFalse(review_ts.trusted)
+
+    def test_that_previous_review_validated_gets_updated(self):
+        card, review = make_card_and_review(reviewer_user=UserFactory())
+
+        user = UserFactory()
+        review.refresh_from_db()
+        self.assertEqual(review.validated, None)
+
+        # add another review
+        new_review = RecruitProjectReviewFactory(
+            reviewer_user=user, recruit_project=card.recruit_project, status=COMPETENT
+        )
+
+        # then make it trusted
+        trust = ReviewTrustFactory(
+            user=user, content_item=card.content_item, flavours=[]
+        )
+
+        review.refresh_from_db()
+        self.assertEqual(review.validated, None)
+
+        trust.update_previous_reviews()
+
+        review.refresh_from_db()
+        self.assertEqual(review.validated, RecruitProjectReview.CORRECT)
 
 
-# class get_validated_streak_Tests(TestCase):
-#     def setUp(self):
-#         content_item = ContentItemFactory()
+class CreatingAReviewUpdatesValidationFieldOnPreviousReviews(TestCase):
+    def setUp(self):
+        self.card, self.review = make_card_and_review(reviewer_user=UserFactory())
+        self.trusted_user = UserFactory(is_superuser=True)
+        self.trusted_user_2 = UserFactory(is_superuser=True)
+        self.untrusted_user = UserFactory(is_superuser=False)
 
-#         self.project_js_1 = RecruitProjectFactory(
-#             flavours=["js"], content_item=content_item
-#         )
+    def test_adding_trusted_competent_review_to_untrusted_competent_marks_review_correct(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=COMPETENT,
+        )
 
-#         self.project_js_2 = RecruitProjectFactory(
-#             flavours=["js"], content_item=content_item
-#         )
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         self.project_js_3 = RecruitProjectFactory(
-#             flavours=["js"], content_item=content_item
-#         )
+        self.assertEqual(self.review.validated, RecruitProjectReview.CORRECT)
+        self.assertEqual(new_review.validated, None)
 
-#         self.project_js_4 = RecruitProjectFactory(
-#             flavours=["js"], content_item=content_item
-#         )
+    def test_adding_trusted_excellent_review_to_untrusted_competent_marks_review_correct(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=EXCELLENT,
+        )
 
-#         self.project_ts_1 = RecruitProjectFactory(
-#             flavours=["ts"], content_item=content_item
-#         )
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         self.project_ts_2 = RecruitProjectFactory(
-#             flavours=["ts"], content_item=content_item
-#         )
+        self.assertEqual(self.review.validated, RecruitProjectReview.CORRECT)
+        self.assertEqual(new_review.validated, None)
 
-#         self.project_ts_3 = RecruitProjectFactory(
-#             flavours=["ts"], content_item=content_item
-#         )
+    def test_adding_trusted_nyc_review_to_untrusted_competent_marks_review_incorrect(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=NOT_YET_COMPETENT,
+        )
 
-#         self.user_1 = UserFactory()
-#         self.user_2 = UserFactory()
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#     def test_different_statuses(self):
-#         review = RecruitProjectReviewFactory(reviewer_user=self.user_1, validated=None)
-#         self.assertEqual(review.get_validated_streak(), 0)
+        self.assertEqual(self.review.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review.validated, None)
 
-#         review = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1, validated=RecruitProjectReview.INCORRECT
-#         )
-#         self.assertEqual(review.get_validated_streak(), 0)
-#         review = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1, validated=RecruitProjectReview.CONTRADICTED
-#         )
-#         self.assertEqual(review.get_validated_streak(), 0)
-#         review = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1, validated=RecruitProjectReview.CORRECT
-#         )
-#         self.assertEqual(review.get_validated_streak(), 1)
+    def test_adding_trusted_red_flag_review_to_untrusted_competent_marks_review_incorrect(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=RED_FLAG,
+        )
 
-#     def test_blacklist(self):
-#         team = TeamFactory(name="tghyj TechQuest dfghj")
-#         review = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1, validated=RecruitProjectReview.CORRECT
-#         )
-#         assignee = review.recruit_project.recruit_users.first()
-#         team.user_set.add(assignee)
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         self.assertEqual(review.get_validated_streak(), 0)
+        self.assertEqual(self.review.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review.validated, None)
 
-#     def test_streak_adds_up_per_flavour(self):
-#         review_js_1 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+    def test_adding_untrusted_competent_review_to_untrusted_competent_makes_no_change(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.untrusted_user,
+            status=COMPETENT,
+        )
 
-#         review_ts_1 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_ts_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         review_js_2 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_2,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.assertEqual(self.review.validated, None)
+        self.assertEqual(new_review.validated, None)
 
-#         review_ts_2 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_ts_2,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+    def test_adding_untrusted_excellent_review_to_untrusted_competent_makes_no_change(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.untrusted_user,
+            status=EXCELLENT,
+        )
 
-#         review_js_3 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_3,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         review_ts_3 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_ts_3,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.assertEqual(self.review.validated, None)
+        self.assertEqual(new_review.validated, None)
 
-#         self.assertEqual(review_js_1.get_validated_streak(), 1)
-#         self.assertEqual(review_js_2.get_validated_streak(), 2)
-#         self.assertEqual(review_js_3.get_validated_streak(), 3)
+    def test_adding_untrusted_nyc_review_to_untrusted_competent_marks_review_contradicted(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.untrusted_user,
+            status=NOT_YET_COMPETENT,
+        )
 
-#         self.assertEqual(review_ts_1.get_validated_streak(), 1)
-#         self.assertEqual(review_ts_2.get_validated_streak(), 2)
-#         self.assertEqual(review_ts_3.get_validated_streak(), 3)
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#     def test_interrupted_streak(self):
+        self.assertEqual(self.review.validated, RecruitProjectReview.CONTRADICTED)
+        self.assertEqual(new_review.validated, None)
 
-#         review_js_1 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+    def test_adding_untrusted_nyc_review_to_untrusted_competent_marks_review_contradicted(
+        self,
+    ):
+        new_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.untrusted_user,
+            status=RED_FLAG,
+        )
 
-#         review_js_2 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_2,
-#             validated=RecruitProjectReview.INCORRECT,
-#         )
+        self.review.refresh_from_db()
+        new_review.refresh_from_db()
 
-#         review_js_3 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_3,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.assertEqual(self.review.validated, RecruitProjectReview.CONTRADICTED)
+        self.assertEqual(new_review.validated, None)
 
-#         review_js_4 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_4,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+    def test_trusted_reviewers_can_mark_other_as_incorrect(self):
+        new_review_1 = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=EXCELLENT,
+        )
 
-#         self.assertEqual(review_js_1.get_validated_streak(), 1)
-#         self.assertEqual(review_js_2.get_validated_streak(), 0)
-#         self.assertEqual(review_js_3.get_validated_streak(), 1)
-#         self.assertEqual(review_js_4.get_validated_streak(), 2)
+        new_review_2 = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user_2,
+            status=RED_FLAG,
+        )
 
-#     def test_only_grabs_last_review_for_project(self):
-#         """otherwise people can try to cheat the system by adding extra reviews to the same thing"""
+        new_review_1.refresh_from_db()
+        new_review_2.refresh_from_db()
 
-#         review_js_1 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.assertEqual(new_review_1.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review_2.validated, None)
 
-#         review_js_2 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
 
-#         review_js_3 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_2,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
-#         review_js_4 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+class CreatingAReviewUpdatesCompleteReviewCycleFlagOnPreviousReviews(TestCase):
+    def setUp(self):
+        self.card, _ = make_card_and_review(reviewer_user=UserFactory())
+        self.trusted_user = UserFactory(is_superuser=True)
+        # self.trusted_user_2 = UserFactory(is_superuser=True)
+        # self.untrusted_user = UserFactory(is_superuser=False)
 
-#         self.assertEqual(review_js_1.get_validated_streak(), 1)
-#         self.assertEqual(review_js_2.get_validated_streak(), 1)
-#         self.assertEqual(review_js_3.get_validated_streak(), 2)
-#         self.assertEqual(review_js_4.get_validated_streak(), 2)
+        self.negative_review = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            # reviewer_user=self.trusted_user,
+            status=NOT_YET_COMPETENT,
+        )
 
-#     def test_that_different_users_get_different_streaks(self):
-#         review_js_1 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_1,
-#             recruit_project=self.project_js_1,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        assert self.card.recruit_project == self.negative_review.recruit_project
 
-#         review_js_2 = RecruitProjectReviewFactory(
-#             reviewer_user=self.user_2,
-#             recruit_project=self.project_js_2,
-#             validated=RecruitProjectReview.CORRECT,
-#         )
+        self.card.refresh_from_db()
+        assert self.card.status == AgileCard.REVIEW_FEEDBACK  # sanity check
 
-#         self.assertEqual(review_js_1.get_validated_streak(), 1)
-#         self.assertEqual(review_js_2.get_validated_streak(), 1)
+        self.card.recruit_project.request_review()
 
-# def test_only_counts_the_first_positive_review(self):
-#     timestamp_2 = timezone.now()
-#     timestamp_1 = timestamp_2 - datetime.timedelta(minutes=1)
+        self.card.refresh_from_db()
+        assert self.card.status == AgileCard.IN_REVIEW  # sanity check
 
-#     review_js_1 = RecruitProjectReviewFactory(
-#         reviewer_user=self.user_1,
-#         recruit_project=self.project_js_1,
-#         validated=RecruitProjectReview.CORRECT,
-#         timestamp=timestamp_1,
-#     )
+    def test_positive_trusted_reviews_mark_nyc_reviews_as_complete(self):
 
-#     review_js_2 = RecruitProjectReviewFactory(
-#         reviewer_user=self.user_1,
-#         recruit_project=self.project_js_1,
-#         validated=RecruitProjectReview.CORRECT,
-#         timestamp=timestamp_2,
-#     )
+        RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=COMPETENT,
+        )
+        self.negative_review.refresh_from_db()
+        self.assertTrue(self.negative_review.complete_review_cycle)
 
-#     self.assertEqual(review_js_1.get_validated_streak(), 1)
-#     self.assertEqual(review_js_2.get_validated_streak(), 0)
+    def test_negative_reviews_mark_nyc_reviews_as_complete(self):
+        RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            # reviewer_user=self.trusted_user,
+            status=NOT_YET_COMPETENT,
+        )
+        self.negative_review.refresh_from_db()
+
+        self.assertFalse(self.negative_review.complete_review_cycle)
