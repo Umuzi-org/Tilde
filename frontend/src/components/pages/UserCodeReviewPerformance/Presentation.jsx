@@ -8,6 +8,8 @@ import {
   TableCell,
   Avatar,
   Tooltip,
+  TableHead,
+  Chip,
 } from "@material-ui/core";
 import FlavourChips from "../../widgets/FlavourChips";
 import StoryPoints from "../../widgets/StoryPoints";
@@ -94,6 +96,8 @@ function CompetenceReview({ review }) {
     return classes.avatar;
   }
 
+  const style = review.trusted ? { border: `3px solid ${trustedColor}` } : {};
+
   return (
     <Tooltip
       title={
@@ -122,7 +126,11 @@ function CompetenceReview({ review }) {
         </React.Fragment>
       }
     >
-      <Avatar className={getClassName({ review })} variant="rounded">
+      <Avatar
+        className={getClassName({ review })}
+        variant="rounded"
+        style={style}
+      >
         {review.status}
       </Avatar>
     </Tooltip>
@@ -184,6 +192,14 @@ function Presentation({
         <ArrowRightIcon />
       </IconButton>
       <Table size="small">
+        {/* <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>competence reviews</TableCell>
+            <TableCell>pr reviews</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead> */}
         <TableBody>
           {Object.keys(grouped)
             .sort((a, b) => {
@@ -203,13 +219,26 @@ function Presentation({
                 <TableRow key={key}>
                   <TableCell>
                     {title}
+                    <br />
                     <FlavourChips flavourNames={flavourNames} variant="small" />
                     <StoryPoints
                       storyPoints={contentItemAgileWeight}
                       variant="small"
                     />
                   </TableCell>
-                  {/* <TableCell>{reviews.length}</TableCell> */}
+                  <TableCell>
+                    <Chip
+                      label={`Competence reviews ${
+                        reviews.filter((r) => r.type === COMPETENCE_REVIEW)
+                          .length
+                      }`}
+                    />
+                    <Chip
+                      label={`PR reviews ${
+                        reviews.filter((r) => r.type === PR_REVIEW).length
+                      }`}
+                    />
+                  </TableCell>
 
                   <TableCell>
                     {reviews

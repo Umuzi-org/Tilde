@@ -3,6 +3,8 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { useApiCallbacks } from "../../../hooks";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
 const PAGE_SIZE = 14;
 
@@ -31,14 +33,48 @@ function UserCodeReviewPerformanceUnconnected({
   let urlParams = useParams() || {};
   const user = parseInt(urlParams.userId);
 
-  const pullRequestReviews = Object.values(pullRequestReviewsObject);
-  const competenceReviews = Object.values(competenceReviewsObject);
-
   useEffect(() => {
-    console.log({ user, startDate, endDate });
     fetchCompetenceReviewQualityPage({ page: 1, startDate, endDate, user });
     fetchPullRequestQualitiesPage({ page: 1, startDate, endDate, user });
   }, [startDate, endDate]);
+
+  const competenceReviewQualityPageCall = getLatestMatchingCall({
+    callLog: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
+    requestData: { startDate, endDate },
+  });
+
+  useApiCallbacks({
+    lastCallEntry: competenceReviewQualityPageCall,
+    successResponseCallback: () => {
+      if (competenceReviewQualityPageCall.responseData.next) {
+        fetchCompetenceReviewQualityPage({
+          page: competenceReviewQualityPageCall.requestData.page + 1,
+          startDate,
+          endDate,
+          user,
+        });
+      }
+    },
+  });
+
+  const prReviewQualityPageCall = getLatestMatchingCall({
+    callLog: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+    requestData: { startDate, endDate },
+  });
+
+  useApiCallbacks({
+    lastCallEntry: prReviewQualityPageCall,
+    successResponseCallback: () => {
+      if (prReviewQualityPageCall.responseData.next) {
+        fetchPullRequestQualitiesPage({
+          page: prReviewQualityPageCall.requestData.page + 1,
+          startDate,
+          endDate,
+          user,
+        });
+      }
+    },
+  });
 
   function _shiftDates(days) {
     const newStartDate = new Date();
@@ -58,6 +94,16 @@ function UserCodeReviewPerformanceUnconnected({
   function handleClickNext() {
     _shiftDates(+PAGE_SIZE);
   }
+
+  const pullRequestReviews = Object.values(pullRequestReviewsObject)
+    .filter((o) => new Date(o.submittedAt) <= endDate)
+    .filter((o) => new Date(o.submittedAt) >= startDate);
+  // TODO: filter by user
+
+  const competenceReviews = Object.values(competenceReviewsObject)
+    .filter((o) => new Date(o.timestamp) <= endDate)
+    .filter((o) => new Date(o.timestamp) >= startDate);
+  // TODO: filter by user
 
   const props = {
     pullRequestReviews,
