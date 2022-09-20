@@ -59,6 +59,54 @@ class TopicProgressSerializer(serializers.ModelSerializer):
     flavours = serializers.CharField(help_text="comma seperated list of flavours")
 
 
+class RecruitProjectReviewQualitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProjectReview
+        fields = [
+            "id",
+            "flavour_names",
+            "content_item",
+            "title",
+            "trusted",
+            "validated",
+            "agile_card",
+            "status",
+            "timestamp",
+            "reviewer_user",
+            "content_item_agile_weight",
+        ]
+
+    flavour_names = serializers.SerializerMethodField("get_flavour_names")
+    content_item = serializers.SerializerMethodField("get_content_item")
+    agile_card = serializers.SerializerMethodField("get_agile_card")
+    title = serializers.SerializerMethodField("get_title")
+    content_item_agile_weight = serializers.SerializerMethodField(
+        "get_content_item_agile_weight"
+    )
+
+    def get_flavour_names(self, instance):
+        return instance.recruit_project.flavour_names
+
+    def get_content_item(self, instance):
+        return instance.recruit_project.content_item.id
+
+    def get_agile_card(self, instance):
+        try:
+            return instance.recruit_project.agile_card.id
+        except models.AgileCard.DoesNotExist:
+            return
+
+    def get_title(self, instance):
+        return instance.recruit_project.content_item.title
+
+    def get_content_item_agile_weight(self, instance):
+        weights = instance.recruit_project.content_item.agile_weights.all()
+        flavour_names = instance.recruit_project.flavour_names
+        for weight in weights:
+            if weight.flavours_match(flavour_names):
+                return weight.weight
+
+
 class RecruitProjectReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProjectReview

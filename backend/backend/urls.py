@@ -55,6 +55,12 @@ router.register(
 )
 
 router.register(
+    r"recruit_project_review_qualities",
+    curriculum_tracking_api_views.RecruitProjectReviewQualityViewset,
+    "recruitprojectreviewquality",
+)
+
+router.register(
     r"content_item",
     curriculum_tracking_api_views.ContentItemViewset,
     "contentitem",

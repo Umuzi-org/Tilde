@@ -836,6 +836,7 @@ class RecruitProjectReview(models.Model, Mixins):
         return 1
 
     def _get_previous_review_in_streak(self, projects_visited):
+        # TODO: remove
         content_item = self.recruit_project.content_item
         flavours = self.recruit_project.flavour_names
 
@@ -868,36 +869,37 @@ class RecruitProjectReview(models.Model, Mixins):
             reviews = reviews.filter(timestamp__gte=since_time)
 
         for review in reviews:
-            review.update_validated_from(self)
+            if review.id != self.id:
+                review.update_validated_from(self)
 
     def update_validated_from(self, other):
+        """other is a review that happened after self"""
         positive = [COMPETENT, EXCELLENT]
         negative = [NOT_YET_COMPETENT, RED_FLAG]
-        if other.trusted:
-            if self.status in positive and other.status in positive:
-                if self.is_first_review_after_request():
+
+        # sanity checks
+        assert self.timestamp < other.timestamp
+        assert self.recruit_project == other.recruit_project
+        assert self.timestamp > self.recruit_project.review_request_time
+        if self.status in positive:
+            if other.status in positive:
+                if other.trusted:
                     self.validated = RecruitProjectReview.CORRECT
             else:
-                self.validated = RecruitProjectReview.INCORRECT
-        else:
-            if self.status in positive and other.status in negative:
-                self.validated = RecruitProjectReview.CONTRADICTED
+                assert other.status in negative
+                if other.trusted:
+                    self.validated = RecruitProjectReview.INCORRECT
+                else:
+                    self.validated = RecruitProjectReview.CONTRADICTED
+
+        if self.status in negative:
+            if other.status in positive:
+                if other.trusted:
+                    self.validated = RecruitProjectReview.INCORRECT
+                else:
+                    self.validated = RecruitProjectReview.CONTRADICTED
+
         self.save()
-
-    def is_first_review_after_request(self):
-        request_time = self.recruit_project.review_request_time
-        if not request_time:
-            return False
-        if request_time > self.timestamp:
-            return False
-        first_review = (
-            RecruitProjectReview.objects.filter(timestamp__gte=request_time)
-            .filter(recruit_project=self.recruit_project)
-            .order_by("timestamp")
-            .first()
-        )
-
-        return self == first_review
 
 
 class TopicProgress(

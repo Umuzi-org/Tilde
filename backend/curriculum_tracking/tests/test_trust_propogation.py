@@ -148,92 +148,144 @@ class CreatingAReviewUpdatesValidationFieldOnPreviousReviews(TestCase):
     def setUp(self):
         self.card, self.review = make_card_and_review(reviewer_user=UserFactory())
         self.trusted_user = UserFactory(is_superuser=True)
+        self.trusted_user_2 = UserFactory(is_superuser=True)
         self.untrusted_user = UserFactory(is_superuser=False)
 
     def test_adding_trusted_competent_review_to_untrusted_competent_marks_review_correct(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.trusted_user,
             status=COMPETENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.CORRECT)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_trusted_excellent_review_to_untrusted_competent_marks_review_correct(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.trusted_user,
             status=EXCELLENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.CORRECT)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_trusted_nyc_review_to_untrusted_competent_marks_review_incorrect(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.trusted_user,
             status=NOT_YET_COMPETENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_trusted_red_flag_review_to_untrusted_competent_marks_review_incorrect(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.trusted_user,
             status=RED_FLAG,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_untrusted_competent_review_to_untrusted_competent_makes_no_change(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.untrusted_user,
             status=COMPETENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, None)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_untrusted_excellent_review_to_untrusted_competent_makes_no_change(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.untrusted_user,
             status=EXCELLENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, None)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_untrusted_nyc_review_to_untrusted_competent_marks_review_contradicted(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.untrusted_user,
             status=NOT_YET_COMPETENT,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.CONTRADICTED)
+        self.assertEqual(new_review.validated, None)
 
     def test_adding_untrusted_nyc_review_to_untrusted_competent_marks_review_contradicted(
         self,
     ):
-        RecruitProjectReviewFactory(
+        new_review = RecruitProjectReviewFactory(
             recruit_project=self.card.recruit_project,
             reviewer_user=self.untrusted_user,
             status=RED_FLAG,
         )
+
         self.review.refresh_from_db()
+        new_review.refresh_from_db()
+
         self.assertEqual(self.review.validated, RecruitProjectReview.CONTRADICTED)
+        self.assertEqual(new_review.validated, None)
+
+    def test_trusted_reviewers_can_mark_other_as_incorrect(self):
+        new_review_1 = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user,
+            status=EXCELLENT,
+        )
+
+        new_review_2 = RecruitProjectReviewFactory(
+            recruit_project=self.card.recruit_project,
+            reviewer_user=self.trusted_user_2,
+            status=RED_FLAG,
+        )
+
+        new_review_1.refresh_from_db()
+        new_review_2.refresh_from_db()
+
+        self.assertEqual(new_review_1.validated, RecruitProjectReview.INCORRECT)
+        self.assertEqual(new_review_2.validated, None)

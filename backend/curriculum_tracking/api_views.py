@@ -670,16 +670,49 @@ class TopicReviewViewset(viewsets.ModelViewSet):
     ]
 
 
+class RecruitProjectReviewQualityViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.RecruitProjectReviewQualitySerializer
+    queryset = models.RecruitProjectReview.objects.order_by("-timestamp")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        "timestamp": ["gte", "lte"],
+        "reviewer_user": ["exact"],
+    }
+
+    permission_classes = [
+        ActionIs("list")
+        & (
+            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
+            )
+        )
+        | ActionIs("retrieve")
+        & (
+            core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_review,
+            )
+        )
+    ]
+
+
 class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     serializer_class = serializers.RecruitProjectReviewSerializer
     queryset = models.RecruitProjectReview.objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = [
-        "status",
-        "reviewer_user",
-        "recruit_project",
-        "recruit_project__recruit_users",
-    ]
+    filterset_fields = {
+        "timestamp": ["gte", "lte"],
+        "status": ["exact"],
+        "reviewer_user": ["exact"],
+        "recruit_project": ["exact"],
+        "recruit_project__recruit_users": ["exact"],
+    }
 
     permission_classes = [
         ActionIs("list")

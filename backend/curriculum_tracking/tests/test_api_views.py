@@ -15,6 +15,7 @@ from curriculum_tracking.models import (
     RecruitProjectReview,
     AgileCard,
     ContentItemAgileWeight,
+    RecruitProject,
 )
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
@@ -497,15 +498,39 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     #     self.assertEqual(response.status_code, 403)
 
 
+class RecruitProjectReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "recruitprojectreviewquality-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
+
+    def verbose_instance_factory(self):
+        review = factories.RecruitProjectReviewFactory(
+            trusted=True, validated=RecruitProjectReview.CORRECT
+        )
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        weight = factories.ContentItemAgileWeightFactory(
+            content_item=project.content_item
+        )
+        weight.set_flavours(["js"])
+
+        return review
+
+
 class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "recruitprojectreview-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        return factories.RecruitProjectReviewFactory(
+        review = factories.RecruitProjectReviewFactory(
             trusted=True, validated=RecruitProjectReview.CORRECT
         )
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        return review
 
 
 class RecruitTopicReviewViewsetTests(APITestCase, APITestCaseMixin):
