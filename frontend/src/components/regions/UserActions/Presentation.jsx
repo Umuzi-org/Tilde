@@ -4,7 +4,6 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
-import ActivityDashboardBarGraph from "./ActivityDashboardBarGraph";
 
 import UserBurnDownChart from "./UserBurndownStats";
 
@@ -27,37 +26,29 @@ export default function Presentation({
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>
-      <Grid container>
-        {currentUserBurndownStats && (
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
-            </Paper>
-          </Grid>
-        )}
+    <Grid container>
+      {currentUserBurndownStats && (
         <Grid item xs={12}>
-          <Paper>
-            {orderedDates.map((date) => (
-              <DayLog
-                date={date}
-                key={date}
-                actions={actionLogByDate[date]}
-                handleClickOpenProjectDetails={handleClickOpenProjectDetails}
-              />
-            ))}
+          <Paper className={classes.paper}>
+            <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
+          </Paper>
+        </Grid>
+      )}
+      <Grid item xs={12}>
+        <Paper>
+          {orderedDates.map((date) => (
+            <DayLog
+              date={date}
+              key={date}
+              actions={actionLogByDate[date]}
+              handleClickOpenProjectDetails={handleClickOpenProjectDetails}
+            />
+          ))}
 
-            {anyLoading && <Loading />}
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper
-            elevation="false"
-            style={{ position: "fixed", top: "46%", width: "100%" }}
-          >
-            <ActivityDashboardBarGraph />
-          </Paper>
-        </Grid>
+          {anyLoading && <Loading />}
+        </Paper>
       </Grid>
-    </div>
+    </Grid>
+  </div>
   );
 }
