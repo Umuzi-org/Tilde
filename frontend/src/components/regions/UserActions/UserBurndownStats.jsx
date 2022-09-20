@@ -30,7 +30,6 @@ export default ({ burnDownSnapshots }) => {
         .slice(0, 10))
   );
 
-  // console.log({ burnDownSnapshots });
   const classes = useStyles();
   return (
     <React.Fragment>

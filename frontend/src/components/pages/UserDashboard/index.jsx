@@ -13,10 +13,8 @@ function DashboardUnconnected({
   authUser,
   users,
   userDetailedStats,
-  userBurndownStats,
   fetchUser,
   fetchUserDetailedStats,
-  fetchUserBurndownStats,
 }) {
 
   let urlParams = useParams() || {};
@@ -31,7 +29,6 @@ function DashboardUnconnected({
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
-      fetchUserBurndownStats({ userId });
     }
   }, [userId, fetchUser, fetchUserDetailedStats, fetchUserBurndownStats]);
  
@@ -48,7 +45,6 @@ function DashboardUnconnected({
   const props = {
     user,
     currentUserDetailedStats,
-    currentUserBurndownStats,
     showTeamsTable,
     authUser,
   };
@@ -83,6 +79,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+
     //TODO Implement Page check
     fetchUserBurndownStats: ({ userId }) => {
       dispatch(

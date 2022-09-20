@@ -42,6 +42,14 @@ def get_automark_result(repo_url, content_item_id, flavours):
 # http://localhost:1313/mark-project
 
 
+def confirm_continue(message):
+    answer = ""
+    while answer not in ["Y", "N"]:
+        print(f"message = \n```\n{message}\n```")
+        answer = input("\n\nWould you like to continue? Y/N").upper()
+    return answer == "Y"
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("content_item", type=str)
@@ -119,14 +127,25 @@ class Command(BaseCommand):
                     comments = f"{comments}\n{errors}"
 
                 if debug_mode:
-                    print(f"comments:\n\n{comments}")
-                    breakpoint()
+                    # print(f"comments:\n\n{comments}")
+                    message = f"You are about to leave a negative review:\n\n"
+                    message += f"Repo url: {card.recruit_project.repository.ssh_url}\n"
+                    message += f"Card url: https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}\n"
+                    message += f"review comments:\n\n{comments}"
 
-                self.add_review(
-                    card=card,
-                    status=NOT_YET_COMPETENT,
-                    comments=comments,
-                )
+                    if confirm_continue(message):
+                        self.add_review(
+                            card=card,
+                            status=NOT_YET_COMPETENT,
+                            comments=comments,
+                        )
+                else:
+
+                    self.add_review(
+                        card=card,
+                        status=NOT_YET_COMPETENT,
+                        comments=comments,
+                    )
             else:
 
                 pprint(result)

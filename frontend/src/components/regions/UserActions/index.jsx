@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 // import { useParams } from "react-router-dom";
 // https://api.github.com/users/sheenarbw/events
@@ -8,6 +8,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+import Loading from "../../widgets/Loading";
 
 // TODO: look nice
 
@@ -27,14 +28,19 @@ function UserActionsUnconnected({
   cardSummaries,
   fetchProjectReviewsPages,
   fetchCardCompletions,
+  userBurndownStats,
+  fetchUserBurndownStats,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
+  const currentUserBurndownStats = Object.values(userBurndownStats).filter(
+    (snapshot) => snapshot.user === userId
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchProjectReviewsPages({
       dataSequence: [
         { page: 1, reviewerUser: userId },
@@ -43,9 +49,18 @@ function UserActionsUnconnected({
     });
   }, [fetchProjectReviewsPages, userId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
-  }, [fetchCardCompletions, userId]);
+    fetchUserBurndownStats({ userId });
+  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
+
+  if (
+    !userId ||
+    !fetchProjectReviewsPages ||
+    !fetchCardCompletions ||
+    !fetchUserBurndownStats
+  )
+    return <Loading />;
 
   const latestProjectReviewsCall = getLatestMatchingCall({
     callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
@@ -98,7 +113,7 @@ function UserActionsUnconnected({
       dateStr,
     };
   };
-
+  if (!cardSummaries) return <Loading />;
   const completedCards = Object.values(cardSummaries)
     .filter((card) => card.assignees.indexOf(userId) !== -1)
     .map((card) => {
@@ -107,11 +122,10 @@ function UserActionsUnconnected({
       return {
         ...card,
         ...timeFields,
-
         actionType: ACTION_NAMES.CARD_COMPLETED,
       };
     });
-
+  if (!projectReviews) return <Loading />;
   const reviewsDone = Object.values(projectReviews)
     .filter((review) => review.reviewerUser === userId)
     .map((review) => {
@@ -142,20 +156,21 @@ function UserActionsUnconnected({
     actionLogByDate,
     anyLoading,
     handleScroll,
+    currentUserBurndownStats,
   };
   return <Presentation {...props} />;
 }
 
 const mapStateToProps = (state) => {
   return {
-    users: state.apiEntities.users || {},
-    projectReviews: state.apiEntities.projectReviews || {},
-    cardSummaries: state.apiEntities.projectSummaryCards || {},
+    projectReviews: state.apiEntities.projectReviews,
+    cardSummaries: state.apiEntities.projectSummaryCards,
     authedUserId: state.App.authUser.userId,
     FETCH_RECRUIT_PROJECT_REVIEWS_PAGE:
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    userBurndownStats: state.apiEntities.burndownSnapshots || {},
   };
 };
 
@@ -168,7 +183,18 @@ const mapDispatchToProps = (dispatch) => {
         )
       );
     },
-
+    //TODO Implement Page check
+    fetchUserBurndownStats: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
+          data: {
+            userId: parseInt(userId),
+            page: 1,
+          },
+        })
+      );
+    },
+    
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(
         apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({

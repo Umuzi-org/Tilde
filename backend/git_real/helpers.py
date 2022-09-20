@@ -1,4 +1,5 @@
 import base64
+from urllib.error import HTTPError
 from social_auth.github_api import Api
 from git_real import models
 from git_real.constants import GITHUB_DATETIME_FORMAT, GITHUB_DEFAULT_TIMEZONE
@@ -7,6 +8,7 @@ from timezone_helpers import (
     timestamp_int_to_tz_aware_datetime,
 )
 from django.http import Http404
+import requests
 
 
 def github_timestamp_int_to_tz_aware_datetime(timestamp):
@@ -188,3 +190,30 @@ def fetch_and_save_repo(api, repo_full_name):
     o = save_repo(repo_dict)
     assert o != None
     return o
+
+
+from functools import lru_cache
+import time
+
+
+@lru_cache(maxsize=None)
+def github_user_exists(github_name):
+    return True  # this causes other api calls to timeout. We need a better solution
+
+    def inner(attempt=1):
+        url = f"https://github.com/{github_name}"
+        response = requests.get(url)
+        if response.status_code == 404:
+            return False
+        if response.status_code in [200, 201]:
+            return True
+        if response.status_code == 429:
+            # timeout
+            time.sleep(10 * attempt)
+            if attempt <= 4:
+                return inner(attempt + 1)
+            raise Exception(
+                f"Unexpected status code {response.status_code} for GET {url}"
+            )
+
+    return inner()
