@@ -801,6 +801,11 @@ class RecruitProjectReview(models.Model, Mixins):
         choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
     )
 
+    # if a user leaves a negative review and then another review is requested then two things can happen:
+    # either the next review is negative (meaning the previous review was incomplete or incompletely implemented) or
+    # the card is closed (meaning the previous negative review was complete and completely implemented)
+    complete_review_cycle = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
