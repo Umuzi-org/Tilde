@@ -24,6 +24,7 @@ export const REVIEW_VALIDATED_STATUS_CHOICES = {
   [INCORRECT]: "incorrect",
   [CORRECT]: "correct",
   [CONTRADICTED]: "contradicted",
+  [null]: "not yet validated",
 };
 
 export const AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER = [
