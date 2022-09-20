@@ -3,7 +3,7 @@ import {
   BarChart,
   Bar,
   XAxis,
-  YAxis,
+  // YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
