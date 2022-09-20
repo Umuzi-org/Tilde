@@ -805,56 +805,6 @@ class RecruitProjectReview(models.Model, Mixins):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
 
-    def get_validated_streak(self, projects_visited=None):
-        """how many reviews on the same project have been marked as valid in a row. This is a recursive function.
-        if self.validated != CORRECT
-            return 0
-        else
-            return previous_matching_review.get_validated_streak() +1
-        """
-        if self.validated != RecruitProjectReview.CORRECT:
-            return 0
-        if self.reviewer_user.email == CURRICULUM_TRACKING_REVIEW_BOT_EMAIL:
-            return 0
-        # blacklist code. This needs to be removed once we have enough
-        # trusted members
-        assignee = self.recruit_project.recruit_users.first()
-        for team in assignee.teams():
-            if "techquest" in team.name.lower():
-                return 0
-
-        projects_visited = projects_visited or []
-        projects_visited.append(self.recruit_project)
-        last_matching_review = self._get_previous_review_in_streak(
-            projects_visited=projects_visited
-        )
-        if last_matching_review:
-            return 1 + last_matching_review.get_validated_streak(
-                projects_visited=projects_visited
-            )
-
-        return 1
-
-    def _get_previous_review_in_streak(self, projects_visited):
-        # TODO: remove
-        content_item = self.recruit_project.content_item
-        flavours = self.recruit_project.flavour_names
-
-        reviews = (
-            RecruitProjectReview.objects.filter(
-                recruit_project__content_item=content_item
-            )
-            .filter(id__lt=self.id)
-            .filter(reviewer_user=self.reviewer_user)
-            .order_by("-id")
-        )
-
-        for review in reviews:
-            if review.recruit_project in projects_visited:
-                continue
-            if review.recruit_project.flavours_match(flavours):
-                return review
-
     @property
     def reviewer_user_email(self):
         return self.reviewer_user.email
