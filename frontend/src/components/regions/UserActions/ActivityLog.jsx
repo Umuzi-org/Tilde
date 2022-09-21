@@ -1,28 +1,20 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import TodayIcon from "@material-ui/icons/Today";
+import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  containerStyles: {
-    width: "50%",
-    margin: 5,
-    border: "1px black solid",
-  },
-
   fillerStyles: {
-    height: "100%",
-    textAlign: "right",
-    display: "flex",
-    flexDirection: "row",
+    marginTop: theme.spacing(2),
   },
   labelStyles: {
-    width: 20,
     color: "black",
   },
-  content: {
-    width: "90%",
+  title: {
+    marginTop: theme.spacing(2),
     ["@media (max-width:620px)"]: {
       fontSize: "1rem",
     },
@@ -40,9 +32,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActivityLog({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
-
   return (
-    <div>
+    <Paper>
       {sortedTimestampArray.map((timestamp) => (
         <>
           <Typography variant="h6" className={classes.dateTypography}>
@@ -52,28 +43,28 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
           {eventList.map((item) => (
             <>
               {item.timestamp === timestamp && (
-                <Grid>
-                  <Grid
-                    className={classes.containerStyles}
-                    colors={item.eventColor}
-                    timestamp={item.timestamp}
-                  >
-                    <Grid className={classes.fillerStyles}>
-                      <span
-                        className={classes.labelStyles}
-                        style={{ backgroundColor: item.eventColor }}
-                      />
-                      <Typography className={classes.content}>
+                <Paper colors={item.eventColor} timestamp={item.timestamp}>
+                  <Grid className={classes.fillerStyles}>
+                    <Chip
+                      className={classes.labelStyles}
+                      style={{ backgroundColor: item.eventColor }}
+                      label={item.eventName}
+                    />
+                    <Paper>
+                      <Typography variant="h6" className={classes.title}>
                         {item.title}
                       </Typography>
-                    </Grid>
+                      <p>
+                        {new Date(timestamp).toTimeString().substring(0, 8)}
+                      </p>
+                    </Paper>
                   </Grid>
-                </Grid>
+                </Paper>
               )}
             </>
           ))}
         </>
       ))}
-    </div>
+    </Paper>
   );
 }

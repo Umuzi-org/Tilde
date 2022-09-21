@@ -10,7 +10,8 @@
     "object2ContentTypeName": "git_real | repository",
     "object2Id": 7250,
     "eventColor": "#fb8c00",
-    "title": "Level 1 coding challenges"
+    "title": "Level 1 coding challenges",
+    "eventName": "Card review requested"
   },
   {
     "id": 116282,
@@ -23,12 +24,13 @@
     "object2ContentTypeName": "curriculum_tracking | recruit project",
     "object2Id": 15112,
     "eventColor": "#43a047",
-    "title": "Level 1 coding challenges"
+    "title": "Level 1 coding challenges",
+    "eventName": "Card started"
   },
   {
     "id": 116281,
     "eventType": 1,
-    "timestamp": "2022-09-01T13:18:03.743668Z",
+    "timestamp": "2022-09-01T10:18:03.743668Z",
     "actorUser": 132,
     "effectedUser": 1023,
     "object1ContentTypeName": "curriculum_tracking | recruit project review",
@@ -36,7 +38,8 @@
     "object2ContentTypeName": "curriculum_tracking | recruit project",
     "object2Id": 17024,
     "eventColor": "#43a047",
-    "title": "Tilde project tutorial: How to submit a link"
+    "title": "Tilde project tutorial: How to submit a link",
+    "eventName": "Card Started"
   },
   {
     "id": 116281,
@@ -49,6 +52,7 @@
     "object2ContentTypeName": "curriculum_tracking | recruit project",
     "object2Id": 17024,
     "eventColor": "#e53935",
-    "title": "Level 0 coding challenges"
+    "title": "Level 0 coding challenges",
+    "eventName": "Card moved to review feedback"
   }
 ]
