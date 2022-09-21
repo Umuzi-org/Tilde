@@ -875,7 +875,8 @@ class RecruitProjectReview(models.Model, Mixins):
         # sanity checks
         assert self.timestamp < other.timestamp
         assert self.recruit_project == other.recruit_project
-        assert self.timestamp > self.recruit_project.review_request_time
+        if self.recruit_project.review_request_time != None:
+            assert self.timestamp > self.recruit_project.review_request_time
 
         if self.status in POSITIVE_REVIEW_STATUS_CHOICES:
             if other.status in POSITIVE_REVIEW_STATUS_CHOICES:

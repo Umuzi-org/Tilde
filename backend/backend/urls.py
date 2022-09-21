@@ -187,6 +187,7 @@ router.register(
     curriculum_tracking_api_views.PullRequestReviewQueueViewSet,
     r"pullrequestreviewqueue",
 )
+
 router.register(
     r"curriculum_content_requirements",
     curriculum_tracking_api_views.CurriculumContentRequirementViewset,

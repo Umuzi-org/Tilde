@@ -70,8 +70,11 @@ class PullRequestReviewQualitySerializer(serializers.ModelSerializer):
             "content_item",
             "title",
             "content_item_agile_weight",
+            "agile_card",
+            "user",
         ]
 
+    agile_card = serializers.SerializerMethodField("get_agile_card")
     flavour_names = serializers.SerializerMethodField("get_flavour_names")
     content_item = serializers.SerializerMethodField("get_content_item")
     title = serializers.SerializerMethodField("get_title")
@@ -79,19 +82,31 @@ class PullRequestReviewQualitySerializer(serializers.ModelSerializer):
         "get_content_item_agile_weight"
     )
 
+    def get_project(self, instance):
+        return instance.pull_request.repository.recruit_projects.order_by("id").last()
+
+    def get_agile_card(self, instance):
+        project = self.get_project(instance)
+        try:
+            card = project.agile_card
+        except models.AgileCard.DoesNotExist:
+            return None
+
+        return card.id
+
     def get_flavour_names(self, instance):
-        return instance.pull_request.repository.recruit_projects.first().flavour_names
+        return self.get_project(instance).flavour_names
 
     def get_title(self, instance):
-        return (
-            instance.pull_request.repository.recruit_projects.first().content_item.title
-        )
+        return self.get_project(instance).content_item.title
 
     def get_content_item(self, instance):
-        return instance.pull_request.repository.recruit_projects.first().content_item.id
+        return self.get_project(instance).content_item.id
 
     def get_content_item_agile_weight(self, instance):
-        project = instance.pull_request.repository.recruit_projects.first()
+        project = instance.pull_request.repository.recruit_projects.order_by(
+            "id"
+        ).last()
         weights = project.content_item.agile_weights.all()
         flavour_names = project.flavour_names
         for weight in weights:
@@ -112,7 +127,7 @@ class RecruitProjectReviewQualitySerializer(serializers.ModelSerializer):
             "agile_card",
             "status",
             "timestamp",
-            # "reviewer_user",
+            "reviewer_user",
             "content_item_agile_weight",
             "complete_review_cycle",
         ]

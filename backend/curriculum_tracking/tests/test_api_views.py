@@ -479,29 +479,11 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
         self.assertNotIn("detail", response.data)
         self.assertEqual(response.status_code, 200)
 
-    # def test_recruit_permissions_on_object(self):
-    #     return  # TODO
-    #     recruit1 = UserFactory(is_superuser=False, is_staff=False)
-    #     recruit2 = UserFactory(is_superuser=False, is_staff=False)
-
-    #     project1 = factories.RecruitProjectFactory(recruit_users=[recruit1])
-    #     project2 = factories.RecruitProjectFactory(recruit_users=[recruit2])
-
-    #     self.login(recruit1)
-
-    #     url = self.get_list_url()
-    #     response = self.client.get(f"{url}{project1.id}/")
-
-    #     self.assertEqual(response.status_code, 200)
-
-    #     response = self.client.get(f"{url}{project2.id}/")
-    #     self.assertEqual(response.status_code, 403)
-
 
 class PullRequestReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "pullrequestreviewquality-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
-    FIELDS_THAT_CAN_BE_FALSEY = []
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
         pr_review = PullRequestReviewFactory()
