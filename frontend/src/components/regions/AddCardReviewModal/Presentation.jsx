@@ -1,6 +1,8 @@
 import React from "react";
 import Modal from "../../widgets/Modal";
-import { Typography, Paper, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import CloseIcon from "@material-ui/icons/Close";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -8,25 +10,14 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Alert from "@material-ui/lab/Alert";
-
 import Button from "../../widgets/Button";
-import Help from "../../widgets/Help";
 import CardButton from "../../widgets/CardButton";
-import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
-import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
-import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
-import MoodBadIcon from "@material-ui/icons/MoodBad";
-
 import { makeStyles } from "@material-ui/core/styles";
+import StatusHelp from "./StatusHelp";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    // margin: theme.spacing(1),
     minWidth: 120,
-  },
-  selectEmpty: {
-    // marginTop: theme.spacing(2),
-    // paddingTop: theme.spacing(2),
   },
   alert: {
     marginBottom: theme.spacing(1),
@@ -43,111 +34,9 @@ const useStyles = makeStyles((theme) => ({
   exitIcon: {
     marginBottom: "0.5rem",
   },
-  paperStyle: {
-    maxHeight: "80vh",
-    maxWidth: "80vw",
-    overflow: "auto",
-    padding: "5px",
-  },
 }));
 
-function StatusHelp() {
-  const classes = useStyles();
-  return (
-    <Help buttonText="How do I choose a status?">
-      <Paper className={classes.paperStyle}>
-        <Typography variant="subtitle2">
-          <SentimentSatisfiedIcon /> Competent
-        </Typography>
-
-        <ul>
-          <li>
-            <Typography>
-              The project matches the specification - it does what it is
-              supposed to
-            </Typography>
-          </li>
-          <li>
-            <Typography>
-              All the relevent code is in the master branch - The master branch
-              has to work!
-            </Typography>
-          </li>
-          <li>
-            <Typography>
-              The code is neat and tidy - but it doesn't have to be perfect
-            </Typography>
-          </li>
-          <li>
-            <Typography>The names used in the code make sense</Typography>
-          </li>
-        </ul>
-
-        <Typography variant="subtitle2">
-          <SentimentVerySatisfiedIcon /> Excellent
-        </Typography>
-        <ul>
-          <li>
-            <Typography>The code is better than competent</Typography>
-          </li>
-          <li>
-            <Typography>
-              If there were extra challenges on the project, those were
-              completed and are in the master branch
-            </Typography>
-          </li>
-          <li>
-            <Typography>The code is simply beautiful to behold</Typography>
-          </li>
-        </ul>
-
-        <Typography variant="subtitle2">
-          <SentimentDissatisfiedIcon /> Not Yet Competent
-          <ul>
-            <li>
-              <Typography>The code is on its way to competent</Typography>
-            </li>
-            <li>
-              <Typography>
-                The recruit(s) working on this project will be able to succeed
-              </Typography>
-            </li>
-          </ul>
-        </Typography>
-        <Typography variant="subtitle2">
-          <MoodBadIcon /> Red Flag
-          <ul>
-            <li>
-              <Typography>
-                There is something terribly wrong, maybe master branch is empty,
-                or the recruit ignored instructions, or it is clear that the
-                recruit doesn't understand the technologies in play
-              </Typography>
-            </li>
-            <li>
-              <Typography>This recruit needs some serious help</Typography>
-            </li>
-            <li>
-              <Typography>
-                Red flags are taken seriously. If someone gets a red flag then a
-                staff member will intervene. So use this wisely
-              </Typography>
-            </li>
-            <li>
-              <Typography>
-                If you think you can help this recruit then try to help them
-                before giving them a red flag. Remember that the only meaningful
-                measure of success is the number of people you have helped!
-              </Typography>
-            </li>
-          </ul>
-        </Typography>
-      </Paper>
-    </Help>
-  );
-}
-
-export default ({
+export default function Presentation({
   card,
   handleSubmit,
   status,
@@ -156,7 +45,7 @@ export default ({
   closeModal,
   statusChoices,
   loading,
-}) => {
+}) {
   const classes = useStyles();
 
   if (!card) {
@@ -166,7 +55,7 @@ export default ({
   return (
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
-        <Grid container xs={12}>
+        <Grid container>
           <Grid item xs={10} sm={11}>
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
@@ -180,7 +69,7 @@ export default ({
         </Grid>
 
         <Alert severity="info" className={classes.alert}>
-          Whatever you writ here will be visable to staff and to the person you
+          Whatever you write here will be visible to staff and to the person you
           are reviewing. Take the time to give an accurate and useful review
         </Alert>
 
@@ -218,7 +107,7 @@ export default ({
               <TextareaAutosize
                 className={classes.textArea}
                 aria-label="your comments"
-                rowsMin={5}
+                minRows={5}
                 placeholder="Your comments*"
                 {...comments}
               />
@@ -243,4 +132,4 @@ export default ({
       </Paper>
     </Modal>
   );
-};
+}

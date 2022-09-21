@@ -11,24 +11,20 @@ function DashboardUnconnected({
   authUser,
   users,
   userDetailedStats,
-  userBurndownStats,
   fetchUser,
   fetchUserDetailedStats,
-  fetchUserBurndownStats,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users[userId];
   const currentUserDetailedStats = userDetailedStats[userId];
-  const currentUserBurndownStats = Object.values(userBurndownStats).filter((snapshot) => snapshot.user === userId);
 
   React.useEffect(() => {
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
-      fetchUserBurndownStats({ userId });
     }
-  }, [userId, fetchUser, fetchUserDetailedStats, fetchUserBurndownStats]);
+  }, [userId, fetchUser, fetchUserDetailedStats]);
 
   const showTeamsTable = user
     ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
@@ -37,7 +33,6 @@ function DashboardUnconnected({
   const props = {
     user,
     currentUserDetailedStats,
-    currentUserBurndownStats,
     showTeamsTable,
     authUser,
   };
@@ -49,7 +44,6 @@ const mapStateToProps = (state) => {
   return {
     users: state.apiEntities.users || {},
     userDetailedStats: state.apiEntities.userDetailedStats || {},
-    userBurndownStats: state.apiEntities.burndownSnapshots || {},
     // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser || {},
   };
@@ -69,17 +63,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER_DETAILED_STATS.operations.maybeStart({
           data: { userId: parseInt(userId) },
-        })
-      );
-    },
-    //TODO Implement Page check
-    fetchUserBurndownStats: ({ userId }) => {
-      dispatch(
-        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: { 
-            userId: parseInt(userId),
-            page: 1,
-           },
         })
       );
     },

@@ -10,6 +10,7 @@ from timezone_helpers import (
 from django.http import Http404
 import requests
 
+
 def github_timestamp_int_to_tz_aware_datetime(timestamp):
     if timestamp:
         return timestamp_int_to_tz_aware_datetime(
@@ -192,20 +193,27 @@ def fetch_and_save_repo(api, repo_full_name):
 
 
 from functools import lru_cache
-import time 
+import time
+
 
 @lru_cache(maxsize=None)
 def github_user_exists(github_name):
-    def inner():
+    return True  # this causes other api calls to timeout. We need a better solution
+
+    def inner(attempt=1):
         url = f"https://github.com/{github_name}"
         response = requests.get(url)
         if response.status_code == 404:
             return False
         if response.status_code in [200, 201]:
-            return True 
-        if response.status_code == 429: 
-            #timeout 
-            time.sleep(10)
-            inner()
-        raise Exception(f"Unexpected status code {response.status_code} for GET {url}")
+            return True
+        if response.status_code == 429:
+            # timeout
+            time.sleep(10 * attempt)
+            if attempt <= 4:
+                return inner(attempt + 1)
+            raise Exception(
+                f"Unexpected status code {response.status_code} for GET {url}"
+            )
+
     return inner()
