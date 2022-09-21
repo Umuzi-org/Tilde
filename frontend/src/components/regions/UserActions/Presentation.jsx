@@ -21,9 +21,10 @@ export default function Presentation({
   handleScroll,
   anyLoading,
   currentUserBurndownStats,
+  activityLogEntries,
 }) {
   const classes = useStyles();
-  console.log("xx", "hello?");
+  console.log(activityLogEntries);
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
@@ -35,7 +36,7 @@ export default function Presentation({
           </Grid>
         )}
         <Grid item xs={12}>
-          <Paper>
+          {/* <Paper>
             {orderedDates.map((date) => (
               <DayLog
                 date={date}
@@ -46,14 +47,14 @@ export default function Presentation({
             ))}
 
             {anyLoading && <Loading />}
-          </Paper>
+          </Paper> */}
         </Grid>
-        {/* <Grid>
+        <Grid>
           <TestFile
-            eventList={actionLogByDate}
+            eventList={activityLogEntries}
             sortedTimestampArray={orderedDates}
           />
-        </Grid> */}
+        </Grid>
       </Grid>
     </div>
   );

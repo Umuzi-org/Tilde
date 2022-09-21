@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TestFile({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
+  console.log(eventList);
   return (
     <Paper>
       {sortedTimestampArray.map((timestamp) => (
@@ -40,22 +41,25 @@ export default function TestFile({ eventList, sortedTimestampArray }) {
             <TodayIcon className={classes.calendarIcon} />
             {new Date(timestamp).toDateString()}
           </Typography>
-          {eventList.map((item) => (
+          {Object.keys(eventList).map((item) => (
             <>
-              {item.timestamp.substring(0, 10) === timestamp && (
-                <Paper colors={item.eventColor} timestamp={item.timestamp}>
+              {eventList[item].timestamp.substring(0, 10) === timestamp && (
+                <Paper
+                  colors={eventList[item].eventColor}
+                  timestamp={eventList[item].timestamp}
+                >
                   <Grid className={classes.fillerStyles}>
                     <Chip
                       className={classes.labelStyles}
-                      style={{ backgroundColor: item.eventColor }}
-                      label={item.eventName}
+                      style={{ backgroundColor: eventList[item].eventColor }}
+                      label={eventList[item].eventName}
                     />
                     <Paper>
                       <Typography variant="h6" className={classes.title}>
-                        {item.title}
+                        {eventList[item].title}
                       </Typography>
                       <p>
-                        {new Date(item.timestamp)
+                        {new Date(eventList[item].timestamp)
                           .toTimeString()
                           .substring(0, 8)}
                       </p>

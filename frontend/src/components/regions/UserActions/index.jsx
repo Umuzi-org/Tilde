@@ -30,10 +30,13 @@ function UserActionsUnconnected({
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
+  fetchEventTypes,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-  FETCH_EVENT_TYPES,
+  eventTypes,
+  activityLogEntries,
+  fetchActivityLogEntries,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -55,6 +58,13 @@ function UserActionsUnconnected({
     fetchUserBurndownStats({ userId });
   }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
 
+  useEffect(() => {
+    fetchActivityLogEntries({
+      actorUser: userId,
+      page: 1,
+    });
+  }, [fetchActivityLogEntries, userId]);
+
   if (
     !userId ||
     !fetchProjectReviewsPages ||
@@ -73,10 +83,10 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
-  const latestEventTypesPage = getLatestMatchingCall({
-    callLog: FETCH_EVENT_TYPES,
-    requestData: { assigneeUserId: userId },
-  });
+  // const latestEventTypesPage = getLatestMatchingCall({
+  //   callLog: FETCH_EVENT_TYPES,
+  //   requestData: { page: 1 },
+  // });
 
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
@@ -92,10 +102,6 @@ function UserActionsUnconnected({
     if (lastCompletedCardsPage.responseData.results.length > 0) {
       const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
       fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
-    }
-    if (latestEventTypesPage.responseData.results.length > 0) {
-      const nextListPage = latestEventTypesPage.requestData.page + 1;
-      fetchCardCompletions({ page: nextListPage, assigneeUserId: userId });
     }
   };
 
@@ -163,7 +169,9 @@ function UserActionsUnconnected({
 
   const props = {
     orderedDates,
-    actionLogByDate,
+    // actionLogByDate,
+    eventTypes,
+    activityLogEntries,
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
@@ -181,6 +189,8 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    eventTypes: state.apiEntities.eventTypes,
+    activityLogEntries: state.apiEntities.activityLogEntries,
   };
 };
 
@@ -220,9 +230,18 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchEventTypes: ({ assigneeUserId, page }) => {
+    fetchEventTypes: ({ page }) => {
       dispatch(
-        apiReduxApps.FETCH_EVENT_TYPES.start({ data: { assigneeUserId, page } })
+        apiReduxApps.FETCH_EVENT_TYPES.operations.start({
+          data: { page },
+        })
+      );
+    },
+    fetchActivityLogEntries: ({ actorUser, page }) => {
+      dispatch(
+        apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
+          data: { actorUser, page },
+        })
       );
     },
   };
