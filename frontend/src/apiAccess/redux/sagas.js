@@ -1,5 +1,4 @@
-import { takeLatest, put, takeEvery, select } from "redux-saga/effects";
-import operations from "./operations";
+import { put, takeEvery, select } from "redux-saga/effects";
 import { apiReduxApps } from "../apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/appCreator";
 
@@ -11,8 +10,6 @@ function* fetchAllPagesSideEffects({ API_BASE_TYPE, requestData }) {
 
   const startPage = requestData.page;
   if (startPage === undefined) throw new Error("page must be defined");
-
-  console.log({ lastCall });
 
   const { next, count, results } = lastCall.responseData;
 
