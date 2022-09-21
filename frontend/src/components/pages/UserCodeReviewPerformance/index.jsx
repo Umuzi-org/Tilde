@@ -3,8 +3,10 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-import { useApiCallbacks } from "../../../hooks";
-import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+// import { useApiCallbacks } from "../../../hooks";
+// import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+
+import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 const PAGE_SIZE = 7;
 
@@ -125,24 +127,40 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCompetenceReviewQualityPage: ({ page, startDate, endDate, user }) => {
+      const data = {
+        page,
+        startDate,
+        endDate,
+        user,
+      };
       dispatch(
         apiReduxApps.FETCH_COMPETENCE_REVIEW_QUALITY_PAGE.operations.maybeStart(
           {
-            data: {
-              page,
-              startDate,
-              endDate,
-              user,
-            },
+            data,
+            successDispatchActions: [
+              apiUtilitiesOperations.fetchAllPages({
+                API_BASE_TYPE: "FETCH_COMPETENCE_REVIEW_QUALITY_PAGE",
+                requestData: data,
+              }),
+            ],
           }
         )
       );
     },
 
     fetchPullRequestQualitiesPage: ({ page, startDate, endDate, user }) => {
+      const data = { page, startDate, endDate, user };
       dispatch(
         apiReduxApps.FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE.operations.maybeStart(
-          { data: { page, startDate, endDate, user } }
+          {
+            data,
+            successDispatchActions: [
+              apiUtilitiesOperations.fetchAllPages({
+                API_BASE_TYPE: "FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE",
+                requestData: data,
+              }),
+            ],
+          }
         )
       );
     },
