@@ -33,6 +33,7 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+  FETCH_EVENT_TYPES,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -72,6 +73,11 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
+  const latestEventTypesPage = getLatestMatchingCall({
+    callLog: FETCH_EVENT_TYPES,
+    requestData: { assigneeUserId: userId },
+  });
+
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
@@ -86,6 +92,10 @@ function UserActionsUnconnected({
     if (lastCompletedCardsPage.responseData.results.length > 0) {
       const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
       fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+    }
+    if (latestEventTypesPage.responseData.results.length > 0) {
+      const nextListPage = latestEventTypesPage.requestData.page + 1;
+      fetchCardCompletions({ page: nextListPage, assigneeUserId: userId });
     }
   };
 
@@ -194,7 +204,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    
+
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(
         apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
@@ -208,6 +218,11 @@ const mapDispatchToProps = (dispatch) => {
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
           data: { userId: parseInt(userId) },
         })
+      );
+    },
+    fetchEventTypes: ({ assigneeUserId, page }) => {
+      dispatch(
+        apiReduxApps.FETCH_EVENT_TYPES.start({ data: { assigneeUserId, page } })
       );
     },
   };
