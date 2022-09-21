@@ -6,10 +6,6 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-// import {
-//   getShowAddReviewButton,
-//   getTeamPermissions,
-// } from "../../../utils/cardButtons";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
@@ -71,12 +67,16 @@ function CardDetailsUnconnected({
     card,
   ]);
 
-  const [formState, { linkSubmission }, formErrors, dataFromState] =
-    useMaterialUiFormState({
-      linkSubmission: {
-        required: true,
-      },
-    });
+  const [
+    formState,
+    { linkSubmission },
+    formErrors,
+    dataFromState,
+  ] = useMaterialUiFormState({
+    linkSubmission: {
+      required: true,
+    },
+  });
 
   const handleClickUpdateProjectLink = (e) => {
     e.preventDefault();
