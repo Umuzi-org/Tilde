@@ -373,7 +373,41 @@ async function activityLogDayCountsPage({
   if (effectedUser) params["effected_user"] = effectedUser;
   const getParams = objectToGetQueryString(params);
 
-  const url = `${API_BASE_URL}/api/activity_log_day_count/?${getParams}`;
+  const url = `${API_BASE_URL}/api/activity_log_day_counts/?${getParams}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
+
+async function activityLogEntries({
+  eventTypeName,
+  effectedUser,
+  actorUser,
+  object1ContentType,
+  object1Id,
+  object2ContentType,
+  object2Id,
+  page,
+}) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+  let params = {
+    limit,
+    offset,
+  };
+
+  if (eventTypeName) params["event_type__name"] = eventTypeName;
+  if (actorUser) params["actor_user"] = actorUser;
+  if (effectedUser) params["effected_user"] = effectedUser;
+  if (object1ContentType) params["object_1_content_type"] = object1ContentType;
+  if (object1Id) params["object_1_id"] = object1Id;
+  if (object2ContentType) params["object_2_content_type"] = object2ContentType;
+  if (object2Id) params["object_2_id"] = object2Id;
+  const getParams = objectToGetQueryString(params);
+
+  const url = `${API_BASE_URL}/api/activity_log_entries/?${getParams}`;
 
   const { response, responseData } = await fetchAndClean({
     url,
@@ -382,7 +416,7 @@ async function activityLogDayCountsPage({
 }
 
 async function pullRequestReviewQueue({ page }) {
-  const limit = 10;
+  const limit = 20;
   const offset = calculateOffset({ page, limit });
 
   const url = `${API_BASE_URL}/api/pull_request_review_queue/?limit=${limit}&offset=${offset}`;
@@ -391,11 +425,57 @@ async function pullRequestReviewQueue({ page }) {
 }
 
 async function competenceReviewQueue({ page }) {
-  const limit = 10;
+  const limit = 20;
   const offset = calculateOffset({ page, limit });
 
   const url = `${API_BASE_URL}/api/competence_review_queue/?limit=${limit}&offset=${offset}`;
   const { response, responseData } = await fetchAndClean({ url });
+  return { response, responseData };
+}
+
+async function eventTypes({ page }) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/event_types/?limit=${limit}&offset=${offset}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
+
+async function competenceReviewQualitiesPage({
+  page,
+  startDate,
+  endDate,
+  user,
+}) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/recruit_project_review_qualities/?limit=${limit}&offset=${offset}&timestamp__lte=${endDate.toISOString()}&timestamp__gte=${startDate.toISOString()}&reviewer_user=${user}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
+
+async function pullRequestReviewQualitiesPage({
+  page,
+  startDate,
+  endDate,
+  user,
+}) {
+  const limit = 20;
+  const offset = calculateOffset({ page, limit });
+
+  const url = `${API_BASE_URL}/api/pull_request_review_qualities/?limit=${limit}&offset=${offset}&submitted_at__lte=${endDate.toISOString()}&timestamp__gte=${startDate.toISOString()}&user=${user}`;
+
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
   return { response, responseData };
 }
 
@@ -436,6 +516,10 @@ export default {
   personallyAssignedCardSummaryEntity,
   agileCardEntity,
   activityLogDayCountsPage,
+  activityLogEntries,
   pullRequestReviewQueue,
   competenceReviewQueue,
+  eventTypes,
+  competenceReviewQualitiesPage,
+  pullRequestReviewQualitiesPage,
 };

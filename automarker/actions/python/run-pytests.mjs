@@ -72,19 +72,22 @@ function lookForFailures(testOutput) {
       } - please make sure you are following the instructions. Pay close attention to function arguments`;
     }
 
-    // if (line.indexOf("Failed:") !== -1) {
-    //   return line.split("Failed: ")[1];
-    // }
-
-    if (line.indexOf("AssertionError:") === -1) {
-      console.log("==============================");
-      console.log("==============================");
-      console.log(lines);
-      console.log("==============================");
-      console.log("==============================");
-      throw new Error(`Unknown error type:\n \'\'\'\n\t${line}\n\`\`\``);
+    if (line.indexOf("AssertionError:") !== -1) {
+      return line.split("AssertionError: ")[1];
     }
-    return line.split("AssertionError: ")[1];
+
+    const match = line.match(/(\w*\.py:\d+:.*)/g);
+    // eg: line = "/home/sheena/workspace/Tilde/gitignore/automark_clone_path/Umuzi-org-Kopano-Mosai-758-contentitem-python/task6.py:12: UnboundLocalError: local variable 'maximum' referenced before assignment"
+    // match  = ["task6.py:12: UnboundLocalError: local variable 'maximum' referenced before assignment"]
+
+    if (match.length === 1) return match[0];
+
+    console.log("==============================");
+    console.log("==============================");
+    console.log(lines);
+    console.log("==============================");
+    console.log("==============================");
+    throw new Error(`Unknown error type:\n \'\'\'\n\t${line}\n\`\`\``);
   });
 }
 
@@ -129,8 +132,21 @@ function lookForTestProblems(testOutput) {
 
   // Just a sanity check. We should have found all the ERRORs in the last step
   if (testOutput.indexOf("ERRORS") != -1) {
-    console.log({ testOutput });
-    throw new Error("wtf");
+    const lines = testOutput
+      .split("==== ERRORS ====")[1]
+      .split("=== short test summary info =====")[0]
+      .split("\n");
+
+    lines.shift();
+
+    if (lines[0][0] !== "_") {
+      console.log({ testOutput });
+      throw new Error("wtf");
+    }
+
+    lines.shift();
+    lines.pop();
+    return lines;
   }
 
   const failures = lookForFailures(testOutput);

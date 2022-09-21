@@ -3,7 +3,18 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { apiUtilitiesOperations } from "../../../apiAccess/redux";
+
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+import { useState } from "react";
+
+function removeNameFromArray({ array, name }) {
+  const index = array.indexOf(name);
+  if (index !== -1) {
+    array.splice(index, 1);
+  }
+  return array;
+}
 
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
@@ -12,20 +23,40 @@ function GlobalCodeReviewDashboardUnconnected({
   pullRequestReviewQueueProjectsObject,
   FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
   FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+  teams,
 
   // mapDispatchToProps
 
   fetchCompetenceReviewQueuePage,
   fetchPullRequestReviewQueuePage,
+  fetchTeamsPages,
 }) {
+  teams = teams || {};
+
+  const [filterIncludeTags, setFilterIncludeTags] = useState([]);
+  const [filterExcludeTags, setFilterExcludeTags] = useState([
+    "technical-assessment",
+  ]);
+
+  const [filterIncludeFlavours, setFilterIncludeFlavours] = useState([]);
+  const [filterExcludeFlavours, setFilterExcludeFlavours] = useState([]);
+
+  // const [filterAssigneeTeam, setFilterAssigneeTeam] = useState([])
+
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
     fetchPullRequestReviewQueuePage({ page: 1 });
-  }, [fetchCompetenceReviewQueuePage, fetchPullRequestReviewQueuePage]);
+    fetchTeamsPages();
+  }, [
+    fetchCompetenceReviewQueuePage,
+    fetchPullRequestReviewQueuePage,
+    fetchTeamsPages,
+  ]);
 
   const fetchCompetenceReviewQueueLastCall = getLatestMatchingCall({
     callLog: FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
   }) || { loading: true };
+
   const fetchPullRequestQueueLastCall = getLatestMatchingCall({
     callLog: FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
   }) || { loading: true };
@@ -48,6 +79,50 @@ function GlobalCodeReviewDashboardUnconnected({
     fetchPullRequestReviewQueuePage({ page });
   }
 
+  function handleChangeFilter({
+    includes,
+    excludes,
+    setIncludes,
+    setExcludes,
+  }) {
+    function handleChangeFlavourFilter(name) {
+      function handle() {
+        if (includes.includes(name)) {
+          const newFilterIncludes = removeNameFromArray({
+            array: includes,
+            name,
+          });
+          setIncludes([...newFilterIncludes]);
+          setExcludes([...excludes, name]);
+        } else if (excludes.includes(name)) {
+          const newFilterExcludes = removeNameFromArray({
+            array: excludes,
+            name,
+          });
+          setExcludes([...newFilterExcludes]);
+        } else {
+          setIncludes([...includes, name]);
+        }
+      }
+      return handle;
+    }
+    return handleChangeFlavourFilter;
+  }
+
+  const handleChangeFlavourFilter = handleChangeFilter({
+    includes: filterIncludeFlavours,
+    excludes: filterExcludeFlavours,
+    setIncludes: setFilterIncludeFlavours,
+    setExcludes: setFilterExcludeFlavours,
+  });
+
+  const handleChangeTagFilter = handleChangeFilter({
+    includes: filterIncludeTags,
+    excludes: filterExcludeTags,
+    setIncludes: setFilterIncludeTags,
+    setExcludes: setFilterExcludeTags,
+  });
+
   const props = {
     competenceReviewQueueProjects,
     pullRequestReviewQueueProjects,
@@ -57,6 +132,15 @@ function GlobalCodeReviewDashboardUnconnected({
 
     fetchNextCompetenceReviewQueuePage,
     fetchNextPullRequestQueuePage,
+
+    filterIncludeTags,
+    filterExcludeTags,
+
+    filterIncludeFlavours,
+    filterExcludeFlavours,
+
+    handleChangeFlavourFilter,
+    handleChangeTagFilter,
   };
   return <Presentation {...props} />;
 }
@@ -71,6 +155,7 @@ const mapStateToProps = (state) => {
       state.FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
     FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE:
       state.FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+    teams: state.apiEntities.teams,
   };
 };
 
@@ -91,6 +176,22 @@ const mapDispatchToProps = (dispatch) => {
             data: { page },
           }
         )
+      );
+    },
+
+    fetchTeamsPages: () => {
+      const data = { page: 1 };
+      dispatch(
+        apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStart({
+          data,
+
+          successDispatchActions: [
+            apiUtilitiesOperations.fetchAllPages({
+              API_BASE_TYPE: "FETCH_TEAMS_PAGE",
+              requestData: data,
+            }),
+          ],
+        })
       );
     },
   };

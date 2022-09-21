@@ -35,14 +35,12 @@ const useStyles = makeStyles((theme) => ({
     variant: "outlined",
     color: "default",
     size: "small",
-    
-    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
+    "@media (max-width:620px)": {
       fontSize: "0.7rem",
     },
   },
   title: {
-    
-    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
+    "@media (max-width:620px)": {
       fontSize: "1rem",
     },
   },

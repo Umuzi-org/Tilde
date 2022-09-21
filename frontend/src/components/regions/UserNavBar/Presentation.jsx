@@ -1,16 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-import { Typography, Toolbar, Tooltip } from "@material-ui/core";
-
-import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
-import { getUrl as getUserDasboardUrl } from "../../widgets/LinkToUserDashboard";
-import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
-
-import GitHubIcon from "@material-ui/icons/GitHub";
-import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Toolbar from "@material-ui/core/Toolbar";
+import Tooltip from "@material-ui/core/Tooltip";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import GitHubIcon from "@material-ui/icons/GitHub";
+import { makeStyles } from "@material-ui/core/styles";
+import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
+import { getUrl as getUserDashboardUrl } from "../../widgets/LinkToUserDashboard";
+import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
+import { getUrl as getUserReviewPerformanceUrl } from "../../widgets/LinkToUserReviewPerformance";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user, userId, value }) => {
+export default function Presentation({ user, userId, value }) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -53,10 +53,14 @@ export default ({ user, userId, value }) => {
         <Link to={getUserActionUrl({ userId })}>
           <Tab label="ACTIONS" />
         </Link>
-        <Link to={getUserDasboardUrl({ userId })}>
+        <Link to={getUserDashboardUrl({ userId })}>
           <Tab label="DASHBOARD" />
+        </Link>
+
+        <Link to={getUserReviewPerformanceUrl({ userId })}>
+          <Tab label="REVIEW PERFORMANCE" />
         </Link>
       </Tabs>
     </React.Fragment>
   );
-};
+}
