@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Typography, Button } from "@material-ui/core";
+import { Typography, Button, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
@@ -20,11 +20,14 @@ const useStyles = makeStyles((theme) => ({
   legend: {
     padding: theme.spacing(1),
   },
+  selectedFilter: {
+    backgroundColor: "green",
+  },
 }));
 
 export default ({ burnDownSnapshots }) => {
   const [metricFilter, setMetricFilter] = useState("");
-  console.log(burnDownSnapshots);
+  const [userFilter, setUserFilter] = useState([]);
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
@@ -32,6 +35,12 @@ export default ({ burnDownSnapshots }) => {
         .slice(0, 10))
   );
 
+  const users = [];
+  burnDownSnapshots.forEach((snapshot) => {
+    if (users.indexOf(snapshot.user) === -1) {
+      users.push(snapshot.user);
+    }
+  });
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -39,24 +48,66 @@ export default ({ burnDownSnapshots }) => {
         Burndown
       </Typography>
       <Typography variant="h6" component="h1">
-        Filter by:
-        <Button onClick={() => setMetricFilter("TotalCards")}>
+        Filter Metric:{" "}
+        <Button
+          onClick={() => setMetricFilter("TotalCards")}
+          variant="outlined"
+          className={
+            metricFilter === "TotalCards" ? classes.selectedFilter : ""
+          }
+        >
           Total Cards
         </Button>
-        <Button onClick={() => setMetricFilter("TotalProjects")}>
+        <Button
+          onClick={() => setMetricFilter("TotalProjects")}
+          variant="outlined"
+          className={
+            metricFilter === "TotalProjects" ? classes.selectedFilter : ""
+          }
+        >
           Total Projects
         </Button>
-        <Button onClick={() => setMetricFilter("CompletedCards")}>
+        <Button
+          onClick={() => setMetricFilter("CompletedCards")}
+          variant="outlined"
+          className={
+            metricFilter === "CompletedCards" ? classes.selectedFilter : ""
+          }
+        >
           Completed Cards
         </Button>
-        <Button onClick={() => setMetricFilter("CompletedProjects")}>
+        <Button
+          onClick={() => setMetricFilter("CompletedProjects")}
+          variant="outlined"
+          className={
+            metricFilter === "CompletedProjects" ? classes.selectedFilter : ""
+          }
+        >
           Completed Projects
         </Button>
-        <Button onClick={() => setMetricFilter("")}>
+        <Button onClick={() => setMetricFilter("")} variant="outlined">
           Clear Filter
         </Button>
       </Typography>
-      <ResponsiveContainer height={500} width="80%">
+      <Typography variant="h6" component="h2">
+        Filter by user:{" "}
+        {users.map((user) => (
+          <Button
+            key={user}
+            onClick={() => setUserFilter(user)}
+            variant="outlined"
+            className={
+              userFilter === user ? classes.selectedFilter : ""
+            }
+          >
+            {user}
+          </Button>
+        ))}
+        <Button onClick={() => setUserFilter("")} variant="outlined">
+          Clear Filter
+        </Button>
+      </Typography>
+      <ResponsiveContainer height={500} width="100%">
         <LineChart data={burnDownSnapshots}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="timestamp" interval="preserveEnd" />
