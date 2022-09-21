@@ -7,14 +7,20 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  fillerStyles: {
+  time: {
+    marginLeft: theme.spacing(2),
+  },
+  filler: {
     marginTop: theme.spacing(2),
   },
-  labelStyles: {
+  label: {
     marginBottom: theme.spacing(2),
+    marginLeft: theme.spacing(2),
   },
   title: {
     marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+
     ["@media (max-width:620px)"]: {
       fontSize: "1rem",
     },
@@ -33,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ActivityLog({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
   return (
-    <Paper>
+    <React.Fragment>
       {sortedTimestampArray.map((timestamp) => (
-        <>
+        <Paper>
           <Typography variant="h6" className={classes.dateTypography}>
             <TodayIcon className={classes.calendarIcon} />
             {new Date(timestamp).toDateString()}
@@ -44,15 +50,15 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
             <>
               {item.timestamp.substring(0, 10) === timestamp && (
                 <Paper colors={item.eventColor} timestamp={item.timestamp}>
-                  <p>
+                  <p className={classes.time}>
                     {new Date(item.timestamp).toTimeString().substring(0, 8)}
                   </p>
                   <Typography variant="h6" className={classes.title}>
                     {item.title}
                   </Typography>
-                  <Paper className={classes.fillerStyles}>
+                  <Paper className={classes.filler}>
                     <Chip
-                      className={classes.labelStyles}
+                      className={classes.label}
                       style={{ backgroundColor: item.eventColor }}
                       label={item.eventName}
                     />
@@ -61,8 +67,8 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
               )}
             </>
           ))}
-        </>
+        </Paper>
       ))}
-    </Paper>
+    </React.Fragment>
   );
 }
