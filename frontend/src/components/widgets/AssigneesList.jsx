@@ -9,13 +9,16 @@ export default function AssigneesList({ userNames, userIds }) {
   return (
     <Table size="small">
       <TableBody>
-        {userNames.map((name) => (
-          <TableRow key={userIds}>
-            <TableCell padding="none">
-              <UserAvatarLink email={name} userId={userIds} />
-            </TableCell>
-          </TableRow>
-        ))}
+        {userNames.map((name, index) => {
+          const userId = userIds[index];
+          return (
+            <TableRow key={userId}>
+              <TableCell padding="none">
+                <UserAvatarLink email={name} userId={userIds} />
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
