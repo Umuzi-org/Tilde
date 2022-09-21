@@ -15,8 +15,8 @@ function UserCodeReviewPerformanceUnconnected({
   pullRequestReviewsObject,
   competenceReviewsObject,
 
-  FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
-  FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+  //   FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,    // TODO: show loading spinners or progress bars
+  //   FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
 
   // mapDispatchToProps
   fetchCompetenceReviewQualityPage,
@@ -39,45 +39,9 @@ function UserCodeReviewPerformanceUnconnected({
   useEffect(() => {
     fetchCompetenceReviewQualityPage({ page: 1, startDate, endDate, user });
     fetchPullRequestQualitiesPage({ page: 1, startDate, endDate, user });
-  }, [datePageOffset]);
-
-  //   const competenceReviewQualityPageCall = getLatestMatchingCall({
-  //     callLog: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
-  //     requestData: { startDate, endDate },
-  //   });
-
-  //   useApiCallbacks({
-  //     lastCallEntry: competenceReviewQualityPageCall,
-  //     successResponseCallback: () => {
-  //       if (competenceReviewQualityPageCall.responseData.next) {
-  //         fetchCompetenceReviewQualityPage({
-  //           page: competenceReviewQualityPageCall.requestData.page + 1,
-  //           startDate,
-  //           endDate,
-  //           user,
-  //         });
-  //       }
-  //     },
-  //   });
-
-  //   const prReviewQualityPageCall = getLatestMatchingCall({
-  //     callLog: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
-  //     requestData: { startDate, endDate },
-  //   });
-
-  //   useApiCallbacks({
-  //     lastCallEntry: prReviewQualityPageCall,
-  //     successResponseCallback: () => {
-  //       if (prReviewQualityPageCall.responseData.next) {
-  //         fetchPullRequestQualitiesPage({
-  //           page: prReviewQualityPageCall.requestData.page + 1,
-  //           startDate,
-  //           endDate,
-  //           user,
-  //         });
-  //       }
-  //     },
-  //   });
+    // NOTE: that if se add startDate and endDate to the deps then we get into an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datePageOffset, user]);
 
   function handleClickPrevious() {
     setDatePageOffset(datePageOffset + 1);

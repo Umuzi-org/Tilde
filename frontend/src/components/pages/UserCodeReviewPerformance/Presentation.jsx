@@ -8,7 +8,6 @@ import {
   TableCell,
   Avatar,
   Tooltip,
-  TableHead,
   Chip,
 } from "@material-ui/core";
 import FlavourChips from "../../widgets/FlavourChips";
@@ -193,14 +192,6 @@ function Presentation({
         <ArrowRightIcon />
       </IconButton>
       <Table size="small">
-        {/* <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>competence reviews</TableCell>
-            <TableCell>pr reviews</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead> */}
         <TableBody>
           {Object.keys(grouped)
             .sort((a, b) => {
