@@ -32,7 +32,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TestFile({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
-  console.log(eventList);
+  const data = [eventList].map((data) => {
+    return data;
+  });
+  console.log(
+    data.map((d) => {
+      return d;
+    })
+  );
+
   return (
     <Paper>
       {sortedTimestampArray.map((timestamp) => (
@@ -43,7 +51,8 @@ export default function TestFile({ eventList, sortedTimestampArray }) {
           </Typography>
           {Object.keys(eventList).map((item) => (
             <>
-              {eventList[item].timestamp.substring(0, 10) === timestamp && (
+              {eventList[item].timestamp.substring(0, 10) ===
+                timestamp.substring(0, 10) && (
                 <Paper
                   colors={eventList[item].eventColor}
                   timestamp={eventList[item].timestamp}

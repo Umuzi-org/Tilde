@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Presentation({
   orderedDates,
+  orderedDates2,
   actionLogByDate,
   handleClickOpenProjectDetails,
   handleScroll,
@@ -52,7 +53,7 @@ export default function Presentation({
         <Grid>
           <TestFile
             eventList={activityLogEntries}
-            sortedTimestampArray={orderedDates}
+            sortedTimestampArray={orderedDates2}
           />
         </Grid>
       </Grid>

@@ -123,6 +123,7 @@ function UserActionsUnconnected({
     const timestamp = new Date(date);
     const dateStr =
       days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
+    console.log(dateStr);
 
     return {
       timestamp,
@@ -158,6 +159,13 @@ function UserActionsUnconnected({
   actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
   let orderedDates = [];
+  let orderedDates2 = [];
+
+  Object.keys(activityLogEntries).map((o) => {
+    const date = activityLogEntries[o].timestamp;
+    orderedDates2.push(date);
+  });
+  orderedDates2 = [...new Set(orderedDates2)];
 
   let actionLogByDate = {};
   actionLog.forEach((o) => {
@@ -166,10 +174,11 @@ function UserActionsUnconnected({
     actionLogByDate[date] = actionLogByDate[date] || [];
     actionLogByDate[date].push(o);
   });
-
+  console.log(orderedDates2);
   const props = {
     orderedDates,
-    // actionLogByDate,
+    orderedDates2,
+    actionLogByDate,
     eventTypes,
     activityLogEntries,
     anyLoading,
