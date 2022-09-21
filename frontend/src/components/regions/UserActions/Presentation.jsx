@@ -25,43 +25,58 @@ export default function Presentation({
   const classes = useStyles();
   return (
     <div
-    className={classes.column}
-    onScroll={handleScroll}
-    style={{ position: "relative" }}
-  >
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={4} lg={4}>
-        <Paper>
-          {orderedDates.map((date) => (
-            <DayLog
-              date={date}
-              key={date}
-              actions={actionLogByDate[date]}
-              handleClickOpenProjectDetails={handleClickOpenProjectDetails}
-            />
-          ))}
+      className={classes.column}
+      onScroll={handleScroll}
+      style={{ position: "relative" }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4} lg={4}>
+          <Paper>
+            {orderedDates.map((date) => (
+              <DayLog
+                date={date}
+                key={date}
+                actions={actionLogByDate[date]}
+                handleClickOpenProjectDetails={handleClickOpenProjectDetails}
+              />
+            ))}
 
-          {anyLoading && <Loading />}
-        </Paper>
-      </Grid>
-      <Grid item xs={12} md={6} lg={6}>
-        <div>
-        {currentUserBurndownStats && (
-            <Paper className={classes.paper}>
-              <UserBurnDownChart burnDownSnapshots={currentUserBurndownStats} />
+            {anyLoading && <Loading />}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <div>
+            {currentUserBurndownStats && (
+              <Paper
+                elevation="false"
+                style={{
+                  position: "fixed",
+                  width: "50%",
+                  paddingBottom: "50px",
+                  top: "5%",
+                }}
+              >
+                <UserBurnDownChart
+                  burnDownSnapshots={currentUserBurndownStats}
+                />
+              </Paper>
+            )}
+          </div>
+          <div>
+            <Paper
+              elevation="false"
+              style={{
+                position: "fixed",
+                top: "46%",
+                width: "100%",
+                paddingTop: "50px",
+              }}
+            >
+              <ActivityDashboardBarGraph />
             </Paper>
-        )}
-        </div>
-        <div>
-        <Paper
-          elevation="false"
-          style={{ position: "fixed", top: "46%", width: "100%" }}
-        >
-          <ActivityDashboardBarGraph />
-        </Paper>
-        </div>
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
-  </div>
+    </div>
   );
 }
