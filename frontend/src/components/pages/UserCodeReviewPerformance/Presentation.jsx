@@ -142,6 +142,7 @@ function Presentation({
   pullRequestReviews,
   startDate,
   endDate,
+  days,
 
   handleClickPrevious,
   handleClickNext,
@@ -187,7 +188,7 @@ function Presentation({
         <ArrowLeftIcon />
       </IconButton>
       {new Intl.DateTimeFormat().format(startDate)} -
-      {new Intl.DateTimeFormat().format(endDate)}
+      {new Intl.DateTimeFormat().format(endDate)} ({days} days)
       <IconButton aria-label="delete" size="big" onClick={handleClickNext}>
         <ArrowRightIcon />
       </IconButton>

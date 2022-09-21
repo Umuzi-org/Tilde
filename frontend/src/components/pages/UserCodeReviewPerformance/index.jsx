@@ -6,7 +6,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { useApiCallbacks } from "../../../hooks";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
-const PAGE_SIZE = 14;
+const PAGE_SIZE = 7;
 
 function UserCodeReviewPerformanceUnconnected({
   //   mapStateToProps
@@ -23,12 +23,13 @@ function UserCodeReviewPerformanceUnconnected({
   pullRequestReviewsObject = pullRequestReviewsObject || {};
   competenceReviewsObject = competenceReviewsObject || {};
 
-  const initialEndDate = new Date();
-  const initialStartDate = new Date();
-  initialStartDate.setDate(initialStartDate.getDate() - PAGE_SIZE);
+  const [datePageOffset, setDatePageOffset] = useState(0);
 
-  const [startDate, setStartDate] = useState(initialStartDate);
-  const [endDate, setEndDate] = useState(initialEndDate);
+  const startDate = new Date();
+  const endDate = new Date();
+
+  startDate.setDate(startDate.getDate() - (1 + datePageOffset) * PAGE_SIZE);
+  endDate.setDate(endDate.getDate() - datePageOffset * PAGE_SIZE);
 
   let urlParams = useParams() || {};
   const user = parseInt(urlParams.userId);
@@ -36,74 +37,63 @@ function UserCodeReviewPerformanceUnconnected({
   useEffect(() => {
     fetchCompetenceReviewQualityPage({ page: 1, startDate, endDate, user });
     fetchPullRequestQualitiesPage({ page: 1, startDate, endDate, user });
-  }, [startDate, endDate]);
+  }, [datePageOffset]);
 
-  const competenceReviewQualityPageCall = getLatestMatchingCall({
-    callLog: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
-    requestData: { startDate, endDate },
-  });
+  //   const competenceReviewQualityPageCall = getLatestMatchingCall({
+  //     callLog: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
+  //     requestData: { startDate, endDate },
+  //   });
 
-  useApiCallbacks({
-    lastCallEntry: competenceReviewQualityPageCall,
-    successResponseCallback: () => {
-      if (competenceReviewQualityPageCall.responseData.next) {
-        fetchCompetenceReviewQualityPage({
-          page: competenceReviewQualityPageCall.requestData.page + 1,
-          startDate,
-          endDate,
-          user,
-        });
-      }
-    },
-  });
+  //   useApiCallbacks({
+  //     lastCallEntry: competenceReviewQualityPageCall,
+  //     successResponseCallback: () => {
+  //       if (competenceReviewQualityPageCall.responseData.next) {
+  //         fetchCompetenceReviewQualityPage({
+  //           page: competenceReviewQualityPageCall.requestData.page + 1,
+  //           startDate,
+  //           endDate,
+  //           user,
+  //         });
+  //       }
+  //     },
+  //   });
 
-  const prReviewQualityPageCall = getLatestMatchingCall({
-    callLog: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
-    requestData: { startDate, endDate },
-  });
+  //   const prReviewQualityPageCall = getLatestMatchingCall({
+  //     callLog: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+  //     requestData: { startDate, endDate },
+  //   });
 
-  useApiCallbacks({
-    lastCallEntry: prReviewQualityPageCall,
-    successResponseCallback: () => {
-      if (prReviewQualityPageCall.responseData.next) {
-        fetchPullRequestQualitiesPage({
-          page: prReviewQualityPageCall.requestData.page + 1,
-          startDate,
-          endDate,
-          user,
-        });
-      }
-    },
-  });
-
-  function _shiftDates(days) {
-    const newStartDate = new Date();
-    const newEndDate = new Date();
-
-    newStartDate.setDate(startDate.getDate() + days);
-    setStartDate(newStartDate);
-
-    newEndDate.setDate(endDate.getDate() + days);
-    setEndDate(newEndDate);
-  }
+  //   useApiCallbacks({
+  //     lastCallEntry: prReviewQualityPageCall,
+  //     successResponseCallback: () => {
+  //       if (prReviewQualityPageCall.responseData.next) {
+  //         fetchPullRequestQualitiesPage({
+  //           page: prReviewQualityPageCall.requestData.page + 1,
+  //           startDate,
+  //           endDate,
+  //           user,
+  //         });
+  //       }
+  //     },
+  //   });
 
   function handleClickPrevious() {
-    _shiftDates(-PAGE_SIZE);
+    setDatePageOffset(datePageOffset + 1);
   }
 
   function handleClickNext() {
-    _shiftDates(+PAGE_SIZE);
+    setDatePageOffset(Math.max(datePageOffset - 1, 0));
   }
 
   const pullRequestReviews = Object.values(pullRequestReviewsObject)
     .filter((o) => new Date(o.submittedAt) <= endDate)
-    .filter((o) => new Date(o.submittedAt) >= startDate);
-  // TODO: filter by user
+    .filter((o) => new Date(o.submittedAt) >= startDate)
+    .filter((o) => o.user === user);
 
   const competenceReviews = Object.values(competenceReviewsObject)
     .filter((o) => new Date(o.timestamp) <= endDate)
-    .filter((o) => new Date(o.timestamp) >= startDate);
-  // TODO: filter by user
+    .filter((o) => new Date(o.timestamp) >= startDate)
+    .filter((o) => o.reviewerUser === user);
 
   const props = {
     pullRequestReviews,
@@ -111,6 +101,7 @@ function UserCodeReviewPerformanceUnconnected({
     competenceReviews,
     startDate,
     endDate,
+    days: PAGE_SIZE,
 
     handleClickPrevious,
     handleClickNext,
@@ -130,6 +121,7 @@ const mapStateToProps = (state) => {
     competenceReviewsObject: state.apiEntities.competenceReviewQualities,
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCompetenceReviewQualityPage: ({ page, startDate, endDate, user }) => {
