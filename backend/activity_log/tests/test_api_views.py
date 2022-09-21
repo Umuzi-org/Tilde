@@ -77,6 +77,14 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
 
+    def test_list_api_filter_by_timestamp_lte_gte(self):
+        url = f"{self.get_list_url()}?lte={self.entry_today_1.timestamp}&gte={self.entry_yesterday_1.timestamp}"
+        response = self.client.get(url)
+        self.assertEqual(len(response.data), 3)
+        self.assertEqual(response.data[0]["total"], 2)
+
+        
+
 
 class TestEventTypeViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "eventtype-list"
