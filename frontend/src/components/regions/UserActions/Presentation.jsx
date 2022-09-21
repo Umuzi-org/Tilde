@@ -5,7 +5,7 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
 import UserBurnDownChart from "./UserBurndownStats";
-// import ActivityLog from "./ActivityLog"; Activity LOg will be imported when merged
+import TestFile from "./TestFile";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -23,6 +23,7 @@ export default function Presentation({
   currentUserBurndownStats,
 }) {
   const classes = useStyles();
+  console.log("xx", "hello?");
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
@@ -47,6 +48,12 @@ export default function Presentation({
             {anyLoading && <Loading />}
           </Paper>
         </Grid>
+        {/* <Grid>
+          <TestFile
+            eventList={actionLogByDate}
+            sortedTimestampArray={orderedDates}
+          />
+        </Grid> */}
       </Grid>
     </div>
   );

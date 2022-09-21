@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ActivityLog({ eventList, sortedTimestampArray }) {
+export default function TestFile({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
   return (
     <Paper>
