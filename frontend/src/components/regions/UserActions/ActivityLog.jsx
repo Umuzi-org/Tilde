@@ -42,7 +42,7 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
           </Typography>
           {eventList.map((item) => (
             <>
-              {item.timestamp === timestamp && (
+              {item.timestamp.substring(0, 10) === timestamp && (
                 <Paper colors={item.eventColor} timestamp={item.timestamp}>
                   <Grid className={classes.fillerStyles}>
                     <Chip
@@ -55,7 +55,9 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
                         {item.title}
                       </Typography>
                       <p>
-                        {new Date(timestamp).toTimeString().substring(0, 8)}
+                        {new Date(item.timestamp)
+                          .toTimeString()
+                          .substring(0, 8)}
                       </p>
                     </Paper>
                   </Grid>
