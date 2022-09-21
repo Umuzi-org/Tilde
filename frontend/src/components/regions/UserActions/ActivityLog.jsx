@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   labelStyles: {
-    color: "black",
+    marginBottom: theme.spacing(2),
   },
   title: {
     marginTop: theme.spacing(2),
@@ -44,23 +44,19 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
             <>
               {item.timestamp.substring(0, 10) === timestamp && (
                 <Paper colors={item.eventColor} timestamp={item.timestamp}>
-                  <Grid className={classes.fillerStyles}>
+                  <p>
+                    {new Date(item.timestamp).toTimeString().substring(0, 8)}
+                  </p>
+                  <Typography variant="h6" className={classes.title}>
+                    {item.title}
+                  </Typography>
+                  <Paper className={classes.fillerStyles}>
                     <Chip
                       className={classes.labelStyles}
                       style={{ backgroundColor: item.eventColor }}
                       label={item.eventName}
                     />
-                    <Paper>
-                      <Typography variant="h6" className={classes.title}>
-                        {item.title}
-                      </Typography>
-                      <p>
-                        {new Date(item.timestamp)
-                          .toTimeString()
-                          .substring(0, 8)}
-                      </p>
-                    </Paper>
-                  </Grid>
+                  </Paper>
                 </Paper>
               )}
             </>
