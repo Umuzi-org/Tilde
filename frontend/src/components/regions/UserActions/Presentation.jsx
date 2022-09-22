@@ -21,6 +21,7 @@ export default function Presentation({
   handleScroll,
   anyLoading,
   currentUserBurndownStats,
+  activityLogDayCounts,
 }) {
   const classes = useStyles();
   return (
@@ -72,7 +73,9 @@ export default function Presentation({
                 paddingTop: "50px",
               }}
             >
-              <ActivityDashboardBarGraph />
+              <ActivityDashboardBarGraph
+                activityLogDayCounts={activityLogDayCounts}
+              />
             </Paper>
           </div>
         </Grid>

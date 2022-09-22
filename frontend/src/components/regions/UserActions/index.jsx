@@ -23,9 +23,10 @@ const days = [
 ];
 
 function UserActionsUnconnected({
-  page,
+  // page,
   actorUser,
-  effectedUser,
+  // effectedUser,
+  activityLogDayCounts,
   authedUserId,
   projectReviews,
   cardSummaries,
@@ -40,6 +41,7 @@ function UserActionsUnconnected({
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
   FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
 }) {
+  console.log(activityLogDayCounts);
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
@@ -58,16 +60,11 @@ function UserActionsUnconnected({
   useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
     fetchUserBurndownStats({ userId });
-    fetchActivityLogDayCountsPage({ actorUser, effectedUser, page });
-  }, [
-    fetchCardCompletions,
-    fetchUserBurndownStats,
-    userId,
-    fetchActivityLogDayCountsPage,
-    actorUser,
-    effectedUser,
-    page,
-  ]);
+  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
+
+  useEffect(() => {
+    fetchActivityLogDayCountsPage({ actorUser: userId, page: 1 });
+  }, [fetchActivityLogDayCountsPage, userId]);
 
   if (
     !userId ||
@@ -172,6 +169,7 @@ function UserActionsUnconnected({
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
+    activityLogDayCounts,
   };
   return <Presentation {...props} />;
 }
@@ -186,6 +184,7 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    activityLogDayCounts: state.apiEntities.activityLogDayCounts,
     FETCH_EVENT_TYPES: state.FETCH_EVENT_TYPES,
     FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE: state.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAG,
   };
@@ -220,10 +219,10 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    fetchActivityLogDayCountsPage: ({ actorUser, effectedUser, page }) => {
+    fetchActivityLogDayCountsPage: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.operations.start({
-          data: { actorUser, effectedUser, page },
+          data: { actorUser, page },
         })
       );
     },
