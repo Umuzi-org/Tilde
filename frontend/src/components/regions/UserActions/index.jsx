@@ -9,6 +9,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
+import { eventTypeColors } from "../../../colors";
 
 // TODO: look nice
 
@@ -21,6 +22,22 @@ const days = [
   "Friday",
   "Saturday",
 ];
+
+function mapData({ eventTypes, activityLogEntries }) {
+  eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
+  activityLogEntries = Object.keys(activityLogEntries).map(
+    (key) => activityLogEntries[key]
+  );
+  console.log(activityLogEntries);
+  const newData = activityLogEntries.map((item, index) => {
+    const data = eventTypes.find((elem) => elem.id === item.eventType);
+    return {
+      ...item,
+      eventName: data ? data.name : "",
+    };
+  });
+  return newData;
+}
 
 function UserActionsUnconnected({
   authedUserId,
@@ -64,6 +81,12 @@ function UserActionsUnconnected({
       page: 1,
     });
   }, [fetchActivityLogEntries, userId]);
+
+  useEffect(() => {
+    fetchEventTypes({
+      page: 1,
+    });
+  }, [fetchEventTypes]);
 
   if (
     !userId ||
@@ -123,7 +146,6 @@ function UserActionsUnconnected({
     const timestamp = new Date(date);
     const dateStr =
       days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
-    console.log(dateStr);
 
     return {
       timestamp,
@@ -174,7 +196,9 @@ function UserActionsUnconnected({
     actionLogByDate[date] = actionLogByDate[date] || [];
     actionLogByDate[date].push(o);
   });
-  console.log(orderedDates2);
+  console.log(eventTypes);
+  console.log(mapData({ eventTypes, activityLogEntries }));
+
   const props = {
     orderedDates,
     orderedDates2,
@@ -239,17 +263,17 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchEventTypes: ({ page }) => {
-      dispatch(
-        apiReduxApps.FETCH_EVENT_TYPES.operations.start({
-          data: { page },
-        })
-      );
-    },
     fetchActivityLogEntries: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
           data: { actorUser, page },
+        })
+      );
+    },
+    fetchEventTypes: ({ page }) => {
+      dispatch(
+        apiReduxApps.FETCH_EVENT_TYPES.operations.start({
+          data: { page },
         })
       );
     },

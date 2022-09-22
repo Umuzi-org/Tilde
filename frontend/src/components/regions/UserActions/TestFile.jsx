@@ -32,14 +32,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TestFile({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
-  const data = [eventList].map((data) => {
-    return data;
-  });
-  console.log(
-    data.map((d) => {
-      return d;
-    })
-  );
 
   return (
     <Paper>

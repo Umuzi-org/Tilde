@@ -25,7 +25,7 @@ export default function Presentation({
   activityLogEntries,
 }) {
   const classes = useStyles();
-  console.log(activityLogEntries);
+
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
