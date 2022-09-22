@@ -141,7 +141,7 @@ class TestPullRequestReview(APITestCase):
 
         url = reverse(views.github_webhook)
 
-        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+        RepositoryFactory(full_name=body["repository"]["full_name"])
 
         self.client.post(url, format="json", data=body, extra=headers)
 
