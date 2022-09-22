@@ -35,8 +35,6 @@ class Commit(models.Model, Mixins):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
-
     def __str__(self):
         ellipse = ""
         cutoff = 40
@@ -65,9 +63,8 @@ class PullRequest(models.Model, Mixins):
 
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
 
-    # user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
     class Meta:
         unique_together = [["repository", "number"]]
 
@@ -173,6 +170,8 @@ class Push(models.Model, Mixins):
     commit_timestamp = models.DateTimeField()
     pushed_at_time = models.DateTimeField()
     ref = models.CharField(max_length=255)
+
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = [["ref", "head_commit_url"]]

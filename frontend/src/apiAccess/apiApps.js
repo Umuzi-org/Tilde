@@ -65,6 +65,11 @@ const FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE =
 
 const FETCH_EVENT_TYPES = "FETCH_EVENT_TYPES";
 
+const FETCH_COMPETENCE_REVIEW_QUALITY_PAGE =
+  "FETCH_COMPETENCE_REVIEW_QUALITY_PAGE";
+const FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE =
+  "FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE";
+
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
     BASE_TYPE: WHO_AM_I,
@@ -352,11 +357,26 @@ export const apiReduxApps = {
     responseIsList: true,
     responseEntityType: "pullRequestReviewQueueProject",
   }),
+
   FETCH_EVENT_TYPES: createReduxApp({
     BASE_TYPE: FETCH_EVENT_TYPES,
     apiCaller: apiCallers.eventTypes,
     responseIsList: true,
     responseEntityType: "eventTypes",
+  }),
+
+  FETCH_COMPETENCE_REVIEW_QUALITY_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
+    apiCaller: apiCallers.competenceReviewQualitiesPage,
+    responseIsList: true,
+    responseEntityType: "competenceReviewQualities",
+  }),
+
+  FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+    apiCaller: apiCallers.pullRequestReviewQualitiesPage,
+    responseIsList: true,
+    responseEntityType: "pullRequestReviewQualities",
   }),
 };
 

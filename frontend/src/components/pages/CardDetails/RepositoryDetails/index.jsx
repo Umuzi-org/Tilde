@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
+
+import Loading from "../../../widgets/Loading";
 
 function toLocaleString(dateTimeString) {
   if (dateTimeString) {
@@ -19,18 +21,26 @@ function RepositoryDetailsUnconnected({
   commits,
   pullRequests,
 }) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (repositoryId) {
       fetchRepository({ repositoryId });
       // fetchCommits({ repositoryId });
       fetchPullRequests({ repositoryId });
     }
   }, [repositoryId, fetchRepository, fetchCommits, fetchPullRequests]);
-  const [tabValue, setTabValue] = React.useState(0);
+
+  const [tabValue, setTabValue] = useState(0);
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  if (
+    commits === undefined ||
+    repositories === undefined ||
+    pullRequests === undefined
+  )
+    return <Loading />;
 
   const repository = repositories[repositoryId];
   const currentCommits = Object.values(commits).filter(
@@ -61,18 +71,9 @@ function RepositoryDetailsUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    repositories:
-      state.apiEntities.repositories === undefined
-        ? {}
-        : state.apiEntities.repositories,
-    commits:
-      state.apiEntities.repoCommits === undefined
-        ? {}
-        : state.apiEntities.repoCommits,
-    pullRequests:
-      state.apiEntities.pullRequests === undefined
-        ? {}
-        : state.apiEntities.pullRequests,
+    repositories: state.apiEntities.repositories,
+    commits: state.apiEntities.repoCommits,
+    pullRequests: state.apiEntities.pullRequests,
   };
 };
 const mapDispatchToProps = (dispatch) => {

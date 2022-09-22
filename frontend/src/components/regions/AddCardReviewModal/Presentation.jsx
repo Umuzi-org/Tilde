@@ -107,7 +107,7 @@ export default function Presentation({
               <TextareaAutosize
                 className={classes.textArea}
                 aria-label="your comments"
-                minRows={5}
+                rowsMin={5}
                 placeholder="Your comments*"
                 {...comments}
               />

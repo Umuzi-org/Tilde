@@ -52,6 +52,11 @@ export default function Presentation({
 
   handleChangeFlavourFilter,
   handleChangeTagFilter,
+
+  teams,
+  allTeamNames,
+  filterIncludeAssigneeTeams,
+  handleChangeAssigneeTeamFilter,
 }) {
   const classes = useStyles();
 
@@ -104,6 +109,20 @@ export default function Presentation({
         if (project.flavourNames.includes(flavour)) return false;
       }
     }
+
+    if (filterIncludeAssigneeTeams.length) {
+      const includedUserIds = Object.values(teams)
+        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
+        .map((team) => team.members)
+        .flat()
+        .map((o) => o.userId);
+
+      const intersection = project.recruitUsers.filter((value) =>
+        includedUserIds.includes(value)
+      );
+      if (intersection.length === 0) return false;
+    }
+
     return true;
   }
 
@@ -127,6 +146,16 @@ export default function Presentation({
             filterInclude={filterIncludeTags}
             filterExclude={filterExcludeTags}
             onChange={handleChangeTagFilter}
+          />
+        </Paper>
+
+        <Typography variant="h6">Filter by assignee team</Typography>
+        <Paper>
+          <FilterByNames
+            allNames={allTeamNames}
+            filterInclude={filterIncludeAssigneeTeams}
+            filterExclude={[]}
+            onChange={handleChangeAssigneeTeamFilter}
           />
         </Paper>
       </Grid>
