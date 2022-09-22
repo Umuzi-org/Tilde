@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   fillerStyles: {
+    width: "100%",
     marginTop: theme.spacing(2),
   },
   labelStyles: {
@@ -57,7 +58,7 @@ export default function TestFile({ eventList, sortedTimestampArray }) {
                     />
                     <Paper>
                       <Typography variant="h6" className={classes.title}>
-                        {eventList[item].title}
+                        {eventList[item].cardName}
                       </Typography>
                       <p>
                         {new Date(eventList[item].timestamp)

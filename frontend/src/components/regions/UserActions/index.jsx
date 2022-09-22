@@ -22,18 +22,33 @@ const days = [
   "Friday",
   "Saturday",
 ];
-
-function mapData({ eventTypes, activityLogEntries }) {
+const matchEventTypesWithColors = ({ eventTypes, eventTypeColors }) => {
+  const arr = [];
   eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
+
+  eventTypes.forEach((eventType) => {
+    arr.push({
+      id: eventType.id,
+      eventName: eventType.name,
+      eventColor: eventTypeColors[eventType.name],
+    });
+  });
+  return arr;
+};
+
+function mapData({ eventTypesWithColors, activityLogEntries }) {
   activityLogEntries = Object.keys(activityLogEntries).map(
     (key) => activityLogEntries[key]
   );
-  console.log(activityLogEntries);
+
   const newData = activityLogEntries.map((item, index) => {
-    const data = eventTypes.find((elem) => elem.id === item.eventType);
+    const data = eventTypesWithColors.find(
+      (elem) => elem.id === item.eventType
+    );
     return {
       ...item,
-      eventName: data ? data.name : "",
+      eventName: data ? data.eventName : "",
+      eventColor: data ? data.eventColor : "",
     };
   });
   return newData;
@@ -196,8 +211,38 @@ function UserActionsUnconnected({
     actionLogByDate[date] = actionLogByDate[date] || [];
     actionLogByDate[date].push(o);
   });
-  console.log(eventTypes);
-  console.log(mapData({ eventTypes, activityLogEntries }));
+
+  const eventTypesWithColors = matchEventTypesWithColors({
+    eventTypes,
+    eventTypeColors,
+  });
+
+  activityLogEntries = mapData({ eventTypesWithColors, activityLogEntries });
+
+  function compare(activityLogEntries, actionLogByDate) {
+    const actions = Object.values(actionLogByDate);
+    let newData;
+    console.log(actionLogByDate);
+    actions.map((action) => {
+      newData = activityLogEntries.map((item, index) => {
+        const data = action.find(
+          (elem) =>
+            elem.timestamp.toString() !==
+            new Date(item.timestamp.toString()).toString()
+        );
+
+        const obj = {
+          ...item,
+          cardName: data ? data.title : "",
+        };
+
+        return obj;
+      });
+    });
+    return newData;
+  }
+
+  activityLogEntries = compare(activityLogEntries, actionLogByDate);
 
   const props = {
     orderedDates,
