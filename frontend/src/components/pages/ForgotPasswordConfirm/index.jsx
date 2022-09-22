@@ -1,15 +1,15 @@
-import React from "react";
+import React, {useState} from "react";
 
 import { connect } from "react-redux";
+
 import Presentation from "./Presentation.jsx";
-import { REST_AUTH_BASE_URL } from "../../../config";
-import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "@prelude/redux-api-toolbox/src/djRestAuth";
+import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { REST_AUTH_BASE_URL } from "../../../config";
 import { useApiCallbacks } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
 import { routes } from "../../../routes";
 
 function PasswordResetConfirmUnconnected({
@@ -23,9 +23,10 @@ function PasswordResetConfirmUnconnected({
     newPassword1: "",
     newPassword2: "",
   });
+
   const params = useParams();
   const navigate = useNavigate();
-
+  
   useApiCallbacks({
     lastCallEntry: lastCall,
     successResponseCallback: () => {

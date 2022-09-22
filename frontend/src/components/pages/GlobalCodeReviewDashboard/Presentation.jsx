@@ -49,39 +49,6 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-// function TimesTable({ project }) {
-//   const classes = useStyles();
-//   const nice = (dateTime) => {
-//     if (dateTime) {
-//       const date = new Date(Date.parse(dateTime));
-//       return new Intl.DateTimeFormat().format(date);
-//     }
-//   };
-
-//   return (
-//     <Table size="small">
-//       <TableBody>
-//         <TableRow className={classes.row}>
-//           <TableCell>Start time</TableCell>
-//           <TableCell>{nice(project.startTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Due time</TableCell>
-//           <TableCell>{nice(project.dueTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Review Request time</TableCell>
-//           <TableCell>{nice(project.reviewRequestTime)}</TableCell>
-//         </TableRow>
-//         <TableRow className={classes.row}>
-//           <TableCell>Oldest PR update time</TableCell>
-//           <TableCell>{nice(project.oldestOpenPrUpdatedTime)}</TableCell>
-//         </TableRow>
-//       </TableBody>
-//     </Table>
-//   );
-// }
-
 function BaseReviewQueueEntry({ project, showAllocatedReviewers }) {
   const classes = useStyles();
   return (
@@ -154,7 +121,7 @@ function FilterByNames({ allNames, filterInclude, filterExclude, onChange }) {
   return (
     <React.Fragment>
       {allNames.map((name) => (
-        <FormGroup>
+        <FormGroup key={name}>
           <FormControlLabel
             control={
               <Switch
@@ -190,6 +157,11 @@ function Presentation({
 
   handleChangeFlavourFilter,
   handleChangeTagFilter,
+
+  teams,
+  allTeamNames,
+  filterIncludeAssigneeTeams,
+  handleChangeAssigneeTeamFilter,
 }) {
   const classes = useStyles();
 
@@ -242,6 +214,20 @@ function Presentation({
         if (project.flavourNames.includes(flavour)) return false;
       }
     }
+
+    if (filterIncludeAssigneeTeams.length) {
+      const includedUserIds = Object.values(teams)
+        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
+        .map((team) => team.members)
+        .flat()
+        .map((o) => o.userId);
+
+      const intersection = project.recruitUsers.filter((value) =>
+        includedUserIds.includes(value)
+      );
+      if (intersection.length === 0) return false;
+    }
+
     return true;
   }
 
@@ -267,6 +253,16 @@ function Presentation({
             onChange={handleChangeTagFilter}
           />
         </Paper>
+
+        <Typography variant="h6">Filter by assignee team</Typography>
+        <Paper>
+          <FilterByNames
+            allNames={allTeamNames}
+            filterInclude={filterIncludeAssigneeTeams}
+            filterExclude={[]}
+            onChange={handleChangeAssigneeTeamFilter}
+          />
+        </Paper>
       </Grid>
       <Grid item sx={3}>
         {/* TODO center headings*/}
@@ -280,7 +276,10 @@ function Presentation({
               new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
           )
           .map((project) => (
-            <CompetenceReviewQueueEntry project={project} />
+            <CompetenceReviewQueueEntry
+              project={project}
+              key={`comp_${project.id}`}
+            />
           ))}
 
         <Paper elevation={3} className={classes.project} variant="outlined">
@@ -302,11 +301,14 @@ function Presentation({
           .filter(applyFilters)
           .sort(
             (a, b) =>
-              new Date(b.oldestOpenPrUpdatedTime) -
-              new Date(a.oldestOpenPrUpdatedTime)
+              new Date(a.oldestOpenPrUpdatedTime) -
+              new Date(b.oldestOpenPrUpdatedTime)
           )
           .map((project) => (
-            <PullRequestReviewQueueEntry project={project} />
+            <PullRequestReviewQueueEntry
+              project={project}
+              key={`pr_${project.id}`}
+            />
           ))}
 
         <Paper elevation={3} className={classes.project} variant="outlined">

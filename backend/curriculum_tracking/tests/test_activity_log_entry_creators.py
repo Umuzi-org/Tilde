@@ -29,6 +29,7 @@ from curriculum_tracking.tests.factories import (
     TopicProgressFactory,
 )
 import mock
+from django.utils import timezone
 
 
 class log_project_competence_review_done_Tests(TestCase):
@@ -178,6 +179,9 @@ class log_multiple_project_competence_review_done_Tests(APITestCase, APITestCase
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
+        project = card.recruit_project
+        project.review_request_time = timezone.now() - timezone.timedelta(days=1)
+        project.save()
         self.login(actor_user)
 
         add_review_url = f"{self.get_instance_url(card.id)}add_review/"
@@ -210,7 +214,8 @@ class log_multiple_project_competence_review_done_Tests(APITestCase, APITestCase
             card_to_complete_entry.event_type.name, creators.CARD_MOVED_TO_COMPLETE
         )
         self.assertEqual(
-            card_to_complete_entry.object_1, card.recruit_project,
+            card_to_complete_entry.object_1,
+            card.recruit_project,
         )
         self.assertEqual(card_to_complete_entry.object_2, None)
 
