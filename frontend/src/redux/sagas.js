@@ -15,6 +15,7 @@ import { addCardReviewSagas } from "../components/regions/AddCardReviewModal/red
 
 import { apiReduxWatchers as coreApiReduxWatchers } from "@prelude/redux-api-toolbox/src/djRestAuth";
 import { utilitySagas } from "@prelude/redux-api-toolbox/src/utilities";
+import { apiUtilitiesSagas } from "../apiAccess/redux";
 
 export function* rootSaga() {
   yield all([
@@ -28,5 +29,6 @@ export function* rootSaga() {
     // ...markSingleCardWorkshopAttendanceSagas,
     ...coreApiReduxWatchers,
     ...utilitySagas,
+    ...apiUtilitiesSagas,
   ]);
 }

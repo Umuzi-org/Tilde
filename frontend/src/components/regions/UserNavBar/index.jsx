@@ -25,6 +25,7 @@ function UserNavBarUnconnected({ fetchUser, users, authUserId }) {
   const userBoardSelected = url.endsWith("/board"); // these match the urls in routes.js. Could be more DRY
   const userActionsSelected = url.endsWith("/actions");
   const userDashboardSelected = url.endsWith("/dashboard");
+  const userCodeReviewPerformanceSelected = url.endsWith("/review_performance");
 
   let value;
   if (userBoardSelected) {
@@ -35,6 +36,9 @@ function UserNavBarUnconnected({ fetchUser, users, authUserId }) {
   }
   if (userDashboardSelected) {
     value = 2;
+  }
+  if (userCodeReviewPerformanceSelected) {
+    value = 3;
   }
   const props = {
     userId,
