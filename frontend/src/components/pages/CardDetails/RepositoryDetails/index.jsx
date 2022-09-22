@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
 
-import Loading from "../../../widgets/Loading";
-
 function toLocaleString(dateTimeString) {
   if (dateTimeString) {
     const timestamp = new Date(dateTimeString);
@@ -16,18 +14,18 @@ function RepositoryDetailsUnconnected({
   repositoryId,
   repositories,
   fetchRepository,
-  fetchCommits,
   fetchPullRequests,
-  commits,
   pullRequests,
 }) {
+  repositories = repositories || {};
+  pullRequests = pullRequests || {};
+
   useEffect(() => {
     if (repositoryId) {
       fetchRepository({ repositoryId });
-      // fetchCommits({ repositoryId });
       fetchPullRequests({ repositoryId });
     }
-  }, [repositoryId, fetchRepository, fetchCommits, fetchPullRequests]);
+  }, [repositoryId, fetchRepository, fetchPullRequests]);
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -35,17 +33,8 @@ function RepositoryDetailsUnconnected({
     setTabValue(newValue);
   };
 
-  if (
-    commits === undefined ||
-    repositories === undefined ||
-    pullRequests === undefined
-  )
-    return <Loading />;
-
   const repository = repositories[repositoryId];
-  const currentCommits = Object.values(commits).filter(
-    (commit) => commit.repository === repositoryId
-  );
+
   const currentPullRequests = Object.values(pullRequests)
     .filter((pr) => pr.repository === repositoryId)
     .map((pr) => {
@@ -60,7 +49,6 @@ function RepositoryDetailsUnconnected({
 
   const props = {
     repository,
-    currentCommits,
     currentPullRequests,
     tabValue,
     handleChangeTab,
@@ -72,7 +60,6 @@ function RepositoryDetailsUnconnected({
 const mapStateToProps = (state) => {
   return {
     repositories: state.apiEntities.repositories,
-    commits: state.apiEntities.repoCommits,
     pullRequests: state.apiEntities.pullRequests,
   };
 };
@@ -85,13 +72,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchCommits: ({ repositoryId }) => {
-      dispatch(
-        apiReduxApps.FETCH_COMMITS_PAGE.operations.maybeStart({
-          data: { repositoryId, page: 1 },
-        })
-      );
-    },
+
     fetchPullRequests: ({ repositoryId }) => {
       dispatch(
         apiReduxApps.FETCH_PULL_REQUESTS_PAGE.operations.maybeStart({
