@@ -288,6 +288,8 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "repo_url",
             "users_that_reviewed_since_last_review_request",
             "users_that_reviewed_since_last_review_request_emails",
+            "users_that_reviewed_open_prs",
+            "users_that_reviewed_open_prs_emails",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
@@ -300,6 +302,13 @@ class AgileCardSerializer(serializers.ModelSerializer):
         )
     )
 
+    users_that_reviewed_open_prs = serializers.SerializerMethodField(
+        "get_users_that_reviewed_open_prs"
+    )
+    users_that_reviewed_open_prs_emails = serializers.SerializerMethodField(
+        "get_users_that_reviewed_open_prs_emails"
+    )
+
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [
             o.email
@@ -310,6 +319,12 @@ class AgileCardSerializer(serializers.ModelSerializer):
         return [
             o.id for o in instance.get_users_that_reviewed_since_last_review_request()
         ]
+
+    def get_users_that_reviewed_open_prs(self, instance):
+        return [o.id for o in instance.get_users_that_reviewed_open_prs()]
+
+    def get_users_that_reviewed_open_prs_emails(self, instance):
+        return [o.email for o in instance.get_users_that_reviewed_open_prs()]
 
 
 class CardSummarySerializer(serializers.ModelSerializer):

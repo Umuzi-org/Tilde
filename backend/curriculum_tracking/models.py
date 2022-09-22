@@ -830,7 +830,7 @@ class RecruitProjectReview(models.Model, Mixins):
             reviews.filter(timestamp__gte=last_review_request_time)
             if last_review_request_time
             else reviews
-        )
+        ).exclude(reviewer_user=self.reviewer_user)
 
         for review in recent_reviews:
             if review.id != self.id:
@@ -871,6 +871,10 @@ class RecruitProjectReview(models.Model, Mixins):
 
     def _update_validated_from(self, other):
         """other is a review that happened after self"""
+
+        if other.reviewer_user == self.reviewer_user:
+            # otherwise people can mark their own stuff as complete
+            return
 
         # sanity checks
         assert self.timestamp < other.timestamp
@@ -1476,17 +1480,19 @@ class AgileCard(
 
         return [review.reviewer_user for review in reviews]
 
+    def get_users_that_reviewed_open_prs(self):
 
-# class ExtraTeamConfig(models.Model, Mixins):
-#     team = models.ForeignKey(Team,on_delete=models.CASCADE)
-#     pr_is_high_priority_if_older_than = models.DurationField(null=True, blank=True)
-#     pr_medium_priority_if_older_than = models.DurationField(null=True, blank=True)
-#     card_review_is_high_priority_if_older_than = models.DurationField(
-#         null=True, blank=True
-#     )
-#     card_review_medium_priority_if_older_than = models.DurationField(
-#         null=True, blank=True
-#     )
+        reviews = (
+            git_models.PullRequestReview.objects.filter(
+                pull_request__repository__recruit_projects__agile_card=self
+            )
+            .filter(pull_request__state=git_models.PullRequest.OPEN)
+            .filter(user__isnull=False)
+        )
+
+        return [review.user for review in reviews]
+
+
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
     timestamp = models.DateTimeField(auto_now_add=True)

@@ -294,6 +294,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "can_force_start",
         "project_link_submission",
         # "open_pr_count",
+        "users_that_reviewed_open_prs",
+        "users_that_reviewed_open_prs_emails",
     ]
 
     def verbose_instance_factory(self):
