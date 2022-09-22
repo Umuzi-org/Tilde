@@ -23,6 +23,9 @@ const days = [
 ];
 
 function UserActionsUnconnected({
+  page,
+  actorUser,
+  effectedUser,
   authedUserId,
   projectReviews,
   cardSummaries,
@@ -55,7 +58,16 @@ function UserActionsUnconnected({
   useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
     fetchUserBurndownStats({ userId });
-  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
+    fetchActivityLogDayCountsPage({ actorUser, effectedUser, page });
+  }, [
+    fetchCardCompletions,
+    fetchUserBurndownStats,
+    userId,
+    fetchActivityLogDayCountsPage,
+    actorUser,
+    effectedUser,
+    page,
+  ]);
 
   if (
     !userId ||
