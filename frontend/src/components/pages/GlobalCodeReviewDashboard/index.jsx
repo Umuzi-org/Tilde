@@ -41,7 +41,9 @@ function GlobalCodeReviewDashboardUnconnected({
   const [filterIncludeFlavours, setFilterIncludeFlavours] = useState([]);
   const [filterExcludeFlavours, setFilterExcludeFlavours] = useState([]);
 
-  // const [filterAssigneeTeam, setFilterAssigneeTeam] = useState([])
+  const [filterIncludeAssigneeTeams, setFilterIncludeAssigneeTeams] = useState(
+    []
+  );
 
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
@@ -85,6 +87,7 @@ function GlobalCodeReviewDashboardUnconnected({
     setIncludes,
     setExcludes,
   }) {
+    excludes = excludes || [];
     function handleChangeFlavourFilter(name) {
       function handle() {
         if (includes.includes(name)) {
@@ -93,7 +96,7 @@ function GlobalCodeReviewDashboardUnconnected({
             name,
           });
           setIncludes([...newFilterIncludes]);
-          setExcludes([...excludes, name]);
+          if (setExcludes) setExcludes([...excludes, name]);
         } else if (excludes.includes(name)) {
           const newFilterExcludes = removeNameFromArray({
             array: excludes,
@@ -123,6 +126,17 @@ function GlobalCodeReviewDashboardUnconnected({
     setExcludes: setFilterExcludeTags,
   });
 
+  const handleChangeAssigneeTeamFilter = handleChangeFilter({
+    includes: filterIncludeAssigneeTeams,
+    // excludes: [],
+    setIncludes: setFilterIncludeAssigneeTeams,
+    // setExcludes:
+  });
+
+  const allTeamNames = Object.values(teams)
+    .map((o) => o.name)
+    .sort();
+
   const props = {
     competenceReviewQueueProjects,
     pullRequestReviewQueueProjects,
@@ -141,6 +155,11 @@ function GlobalCodeReviewDashboardUnconnected({
 
     handleChangeFlavourFilter,
     handleChangeTagFilter,
+
+    teams,
+    allTeamNames,
+    filterIncludeAssigneeTeams,
+    handleChangeAssigneeTeamFilter,
   };
   return <Presentation {...props} />;
 }

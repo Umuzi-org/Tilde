@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
-import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
+// import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
@@ -73,40 +73,46 @@ function UsersAndGroupsUnconnected({
   fetchTeamsPages,
   fetchTeamSummaryStatsPages,
 }) {
-  const [
-    // formState,
-    { filterByGroup, filterByUser },
-    // formErrors,
-    // dataFromState,
-  ] = useMaterialUiFormState({
-    filterByGroup: {},
-    filterByUser: {},
-  });
-
   const [filterUsersByGroupName, setFilterUsersByGroupName] = React.useState(
     ""
   );
+
+  const [filterFormValues, setFilterFormValues] = React.useState({
+    team: "",
+    user: "",
+  });
 
   const handleUserGroupClick = (name) => {
     if (name === filterUsersByGroupName) setFilterUsersByGroupName("");
     else setFilterUsersByGroupName(name);
   };
 
+  function handleChangeFilterFormInput(name) {
+    function handler(event) {
+      setFilterFormValues({
+        ...filterFormValues,
+        [name]: event.target.value,
+      });
+    }
+    return handler;
+  }
+
   const props = {
     teams: cleanAndFilterTeams({
       teams,
-      filterBy: filterByGroup.value,
+      filterBy: filterFormValues.team,
     }),
     users: cleanAndFilterUsers(
       teams,
-      filterByUser.value,
+      filterFormValues.user,
       filterUsersByGroupName
     ),
     teamSummaryStats,
-    filterByGroup,
-    filterByUser,
+
     filterUsersByGroupName,
     handleUserGroupClick,
+    filterFormValues,
+    handleChangeFilterFormInput,
   };
 
   React.useEffect(() => {
