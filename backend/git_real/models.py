@@ -4,13 +4,10 @@ from core.models import User
 from git_real.helpers import (
     strp_github_standard_time,
     github_timestamp_int_to_tz_aware_datetime,
+    get_user_from_github_name,
 )
 
 from django.core.exceptions import MultipleObjectsReturned
-
-
-def get_user_from_github_name(github_name):
-    return User.objects.filter(social_profile__github_name__iexact=github_name).first()
 
 
 class Repository(models.Model, Mixins):

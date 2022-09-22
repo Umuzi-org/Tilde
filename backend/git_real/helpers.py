@@ -1,5 +1,4 @@
 import base64
-from urllib.error import HTTPError
 from social_auth.github_api import Api
 from git_real import models
 from git_real.constants import GITHUB_DATETIME_FORMAT, GITHUB_DEFAULT_TIMEZONE
@@ -9,6 +8,7 @@ from timezone_helpers import (
 )
 from django.http import Http404
 import requests
+from core.models import User
 
 
 def github_timestamp_int_to_tz_aware_datetime(timestamp):
@@ -217,3 +217,7 @@ def github_user_exists(github_name):
             )
 
     return inner()
+
+
+def get_user_from_github_name(github_name):
+    return User.objects.filter(social_profile__github_name__iexact=github_name).first()
