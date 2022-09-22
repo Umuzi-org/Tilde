@@ -1,5 +1,4 @@
 from django.forms import CharField
-import core.models
 from git_real.models import PullRequest, PullRequestReview
 from . import models
 from rest_framework import serializers
@@ -9,6 +8,7 @@ from datetime import timedelta
 from django.utils import timezone
 from config.models import NameSpace
 from taggit.models import Tag
+from git_real import models as git_models
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -56,7 +56,111 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "flavours",
         ]
 
-    flavours = serializers.CharField(help_text="comma seperated list of flavours")
+    flavours = serializers.CharField(help_text="comma separated list of flavours")
+
+
+class PullRequestReviewQualitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = git_models.PullRequestReview
+        fields = [
+            "id",
+            "state",
+            "submitted_at",
+            "flavour_names",
+            "content_item",
+            "title",
+            "content_item_agile_weight",
+            "agile_card",
+            "user",
+        ]
+
+    agile_card = serializers.SerializerMethodField("get_agile_card")
+    flavour_names = serializers.SerializerMethodField("get_flavour_names")
+    content_item = serializers.SerializerMethodField("get_content_item")
+    title = serializers.SerializerMethodField("get_title")
+    content_item_agile_weight = serializers.SerializerMethodField(
+        "get_content_item_agile_weight"
+    )
+
+    def get_project(self, instance):
+        return instance.pull_request.repository.recruit_projects.order_by("id").last()
+
+    def get_agile_card(self, instance):
+        project = self.get_project(instance)
+        try:
+            card = project.agile_card
+        except models.AgileCard.DoesNotExist:
+            return None
+
+        return card.id
+
+    def get_flavour_names(self, instance):
+        return self.get_project(instance).flavour_names
+
+    def get_title(self, instance):
+        return self.get_project(instance).content_item.title
+
+    def get_content_item(self, instance):
+        return self.get_project(instance).content_item.id
+
+    def get_content_item_agile_weight(self, instance):
+        project = instance.pull_request.repository.recruit_projects.order_by(
+            "id"
+        ).last()
+        weights = project.content_item.agile_weights.all()
+        flavour_names = project.flavour_names
+        for weight in weights:
+            if weight.flavours_match(flavour_names):
+                return weight.weight
+
+
+class RecruitProjectReviewQualitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruitProjectReview
+        fields = [
+            "id",
+            "flavour_names",
+            "content_item",
+            "title",
+            "trusted",
+            "validated",
+            "agile_card",
+            "status",
+            "timestamp",
+            "reviewer_user",
+            "content_item_agile_weight",
+            "complete_review_cycle",
+        ]
+
+    agile_card = serializers.SerializerMethodField("get_agile_card")
+    flavour_names = serializers.SerializerMethodField("get_flavour_names")
+    content_item = serializers.SerializerMethodField("get_content_item")
+    title = serializers.SerializerMethodField("get_title")
+    content_item_agile_weight = serializers.SerializerMethodField(
+        "get_content_item_agile_weight"
+    )
+
+    def get_flavour_names(self, instance):
+        return instance.recruit_project.flavour_names
+
+    def get_content_item(self, instance):
+        return instance.recruit_project.content_item.id
+
+    def get_agile_card(self, instance):
+        try:
+            return instance.recruit_project.agile_card.id
+        except models.AgileCard.DoesNotExist:
+            return
+
+    def get_title(self, instance):
+        return instance.recruit_project.content_item.title
+
+    def get_content_item_agile_weight(self, instance):
+        weights = instance.recruit_project.content_item.agile_weights.all()
+        flavour_names = instance.recruit_project.flavour_names
+        for weight in weights:
+            if weight.flavours_match(flavour_names):
+                return weight.weight
 
 
 class RecruitProjectReviewSerializer(serializers.ModelSerializer):

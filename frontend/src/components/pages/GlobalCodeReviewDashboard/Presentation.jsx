@@ -302,8 +302,8 @@ function Presentation({
           .filter(applyFilters)
           .sort(
             (a, b) =>
-              new Date(b.oldestOpenPrUpdatedTime) -
-              new Date(a.oldestOpenPrUpdatedTime)
+              new Date(a.oldestOpenPrUpdatedTime) -
+              new Date(b.oldestOpenPrUpdatedTime)
           )
           .map((project) => (
             <PullRequestReviewQueueEntry project={project} />

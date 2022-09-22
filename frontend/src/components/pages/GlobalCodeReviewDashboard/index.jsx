@@ -3,6 +3,8 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { apiUtilitiesOperations } from "../../../apiAccess/redux";
+
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { useState } from "react";
 
@@ -21,12 +23,16 @@ function GlobalCodeReviewDashboardUnconnected({
   pullRequestReviewQueueProjectsObject,
   FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
   FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+  teams,
 
   // mapDispatchToProps
 
   fetchCompetenceReviewQueuePage,
   fetchPullRequestReviewQueuePage,
+  fetchTeamsPages,
 }) {
+  teams = teams || {};
+
   const [filterIncludeTags, setFilterIncludeTags] = useState([]);
   const [filterExcludeTags, setFilterExcludeTags] = useState([
     "technical-assessment",
@@ -35,10 +41,17 @@ function GlobalCodeReviewDashboardUnconnected({
   const [filterIncludeFlavours, setFilterIncludeFlavours] = useState([]);
   const [filterExcludeFlavours, setFilterExcludeFlavours] = useState([]);
 
+  // const [filterAssigneeTeam, setFilterAssigneeTeam] = useState([])
+
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
     fetchPullRequestReviewQueuePage({ page: 1 });
-  }, [fetchCompetenceReviewQueuePage, fetchPullRequestReviewQueuePage]);
+    fetchTeamsPages();
+  }, [
+    fetchCompetenceReviewQueuePage,
+    fetchPullRequestReviewQueuePage,
+    fetchTeamsPages,
+  ]);
 
   const fetchCompetenceReviewQueueLastCall = getLatestMatchingCall({
     callLog: FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
@@ -142,6 +155,7 @@ const mapStateToProps = (state) => {
       state.FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
     FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE:
       state.FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+    teams: state.apiEntities.teams,
   };
 };
 
@@ -162,6 +176,22 @@ const mapDispatchToProps = (dispatch) => {
             data: { page },
           }
         )
+      );
+    },
+
+    fetchTeamsPages: () => {
+      const data = { page: 1 };
+      dispatch(
+        apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStart({
+          data,
+
+          successDispatchActions: [
+            apiUtilitiesOperations.fetchAllPages({
+              API_BASE_TYPE: "FETCH_TEAMS_PAGE",
+              requestData: data,
+            }),
+          ],
+        })
       );
     },
   };
