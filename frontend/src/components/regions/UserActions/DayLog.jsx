@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
   },
   dateTypography: {
     marginTop: theme.spacing(2),
-    ["@media (max-width:620px)"]: {// eslint-disable-line no-useless-computed-key
+    ["@media (max-width:620px)"]: {
+      // eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
     },
   },
@@ -27,6 +28,7 @@ export default function DayLog({
   handleClickOpenProjectDetails,
 }) {
   const classes = useStyles();
+  console.log(actions);
   return (
     <React.Fragment>
       <Paper>

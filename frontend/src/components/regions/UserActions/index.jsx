@@ -200,8 +200,9 @@ function UserActionsUnconnected({
 
   Object.keys(activityLogEntries).map((o) => {
     const date = activityLogEntries[o].timestamp;
-    orderedDates2.push(date);
+    orderedDates2.push(date.substring(0, 10));
   });
+
   orderedDates2 = [...new Set(orderedDates2)];
 
   let actionLogByDate = {};
@@ -218,31 +219,6 @@ function UserActionsUnconnected({
   });
 
   activityLogEntries = mapData({ eventTypesWithColors, activityLogEntries });
-
-  function compare(activityLogEntries, actionLogByDate) {
-    const actions = Object.values(actionLogByDate);
-    let newData;
-    console.log(actionLogByDate);
-    actions.map((action) => {
-      newData = activityLogEntries.map((item, index) => {
-        const data = action.find(
-          (elem) =>
-            elem.timestamp.toString() !==
-            new Date(item.timestamp.toString()).toString()
-        );
-
-        const obj = {
-          ...item,
-          cardName: data ? data.title : "",
-        };
-
-        return obj;
-      });
-    });
-    return newData;
-  }
-
-  activityLogEntries = compare(activityLogEntries, actionLogByDate);
 
   const props = {
     orderedDates,

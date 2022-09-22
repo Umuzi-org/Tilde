@@ -37,7 +37,7 @@ export default function Presentation({
           </Grid>
         )}
         <Grid item xs={12}>
-          {/* <Paper>
+          <Paper>
             {orderedDates.map((date) => (
               <DayLog
                 date={date}
@@ -48,7 +48,7 @@ export default function Presentation({
             ))}
 
             {anyLoading && <Loading />}
-          </Paper> */}
+          </Paper>
         </Grid>
         <Grid>
           <TestFile
