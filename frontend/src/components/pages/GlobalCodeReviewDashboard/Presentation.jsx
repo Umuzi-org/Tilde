@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => {
       top: -5,
       padding: "10px 0px",
       backgroundColor: theme.palette.background.default,
+      zIndex: 2,
     },
   };
 });
