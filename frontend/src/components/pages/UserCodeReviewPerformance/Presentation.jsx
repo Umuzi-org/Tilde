@@ -110,7 +110,7 @@ function Presentation({
                   <PullRequestReview
                     review={{
                       id: 54897,
-                      state: "CHANGES_REQUESTED",
+                      state: "changes_requested",
                       submittedAt: "2022-01-20T07:51:27Z",
                       flavourNames: ["javascript"],
                       contentItem: 225,
