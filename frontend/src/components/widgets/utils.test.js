@@ -1,4 +1,4 @@
-import { getAgeString } from "./utils";
+import { getAgeString, repoUrlCleaner } from "./utils";
 
 test("getAgeString function doesn't break if null date", () => {
   expect(getAgeString(null)).toBe("");
@@ -39,4 +39,20 @@ test("getAgeString function returns correct string when age is less than a minut
   const today = new Date();
   const date = today.setSeconds(today.getSeconds() - 15);
   expect(getAgeString(date)).toBe("just now");
+});
+
+// repoUrlCleaner tests
+test("git repo url should be cleaned to link to the pull request index on github", () => {
+  const gitRepo =
+    "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git";
+  expect(repoUrlCleaner(gitRepo)).toBe(
+    "https://github.com/Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python/pulls"
+  );
+});
+
+test("git repo should not be only restricted to Umuz owned repositories", () => {
+  const gitRepo = "git@github.com:Sbonelo01/personal-portfolio.git";
+  expect(repoUrlCleaner(gitRepo)).toBe(
+    "https://github.com/Sbonelo01/personal-portfolio/pulls"
+  );
 });
