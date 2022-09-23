@@ -112,9 +112,9 @@ class PullRequestReview(models.Model, Mixins):
         (CONTRADICTED, "contradicted"),
     ]
 
-    NEGATIVE_STATES = ["dismissed", "changes_requested"]
+    NEGATIVE_STATES = ["changes_requested"]
     POSITIVE_STATES = ["approved"]
-    NEUTRAL_STATES = ["commented"]
+    NEUTRAL_STATES = ["commented", "dismissed"]
 
     html_url = models.CharField(max_length=255, unique=True)
     pull_request = models.ForeignKey(
