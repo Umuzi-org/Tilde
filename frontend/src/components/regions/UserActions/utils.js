@@ -4,7 +4,7 @@ export function updateBurnDownSnapshots({
 }) {
   const datesArray = [];
   //console.log(datesArray);
-
+  //console.log(burnDownSnapshots);
   burnDownSnapshots.forEach((burnDownSnapshot) => {
     datesArray.push(burnDownSnapshot.timestamp);
   });
@@ -15,13 +15,15 @@ export function updateBurnDownSnapshots({
   const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
   const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
   const allDatesArr = [];
-
+  //console.log(allDatesArr);
   while (firstDate <= lastDate) {
     allDatesArr.push(new Date(firstDate).toISOString().split("T")[0]);
     firstDate.setDate(firstDate.getDate() + 1);
   }
-  console.log(datesArray);
 
+  // console.log(datesArray);
+  // console.log(uniqueDatesArr);
+  console.log(allDatesArr);
   // for (let i = 0; i < allDatesArr.length; i++) {
   //   if (
   //     !(burnDownSnapshots.timestamp === uniqueDatesArr[i])
@@ -76,46 +78,71 @@ export function updateBurnDownSnapshots({
     return arr;
   };
   let z = [];
-  for (let i = 0; i < datesArray.length; i++) {
+  for (let i = 0; i < burnDownSnapshots.length; i++) {
     z.push(getDaysArray(datesArray[i], datesArray[i + 1]));
+    z[i].pop();
   }
 
-  console.log(z);
+  // for(let i = 0; i < z.length; i++){
+  //   z[0][i] = burnDownSnapshots[i];
+  //   delete z[0][i].timestamp;
+
+  // }
+  //  const result = z.flat();
+
+  //   console.log(z.flat());
+  //   console.log(newCars);
   //console.log(getDaysArray(res[0][0], res[0][1]));
 
   //console.log(res);
   //   return  burnDownSnapshots;
   // }
   //const updatedBurnDownSnapshots = {};
-  for (let uniqueDate of allDatesArr) {
-    if (
-      !burnDownSnapshots.some(
-        (burnDownSnapshot) => burnDownSnapshot.date === uniqueDate
-      )
-    ) {
-      burnDownSnapshots.push({
-        cardsInCompleteColumnTotalCount: 150,
-        cardsTotalCount: 160,
-        id: burnDownSnapshots.id,
-        projectCardsInCompleteColumnTotalCount: 150,
-        projectCardsTotalCount: 160,
-        timestamp: uniqueDate,
-        user: 425,
-      });
+  // for (let uniqueDate of allDatesArr) {
+  //   if (
+  //     !burnDownSnapshots.some(
+  //       (burnDownSnapshot) => burnDownSnapshot.date === uniqueDate
+  //     )
+  //   ) {
+  //     burnDownSnapshots.push({
+  //       cardsInCompleteColumnTotalCount: 150,
+  //       cardsTotalCount: 160,
+  //       id: burnDownSnapshots.id,
+  //       projectCardsInCompleteColumnTotalCount: 150,
+  //       projectCardsTotalCount: 160,
+  //       timestamp: uniqueDate,
+  //       user: 425,
+  //     });
+  //   }
+  // }
+
+  let newBurnDownSnapshots = [];
+
+  for (var i = 0; i < z.length; ++i) {
+    var subArray = z[i];
+    for (var j = 0; j < subArray.length; ++j) {
+      subArray[j] = burnDownSnapshots[i];
+      newBurnDownSnapshots.push(subArray[j]);
     }
   }
+  console.log(newBurnDownSnapshots);
+  const result = allDatesArr.map((c, i) => {
+    return { ...newBurnDownSnapshots[i], timestamp: c };
+  });
 
-  burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
-    if (!unique.some((obj) => obj.timestamp === o.timestamp)) {
-      unique.push(o);
-    }
-    return unique;
-  }, []);
-  burnDownSnapshots = burnDownSnapshots.sort(function (a, b) {
-    var c = new Date(a.timestamp);
-    var d = new Date(b.timestamp);
-    return c - d;
+  console.log(result);
+
+  // burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
+  //   if (!unique.some((obj) => obj.timestamp === o.timestamp)) {
+  //     unique.push(o);
+  //   }
+  //   return unique;
+  // }, []);
+  // burnDownSnapshots = burnDownSnapshots.sort(function (a, b) {
+  //   var c = new Date(a.timestamp);
+  //   var d = new Date(b.timestamp);
+  //   return c - d;
   });
   //console.log(burnDownSnapshots);
-  return burnDownSnapshots;
+  return result;
 }
