@@ -85,8 +85,6 @@ class create_snapshot_Tests(TestCase):
 
         BurndownSnapshot.create_snapshot(user=self.user)
         snapshot = BurndownSnapshot.objects.first()
-        snapshot.save()
-
 
         self.assertEqual(snapshot.user, self.user)
         self.assertEqual(snapshot.cards_total_count, 2)
@@ -99,16 +97,11 @@ class create_snapshot_Tests(TestCase):
             assignees=[self.user],
         )
 
-        BurndownSnapshot.create_snapshot(user=self.user)
-        BurndownSnapshot.create_snapshot(user=self.user)
-
         factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
             assignees=[self.user],
             status=AgileCard.COMPLETE,
         )
-
-        BurndownSnapshot.create_snapshot(user=self.user)
 
         factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
@@ -121,8 +114,6 @@ class create_snapshot_Tests(TestCase):
 
         BurndownSnapshot.create_snapshot(user=self.user)
         snapshot = BurndownSnapshot.objects.first()
-        snapshot.save()
-
 
         self.assertEqual(BurndownSnapshot.objects.count(), 1)
         self.assertEqual(snapshot.user, self.user)
