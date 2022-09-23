@@ -12,6 +12,17 @@ const useStyles = makeStyles((theme) => ({
     height: "85%", // TODO. Fit viewport
     overflowY: "scroll",
   },
+  burnDownPaper: {
+    position: "fixed",
+    width: "100em",
+    paddingBottom: "50px",
+  },
+  barGraphPaper: {
+    position: "fixed",
+    top: "50%",
+    width: "100em",
+    paddingTop: "50px",
+  },
 }));
 
 export default function Presentation({
@@ -50,12 +61,7 @@ export default function Presentation({
             {currentUserBurndownStats && (
               <Paper
                 elevation="false"
-                style={{
-                  position: "fixed",
-                  width: "50%",
-                  paddingBottom: "50px",
-                  top: "5%",
-                }}
+                className={classes.burnDownPaper}
               >
                 <UserBurnDownChart
                   burnDownSnapshots={currentUserBurndownStats}
@@ -66,12 +72,7 @@ export default function Presentation({
           <div>
             <Paper
               elevation="false"
-              style={{
-                position: "fixed",
-                top: "46%",
-                width: "100%",
-                paddingTop: "50px",
-              }}
+              className={classes.barGraphPaper}
             >
               <ActivityDashboardBarGraph
                 activityLogDayCounts={activityLogDayCounts}

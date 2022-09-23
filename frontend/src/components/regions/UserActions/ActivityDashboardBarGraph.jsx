@@ -3,7 +3,6 @@ import {
   BarChart,
   Bar,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
@@ -18,7 +17,7 @@ const YELLOW = eventTypeColors.CARD_MOVED_TO_COMPLETE;
 export default function ActivityDashboardBarGraph({ activityLogDayCounts }) {
   return (
     <BarChart
-      width={1000}
+      width={1415}
       height={300}
       data={activityLogDayCounts}
       margin={{
@@ -30,7 +29,7 @@ export default function ActivityDashboardBarGraph({ activityLogDayCounts }) {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis />
+
       <Tooltip />
       <Legend />
       <Bar dataKey="eventType" fill={RED} name="Project Cards Completed" />
