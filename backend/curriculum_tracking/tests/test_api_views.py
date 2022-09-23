@@ -893,6 +893,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertIsNone(card_3.due_time)
 
 
+
 class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "contentitemagileweight-list"
 
