@@ -1,140 +1,32 @@
 import React from "react";
 import {
   Paper,
-  Typography,
   TableBody,
   Table,
   TableRow,
   TableCell,
-  Avatar,
-  Tooltip,
-  Chip,
+  TableHead,
+  Typography,
 } from "@material-ui/core";
 import FlavourChips from "../../widgets/FlavourChips";
-import StoryPoints from "../../widgets/StoryPoints";
-import {
-  REVIEW_VALIDATED_STATUS_CHOICES,
-  REVIEW_STATUS_CHOICES,
-} from "../../../constants";
+// TODO: put storypoints back once Sam is finished with calcs
+// import StoryPoints from "../../widgets/StoryPoints";
 
 import { routes } from "../../../routes";
 import { Link } from "react-router-dom";
 
-import { reviewValidatedColors, trustedColor } from "../../../colors";
-
-import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 
+import CompetenceReview from "./CompetenceReview";
+import PullRequestReview from "./PullRequestReview";
+
+import HelpIcon from "@material-ui/icons/Help";
+
+import Modal from "../../widgets/Modal";
 const COMPETENCE_REVIEW = "competence";
 const PR_REVIEW = "pr";
-
-const useStyles = makeStyles((theme) => {
-  const avatar = {
-    float: "left",
-    marginRight: theme.spacing(1),
-    width: theme.spacing(5),
-    height: theme.spacing(3),
-    fontSize: theme.spacing(2),
-    cursor: "pointer",
-  };
-
-  const prAvatar = {
-    float: "left",
-    marginRight: theme.spacing(1),
-    width: theme.spacing(18),
-    height: theme.spacing(3),
-    fontSize: theme.spacing(1.5),
-    cursor: "pointer",
-  };
-
-  const result = { avatar, prAvatar };
-
-  Object.keys(REVIEW_VALIDATED_STATUS_CHOICES).forEach((key) => {
-    console.log(key);
-    result[key] = {
-      ...avatar,
-      backgroundColor: reviewValidatedColors[key],
-    };
-  });
-
-  return result;
-});
-
-function formatTimeString(timestamp) {
-  const date = new Date(Date.parse(timestamp));
-  return new Intl.DateTimeFormat().format(date);
-}
-
-function PullRequestReview({ review }) {
-  const classes = useStyles();
-  return (
-    <Tooltip
-      title={
-        <React.Fragment>
-          <Typography>{review.state}</Typography>
-          <em>Timestamp:</em> {formatTimeString(review.timestamp)}
-        </React.Fragment>
-      }
-    >
-      <Avatar variant="rounded" className={classes.prAvatar}>
-        PR {review.state}
-      </Avatar>
-    </Tooltip>
-  );
-}
-
-function CompetenceReview({ review }) {
-  const classes = useStyles();
-
-  function getClassName({ review }) {
-    if (review.validated !== null) {
-      return classes[review.validated];
-    }
-    return classes.avatar;
-  }
-
-  const style = review.trusted ? { border: `3px solid ${trustedColor}` } : {};
-
-  return (
-    <Tooltip
-      title={
-        <React.Fragment>
-          <Typography>{REVIEW_STATUS_CHOICES[review.status]}</Typography>
-          <em>Timestamp:</em> {formatTimeString(review.timestamp)}
-          <br />
-          <em>Validated:</em>{" "}
-          <span
-            style={{
-              color: reviewValidatedColors[review.validated],
-            }}
-          >
-            {REVIEW_VALIDATED_STATUS_CHOICES[review.validated]}
-          </span>
-          <br />
-          {review.trusted && (
-            <span
-              style={{
-                color: trustedColor,
-              }}
-            >
-              Trusted
-            </span>
-          )}
-        </React.Fragment>
-      }
-    >
-      <Avatar
-        className={getClassName({ review })}
-        variant="rounded"
-        style={style}
-      >
-        {review.status}
-      </Avatar>
-    </Tooltip>
-  );
-}
 
 function Presentation({
   competenceReviews,
@@ -145,6 +37,11 @@ function Presentation({
 
   handleClickPrevious,
   handleClickNext,
+
+  // help modal
+  showReviewHelpModal,
+  handleOpenReviewHelpModal,
+  handleCloseReviewHelpModal,
 }) {
   competenceReviews = competenceReviews || [];
   pullRequestReviews = pullRequestReviews || [];
@@ -182,84 +79,402 @@ function Presentation({
   }
 
   return (
-    <Paper>
-      <IconButton aria-label="delete" size="big" onClick={handleClickPrevious}>
-        <ArrowLeftIcon />
-      </IconButton>
-      {new Intl.DateTimeFormat().format(startDate)} -
-      {new Intl.DateTimeFormat().format(endDate)} ({days} days)
-      <IconButton aria-label="delete" size="big" onClick={handleClickNext}>
-        <ArrowRightIcon />
-      </IconButton>
-      <Table size="small">
-        <TableBody>
-          {Object.keys(grouped)
-            .sort((a, b) => {
-              const weightA = JSON.parse(a).contentItemAgileWeight;
-              const weightB = JSON.parse(b).contentItemAgileWeight;
-              return weightB - weightA;
-            })
-            .map((key) => {
-              const {
-                // contentItem,
-                flavourNames,
-                title,
-                contentItemAgileWeight,
-              } = JSON.parse(key);
-              const reviews = grouped[key];
-              return (
-                <TableRow key={key}>
-                  <TableCell>
-                    {title}
-                    <br />
-                    <FlavourChips flavourNames={flavourNames} variant="small" />
-                    <StoryPoints
+    <React.Fragment>
+      <Modal open={showReviewHelpModal} onClose={handleCloseReviewHelpModal}>
+        <Paper>
+          <Typography variant="h4">Reviews</Typography>
+          <Typography>
+            The Reviews column shows all the reviews that happened on a
+            particular project during the selected time period. Each review is
+            represented as a rectangle.
+          </Typography>
+          <Typography>
+            You can hover over a review to see some basic details. Clicking on a
+            review will take you to the details page of the reviewed card.
+          </Typography>
+
+          <br />
+          <Typography>The color coding is explained below:</Typography>
+
+          <br />
+
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell colSpan={2}>Pull request reviews</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <PullRequestReview
+                    review={{
+                      id: 54897,
+                      state: "CHANGES_REQUESTED",
+                      submittedAt: "2022-01-20T07:51:27Z",
+                      flavourNames: ["javascript"],
+                      contentItem: 225,
+                      title: "Animals Part 2. Adding Tests",
+                      contentItemAgileWeight: 30,
+                      agileCard: 159614,
+                      user: 219,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  If you see one of these then it means you reviewed a pull
+                  request.
+                </TableCell>
+              </TableRow>
+            </TableBody>
+
+            <TableHead>
+              <TableRow>
+                <TableCell colSpan={2}>Positive competence reviews</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: null,
+                      agileCard: 207289,
+                      status: "C",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  A perfectly normal competence review. If you see one of these
+                  then it means you marked someone as competent
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: true,
+                      validated: null,
+                      agileCard: 207289,
+                      status: "C",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  The styling on this one means that you left a trusted review.
+                  If you do a good job of reviewing a certain project then
+                  you'll earn trust.
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: "i",
+                      agileCard: 207289,
+                      status: "E",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  You marked someone as excellent and then a trusted reviewer
+                  added a negative review.
+                  <br />
+                  <br />
+                  <strong>
+                    If you don't know what competent looks like then you need to
+                    work on that.
+                  </strong>{" "}
+                  If you see one of these then try to learn from it. Go look at
+                  the recent reviews on the card and see what you missed.
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: "d",
+                      agileCard: 207289,
+                      status: "C",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  You marked someone as competent and then a non-trusted
+                  reviewer added a negative review. If you see one of these then
+                  try to learn from it. Go look at the recent reviews on the
+                  card and see what you missed.
+                  <br />
+                  <br />
+                  You might be able to learn something from the other reviewer.
+                  Or maybe they can learn something from you.
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: "c",
+                      agileCard: 207289,
+                      status: "E",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  You added a positive review and then a trusted reviewer closed
+                  the card. That means you were right.
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableHead>
+              <TableRow>
+                <TableCell colSpan={2}>Negative competence reviews</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: null,
+                      agileCard: 207289,
+                      status: "N",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: null,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  A perfectly normal competence review. If you see one of these
+                  then it means you marked someone as not yet competent
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: null,
+                      agileCard: 207289,
+                      status: "N",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: false,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  You gave feedback to someone and then they asked for another
+                  review and they got more feedback. That means one of two
+                  things: Either the feedback you gave was insufficient in some
+                  way; or the person you reviewed did not implement the feedback
+                  properly. This is BAD!
+                  <br />
+                  <br /> If you give someone feedback then you must always try
+                  to set them up to succeed. Your feedback must:
+                  <ul>
+                    <li>
+                      Make sense - write clearly and make use of markdown syntax
+                      to add meaning
+                    </li>
+                    <li>
+                      Point out all the problems you find, be thorough and
+                      informative
+                    </li>
+                  </ul>
+                  If you see one of these then try to learn from it: <br /> Go
+                  look at the recent reviews on the card and see what you missed
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>
+                  <CompetenceReview
+                    review={{
+                      id: 48678,
+                      flavourNames: [],
+                      contentItem: 316,
+                      title: "FreeCodeCamp - Basic Javascript",
+                      trusted: false,
+                      validated: null,
+                      agileCard: 207289,
+                      status: "N",
+                      timestamp: "2022-09-13T08:52:56.187979Z",
+                      reviewerUser: 219,
+                      contentItemAgileWeight: 12,
+                      completeReviewCycle: true,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  You gave feedback to someone and then they asked for another
+                  review and then they got marked as competent. That means that
+                  they had enough feedback to succeed. This is AWESOME! Always
+                  remember that feedback is a gift, you helped set someone up
+                  for success by telling them what they needed to hear.{" "}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Paper>
+      </Modal>
+      <Paper>
+        <IconButton aria-label="previous" onClick={handleClickPrevious}>
+          <ArrowLeftIcon />
+        </IconButton>
+        {new Intl.DateTimeFormat().format(startDate)} -
+        {new Intl.DateTimeFormat().format(endDate)} ({days} days)
+        <IconButton aria-label="next" onClick={handleClickNext}>
+          <ArrowRightIcon />
+        </IconButton>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Project</TableCell>
+              <TableCell>
+                Competence review count <br />
+                total: {competenceReviews.length}
+              </TableCell>
+              <TableCell>
+                PR review count <br /> total: {pullRequestReviews.length}
+              </TableCell>
+              <TableCell>
+                Reviews{" "}
+                <IconButton onClick={handleOpenReviewHelpModal}>
+                  <HelpIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.keys(grouped)
+              .sort((a, b) => {
+                const weightA = JSON.parse(a).contentItemAgileWeight;
+                const weightB = JSON.parse(b).contentItemAgileWeight;
+                return weightB - weightA;
+              })
+              .map((key) => {
+                const {
+                  // contentItem,
+                  flavourNames,
+                  title,
+                  // contentItemAgileWeight, // TODO: put storypoints back once Sam is finished with calcs
+                } = JSON.parse(key);
+                const reviews = grouped[key];
+                return (
+                  <TableRow key={key}>
+                    <TableCell>
+                      {title}
+                      <br />
+                      <FlavourChips
+                        flavourNames={flavourNames}
+                        variant="small"
+                      />
+                      {/* <StoryPoints // TODO: put storypoints back once Sam is finished with calcs
                       storyPoints={contentItemAgileWeight}
                       variant="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={`Competence reviews ${
+                    /> */}
+                    </TableCell>
+                    <TableCell>
+                      {
                         reviews.filter((r) => r.type === COMPETENCE_REVIEW)
                           .length
-                      }`}
-                    />
-                    <Chip
-                      label={`PR reviews ${
-                        reviews.filter((r) => r.type === PR_REVIEW).length
-                      }`}
-                    />
-                  </TableCell>
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {reviews.filter((r) => r.type === PR_REVIEW).length}
+                    </TableCell>
+                    <TableCell>
+                      {reviews
+                        .sort(
+                          (a, b) =>
+                            new Date(a.timestamp) - new Date(b.timestamp)
+                        )
+                        .map((review) => (
+                          <Link
+                            to={routes.cardDetails.route.path.replace(
+                              ":cardId",
+                              review.agileCard
+                            )}
+                          >
+                            {review.type === COMPETENCE_REVIEW && (
+                              <CompetenceReview review={review} />
+                            )}
 
-                  <TableCell>
-                    {reviews
-                      .sort(
-                        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
-                      )
-                      .map((review) => (
-                        <Link
-                          to={routes.cardDetails.route.path.replace(
-                            ":cardId",
-                            review.agileCard
-                          )}
-                        >
-                          {review.type === COMPETENCE_REVIEW && (
-                            <CompetenceReview review={review} />
-                          )}
-
-                          {review.type === PR_REVIEW && (
-                            <PullRequestReview review={review} />
-                          )}
-                        </Link>
-                      ))}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
-    </Paper>
+                            {review.type === PR_REVIEW && (
+                              <PullRequestReview review={review} />
+                            )}
+                          </Link>
+                        ))}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </Paper>
+    </React.Fragment>
   );
 }
 
