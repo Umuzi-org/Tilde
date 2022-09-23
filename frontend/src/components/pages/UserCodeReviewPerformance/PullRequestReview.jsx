@@ -5,6 +5,10 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { formatTimeString } from "./utils";
 
+import { REVIEW_VALIDATED_STATUS_CHOICES } from "../../../constants";
+
+import { reviewValidatedColors } from "../../../colors";
+
 const useStyles = makeStyles((theme) => {
   const avatar = {
     float: "left",
@@ -19,11 +23,26 @@ const useStyles = makeStyles((theme) => {
     avatar,
   };
 
+  Object.keys(REVIEW_VALIDATED_STATUS_CHOICES).forEach((key) => {
+    result[key] = {
+      ...avatar,
+      backgroundColor: reviewValidatedColors[key],
+    };
+  });
+
   return result;
 });
 
 export default function PullRequestReview({ review }) {
   const classes = useStyles();
+
+  function getClassName({ review }) {
+    if (review.validated === null || review.validated === undefined) {
+      return classes.avatar;
+    }
+    return classes[review.validated];
+  }
+
   return (
     <Tooltip
       title={
@@ -33,7 +52,7 @@ export default function PullRequestReview({ review }) {
         </React.Fragment>
       }
     >
-      <Avatar variant="rounded" className={classes.avatar}>
+      <Avatar variant="rounded" className={getClassName({ review })}>
         PR {review.state}
       </Avatar>
     </Tooltip>

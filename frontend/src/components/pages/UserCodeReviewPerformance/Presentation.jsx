@@ -118,12 +118,42 @@ function Presentation({
                       contentItemAgileWeight: 30,
                       agileCard: 159614,
                       user: 219,
+                      validated: null,
                     }}
                   />
                 </TableCell>
                 <TableCell>
                   If you see one of these then it means you reviewed a pull
                   request.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <PullRequestReview
+                    review={{
+                      id: 54897,
+                      state: "approved",
+                      submittedAt: "2022-01-20T07:51:27Z",
+                      flavourNames: ["javascript"],
+                      contentItem: 225,
+                      title: "Animals Part 2. Adding Tests",
+                      contentItemAgileWeight: 30,
+                      agileCard: 159614,
+                      user: 219,
+                      validated: "d",
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  If you see one of these then it means you approved a PR and
+                  then someone requested changes or dismissed the same PR.
+                  Someone is disagreeing with you. If you see one of these then
+                  try to learn from it. Go look at the recent reviews on the
+                  card and see what you missed.
+                  <br />
+                  <br />
+                  You might be able to learn something from the other reviewer.
+                  Or maybe they can learn something from you.
                 </TableCell>
               </TableRow>
             </TableBody>
