@@ -1,4 +1,5 @@
 # from backend.curriculum_tracking.models import AgileCard
+from git_real.models import PullRequestReview
 from git_real.tests.factories import PullRequestFactory, PullRequestReviewFactory
 from rest_framework.test import APITestCase
 from guardian.shortcuts import assign_perm
@@ -488,7 +489,7 @@ class PullRequestReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        pr_review = PullRequestReviewFactory()
+        pr_review = PullRequestReviewFactory(validated=PullRequestReview.CONTRADICTED)
         project = RecruitProjectFactory(repository=pr_review.pull_request.repository)
         project.set_flavours(["js"])
 
@@ -891,7 +892,6 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
-
 
 
 class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):

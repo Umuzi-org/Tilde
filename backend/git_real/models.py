@@ -1,4 +1,5 @@
 from django.db import models
+from curriculum_tracking.constants import POSITIVE_REVIEW_STATUS_CHOICES
 from model_mixins import Mixins
 from core.models import User
 from git_real.helpers import (
@@ -104,6 +105,17 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
+
+    CONTRADICTED = "d"
+
+    REVIEW_VALIDATED_STATUS_CHOICES = [
+        (CONTRADICTED, "contradicted"),
+    ]
+
+    NEGATIVE_STATES = ["dismissed", "changes_requested"]
+    POSITIVE_STATES = ["approved"]
+    NEUTRAL_STATES = ["commented"]
+
     html_url = models.CharField(max_length=255, unique=True)
     pull_request = models.ForeignKey(
         PullRequest, on_delete=models.CASCADE, related_name="reviews"
@@ -117,7 +129,21 @@ class PullRequestReview(models.Model, Mixins):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
+    validated = models.CharField(
+        choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
+    )
+
+    def update_recent_validation_flags(self):
+        """this review was just created. Update previous reviews"""
+        assert (
+            len(PullRequestReview.POSITIVE_STATES) == 1
+        ), "this function only works if there is one positive state. Upgrade the function"
+        state = self.state.lower()
+        if state in PullRequestReview.NEGATIVE_STATES:
+            prs_to_update = PullRequestReview.objects.filter(
+                pull_request=self.pull_request
+            ).filter(state__iexact=PullRequestReview.POSITIVE_STATES[0])
+            prs_to_update.update(validated=PullRequestReview.CONTRADICTED)
 
     @classmethod
     def create_or_update_from_github_api_data(cls, pull_request, review_data):
@@ -147,10 +173,8 @@ class PullRequestReview(models.Model, Mixins):
             review.update(**defaults)
             review.save()
 
+        review.update_recent_validation_flags()
         return review
-
-
-# dict_keys([' 'author_association', , ', 'html_url', 'id', 'node_id', '', 'state', 'submitted_at', 'user'])
 
 
 class Push(models.Model, Mixins):
