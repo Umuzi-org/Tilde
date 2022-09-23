@@ -23,9 +23,6 @@ const days = [
 ];
 
 function UserActionsUnconnected({
-  // page,
-  actorUser,
-  // effectedUser,
   activityLogDayCounts,
   authedUserId,
   projectReviews,
@@ -34,14 +31,12 @@ function UserActionsUnconnected({
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
-  fetchEventTypes,
+
   fetchActivityLogDayCountsPage,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
 }) {
-  console.log(activityLogDayCounts);
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
@@ -73,6 +68,12 @@ function UserActionsUnconnected({
     !fetchUserBurndownStats
   )
     return <Loading />;
+
+  if (activityLogDayCounts !== undefined) {
+    const activityLogDayCountsData = [];
+    activityLogDayCountsData.push(Object.values(activityLogDayCounts));
+    activityLogDayCounts = activityLogDayCountsData[0];
+  }
 
   const latestProjectReviewsCall = getLatestMatchingCall({
     callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,

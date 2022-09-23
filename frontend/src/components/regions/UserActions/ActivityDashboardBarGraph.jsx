@@ -9,8 +9,13 @@ import {
   Legend,
 } from "recharts";
 
+import { eventTypeColors } from "../../../colors";
+
+const RED = eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK;
+const GREEN = eventTypeColors.CARD_STARTED;
+const YELLOW = eventTypeColors.CARD_MOVED_TO_COMPLETE;
+
 export default function ActivityDashboardBarGraph({ activityLogDayCounts }) {
-  // console.log("TESST", activityLogDayCounts);
   return (
     <BarChart
       width={1000}
@@ -24,21 +29,13 @@ export default function ActivityDashboardBarGraph({ activityLogDayCounts }) {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
+      <XAxis dataKey="date" />
       <YAxis />
       <Tooltip />
       <Legend />
-      <Bar
-        dataKey="projectCardsCompleted"
-        fill="#FF0000"
-        name="Project Cards Completed"
-      />
-      <Bar
-        dataKey="topicCardsCompleted"
-        fill="#00FF00"
-        name="Topic Cards Completed"
-      />
-      <Bar dataKey="reviewsCompleted" fill="#F6BE00" name="Reviews Completed" />
+      <Bar dataKey="eventType" fill={RED} name="Project Cards Completed" />
+      <Bar dataKey="eventType" fill={GREEN} name="Topic Cards Completed" />
+      <Bar dataKey="eventType" fill={YELLOW} name="Reviews Completed" />
     </BarChart>
   );
 }
