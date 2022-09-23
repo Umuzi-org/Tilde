@@ -1,17 +1,14 @@
 import React from "react";
-
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-  Avatar,
-  Tooltip,
-} from "@material-ui/core";
-
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
+import UserAvatarLink from "./UserAvatarLink";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -64,7 +61,7 @@ function ReviewersTable({
       <TableBody>
         {allUsers.map((user) => {
           return (
-            <TableRow>
+            <TableRow key={user.userId}>
               <TableCell padding="none">
                 <Checkbox
                   checked={usersThatReviewedSinceLastReviewRequest.includes(
@@ -80,7 +77,9 @@ function ReviewersTable({
                   </Tooltip>
                 )}
               </TableCell>
-              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <UserAvatarLink email={user.email} userId={user.userId} />
+              </TableCell>
             </TableRow>
           );
         })}

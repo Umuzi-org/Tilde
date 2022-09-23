@@ -1,12 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import { Box } from "@material-ui/core";
+
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import LockRoundedIcon from "@material-ui/icons/LockRounded";
 import Link from "@material-ui/core/Link";
-import { Box } from "@material-ui/core";
+
+
 import Divider from "./Divider";
 
 import { routes } from "../../../routes";
@@ -49,9 +52,12 @@ const useStyles = makeStyles((theme) => ({
     width: "20px",
     padding: "0",
   },
+  textStyle: {
+    fontWeight: 600,
+  },
 }));
 
-const LoginForm = ({
+export default function LoginForm({
   googleLoginLoading,
   error,
   handleLoginWithGoogle,
@@ -60,13 +66,12 @@ const LoginForm = ({
   formErrors,
   handleSubmitLoginForm,
   loginFormLoading,
-}) => {
+}) {
   const classes = useStyles();
-  // console.log(formErrors);
 
   return (
     <form className={classes.root}>
-      <Typography variant="h5" style={{ fontWeight: 600 }}>
+      <Typography variant="h5" className={classes.textStyle}>
         Please Login
       </Typography>
 
@@ -139,7 +144,7 @@ const LoginForm = ({
       </div>
       <Box width={200} m={0}>
         <Divider>
-          <Typography style={{ fontWeight: 600 }}>OR</Typography>
+          <Typography className={classes.textStyle}>OR</Typography>
         </Divider>
       </Box>
       <div>
@@ -156,6 +161,4 @@ const LoginForm = ({
       </div>
     </form>
   );
-};
-
-export default LoginForm;
+}
