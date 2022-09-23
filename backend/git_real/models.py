@@ -4,6 +4,7 @@ from core.models import User
 from git_real.helpers import (
     strp_github_standard_time,
     github_timestamp_int_to_tz_aware_datetime,
+    get_user_from_github_name,
 )
 
 from django.core.exceptions import MultipleObjectsReturned
@@ -35,8 +36,6 @@ class Commit(models.Model, Mixins):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
-
     def __str__(self):
         ellipse = ""
         cutoff = 40
@@ -65,9 +64,8 @@ class PullRequest(models.Model, Mixins):
 
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
 
-    # user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
     class Meta:
         unique_together = [["repository", "number"]]
 
@@ -75,6 +73,8 @@ class PullRequest(models.Model, Mixins):
     def create_or_update_from_github_api_data(cls, repo, pull_request_data):
         assert repo != None, "repo is missing"
         number = pull_request_data["number"]
+
+        github_name = pull_request_data["user"]["login"]
 
         defaults = {
             "state": pull_request_data["state"],
@@ -92,14 +92,11 @@ class PullRequest(models.Model, Mixins):
                 pull_request_data["closed_at"],
             ),
             "merged_at": pull_request_data["merged_at"]
-            and strp_github_standard_time(
-                pull_request_data["merged_at"],
-            ),
+            and strp_github_standard_time(pull_request_data["merged_at"]),
+            "author_github_name": github_name,
+            "user": get_user_from_github_name(github_name),
         }
-        #     "author_github_name": github_user,
-        #     "assignees": [d["login"] for d in pr["assignees"]],
-        #     "user": get_user_from_github_name(github_user),
-        # }
+
         pull_request, _ = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
@@ -135,9 +132,7 @@ class PullRequestReview(models.Model, Mixins):
             and strp_github_standard_time(review_data["submitted_at"]),
             "pull_request": pull_request,
             "author_github_name": github_name,
-            "user": User.objects.filter(
-                social_profile__github_name=github_name
-            ).first(),
+            "user": get_user_from_github_name(github_name),
         }
 
         try:
@@ -151,9 +146,6 @@ class PullRequestReview(models.Model, Mixins):
             review = reviews[-1]
             review.update(**defaults)
             review.save()
-        # review, _ = cls.get_or_create_or_update(
-        #     html_url=review_data["html_url"], defaults=defaults, overrides=defaults
-        # )
 
         return review
 
@@ -174,6 +166,8 @@ class Push(models.Model, Mixins):
     pushed_at_time = models.DateTimeField()
     ref = models.CharField(max_length=255)
 
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
     class Meta:
         unique_together = [["ref", "head_commit_url"]]
 
@@ -183,6 +177,7 @@ class Push(models.Model, Mixins):
         if request_body["head_commit"] is None and bool(request_body["pusher"]):
             return None
         else:
+            pusher_user = request_body.get("pusher").get("name")
             head_commit = request_body["head_commit"]
             head_commit_url = head_commit["url"]
             ref = request_body["ref"]
@@ -191,10 +186,11 @@ class Push(models.Model, Mixins):
                 "author_github_name": head_commit.get("author").get("username"),
                 "committer_github_name": head_commit.get("committer").get("username"),
                 "message": head_commit.get("message"),
-                "pusher_username": request_body.get("pusher").get("name"),
+                "pusher_username": pusher_user,
                 "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
                     int(request_body["repository"]["pushed_at"])
                 ),
+                "user": get_user_from_github_name(pusher_user),
             }
 
             instance, _ = cls.get_or_create_or_update(

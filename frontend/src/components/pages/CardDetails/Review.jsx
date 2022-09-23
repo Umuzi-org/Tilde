@@ -10,6 +10,7 @@ import ReviewValidationIcons from "../../widgets/ReviewValidationIcons";
 import { trimReviewComments } from "./utils";
 import Button from "@material-ui/core/Button";
 import ReviewPopUp from "./ReviewPopUp";
+import UserAvatarLink from "../../widgets/UserAvatarLink";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,10 +19,6 @@ const useStyles = makeStyles(() => ({
   iconAlignment: {},
   timeFont: {
     fontSize: "11px",
-  },
-  reviewerFont: {
-    fontSize: "100%",
-    fontWeight: "bold",
   },
   cardFont: {
     fontSize: "100%",
@@ -54,7 +51,7 @@ const useStyles = makeStyles(() => ({
 export default function Review({ review }) {
   const classes = useStyles();
   const [openReviewPopUp, setOpenReviewPopUp] = useState(false);
-  const onClose = () => setOpenReviewPopUp(false) 
+  const onClose = () => setOpenReviewPopUp(false);
   const timestamp = new Date(review.timestamp);
 
   return (
@@ -66,9 +63,10 @@ export default function Review({ review }) {
           </Typography>
         }
         subheader={
-          <Typography className={classes.reviewerFont}>
-            {review.reviewerUserEmail}
-          </Typography>
+          <UserAvatarLink
+            email={review.reviewerUserEmail}
+            userId={review.reviewerUser}
+          />
         }
         className={classes.cardHeader}
       />
@@ -91,12 +89,12 @@ export default function Review({ review }) {
       <IconButton disabled className={classes.iconColor}>
         <ReviewValidationIcons review={review} />
       </IconButton>
-        <ReviewPopUp
-          onClose={onClose}
-          openReviewPopUp={openReviewPopUp}
-          setOpenReviewPopUp={setOpenReviewPopUp}
-          review={review}
-        ></ReviewPopUp>
+      <ReviewPopUp
+        onClose={onClose}
+        openReviewPopUp={openReviewPopUp}
+        setOpenReviewPopUp={setOpenReviewPopUp}
+        review={review}
+      ></ReviewPopUp>
     </Card>
   );
 }

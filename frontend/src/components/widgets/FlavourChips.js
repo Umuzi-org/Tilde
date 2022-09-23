@@ -11,21 +11,28 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default ({ flavourNames }) => {
+export default ({ flavourNames, variant }) => {
   const classes = useStyles();
+
   return (
     <React.Fragment>
       {flavourNames.map((flavour) => {
+        const props = {};
+        if (variant === "small") {
+          props.label = flavour;
+          props.size = "small";
+        } else {
+          props.label = "flavour: " + flavour;
+          props.icon = <LabelIcon />;
+        }
+
         return (
           <Tooltip
             key={flavour}
             title={`Please use the following tool when completing this card: ${flavour}`}
+            {...props}
           >
-            <Chip
-              className={classes.chip}
-              icon={<LabelIcon />}
-              label={"flavour: " + flavour}
-            />
+            <Chip className={classes.chip} {...props} />
           </Tooltip>
         );
       })}

@@ -1,10 +1,12 @@
 import React from "react";
-import { Paper, Button, Grid, Typography, TextField } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
-
 import RepositoryDetails from "./RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
-
 import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import Reviews from "./Reviews";
 
@@ -128,4 +130,4 @@ export default function Presentation({
       )} */}
     </React.Fragment>
   );
-};
+}

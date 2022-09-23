@@ -1,5 +1,5 @@
 # from backend.curriculum_tracking.models import AgileCard
-from git_real.tests.factories import PullRequestFactory
+from git_real.tests.factories import PullRequestFactory, PullRequestReviewFactory
 from rest_framework.test import APITestCase
 from guardian.shortcuts import assign_perm
 from test_mixins import APITestCaseMixin
@@ -15,6 +15,7 @@ from curriculum_tracking.models import (
     RecruitProjectReview,
     AgileCard,
     ContentItemAgileWeight,
+    RecruitProject,
 )
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
@@ -293,6 +294,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "can_force_start",
         "project_link_submission",
         # "open_pr_count",
+        "users_that_reviewed_open_prs",
+        "users_that_reviewed_open_prs_emails",
     ]
 
     def verbose_instance_factory(self):
@@ -478,23 +481,44 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
         self.assertNotIn("detail", response.data)
         self.assertEqual(response.status_code, 200)
 
-    # def test_recruit_permissions_on_object(self):
-    #     return  # TODO
-    #     recruit1 = UserFactory(is_superuser=False, is_staff=False)
-    #     recruit2 = UserFactory(is_superuser=False, is_staff=False)
 
-    #     project1 = factories.RecruitProjectFactory(recruit_users=[recruit1])
-    #     project2 = factories.RecruitProjectFactory(recruit_users=[recruit2])
+class PullRequestReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "pullrequestreviewquality-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
-    #     self.login(recruit1)
+    def verbose_instance_factory(self):
+        pr_review = PullRequestReviewFactory()
+        project = RecruitProjectFactory(repository=pr_review.pull_request.repository)
+        project.set_flavours(["js"])
 
-    #     url = self.get_list_url()
-    #     response = self.client.get(f"{url}{project1.id}/")
+        weight = factories.ContentItemAgileWeightFactory(
+            content_item=project.content_item
+        )
+        weight.set_flavours(["js"])
+        return pr_review
 
-    #     self.assertEqual(response.status_code, 200)
 
-    #     response = self.client.get(f"{url}{project2.id}/")
-    #     self.assertEqual(response.status_code, 403)
+class RecruitProjectReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "recruitprojectreviewquality-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
+
+    def verbose_instance_factory(self):
+        review = factories.RecruitProjectReviewFactory(
+            trusted=True, validated=RecruitProjectReview.CORRECT
+        )
+        review.complete_review_cycle = True
+        review.save()
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        weight = factories.ContentItemAgileWeightFactory(
+            content_item=project.content_item
+        )
+        weight.set_flavours(["js"])
+
+        return review
 
 
 class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
@@ -503,9 +527,13 @@ class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        return factories.RecruitProjectReviewFactory(
+        review = factories.RecruitProjectReviewFactory(
             trusted=True, validated=RecruitProjectReview.CORRECT
         )
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        return review
 
 
 class RecruitTopicReviewViewsetTests(APITestCase, APITestCaseMixin):
@@ -863,6 +891,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
+
 
 
 class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
