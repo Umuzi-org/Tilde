@@ -15,7 +15,7 @@ import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
-import {updateBurnDownSnapshots} from "./utils";
+import { updateBurnDownSnapshots } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   legend: {
@@ -40,12 +40,11 @@ export default ({ burnDownSnapshots }) => {
 
   const filterStartDate = new Date();
   filterStartDate.setDate(filterStartDate.getDate() - 21);
-  
+
   const updatedBurnDownSnapshots = updateBurnDownSnapshots({
     burnDownSnapshots,
-    filterStartDate,
   });
- 
+
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -65,24 +64,32 @@ export default ({ burnDownSnapshots }) => {
             name="Total Cards"
             stroke={orange[400]}
             activeDot={{ r: 8 }}
+            strokeWidth={1}
+            dot={false}
           />
           <Line
             type="monotone"
             dataKey="projectCardsTotalCount"
             name="Total Project Cards"
             stroke={green[400]}
+            strokeWidth={1}
+            dot={false}
           />
           <Line
             type="monotone"
             dataKey="cardsInCompleteColumnTotalCount"
             name="Completed Cards"
             stroke={blue[400]}
+            strokeWidth={1}
+            dot={false}
           />
           <Line
             type="monotone"
             dataKey="projectCardsInCompleteColumnTotalCount"
             name="Completed Project Cards"
             stroke={red[400]}
+            strokeWidth={1}
+            dot={false}
           />
         </LineChart>
       </ResponsiveContainer>
