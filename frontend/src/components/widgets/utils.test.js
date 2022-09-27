@@ -1,4 +1,4 @@
-import { getAgeString, repoUrlCleaner } from "./utils";
+import { repoUrlCleaner, getAgeString } from "./utils";
 
 test("getAgeString function doesn't break if null date", () => {
   expect(getAgeString(null)).toBe("");
@@ -50,9 +50,16 @@ test("git repo url should be cleaned to link to the pull request index on github
   );
 });
 
-test("git repo should not be only restricted to Umuz owned repositories", () => {
-  const gitRepo = "git@github.com:Sbonelo01/personal-portfolio.git";
-  expect(repoUrlCleaner(gitRepo)).toBe(
+test("git repo url should be able to direct to pull request index' of any individually owned repositories", () => {
+  const gitRepo1 = "git@github.com:Sbonelo01/personal-portfolio.git";
+  expect(repoUrlCleaner(gitRepo1)).toBe(
     "https://github.com/Sbonelo01/personal-portfolio/pulls"
+  );
+});
+
+test("git repo url should be able to direct to pull request index' of any external organizations repositories", () => {
+  const gitRepo2 = "git@github.com:facebook/react.git";
+  expect(repoUrlCleaner(gitRepo2)).toBe(
+    "https://github.com/facebook/react/pulls"
   );
 });
