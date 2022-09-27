@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.utils import timezone
 from config.models import NameSpace
 from taggit.models import Tag
-from activity_log.models import LogEntry
+from activity_log.models import LogEntry, EventType
 from git_real import models as git_models
 
 
@@ -938,8 +938,9 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             return instance.agile_card.status
 
     def get_total_number_of_negative_reviews(self, instance):
-        # pass
-        total_number_of_negative_reviews = LogEntry.objects.filter(effected_user=5)#, event_type="CARD_MOVED_TO_REVIEW_FEEDBACK")
-        # return 4
+        total_number_of_negative_reviews = len(
+            LogEntry.objects.filter(effected_user=instance.recruit_users.first(), 
+            event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
+            )
         return total_number_of_negative_reviews
         
