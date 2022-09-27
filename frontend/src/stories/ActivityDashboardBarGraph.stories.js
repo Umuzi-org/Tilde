@@ -12,6 +12,7 @@ export default {
 const Template = (args) => <ActivityDashboardBarGraph {...args} />;
 
 export const Primary = Template.bind({});
+
 Primary.args = {
-  graphData,
+  eventList: graphData,
 };
