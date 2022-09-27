@@ -5,7 +5,7 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
 import UserBurnDownChart from "./UserBurndownStats";
-import TestFile from "./TestFile";
+import ActivityLog from "./ActivityLog";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -25,7 +25,7 @@ export default function Presentation({
   activityLogEntries,
 }) {
   const classes = useStyles();
-  console.log("activity:", activityLogEntries);
+
   return (
     <div className={classes.column} onScroll={handleScroll}>
       <Grid container>
@@ -51,7 +51,7 @@ export default function Presentation({
           </Paper>
         </Grid>
         <Grid>
-          <TestFile
+          <ActivityLog
             eventList={activityLogEntries}
             sortedTimestampArray={orderedDates2}
           />

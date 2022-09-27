@@ -28,7 +28,6 @@ export default function DayLog({
   handleClickOpenProjectDetails,
 }) {
   const classes = useStyles();
-  console.log(actions);
   return (
     <React.Fragment>
       <Paper>
