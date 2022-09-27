@@ -54,6 +54,14 @@ export const REVIEW_STATUS_CHOICES = {
   [EXCELLENT]: "excellent",
 };
 
+export const COMPLETE_REVIEW_CYCLE_CHOICES = {
+  [true]: "complete",
+  [false]: "incomplete",
+};
+
+export const REVIEW_STATUS_CHOICES_POSITIVE = [COMPETENT, EXCELLENT];
+export const REVIEW_STATUS_CHOICES_NEGATIVE = [NOT_YET_COMPETENT, RED_FLAG];
+
 export const MANAGE_CARDS = "MANAGE_CARDS";
 export const VIEW_ALL = "VIEW_ALL";
 export const ASSIGN_REVIEWERS = "ASSIGN_REVIEWERS";
@@ -80,10 +88,12 @@ export const CARD_STARTED = "CARD_STARTED";
 export const COMPETENCE_REVIEW_DONE = "COMPETENCE_REVIEW_DONE";
 export const PR_REVIEWED = "PR_REVIEWED";
 
+// TODO: remove this default export. Just export things individually
 export default {
   AGILE_CARD_STATUS_CHOICES,
   AGILE_COLUMNS,
   REVIEW_STATUS_CHOICES,
+
   AGILE_CARD_STATUS_CHOICES_SHOW_REVIEWER,
   REVIEW_VALIDATED_STATUS_CHOICES,
 

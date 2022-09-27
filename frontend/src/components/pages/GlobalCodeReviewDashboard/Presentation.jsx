@@ -1,145 +1,41 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  IconButton,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-} from "@material-ui/core";
 import React from "react";
-
-import CardBadges from "../../widgets/CardBadges";
-import MoreIcon from "@material-ui/icons/More";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import TagChips from "../../widgets/TagChips";
-import FlavourChips from "../../widgets/FlavourChips";
-import { routes } from "../../../routes";
 import Button from "../../widgets/Button";
-import AssigneesList from "../../widgets/AssigneesList";
-import ReviewersTable from "../../widgets/ReviewersTable";
 import Loading from "../../widgets/Loading";
+import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
+import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
+import FilterByNames from "./FilterByNames";
 
 const useStyles = makeStyles((theme) => {
   return {
-    row: {
-      padding: 5,
+    mainSection: {
+      width: "100%",
+      paddingTop: 0,
+      height: "calc(100vh - 64px)",
     },
-
-    queue: {
-      padding: theme.spacing(1),
+    queueContainer: {
+      margin: 0,
+      width: "100%",
     },
-
-    project: {
-      marginTop: theme.spacing(1),
-      padding: theme.spacing(1),
+    queueItem: {
+      maxHeight: "90vh",
+      overflowY: "scroll",
+      padding: "0px 10px",
     },
-
-    left: {
-      float: "left",
-    },
-
-    right: {
-      // float: "right",
-    },
-
-    flexContainer: {
-      display: "flex",
+    queueContainerHeading: {
+      position: "sticky",
+      top: -5,
+      padding: "10px 0px",
+      backgroundColor: theme.palette.background.default,
+      zIndex: 2,
     },
   };
 });
 
-function BaseReviewQueueEntry({ project, showAllocatedReviewers }) {
-  const classes = useStyles();
-  return (
-    <Paper elevation={3} className={classes.project} variant="outlined">
-      <div className={classes.flexContainer}>
-        {/* TODO: replace with a stack once MUI is upgraded */}
-        <div className={classes.left}>
-          <Typography>{project.contentItemTitle}</Typography>
-        </div>
-        <div className={classes.left}>
-          <FlavourChips flavourNames={project.flavourNames} />
-        </div>
-        <div className={classes.left}>
-          <CardBadges card={project} />
-        </div>
-        <div className={classes.right}>
-          <a
-            href={routes.cardDetails.route.path.replace(
-              ":cardId",
-              project.agileCard
-            )}
-          >
-            <IconButton>
-              <MoreIcon />
-            </IconButton>
-          </a>
-        </div>
-      </div>
-
-      <TagChips tagNames={project.tagNames} />
-
-      {/* <TimesTable project={project} /> */}
-
-      <Typography>Assignees</Typography>
-      <AssigneesList
-        userIds={project.recruitUsers}
-        userNames={project.recruitUserEmails}
-      />
-
-      {showAllocatedReviewers && (
-        <React.Fragment>
-          <Typography>Reviewers</Typography>
-          <ReviewersTable
-            reviewerUsers={project.reviewerUsers}
-            reviewerUserEmails={project.reviewerUserEmails}
-            usersThatReviewedSinceLastReviewRequest={
-              project.usersThatReviewedSinceLastReviewRequest
-            }
-            usersThatReviewedSinceLastReviewRequestEmails={
-              project.usersThatReviewedSinceLastReviewRequestEmails
-            }
-          />
-        </React.Fragment>
-      )}
-    </Paper>
-  );
-}
-
-function PullRequestReviewQueueEntry({ project }) {
-  return BaseReviewQueueEntry({ project });
-}
-
-function CompetenceReviewQueueEntry({ project }) {
-  return BaseReviewQueueEntry({ project, showAllocatedReviewers: true });
-}
-
-function FilterByNames({ allNames, filterInclude, filterExclude, onChange }) {
-  const allFilters = [...filterInclude, ...filterExclude];
-
-  return (
-    <React.Fragment>
-      {allNames.map((name) => (
-        <FormGroup key={name}>
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                color={filterExclude.includes(name) ? "secondary" : "primary"}
-                onChange={onChange(name)}
-              />
-            }
-            label={name}
-            checked={allFilters.includes(name)}
-          />
-        </FormGroup>
-      ))}
-    </React.Fragment>
-  );
-}
-
-function Presentation({
+export default function Presentation({
   competenceReviewQueueProjects,
   pullRequestReviewQueueProjects,
 
@@ -232,8 +128,8 @@ function Presentation({
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item sx={3}>
+    <Grid container spacing={3} className={classes.mainSection}>
+      <Grid item xs={2}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper>
           <FilterByNames
@@ -264,64 +160,62 @@ function Presentation({
           />
         </Paper>
       </Grid>
-      <Grid item sx={3}>
-        {/* TODO center headings*/}
-        <Typography variant="h5">Competence Review Queue</Typography>
-        {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
+      <Grid item xs={10} container className={classes.queueContainer}>
+        <Grid item xs={12} md={6} className={classes.queueItem}>
+          {/* TODO center headings*/}
+          <Grid className={classes.queueContainerHeading}>
+            <Typography variant="h5">Competence Review Queue</Typography>
+          </Grid>
+          <Grid>
+            {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
+            {competenceReviewQueueProjects
+              .filter(applyFilters)
+              .sort(
+                (a, b) =>
+                  new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
+              )
+              .map((project) => (
+                <CompetenceReviewQueueEntry project={project} />
+              ))}
+          </Grid>
+          <Paper elevation={3} className={classes.project} variant="outlined">
+            {competenceReviewQueueLoading ? (
+              <Loading />
+            ) : (
+              <Button onClick={fetchNextCompetenceReviewQueuePage}>
+                Load more
+              </Button>
+            )}
+            {/* TODO Center the button or spinner*/}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} className={classes.queueItem}>
+          <Grid className={classes.queueContainerHeading}>
+            <Typography variant="h5">Pull Request Review Queue</Typography>
+          </Grid>
+          <Grid>
+            {pullRequestReviewQueueProjects
+              .filter(applyFilters)
+              .sort(
+                (a, b) =>
+                  new Date(b.oldestOpenPrUpdatedTime) -
+                  new Date(a.oldestOpenPrUpdatedTime)
+              )
+              .map((project) => (
+                <PullRequestReviewQueueEntry project={project} />
+              ))}
+          </Grid>
 
-        {competenceReviewQueueProjects
-          .filter(applyFilters)
-          .sort(
-            (a, b) =>
-              new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
-          )
-          .map((project) => (
-            <CompetenceReviewQueueEntry
-              project={project}
-              key={`comp_${project.id}`}
-            />
-          ))}
-
-        <Paper elevation={3} className={classes.project} variant="outlined">
-          {competenceReviewQueueLoading ? (
-            <Loading />
-          ) : (
-            <Button onClick={fetchNextCompetenceReviewQueuePage}>
-              Load more
-            </Button>
-          )}
-          {/* TODO Center the button or spinner*/}
-        </Paper>
-      </Grid>
-      <Grid item sx={3}>
-        <Typography variant="h5">Pull Request Review Queue</Typography>
-        {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
-
-        {pullRequestReviewQueueProjects
-          .filter(applyFilters)
-          .sort(
-            (a, b) =>
-              new Date(a.oldestOpenPrUpdatedTime) -
-              new Date(b.oldestOpenPrUpdatedTime)
-          )
-          .map((project) => (
-            <PullRequestReviewQueueEntry
-              project={project}
-              key={`pr_${project.id}`}
-            />
-          ))}
-
-        <Paper elevation={3} className={classes.project} variant="outlined">
-          {pullRequestReviewQueueLoading ? (
-            <Loading />
-          ) : (
-            <Button onClick={fetchNextPullRequestQueuePage}>Load more</Button>
-          )}
-          {/* TODO Center the button or spinner*/}
-        </Paper>
+          <Paper elevation={3} className={classes.project} variant="outlined">
+            {pullRequestReviewQueueLoading ? (
+              <Loading />
+            ) : (
+              <Button onClick={fetchNextPullRequestQueuePage}>Load more</Button>
+            )}
+            {/* TODO Center the button or spinner*/}
+          </Paper>
+        </Grid>
       </Grid>
     </Grid>
   );
 }
-
-export default Presentation;
