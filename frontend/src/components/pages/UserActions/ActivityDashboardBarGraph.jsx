@@ -20,7 +20,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <XAxis dataKey="date" />
 
       <Bar
-        dataKey="projectCardsCompleted"
+        dataKey="total"
         fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
         name="Project cards completed"
       />
