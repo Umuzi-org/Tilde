@@ -12,6 +12,9 @@ import {
   CARD_STARTED,
   PR_REVIEWED,
   COMPETENCE_REVIEW_DONE,
+  PROJECT_CARDS_COMPLETED,
+  TOPIC_CARDS_COMPLETED,
+  REVIEWS_COMPLETED,
 } from "./constants";
 import { colors } from "@material-ui/core";
 
@@ -32,4 +35,7 @@ export const eventTypeColors = {
   [CARD_STARTED]: colors.green[600],
   [PR_REVIEWED]: colors.purple[600],
   [COMPETENCE_REVIEW_DONE]: colors.blue[600],
+  [PROJECT_CARDS_COMPLETED] : colors.yellow[600],
+  [TOPIC_CARDS_COMPLETED]: colors.red[600],
+  [REVIEWS_COMPLETED]: colors.green[600]
 };

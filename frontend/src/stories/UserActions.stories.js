@@ -1,6 +1,6 @@
 import React from "react";
 
-import UserActions from "../components/regions/UserActions/Presentation";
+import UserActions from "../components/pages/UserActions/Presentation";
 import actionLogByDate from "./fixtures/userActionLogsByDate.json";
 
 const orderedDates = [
