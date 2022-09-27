@@ -24,6 +24,27 @@ class Repository(models.Model, Mixins):
     def __str__(self):
         return self.ssh_url
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        project = RecruitProject.objects.filter(repository=self).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
+
 
 class Commit(models.Model, Mixins):
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
@@ -132,6 +153,28 @@ class PullRequestReview(models.Model, Mixins):
     validated = models.CharField(
         choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
     )
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        repo = self.pull_request.repository
+        project = RecruitProject.objects.filter(repository=repo).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
 
     def update_recent_validation_flags(self):
         """this review was just created. Update previous reviews"""
