@@ -15,7 +15,7 @@ import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
-import { updateBurnDownSnapshots } from "./utils";
+import { updateBurnDownSnapshots, removeDuplicateDates } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   legend: {
@@ -24,13 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default ({ burnDownSnapshots }) => {
-  burnDownSnapshots = burnDownSnapshots.reduce((unique, o) => {
-    if (!unique.some((obj) => obj.timestamp === o.timestamp)) {
-      unique.push(o);
-    }
-    return unique;
-  }, []);
-
+  burnDownSnapshots = removeDuplicateDates({ burnDownSnapshots });
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)

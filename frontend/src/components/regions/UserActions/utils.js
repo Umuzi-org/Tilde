@@ -18,13 +18,13 @@ export function updateBurnDownSnapshots({ burnDownSnapshots }) {
   }
 
   const getDaysArray = function (start, end) {
-    for (
-      var gapDates = [], firstGapDate = new Date(start);
-      firstGapDate <= new Date(end);
-      firstGapDate.setDate(firstGapDate.getDate() + 1)
-    ) {
-      gapDates.push(new Date(firstGapDate).toISOString().split("T")[0]);
+    let gapDates = [];
+    const theDate = new Date(start);
+    while (theDate < new Date(end)) {
+      gapDates = [...gapDates, new Date(theDate)];
+      theDate.setDate(theDate.getDate() + 1);
     }
+    gapDates = [...gapDates, new Date(end)];
     return gapDates;
   };
 
@@ -43,10 +43,19 @@ export function updateBurnDownSnapshots({ burnDownSnapshots }) {
     }
   }
 
-  const result = allDatesArr.map((c, i) => {
-    return { ...newBurnDownSnapshots[i], timestamp: c };
+  const result = allDatesArr.map((indexPosition, i) => {
+    return { ...newBurnDownSnapshots[i], timestamp: indexPosition };
   });
   result[result.length - 1] = burnDownSnapshots[burnDownSnapshots.length - 1];
 
+  return result;
+}
+
+export function removeDuplicateDates({ burnDownSnapshots }) {
+  const result = burnDownSnapshots.filter(
+    (burnDownSnapshot, index, self) =>
+      index ===
+      self.findIndex((t) => t.timestamp === burnDownSnapshot.timestamp)
+  );
   return result;
 }
