@@ -21,13 +21,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   selectedFilter: {
-    backgroundColor: "green",
+    color: "green",
   },
 }));
 
-export default ({ burnDownSnapshots, authedUser = 1 }) => {
-  const [metricFilter, setMetricFilter] = useState("");
-  const [userFilter, setUserFilter] = useState([]);
+export default ({ burnDownSnapshots }) => {
+  const [metricFilter, setMetricFilter] = useState("TotalProjects");
 
   burnDownSnapshots.map(
     (burnDownSnapshot) =>
@@ -35,31 +34,33 @@ export default ({ burnDownSnapshots, authedUser = 1 }) => {
         .toISOString()
         .slice(0, 10))
   );
+  
+  const authedUserId = 1
+  // seperate the authed user and the other users' snapshots
+  const authedUserIdSnapshot = burnDownSnapshots.filter(
+    (snapshot) => snapshot.user === authedUserId
+  );
 
-  // Future name planning here if we want to list all the data for the team the user is on
+  // organize data from the team, and format it so the chart can use it
   const usersOnTeam = [];
   burnDownSnapshots.forEach((snapshot) => {
     if (
-      !usersOnTeam.some((user) => user.userId === snapshot.user) &&
-      snapshot.user !== authedUser
+      !usersOnTeam.some((user) => user.user === snapshot.user) &&
+      snapshot.user !== authedUserId
     ) {
-      const userData = {
-        userId: snapshot.user,
+      const userSnapshot = {
+        user: snapshot.user,
         userEmail: snapshot.userEmail,
+        snapshot: [snapshot],
       };
-      usersOnTeam.push(userData);
+      usersOnTeam.push(userSnapshot);
+    } else if (usersOnTeam.some((user) => user.user === snapshot.user)) {
+      const userIndex = usersOnTeam.findIndex((user) => {
+        return user.user === snapshot.user;
+      });
+      usersOnTeam[userIndex].snapshot.push(snapshot);
     }
   });
-
-  function handleUserFilter(user) {
-    if (userFilter.indexOf(user) >= 0) {
-      return userFilter;
-    } else {
-      const currentUserFilter = userFilter;
-      currentUserFilter.push(user);
-      setUserFilter(currentUserFilter);
-    }
-  }
 
   const classes = useStyles();
   return (
@@ -96,78 +97,96 @@ export default ({ burnDownSnapshots, authedUser = 1 }) => {
         >
           Completed Projects
         </Button>
-        <Button onClick={() => setMetricFilter("")} variant="outlined">
-          Clear Filter
-        </Button>
       </Typography>
       <Grid container>
         <Grid item xs={10}>
           <ResponsiveContainer height={500} width="100%">
-            <LineChart data={burnDownSnapshots}>
+            <LineChart>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" interval="preserveEnd" />
+              <XAxis
+                data={authedUserIdSnapshot}
+                dataKey="timestamp"
+                interval="preserveEnd"
+                allowDuplicatedCategory={false}
+              />
               <YAxis />
               <Tooltip />
               <Legend className={classes.legend} />
-              {metricFilter === "TotalCards" || metricFilter === "" ? (
-                <Line
-                  type="monotone"
-                  dataKey="cardsTotalCount"
-                  name="Total Cards"
-                  stroke={orange[400]}
-                  activeDot={{ r: 8 }}
-                />
-              ) : null}
               {metricFilter === "TotalProjects" || metricFilter === "" ? (
-                <Line
-                  type="monotone"
-                  dataKey="projectCardsTotalCount"
-                  name="Total Project Cards"
-                  stroke={green[400]}
-                />
+                <>
+                  <Line
+                    type="monotone"
+                    data={authedUserIdSnapshot}
+                    dataKey="projectCardsTotalCount"
+                    name={authedUserIdSnapshot[0].userEmail}
+                    stroke={green[400]}
+                  />
+                  {usersOnTeam.map((userOnTeam) => (
+                    <Line
+                      type="monotone"
+                      data={userOnTeam.snapshot}
+                      dataKey="projectCardsTotalCount"
+                      name={`${userOnTeam.userEmail}`}
+                      stroke={orange[400]}
+                      activeDot={{ r: 8 }}
+                    />
+                  ))}
+                </>
               ) : null}
               {metricFilter === "CompletedCards" || metricFilter === "" ? (
-                <Line
-                  type="monotone"
-                  dataKey="cardsInCompleteColumnTotalCount"
-                  name="Completed Cards"
-                  stroke={blue[400]}
-                />
+                <>
+                  <Line
+                    type="monotone"
+                    data={authedUserIdSnapshot}
+                    dataKey="cardsInCompleteColumnTotalCount"
+                    name={authedUserIdSnapshot[0].userEmail}
+                    stroke={blue[400]}
+                  />
+                  {usersOnTeam.map((userOnTeam) => (
+                    <Line
+                      type="monotone"
+                      data={userOnTeam.snapshot}
+                      dataKey="cardsInCompleteColumnTotalCount"
+                      name={`${userOnTeam.userEmail}`}
+                      stroke={orange[400]}
+                      activeDot={{ r: 8 }}
+                    />
+                  ))}
+                </>
               ) : null}
               {metricFilter === "CompletedProjects" || metricFilter === "" ? (
-                <Line
-                  type="monotone"
-                  dataKey="projectCardsInCompleteColumnTotalCount"
-                  name="Completed Project Cards"
-                  stroke={red[400]}
-                />
+                <>
+                  <Line
+                    type="monotone"
+                    data={authedUserIdSnapshot}
+                    dataKey="projectCardsInCompleteColumnTotalCount"
+                    name={authedUserIdSnapshot[0].userEmail}
+                    stroke={red[400]}
+                  />
+                  {usersOnTeam.map((userOnTeam) => (
+                    <Line
+                      type="monotone"
+                      data={userOnTeam.snapshot}
+                      dataKey="cardsInCompleteColumnTotalCount"
+                      name={`${userOnTeam.userEmail}`}
+                      stroke={orange[400]}
+                      activeDot={{ r: 8 }}
+                    />
+                  ))}
+                </>
               ) : null}
             </LineChart>
           </ResponsiveContainer>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="h6" component="h2">
-            Filter by user:{" "}
+            Cohort users
           </Typography>
           {usersOnTeam.map((user) => (
             <Grid item>
-              <Button
-                key={user.userId}
-                onClick={() => handleUserFilter(user.userId)}
-                variant="outlined"
-                className={
-                  userFilter.indexOf(user.userId) >= 0
-                    ? classes.selectedFilter
-                    : ""
-                }
-              >
-                {user.userEmail}
-              </Button>
+              <Typography key={user.userId}>{user.userEmail}</Typography>
             </Grid>
           ))}
-          <Button onClick={() => setUserFilter([])} variant="outlined">
-            Clear Filter
-          </Button>
         </Grid>
       </Grid>
     </React.Fragment>

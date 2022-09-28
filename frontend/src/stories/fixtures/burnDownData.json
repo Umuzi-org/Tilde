@@ -69,7 +69,7 @@
     "userEmail": "someone.nice@umuzi.org",
     "timestamp": "2019-08-10T13:49:31Z",
     "cardsTotalCount": 40,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 30,
     "cardsInCompleteColumnTotalCount": 14,
     "projectCardsInCompleteColumnTotalCount": 11
   },
@@ -78,7 +78,7 @@
     "userEmail": "someone.nice@umuzi.org",
     "timestamp": "2019-08-11T13:49:31Z",
     "cardsTotalCount": 40,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 30,
     "cardsInCompleteColumnTotalCount": 17,
     "projectCardsInCompleteColumnTotalCount": 14
   },
@@ -87,7 +87,7 @@
     "userEmail": "someone.nice@umuzi.org",
     "timestamp": "2019-08-12T13:49:31Z",
     "cardsTotalCount": 40,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 30,
     "cardsInCompleteColumnTotalCount": 22,
     "projectCardsInCompleteColumnTotalCount": 18
   },
@@ -97,7 +97,7 @@
     "userEmail": "someone.cool@umuzi.org",
     "timestamp": "2019-08-09T13:49:31Z",
     "cardsTotalCount": 43,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 35,
     "cardsInCompleteColumnTotalCount": 10,
     "projectCardsInCompleteColumnTotalCount": 7
   },
@@ -106,7 +106,7 @@
     "userEmail": "someone.cool@umuzi.org",
     "timestamp": "2019-08-10T13:49:31Z",
     "cardsTotalCount": 43,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 35,
     "cardsInCompleteColumnTotalCount": 14,
     "projectCardsInCompleteColumnTotalCount": 11
   },
@@ -115,7 +115,7 @@
     "userEmail": "someone.cool@umuzi.org",
     "timestamp": "2019-08-11T13:49:31Z",
     "cardsTotalCount": 43,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 35,
     "cardsInCompleteColumnTotalCount": 17,
     "projectCardsInCompleteColumnTotalCount": 14
   },
@@ -124,7 +124,7 @@
     "userEmail": "someone.cool@umuzi.org",
     "timestamp": "2019-08-12T13:49:31Z",
     "cardsTotalCount": 43,
-    "projectCardsTotalCount": 25,
+    "projectCardsTotalCount": 45,
     "cardsInCompleteColumnTotalCount": 22,
     "projectCardsInCompleteColumnTotalCount": 18
   }
