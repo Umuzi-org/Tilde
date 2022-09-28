@@ -129,6 +129,7 @@ export default ({ burnDownSnapshots }) => {
                       name={`${userOnTeam.userEmail}`}
                       stroke={orange[400]}
                       activeDot={{ r: 8 }}
+                      key={userOnTeam.user}
                     />
                   ))}
                 </>
@@ -150,6 +151,7 @@ export default ({ burnDownSnapshots }) => {
                       name={`${userOnTeam.userEmail}`}
                       stroke={orange[400]}
                       activeDot={{ r: 8 }}
+                      key={userOnTeam.user}
                     />
                   ))}
                 </>
@@ -171,6 +173,7 @@ export default ({ burnDownSnapshots }) => {
                       name={`${userOnTeam.userEmail}`}
                       stroke={orange[400]}
                       activeDot={{ r: 8 }}
+                      key={userOnTeam.user}
                     />
                   ))}
                 </>
@@ -182,9 +185,9 @@ export default ({ burnDownSnapshots }) => {
           <Typography variant="h6" component="h2">
             Cohort users
           </Typography>
-          {usersOnTeam.map((user) => (
-            <Grid item>
-              <Typography key={user.userId}>{user.userEmail}</Typography>
+          {usersOnTeam.map((userOnTeam) => (
+            <Grid item key={userOnTeam.user}>
+              <Typography>{userOnTeam.userEmail}</Typography>
             </Grid>
           ))}
         </Grid>
