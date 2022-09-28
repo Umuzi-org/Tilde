@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Chip from "@material-ui/core/Chip";
+// import Chip from "@material-ui/core/Chip";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
@@ -12,6 +12,7 @@ import FilterByNames from "./FilterByNames";
 import competenceProjects from "./mock-competence-review-projects";
 import pullRequestProjects from "./mock-pull-request-review-projects";
 import { useState } from "react";
+import ReviewQueueFilterChips from "./ReviewQueueFilterChips";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -207,49 +208,49 @@ export default function Presentation({
       )[0];
     });
 
-  function QueueFilterChips({
-    orderFilters,
-    setFiltersMethod,
-    setSelectedFilterMethod,
-  }) {
-    return (
-      <>
-        <Typography>Sort by:</Typography>
-        {orderFilters &&
-          orderFilters.map((filter) => (
-            <Chip
-              label={filter.label}
-              variant={filter.isSelected ? "default" : "outlined"}
-              onClick={() =>
-                handleClick({
-                  setFiltersMethod: setFiltersMethod,
-                  setSelectedFilterMethod: setSelectedFilterMethod,
-                  selectedFilter: filter,
-                })
-              }
-            />
-          ))}
-      </>
-    );
-  }
+  // function ReviewQueueFilterChips({
+  //   orderFilters,
+  //   setFiltersMethod,
+  //   setSelectedFilterMethod,
+  // }) {
+  //   return (
+  //     <>
+  //       <Typography>Sort by:</Typography>
+  //       {orderFilters &&
+  //         orderFilters.map((filter) => (
+  //           <Chip
+  //             label={filter.label}
+  //             variant={filter.isSelected ? "default" : "outlined"}
+  //             onClick={() =>
+  //               handleClick({
+  //                 setFiltersMethod: setFiltersMethod,
+  //                 setSelectedFilterMethod: setSelectedFilterMethod,
+  //                 selectedFilter: filter,
+  //               })
+  //             }
+  //           />
+  //         ))}
+  //     </>
+  //   );
+  // }
 
-  function handleClick({
-    setFiltersMethod,
-    setSelectedFilterMethod,
-    selectedFilter,
-  }) {
-    setFiltersMethod((prev) => {
-      return prev.map((filter) => {
-        if (filter.label === selectedFilter.label) {
-          const newSelectedFilter = { ...filter, isSelected: true };
-          setSelectedFilterMethod(newSelectedFilter);
-          return { ...filter, isSelected: true };
-        } else {
-          return { ...filter, isSelected: false };
-        }
-      });
-    });
-  }
+  // function handleClick({
+  //   setFiltersMethod,
+  //   setSelectedFilterMethod,
+  //   selectedFilter,
+  // }) {
+  //   setFiltersMethod((prev) => {
+  //     return prev.map((filter) => {
+  //       if (filter.label === selectedFilter.label) {
+  //         const newSelectedFilter = { ...filter, isSelected: true };
+  //         setSelectedFilterMethod(newSelectedFilter);
+  //         return { ...filter, isSelected: true };
+  //       } else {
+  //         return { ...filter, isSelected: false };
+  //       }
+  //     });
+  //   });
+  // }
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -290,7 +291,7 @@ export default function Presentation({
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Competence Review Queue</Typography>
             <Grid className={classes.queueContainerHeadingFilters}>
-              <QueueFilterChips
+              <ReviewQueueFilterChips
                 orderFilters={competenceOrderFilters}
                 setFiltersMethod={setCompetenceOrderFilters}
                 setSelectedFilterMethod={setSelectedCompetenceOrderFilter}
@@ -320,7 +321,7 @@ export default function Presentation({
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
             <Grid className={classes.queueContainerHeadingFilters}>
-              <QueueFilterChips
+              <ReviewQueueFilterChips
                 orderFilters={pullRequestOrderFilters}
                 setFiltersMethod={setPullRequestOrderFilters}
                 setSelectedFilterMethod={setSelectedPullRequestOrderFilter}
