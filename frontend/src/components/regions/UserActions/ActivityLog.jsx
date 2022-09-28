@@ -61,7 +61,7 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
                     <Chip
                       className={classes.label}
                       style={{ backgroundColor: item.eventColor }}
-                      label={item.eventName}
+                      label={item.eventName.split("_").join(" ").toLowerCase()}
                     />
                   </Paper>
                 </Paper>
