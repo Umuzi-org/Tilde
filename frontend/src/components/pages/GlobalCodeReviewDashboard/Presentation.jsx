@@ -12,6 +12,7 @@ import FilterByNames from "./FilterByNames";
 import competenceProjects from "./mock-competence-review-projects";
 import pullRequestProjects from "./mock-pull-request-review-projects";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -136,16 +137,16 @@ export default function Presentation({
   const initialPullRequestOrderFilters = [
     {
       label: "last updated time(oldest)",
-      func: (a, b) =>
-        new Date(b.oldestOpenPrUpdatedTime) -
-        new Date(a.oldestOpenPrUpdatedTime),
-      isSelected: false,
+      sortFunction: (a, b) =>
+        new Date(a.oldestOpenPrUpdatedTime) -
+        new Date(b.oldestOpenPrUpdatedTime),
+      isSelected: true,
     },
     {
       label: "last updated time(newest)",
-      func: (a, b) =>
-        new Date(a.oldestOpenPrUpdatedTime) -
-        new Date(b.oldestOpenPrUpdatedTime),
+      sortFunction: (a, b) =>
+        new Date(b.oldestOpenPrUpdatedTime) -
+        new Date(a.oldestOpenPrUpdatedTime),
       isSelected: false,
     },
   ];
@@ -154,7 +155,15 @@ export default function Presentation({
     initialPullRequestOrderFilters
   );
 
-  const [selectedOrderFilter, setSelectedOrderFilter] = useState({});
+  const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
+    useState({});
+
+  useEffect(() => {
+    const selectedfilter = pullRequestOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    );
+    setSelectedPullRequestOrderFilter(selectedfilter[0]);
+  }, [selectedPullRequestOrderFilter]);
 
   function QueueFilterChips({ orderFilters }) {
     return (
@@ -165,8 +174,7 @@ export default function Presentation({
           variant={filter.isSelected ? "default" : "outlined"}
           onClick={() =>
             handleClick({
-              filters: pullRequestOrderFilters,
-              selectedFilter: selectedOrderFilter,
+              selectedFilter: filter,
             })
           }
         />
@@ -174,25 +182,19 @@ export default function Presentation({
     );
   }
 
-  const currentPullRequestOrder = {
-    label: "last updated time",
-  };
-
-  function handleClick({ filters, selectedFilter }) {
+  function handleClick({ selectedFilter }) {
     setPullRequestOrderFilters((prev) => {
       return prev.map((filter) => {
         if (filter.label === selectedFilter.label) {
+          const newSelectedFilter = { ...filter, isSelected: true };
+          setSelectedPullRequestOrderFilter(newSelectedFilter);
           return { ...filter, isSelected: true };
+        } else {
+          return { ...filter, isSelected: false };
         }
-        return { ...filter, isSelected: false };
       });
     });
-    const selectedFilterObject = pullRequestOrderFilters.filter(
-      (sortfilter) => sortfilter.isSelected
-    );
-    setSelectedOrderFilter(selectedFilterObject);
   }
-  console.log(pullRequestOrderFilters, "|", selectedOrderFilter);
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -266,11 +268,7 @@ export default function Presentation({
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
-              .sort(
-                (a, b) =>
-                  new Date(b.oldestOpenPrUpdatedTime) -
-                  new Date(a.oldestOpenPrUpdatedTime)
-              )
+              .sort(selectedPullRequestOrderFilter.sortFunction)
               .map((project) => (
                 <PullRequestReviewQueueEntry project={project} />
               ))}
