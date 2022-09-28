@@ -3,10 +3,15 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import TodayIcon from "@material-ui/icons/Today";
 import Chip from "@material-ui/core/Chip";
-import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    width: "50rem",
+    ["@media (max-width:620px)"]: {
+      fontSize: "1rem",
+    },
+  },
   time: {
     marginLeft: theme.spacing(2),
   },
@@ -20,36 +25,29 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(2),
-
-    ["@media (max-width:620px)"]: {
-      fontSize: "1rem",
-    },
   },
   calendarIcon: {
     margin: theme.spacing(1),
   },
   dateTypography: {
     marginTop: theme.spacing(2),
-    ["@media (max-width:620px)"]: {
-      fontSize: "1rem",
-    },
   },
 }));
 
 export default function ActivityLog({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
-  console.log("eventList", eventList);
   return (
     <React.Fragment>
       {sortedTimestampArray.map((timestamp) => (
-        <Paper>
+        <Paper className={classes.paper}>
           <Typography variant="h6" className={classes.dateTypography}>
             <TodayIcon className={classes.calendarIcon} />
-            {new Date(timestamp).toDateString()}
+            {new Date(timestamp.substring(0, 10)).toDateString()}
           </Typography>
           {eventList.map((item) => (
             <>
-              {item.timestamp.substring(0, 10) === timestamp && (
+              {item.timestamp.substring(0, 10) ===
+                timestamp.substring(0, 10) && (
                 <Paper colors={item.eventColor} timestamp={item.timestamp}>
                   <p className={classes.time}>
                     {new Date(item.timestamp).toTimeString().substring(0, 8)}

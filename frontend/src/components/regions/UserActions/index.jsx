@@ -214,16 +214,13 @@ function UserActionsUnconnected({
   });
 
   orderedDates2 = [...new Set(orderedDates2)];
-  console.log(orderedDates2);
 
-  console.log("bfore", activityLogEntries);
   const eventTypesWithColors = matchEventTypesWithColors({
     eventTypes,
     eventTypeColors,
   });
 
   activityLogEntries = mapData({ eventTypesWithColors, activityLogEntries });
-  console.log("after", activityLogEntries);
 
   const props = {
     orderedDates,
@@ -291,7 +288,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchActivityLogEntries: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
-          data: { actorUser, page },
+          data: { actorUser: parseInt(actorUser), page },
         })
       );
     },
