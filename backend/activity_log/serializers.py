@@ -64,10 +64,14 @@ class LogEntrySerializer(serializers.ModelSerializer):
             "event_type",
             "actor_user",
             "effected_user",
+            "actor_user_email",
+            "effected_user_email",
             "object_1_content_type_name",
             "object_1_id",
             "object_2_content_type_name",
             "object_2_id",
+            "object_1_summary",
+            "object_2_summary",
         ]
 
     object_1_content_type_name = serializers.SerializerMethodField(
@@ -76,6 +80,12 @@ class LogEntrySerializer(serializers.ModelSerializer):
     object_2_content_type_name = serializers.SerializerMethodField(
         "get_object_2_content_type_name"
     )
+
+    object_1_summary = serializers.SerializerMethodField("get_object_1_summary")
+    object_2_summary = serializers.SerializerMethodField("get_object_2_summary")
+
+    effected_user_email = serializers.SerializerMethodField("get_effected_user_email")
+    actor_user_email = serializers.SerializerMethodField("get_actor_user_email")
 
     def get_object_1_content_type_name(self, instance):
         return (
@@ -90,3 +100,20 @@ class LogEntrySerializer(serializers.ModelSerializer):
             if instance.object_2_content_type
             else None
         )
+
+    def _get_summary_for_instance(self, object):
+        """Return a json serializable dict that describes the instance"""
+        if object:
+            return object.get_activity_log_summary_data()
+
+    def get_object_1_summary(self, instance):
+        return self._get_summary_for_instance(instance.object_1)
+
+    def get_object_2_summary(self, instance):
+        return self._get_summary_for_instance(instance.object_2)
+
+    def get_effected_user_email(self, instance):
+        return instance.effected_user.email
+
+    def get_actor_user_email(self, instance):
+        return instance.actor_user.email

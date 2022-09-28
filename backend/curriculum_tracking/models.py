@@ -507,6 +507,20 @@ class RecruitProject(
     #         ["content_item", "repository"],
     #     ]
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        try:
+            card = self.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+
+        return {
+            "card": card_id,
+            "title": self.content_item.title,
+            "flavour_names": self.flavour_names,
+        }
+
     def users_that_reviewed_since_last_review_request(self):
         if self.review_request_time is None:
             return []
@@ -812,6 +826,22 @@ class RecruitProjectReview(models.Model, Mixins):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        project = self.recruit_project
+        try:
+            card = project.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+
+        return {
+            "recruit_project": project.id,
+            "card": card_id,
+            "title": project.content_item.title,
+            "flavour_names": project.flavour_names,
+        }
+
     @property
     def reviewer_user_email(self):
         return self.reviewer_user.email
@@ -924,6 +954,20 @@ class TopicProgress(
             return f"{s} [{flavours}]"
         return s
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        try:
+            card = self.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+        return {
+            "topic_progress": self.id,
+            "card": card_id,
+            "title": self.content_item.title,
+            "flavour_names": self.content_item.flavour_names,
+        }
+
 
 class TopicReview(models.Model, Mixins):
     status = models.CharField(
@@ -940,6 +984,21 @@ class TopicReview(models.Model, Mixins):
     @property
     def reviewer_user_email(self):
         return self.reviewer_user.email
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        topic = self.topic_progress
+        try:
+            card = topic.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+        return {
+            "topic_progress": topic.id,
+            "card": card_id,
+            "title": topic.content_item.title,
+            "flavour_names": topic.content_item.flavour_names,
+        }
 
 
 class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin, FlavourMixin):
@@ -1036,6 +1095,13 @@ class AgileCard(
     # this field is filled in by signals
 
     __original_status = None
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        return {
+            "title": self.content_item.title,
+            "flavour_names": self.flavour_names,
+        }
 
     @property
     def progress_instance(self):
