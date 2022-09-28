@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import TodayIcon from "@material-ui/icons/Today";
 import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActivityLog({ eventList, sortedTimestampArray }) {
   const classes = useStyles();
+  console.log("eventList", eventList);
   return (
     <React.Fragment>
       {sortedTimestampArray.map((timestamp) => (
@@ -53,7 +55,7 @@ export default function ActivityLog({ eventList, sortedTimestampArray }) {
                     {new Date(item.timestamp).toTimeString().substring(0, 8)}
                   </p>
                   <Typography variant="h6" className={classes.title}>
-                    {item.title}
+                    {item.object_1Summary.title}
                   </Typography>
                   <Paper className={classes.filler}>
                     <Chip

@@ -22,6 +22,7 @@ const days = [
   "Friday",
   "Saturday",
 ];
+
 const matchEventTypesWithColors = ({ eventTypes, eventTypeColors }) => {
   const arr = [];
   eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
@@ -58,18 +59,17 @@ function UserActionsUnconnected({
   authedUserId,
   projectReviews,
   cardSummaries,
+  activityLogEntries,
   fetchProjectReviewsPages,
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
+  fetchActivityLogEntries,
+  eventTypes,
   fetchEventTypes,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-  FETCH_ACTIVITY_LOG_ENTRIES,
-  eventTypes,
-  activityLogEntries,
-  fetchActivityLogEntries,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -122,11 +122,6 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
-  const latestActivityLogEntries = getLatestMatchingCall({
-    callLog: FETCH_ACTIVITY_LOG_ENTRIES,
-    requestData: { page: 1 },
-  });
-
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
@@ -141,10 +136,6 @@ function UserActionsUnconnected({
     if (lastCompletedCardsPage.responseData.results.length > 0) {
       const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
       fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
-    }
-    if (latestActivityLogEntries.responseData.results.length === 0) {
-      const nextCardPage = latestActivityLogEntries.requestData.page + 1;
-      fetchCardCompletions({ page: nextCardPage, actorUser: userId });
     }
   };
 
@@ -196,20 +187,13 @@ function UserActionsUnconnected({
       };
     });
 
+  if (!activityLogEntries) return <Loading />;
+
   let actionLog = [...reviewsDone, ...completedCards].filter((o) => o.dateStr);
 
   actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
   let orderedDates = [];
-  let orderedDates2 = [];
-  console.log(eventTypes);
-
-  Object.keys(activityLogEntries).map((o) => {
-    const date = activityLogEntries[o].timestamp;
-    orderedDates2.push(date.substring(0, 10));
-  });
-
-  orderedDates2 = [...new Set(orderedDates2)];
 
   let actionLogByDate = {};
   actionLog.forEach((o) => {
@@ -218,22 +202,37 @@ function UserActionsUnconnected({
     actionLogByDate[date] = actionLogByDate[date] || [];
     actionLogByDate[date].push(o);
   });
+
+  let orderedDates2 = [];
+
+  Object.keys(activityLogEntries).map((o) => {
+    const date = activityLogEntries[o].timestamp;
+    orderedDates2.push(date.substring(0, 10));
+    orderedDates2.sort((time1, time2) => {
+      return new Date(time1) < new Date(time2) ? 1 : -1;
+    });
+  });
+
+  orderedDates2 = [...new Set(orderedDates2)];
+  console.log(orderedDates2);
+
+  console.log("bfore", activityLogEntries);
   const eventTypesWithColors = matchEventTypesWithColors({
     eventTypes,
     eventTypeColors,
   });
 
   activityLogEntries = mapData({ eventTypesWithColors, activityLogEntries });
+  console.log("after", activityLogEntries);
 
   const props = {
     orderedDates,
     orderedDates2,
     actionLogByDate,
-    eventTypes,
-    activityLogEntries,
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
+    activityLogEntries,
   };
   return <Presentation {...props} />;
 }
