@@ -12,7 +12,6 @@ import FilterByNames from "./FilterByNames";
 import competenceProjects from "./mock-competence-review-projects";
 import pullRequestProjects from "./mock-pull-request-review-projects";
 import { useState } from "react";
-import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -180,29 +179,24 @@ export default function Presentation({
   const [pullRequestOrderFilters, setPullRequestOrderFilters] = useState(
     initialPullRequestOrderFilters
   );
+
   const [competenceOrderFilters, setCompetenceOrderFilters] = useState(
     initialCompetenceOrderFilters
   );
 
   const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
-    useState({});
+    useState(() => {
+      return pullRequestOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
 
   const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
-    useState({});
-
-  useEffect(() => {
-    const selectedfilter = pullRequestOrderFilters.filter(
-      (orderFilter) => orderFilter.isSelected
-    );
-    setSelectedPullRequestOrderFilter(selectedfilter[0]);
-  }, [selectedPullRequestOrderFilter]);
-
-  useEffect(() => {
-    const selectedfilter = competenceOrderFilters.filter(
-      (orderFilter) => orderFilter.isSelected
-    );
-    setSelectedCompetenceOrderFilter(selectedfilter[0]);
-  }, [selectedCompetenceOrderFilter]);
+    useState(() => {
+      return competenceOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
 
   function QueueFilterChips({
     orderFilters,
