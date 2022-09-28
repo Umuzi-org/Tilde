@@ -35,6 +35,15 @@ const useStyles = makeStyles((theme) => {
       padding: "10px 0px",
       backgroundColor: theme.palette.background.default,
       zIndex: 2,
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+    },
+    queueContainerHeadingFilters: {
+      display: "flex",
+      alignItems: "center",
+      gap: 5,
+      flexWrap: "wrap",
     },
   };
 });
@@ -204,20 +213,23 @@ export default function Presentation({
     setSelectedFilterMethod,
   }) {
     return (
-      orderFilters &&
-      orderFilters.map((filter) => (
-        <Chip
-          label={filter.label}
-          variant={filter.isSelected ? "default" : "outlined"}
-          onClick={() =>
-            handleClick({
-              setFiltersMethod: setFiltersMethod,
-              setSelectedFilterMethod: setSelectedFilterMethod,
-              selectedFilter: filter,
-            })
-          }
-        />
-      ))
+      <>
+        <Typography>Sort by:</Typography>
+        {orderFilters &&
+          orderFilters.map((filter) => (
+            <Chip
+              label={filter.label}
+              variant={filter.isSelected ? "default" : "outlined"}
+              onClick={() =>
+                handleClick({
+                  setFiltersMethod: setFiltersMethod,
+                  setSelectedFilterMethod: setSelectedFilterMethod,
+                  selectedFilter: filter,
+                })
+              }
+            />
+          ))}
+      </>
     );
   }
 
@@ -277,7 +289,7 @@ export default function Presentation({
           {/* TODO center headings*/}
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Competence Review Queue</Typography>
-            <Grid>
+            <Grid className={classes.queueContainerHeadingFilters}>
               <QueueFilterChips
                 orderFilters={competenceOrderFilters}
                 setFiltersMethod={setCompetenceOrderFilters}
@@ -286,7 +298,6 @@ export default function Presentation({
             </Grid>
           </Grid>
           <Grid>
-            {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
             {competenceReviewQueueProjects
               .filter(applyFilters)
               .sort(selectedCompetenceOrderFilter.sortFunction)
@@ -308,7 +319,7 @@ export default function Presentation({
         <Grid item xs={12} md={6} className={classes.queueItem}>
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
-            <Grid>
+            <Grid className={classes.queueContainerHeadingFilters}>
               <QueueFilterChips
                 orderFilters={pullRequestOrderFilters}
                 setFiltersMethod={setPullRequestOrderFilters}
