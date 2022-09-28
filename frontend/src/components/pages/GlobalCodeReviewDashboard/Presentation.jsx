@@ -2,12 +2,16 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import Chip from "@material-ui/core/Chip";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
 import FilterByNames from "./FilterByNames";
+import competenceProjects from "./mock-competence-review-projects";
+import pullRequestProjects from "./mock-pull-request-review-projects";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -65,6 +69,8 @@ export default function Presentation({
   filterExcludeTags = filterExcludeTags || [];
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
+  competenceReviewQueueProjects = competenceProjects || [];
+  pullRequestReviewQueueProjects = pullRequestProjects || [];
 
   const allFlavours = [
     ...new Set(
@@ -126,6 +132,67 @@ export default function Presentation({
 
     return true;
   }
+
+  const initialPullRequestOrderFilters = [
+    {
+      label: "last updated time(oldest)",
+      func: (a, b) =>
+        new Date(b.oldestOpenPrUpdatedTime) -
+        new Date(a.oldestOpenPrUpdatedTime),
+      isSelected: false,
+    },
+    {
+      label: "last updated time(newest)",
+      func: (a, b) =>
+        new Date(a.oldestOpenPrUpdatedTime) -
+        new Date(b.oldestOpenPrUpdatedTime),
+      isSelected: false,
+    },
+  ];
+
+  const [pullRequestOrderFilters, setPullRequestOrderFilters] = useState(
+    initialPullRequestOrderFilters
+  );
+
+  const [selectedOrderFilter, setSelectedOrderFilter] = useState({});
+
+  function QueueFilterChips({ orderFilters }) {
+    return (
+      orderFilters &&
+      orderFilters.map((filter) => (
+        <Chip
+          label={filter.label}
+          variant={filter.isSelected ? "default" : "outlined"}
+          onClick={() =>
+            handleClick({
+              filters: pullRequestOrderFilters,
+              selectedFilter: selectedOrderFilter,
+            })
+          }
+        />
+      ))
+    );
+  }
+
+  const currentPullRequestOrder = {
+    label: "last updated time",
+  };
+
+  function handleClick({ filters, selectedFilter }) {
+    setPullRequestOrderFilters((prev) => {
+      return prev.map((filter) => {
+        if (filter.label === selectedFilter.label) {
+          return { ...filter, isSelected: true };
+        }
+        return { ...filter, isSelected: false };
+      });
+    });
+    const selectedFilterObject = pullRequestOrderFilters.filter(
+      (sortfilter) => sortfilter.isSelected
+    );
+    setSelectedOrderFilter(selectedFilterObject);
+  }
+  console.log(pullRequestOrderFilters, "|", selectedOrderFilter);
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -192,6 +259,9 @@ export default function Presentation({
         <Grid item xs={12} md={6} className={classes.queueItem}>
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
+            <Grid>
+              <QueueFilterChips orderFilters={pullRequestOrderFilters} />
+            </Grid>
           </Grid>
           <Grid>
             {pullRequestReviewQueueProjects
