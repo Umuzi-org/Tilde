@@ -151,11 +151,43 @@ export default function Presentation({
     },
   ];
 
+  const initialCompetenceOrderFilters = [
+    {
+      label: "review request time",
+      sortFunction: (a, b) =>
+        new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime),
+      isSelected: true,
+    },
+    {
+      label: "start time",
+      sortFunction: (a, b) => new Date(a.startTime) - new Date(b.startTime),
+      isSelected: false,
+    },
+    {
+      label: "positive reviews",
+      sortFunction: (a, b) => {
+        return (
+          b.codeReviewCompetentSinceLastReviewRequest +
+          b.codeReviewExcellentSinceLastReviewRequest -
+          (a.codeReviewCompetentSinceLastReviewRequest +
+            a.codeReviewExcellentSinceLastReviewRequest)
+        );
+      },
+      isSelected: false,
+    },
+  ];
+
   const [pullRequestOrderFilters, setPullRequestOrderFilters] = useState(
     initialPullRequestOrderFilters
   );
+  const [competenceOrderFilters, setCompetenceOrderFilters] = useState(
+    initialCompetenceOrderFilters
+  );
 
   const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
+    useState({});
+
+  const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
     useState({});
 
   useEffect(() => {
@@ -165,7 +197,18 @@ export default function Presentation({
     setSelectedPullRequestOrderFilter(selectedfilter[0]);
   }, [selectedPullRequestOrderFilter]);
 
-  function QueueFilterChips({ orderFilters }) {
+  useEffect(() => {
+    const selectedfilter = competenceOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    );
+    setSelectedCompetenceOrderFilter(selectedfilter[0]);
+  }, [selectedCompetenceOrderFilter]);
+
+  function QueueFilterChips({
+    orderFilters,
+    setFiltersMethod,
+    setSelectedFilterMethod,
+  }) {
     return (
       orderFilters &&
       orderFilters.map((filter) => (
@@ -174,6 +217,8 @@ export default function Presentation({
           variant={filter.isSelected ? "default" : "outlined"}
           onClick={() =>
             handleClick({
+              setFiltersMethod: setFiltersMethod,
+              setSelectedFilterMethod: setSelectedFilterMethod,
               selectedFilter: filter,
             })
           }
@@ -182,12 +227,16 @@ export default function Presentation({
     );
   }
 
-  function handleClick({ selectedFilter }) {
-    setPullRequestOrderFilters((prev) => {
+  function handleClick({
+    setFiltersMethod,
+    setSelectedFilterMethod,
+    selectedFilter,
+  }) {
+    setFiltersMethod((prev) => {
       return prev.map((filter) => {
         if (filter.label === selectedFilter.label) {
           const newSelectedFilter = { ...filter, isSelected: true };
-          setSelectedPullRequestOrderFilter(newSelectedFilter);
+          setSelectedFilterMethod(newSelectedFilter);
           return { ...filter, isSelected: true };
         } else {
           return { ...filter, isSelected: false };
@@ -234,15 +283,19 @@ export default function Presentation({
           {/* TODO center headings*/}
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Competence Review Queue</Typography>
+            <Grid>
+              <QueueFilterChips
+                orderFilters={competenceOrderFilters}
+                setFiltersMethod={setCompetenceOrderFilters}
+                setSelectedFilterMethod={setSelectedCompetenceOrderFilter}
+              />
+            </Grid>
           </Grid>
           <Grid>
             {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
             {competenceReviewQueueProjects
               .filter(applyFilters)
-              .sort(
-                (a, b) =>
-                  new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
-              )
+              .sort(selectedCompetenceOrderFilter.sortFunction)
               .map((project) => (
                 <CompetenceReviewQueueEntry project={project} />
               ))}
@@ -262,7 +315,11 @@ export default function Presentation({
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
             <Grid>
-              <QueueFilterChips orderFilters={pullRequestOrderFilters} />
+              <QueueFilterChips
+                orderFilters={pullRequestOrderFilters}
+                setFiltersMethod={setPullRequestOrderFilters}
+                setSelectedFilterMethod={setSelectedPullRequestOrderFilter}
+              />
             </Grid>
           </Grid>
           <Grid>
