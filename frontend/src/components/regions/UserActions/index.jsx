@@ -66,6 +66,7 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+  FETCH_ACTIVITY_LOG_ENTRIES,
   eventTypes,
   activityLogEntries,
   fetchActivityLogEntries,
@@ -93,7 +94,7 @@ function UserActionsUnconnected({
   useEffect(() => {
     fetchActivityLogEntries({
       actorUser: userId,
-      page: 1,
+      page: 3,
     });
   }, [fetchActivityLogEntries, userId]);
 
@@ -121,10 +122,10 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
-  // const latestEventTypesPage = getLatestMatchingCall({
-  //   callLog: FETCH_EVENT_TYPES,
-  //   requestData: { page: 1 },
-  // });
+  const latestActivityLogEntries = getLatestMatchingCall({
+    callLog: FETCH_ACTIVITY_LOG_ENTRIES,
+    requestData: { page: 1 },
+  });
 
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
@@ -140,6 +141,10 @@ function UserActionsUnconnected({
     if (lastCompletedCardsPage.responseData.results.length > 0) {
       const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
       fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+    }
+    if (latestActivityLogEntries.responseData.results.length === 0) {
+      const nextCardPage = latestActivityLogEntries.requestData.page + 1;
+      fetchCardCompletions({ page: nextCardPage, actorUser: userId });
     }
   };
 
@@ -197,6 +202,7 @@ function UserActionsUnconnected({
 
   let orderedDates = [];
   let orderedDates2 = [];
+  console.log(eventTypes);
 
   Object.keys(activityLogEntries).map((o) => {
     const date = activityLogEntries[o].timestamp;
@@ -212,7 +218,6 @@ function UserActionsUnconnected({
     actionLogByDate[date] = actionLogByDate[date] || [];
     actionLogByDate[date].push(o);
   });
-
   const eventTypesWithColors = matchEventTypesWithColors({
     eventTypes,
     eventTypeColors,

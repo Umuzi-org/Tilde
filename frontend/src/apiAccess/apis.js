@@ -383,12 +383,17 @@ async function activityLogDayCountsPage({
 
 async function activityLogEntries({
   eventTypeName,
+  timestamp,
   effectedUser,
   actorUser,
+  actorUserEmail,
+  effectedUserEmail,
   object1ContentType,
   object1Id,
   object2ContentType,
   object2Id,
+  object1Summary,
+  object2Summary,
   page,
 }) {
   const limit = 20;
@@ -405,6 +410,11 @@ async function activityLogEntries({
   if (object1Id) params["object_1_id"] = object1Id;
   if (object2ContentType) params["object_2_content_type"] = object2ContentType;
   if (object2Id) params["object_2_id"] = object2Id;
+  if (timestamp) params["timestamp"] = timestamp;
+  if (actorUserEmail) params["actor_user_email"] = actorUserEmail;
+  if (effectedUserEmail) params["effected_user_email"] = effectedUserEmail;
+  if (object1Summary) params["object_1_summary"] = object1Summary;
+  if (object2Summary) params["object_2_summary"] = object2Summary;
   const getParams = objectToGetQueryString(params);
 
   const url = `${API_BASE_URL}/api/activity_log_entries/?${getParams}`;
