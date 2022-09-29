@@ -174,8 +174,11 @@ export default function Presentation({
                 (a, b) =>
                   new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
               )
-              .map((project) => (
-                <CompetenceReviewQueueEntry project={project} />
+              .map((project, index) => (
+                <CompetenceReviewQueueEntry
+                  project={project}
+                  key={`${project}_${index}`}
+                />
               ))}
           </Grid>
           <Paper elevation={3} className={classes.project} variant="outlined">
@@ -201,8 +204,11 @@ export default function Presentation({
                   new Date(b.oldestOpenPrUpdatedTime) -
                   new Date(a.oldestOpenPrUpdatedTime)
               )
-              .map((project) => (
-                <PullRequestReviewQueueEntry project={project} />
+              .map((project, index) => (
+                <PullRequestReviewQueueEntry
+                  project={project}
+                  key={`${project}_${index}`}
+                />
               ))}
           </Grid>
 
