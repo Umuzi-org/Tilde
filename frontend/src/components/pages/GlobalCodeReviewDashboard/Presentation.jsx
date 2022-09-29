@@ -7,7 +7,7 @@ import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
-import FilterByNames from "./FilterByNames";
+import Filters from "./Filters";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => {
     },
     queueItem: {
       maxHeight: "90vh",
+
       overflowY: "scroll",
       padding: "0px 10px",
     },
@@ -35,20 +36,6 @@ const useStyles = makeStyles((theme) => {
     filterByNamesContainer: {
       margin: 0,
       width: "100%",
-    },
-    filterByNamesItem: {
-      maxHeight: "90vh",
-      overflowY: "scroll",
-    },
-    filterByNamesContainerHeading: {
-      position: "sticky",
-      top: -5,
-      padding: "10px",
-      backgroundColor: theme.palette.background.default,
-      zIndex: 2,
-    },
-    filterByNamesItemBody: {
-      padding: "0px 10px",
     },
   };
 });
@@ -145,45 +132,24 @@ export default function Presentation({
     return true;
   }
 
+  const props = {
+    filterIncludeTags,
+    filterExcludeTags,
+    filterIncludeFlavours,
+    filterExcludeFlavours,
+    handleChangeFlavourFilter,
+    handleChangeTagFilter,
+    allTagNames,
+    allFlavours,
+    allTeamNames,
+    filterIncludeAssigneeTeams,
+    handleChangeAssigneeTeamFilter,
+  };
+
   return (
     <Grid container spacing={3} className={classes.mainSection}>
       <Grid item xs={2} className={classes.filterByNamesContainer}>
-        <Grid className={classes.filterByNamesItem}>
-          <Grid className={classes.filterByNamesContainerHeading}>
-            <Typography variant="h5">Filters</Typography>
-          </Grid>
-          <Grid className={classes.filterByNamesItemBody}>
-            <Typography variant="h6">Filter by flavour</Typography>
-            <Paper className={classes.filterByItemPaper}>
-              <FilterByNames
-                allNames={allFlavours}
-                filterInclude={filterIncludeFlavours}
-                filterExclude={filterExcludeFlavours}
-                onChange={handleChangeFlavourFilter}
-              />
-            </Paper>
-
-            <Typography variant="h6">Filter by tag</Typography>
-            <Paper className={classes.filterByItemPaper}>
-              <FilterByNames
-                allNames={allTagNames}
-                filterInclude={filterIncludeTags}
-                filterExclude={filterExcludeTags}
-                onChange={handleChangeTagFilter}
-              />
-            </Paper>
-
-            <Typography variant="h6">Filter by assignee team</Typography>
-            <Paper className={classes.filterByItemPaper}>
-              <FilterByNames
-                allNames={allTeamNames}
-                filterInclude={filterIncludeAssigneeTeams}
-                filterExclude={[]}
-                onChange={handleChangeAssigneeTeamFilter}
-              />
-            </Paper>
-          </Grid>
-        </Grid>
+        <Filters {...props} />
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
