@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function Filters({
+export default function FilterByNamesFilters({
   filterIncludeTags,
   filterExcludeTags,
 
@@ -120,5 +120,3 @@ function Filters({
     </Grid>
   );
 }
-
-export default Filters;

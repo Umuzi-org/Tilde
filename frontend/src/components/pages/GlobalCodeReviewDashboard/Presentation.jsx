@@ -7,7 +7,7 @@ import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
-import Filters from "./Filters";
+import FilterByNamesFilters from "./FilterByNamesFilters";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -149,7 +149,7 @@ export default function Presentation({
   return (
     <Grid container spacing={3} className={classes.mainSection}>
       <Grid item xs={2} className={classes.filterByNamesContainer}>
-        <Filters {...props} />
+        <FilterByNamesFilters {...props} />
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
