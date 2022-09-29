@@ -129,7 +129,9 @@ function UserActionsUnconnected({
   }) || { loading: true };
 
   const anyLoading =
-    latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
+    latestProjectReviewsCall.loading ||
+    lastCompletedCardsPage.loading ||
+    latestActivityLogPage.loading;
 
   const fetchNextPages = () => {
     if (anyLoading) return;
@@ -219,7 +221,7 @@ function UserActionsUnconnected({
   Object.keys(activityLogEntries).map((o) => {
     const date = activityLogEntries[o].timestamp;
     orderedDates2.push(date.substring(0, 10));
-    orderedDates2.sort((time1, time2) => {
+    return orderedDates2.sort((time1, time2) => {
       return new Date(time1) < new Date(time2) ? 1 : -1;
     });
   });
@@ -254,6 +256,7 @@ const mapStateToProps = (state) => {
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    FETCH_ACTIVITY_LOG_ENTRIES: state.FETCH_ACTIVITY_LOG_ENTRIES,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
     eventTypes: state.apiEntities.eventTypes,
     activityLogEntries: state.apiEntities.activityLogEntries,
@@ -299,7 +302,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchActivityLogEntries: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
-          data: { actorUser: parseInt(actorUser), page },
+          data: { actorUser, page },
         })
       );
     },
