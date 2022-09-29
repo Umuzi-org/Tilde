@@ -161,11 +161,11 @@ export default function Presentation({
   teams,
   users,
   teamSummaryStats,
-  filterByGroup,
-  filterByUser,
 
+  filterFormValues,
   filterUsersByGroupName,
   handleUserGroupClick,
+  handleChangeFilterFormInput
 }) {
   const classes = useStyles();
   return (
@@ -184,8 +184,9 @@ export default function Presentation({
           <TextField
             label="Teams"
             variant="outlined"
-            {...filterByGroup}
+            value={filterFormValues.team}
             className={classes.textBoxSize}
+            onChange={handleChangeFilterFormInput("team")}
           />
         </Paper>
         {teams.map((team) => {
@@ -213,7 +214,9 @@ export default function Presentation({
           <TextField
             label={`${filterUsersByGroupName} Users`}
             variant="outlined"
-            {...filterByUser}
+            value={filterFormValues.user}
+            onChange={handleChangeFilterFormInput("user")}
+
             className={classes.textBoxSize}
           />
         </Paper>

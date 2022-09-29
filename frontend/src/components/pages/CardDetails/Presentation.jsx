@@ -1,23 +1,19 @@
 import React from "react";
-import {
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Typography from "@material-ui/core/Typography";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
-
 import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 // import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
-
 import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";

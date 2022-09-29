@@ -7,25 +7,21 @@ import operations from "./redux/operations.js";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
 
-const AddReviewModalUnconnected = ({
+function AddReviewModalUnconnected({
   card,
   closeModal,
   saveReview,
   CARD_ADD_REVIEW,
-}) => {
-  const [
-    formState,
-    { status, comments },
-    formErrors,
-    dataFromState,
-  ] = useMaterialUiFormState({
-    status: {
-      required: true,
-    },
-    comments: {
-      required: true,
-    },
-  });
+}) {
+  const [formState, { status, comments }, formErrors, dataFromState] =
+    useMaterialUiFormState({
+      status: {
+        required: true,
+      },
+      comments: {
+        required: true,
+      },
+    });
 
   const cardId = card && card.id;
 
@@ -55,7 +51,7 @@ const AddReviewModalUnconnected = ({
     loading: latestCall.loading,
   };
   return <Presentation {...props} />;
-};
+}
 
 const mapStateToProps = (state) => {
   const cardId = state.AddCardReviewModal.cardId;

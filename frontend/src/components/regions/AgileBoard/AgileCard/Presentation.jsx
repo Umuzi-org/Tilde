@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => {
   const card = {
     margin: theme.spacing(1),
     backgroundColor: blue[100],
+    // "border-left": `1em solid ${blue[500]}`,
   };
 
   const goalCard = {
