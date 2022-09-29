@@ -94,7 +94,7 @@ function UserActionsUnconnected({
   useEffect(() => {
     fetchActivityLogEntries({
       actorUser: userId,
-      page: 3,
+      page: 1,
     });
   }, [fetchActivityLogEntries, userId]);
 
