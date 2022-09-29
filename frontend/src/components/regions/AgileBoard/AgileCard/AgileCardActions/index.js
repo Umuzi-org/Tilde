@@ -3,7 +3,7 @@ import Presentation from "./Presentation";
 import { showButtons } from "../../../../../utils/cardButtons";
 
 export default ({
-  authUser,
+  authUser, // should only take in the authId
   viewedUser,
 
   card,
