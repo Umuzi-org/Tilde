@@ -32,6 +32,24 @@ const useStyles = makeStyles((theme) => {
       backgroundColor: theme.palette.background.default,
       zIndex: 2,
     },
+    filterByNamesContainer: {
+      margin: 0,
+      width: "100%",
+    },
+    filterByNamesItem: {
+      maxHeight: "90vh",
+      overflowY: "scroll",
+    },
+    filterByNamesContainerHeading: {
+      position: "sticky",
+      top: -5,
+      padding: "10px",
+      backgroundColor: theme.palette.background.default,
+      zIndex: 2,
+    },
+    filterByNamesItemBody: {
+      padding: "0px 10px",
+    },
   };
 });
 
@@ -129,36 +147,43 @@ export default function Presentation({
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
-      <Grid item xs={2}>
-        <Typography variant="h6">Filter by flavour</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allFlavours}
-            filterInclude={filterIncludeFlavours}
-            filterExclude={filterExcludeFlavours}
-            onChange={handleChangeFlavourFilter}
-          />
-        </Paper>
+      <Grid item xs={2} className={classes.filterByNamesContainer}>
+        <Grid className={classes.filterByNamesItem}>
+          <Grid className={classes.filterByNamesContainerHeading}>
+            <Typography variant="h5">Filters</Typography>
+          </Grid>
+          <Grid className={classes.filterByNamesItemBody}>
+            <Typography variant="h6">Filter by flavour</Typography>
+            <Paper className={classes.filterByItemPaper}>
+              <FilterByNames
+                allNames={allFlavours}
+                filterInclude={filterIncludeFlavours}
+                filterExclude={filterExcludeFlavours}
+                onChange={handleChangeFlavourFilter}
+              />
+            </Paper>
 
-        <Typography variant="h6">Filter by tag</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTagNames}
-            filterInclude={filterIncludeTags}
-            filterExclude={filterExcludeTags}
-            onChange={handleChangeTagFilter}
-          />
-        </Paper>
+            <Typography variant="h6">Filter by tag</Typography>
+            <Paper className={classes.filterByItemPaper}>
+              <FilterByNames
+                allNames={allTagNames}
+                filterInclude={filterIncludeTags}
+                filterExclude={filterExcludeTags}
+                onChange={handleChangeTagFilter}
+              />
+            </Paper>
 
-        <Typography variant="h6">Filter by assignee team</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTeamNames}
-            filterInclude={filterIncludeAssigneeTeams}
-            filterExclude={[]}
-            onChange={handleChangeAssigneeTeamFilter}
-          />
-        </Paper>
+            <Typography variant="h6">Filter by assignee team</Typography>
+            <Paper className={classes.filterByItemPaper}>
+              <FilterByNames
+                allNames={allTeamNames}
+                filterInclude={filterIncludeAssigneeTeams}
+                filterExclude={[]}
+                onChange={handleChangeAssigneeTeamFilter}
+              />
+            </Paper>
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
