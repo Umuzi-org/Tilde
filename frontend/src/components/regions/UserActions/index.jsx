@@ -147,7 +147,6 @@ function UserActionsUnconnected({
     }
     if (latestActivityLogPage.responseData.results.length > 0) {
       const nextCardPage = latestActivityLogPage.requestData.page + 1;
-      console.log({ page: nextCardPage, actorUser: userId });
       fetchActivityLogEntries({ page: nextCardPage, actorUser: userId });
     }
   };
