@@ -70,6 +70,7 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+  FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
@@ -122,6 +123,11 @@ function UserActionsUnconnected({
     requestData: { assigneeUserId: userId },
   }) || { loading: true };
 
+  const latestActivityLogPage = getLatestMatchingCall({
+    callLog: FETCH_ACTIVITY_LOG_ENTRIES,
+    requestData: { actorUser: userId },
+  }) || { loading: true };
+
   const anyLoading =
     latestProjectReviewsCall.loading || lastCompletedCardsPage.loading;
 
@@ -136,6 +142,11 @@ function UserActionsUnconnected({
     if (lastCompletedCardsPage.responseData.results.length > 0) {
       const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
       fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
+    }
+    if (latestActivityLogPage.responseData.results.length > 0) {
+      const nextCardPage = latestActivityLogPage.requestData.page + 1;
+      console.log({ page: nextCardPage, actorUser: userId });
+      fetchActivityLogEntries({ page: nextCardPage, actorUser: userId });
     }
   };
 
