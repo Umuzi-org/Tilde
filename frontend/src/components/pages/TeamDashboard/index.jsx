@@ -48,7 +48,7 @@ function DashboardUnconnected({
       fetchUserActivityLogDayCountsSequence({ dataSequence });
     }
   }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
- 
+
   if (teams === undefined) return <Loading />;
 
   const eventTypes = [
@@ -70,14 +70,14 @@ function DashboardUnconnected({
       eventTypes,
       userIds: team ? team.members.map((member) => member.userId) : [],
     });
- 
+
   return <Presentation {...props} />;
 }
 
 function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams,
-    authUser: state.App.authUser || {},
+    authUser: state.App.authUser,
 
     activityLogDayCounts: Object.values(
       state.apiEntities.activityLogDayCounts || {}
