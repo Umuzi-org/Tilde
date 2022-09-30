@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { getUrl as getUserBoardUrl } from "../../widgets/LinkToUserBoard";
 import { getUrl as getUserDashboardUrl } from "../../widgets/LinkToUserDashboard";
 import { getUrl as getUserActionUrl } from "../../widgets/LinkToUserActions";
+import { getUrl as getUserReviewPerformanceUrl } from "../../widgets/LinkToUserReviewPerformance";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -54,6 +55,10 @@ export default function Presentation({ user, userId, value }) {
         </Link>
         <Link to={getUserDashboardUrl({ userId })}>
           <Tab label="DASHBOARD" />
+        </Link>
+
+        <Link to={getUserReviewPerformanceUrl({ userId })}>
+          <Tab label="REVIEW PERFORMANCE" />
         </Link>
       </Tabs>
     </React.Fragment>

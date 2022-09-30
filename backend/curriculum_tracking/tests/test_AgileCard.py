@@ -24,6 +24,7 @@ from curriculum_tracking.constants import (
     EXCELLENT,
 )
 from django.utils import timezone
+from git_real.models import PullRequest
 
 TYPESCRIPT = "ts"
 JAVASCRIPT = "js"
@@ -839,3 +840,24 @@ class repo_url_Tests(TestCase):
             recruit_project=None,
         )
         self.assertEqual(card_no_repo.repo_url, None)
+
+
+class get_users_that_reviewed_open_prs_Tests(TestCase):
+    def test_all(self):
+
+        repo = git_real_factories.RepositoryFactory()
+        open_pr = git_real_factories.PullRequestFactory(
+            repository=repo, state=PullRequest.OPEN
+        )
+        closed_pr = git_real_factories.PullRequestFactory(
+            repository=repo, state=PullRequest.CLOSED
+        )
+
+        review_open = git_real_factories.PullRequestReviewFactory(pull_request=open_pr)
+        git_real_factories.PullRequestReviewFactory(pull_request=closed_pr)
+
+        project = factories.RecruitProjectFactory(repository=repo)
+        card = factories.AgileCardFactory(recruit_project=project)
+
+        result = card.get_users_that_reviewed_open_prs()
+        self.assertEqual(result, [review_open.user])

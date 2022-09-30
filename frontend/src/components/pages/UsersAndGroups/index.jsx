@@ -3,7 +3,9 @@ import { connect } from "react-redux";
 import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
-import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
+// import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
+
+import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 export function cleanAndFilterTeams({ teams, filterBy }) {
   let ret = Object.values(teams);
@@ -25,8 +27,6 @@ export function cleanAndFilterTeams({ teams, filterBy }) {
   }
   return ret;
 }
-
-function ignore() {}
 
 export function cleanAndFilterUsers(teams, filterBy, filterUsersByGroupName) {
   let users = {};
@@ -73,61 +73,51 @@ function UsersAndGroupsUnconnected({
   fetchTeamsPages,
   fetchTeamSummaryStatsPages,
 }) {
-  const [
-    formState,
-    { filterByGroup, filterByUser },
-    formErrors,
-    dataFromState,
-  ] = useMaterialUiFormState({
-    filterByGroup: {},
-    filterByUser: {},
-  });
   const [filterUsersByGroupName, setFilterUsersByGroupName] = React.useState(
     ""
   );
-  ignore(formState, formErrors, dataFromState);
+
+  const [filterFormValues, setFilterFormValues] = React.useState({
+    team: "",
+    user: "",
+  });
 
   const handleUserGroupClick = (name) => {
     if (name === filterUsersByGroupName) setFilterUsersByGroupName("");
     else setFilterUsersByGroupName(name);
   };
 
+  function handleChangeFilterFormInput(name) {
+    function handler(event) {
+      setFilterFormValues({
+        ...filterFormValues,
+        [name]: event.target.value,
+      });
+    }
+    return handler;
+  }
+
   const props = {
     teams: cleanAndFilterTeams({
       teams,
-      filterBy: filterByGroup.value,
+      filterBy: filterFormValues.team,
     }),
     users: cleanAndFilterUsers(
       teams,
-      filterByUser.value,
+      filterFormValues.user,
       filterUsersByGroupName
     ),
     teamSummaryStats,
-    filterByGroup,
-    filterByUser,
+
     filterUsersByGroupName,
     handleUserGroupClick,
+    filterFormValues,
+    handleChangeFilterFormInput,
   };
 
   React.useEffect(() => {
-    const dataSequence = [
-      { page: 1 },
-      { page: 2 },
-      { page: 3 },
-      { page: 4 },
-      { page: 5 },
-      { page: 6 },
-      { page: 7 },
-      { page: 8 },
-      { page: 9 },
-      { page: 10 },
-    ];
-
-    fetchTeamsPages({
-      dataSequence,
-    });
-
-    fetchTeamSummaryStatsPages({ dataSequence });
+    fetchTeamsPages();
+    fetchTeamSummaryStatsPages();
   }, [fetchTeamsPages, fetchTeamSummaryStatsPages]);
 
   return <Presentation {...props} />;
@@ -141,27 +131,37 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  function fetchTeamsPages({ dataSequence }) {
-    dispatch(
-      apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStartCallSequence({
-        dataSequence,
-      })
-    );
-  }
-
-  function fetchTeamSummaryStatsPages({ dataSequence }) {
-    dispatch(
-      apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStartCallSequence(
-        {
-          dataSequence,
-        }
-      )
-    );
-  }
-
   return {
-    fetchTeamsPages,
-    fetchTeamSummaryStatsPages,
+    fetchTeamsPages: () => {
+      const data = { page: 1 };
+      dispatch(
+        apiReduxApps.FETCH_TEAMS_PAGE.operations.maybeStart({
+          data,
+
+          successDispatchActions: [
+            apiUtilitiesOperations.fetchAllPages({
+              API_BASE_TYPE: "FETCH_TEAMS_PAGE",
+              requestData: data,
+            }),
+          ],
+        })
+      );
+    },
+
+    fetchTeamSummaryStatsPages: () => {
+      const data = { page: 1 };
+      dispatch(
+        apiReduxApps.FETCH_TEAM_SUMMARY_STATS_PAGE.operations.maybeStart({
+          data,
+          successDispatchActions: [
+            apiUtilitiesOperations.fetchAllPages({
+              API_BASE_TYPE: "FETCH_TEAM_SUMMARY_STATS_PAGE",
+              requestData: data,
+            }),
+          ],
+        })
+      );
+    },
   };
 }
 

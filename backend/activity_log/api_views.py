@@ -7,13 +7,14 @@ from django.db.models import DateField, Count, Value, CharField
 import core.permissions as core_permissions
 from core.models import Team
 from . import models
+from django.utils import timezone
+from datetime import date, timedelta, datetime
 
 
 class ActivityLogEntryDayCountViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ActivityLogDayCountSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["event_type", "actor_user", "effected_user"]
-
+    filterset_fields = {"event_type": ['exact'], "actor_user": ['exact'], "effected_user": ['exact'], 'timestamp': ['gte', 'lte']}
     permission_classes = [
         core_permissions.ActionIs("list")
         & (
@@ -59,6 +60,7 @@ class EventTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [core_permissions.IsReadOnly & permissions.IsAuthenticated]
 
 
+
 class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.LogEntrySerializer
     queryset = models.LogEntry.objects.order_by("-timestamp")
@@ -81,12 +83,16 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
             )
         )
     ]
-    filterset_fields = [
-        "event_type",
-        "actor_user",
-        "effected_user",
-        "object_1_content_type",
-        "object_1_id",
-        "object_2_content_type",
-        "object_2_id",
-    ]
+    filterset_fields = {
+        "event_type":['exact'],
+        "actor_user":['exact'],
+        "effected_user":['exact'],
+        "object_1_content_type":['exact'],
+        "object_1_id":['exact'],
+        "object_2_content_type":['exact'],
+        "object_2_id":['exact'],
+        'timestamp':['gte','lte']
+        }
+
+
+
