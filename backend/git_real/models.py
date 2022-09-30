@@ -1,9 +1,11 @@
 from django.db import models
+from curriculum_tracking.constants import POSITIVE_REVIEW_STATUS_CHOICES
 from model_mixins import Mixins
 from core.models import User
 from git_real.helpers import (
     strp_github_standard_time,
     github_timestamp_int_to_tz_aware_datetime,
+    get_user_from_github_name,
 )
 
 from django.core.exceptions import MultipleObjectsReturned
@@ -22,6 +24,27 @@ class Repository(models.Model, Mixins):
     def __str__(self):
         return self.ssh_url
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        project = RecruitProject.objects.filter(repository=self).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
+
 
 class Commit(models.Model, Mixins):
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
@@ -34,8 +57,6 @@ class Commit(models.Model, Mixins):
     datetime = models.DateTimeField()
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-
-    # TODO Denormalise (#157)
 
     def __str__(self):
         ellipse = ""
@@ -65,9 +86,8 @@ class PullRequest(models.Model, Mixins):
 
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
 
-    # user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
     class Meta:
         unique_together = [["repository", "number"]]
 
@@ -75,6 +95,8 @@ class PullRequest(models.Model, Mixins):
     def create_or_update_from_github_api_data(cls, repo, pull_request_data):
         assert repo != None, "repo is missing"
         number = pull_request_data["number"]
+
+        github_name = pull_request_data["user"]["login"]
 
         defaults = {
             "state": pull_request_data["state"],
@@ -92,14 +114,11 @@ class PullRequest(models.Model, Mixins):
                 pull_request_data["closed_at"],
             ),
             "merged_at": pull_request_data["merged_at"]
-            and strp_github_standard_time(
-                pull_request_data["merged_at"],
-            ),
+            and strp_github_standard_time(pull_request_data["merged_at"]),
+            "author_github_name": github_name,
+            "user": get_user_from_github_name(github_name),
         }
-        #     "author_github_name": github_user,
-        #     "assignees": [d["login"] for d in pr["assignees"]],
-        #     "user": get_user_from_github_name(github_user),
-        # }
+
         pull_request, _ = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
@@ -107,6 +126,17 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
+
+    CONTRADICTED = "d"
+
+    REVIEW_VALIDATED_STATUS_CHOICES = [
+        (CONTRADICTED, "contradicted"),
+    ]
+
+    NEGATIVE_STATES = ["changes_requested"]
+    POSITIVE_STATES = ["approved"]
+    NEUTRAL_STATES = ["commented", "dismissed"]
+
     html_url = models.CharField(max_length=255, unique=True)
     pull_request = models.ForeignKey(
         PullRequest, on_delete=models.CASCADE, related_name="reviews"
@@ -120,7 +150,43 @@ class PullRequestReview(models.Model, Mixins):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
+    validated = models.CharField(
+        choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
+    )
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        repo = self.pull_request.repository
+        project = RecruitProject.objects.filter(repository=repo).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
+
+    def update_recent_validation_flags(self):
+        """this review was just created. Update previous reviews"""
+        assert (
+            len(PullRequestReview.POSITIVE_STATES) == 1
+        ), "this function only works if there is one positive state. Upgrade the function"
+        state = self.state.lower()
+        if state in PullRequestReview.NEGATIVE_STATES:
+            prs_to_update = PullRequestReview.objects.filter(
+                pull_request=self.pull_request
+            ).filter(state__iexact=PullRequestReview.POSITIVE_STATES[0])
+            prs_to_update.update(validated=PullRequestReview.CONTRADICTED)
 
     @classmethod
     def create_or_update_from_github_api_data(cls, pull_request, review_data):
@@ -135,9 +201,7 @@ class PullRequestReview(models.Model, Mixins):
             and strp_github_standard_time(review_data["submitted_at"]),
             "pull_request": pull_request,
             "author_github_name": github_name,
-            "user": User.objects.filter(
-                social_profile__github_name=github_name
-            ).first(),
+            "user": get_user_from_github_name(github_name),
         }
 
         try:
@@ -151,14 +215,9 @@ class PullRequestReview(models.Model, Mixins):
             review = reviews[-1]
             review.update(**defaults)
             review.save()
-        # review, _ = cls.get_or_create_or_update(
-        #     html_url=review_data["html_url"], defaults=defaults, overrides=defaults
-        # )
 
+        review.update_recent_validation_flags()
         return review
-
-
-# dict_keys([' 'author_association', , ', 'html_url', 'id', 'node_id', '', 'state', 'submitted_at', 'user'])
 
 
 class Push(models.Model, Mixins):
@@ -174,6 +233,8 @@ class Push(models.Model, Mixins):
     pushed_at_time = models.DateTimeField()
     ref = models.CharField(max_length=255)
 
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
     class Meta:
         unique_together = [["ref", "head_commit_url"]]
 
@@ -183,6 +244,7 @@ class Push(models.Model, Mixins):
         if request_body["head_commit"] is None and bool(request_body["pusher"]):
             return None
         else:
+            pusher_user = request_body.get("pusher").get("name")
             head_commit = request_body["head_commit"]
             head_commit_url = head_commit["url"]
             ref = request_body["ref"]
@@ -191,10 +253,11 @@ class Push(models.Model, Mixins):
                 "author_github_name": head_commit.get("author").get("username"),
                 "committer_github_name": head_commit.get("committer").get("username"),
                 "message": head_commit.get("message"),
-                "pusher_username": request_body.get("pusher").get("name"),
+                "pusher_username": pusher_user,
                 "pushed_at_time": github_timestamp_int_to_tz_aware_datetime(
                     int(request_body["repository"]["pushed_at"])
                 ),
+                "user": get_user_from_github_name(pusher_user),
             }
 
             instance, _ = cls.get_or_create_or_update(

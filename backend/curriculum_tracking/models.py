@@ -16,11 +16,13 @@ from .constants import (
     RED_FLAG,
     EXCELLENT,
     REVIEW_STATUS_CHOICES,
+    POSITIVE_REVIEW_STATUS_CHOICES,
+    NEGATIVE_REVIEW_STATUS_CHOICES,
 )
 from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
-from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -505,6 +507,20 @@ class RecruitProject(
     #         ["content_item", "repository"],
     #     ]
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        try:
+            card = self.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+
+        return {
+            "card": card_id,
+            "title": self.content_item.title,
+            "flavour_names": self.flavour_names,
+        }
+
     def users_that_reviewed_since_last_review_request(self):
         if self.review_request_time is None:
             return []
@@ -801,58 +817,30 @@ class RecruitProjectReview(models.Model, Mixins):
         choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
     )
 
+    # if a user leaves a negative review and then another review is requested then two things can happen:
+    # either the next review is negative (meaning the previous review was incomplete or incompletely implemented) or
+    # the card is closed (meaning the previous negative review was complete and completely implemented)
+    complete_review_cycle = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"
 
-    def get_validated_streak(self, projects_visited=None):
-        """how many reviews on the same project have been marked as valid in a row. This is a recursive function.
-        if self.validated != CORRECT
-            return 0
-        else
-            return previous_matching_review.get_validated_streak() +1
-        """
-        if self.validated != RecruitProjectReview.CORRECT:
-            return 0
-        if self.reviewer_user.email == CURRICULUM_TRACKING_REVIEW_BOT_EMAIL:
-            return 0
-        # blacklist code. This needs to be removed once we have enough
-        # trusted members
-        assignee = self.recruit_project.recruit_users.first()
-        for team in assignee.teams():
-            if "techquest" in team.name.lower():
-                return 0
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        project = self.recruit_project
+        try:
+            card = project.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
 
-        projects_visited = projects_visited or []
-        projects_visited.append(self.recruit_project)
-        last_matching_review = self._get_previous_review_in_streak(
-            projects_visited=projects_visited
-        )
-        if last_matching_review:
-            return 1 + last_matching_review.get_validated_streak(
-                projects_visited=projects_visited
-            )
-
-        return 1
-
-    def _get_previous_review_in_streak(self, projects_visited):
-        content_item = self.recruit_project.content_item
-        flavours = self.recruit_project.flavour_names
-
-        reviews = (
-            RecruitProjectReview.objects.filter(
-                recruit_project__content_item=content_item
-            )
-            .filter(id__lt=self.id)
-            .filter(reviewer_user=self.reviewer_user)
-            .order_by("-id")
-        )
-
-        for review in reviews:
-            if review.recruit_project in projects_visited:
-                continue
-            if review.recruit_project.flavours_match(flavours):
-                return review
+        return {
+            "recruit_project": project.id,
+            "card": card_id,
+            "title": project.content_item.title,
+            "flavour_names": project.flavour_names,
+        }
 
     @property
     def reviewer_user_email(self):
@@ -863,41 +851,86 @@ class RecruitProjectReview(models.Model, Mixins):
         reviews = RecruitProjectReview.objects.filter(
             recruit_project=self.recruit_project
         ).filter(timestamp__lt=self.timestamp)
-        since_time = self.recruit_project.review_request_time
-        if since_time:
-            reviews = reviews.filter(timestamp__gte=since_time)
 
-        for review in reviews:
-            review.update_validated_from(self)
+        last_review_request_time = self.recruit_project.review_request_time
 
-    def update_validated_from(self, other):
-        positive = [COMPETENT, EXCELLENT]
-        negative = [NOT_YET_COMPETENT, RED_FLAG]
-        if other.trusted:
-            if self.status in positive and other.status in positive:
-                if self.is_first_review_after_request():
+        # take a look at all the reviews that happened since the last review request
+
+        recent_reviews = (
+            reviews.filter(timestamp__gte=last_review_request_time)
+            if last_review_request_time
+            else reviews
+        ).exclude(reviewer_user=self.reviewer_user)
+
+        for review in recent_reviews:
+            if review.id != self.id:
+                review._update_validated_from(self)
+
+        # now grab all the negative reviews that happened before the last review request (if any)
+        # update the flag to say if the review was an incomplete review cycle
+
+        if last_review_request_time:
+
+            previous_negative_reviews = reviews.filter(
+                timestamp__lte=last_review_request_time
+            ).filter(Q(status=NOT_YET_COMPETENT) | Q(status=RED_FLAG))
+            # breakpoint()
+
+            for review in previous_negative_reviews:
+                review._update_incomplete_cycle_from(self)
+
+    def _update_incomplete_cycle_from(self, other):
+        """other is a review that happened after self"""
+
+        # sanity checks
+
+        assert self.timestamp < other.timestamp
+        assert self.recruit_project == other.recruit_project
+        assert self.timestamp <= self.recruit_project.review_request_time
+        assert self.status in NEGATIVE_REVIEW_STATUS_CHOICES
+
+        if other.status in POSITIVE_REVIEW_STATUS_CHOICES and other.trusted:
+            # the feedback given was sufficient because the next time a review was requested, the card got closed off
+            self.complete_review_cycle = True
+            self.save()
+
+        if other.status in NEGATIVE_REVIEW_STATUS_CHOICES:
+            # the feedback given was insufficient or only partially applied because the next time a review was requested, the card got bounced back
+            self.complete_review_cycle = False
+            self.save()
+
+    def _update_validated_from(self, other):
+        """other is a review that happened after self"""
+
+        if other.reviewer_user == self.reviewer_user:
+            # otherwise people can mark their own stuff as complete
+            return
+
+        # sanity checks
+        assert self.timestamp < other.timestamp
+        assert self.recruit_project == other.recruit_project
+        if self.recruit_project.review_request_time != None:
+            assert self.timestamp > self.recruit_project.review_request_time
+
+        if self.status in POSITIVE_REVIEW_STATUS_CHOICES:
+            if other.status in POSITIVE_REVIEW_STATUS_CHOICES:
+                if other.trusted:
                     self.validated = RecruitProjectReview.CORRECT
             else:
-                self.validated = RecruitProjectReview.INCORRECT
-        else:
-            if self.status in positive and other.status in negative:
-                self.validated = RecruitProjectReview.CONTRADICTED
+                assert other.status in NEGATIVE_REVIEW_STATUS_CHOICES
+                if other.trusted:
+                    self.validated = RecruitProjectReview.INCORRECT
+                else:
+                    self.validated = RecruitProjectReview.CONTRADICTED
+
+        if self.status in NEGATIVE_REVIEW_STATUS_CHOICES:
+            if other.status in POSITIVE_REVIEW_STATUS_CHOICES:
+                if other.trusted:
+                    self.validated = RecruitProjectReview.INCORRECT
+                else:
+                    self.validated = RecruitProjectReview.CONTRADICTED
+
         self.save()
-
-    def is_first_review_after_request(self):
-        request_time = self.recruit_project.review_request_time
-        if not request_time:
-            return False
-        if request_time > self.timestamp:
-            return False
-        first_review = (
-            RecruitProjectReview.objects.filter(timestamp__gte=request_time)
-            .filter(recruit_project=self.recruit_project)
-            .order_by("timestamp")
-            .first()
-        )
-
-        return self == first_review
 
 
 class TopicProgress(
@@ -921,6 +954,20 @@ class TopicProgress(
             return f"{s} [{flavours}]"
         return s
 
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        try:
+            card = self.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+        return {
+            "topic_progress": self.id,
+            "card": card_id,
+            "title": self.content_item.title,
+            "flavour_names": self.content_item.flavour_names,
+        }
+
 
 class TopicReview(models.Model, Mixins):
     status = models.CharField(
@@ -937,6 +984,21 @@ class TopicReview(models.Model, Mixins):
     @property
     def reviewer_user_email(self):
         return self.reviewer_user.email
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        topic = self.topic_progress
+        try:
+            card = topic.agile_card
+            card_id = card.id
+        except AgileCard.DoesNotExist:
+            card_id = None
+        return {
+            "topic_progress": topic.id,
+            "card": card_id,
+            "title": topic.content_item.title,
+            "flavour_names": topic.content_item.flavour_names,
+        }
 
 
 class WorkshopAttendance(models.Model, Mixins, ContentItemProxyMixin, FlavourMixin):
@@ -1033,6 +1095,13 @@ class AgileCard(
     # this field is filled in by signals
 
     __original_status = None
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        return {
+            "title": self.content_item.title,
+            "flavour_names": self.flavour_names,
+        }
 
     @property
     def progress_instance(self):
@@ -1477,17 +1546,19 @@ class AgileCard(
 
         return [review.reviewer_user for review in reviews]
 
+    def get_users_that_reviewed_open_prs(self):
 
-# class ExtraTeamConfig(models.Model, Mixins):
-#     team = models.ForeignKey(Team,on_delete=models.CASCADE)
-#     pr_is_high_priority_if_older_than = models.DurationField(null=True, blank=True)
-#     pr_medium_priority_if_older_than = models.DurationField(null=True, blank=True)
-#     card_review_is_high_priority_if_older_than = models.DurationField(
-#         null=True, blank=True
-#     )
-#     card_review_medium_priority_if_older_than = models.DurationField(
-#         null=True, blank=True
-#     )
+        reviews = (
+            git_models.PullRequestReview.objects.filter(
+                pull_request__repository__recruit_projects__agile_card=self
+            )
+            .filter(pull_request__state=git_models.PullRequest.OPEN)
+            .filter(user__isnull=False)
+        )
+
+        return [review.user for review in reviews]
+
+
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
     timestamp = models.DateTimeField(auto_now_add=True)

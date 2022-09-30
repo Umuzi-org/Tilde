@@ -4,14 +4,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-
 import AssistantPhotoIcon from "@material-ui/icons/AssistantPhoto";
 import AccessAlarms from "@material-ui/icons/AccessAlarms";
-
 import CardBadges from "../../../widgets/CardBadges";
-
 import { BLOCKED } from "../../../../constants";
-
 import Checkbox from "@material-ui/core/Checkbox";
 // import StoryPoints from "../../../widgets/StoryPoints";
 import TagChips from "../../../widgets/TagChips";
@@ -28,6 +24,7 @@ const useStyles = makeStyles((theme) => {
   const card = {
     margin: theme.spacing(1),
     backgroundColor: blue[100],
+    // "border-left": `1em solid ${blue[500]}`,
   };
 
   const goalCard = {
@@ -86,7 +83,7 @@ function ListCardUsers({ userNames, userIds }) {
   );
 }
 
-export default ({
+export default function Presentation({
   card,
   authUser,
   viewedUser,
@@ -114,7 +111,7 @@ export default ({
   loadingStopTopic,
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
-}) => {
+}) {
   const classes = useStyles();
 
   const agileCardActionProps = {
@@ -225,4 +222,4 @@ export default ({
       <AgileCardActions {...agileCardActionProps} />{" "}
     </Card>
   );
-};
+}

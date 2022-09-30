@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+import json
 
 # see https://docs.djangoproject.com/en/3.2/ref/contrib/contenttypes/#django.contrib.contenttypes.fields.GenericForeignKey
 
@@ -79,6 +80,23 @@ class LogEntry(models.Model):
     )
 
     event_type = models.ForeignKey(EventType, on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        # <sanity_checks>
+
+        # the get_activity_log_summary_data function gets used when serializing a log entry
+        # for the apis. If it doesn't return serializable data then we will get problems later.
+        # there is probably a more efficient way to do this
+
+        for object in [self.object_1, self.object_2]:
+            if object is not None:
+                data = object.get_activity_log_summary_data()
+                json.dumps(data)
+                assert data.__class__ == dict
+
+        # </sanity checks>
+
+        super(LogEntry, self).save(*args, **kwargs)
 
     @classmethod
     def debounce_create(

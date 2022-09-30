@@ -15,6 +15,7 @@ import TeamNavBar from "./components/regions/TeamNavBar";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ForgotPasswordConfirm from "./components/pages/ForgotPasswordConfirm";
 import LoginForm from "./components/pages/Login";
+import UserCodeReviewPerformance from "./components/pages/UserCodeReviewPerformance";
 
 const exact = true;
 
@@ -169,6 +170,15 @@ export const routes = {
       path: "/users/:userId/dashboard",
     },
     component: UserDashboard,
+    navBarComponent: UserNavBar,
+  },
+
+  userCodeReviewPerformance: {
+    route: {
+      exact,
+      path: "/users/:userId/review_performance",
+    },
+    component: UserCodeReviewPerformance,
     navBarComponent: UserNavBar,
   },
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { BarChart, Bar, XAxis } from "recharts";
 
-ernkeb;
 import { eventTypeColors } from "../../../colors";
 
 export default function ActivityDashboardBarGraph({ eventList }) {

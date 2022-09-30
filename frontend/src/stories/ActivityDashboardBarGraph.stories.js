@@ -4,7 +4,7 @@ import ActivityDashboardBarGraph from "../components/pages/UserActions/ActivityD
 import graphData from "./fixtures/ActivityDashBoardBargraphData.json";
 
 export default {
-  title: "Tilde/UserActions/ActivityDashboardBarGraph",
+  title: "Tilde/pages/UserActions/ActivityDashboardBarGraph",
   components: ActivityDashboardBarGraph,
   args: {},
 };

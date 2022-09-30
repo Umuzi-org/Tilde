@@ -12,9 +12,9 @@ import {
   CARD_STARTED,
   PR_REVIEWED,
   COMPETENCE_REVIEW_DONE,
-  PROJECT_CARDS_COMPLETED,
-  TOPIC_CARDS_COMPLETED,
-  REVIEWS_COMPLETED,
+  INCORRECT,
+  CORRECT,
+  CONTRADICTED,
 } from "./constants";
 import { colors } from "@material-ui/core";
 
@@ -38,4 +38,17 @@ export const eventTypeColors = {
   [PROJECT_CARDS_COMPLETED] : colors.yellow[600],
   [TOPIC_CARDS_COMPLETED]: colors.red[600],
   [REVIEWS_COMPLETED]: colors.green[600]
+};
+
+export const reviewValidatedColors = {
+  [INCORRECT]: colors.red[600],
+  [CORRECT]: colors.green[600],
+  [CONTRADICTED]: colors.orange[600],
+};
+
+export const trustedColor = colors.yellow[600];
+
+export const completeReviewCycleColors = {
+  [true]: colors.blue[600],
+  [false]: colors.deepPurple[600],
 };
