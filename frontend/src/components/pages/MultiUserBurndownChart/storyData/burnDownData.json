@@ -1,0 +1,131 @@
+
+ [{
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-09T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 10,
+    "projectCardsInCompleteColumnTotalCount": 7
+  },
+  {
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-10T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 14,
+    "projectCardsInCompleteColumnTotalCount": 11
+  },
+  {
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-11T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 17,
+    "projectCardsInCompleteColumnTotalCount": 14
+  },
+  {
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-12T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 22,
+    "projectCardsInCompleteColumnTotalCount": 18
+  },
+  {
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-13T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 23,
+    "projectCardsInCompleteColumnTotalCount": 19
+  },
+  {
+    "user": 1,
+    "userEmail": "khalid.ebrahim@umuzi.org",
+    "timestamp": "2019-08-14T13:49:31Z",
+    "cardsTotalCount": 32,
+    "projectCardsTotalCount": 25,
+    "cardsInCompleteColumnTotalCount": 32,
+    "projectCardsInCompleteColumnTotalCount": 25
+  },
+  
+
+  {
+    "user": 2,
+    "userEmail": "someone.nice@umuzi.org",
+    "timestamp": "2019-08-09T13:49:31Z",
+    "cardsTotalCount": 40,
+    "projectCardsTotalCount": 30,
+    "cardsInCompleteColumnTotalCount": 12,
+    "projectCardsInCompleteColumnTotalCount": 8
+  },
+  {
+    "user": 2,
+    "userEmail": "someone.nice@umuzi.org",
+    "timestamp": "2019-08-10T13:49:31Z",
+    "cardsTotalCount": 40,
+    "projectCardsTotalCount": 30,
+    "cardsInCompleteColumnTotalCount": 14,
+    "projectCardsInCompleteColumnTotalCount": 11
+  },
+  {
+    "user": 2,
+    "userEmail": "someone.nice@umuzi.org",
+    "timestamp": "2019-08-11T13:49:31Z",
+    "cardsTotalCount": 40,
+    "projectCardsTotalCount": 30,
+    "cardsInCompleteColumnTotalCount": 17,
+    "projectCardsInCompleteColumnTotalCount": 14
+  },
+  {
+    "user": 2,
+    "userEmail": "someone.nice@umuzi.org",
+    "timestamp": "2019-08-12T13:49:31Z",
+    "cardsTotalCount": 40,
+    "projectCardsTotalCount": 30,
+    "cardsInCompleteColumnTotalCount": 22,
+    "projectCardsInCompleteColumnTotalCount": 18
+  },
+
+  {
+    "user": 3,
+    "userEmail": "someone.cool@umuzi.org",
+    "timestamp": "2019-08-09T13:49:31Z",
+    "cardsTotalCount": 43,
+    "projectCardsTotalCount": 35,
+    "cardsInCompleteColumnTotalCount": 10,
+    "projectCardsInCompleteColumnTotalCount": 7
+  },
+  {
+    "user": 3,
+    "userEmail": "someone.cool@umuzi.org",
+    "timestamp": "2019-08-10T13:49:31Z",
+    "cardsTotalCount": 43,
+    "projectCardsTotalCount": 35,
+    "cardsInCompleteColumnTotalCount": 14,
+    "projectCardsInCompleteColumnTotalCount": 11
+  },
+  {
+    "user": 3,
+    "userEmail": "someone.cool@umuzi.org",
+    "timestamp": "2019-08-11T13:49:31Z",
+    "cardsTotalCount": 43,
+    "projectCardsTotalCount": 35,
+    "cardsInCompleteColumnTotalCount": 17,
+    "projectCardsInCompleteColumnTotalCount": 14
+  },
+  {
+    "user": 3,
+    "userEmail": "someone.cool@umuzi.org",
+    "timestamp": "2019-08-12T13:49:31Z",
+    "cardsTotalCount": 43,
+    "projectCardsTotalCount": 45,
+    "cardsInCompleteColumnTotalCount": 22,
+    "projectCardsInCompleteColumnTotalCount": 18
+  }
+]
