@@ -1,12 +1,13 @@
 import React from "react";
-
 import Markdown from "react-markdown";
 import Box from "@material-ui/core/Box";
 import Modal from "../../widgets/Modal";
 import Card from "@material-ui/core/Card";
 import { makeStyles } from "@material-ui/core/styles";
 import ReviewStatus from "../../widgets/ReviewStatus";
-import { CardActions, CardContent, Typography } from "@material-ui/core";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 

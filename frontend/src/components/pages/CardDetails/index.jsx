@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -6,10 +6,6 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-// import {
-//   getShowAddReviewButton,
-//   getTeamPermissions,
-// } from "../../../utils/cardButtons";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
@@ -46,7 +42,7 @@ function CardDetailsUnconnected({
       ? topicProgressArray[topicProgressId]
       : null;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (projectId) {
       fetchProject({ projectId });
       fetchProjectReviews({ projectId });
