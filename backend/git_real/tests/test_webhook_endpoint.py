@@ -12,8 +12,6 @@ import mock
 from git_real.permissions import IsWebhookSignatureOk
 from django.utils import timezone
 import dateutil.parser
-import git_real.activity_log_creators as creators
-from activity_log.models import LogEntry
 
 from .utils import get_body_and_headers
 
@@ -234,11 +232,6 @@ class PushEventTests(APITestCase):
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.count(), 1)
-
-        creators.log_push_event(push)
-        entry = LogEntry.objects.first()
-
-        self.assertEqual(entry.event_type.name, creators.GIT_PUSH)
 
 
 class TestNoHeadCommitInPushEvents(APITestCase):

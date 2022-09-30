@@ -83,10 +83,14 @@ class log_push_event_Tests(APITestCase):
     def test_pushing(self, has_permission):
         has_permission.return_value = True
 
-        self.assertEqual(Push.objects.all().count(), 0)     
+        self.assertEqual(Push.objects.all().count(), 0)   
 
-        push = PushFactory()
-        creators.log_push_event(push)
+        url = reverse(views.github_webhook)  
+
+        body, headers = get_body_and_headers("push")
+        RepositoryFactory(full_name=body["repository"]["full_name"])
+
+        self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(Push.objects.all().count(), 1)
 
