@@ -44,3 +44,8 @@ export const reviewValidatedColors = {
 };
 
 export const trustedColor = colors.yellow[600];
+
+export const completeReviewCycleColors = {
+  [true]: colors.blue[600],
+  [false]: colors.deepPurple[600],
+};

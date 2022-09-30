@@ -13,7 +13,6 @@ from git_real.permissions import IsWebhookSignatureOk
 from django.utils import timezone
 import dateutil.parser
 
-# from timezone_helpers import timestamp_zoned_str_to_tz_aware_datetime
 from .utils import get_body_and_headers
 
 
@@ -27,6 +26,8 @@ class TestPullRequestEvents(APITestCase):
         body, headers = get_body_and_headers("pull_request_opened")
         url = reverse(views.github_webhook)
 
+        author_github_name = body["pull_request"]["user"]["login"]
+        profile = SocialProfileFactory(github_name=author_github_name)
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
 
         self.client.post(url, format="json", data=body, extra=headers)
@@ -52,7 +53,22 @@ class TestPullRequestEvents(APITestCase):
             pr.merged_at, strp_github_standard_time(body["pull_request"]["merged_at"])
         )
         self.assertEqual(pr.number, body["pull_request"]["number"])
+        self.assertEqual(pr.author_github_name, author_github_name)
+        self.assertEqual(pr.user, profile.user)
 
+        self.client.post(url, format="json", data=body, extra=headers)
+
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_webhook_doesnt_make_duplicate_prs(self, has_permission):
+        has_permission.return_value = True
+
+        body, headers = get_body_and_headers("pull_request_opened")
+        url = reverse(views.github_webhook)
+
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+
+        self.client.post(url, format="json", data=body, extra=headers)
+        self.assertEqual(PullRequest.objects.all().count(), 1)
         self.client.post(url, format="json", data=body, extra=headers)
         self.assertEqual(PullRequest.objects.all().count(), 1)
 
@@ -125,7 +141,7 @@ class TestPullRequestReview(APITestCase):
 
         url = reverse(views.github_webhook)
 
-        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+        RepositoryFactory(full_name=body["repository"]["full_name"])
 
         self.client.post(url, format="json", data=body, extra=headers)
 
@@ -188,6 +204,8 @@ class PushEventTests(APITestCase):
         repository = body["repository"]
         ref = body["ref"]
 
+        profile = SocialProfileFactory(github_name=pusher_username)
+
         # repo_full_name = repository["full_name"]
         pushed_at_time = github_timestamp_int_to_tz_aware_datetime(
             int(repository["pushed_at"])
@@ -206,6 +224,8 @@ class PushEventTests(APITestCase):
         self.assertEqual(push.ref, ref)
         self.assertEqual(push.repository, repo)
         self.assertEqual(push.commit_timestamp, commit_timestamp)
+        self.assertEqual(push.user, profile.user)
+
         # self.assertEqual(push.commit_timestamp.isoformat(), commit_timestamp.isoformat())
         # BUG: if you uncomment the above line then you'll see that the stored timestamps aren't keeping the timezonne info. Please fix here and in all other places where we are getting info from gihub
 
@@ -213,15 +233,16 @@ class PushEventTests(APITestCase):
 
         self.assertEqual(Push.objects.count(), 1)
 
-
-class TestNoHeadCommitInPushEvents(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_payload_without_head_commit_details_is_handled_but_not_stored_to_db(
         self, has_permission
     ):
 
         has_permission.return_value = True
-        body, headers = get_body_and_headers("webhook_push")
+        url = reverse(views.github_webhook)
+
+        body, headers = get_body_and_headers("push_with_no_head_commit")
         repo = RepositoryFactory(full_name=body["repository"]["full_name"])
-        push_object = Push.create_or_update_from_github_api_data(repo, body)
+        self.client.post(url, format="json", data=body, extra=headers)
+
         self.assertEqual(Push.objects.count(), 0)

@@ -1,4 +1,5 @@
 # from backend.curriculum_tracking.models import AgileCard
+from git_real.models import PullRequestReview
 from git_real.tests.factories import PullRequestFactory, PullRequestReviewFactory
 from rest_framework.test import APITestCase
 from guardian.shortcuts import assign_perm
@@ -294,6 +295,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "can_force_start",
         "project_link_submission",
         # "open_pr_count",
+        "users_that_reviewed_open_prs",
+        "users_that_reviewed_open_prs_emails",
     ]
 
     def verbose_instance_factory(self):
@@ -486,7 +489,7 @@ class PullRequestReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        pr_review = PullRequestReviewFactory()
+        pr_review = PullRequestReviewFactory(validated=PullRequestReview.CONTRADICTED)
         project = RecruitProjectFactory(repository=pr_review.pull_request.repository)
         project.set_flavours(["js"])
 

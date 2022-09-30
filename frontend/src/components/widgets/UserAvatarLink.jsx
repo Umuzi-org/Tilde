@@ -8,11 +8,14 @@ import { getUrl as getUserBoardUrl } from "./LinkToUserBoard";
 const useStyles = makeStyles({
   avatarLink: {
     textDecoration: "none",
+    marginRight: 8,
   },
   container: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
+  },
+  emailText: {
+    color: "#000",
   },
 });
 
@@ -38,7 +41,7 @@ function UserAvatarLink({ email, userId }) {
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
         <Avatar>{getAvatarInitials(email)}</Avatar>
       </Link>
-      <Typography>{email}</Typography>
+      <Typography className={classes.emailText}>{email}</Typography>
     </div>
   );
 }
