@@ -16,7 +16,6 @@ function DashboardUnconnected({
   fetchUser,
   fetchUserDetailedStats,
 }) {
-  console.log("xxxxxxx");
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users && users[userId];
