@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import Presentation from "./Presentation.jsx";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
-// import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
-
 import Loading from "../../widgets/Loading";
 
 import { apiUtilitiesOperations } from "../../../apiAccess/redux";
@@ -79,10 +77,9 @@ function UsersAndGroupsUnconnected({
   fetchTeamsPages,
   fetchTeamSummaryStatsPages,
 }) {
-  const [filterUsersByGroupName, setFilterUsersByGroupName] =
-    React.useState("");
+  const [filterUsersByGroupName, setFilterUsersByGroupName] = useState("");
 
-  const [filterFormValues, setFilterFormValues] = React.useState({
+  const [filterFormValues, setFilterFormValues] = useState({
     team: "",
     user: "",
   });
