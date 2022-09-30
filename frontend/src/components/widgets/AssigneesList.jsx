@@ -1,18 +1,25 @@
 import React from "react";
-// import { Typography } from "@material-ui/core";
-import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import UserAvatarLink from "../widgets/UserAvatarLink";
 
-export default ({ userNames, userIds }) => {
+export default function AssigneesList({ userNames, userIds }) {
   return (
     <Table size="small">
       <TableBody>
-        {userNames.map((name) => (
-          <TableRow>
-            <TableCell padding="none">{name}</TableCell>
-          </TableRow>
-        ))}
+        {userNames.map((name, index) => {
+          const userId = userIds[index];
+          return (
+            <TableRow key={userId}>
+              <TableCell padding="none">
+                <UserAvatarLink email={name} userId={userIds} />
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
-  // return <Typography>{userNames.join(", ")}</Typography>;
-};
+}
