@@ -30,6 +30,7 @@ def scrape_repo_prs(api, repo):
     )
     for pr in pull_requests:
         if pr == 404:
+            breakpoint()
             continue
         pr_object = models.PullRequest.create_or_update_from_github_api_data(
             pull_request_data=pr, repo=repo

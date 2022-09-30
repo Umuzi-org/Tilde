@@ -1,26 +1,23 @@
 import React from "react";
-import {
-  Button,
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Typography from "@material-ui/core/Typography";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
-
 import { makeStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
-import StoryPoints from "../../widgets/StoryPoints";
+// import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
-
+import Button from "../../widgets/Button";
 import ProjectDetails from "./ProjectDetails";
-import UsersTable from "./UsersTable";
+import AssigneesList from "../../widgets/AssigneesList";
+import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
 import { canSetDueTime } from "../../regions/CardDetails/utils";
 
@@ -94,20 +91,26 @@ function CardBasicDetails({
         <Grid item xs={12} sm={12} md={12}>
           <TagChips tagNames={card.tagNames} />
           <FlavourChips flavourNames={card.flavourNames} />
-          <StoryPoints storyPoints={card.storyPoints} />
+          {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
-            <UsersTable
+            <AssigneesList
               userNames={card.assigneeNames}
               userIds={card.assignees}
             />
             <Typography variant="subtitle2">Reviewers:</Typography>
-            <UsersTable
-              userNames={card.reviewerNames}
-              userIds={card.reviewers}
+            <ReviewersTable
+              reviewerUserEmails={card.reviewerNames}
+              reviewerUsers={card.reviewers}
+              usersThatReviewedSinceLastReviewRequestEmails={
+                card.usersThatReviewedSinceLastReviewRequestEmails
+              }
+              usersThatReviewedSinceLastReviewRequest={
+                card.usersThatReviewedSinceLastReviewRequest
+              }
             />
           </Paper>
         </Grid>
@@ -155,21 +158,11 @@ function CardBasicDetails({
           </Paper>
         </Grid>
       </Grid>
-      {card.startTime === null && (
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={card.contentItemUrl}
-              contentItemId={card.contentItem}
-            />
-          }
-        />
-      )}
     </React.Fragment>
   );
 }
 
-export default ({
+export default function Presentation({
   card,
   viewedUser,
   authUser,
@@ -185,8 +178,14 @@ export default ({
   // showAddReviewButton,
   linkSubmission,
   formErrors,
-}) => {
+}) {
   const classes = useStyles();
+
+  let contentItemUrl, contentItem;
+  if (card !== undefined) {
+    contentItemUrl = card.contentItemUrl;
+    contentItem = card.contentItem;
+  }
 
   const workshopAttendance = false;
   if (cardId)
@@ -231,7 +230,16 @@ export default ({
         ) : (
           <React.Fragment />
         )}
+
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={contentItemUrl}
+              contentItemId={contentItem}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
-};
+}

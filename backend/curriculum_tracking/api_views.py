@@ -1,4 +1,3 @@
-from urllib import response
 from git_real import models as git_models
 from git_real import serializers as git_serializers
 from django.utils import timezone
@@ -22,13 +21,12 @@ from core.permissions import (
 )
 from core.models import Team, User, Stream
 import curriculum_tracking.activity_log_entry_creators as log_creators
-from django.db.models import Q
-
 from rest_framework import filters
 from social_auth.models import SocialProfile
-
-
-
+from guardian.shortcuts import get_objects_for_user
+from django.db.models import Q, Max
+from django.db.models import Count
+from sql_util.utils import SubqueryAggregate
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -171,7 +169,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
 
     serializer_class = serializers.AgileCardSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["assignees", "reviewers", "status","requires_cards"]
+    filterset_fields = ["assignees", "reviewers", "status", "requires_cards"]
 
     queryset = (
         models.AgileCard.objects.order_by("order")
@@ -185,8 +183,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             & (
                 curriculum_permissions.CardBelongsToRequestingUser
                 | core_permissions.HasObjectPermission(
-                    permissions=Team.PERMISSION_VIEW,
-                    get_objects=_get_teams_from_card,
+                    permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_card
                 )
             )
         )
@@ -389,13 +386,12 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_project(self, request, pk=None):
         card: models.AgileCard = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         card.start_project()
 
@@ -417,8 +413,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     )
     def set_project_link(self, request, pk=None):
         card = self.get_card_or_error(
-            status_or_404=None,
-            type_or_404=models.ContentItem.PROJECT,
+            status_or_404=None, type_or_404=models.ContentItem.PROJECT
         )
         content_item = card.content_item
         assert (
@@ -450,7 +445,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
                     get_objects=_get_teams_from_card,
                 )
                 & curriculum_permissions.CardCanForceStart
-            ),
+            )
         ],
     )
     def start_topic(self, request, pk=None):
@@ -677,16 +672,90 @@ class TopicReviewViewset(viewsets.ModelViewSet):
     ]
 
 
+class PullRequestReviewQualityViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.PullRequestReviewQualitySerializer
+    queryset = (
+        git_models.PullRequestReview.objects.order_by("-submitted_at")
+        .annotate(
+            project_count=SubqueryAggregate(
+                "pull_request__repository__recruit_projects", aggregate=Count
+            )
+        )
+        .filter(project_count__gte=1)
+    )
+
+    # .filter_by(repository__recruit_projects)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        "submitted_at": ["gte", "lte"],
+        "user": ["exact"],
+    }
+    permission_classes = [
+        ActionIs("list")
+        & (
+            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
+            )
+        )
+        | ActionIs("retrieve")
+        & (
+            core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_review,
+            )
+        )
+    ]
+
+
+class RecruitProjectReviewQualityViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.RecruitProjectReviewQualitySerializer
+    queryset = models.RecruitProjectReview.objects.order_by("-timestamp")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        "timestamp": ["gte", "lte"],
+        "reviewer_user": ["exact"],
+    }
+
+    permission_classes = [
+        ActionIs("list")
+        & (
+            curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
+            | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
+            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter(
+                    "reviewer_user"
+                ),
+            )
+        )
+        | ActionIs("retrieve")
+        & (
+            core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_recruit_project_review,
+            )
+        )
+    ]
+
+
 class RecruitProjectReviewViewset(viewsets.ModelViewSet):
     serializer_class = serializers.RecruitProjectReviewSerializer
     queryset = models.RecruitProjectReview.objects.order_by("-timestamp")
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = [
-        "status",
-        "reviewer_user",
-        "recruit_project",
-        "recruit_project__recruit_users",
-    ]
+    filterset_fields = {
+        "timestamp": ["gte", "lte"],
+        "status": ["exact"],
+        "reviewer_user": ["exact"],
+        "recruit_project": ["exact"],
+        "recruit_project__recruit_users": ["exact"],
+    }
 
     permission_classes = [
         ActionIs("list")
@@ -748,8 +817,7 @@ class RepositoryViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsRepoAttachedToProjectICanSee
             | core_permissions.HasObjectPermission(
-                permissions=Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_repository,
+                permissions=Team.PERMISSION_VIEW, get_objects=_get_teams_from_repository
             )
         )
         | ActionIs("list") & (permissions.IsAdminUser)
@@ -867,11 +935,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     def auto_assign_reviewers(self, request, pk=None):
         """automatically assign qualified reviewers to cards"""
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
         else:
             from long_running_request_actors import auto_assign_reviewers as actor
 
@@ -890,11 +954,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         from curriculum_tracking.management.helpers import get_user_cards
 
         if request.method == "GET":
-            return Response(
-                {
-                    "status": "OK",
-                }
-            )
+            return Response({"status": "OK"})
 
         serializer = serializers.BulkSetDueDatesHumanFriendly(data=request.data)
         if serializer.is_valid():
@@ -932,7 +992,6 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     @action(
         detail=False,
         methods=["post"],
@@ -943,20 +1002,30 @@ class ManagementActionsViewSet(viewsets.ViewSet):
         serializer = serializers.RegisterNewLearnerSerializer(data=request.data)
         if serializer.is_valid():
 
-            email = serializer.data['email']
-            first_name = serializer.data['first_name']
-            last_name = serializer.data['last_name']
-            github_name = serializer.data['github_name']
-            stream_name = serializer.data['stream_name']
-            team_name = serializer.data['team_name']
+            email = serializer.data["email"]
+            first_name = serializer.data["first_name"]
+            last_name = serializer.data["last_name"]
+            github_name = serializer.data["github_name"]
+            stream_name = serializer.data["stream_name"]
+            team_name = serializer.data["team_name"]
 
             try:
                 stream = Stream.objects.get(name=stream_name)
             except Stream.DoesNotExist:
-                return Response({'stream_name': f'Stream matching name "{stream_name}" does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "stream_name": f'Stream matching name "{stream_name}" does not exist'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             if stream.stream_curriculums.count() == 0:
-                return Response({'stream_name': f'Stream matching name "{stream_name}" does not have any courses. Please make sure it is set up correctly'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "stream_name": f'Stream matching name "{stream_name}" does not have any courses. Please make sure it is set up correctly'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             user = User.objects.get_or_create(
                 email=email, defaults={"first_name": first_name, "last_name": last_name}
@@ -964,14 +1033,16 @@ class ManagementActionsViewSet(viewsets.ViewSet):
             user.active = True
             user.save()
 
-            profile =  SocialProfile.objects.get_or_create(user=user)[0]
+            profile = SocialProfile.objects.get_or_create(user=user)[0]
             profile.github_name = github_name
             profile.save()
 
             team = Team.objects.get_or_create(name=team_name)[0]
             team.user_set.add(user)
 
-            curriculum_ids =  [o.curriculum_id for o in  stream.stream_curriculums.order_by('order')]
+            curriculum_ids = [
+                o.curriculum_id for o in stream.stream_curriculums.order_by("order")
+            ]
             existing = models.CourseRegistration.objects.filter(user=user)
             for o in existing:
                 if o.curriculum_id not in curriculum_ids:
@@ -984,15 +1055,10 @@ class ManagementActionsViewSet(viewsets.ViewSet):
                     o.order = i
                     o.save()
 
-            return Response({'user_id':user.id})  # TODO: use a serializer rather
-
+            return Response({"user_id": user.id})  # TODO: use a serializer rather
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 class BurnDownSnapShotViewset(viewsets.ModelViewSet):
@@ -1033,3 +1099,117 @@ class ReviewTrustsViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ReviewTrustSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["user"]
+
+
+class ContentItemAgileWeightViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+
+    queryset = models.ContentItemAgileWeight.objects.order_by("content_item").all()
+    serializer_class = serializers.ContentItemAgileWeightSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["content_item", "weight"]
+
+
+class CourseRegistrationViewset(viewsets.ModelViewSet):
+    queryset = models.CourseRegistration.objects.all().order_by("user")
+    filterset_fields = ["user", "curriculum"]
+    serializer_class = serializers.CourseRegistrationSerialiser
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [
+        permissions.IsAdminUser
+        | ActionIs("list")
+        & (
+            core_permissions.IsCurrentUserInSpecificFilter("user")
+            | core_permissions.HasObjectPermission(
+                permissions=Team.PERMISSION_VIEW,
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
+            )
+        )
+    ]
+
+
+class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
+    serializer_class = serializers.ProjectReviewQueueSerializer
+    filter_backends = [DjangoFilterBackend]
+
+    permission_classes = [IsReadOnly]
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        queryset = super().get_queryset(*args, **kwargs)
+        if user.is_superuser:
+            return queryset
+
+        filter = Q(recruit_users__in=[user]) | Q(reviewer_users__in=[user])
+
+        for PERMISSION in Team.PERMISSION_VIEW:
+
+            teams = get_objects_for_user(user, PERMISSION, Team)
+            for team in teams:
+                team_users = team.user_set.all()
+                filter = (
+                    filter
+                    | Q(recruit_users__in=team_users)
+                    | Q(reviewer_users__in=team_users)
+                )
+
+        queryset = queryset.filter(filter)
+        return queryset
+
+
+class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
+    queryset = (
+        models.RecruitProject.objects.filter(
+            agile_card__status=models.AgileCard.IN_REVIEW
+        )
+        .exclude(
+            content_item__tags__name="technical-assessment"
+        )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
+        .filter(recruit_users__active__in=[True])
+        .order_by("review_request_time")
+    )
+    filterset_fields = [
+        "recruit_users",
+        "reviewer_users",
+        "code_review_competent_since_last_review_request",
+        "code_review_excellent_since_last_review_request",
+        "code_review_red_flag_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+    ]
+
+
+class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
+    queryset = (
+        models.RecruitProject.objects.filter(recruit_users__active__in=[True])
+        .filter(
+            repository__pull_requests__in=git_models.PullRequest.objects.filter(
+                state="open"
+            )
+        )
+        .annotate(
+            pr_time=Max("repository__pull_requests__updated_at"),
+        )
+        .order_by("pr_time")
+    )
+    filterset_fields = [
+        "recruit_users",
+        "reviewer_users",
+    ]
+
+
+class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
+    queryset = models.CurriculumContentRequirement.objects.all().order_by(
+        "curriculum_id"
+    )
+    filterset_fields = ["curriculum", "content_item"]
+    serializer_class = serializers.CurriculumContentRequirementSerializer
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [permissions.IsAdminUser]
+
+
+# from curriculum_tracking.models import *
+# from django.utils import timezone
+# from django.db.models import  F
+# from django.contrib.postgres.aggregates import *
+# # class UserReviewPerformance(viewsets.ModelViewSet):
+#     RecruitProjectReview.objects.filter(reviewer_user__email="vuyisanani.meteni@umuzi.org").filter(timestamp__gte = timezone.now() - timezone.timedelta(days=7)).annotate(flavour_names=StringAgg('recruit_project__flavours__name',delimiter=",", ordering= 'recruit_project__flavours__name')).values('id','flavour_names','recruit_project__content_item_id')

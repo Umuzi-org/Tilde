@@ -24,6 +24,7 @@ from curriculum_tracking.constants import (
     EXCELLENT,
 )
 from django.utils import timezone
+from git_real.models import PullRequest
 
 TYPESCRIPT = "ts"
 JAVASCRIPT = "js"
@@ -768,17 +769,20 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         review_4.timestamp = self.time_four
         review_4.save()
 
-        ids_which_should_be_returned = [
-            review_2.reviewer_user.id,
-            review_3.reviewer_user.id,
-            review_4.reviewer_user.id,
+        expected_users = [
+            review_2.reviewer_user,
+            review_3.reviewer_user,
+            review_4.reviewer_user,
         ]
 
         # Making sure that reviews were done on card and not on card_2, if card_2 returns reviews then our function is
         # returning the wrong stuff and therefore it is not working as it should.
         self.assertEqual(
-            sorted(self.card_1.get_users_that_reviewed_since_last_review_request()),
-            sorted(ids_which_should_be_returned),
+            sorted(
+                self.card_1.get_users_that_reviewed_since_last_review_request(),
+                key=lambda user: user.id,
+            ),
+            sorted(expected_users, key=lambda user: user.id),
         )
 
     def test_request_review_and_perform_review_since_time_of_review_request(self):
@@ -801,7 +805,7 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
 
         self.assertEqual(
             AgileCard.get_users_that_reviewed_since_last_review_request(project_one),
-            [review_on_project_one.reviewer_user.id],
+            [review_on_project_one.reviewer_user],
         )
 
     def test_request_review_but_no_review_done_since_time_of_review_request(self):
@@ -813,13 +817,13 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         # The next line had to be done because RecruitProjectFactory does not create an attribute 'recruit_project'
         # so I manually created a 'recruit_project' attribute.
         project_two.recruit_project = project_two
-        
+
         self.assertEqual(
             AgileCard.get_users_that_reviewed_since_last_review_request(project_two), []
         )
 
-class repo_url_Tests(TestCase):
 
+class repo_url_Tests(TestCase):
     def test_repository_link_is_returned_and_that_it_is_an_actual_repository(self):
         card = factories.AgileCardFactory()
         card.recruit_project.repository = git_real_factories.RepositoryFactory()
@@ -829,11 +833,31 @@ class repo_url_Tests(TestCase):
 
     def test_none_is_returned_for_card_not_linked_to_a_repository(self):
         card_no_repo = factories.AgileCardFactory(
-                content_item=factories.ContentItemFactory(
-                content_type=ContentItem.WORKSHOP),
-                status=AgileCard.READY,
-                recruit_project=None
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.WORKSHOP
+            ),
+            status=AgileCard.READY,
+            recruit_project=None,
         )
         self.assertEqual(card_no_repo.repo_url, None)
 
 
+class get_users_that_reviewed_open_prs_Tests(TestCase):
+    def test_all(self):
+
+        repo = git_real_factories.RepositoryFactory()
+        open_pr = git_real_factories.PullRequestFactory(
+            repository=repo, state=PullRequest.OPEN
+        )
+        closed_pr = git_real_factories.PullRequestFactory(
+            repository=repo, state=PullRequest.CLOSED
+        )
+
+        review_open = git_real_factories.PullRequestReviewFactory(pull_request=open_pr)
+        git_real_factories.PullRequestReviewFactory(pull_request=closed_pr)
+
+        project = factories.RecruitProjectFactory(repository=repo)
+        card = factories.AgileCardFactory(recruit_project=project)
+
+        result = card.get_users_that_reviewed_open_prs()
+        self.assertEqual(result, [review_open.user])

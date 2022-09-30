@@ -1,3 +1,7 @@
+
+
+dont use
+
 from django.core.management.base import BaseCommand
 from curriculum_tracking.models import RecruitProjectReview
 from django.utils.timezone import timedelta

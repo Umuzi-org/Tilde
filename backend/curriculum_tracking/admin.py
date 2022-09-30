@@ -4,6 +4,10 @@ from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 
 
+class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
+    model = models.ContentItemAutoMarkerConfig
+
+
 class ContentItemOrderPostAdmin(admin.TabularInline):
     model = models.ContentItem.prerequisites.through
     fk_name = "post"
@@ -17,7 +21,11 @@ class ContentItemOrderPreAdmin(admin.TabularInline):
 @admin.register(models.ContentItem)
 class ContentItemAdmin(admin.ModelAdmin):
 
-    inlines = (ContentItemOrderPostAdmin, ContentItemOrderPreAdmin)
+    inlines = (
+        ContentItemOrderPostAdmin,
+        ContentItemOrderPreAdmin,
+        ContentItemAutoMarkerConfigAdmin,
+    )
 
     list_display = ["content_type", "title", "tag_list"]
     search_fields = ["title"]
