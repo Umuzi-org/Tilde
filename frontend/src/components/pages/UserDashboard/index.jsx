@@ -16,27 +16,22 @@ function DashboardUnconnected({
   fetchUser,
   fetchUserDetailedStats,
 }) {
-
+  console.log("xxxxxxx");
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
   const user = users && users[userId];
-  const currentUserDetailedStats = userDetailedStats && userDetailedStats[userId];
-  const currentUserBurndownStats = userBurndownStats && Object.values(userBurndownStats).filter(
-    (snapshot) => snapshot.user === userId
-  );
+  const currentUserDetailedStats =
+    userDetailedStats && userDetailedStats[userId];
 
   useEffect(() => {
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
     }
-  }, [userId, fetchUser, fetchUserDetailedStats, fetchUserBurndownStats]);
- 
-  if (
-    users === undefined || 
-    userDetailedStats === undefined || 
-    userBurndownStats === undefined
-    ) return <Loading />
+  }, [userId, fetchUser, fetchUserDetailedStats]);
+
+  if (users === undefined || userDetailedStats === undefined)
+    return <Loading />;
 
   const showTeamsTable = user
     ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
@@ -48,7 +43,7 @@ function DashboardUnconnected({
     showTeamsTable,
     authUser,
   };
-  
+
   return <Presentation {...props} />;
 }
 
@@ -58,7 +53,7 @@ const mapStateToProps = (state) => {
     userDetailedStats: state.apiEntities.userDetailedStats,
     userBurndownStats: state.apiEntities.burndownSnapshots,
     // authedUserId: state.App.authUser.userId,
-    authUser: state.App.authUser || {},
+    authUser: state.App.authUser,
   };
 };
 
