@@ -15,7 +15,7 @@ import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
-import { updateBurnDownSnapshots, removeDuplicateDates } from "./utils";
+import { fillInSnapshotDateGaps, removeDuplicateDates } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   legend: {
@@ -35,7 +35,7 @@ export default ({ burnDownSnapshots }) => {
   const filterStartDate = new Date();
   filterStartDate.setDate(filterStartDate.getDate() - 21);
 
-  const updatedBurnDownSnapshots = updateBurnDownSnapshots({
+  const burnDownSnapshotsFilledDates = fillInSnapshotDateGaps({
     burnDownSnapshots,
   });
 
@@ -46,7 +46,7 @@ export default ({ burnDownSnapshots }) => {
         Burndown
       </Typography>
       <ResponsiveContainer height={500} width="100%">
-        <LineChart data={updatedBurnDownSnapshots}>
+        <LineChart data={burnDownSnapshotsFilledDates}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="timestamp" interval="preserveEnd" />
           <YAxis />

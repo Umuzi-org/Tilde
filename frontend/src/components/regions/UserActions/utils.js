@@ -1,7 +1,6 @@
-export function updateBurnDownSnapshots({ burnDownSnapshots }) {
-  const datesArray = [];
-  burnDownSnapshots.forEach((burnDownSnapshot) => {
-    datesArray.push(burnDownSnapshot.timestamp);
+export function fillInSnapshotDateGaps({ burnDownSnapshots }) {
+  const datesArray = burnDownSnapshots.map((burnDownSnapshot) => {
+    return burnDownSnapshot.timestamp;
   });
 
   const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
@@ -55,7 +54,12 @@ export function removeDuplicateDates({ burnDownSnapshots }) {
   const result = burnDownSnapshots.filter(
     (burnDownSnapshot, index, self) =>
       index ===
-      self.findIndex((t) => t.timestamp === burnDownSnapshot.timestamp)
+      self.findIndex(
+        (t) =>
+          t.timestamp === burnDownSnapshot.timestamp &&
+          t.cardsInCompleteColumnTotalCount ===
+            burnDownSnapshot.cardsInCompleteColumnTotalCount
+      )
   );
   return result;
 }
