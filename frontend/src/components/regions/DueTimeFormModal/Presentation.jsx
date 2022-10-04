@@ -27,14 +27,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default ({ card, cardId, handleClose, handleSubmit, loading }) => {
+export default ({ cards, cardId, handleClose, handleSubmit, loading }) => {
   const classes = useStyles();
-  const [dueTime, setDueTime] = useState(card.dueTime);
+  const [dueTime, setDueTime] = useState(cards.dueTime);
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
-          {card ? (
+          {cards ? (
             <form noValidate>
               <DateTimePicker
                 onChange={setDueTime}

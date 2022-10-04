@@ -109,7 +109,7 @@ function CardDetailsUnconnected({
   };
 
   const viewedUser = card && users[card.assignees[0]];
-
+  // eslint-disable-next-line
   const isReviewer =
     ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
 

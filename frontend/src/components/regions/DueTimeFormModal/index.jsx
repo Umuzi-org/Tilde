@@ -8,7 +8,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 function DueTimeFormModalUnconnected({
   users,
   cardId,
-  card,
+  cards,
   handleClose,
   fetchAgileCard,
   setDueTime,
@@ -16,13 +16,13 @@ function DueTimeFormModalUnconnected({
 }) {
 
   React.useEffect(() => {
-    if (cardId && (card === undefined || card === null || card === {})) {
+    if (cardId && (cards === undefined || cards === null || cards === {})) {
       fetchAgileCard({ cardId });
     }
-  }, [cardId, fetchAgileCard, card]);
+  }, [cardId, fetchAgileCard, cards]);
 
   const viewedUser =
-    card.assignees === undefined ? null : users[card.assignees[0]];
+    cards.assignees === undefined ? null : users[cards.assignees[0]];
 
   const latestCall =
     cardId !== null
@@ -41,7 +41,7 @@ function DueTimeFormModalUnconnected({
   const props = {
     viewedUser,
     cardId,
-    card,
+    cards,
     handleClose,
     handleSubmit,
     loading: latestCall.loading,
@@ -59,7 +59,7 @@ const mapStateToProps = (state) => {
     }),
     cardId: state.DueTimeFormModal.cardId || null,
     users: state.apiEntities.user || {},
-    card: state.apiEntities.cards || {},
+    cards: state.apiEntities.cards || {},
     authUser: state.apiEntities.authUser,
     CARD_SET_DUE_TIME: state.CARD_SET_DUE_TIME,
   };
