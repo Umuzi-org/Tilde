@@ -64,12 +64,6 @@ function DashboardUnconnected({
       userIds: team ? team.members.map((member) => member.userId) : [],
     }),
   };
-  if (activityLogDayCounts.length === 0)
-    getActivityLogCountsByDayForUsers({
-      activityLogDayCounts,
-      eventTypes,
-      userIds: team ? team.members.map((member) => member.userId) : [],
-    });
 
   return <Presentation {...props} />;
 }
@@ -78,10 +72,7 @@ function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams,
     authUser: state.App.authUser,
-
-    activityLogDayCounts: Object.values(
-      state.apiEntities.activityLogDayCounts || {}
-    ),
+    activityLogDayCounts: state.apiEntities.activityLogDayCounts,
   };
 }
 
