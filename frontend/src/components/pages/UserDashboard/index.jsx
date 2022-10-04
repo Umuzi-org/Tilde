@@ -50,8 +50,6 @@ const mapStateToProps = (state) => {
   return {
     users: state.apiEntities.users,
     userDetailedStats: state.apiEntities.userDetailedStats,
-    userBurndownStats: state.apiEntities.burndownSnapshots,
-    // authedUserId: state.App.authUser.userId,
     authUser: state.App.authUser,
   };
 };
@@ -70,18 +68,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER_DETAILED_STATS.operations.maybeStart({
           data: { userId: parseInt(userId) },
-        })
-      );
-    },
-
-    //TODO Implement Page check
-    fetchUserBurndownStats: ({ userId }) => {
-      dispatch(
-        apiReduxApps.FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE.operations.maybeStart({
-          data: {
-            userId: parseInt(userId),
-            page: 1,
-          },
         })
       );
     },
