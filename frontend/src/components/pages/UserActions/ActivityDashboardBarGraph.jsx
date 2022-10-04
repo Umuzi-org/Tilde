@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart, Bar, XAxis } from "recharts";
+import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -16,20 +16,22 @@ export default function ActivityDashboardBarGraph({ eventList }) {
         bottom: 5,
       }}
     >
+      <CartesianGrid />
       <XAxis dataKey="date" />
-
+      <Tooltip />
+      <Legend />
       <Bar
         dataKey="total"
         fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
         name="Project cards completed"
       />
       <Bar
-        dataKey="topicCardsCompleted"
+        dataKey="total"
         fill={eventTypeColors.TOPIC_CARDS_COMPLETED}
         name="Topic cards completed"
       />
       <Bar
-        dataKey="reviewsCompleted"
+        dataKey="total"
         fill={eventTypeColors.REVIEWS_COMPLETED}
         name="Reviews completed"
       />

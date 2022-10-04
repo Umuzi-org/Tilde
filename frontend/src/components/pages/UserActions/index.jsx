@@ -33,7 +33,9 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+
 }) {
+ 
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(

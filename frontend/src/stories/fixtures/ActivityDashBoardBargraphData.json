@@ -5,7 +5,8 @@
     "total": 6,
     "filter_by_actor_user": "2",
     "filter_by_effected_user": "",
-    "event_type": 1
+    "event_type": 1,
+    "event_type_name": "COMPETENCE_REVIEW_DONE"
   },
   {
     "id": "date=2022-08-12&event_type=5&filter_by_actor_user=2&filter_by_effected_user=",
@@ -13,7 +14,8 @@
     "total": 3,
     "filter_by_actor_user": "2",
     "filter_by_effected_user": "",
-    "event_type": 5
+    "event_type": 5,
+    "event_type_name": "CARD_MOVED_TO_REVIEW_FEEDBACK"
   },
   {
     "id": "date=2022-08-12&event_type=6&filter_by_actor_user=2&filter_by_effected_user=",
@@ -21,7 +23,8 @@
     "total": 3,
     "filter_by_actor_user": "2",
     "filter_by_effected_user": "",
-    "event_type": 6
+    "event_type": 6,
+    "event_type_name": "CARD_MOVED_TO_COMPLETE"
   },
   {
     "id": "date=2022-08-11&event_type=1&filter_by_actor_user=2&filter_by_effected_user=",
@@ -29,6 +32,7 @@
     "total": 2,
     "filter_by_actor_user": "2",
     "filter_by_effected_user": "",
-    "event_type": 1
+    "event_type": 1,
+    "event_type_name": "COMPETENCE_REVIEW_DONE"
   }
 ]
