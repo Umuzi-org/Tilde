@@ -1,14 +1,40 @@
 import React from "react";
-import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  Legend,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
 export default function ActivityDashboardBarGraph({ eventList }) {
+  const data = [];
+  eventList.forEach((snapshot) => {
+    if (!data.some((date) => date.date === snapshot.date)) {
+      const activitySnapshot = {
+        id: snapshot.id,
+        date: snapshot.date,
+        snapshot: [snapshot],
+      };
+      data.push(activitySnapshot);
+    } else if (data.some((date) => date.date === snapshot.date)) {
+      const dateIndex = data.findIndex((date) => {
+        return date.date === snapshot.date;
+      });
+      data[dateIndex].snapshot.push(snapshot);
+    }
+  });
+  console.log(data);
   return (
+    // <ResponsiveContainer width="100%">
     <BarChart
       width={1000}
       height={300}
-      data={eventList}
+      data={data}
       margin={{
         top: 5,
         right: 30,
@@ -20,12 +46,13 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <XAxis dataKey="date" />
       <Tooltip />
       <Legend />
+      {/* {console.log("hey", eventList[1].snapshot[0].total)}; */} */}
       <Bar
-        dataKey="total"
+        dataKey={() => data[0].snapshot[0].total}
         fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
         name="Project cards completed"
       />
-      <Bar
+      {/* <Bar
         dataKey="total"
         fill={eventTypeColors.TOPIC_CARDS_COMPLETED}
         name="Topic cards completed"
@@ -34,7 +61,8 @@ export default function ActivityDashboardBarGraph({ eventList }) {
         dataKey="total"
         fill={eventTypeColors.REVIEWS_COMPLETED}
         name="Reviews completed"
-      />
+      /> */}
     </BarChart>
+    // </ResponsiveContainer>
   );
 }
