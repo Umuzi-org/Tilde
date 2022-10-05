@@ -8,7 +8,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
 import Button from "../../widgets/Button";
@@ -41,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     marginTop: theme.spacing(1),
+  },
+  statusHelp: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -113,16 +116,11 @@ export default function Presentation({
                   })}
                 </Select>
               </FormControl>
-              <StatusHelp />
+              <Grid className={classes.statusHelp}>
+                <StatusHelp />
+              </Grid>
             </Grid>
             <Grid item xs={12}>
-              {/* <TextareaAutosize
-                className={classes.textArea}
-                aria-label="your comments"
-                rowsMin={5}
-                placeholder="Your comments*"
-                {...comments}
-              /> */}
               <TextField
                 variant="outlined"
                 aria-label="your comments"
