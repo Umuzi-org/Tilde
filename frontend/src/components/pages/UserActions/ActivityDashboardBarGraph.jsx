@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  Legend,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -28,9 +20,8 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       data[dateIndex].snapshot.push(snapshot);
     }
   });
-  console.log(data);
+
   return (
-    // <ResponsiveContainer width="100%">
     <BarChart
       width={1000}
       height={300}
@@ -46,23 +37,14 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <XAxis dataKey="date" />
       <Tooltip />
       <Legend />
-      {/* {console.log("hey", eventList[1].snapshot[0].total)}; */} */}
-      <Bar
-        dataKey={() => data[0].snapshot[0].total}
-        fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
-        name="Project cards completed"
-      />
-      {/* <Bar
-        dataKey="total"
-        fill={eventTypeColors.TOPIC_CARDS_COMPLETED}
-        name="Topic cards completed"
-      />
-      <Bar
-        dataKey="total"
-        fill={eventTypeColors.REVIEWS_COMPLETED}
-        name="Reviews completed"
-      /> */}
+
+      {data.map((x, i) => (
+        <Bar
+          dataKey={() => x.snapshot[0].total}
+          fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
+          name={() => x.snapshot[0].event_type_name}
+        />
+      ))}
     </BarChart>
-    // </ResponsiveContainer>
   );
 }
