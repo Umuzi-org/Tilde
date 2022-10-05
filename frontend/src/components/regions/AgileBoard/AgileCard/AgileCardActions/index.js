@@ -7,45 +7,21 @@ import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
 import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
 function AgileCardActionsUnconnected({
-  // authUser,
-  // viewedUser,
-
-  // card,
-  // handleClickAddReview,
-  handleClickOpenCardDetails,
-
-  // handleRequestReview,
-  // handleStartProject,
-  // handleCancelReviewRequest,
-
-  // handleClickOpenWorkshopAttendanceForm,
-  // handleStartTopic,
-  // handleStopTopic,
-  // handleFinishTopic,
-  // handleRemoveWorkshopAttendance,
-  // loadingStartProject,
-  // loadingStartTopic,
-  // loadingClickOpenWorkshopAttendanceForm,
-  // loadingRequestReview,
-  // loadingCancelReviewRequest,
-  // loadingStopTopic,
-  // loadingFinishTopic,
-  // loadingRemoveWorkshopAttendance,
-
   card,
-  repoUrl,
   authUser,
   viewedUser,
+
   startProject,
   requestReview,
   cancelReviewRequest,
   startTopic,
   stopTopic,
   finishTopic,
+  handleClickOpenCardDetails,
   removeWorkshopAttendance,
   addWorkshopAttendance,
   openReviewFormModal,
-  filterUserId,
+
   CARD_START_PROJECT,
   CARD_REQUEST_REVIEW,
   CARD_CANCEL_REVIEW_REQUEST,
