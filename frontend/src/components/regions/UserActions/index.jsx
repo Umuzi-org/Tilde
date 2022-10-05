@@ -57,10 +57,7 @@ function mapData({ eventTypesWithColors, activityLogEntries }) {
 
 function UserActionsUnconnected({
   authedUserId,
-  projectReviews,
-  cardSummaries,
   activityLogEntries,
-  fetchProjectReviewsPages,
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
@@ -68,8 +65,6 @@ function UserActionsUnconnected({
   eventTypes,
   fetchEventTypes,
   // call logs
-  FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
   FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
   let urlParams = useParams() || {};
@@ -77,15 +72,6 @@ function UserActionsUnconnected({
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
     (snapshot) => snapshot.user === userId
   );
-
-  useEffect(() => {
-    fetchProjectReviewsPages({
-      dataSequence: [
-        { page: 1, reviewerUser: userId },
-        // { page: 1, recruitUsers: [userId] },
-      ],
-    });
-  }, [fetchProjectReviewsPages, userId]);
 
   useEffect(() => {
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
@@ -105,46 +91,17 @@ function UserActionsUnconnected({
     });
   }, [fetchEventTypes]);
 
-  if (
-    !userId ||
-    !fetchProjectReviewsPages ||
-    !fetchCardCompletions ||
-    !fetchUserBurndownStats
-  )
-    return <Loading />;
-
-  const latestProjectReviewsCall = getLatestMatchingCall({
-    callLog: FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-    requestData: { reviewerUser: userId },
-  }) || { loading: true };
-
-  const lastCompletedCardsPage = getLatestMatchingCall({
-    callLog: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-    requestData: { assigneeUserId: userId },
-  }) || { loading: true };
+  if (!userId || !fetchUserBurndownStats) return <Loading />;
 
   const latestActivityLogPage = getLatestMatchingCall({
     callLog: FETCH_ACTIVITY_LOG_ENTRIES,
     requestData: { actorUser: userId },
   }) || { loading: true };
 
-  const anyLoading =
-    latestProjectReviewsCall.loading ||
-    lastCompletedCardsPage.loading ||
-    latestActivityLogPage.loading;
+  const anyLoading = latestActivityLogPage.loading;
 
   const fetchNextPages = () => {
     if (anyLoading) return;
-    if (latestProjectReviewsCall.responseData.results.length > 0) {
-      const nextReviewPage = latestProjectReviewsCall.requestData.page + 1;
-      fetchProjectReviewsPages({
-        dataSequence: [{ page: nextReviewPage, reviewerUser: userId }],
-      });
-    }
-    if (lastCompletedCardsPage.responseData.results.length > 0) {
-      const nextCardPage = lastCompletedCardsPage.requestData.page + 1;
-      fetchCardCompletions({ page: nextCardPage, assigneeUserId: userId });
-    }
     if (latestActivityLogPage.responseData.results.length > 0) {
       const nextCardPage = latestActivityLogPage.requestData.page + 1;
       fetchActivityLogEntries({ page: nextCardPage, actorUser: userId });
@@ -160,72 +117,19 @@ function UserActionsUnconnected({
     }
   }
 
-  const getTimeFields = (date) => {
-    if (!date) {
-      console.warn("date is falsy!!!!!!!!!!!!!");
-      return {};
-    }
-
-    const timestamp = new Date(date);
-    const dateStr =
-      days[timestamp.getDay()] + " " + timestamp.toLocaleDateString();
-
-    return {
-      timestamp,
-      dateStr,
-    };
-  };
-  if (!cardSummaries) return <Loading />;
-  const completedCards = Object.values(cardSummaries)
-    .filter((card) => card.assignees.indexOf(userId) !== -1)
-    .map((card) => {
-      const timeFields = getTimeFields(card.completeTime);
-
-      return {
-        ...card,
-        ...timeFields,
-        actionType: ACTION_NAMES.CARD_COMPLETED,
-      };
-    });
-  if (!projectReviews) return <Loading />;
-  const reviewsDone = Object.values(projectReviews)
-    .filter((review) => review.reviewerUser === userId)
-    .map((review) => {
-      const timeFields = getTimeFields(review.timestamp);
-      return {
-        ...review,
-        ...timeFields,
-        actionType: ACTION_NAMES.COMPETENCE_REVIEW_DONE,
-      };
-    });
-
   if (!activityLogEntries) return <Loading />;
-
-  let actionLog = [...reviewsDone, ...completedCards].filter((o) => o.dateStr);
-
-  actionLog.sort((action1, action2) => action2.timestamp - action1.timestamp);
 
   let orderedDates = [];
 
-  let actionLogByDate = {};
-  actionLog.forEach((o) => {
-    const date = o.dateStr;
-    if (orderedDates.indexOf(date) === -1) orderedDates.push(date);
-    actionLogByDate[date] = actionLogByDate[date] || [];
-    actionLogByDate[date].push(o);
-  });
-
-  let orderedDates2 = [];
-
   Object.keys(activityLogEntries).map((o) => {
     const date = activityLogEntries[o].timestamp;
-    orderedDates2.push(date.substring(0, 10));
-    return orderedDates2.sort((time1, time2) => {
+    orderedDates.push(date.substring(0, 10));
+    return orderedDates.sort((time1, time2) => {
       return new Date(time1) < new Date(time2) ? 1 : -1;
     });
   });
 
-  orderedDates2 = [...new Set(orderedDates2)];
+  orderedDates = [...new Set(orderedDates)];
 
   const eventTypesWithColors = matchEventTypesWithColors({
     eventTypes,
@@ -236,8 +140,6 @@ function UserActionsUnconnected({
 
   const props = {
     orderedDates,
-    orderedDates2,
-    actionLogByDate,
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
