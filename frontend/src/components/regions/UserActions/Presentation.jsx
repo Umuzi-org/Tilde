@@ -34,7 +34,7 @@ export default function Presentation({
         <Grid item xs={12}>
           <ActivityLog
             eventList={activityLogEntries}
-            sortedTimestampArray={orderedDates}
+            orderedDates={orderedDates}
           />
 
           {anyLoading && <Loading />}

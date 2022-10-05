@@ -8,7 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   paper: {
     width: "50rem",
-    ["@media (max-width:620px)"]: { // eslint-disable-line no-useless-computed-key
+    ["@media (max-width:620px)"]: {
+      // eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
     },
   },
@@ -34,11 +35,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ActivityLog({ eventList, sortedTimestampArray }) {
+export default function ActivityLog({ eventList, orderedDates }) {
   const classes = useStyles();
   return (
     <React.Fragment>
-      {sortedTimestampArray.map((timestamp) => (
+      {orderedDates.map((timestamp) => (
         <Paper className={classes.paper}>
           <Typography variant="h6" className={classes.dateTypography}>
             <TodayIcon className={classes.calendarIcon} />
