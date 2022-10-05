@@ -1,42 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Presentation from "./Presentation";
 import { showButtons } from "../../../../../utils/cardButtons";
-
-import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { apiReduxApps } from "../../../../../apiAccess/apiApps";
-
-import { ACTION_NAMES } from "../../../../../constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
+import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
-function AgileCardUnconnected({
-  authUser, // should only take in the authId
-  viewedUser,
+function AgileCardActionsUnconnected({
+  // authUser,
+  // viewedUser,
 
-  // api calls
-  requestReview,
-
-  card,
+  // card,
   // handleClickAddReview,
   handleClickOpenCardDetails,
-  startProject,
-  cancelReviewRequest,
-  startTopic,
-  stopTopic,
-  finishTopic,
-  removeWorkshopAttendance,
-  addWorkshopAttendance,
-  openReviewFormModal,
-  filterUserId,
-  CARD_START_PROJECT,
-  CARD_REQUEST_REVIEW,
-  CARD_CANCEL_REVIEW_REQUEST,
-  CARD_START_TOPIC,
-  CARD_STOP_TOPIC,
-  CARD_FINISH_TOPIC,
-  CARD_REMOVE_WORKSHOP_ATTENDANCE,
-  CARD_ADD_WORKSHOP_ATTENDANCE,
 
   // handleRequestReview,
   // handleStartProject,
@@ -55,12 +31,31 @@ function AgileCardUnconnected({
   // loadingStopTopic,
   // loadingFinishTopic,
   // loadingRemoveWorkshopAttendance,
+
+  card,
+  repoUrl,
+  authUser,
+  viewedUser,
+  startProject,
+  requestReview,
+  cancelReviewRequest,
+  startTopic,
+  stopTopic,
+  finishTopic,
+  removeWorkshopAttendance,
+  addWorkshopAttendance,
+  openReviewFormModal,
+  filterUserId,
+  CARD_START_PROJECT,
+  CARD_REQUEST_REVIEW,
+  CARD_CANCEL_REVIEW_REQUEST,
+  CARD_START_TOPIC,
+  CARD_STOP_TOPIC,
+  CARD_FINISH_TOPIC,
+  CARD_REMOVE_WORKSHOP_ATTENDANCE,
+  CARD_ADD_WORKSHOP_ATTENDANCE,
 }) {
   const cardId = card.id;
-
-  useEffect(() => {
-    requestReview({ cardId });
-  }, [requestReview, cardId]);
 
   const handleClickOpenWorkshopAttendanceForm = () => {
     // openWorkshopAttendanceModal({ cardId });
@@ -165,7 +160,6 @@ function AgileCardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    // requestReview: state.apiEntities.requestReview,
     authUser: state.App.authUser,
     CARD_START_PROJECT: state.CARD_START_PROJECT,
     CARD_REQUEST_REVIEW: state.CARD_REQUEST_REVIEW,
@@ -207,6 +201,14 @@ const mapDispatchToProps = (dispatch) => {
     openReviewFormModal: ({ cardId }) => {
       dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
     },
+
+    // openWorkshopAttendanceModal: ({ cardId }) => {
+    //   dispatch(
+    //     markSingleCardWorkshopAttendanceOperations.openWorkshopCardAttendanceForm(
+    //       { cardId }
+    //     )
+    //   );
+    // },
 
     startTopic: ({ cardId }) => {
       dispatch(
@@ -250,9 +252,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const AgileCard = connect(
+const AgileCardActions = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AgileCardUnconnected);
+)(AgileCardActionsUnconnected);
 
-export default AgileCard;
+export default AgileCardActions;
