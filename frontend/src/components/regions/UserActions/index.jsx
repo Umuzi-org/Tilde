@@ -6,64 +6,20 @@ import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 
-import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
 import { eventTypeColors } from "../../../colors";
-
-// TODO: look nice
-
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-const matchEventTypesWithColors = ({ eventTypes, eventTypeColors }) => {
-  const arr = [];
-  eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
-
-  eventTypes.forEach((eventType) => {
-    arr.push({
-      id: eventType.id,
-      eventName: eventType.name,
-      eventColor: eventTypeColors[eventType.name],
-    });
-  });
-  return arr;
-};
-
-function mapData({ eventTypesWithColors, activityLogEntries }) {
-  activityLogEntries = Object.keys(activityLogEntries).map(
-    (key) => activityLogEntries[key]
-  );
-
-  const newData = activityLogEntries.map((item, index) => {
-    const data = eventTypesWithColors.find(
-      (elem) => elem.id === item.eventType
-    );
-    return {
-      ...item,
-      eventName: data ? data.eventName : "",
-      eventColor: data ? data.eventColor : "",
-    };
-  });
-  return newData;
-}
+import { addEventColorsToLogEntries, matchEventTypesWithColors } from "./utils";
 
 function UserActionsUnconnected({
   authedUserId,
-  activityLogEntries,
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
   fetchActivityLogEntries,
-  eventTypes,
   fetchEventTypes,
+  eventTypes,
+  activityLogEntries,
   // call logs
   FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
@@ -136,7 +92,10 @@ function UserActionsUnconnected({
     eventTypeColors,
   });
 
-  activityLogEntries = mapData({ eventTypesWithColors, activityLogEntries });
+  activityLogEntries = addEventColorsToLogEntries({
+    eventTypesWithColors,
+    activityLogEntries,
+  });
 
   const props = {
     orderedDates,
