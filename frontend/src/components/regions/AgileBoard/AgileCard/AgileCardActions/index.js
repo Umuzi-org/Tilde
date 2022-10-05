@@ -8,6 +8,7 @@ import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
 import { ACTION_NAMES } from "../../../../../constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
+import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
 
 function AgileCardUnconnected({
   authUser, // should only take in the authId
@@ -203,9 +204,9 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    // openReviewFormModal: ({ cardId }) => {
-    //   dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
-    // },
+    openReviewFormModal: ({ cardId }) => {
+      dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
+    },
 
     startTopic: ({ cardId }) => {
       dispatch(
