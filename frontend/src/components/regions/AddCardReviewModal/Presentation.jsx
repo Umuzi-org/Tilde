@@ -9,6 +9,7 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
 import Button from "../../widgets/Button";
 import CardButton from "../../widgets/CardButton";
@@ -23,16 +24,23 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   paper: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   },
   textArea: {
     width: "100%",
   },
-  rightButton: {
-    float: "right",
+  modalHeadingSection: {
+    marginBottom: theme.spacing(1),
   },
-  exitIcon: {
-    marginBottom: "0.5rem",
+  exitIconContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    height: "0%",
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -55,14 +63,18 @@ export default function Presentation({
   return (
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
-        <Grid container>
-          <Grid item xs={10} sm={11}>
+        <Grid container className={classes.modalHeadingSection}>
+          <Grid item xs={10}>
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
             </Typography>
           </Grid>
-          <Grid item xs={2} sm={1} className={classes.exitIcon}>
-            <Button variant="outlined" onClick={closeModal}>
+          <Grid item xs={2} className={classes.exitIconContainer}>
+            <Button
+              variant="outlined"
+              className={classes.exitIcon}
+              onClick={closeModal}
+            >
               <CloseIcon />
             </Button>
           </Grid>
@@ -76,7 +88,7 @@ export default function Presentation({
         <form noValidate onSubmit={handleSubmit}>
           {formErrors}
 
-          <Grid container spacing={1}>
+          <Grid container>
             <Grid item xs={12}>
               <FormControl
                 variant="outlined"
@@ -104,28 +116,41 @@ export default function Presentation({
               <StatusHelp />
             </Grid>
             <Grid item xs={12}>
-              <TextareaAutosize
+              {/* <TextareaAutosize
                 className={classes.textArea}
                 aria-label="your comments"
                 rowsMin={5}
                 placeholder="Your comments*"
                 {...comments}
+              /> */}
+              <TextField
+                variant="outlined"
+                aria-label="your comments"
+                id="outlined-multiline-static"
+                label="Your comments"
+                multiline
+                rows={5}
+                placeholder="Nicely done :)"
+                fullWidth
+                {...comments}
               />
             </Grid>
-            <Grid item xs={6}>
-              <Button variant="outlined" onClick={closeModal}>
-                Cancel
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <CardButton
-                type="submit"
-                variant="outlined"
-                className={classes.rightButton}
-                loading={loading}
-                label="Submit your review"
-                onClick={handleSubmit}
-              ></CardButton>
+            <Grid container className={classes.buttons}>
+              <Grid item>
+                <Button variant="outlined" onClick={closeModal}>
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <CardButton
+                  type="submit"
+                  variant="outlined"
+                  // className={classes.rightButton}
+                  loading={loading}
+                  label="Submit your review"
+                  onClick={handleSubmit}
+                ></CardButton>
+              </Grid>
             </Grid>
           </Grid>
         </form>
