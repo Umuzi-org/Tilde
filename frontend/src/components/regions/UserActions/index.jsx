@@ -105,6 +105,7 @@ function UserActionsUnconnected({
     handleScroll,
     currentUserBurndownStats,
     activityLogEntries,
+    fetchNextPages,
   };
   return <Presentation {...props} />;
 }

@@ -5,6 +5,7 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import UserBurnDownChart from "./UserBurndownStats";
 import ActivityLog from "./ActivityLog";
+import Button from "../../widgets/Button";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -19,6 +20,7 @@ export default function Presentation({
   anyLoading,
   currentUserBurndownStats,
   activityLogEntries,
+  fetchNextPages,
 }) {
   const classes = useStyles();
   return (
@@ -37,6 +39,8 @@ export default function Presentation({
               eventList={activityLogEntries}
               orderedDates={orderedDates}
             />
+            <Button onClick={fetchNextPages}>Load More</Button>
+
             {anyLoading && <Loading />}
           </Paper>
         </Grid>
