@@ -9,7 +9,10 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
 import { eventTypeColors } from "../../../colors";
-import { addEventColorsToLogEntries, matchEventTypesWithColors } from "./utils";
+import {
+  addEventColorsToLogEntries,
+  matchEventTypesWithColors,
+} from "./utils.js";
 
 function UserActionsUnconnected({
   authedUserId,
@@ -48,6 +51,7 @@ function UserActionsUnconnected({
   }, [fetchEventTypes]);
 
   if (!userId || !fetchUserBurndownStats) return <Loading />;
+  if (!activityLogEntries) return <Loading />;
 
   const latestActivityLogPage = getLatestMatchingCall({
     callLog: FETCH_ACTIVITY_LOG_ENTRIES,
@@ -72,8 +76,6 @@ function UserActionsUnconnected({
       fetchNextPages();
     }
   }
-
-  if (!activityLogEntries) return <Loading />;
 
   let orderedDates = [];
 

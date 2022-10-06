@@ -8,7 +8,7 @@ import ActivityLog from "./ActivityLog";
 
 const useStyles = makeStyles((theme) => ({
   column: {
-    height: "85%", // TODO. Fit viewport
+    height: "100%", // TODO. Fit viewport
     overflowY: "scroll",
   },
 }));
@@ -32,12 +32,13 @@ export default function Presentation({
           </Grid>
         )}
         <Grid item xs={12}>
-          <ActivityLog
-            eventList={activityLogEntries}
-            orderedDates={orderedDates}
-          />
-
-          {anyLoading && <Loading />}
+          <Paper>
+            <ActivityLog
+              eventList={activityLogEntries}
+              orderedDates={orderedDates}
+            />
+            {anyLoading && <Loading />}
+          </Paper>
         </Grid>
       </Grid>
     </div>
