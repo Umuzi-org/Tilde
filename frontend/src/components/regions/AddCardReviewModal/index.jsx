@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import operations from "./redux/operations.js";
-import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
+import { useState } from "react";
 
 function AddReviewModalUnconnected({
   card,
@@ -13,15 +13,10 @@ function AddReviewModalUnconnected({
   saveReview,
   CARD_ADD_REVIEW,
 }) {
-  const [formState, { status, comments }, formErrors, dataFromState] =
-    useMaterialUiFormState({
-      status: {
-        required: true,
-      },
-      comments: {
-        required: true,
-      },
-    });
+  const [formValues, setFormValues] = useState({
+    status: "",
+    comments: "",
+  });
 
   const cardId = card && card.id;
 
@@ -33,19 +28,23 @@ function AddReviewModalUnconnected({
         }) || { loading: false }
       : { loading: false };
 
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (latestCall.loading) return;
-    const { status, comments } = dataFromState({ state: formState });
+    const { comments, status } = formValues;
     saveReview({ status, comments, cardId });
   };
 
   const props = {
     card,
     handleSubmit,
-    status,
-    comments,
-    formErrors,
+    handleOnChange,
+    formValues,
     closeModal,
     statusChoices: REVIEW_STATUS_CHOICES,
     loading: latestCall.loading,

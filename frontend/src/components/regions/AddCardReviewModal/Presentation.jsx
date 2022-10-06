@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Presentation({
   card,
   handleSubmit,
-  status,
-  comments,
+  handleOnChange,
+  formValues,
   formErrors,
   closeModal,
   statusChoices,
@@ -105,7 +105,9 @@ export default function Presentation({
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  {...status}
+                  name="status"
+                  value={formValues.status}
+                  onChange={handleOnChange}
                 >
                   {Object.keys(statusChoices).map((key) => {
                     return (
@@ -130,7 +132,9 @@ export default function Presentation({
                 rows={5}
                 placeholder="Nicely done :)"
                 fullWidth
-                {...comments}
+                name="comments"
+                value={formValues.comments}
+                onChange={handleOnChange}
               />
             </Grid>
             <Grid container className={classes.buttons}>
