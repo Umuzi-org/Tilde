@@ -47,11 +47,11 @@ export default function ActivityDashboardBarGraph({ eventList }) {
           <Bar
             dataKey={() => item.total}
             fill={
-              item.event_type_name === "COMPETENCE_REVIEW_DONE"
+              item.event_type === 1
                 ? eventTypeColors.COMPETENCE_REVIEW_DONE
-                : item.event_type_name === "CARD_MOVED_TO_COMPLETE"
+                : item.event_type === 6
                 ? eventTypeColors.CARD_MOVED_TO_COMPLETE
-                : item.event_type_name === "CARD_MOVED_TO_REVIEW_FEEDBACK"
+                : item.event_type === 5
                 ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
                 : "white"
             }
