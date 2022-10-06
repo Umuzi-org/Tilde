@@ -14,7 +14,7 @@ import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
-import AgileCardActions from "./AgileCardActions";
+import AgileCardActions from "./AgileCardActions/index.jsx";
 import {
   checkIfCardIsInReviewColumn,
   userReviewedSinceLastReviewRequest,
