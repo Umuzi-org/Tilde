@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
 import { eventTypeColors } from "../../../colors";
 
 export default function ActivityDashboardBarGraph({ eventList }) {
+  // will format data in index.js once redux wiring is done
   const data = [];
   eventList.forEach((snapshot) => {
     if (!data.some((date) => date.date === snapshot.date)) {
@@ -37,14 +38,27 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <XAxis dataKey="date" />
       <Tooltip />
       <Legend />
+      {data.map((y) =>
+        y.snapshot.map((z, i) => console.log("bddn", z.total, i))
+      )}
 
-      {data.map((x, i) => (
-        <Bar
-          dataKey={() => x.snapshot[0].total}
-          fill={eventTypeColors.PROJECT_CARDS_COMPLETED}
-          name={() => x.snapshot[0].event_type_name}
-        />
-      ))}
+      {data.map((key) =>
+        key.snapshot.map((item) => (
+          <Bar
+            dataKey={() => item.total}
+            fill={
+              item.event_type_name === "COMPETENCE_REVIEW_DONE"
+                ? eventTypeColors.COMPETENCE_REVIEW_DONE
+                : item.event_type_name === "CARD_MOVED_TO_COMPLETE"
+                ? eventTypeColors.CARD_MOVED_TO_COMPLETE
+                : item.event_type_name === "CARD_MOVED_TO_REVIEW_FEEDBACK"
+                ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
+                : "white"
+            }
+            name={item.event_type_name.toLowerCase().replaceAll(/_/gi, " ")}
+          />
+        ))
+      )}
     </BarChart>
   );
 }
