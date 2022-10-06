@@ -8,8 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   paper: {
     width: "50rem",
-    ["@media (max-width:620px)"]: {
-      // eslint-disable-line no-useless-computed-key
+    ["@media (max-width:620px)"]: { // eslint-disable-line no-useless-computed-key
       fontSize: "1rem",
     },
   },
