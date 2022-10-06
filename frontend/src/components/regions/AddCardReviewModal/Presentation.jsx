@@ -63,7 +63,6 @@ export default function Presentation({
   if (!card) {
     return <React.Fragment />;
   }
-  console.log(isFormValueEmpty);
 
   return (
     <Modal open={!!card} onClose={closeModal}>
@@ -158,7 +157,6 @@ export default function Presentation({
                 <CardButton
                   type="submit"
                   variant="outlined"
-                  // className={classes.rightButton}
                   loading={loading}
                   label="Submit your review"
                   onClick={handleSubmit}
