@@ -120,7 +120,7 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     FETCH_ACTIVITY_LOG_ENTRIES: state.FETCH_ACTIVITY_LOG_ENTRIES,
-    userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    userBurndownStats: state.apiEntities.burndownSnapshots,
     eventTypes: state.apiEntities.eventTypes,
     activityLogEntries: state.apiEntities.activityLogEntries,
   };
