@@ -24,8 +24,8 @@ export default function Presentation({
 }) {
   const classes = useStyles();
   return (
-    <div className={classes.column}>
-      <Grid container onScroll={handleScroll}>
+    <div className={classes.column} onScroll={handleScroll}>
+      <Grid container>
         {currentUserBurndownStats && (
           <Grid item xs={12}>
             <Paper className={classes.paper}>
