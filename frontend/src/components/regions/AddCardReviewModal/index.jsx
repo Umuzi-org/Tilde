@@ -18,6 +18,12 @@ function AddReviewModalUnconnected({
     status: "",
     comments: "",
   });
+
+  const [isFormValueEmpty, setIsFormValueEmpty] = useState({
+    status: false,
+    comments: false,
+  });
+
   const [hasFailedApiResponse, setHasFailedApiResponse] = useState(false);
 
   const cardId = card && card.id;
@@ -31,12 +37,23 @@ function AddReviewModalUnconnected({
       : { loading: false };
 
   const handleOnChange = (e) => {
+    setIsFormValueEmpty((prev) => ({
+      ...prev,
+      comments: false,
+      status: false,
+    }));
     const { name, value } = e.target;
     setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (formValues.status === "")
+      setIsFormValueEmpty((prev) => ({ ...prev, status: true }));
+    if (formValues.comments === "")
+      setIsFormValueEmpty((prev) => ({ ...prev, comments: true }));
+
     if (latestCall.loading) return;
     const { comments, status } = formValues;
     saveReview({ status, comments, cardId });
@@ -46,6 +63,7 @@ function AddReviewModalUnconnected({
   const props = {
     card,
     hasFailedApiResponse,
+    isFormValueEmpty,
     handleSubmit,
     handleOnChange,
     formValues,

@@ -50,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Presentation({
   card,
   hasFailedApiResponse,
+  isFormValueEmpty,
   handleSubmit,
   handleOnChange,
   formValues,
-  formErrors,
   closeModal,
   statusChoices,
   loading,
@@ -63,6 +63,7 @@ export default function Presentation({
   if (!card) {
     return <React.Fragment />;
   }
+  console.log(isFormValueEmpty);
 
   return (
     <Modal open={!!card} onClose={closeModal}>
@@ -86,7 +87,7 @@ export default function Presentation({
 
         {hasFailedApiResponse && (
           <Alert severity="error" className={classes.alert}>
-            An error occured while trying to submit the review
+            An error occured while trying to submit your review
           </Alert>
         )}
 
@@ -96,8 +97,6 @@ export default function Presentation({
         </Alert>
 
         <form noValidate onSubmit={handleSubmit}>
-          {formErrors}
-
           <Grid container>
             <Grid item xs={12}>
               <FormControl
@@ -115,6 +114,7 @@ export default function Presentation({
                   name="status"
                   value={formValues.status}
                   onChange={handleOnChange}
+                  error={isFormValueEmpty.status ? true : false}
                 >
                   {Object.keys(statusChoices).map((key) => {
                     return (
@@ -142,6 +142,10 @@ export default function Presentation({
                 name="comments"
                 value={formValues.comments}
                 onChange={handleOnChange}
+                error={isFormValueEmpty.comments ? true : false}
+                helperText={
+                  isFormValueEmpty.comments ? "This field is required" : ""
+                }
               />
             </Grid>
             <Grid container className={classes.buttons}>
