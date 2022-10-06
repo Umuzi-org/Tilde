@@ -9,6 +9,7 @@ import { useState } from "react";
 
 function AddReviewModalUnconnected({
   card,
+  latestApiCallStatus,
   closeModal,
   saveReview,
   CARD_ADD_REVIEW,
@@ -17,6 +18,7 @@ function AddReviewModalUnconnected({
     status: "",
     comments: "",
   });
+  const [hasFailedApiResponse, setHasFailedApiResponse] = useState(false);
 
   const cardId = card && card.id;
 
@@ -38,10 +40,12 @@ function AddReviewModalUnconnected({
     if (latestCall.loading) return;
     const { comments, status } = formValues;
     saveReview({ status, comments, cardId });
+    if (!latestApiCallStatus?.responseOk) setHasFailedApiResponse(true);
   };
 
   const props = {
     card,
+    hasFailedApiResponse,
     handleSubmit,
     handleOnChange,
     formValues,

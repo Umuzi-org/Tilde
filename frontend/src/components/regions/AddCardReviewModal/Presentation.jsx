@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Presentation({
   card,
+  hasFailedApiResponse,
   handleSubmit,
   handleOnChange,
   formValues,
@@ -82,6 +83,12 @@ export default function Presentation({
             </Button>
           </Grid>
         </Grid>
+
+        {hasFailedApiResponse && (
+          <Alert severity="error" className={classes.alert}>
+            An error occured while trying to submit the review
+          </Alert>
+        )}
 
         <Alert severity="info" className={classes.alert}>
           Whatever you write here will be visible to staff and to the person you
