@@ -27,7 +27,7 @@ export const getActivityLogCountsByDayForSingleUser = ({
     zeroes[element] = 0;
   });
 
-  const userLogs = Object.values(activityLogDayCounts).filter(
+  const userLogs = activityLogDayCounts.filter(
     (element) =>
       element.id.match(`actor_user=${userId}$`) ||
       element.id.match(`actor_user=${userId}&`) ||
