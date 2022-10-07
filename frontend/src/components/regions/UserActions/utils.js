@@ -3,12 +3,8 @@ export function fillInSnapshotDateGaps({ burnDownSnapshots }) {
     return burnDownSnapshot.timestamp;
   });
 
-  const uniqueDatesArr = Array.from(new Set(datesArray)).sort(
-    (a, b) => new Date(a) - new Date(b)
-  );
-
-  const firstDate = new Date(new Date(uniqueDatesArr[0]).getTime());
-  const lastDate = new Date(uniqueDatesArr[uniqueDatesArr.length - 1]);
+  const firstDate = new Date(new Date(datesArray[0]).getTime());
+  const lastDate = new Date(datesArray[datesArray.length - 1]);
   const allDatesArr = [];
 
   while (firstDate <= lastDate) {
