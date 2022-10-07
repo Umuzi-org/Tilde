@@ -23,7 +23,7 @@ function DashboardUnconnected({
 
   const teamId = parseInt(urlParams.teamId, 10);
   const team = teams && teams[teamId];
-  activityLogDayCounts = {};
+  activityLogDayCounts = [];
 
   useEffect(() => {
     if (teamId) {
