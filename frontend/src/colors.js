@@ -38,9 +38,6 @@ export const eventTypeColors = {
   [CARD_STARTED]: colors.green[600],
   [PR_REVIEWED]: colors.purple[600],
   [COMPETENCE_REVIEW_DONE]: colors.blue[600],
-  [PROJECT_CARDS_COMPLETED]: colors.yellow[600],
-  [TOPIC_CARDS_COMPLETED]: colors.red[600],
-  [REVIEWS_COMPLETED]: colors.green[600],
 };
 
 export const reviewValidatedColors = {

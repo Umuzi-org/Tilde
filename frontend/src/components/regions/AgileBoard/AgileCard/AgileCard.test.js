@@ -22,3 +22,11 @@ test("userReviewedSinceLastReviewRequest should return false if the card is in t
   };
   expect(userReviewedSinceLastReviewRequest({ viewedUser, card })).toBe(false);
 });
+
+test("git repo url should be cleaned to link to the pull request index on github", () => {
+  const gitRepo =
+    "git@github.com:Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python.git";
+  expect(repoUrlCleaner(gitRepo)).toBe(
+    "https://github.com/Umuzi-org/Nkosinathi-Mtshali-705-contentitem-python/pulls"
+  );
+});

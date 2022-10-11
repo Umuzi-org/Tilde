@@ -8,11 +8,11 @@ export default function ActivityDashboardBarGraph({ eventList }) {
   const userActivityLogs = [];
   eventList.forEach((events) => {
     if (!userActivityLogs.some((date) => date.date === events.date)) {
-      const activity = {
+      const userActivity = {
         date: events.date,
         events: [events],
       };
-      userActivityLogs.push(activity);
+      userActivityLogs.push(userActivity);
     } else if (userActivityLogs.some((date) => date.date === events.date)) {
       const dateIndex = userActivityLogs.findIndex((date) => {
         return date.date === events.date;
@@ -43,11 +43,11 @@ export default function ActivityDashboardBarGraph({ eventList }) {
           <Bar
             dataKey={() => item.total}
             fill={
-              item.event_type === 1
+              item.eventType === 1
                 ? eventTypeColors.COMPETENCE_REVIEW_DONE
-                : item.event_type === 6
+                : item.eventType === 6
                 ? eventTypeColors.CARD_MOVED_TO_COMPLETE
-                : item.event_type === 5
+                : item.eventType === 5
                 ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
                 : "white"
             }

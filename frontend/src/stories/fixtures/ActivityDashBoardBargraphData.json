@@ -3,32 +3,32 @@
     "id": "date=2022-08-12&event_type=1&filter_by_actor_user=2&filter_by_effected_user=",
     "date": "2022-08-12",
     "total": 6,
-    "filter_by_actor_user": "2",
-    "filter_by_effected_user": "",
-    "event_type": 1
+    "filterByActorUser": "2",
+    "filterByEffectedUser": "",
+    "eventType": 1
   },
   {
-    "id": "date=2022-08-12&event_type=5&filter_by_actor_user=2&filter_by_effected_user=",
+    "id": "date=2022-08-12&event_type=5&filterByActorUser=2&filter_by_effected_user=",
     "date": "2022-08-12",
     "total": 3,
-    "filter_by_actor_user": "2",
-    "filter_by_effected_user": "",
-    "event_type": 5
+    "filterByActorUser": "2",
+    "filterByEffectedUser": "",
+    "eventType": 5
   },
   {
     "id": "date=2022-08-12&event_type=6&filter_by_actor_user=2&filter_by_effected_user=",
     "date": "2022-08-12",
     "total": 3,
-    "filter_by_actor_user": "2",
-    "filter_by_effected_user": "",
-    "event_type": 6
+    "filterByActorUser": "2",
+    "filterByEffectedUser": "",
+    "eventType": 6
   },
   {
     "id": "date=2022-08-11&event_type=1&filter_by_actor_user=2&filter_by_effected_user=",
     "date": "2022-08-11",
     "total": 2,
-    "filter_by_actor_user": "2",
-    "filter_by_effected_user": "",
-    "event_type": 1
+    "filterByActorUser": "2",
+    "filterByEffectedUser": "",
+    "eventType": 1
   }
 ]
