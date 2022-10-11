@@ -7,6 +7,7 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
+from .activity_log_creators import log_push_event
 
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -267,4 +268,30 @@ class Push(models.Model, Mixins):
                 defaults=defaults,
                 overrides=defaults,
             )
+
+            log_push_event(instance)
+
             return instance
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        repo = self.repository
+        project = RecruitProject.objects.filter(repository=repo).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+    }
+

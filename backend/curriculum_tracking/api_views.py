@@ -1137,6 +1137,10 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
+
+        return self.filter_by_view_permission(queryset, user)
+
+    def filter_by_view_permission(self, queryset, user):
         if user.is_superuser:
             return queryset
 
@@ -1158,16 +1162,7 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
 
 
 class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
-    queryset = (
-        models.RecruitProject.objects.filter(
-            agile_card__status=models.AgileCard.IN_REVIEW
-        )
-        .exclude(
-            content_item__tags__name="technical-assessment"
-        )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
-        .filter(recruit_users__active__in=[True])
-        .order_by("review_request_time")
-    )
+
     filterset_fields = [
         "recruit_users",
         "reviewer_users",
@@ -1176,6 +1171,20 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
         "code_review_red_flag_since_last_review_request",
         "code_review_ny_competent_since_last_review_request",
     ]
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = (
+            models.RecruitProject.objects.filter(
+                agile_card__status=models.AgileCard.IN_REVIEW
+            )
+            .exclude(
+                content_item__tags__name="technical-assessment"
+            )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
+            .filter(recruit_users__active__in=[True])
+            .order_by("review_request_time")
+        )
+        user = self.request.user
+        return self.filter_by_view_permission(queryset, user)
 
 
 class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
