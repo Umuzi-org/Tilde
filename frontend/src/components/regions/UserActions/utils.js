@@ -1,27 +1,26 @@
-export function matchEventTypesWithColors({ eventTypes, eventTypeColors }) {
-  const arr = [];
+export function addEventColorsToLogEntries({
+  eventTypes, 
+  eventTypeColors,
+  activityLogEntries,
+}) {
+
+  const eventTypesWithEventNames = [];
   eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
 
   eventTypes.forEach((eventType) => {
-    arr.push({
+    eventTypesWithEventNames.push({
       id: eventType.id,
       eventName: eventType.name,
       eventColor: eventTypeColors[eventType.name],
     });
   });
-  return arr;
-}
 
-export function addEventColorsToLogEntries({
-  eventTypesWithColors,
-  activityLogEntries,
-}) {
   activityLogEntries = Object.keys(activityLogEntries).map(
     (key) => activityLogEntries[key]
   );
 
   const newData = activityLogEntries.map((item, index) => {
-    const data = eventTypesWithColors.find(
+    const data = eventTypesWithEventNames.find(
       (elem) => elem.id === item.eventType
     );
     return {

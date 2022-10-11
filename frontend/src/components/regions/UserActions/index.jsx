@@ -11,7 +11,6 @@ import Loading from "../../widgets/Loading";
 import { eventTypeColors } from "../../../colors";
 import {
   addEventColorsToLogEntries,
-  matchEventTypesWithColors,
 } from "./utils.js";
 
 function UserActionsUnconnected({
@@ -89,14 +88,8 @@ function UserActionsUnconnected({
 
   orderedDates = [...new Set(orderedDates)];
 
-  const eventTypesWithColors = matchEventTypesWithColors({
-    eventTypes,
-    eventTypeColors,
-  });
-
   activityLogEntries = addEventColorsToLogEntries({
-    eventTypesWithColors,
-    activityLogEntries,
+    eventTypes, eventTypeColors, activityLogEntries
   });
 
   const props = {
