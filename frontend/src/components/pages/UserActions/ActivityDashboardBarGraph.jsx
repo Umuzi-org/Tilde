@@ -6,19 +6,18 @@ import { eventTypeColors } from "../../../colors";
 export default function ActivityDashboardBarGraph({ eventList }) {
   // will format data in index.js once redux wiring is done
   const userActivityLogs = [];
-  eventList.forEach((snapshot) => {
-    if (!userActivityLogs.some((date) => date.date === snapshot.date)) {
-      const activitySnapshot = {
-        id: snapshot.id,
-        date: snapshot.date,
-        snapshot: [snapshot],
+  eventList.forEach((events) => {
+    if (!userActivityLogs.some((date) => date.date === events.date)) {
+      const activity = {
+        date: events.date,
+        events: [events],
       };
-      userActivityLogs.push(activitySnapshot);
-    } else if (userActivityLogs.some((date) => date.date === snapshot.date)) {
+      userActivityLogs.push(activity);
+    } else if (userActivityLogs.some((date) => date.date === events.date)) {
       const dateIndex = userActivityLogs.findIndex((date) => {
-        return date.date === snapshot.date;
+        return date.date === events.date;
       });
-      userActivityLogs[dateIndex].snapshot.push(snapshot);
+      userActivityLogs[dateIndex].events.push(events);
     }
   });
 
@@ -40,7 +39,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <Legend />
 
       {userActivityLogs.map((key) =>
-        key.snapshot.map((item) => (
+        key.events.map((item) => (
           <Bar
             dataKey={() => item.total}
             fill={
