@@ -14,9 +14,6 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
       width: theme.spacing(35),
-      // height: theme.spacing(100),
-      // height: `calc(100% - ${0}px)`,
-      // height: "calc(100vh - 20rem)",
     },
   },
   paper: {
@@ -25,6 +22,11 @@ const useStyles = makeStyles((theme) => ({
   column: {
     height: "calc(100% - 2.5rem)",
     overflowY: "scroll",
+  },
+  typography: {
+    margin: "auto",
+    position: "relative",
+    top: 4,
   },
 }));
 
@@ -40,7 +42,6 @@ export default function Presentation({
   const classes = useStyles();
   return (
     <React.Fragment>
-      {/* <Typography>{user.email}</Typography> */}
       <Grid container wrap="nowrap">
         {board.map((column) => {
           return (
@@ -52,7 +53,11 @@ export default function Presentation({
                 key={column.label}
               >
                 <Paper elevation={3} className={classes.paper}>
-                  <Typography variant="h5" align="center">
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    className={classes.typography}
+                  >
                     {column.label} ({column.totalCards})
                   </Typography>
                   <div
