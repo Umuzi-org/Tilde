@@ -937,6 +937,7 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
         "review_request_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
+        # "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
@@ -970,6 +971,7 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
         "oldest_open_pr_updated_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
+        # "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
