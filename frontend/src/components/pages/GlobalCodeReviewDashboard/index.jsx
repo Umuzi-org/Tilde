@@ -45,6 +45,65 @@ function GlobalCodeReviewDashboardUnconnected({
     []
   );
 
+  const initialPullRequestOrderFilters = [
+    {
+      label: "last updated time",
+      sortFunction: (a, b) =>
+        new Date(a.oldestOpenPrUpdatedTime) -
+        new Date(b.oldestOpenPrUpdatedTime),
+      isSelected: true,
+    },
+  ];
+
+  const initialCompetenceOrderFilters = [
+    {
+      label: "review request time",
+      sortFunction: (a, b) =>
+        new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime),
+      isSelected: true,
+    },
+    {
+      label: "start time",
+      sortFunction: (a, b) => new Date(a.startTime) - new Date(b.startTime),
+      isSelected: false,
+    },
+    {
+      label: "positive reviews",
+      sortFunction: (a, b) => {
+        return (
+          b.codeReviewCompetentSinceLastReviewRequest +
+          b.codeReviewExcellentSinceLastReviewRequest -
+          (a.codeReviewCompetentSinceLastReviewRequest +
+            a.codeReviewExcellentSinceLastReviewRequest)
+        );
+      },
+      isSelected: false,
+    },
+  ];
+
+  const [pullRequestOrderFilters, setPullRequestOrderFilters] = useState(
+    initialPullRequestOrderFilters
+  );
+
+  const [competenceOrderFilters, setCompetenceOrderFilters] = useState(
+    initialCompetenceOrderFilters
+  );
+
+  const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
+    useState(() => {
+      return pullRequestOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
+
+  const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
+    useState(() => {
+      return competenceOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
+
+
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
     fetchPullRequestReviewQueuePage({ page: 1 });
@@ -70,6 +129,68 @@ function GlobalCodeReviewDashboardUnconnected({
   const pullRequestReviewQueueProjects = Object.values(
     pullRequestReviewQueueProjectsObject || {}
   );
+
+  const allFlavours = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.flavourNames),
+        pullRequestReviewQueueProjects.map((proj) => proj.flavourNames),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ].sort();
+
+  const allTagNames = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.tagNames),
+        pullRequestReviewQueueProjects.map((proj) => proj.tagNames),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ].sort();
+
+  function applyFilters(project) {
+    if (filterIncludeTags.length) {
+      for (let tag of filterIncludeTags) {
+        if (!project.tagNames.includes(tag)) return false;
+      }
+    }
+
+    if (filterExcludeTags.length) {
+      for (let tag of filterExcludeTags) {
+        if (project.tagNames.includes(tag)) return false;
+      }
+    }
+    if (filterIncludeFlavours.length) {
+      for (let flavour of filterIncludeFlavours) {
+        if (!project.flavourNames.includes(flavour)) return false;
+      }
+    }
+    if (filterExcludeFlavours.length) {
+      for (let flavour of filterExcludeFlavours) {
+        if (project.flavourNames.includes(flavour)) return false;
+      }
+    }
+
+    if (filterIncludeAssigneeTeams.length) {
+      const includedUserIds = Object.values(teams)
+        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
+        .map((team) => team.members)
+        .flat()
+        .map((o) => o.userId);
+
+      const intersection = project.recruitUsers.filter((value) =>
+        includedUserIds.includes(value)
+      );
+      if (intersection.length === 0) return false;
+    }
+
+    return true;
+  }
+
 
   function fetchNextCompetenceReviewQueuePage() {
     const page = fetchCompetenceReviewQueueLastCall.requestData.page + 1;
@@ -152,11 +273,25 @@ function GlobalCodeReviewDashboardUnconnected({
 
     filterIncludeFlavours,
     filterExcludeFlavours,
+    
+    allFlavours,
+    allTagNames,
+    applyFilters,
+
+    competenceOrderFilters,
+    setCompetenceOrderFilters,
+    selectedCompetenceOrderFilter,
+    setSelectedCompetenceOrderFilter,
+
+    pullRequestOrderFilters,
+    setPullRequestOrderFilters,
+    selectedPullRequestOrderFilter,
+    setSelectedPullRequestOrderFilter,
+
 
     handleChangeFlavourFilter,
     handleChangeTagFilter,
 
-    teams,
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
