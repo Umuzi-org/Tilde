@@ -27,11 +27,11 @@ function AddReviewModalUnconnected({
 
   const [hasFailedApiResponse, setHasFailedApiResponse] = useState(false);
 
-  useEffect(()=>{
-    if(latestApiCallStatus){
+  useEffect(() => {
+    if (latestApiCallStatus) {
       if (!latestApiCallStatus.responseOk) setHasFailedApiResponse(true);
     }
-  },[latestApiCallStatus])
+  }, [latestApiCallStatus]);
 
   const cardId = card && card.id;
 

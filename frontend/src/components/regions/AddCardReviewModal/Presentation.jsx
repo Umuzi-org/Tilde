@@ -14,6 +14,7 @@ import Button from "../../widgets/Button";
 import CardButton from "../../widgets/CardButton";
 import { makeStyles } from "@material-ui/core/styles";
 import StatusHelp from "./StatusHelp";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -74,13 +75,11 @@ export default function Presentation({
             </Typography>
           </Grid>
           <Grid item xs={2} className={classes.exitIconContainer}>
-            <Button
-              variant="outlined"
+            <IconButton
+              children={<CloseIcon />}
               className={classes.exitIcon}
               onClick={closeModal}
-            >
-              <CloseIcon />
-            </Button>
+            />
           </Grid>
         </Grid>
 
