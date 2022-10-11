@@ -1186,6 +1186,9 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
                 state="open"
             )
         )
+        .exclude(
+            agile_card__status=models.AgileCard.COMPLETE
+        )
         .annotate(
             pr_time=Max("repository__pull_requests__updated_at"),
         )
