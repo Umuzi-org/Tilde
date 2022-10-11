@@ -90,6 +90,7 @@ function TeamSummaryStats({ summaryStats }) {
     </Table>
   );
 }
+//add whitespace around filter text fields 
 
 function TeamCard({
   team,
