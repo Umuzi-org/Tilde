@@ -1137,6 +1137,10 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
+
+        return self.filter_by_view_permission(queryset, user)
+
+    def filter_by_view_permission(self, queryset, user):
         if user.is_superuser:
             return queryset
 
@@ -1169,7 +1173,7 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
     ]
 
     def get_queryset(self, *args, **kwargs):
-        return (
+        queryset = (
             models.RecruitProject.objects.filter(
                 agile_card__status=models.AgileCard.IN_REVIEW
             )
@@ -1179,6 +1183,8 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
             .filter(recruit_users__active__in=[True])
             .order_by("review_request_time")
         )
+        user = self.request.user
+        return self.filter_by_view_permission(queryset, user)
 
 
 class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):

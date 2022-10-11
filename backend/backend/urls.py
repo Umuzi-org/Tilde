@@ -176,11 +176,11 @@ router.register(
     "courseregistration",
 )
 
-# router.register(
-#     r"competence_review_queue",
-#     curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
-#     r"competencereviewqueue",
-# )
+router.register(
+    r"competence_review_queue",
+    curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
+    r"competencereviewqueue",
+)
 
 router.register(
     r"pull_request_review_queue",
