@@ -233,6 +233,8 @@ class PushEventTests(APITestCase):
 
         self.assertEqual(Push.objects.count(), 1)
 
+
+class TestNoHeadCommitInPushEvents(APITestCase):
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_payload_without_head_commit_details_is_handled_but_not_stored_to_db(
         self, has_permission
