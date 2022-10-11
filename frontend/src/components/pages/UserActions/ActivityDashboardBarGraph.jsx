@@ -5,20 +5,20 @@ import { eventTypeColors } from "../../../colors";
 
 export default function ActivityDashboardBarGraph({ eventList }) {
   // will format data in index.js once redux wiring is done
-  const data = [];
+  const userActivityLogs = [];
   eventList.forEach((snapshot) => {
-    if (!data.some((date) => date.date === snapshot.date)) {
+    if (!userActivityLogs.some((date) => date.date === snapshot.date)) {
       const activitySnapshot = {
         id: snapshot.id,
         date: snapshot.date,
-        snapshot: { snapshot },
+        snapshot: [snapshot],
       };
-      data.push(activitySnapshot);
-    } else if (data.some((date) => date.date === snapshot.date)) {
-      const dateIndex = data.findIndex((date) => {
+      userActivityLogs.push(activitySnapshot);
+    } else if (userActivityLogs.some((date) => date.date === snapshot.date)) {
+      const dateIndex = userActivityLogs.findIndex((date) => {
         return date.date === snapshot.date;
       });
-      data[dateIndex].snapshot.push(snapshot);
+      userActivityLogs[dateIndex].snapshot.push(snapshot);
     }
   });
 
@@ -26,7 +26,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
     <BarChart
       width={1000}
       height={300}
-      data={data}
+      data={userActivityLogs}
       margin={{
         top: 5,
         right: 30,
@@ -39,13 +39,11 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <Tooltip />
       <Legend />
 
-      {data.map((key) =>
+      {userActivityLogs.map((key) =>
         key.snapshot.map((item) => (
           <Bar
-            data={item}
             dataKey={() => item.total}
             fill={
-              // Better implementation
               item.event_type === 1
                 ? eventTypeColors.COMPETENCE_REVIEW_DONE
                 : item.event_type === 6
@@ -54,7 +52,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
                 ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
                 : "white"
             }
-            name="random name for now"
+            name="random name"
           />
         ))
       )}
