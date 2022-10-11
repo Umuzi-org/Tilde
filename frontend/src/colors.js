@@ -15,9 +15,6 @@ import {
   INCORRECT,
   CORRECT,
   CONTRADICTED,
-  PROJECT_CARDS_COMPLETED,
-  TOPIC_CARDS_COMPLETED,
-  REVIEWS_COMPLETED,
 } from "./constants";
 import { colors } from "@material-ui/core";
 
