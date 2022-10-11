@@ -288,7 +288,6 @@ function GlobalCodeReviewDashboardUnconnected({
     selectedPullRequestOrderFilter,
     setSelectedPullRequestOrderFilter,
 
-
     handleChangeFlavourFilter,
     handleChangeTagFilter,
 

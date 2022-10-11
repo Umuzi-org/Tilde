@@ -41,8 +41,9 @@ export default function ReviewQueueFilterChips({
     <>
       <Typography>Sort by:</Typography>
       {orderFilters &&
-        orderFilters.map((filter) => (
+        orderFilters.map((filter,index) => (
           <Chip
+          key={`${filter}_${index}`}
             label={filter.label}
             variant={filter.isSelected ? "default" : "outlined"}
             onClick={() =>

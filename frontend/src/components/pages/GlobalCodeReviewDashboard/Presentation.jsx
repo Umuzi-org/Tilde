@@ -72,7 +72,7 @@ export default function Presentation({
   setPullRequestOrderFilters,
   selectedPullRequestOrderFilter,
   setSelectedPullRequestOrderFilter,
-
+  
   handleChangeFlavourFilter,
   handleChangeTagFilter,
 
@@ -86,7 +86,6 @@ export default function Presentation({
   filterExcludeTags = filterExcludeTags || [];
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
-
   
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -139,7 +138,7 @@ export default function Presentation({
               .filter(applyFilters)
               .sort(selectedCompetenceOrderFilter.sortFunction)
               .map((project) => (
-                <CompetenceReviewQueueEntry project={project} />
+                <CompetenceReviewQueueEntry project={project} key={`${project.id}`}/>
               ))}
           </Grid>
           <Paper elevation={3} className={classes.project} variant="outlined">
@@ -169,7 +168,7 @@ export default function Presentation({
               .filter(applyFilters)
               .sort(selectedPullRequestOrderFilter.sortFunction)
               .map((project) => (
-                <PullRequestReviewQueueEntry project={project} />
+                <PullRequestReviewQueueEntry project={project} key={`${project.id}`}/>
               ))}
           </Grid>
 
