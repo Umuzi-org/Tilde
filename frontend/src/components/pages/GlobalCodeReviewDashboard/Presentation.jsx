@@ -34,12 +34,10 @@ const useStyles = makeStyles((theme) => {
       zIndex: 2,
       display: "flex",
       flexDirection: "column",
-      gap: 10,
     },
     queueContainerHeadingFilters: {
       display: "flex",
       alignItems: "center",
-      gap: 5,
       flexWrap: "wrap",
     },
   };

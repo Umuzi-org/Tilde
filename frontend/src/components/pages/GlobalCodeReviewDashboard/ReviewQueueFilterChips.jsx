@@ -1,12 +1,24 @@
 import React from "react";
 import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => {
+  return {
+    chip: {
+      margin:theme.spacing(.5)
+    }
+  }   
+});
+
 
 export default function ReviewQueueFilterChips({
   orderFilters,
   setFiltersMethod,
   setSelectedFilterMethod,
 }) {
+  const classes = useStyles()
+
   function handleClick({
     setFiltersMethod,
     setSelectedFilterMethod,
@@ -40,6 +52,7 @@ export default function ReviewQueueFilterChips({
                 selectedFilter: filter,
               })
             }
+            className={classes.chip}
           />
         ))}
     </>
