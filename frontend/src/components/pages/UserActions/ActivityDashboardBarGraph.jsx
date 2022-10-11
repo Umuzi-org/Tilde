@@ -11,7 +11,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       const activitySnapshot = {
         id: snapshot.id,
         date: snapshot.date,
-        snapshot: [snapshot],
+        snapshot: { snapshot },
       };
       data.push(activitySnapshot);
     } else if (data.some((date) => date.date === snapshot.date)) {
@@ -38,15 +38,14 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <XAxis dataKey="date" />
       <Tooltip />
       <Legend />
-      {data.map((y) =>
-        y.snapshot.map((z, i) => console.log("bddn", z.total, i))
-      )}
 
       {data.map((key) =>
         key.snapshot.map((item) => (
           <Bar
+            data={item}
             dataKey={() => item.total}
             fill={
+              // Better implementation
               item.event_type === 1
                 ? eventTypeColors.COMPETENCE_REVIEW_DONE
                 : item.event_type === 6
@@ -55,7 +54,7 @@ export default function ActivityDashboardBarGraph({ eventList }) {
                 ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
                 : "white"
             }
-            name={item.event_type_name.toLowerCase().replaceAll(/_/gi, " ")}
+            name="random name for now"
           />
         ))
       )}
