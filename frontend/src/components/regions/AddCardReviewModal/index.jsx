@@ -6,6 +6,7 @@ import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntitie
 import operations from "./redux/operations.js";
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
 import { useState } from "react";
+import { useEffect } from "react";
 
 function AddReviewModalUnconnected({
   card,
@@ -25,6 +26,12 @@ function AddReviewModalUnconnected({
   });
 
   const [hasFailedApiResponse, setHasFailedApiResponse] = useState(false);
+
+  useEffect(()=>{
+    if(latestApiCallStatus){
+      if (!latestApiCallStatus.responseOk) setHasFailedApiResponse(true);
+    }
+  },[latestApiCallStatus])
 
   const cardId = card && card.id;
 
@@ -57,7 +64,6 @@ function AddReviewModalUnconnected({
     if (latestCall.loading) return;
     const { comments, status } = formValues;
     saveReview({ status, comments, cardId });
-    if (!latestApiCallStatus?.responseOk) setHasFailedApiResponse(true);
   };
 
   const props = {
