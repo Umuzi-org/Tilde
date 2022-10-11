@@ -73,6 +73,7 @@ class PullRequestReviewQualitySerializer(serializers.ModelSerializer):
             "content_item_agile_weight",
             "agile_card",
             "user",
+            "validated",
         ]
 
     agile_card = serializers.SerializerMethodField("get_agile_card")

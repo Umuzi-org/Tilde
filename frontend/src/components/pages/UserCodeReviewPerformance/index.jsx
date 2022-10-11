@@ -10,31 +10,36 @@ import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 const PAGE_SIZE = 7;
 
-function UserCodeReviewPerformanceUnconnected({
+export function UserCodeReviewPerformanceUnconnected({
   //   mapStateToProps
   pullRequestReviewsObject,
   competenceReviewsObject,
 
-  //   FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,    // TODO: show loading spinners or progress bars
-  //   FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+  // FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,    // TODO: show loading spinners or progress bars
+  // FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
 
   // mapDispatchToProps
   fetchCompetenceReviewQualityPage,
   fetchPullRequestQualitiesPage,
+
+  // storybook
+  forceUser,
+  forceToday,
 }) {
   pullRequestReviewsObject = pullRequestReviewsObject || {};
   competenceReviewsObject = competenceReviewsObject || {};
 
   const [datePageOffset, setDatePageOffset] = useState(0);
+  const [showReviewHelpModal, setShowReviewHelpModal] = useState(false);
 
-  const startDate = new Date();
-  const endDate = new Date();
+  const startDate = forceToday ? new Date(Date.parse(forceToday)) : new Date();
+  const endDate = forceToday ? new Date(Date.parse(forceToday)) : new Date();
 
   startDate.setDate(startDate.getDate() - (1 + datePageOffset) * PAGE_SIZE);
   endDate.setDate(endDate.getDate() - datePageOffset * PAGE_SIZE);
 
   let urlParams = useParams() || {};
-  const user = parseInt(urlParams.userId);
+  const user = forceUser || parseInt(urlParams.userId);
 
   useEffect(() => {
     fetchCompetenceReviewQualityPage({ page: 1, startDate, endDate, user });
@@ -51,6 +56,13 @@ function UserCodeReviewPerformanceUnconnected({
     setDatePageOffset(Math.max(datePageOffset - 1, 0));
   }
 
+  function handleOpenReviewHelpModal() {
+    setShowReviewHelpModal(true);
+  }
+  function handleCloseReviewHelpModal() {
+    setShowReviewHelpModal(false);
+  }
+
   const pullRequestReviews = Object.values(pullRequestReviewsObject)
     .filter((o) => new Date(o.submittedAt) <= endDate)
     .filter((o) => new Date(o.submittedAt) >= startDate)
@@ -63,11 +75,15 @@ function UserCodeReviewPerformanceUnconnected({
 
   const props = {
     pullRequestReviews,
-
     competenceReviews,
+
     startDate,
     endDate,
     days: PAGE_SIZE,
+
+    showReviewHelpModal,
+    handleOpenReviewHelpModal,
+    handleCloseReviewHelpModal,
 
     handleClickPrevious,
     handleClickNext,

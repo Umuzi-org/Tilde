@@ -1,4 +1,5 @@
 from django.db import models
+from curriculum_tracking.constants import POSITIVE_REVIEW_STATUS_CHOICES
 from model_mixins import Mixins
 from core.models import User
 from git_real.helpers import (
@@ -22,6 +23,27 @@ class Repository(models.Model, Mixins):
 
     def __str__(self):
         return self.ssh_url
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        project = RecruitProject.objects.filter(repository=self).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
 
 
 class Commit(models.Model, Mixins):
@@ -104,6 +126,17 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
+
+    CONTRADICTED = "d"
+
+    REVIEW_VALIDATED_STATUS_CHOICES = [
+        (CONTRADICTED, "contradicted"),
+    ]
+
+    NEGATIVE_STATES = ["changes_requested"]
+    POSITIVE_STATES = ["approved"]
+    NEUTRAL_STATES = ["commented", "dismissed"]
+
     html_url = models.CharField(max_length=255, unique=True)
     pull_request = models.ForeignKey(
         PullRequest, on_delete=models.CASCADE, related_name="reviews"
@@ -117,7 +150,43 @@ class PullRequestReview(models.Model, Mixins):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    # TODO Denormalise (#157)
+    validated = models.CharField(
+        choices=REVIEW_VALIDATED_STATUS_CHOICES, max_length=1, null=True, blank=True
+    )
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        repo = self.pull_request.repository
+        project = RecruitProject.objects.filter(repository=repo).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
+
+    def update_recent_validation_flags(self):
+        """this review was just created. Update previous reviews"""
+        assert (
+            len(PullRequestReview.POSITIVE_STATES) == 1
+        ), "this function only works if there is one positive state. Upgrade the function"
+        state = self.state.lower()
+        if state in PullRequestReview.NEGATIVE_STATES:
+            prs_to_update = PullRequestReview.objects.filter(
+                pull_request=self.pull_request
+            ).filter(state__iexact=PullRequestReview.POSITIVE_STATES[0])
+            prs_to_update.update(validated=PullRequestReview.CONTRADICTED)
 
     @classmethod
     def create_or_update_from_github_api_data(cls, pull_request, review_data):
@@ -147,10 +216,8 @@ class PullRequestReview(models.Model, Mixins):
             review.update(**defaults)
             review.save()
 
+        review.update_recent_validation_flags()
         return review
-
-
-# dict_keys([' 'author_association', , ', 'html_url', 'id', 'node_id', '', 'state', 'submitted_at', 'user'])
 
 
 class Push(models.Model, Mixins):
