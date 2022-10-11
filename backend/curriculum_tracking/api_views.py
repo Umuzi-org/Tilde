@@ -1158,16 +1158,7 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
 
 
 class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
-    queryset = (
-        models.RecruitProject.objects.filter(
-            agile_card__status=models.AgileCard.IN_REVIEW
-        )
-        .exclude(
-            content_item__tags__name="technical-assessment"
-        )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
-        .filter(recruit_users__active__in=[True])
-        .order_by("review_request_time")
-    )
+
     filterset_fields = [
         "recruit_users",
         "reviewer_users",
@@ -1176,6 +1167,18 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
         "code_review_red_flag_since_last_review_request",
         "code_review_ny_competent_since_last_review_request",
     ]
+
+    def get_queryset(self, *args, **kwargs):
+        return (
+            models.RecruitProject.objects.filter(
+                agile_card__status=models.AgileCard.IN_REVIEW
+            )
+            .exclude(
+                content_item__tags__name="technical-assessment"
+            )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
+            .filter(recruit_users__active__in=[True])
+            .order_by("review_request_time")
+        )
 
 
 class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
