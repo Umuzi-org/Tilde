@@ -378,6 +378,7 @@ async function activityLogDayCountsPage({
   const { response, responseData } = await fetchAndClean({
     url,
   });
+  console.log(responseData);
   return { response, responseData };
 }
 
