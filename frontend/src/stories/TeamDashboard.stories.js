@@ -78,12 +78,12 @@ const team = {
 const activityLogDayCounts = {
   84: [
     {
-      date: "2020-07-12",
+      date: "2022-10-12",
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: "2021-07-20",
+      date: "2022-10-20",
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 20,
     },
@@ -111,17 +111,17 @@ const activityLogDayCounts = {
 
   26: [
     {
-      date: "2021-07-15",
+      date: "2022-10-15",
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: "2021-07-10",
+      date: "2022-10-10",
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 2,
     },
     {
-      date: "2021-07-17",
+      date: "2022-10-17",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 1,
     },
@@ -129,17 +129,17 @@ const activityLogDayCounts = {
 
   132: [
     {
-      date: "2021-07-15",
+      date: "2022-10-15",
       COMPETENCE_REVIEW_DONE: 50,
       PR_REVIEWED: 3,
     },
     {
-      date: "2021-07-16",
+      date: "2022-10-16",
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 2,
     },
     {
-      date: "2021-07-31",
+      date: "2022-10-31",
       COMPETENCE_REVIEW_DONE: 1,
       PR_REVIEWED: 1,
     },
@@ -151,7 +151,6 @@ export default {
   component: TeamDashboard,
   argTypes: {},
 };
-
 const Template = (args) => <TeamDashboard {...args} />;
 
 export const Primary = Template.bind({});
