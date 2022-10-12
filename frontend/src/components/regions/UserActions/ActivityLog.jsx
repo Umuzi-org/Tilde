@@ -53,7 +53,7 @@ export default function ActivityLog({ eventList, orderedDates }) {
                     {new Date(item.timestamp).toTimeString().substring(0, 8)}
                   </p>
                   <Typography variant="h6" className={classes.title}>
-                    {item.object_1Summary.title}
+                    {item.object1Summary.title}
                   </Typography>
                   <Paper className={classes.filler}>
                     <Chip

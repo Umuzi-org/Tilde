@@ -8,9 +8,14 @@ export function getNextPageNumberFromUrl({ url }) {
 }
 
 const _toCamel = (s) => {
-  return s.replace(/([-_][a-z])/gi, ($1) => {
-    return $1.toUpperCase().replace("-", "").replace("_", "");
-  });
+  let arr = s.split("");
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === "_") {
+      arr[i + 1] = arr[i + 1].replace(arr[i + 1], arr[i + 1].toUpperCase());
+    }
+  }
+  arr = arr.join("").replaceAll("_", "");
+  return arr;
 };
 
 const _isArray = function (a) {
