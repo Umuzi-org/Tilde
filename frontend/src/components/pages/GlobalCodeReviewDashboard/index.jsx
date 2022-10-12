@@ -89,20 +89,23 @@ function GlobalCodeReviewDashboardUnconnected({
     initialCompetenceOrderFilters
   );
 
-  const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
-    useState(() => {
-      return pullRequestOrderFilters.filter(
-        (orderFilter) => orderFilter.isSelected
-      )[0];
-    });
+  const [
+    selectedPullRequestOrderFilter,
+    setSelectedPullRequestOrderFilter,
+  ] = useState(() => {
+    return pullRequestOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
 
-  const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
-    useState(() => {
-      return competenceOrderFilters.filter(
-        (orderFilter) => orderFilter.isSelected
-      )[0];
-    });
-
+  const [
+    selectedCompetenceOrderFilter,
+    setSelectedCompetenceOrderFilter,
+  ] = useState(() => {
+    return competenceOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
 
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
@@ -154,23 +157,23 @@ function GlobalCodeReviewDashboardUnconnected({
 
   function applyFilters(project) {
     if (filterIncludeTags.length) {
-      for (let tag of filterIncludeTags) {
+      for (const tag of filterIncludeTags) {
         if (!project.tagNames.includes(tag)) return false;
       }
     }
 
     if (filterExcludeTags.length) {
-      for (let tag of filterExcludeTags) {
+      for (const tag of filterExcludeTags) {
         if (project.tagNames.includes(tag)) return false;
       }
     }
     if (filterIncludeFlavours.length) {
-      for (let flavour of filterIncludeFlavours) {
+      for (const flavour of filterIncludeFlavours) {
         if (!project.flavourNames.includes(flavour)) return false;
       }
     }
     if (filterExcludeFlavours.length) {
-      for (let flavour of filterExcludeFlavours) {
+      for (const flavour of filterExcludeFlavours) {
         if (project.flavourNames.includes(flavour)) return false;
       }
     }
@@ -190,7 +193,6 @@ function GlobalCodeReviewDashboardUnconnected({
 
     return true;
   }
-
 
   function fetchNextCompetenceReviewQueuePage() {
     const page = fetchCompetenceReviewQueueLastCall.requestData.page + 1;
@@ -273,7 +275,7 @@ function GlobalCodeReviewDashboardUnconnected({
 
     filterIncludeFlavours,
     filterExcludeFlavours,
-    
+
     allFlavours,
     allTagNames,
     applyFilters,
