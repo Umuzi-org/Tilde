@@ -144,6 +144,7 @@ export default function Presentation({
                 helperText={
                   isFormValueEmpty.comments ? "This field is required" : ""
                 }
+                required
               />
             </Grid>
             <Grid container className={classes.buttons}>
