@@ -58,6 +58,8 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+  filterIncludeCardNames,
+  handleChangeCardNameFilter,
 }) {
   const classes = useStyles();
 
@@ -88,6 +90,17 @@ export default function Presentation({
     ),
   ].sort();
 
+  const allCardNames = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.contentItemTitle),
+        pullRequestReviewQueueProjects.map((proj) => proj.contentItemTitle),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ];
+
   function applyFilters(project) {
     if (filterIncludeTags.length) {
       for (let tag of filterIncludeTags) {
@@ -96,17 +109,17 @@ export default function Presentation({
     }
 
     if (filterExcludeTags.length) {
-      for (let tag of filterExcludeTags) {
+      for (const tag of filterExcludeTags) {
         if (project.tagNames.includes(tag)) return false;
       }
     }
     if (filterIncludeFlavours.length) {
-      for (let flavour of filterIncludeFlavours) {
+      for (const flavour of filterIncludeFlavours) {
         if (!project.flavourNames.includes(flavour)) return false;
       }
     }
     if (filterExcludeFlavours.length) {
-      for (let flavour of filterExcludeFlavours) {
+      for (const flavour of filterExcludeFlavours) {
         if (project.flavourNames.includes(flavour)) return false;
       }
     }
@@ -122,6 +135,12 @@ export default function Presentation({
         includedUserIds.includes(value)
       );
       if (intersection.length === 0) return false;
+    }
+
+    if (filterIncludeCardNames.length) {
+      for (const cardName of filterIncludeCardNames) {
+        if (!project.contentItemTitle.includes(cardName)) return false;
+      }
     }
 
     return true;
@@ -157,6 +176,16 @@ export default function Presentation({
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}
+          />
+        </Paper>
+
+        <Typography variant="h6">Filter by card name</Typography>
+        <Paper>
+          <FilterByNames
+            allNames={allCardNames}
+            filterInclude={filterIncludeCardNames}
+            filterExclude={[]}
+            onChange={handleChangeCardNameFilter}
           />
         </Paper>
       </Grid>
