@@ -9,7 +9,7 @@ export default {
   title: "Tilde/UserActions/ActivityLog",
   component: ActivityLog,
 };
-
+console.log("ActivityLogList", ActivityLogList)
 const Template = (args) => <ActivityLog {...args} />;
 
 export const Primary = Template.bind({});
