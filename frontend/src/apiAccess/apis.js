@@ -386,14 +386,10 @@ async function activityLogEntries({
   timestamp,
   effectedUser,
   actorUser,
-  actorUserEmail,
-  effectedUserEmail,
   object1ContentType,
   object1Id,
   object2ContentType,
   object2Id,
-  object1Summary,
-  object2Summary,
   page,
 }) {
   const limit = 20;
