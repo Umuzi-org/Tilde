@@ -61,6 +61,7 @@ export default function Presentation({
 
   allFlavours,
   allTagNames,
+  allCardNames,
   applyFilters,
 
   competenceOrderFilters,
@@ -79,6 +80,8 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+  filterIncludeCardNames,
+  handleChangeCardNameFilter,
 }) {
   const classes = useStyles();
 
@@ -99,7 +102,6 @@ export default function Presentation({
             onChange={handleChangeFlavourFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by tag</Typography>
         <Paper>
           <FilterByNames
@@ -109,7 +111,6 @@ export default function Presentation({
             onChange={handleChangeTagFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by assignee team</Typography>
         <Paper>
           <FilterByNames
@@ -117,6 +118,15 @@ export default function Presentation({
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}
+          />
+        </Paper>
+        <Typography variant="h6">Filter by card name</Typography>
+        <Paper>
+          <FilterByNames
+            allNames={allCardNames}
+            filterInclude={filterIncludeCardNames}
+            filterExclude={[]}
+            onChange={handleChangeCardNameFilter}
           />
         </Paper>
       </Grid>

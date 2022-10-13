@@ -45,6 +45,8 @@ function GlobalCodeReviewDashboardUnconnected({
     []
   );
 
+  const [filterIncludeCardNames, setFilterIncludeCardNames] = useState([]);
+
   const initialPullRequestOrderFilters = [
     {
       label: "last updated time",
@@ -155,6 +157,17 @@ function GlobalCodeReviewDashboardUnconnected({
     ),
   ].sort();
 
+  const allCardNames = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.contentItemTitle),
+        pullRequestReviewQueueProjects.map((proj) => proj.contentItemTitle),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ].sort();
+
   function applyFilters(project) {
     if (filterIncludeTags.length) {
       for (const tag of filterIncludeTags) {
@@ -189,6 +202,11 @@ function GlobalCodeReviewDashboardUnconnected({
         includedUserIds.includes(value)
       );
       if (intersection.length === 0) return false;
+    }
+
+    if (filterIncludeCardNames.length) {
+      if (!filterIncludeCardNames.includes(project.contentItemTitle))
+        return false;
     }
 
     return true;
@@ -251,9 +269,12 @@ function GlobalCodeReviewDashboardUnconnected({
 
   const handleChangeAssigneeTeamFilter = handleChangeFilter({
     includes: filterIncludeAssigneeTeams,
-    // excludes: [],
     setIncludes: setFilterIncludeAssigneeTeams,
-    // setExcludes:
+  });
+
+  const handleChangeCardNameFilter = handleChangeFilter({
+    includes: filterIncludeCardNames,
+    setIncludes: setFilterIncludeCardNames,
   });
 
   const allTeamNames = Object.values(teams)
@@ -278,6 +299,7 @@ function GlobalCodeReviewDashboardUnconnected({
 
     allFlavours,
     allTagNames,
+    allCardNames,
     applyFilters,
 
     competenceOrderFilters,
@@ -296,6 +318,8 @@ function GlobalCodeReviewDashboardUnconnected({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
+    filterIncludeCardNames,
+    handleChangeCardNameFilter,
   };
   return <Presentation {...props} />;
 }
