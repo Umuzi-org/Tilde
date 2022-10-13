@@ -13,8 +13,8 @@ export default function FilterByNames({
 
   return (
     <React.Fragment>
-      {allNames.map((name) => (
-        <FormGroup>
+      {allNames.map((name,index) => (
+        <FormGroup key={`${name}_${index}`}>
           <FormControlLabel
             control={
               <Switch
