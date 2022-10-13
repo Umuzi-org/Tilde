@@ -251,12 +251,9 @@ function GlobalCodeReviewDashboardUnconnected({
 
   const handleChangeAssigneeTeamFilter = handleChangeFilter({
     includes: filterIncludeAssigneeTeams,
+    // excludes: [],
     setIncludes: setFilterIncludeAssigneeTeams,
-  });
-
-  const handleChangeCardNameFilter = handleChangeFilter({
-    includes: filterIncludeCardNames,
-    setIncludes: setFilterIncludeCardNames,
+    // setExcludes:
   });
 
   const allTeamNames = Object.values(teams)
@@ -299,8 +296,6 @@ function GlobalCodeReviewDashboardUnconnected({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
-    filterIncludeCardNames,
-    handleChangeCardNameFilter,
   };
   return <Presentation {...props} />;
 }

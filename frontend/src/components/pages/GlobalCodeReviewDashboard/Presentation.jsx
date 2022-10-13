@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
@@ -33,6 +32,13 @@ const useStyles = makeStyles((theme) => {
       padding: "10px 0px",
       backgroundColor: theme.palette.background.default,
       zIndex: 2,
+      display: "flex",
+      flexDirection: "column",
+    },
+    queueContainerHeadingFilters: {
+      display: "flex",
+      alignItems: "center",
+      flexWrap: "wrap",
     },
   };
 });
@@ -73,8 +79,6 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
-  filterIncludeCardNames,
-  handleChangeCardNameFilter,
 }) {
   const classes = useStyles();
 
@@ -113,24 +117,6 @@ export default function Presentation({
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}
-          />
-        </Paper>
-
-        <Typography variant="h6">Filter by card name</Typography>
-        <Paper>
-          <TextField
-            className={classes.filterByNameTextField}
-            variant="outlined"
-            placeholder="Card name"
-            value={searchTerm}
-            onChange={handleChangeSearchTerm}
-            fullWidth
-          />
-          <FilterByNames
-            allNames={searchTerm ? allFoundCardNames : allCardNames}
-            filterInclude={filterIncludeCardNames}
-            filterExclude={[]}
-            onChange={handleChangeCardNameFilter}
           />
         </Paper>
       </Grid>
