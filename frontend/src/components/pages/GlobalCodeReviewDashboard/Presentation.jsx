@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => {
       display: "flex",
       alignItems: "center",
       flexWrap: "wrap",
+    },
+    filterByNameTextField: {
+      marginBottom: theme.spacing(2),
     },
   };
 });
@@ -90,6 +94,21 @@ export default function Presentation({
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
 
+  const [cardNameFilterSearchTerm, setCardNameFilterSearchTerm] = useState("");
+  const [allFoundCardNames, setAllFoundCardNames] = useState([]);
+
+  useEffect(() => {
+    setAllFoundCardNames(() =>
+      allCardNames.filter((cardName) =>
+        cardName.toLocaleLowerCase().includes(cardNameFilterSearchTerm)
+      )
+    );
+  }, [cardNameFilterSearchTerm, allCardNames]);
+
+  function handleCardNameFilterSearch(e) {
+    setCardNameFilterSearchTerm(e.target.value);
+  }
+
   return (
     <Grid container spacing={3} className={classes.mainSection}>
       <Grid item xs={2}>
@@ -122,8 +141,18 @@ export default function Presentation({
         </Paper>
         <Typography variant="h6">Filter by card name</Typography>
         <Paper>
+          <TextField
+            className={classes.filterByNameTextField}
+            variant="outlined"
+            placeholder="Card name"
+            value={cardNameFilterSearchTerm}
+            onChange={handleCardNameFilterSearch}
+            fullWidth
+          />
           <FilterByNames
-            allNames={allCardNames}
+            allNames={
+              cardNameFilterSearchTerm ? allFoundCardNames : allCardNames
+            }
             filterInclude={filterIncludeCardNames}
             filterExclude={[]}
             onChange={handleChangeCardNameFilter}
