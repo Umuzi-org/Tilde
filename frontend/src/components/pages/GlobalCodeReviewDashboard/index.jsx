@@ -155,6 +155,10 @@ function GlobalCodeReviewDashboardUnconnected({
     ),
   ].sort();
 
+  const allTeamNames = Object.values(teams)
+    .map((o) => o.name)
+    .sort();
+
   function applyFilters(project) {
     if (filterIncludeTags.length) {
       for (const tag of filterIncludeTags) {
@@ -251,14 +255,8 @@ function GlobalCodeReviewDashboardUnconnected({
 
   const handleChangeAssigneeTeamFilter = handleChangeFilter({
     includes: filterIncludeAssigneeTeams,
-    // excludes: [],
     setIncludes: setFilterIncludeAssigneeTeams,
-    // setExcludes:
   });
-
-  const allTeamNames = Object.values(teams)
-    .map((o) => o.name)
-    .sort();
 
   const props = {
     competenceReviewQueueProjects,

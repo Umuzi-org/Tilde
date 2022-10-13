@@ -6,18 +6,17 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => {
   return {
     chip: {
-      margin:theme.spacing(.5)
-    }
-  }   
+      margin: theme.spacing(0.5),
+    },
+  };
 });
-
 
 export default function ReviewQueueFilterChips({
   orderFilters,
   setFiltersMethod,
   setSelectedFilterMethod,
 }) {
-  const classes = useStyles()
+  const classes = useStyles();
 
   function handleClick({
     setFiltersMethod,
@@ -29,7 +28,7 @@ export default function ReviewQueueFilterChips({
         if (filter.label === selectedFilter.label) {
           const newSelectedFilter = { ...filter, isSelected: true };
           setSelectedFilterMethod(newSelectedFilter);
-          return { ...filter, isSelected: true };
+          return newSelectedFilter;
         } else {
           return { ...filter, isSelected: false };
         }
@@ -41,9 +40,9 @@ export default function ReviewQueueFilterChips({
     <>
       <Typography>Sort by:</Typography>
       {orderFilters &&
-        orderFilters.map((filter,index) => (
+        orderFilters.map((filter, index) => (
           <Chip
-          key={`${filter}_${index}`}
+            key={`${filter}_${index}`}
             label={filter.label}
             variant={filter.isSelected ? "default" : "outlined"}
             onClick={() =>
