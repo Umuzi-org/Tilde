@@ -17,7 +17,7 @@
       "title": "Understanding the review column",
       "flavourNames": []
     },
-    "object_2Summary": null,
+    "object2Summary": null,
     "eventColor": "#fb8c00",
     "eventName": "Card review requested"
   },
@@ -39,7 +39,7 @@
       "title": "Level 1 coding challenges",
       "flavourNames": []
     },
-    "object_2Summary": null,
+    "object2Summary": null,
     "eventColor": "#43a047",
     "eventName": "Card started"
   },
@@ -61,7 +61,7 @@
       "title": "Tilde project tutorial: How to submit a link",
       "flavourNames": []
     },
-    "object_2Summary": null,
+    "object2Summary": null,
     "eventColor": "#43a047",
     "eventName": "Card Started"
   },
