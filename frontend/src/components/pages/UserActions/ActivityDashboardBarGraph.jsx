@@ -1,16 +1,18 @@
+import { yellow } from "@material-ui/core/colors";
+import { DataUsage } from "@material-ui/icons";
 import React from "react";
 import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
-export default function ActivityDashboardBarGraph({ eventList }) {
+export default function ActivityDashboardBarGraph({ activityDayCounts }) {
   // will format data in index.js once redux wiring is done
   const userActivityLogs = [];
-  eventList.forEach((events) => {
+  activityDayCounts.forEach((events) => {
     if (!userActivityLogs.some((date) => date.date === events.date)) {
       const userActivity = {
-        date: events.date,
-        events: [events],
+        id: events.id,
+        events,
       };
       userActivityLogs.push(userActivity);
     } else if (userActivityLogs.some((date) => date.date === events.date)) {
@@ -21,16 +23,31 @@ export default function ActivityDashboardBarGraph({ eventList }) {
     }
   });
 
+  const unique = Array.from(
+    new Set(userActivityLogs.map((i) => i.events.total))
+  );
+
+  const activityLogValues = Object.values(
+    userActivityLogs.reduce((acc, curr) => {
+      const {
+        events: { date, total },
+      } = curr;
+      acc[date] = acc[date] || { date };
+      acc[date][total] = (acc[date][total] || 0) + 1;
+      return acc;
+    }, {})
+  );
+
   return (
     <BarChart
       width={1000}
       height={300}
-      data={userActivityLogs}
+      data={activityLogValues}
       margin={{
-        top: 5,
+        top: 25,
         right: 30,
         left: 20,
-        bottom: 5,
+        bottom: 25,
       }}
     >
       <CartesianGrid />
@@ -38,23 +55,9 @@ export default function ActivityDashboardBarGraph({ eventList }) {
       <Tooltip />
       <Legend />
 
-      {userActivityLogs.map((key) =>
-        key.events.map((item) => (
-          <Bar
-            dataKey={() => item.total}
-            fill={
-              item.eventType === 1
-                ? eventTypeColors.COMPETENCE_REVIEW_DONE
-                : item.eventType === 6
-                ? eventTypeColors.CARD_MOVED_TO_COMPLETE
-                : item.eventType === 5
-                ? eventTypeColors.CARD_MOVED_TO_REVIEW_FEEDBACK
-                : "white"
-            }
-            name="random name"
-          />
-        ))
-      )}
+      {unique.map((tot) => (
+        <Bar dataKey={tot} fill={"blue"} name="random name" />
+      ))}
     </BarChart>
   );
 }
