@@ -44,6 +44,7 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         "start_time",
         "open_pr_count",
         "oldest_open_pr_updated_time",
+        "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
@@ -297,6 +298,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         # "open_pr_count",
         "users_that_reviewed_open_prs",
         "users_that_reviewed_open_prs_emails",
+        "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
@@ -937,7 +939,7 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
         "review_request_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
-        # "number_of_times_card_moved_to_review_feedback",
+        "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
@@ -971,7 +973,7 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
         "oldest_open_pr_updated_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
-        # "number_of_times_card_moved_to_review_feedback",
+        "number_of_times_card_moved_to_review_feedback",
     ]
 
     def verbose_instance_factory(self):
