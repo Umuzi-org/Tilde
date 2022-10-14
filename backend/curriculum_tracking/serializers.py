@@ -334,6 +334,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
     # def get_number_of_times_card_moved_to_review_feedback(self, instance):
     #     number_of_times_card_moved_to_review_feedback = len(
     #         LogEntry.objects.filter(effected_user=instance.assignees.first(), 
+            # object_1_id=instance.pk, 
     #         event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
     #         )
     #     return number_of_times_card_moved_to_review_feedback
@@ -374,6 +375,7 @@ class CardSummarySerializer(serializers.ModelSerializer):
     # def get_total_number_of_negative_reviews(self, instance):
     #     number_of_times_card_moved_to_review_feedback = len(
     #         LogEntry.objects.filter(effected_user=instance.assignees.first(), 
+            # object_1_id=instance.pk, 
     #         event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
     #         )
     #     return number_of_times_card_moved_to_review_feedback
@@ -960,9 +962,9 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
 
     def get_number_of_times_card_moved_to_review_feedback(self, instance):
         number_of_times_card_moved_to_review_feedback = len(
-            LogEntry.objects.filter(effected_user=instance.recruit_users.first(), 
-            event_type=EventType.objects.get(name='RED_FLAG')),
+            LogEntry.objects.filter(effected_user=instance.recruit_users.first(),
+            object_1_id=instance.pk, 
+            event_type=EventType.objects.get(name='CARD_MOVED_TO_REVIEW_FEEDBACK')),
             )
-        print(len(EventType.objects.all()))
-        return 4 #number_of_times_card_moved_to_review_feedback
+        return number_of_times_card_moved_to_review_feedback
         
