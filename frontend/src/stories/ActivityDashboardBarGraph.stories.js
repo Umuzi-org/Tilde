@@ -14,5 +14,5 @@ const Template = (args) => <ActivityDashboardBarGraph {...args} />;
 export const Primary = Template.bind({});
 
 Primary.args = {
-  eventList: graphData,
+  activityDayCounts: graphData,
 };
