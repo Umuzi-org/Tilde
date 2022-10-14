@@ -7,14 +7,19 @@ export default class PrepForKataSelfTest extends Action {
   name = "prep for kata self test";
 
   action = async function () {
-    // nothing to do
+    return {
+      status: STATUS_OK,
+    };
   };
 
   testAction = async function ({ destinationPath }) {
+    console.log('ping', destinationPath)
+    
     const scriptPath = "./actions/java/prep-for-kata-self-test.sh";
     const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
-    const output = await shell.exec(command).stdout;
-
+    await shell.exec(command).stdout;
+    console.log('clone repo', command)
+    
     return {
       status: STATUS_OK,
     };
