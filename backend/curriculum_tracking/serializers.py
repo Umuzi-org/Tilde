@@ -292,7 +292,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
             "users_that_reviewed_since_last_review_request_emails",
             "users_that_reviewed_open_prs",
             "users_that_reviewed_open_prs_emails",
-            # "number_of_times_card_moved_to_review_feedback",
+            "number_of_times_card_moved_to_review_feedback",
         ]
 
     users_that_reviewed_since_last_review_request = serializers.SerializerMethodField(
@@ -312,7 +312,7 @@ class AgileCardSerializer(serializers.ModelSerializer):
         "get_users_that_reviewed_open_prs_emails"
     )
 
-    # number_of_times_card_moved_to_review_feedback = serializers.SerializerMethodField("get_number_of_times_card_moved_to_review_feedback")
+    number_of_times_card_moved_to_review_feedback = serializers.SerializerMethodField("get_number_of_times_card_moved_to_review_feedback")
 
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [
@@ -331,13 +331,15 @@ class AgileCardSerializer(serializers.ModelSerializer):
     def get_users_that_reviewed_open_prs_emails(self, instance):
         return [o.email for o in instance.get_users_that_reviewed_open_prs()]
 
-    # def get_number_of_times_card_moved_to_review_feedback(self, instance):
-    #     number_of_times_card_moved_to_review_feedback = len(
-    #         LogEntry.objects.filter(effected_user=instance.assignees.first(), 
-            # object_1_id=instance.pk, 
-    #         event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
-    #         )
-    #     return number_of_times_card_moved_to_review_feedback
+    def get_number_of_times_card_moved_to_review_feedback(self, instance):
+        if instance.recruit_project:
+            number_of_times_card_moved_to_review_feedback = len(
+                LogEntry.objects.filter(effected_user=instance.assignees.first(), 
+                object_1_id=instance.recruit_project.pk, 
+                event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
+                )
+            return number_of_times_card_moved_to_review_feedback
+        return 0
 
 
 class CardSummarySerializer(serializers.ModelSerializer):
@@ -367,18 +369,20 @@ class CardSummarySerializer(serializers.ModelSerializer):
             "open_pr_count",
             "oldest_open_pr_updated_time",
             "repo_url",
-            # "number_of_times_card_moved_to_review_feedback",
+            "number_of_times_card_moved_to_review_feedback",
         ]
 
-    # number_of_times_card_moved_to_review_feedback = serializers.SerializerMethodField("get_number_of_times_card_moved_to_review_feedback")
+    number_of_times_card_moved_to_review_feedback = serializers.SerializerMethodField("get_number_of_times_card_moved_to_review_feedback")
 
-    # def get_total_number_of_negative_reviews(self, instance):
-    #     number_of_times_card_moved_to_review_feedback = len(
-    #         LogEntry.objects.filter(effected_user=instance.assignees.first(), 
-            # object_1_id=instance.pk, 
-    #         event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
-    #         )
-    #     return number_of_times_card_moved_to_review_feedback
+    def get_number_of_times_card_moved_to_review_feedback(self, instance):
+        if instance.recruit_project:
+            number_of_times_card_moved_to_review_feedback = len(
+                LogEntry.objects.filter(effected_user=instance.assignees.first(), 
+                object_1_id=instance.recruit_project.pk, 
+                event_type=EventType.objects.get(name="CARD_MOVED_TO_REVIEW_FEEDBACK").id),
+                )
+            return number_of_times_card_moved_to_review_feedback
+        return 0
 
 
 class NoArgs(serializers.Serializer):
