@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9.14
 
 # based on https://docs.docker.com/compose/django/https://docs.docker.com/compose/django/+
 RUN pip install --upgrade pip

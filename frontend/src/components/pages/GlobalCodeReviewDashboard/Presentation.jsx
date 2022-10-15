@@ -8,6 +8,7 @@ import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
 import FilterByNamesFilters from "./FilterByNamesFilters";
+import ReviewQueueFilterChips from "./ReviewQueueFilterChips";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -32,6 +33,17 @@ const useStyles = makeStyles((theme) => {
       padding: "10px 0px",
       backgroundColor: theme.palette.background.default,
       zIndex: 2,
+      display: "flex",
+      flexDirection: "column",
+    },
+    queueContainerHeadingFilters: {
+      display: "flex",
+      alignItems: "center",
+      flexWrap: "wrap",
+    },
+    filterByNamesContainer: {
+      margin: 0,
+      width: "100%",
     },
     filterByNamesContainer: {
       margin: 0,
@@ -56,10 +68,23 @@ export default function Presentation({
   filterIncludeFlavours,
   filterExcludeFlavours,
 
+  allFlavours,
+  allTagNames,
+  applyFilters,
+
+  competenceOrderFilters,
+  setCompetenceOrderFilters,
+  selectedCompetenceOrderFilter,
+  setSelectedCompetenceOrderFilter,
+
+  pullRequestOrderFilters,
+  setPullRequestOrderFilters,
+  selectedPullRequestOrderFilter,
+  setSelectedPullRequestOrderFilter,
+
   handleChangeFlavourFilter,
   handleChangeTagFilter,
 
-  teams,
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
@@ -70,67 +95,6 @@ export default function Presentation({
   filterExcludeTags = filterExcludeTags || [];
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
-
-  const allFlavours = [
-    ...new Set(
-      [
-        ...competenceReviewQueueProjects.map((proj) => proj.flavourNames),
-        pullRequestReviewQueueProjects.map((proj) => proj.flavourNames),
-      ]
-        .flat()
-        .flat() // yes, twice
-    ),
-  ].sort();
-
-  const allTagNames = [
-    ...new Set(
-      [
-        ...competenceReviewQueueProjects.map((proj) => proj.tagNames),
-        pullRequestReviewQueueProjects.map((proj) => proj.tagNames),
-      ]
-        .flat()
-        .flat() // yes, twice
-    ),
-  ].sort();
-
-  function applyFilters(project) {
-    if (filterIncludeTags.length) {
-      for (let tag of filterIncludeTags) {
-        if (!project.tagNames.includes(tag)) return false;
-      }
-    }
-
-    if (filterExcludeTags.length) {
-      for (let tag of filterExcludeTags) {
-        if (project.tagNames.includes(tag)) return false;
-      }
-    }
-    if (filterIncludeFlavours.length) {
-      for (let flavour of filterIncludeFlavours) {
-        if (!project.flavourNames.includes(flavour)) return false;
-      }
-    }
-    if (filterExcludeFlavours.length) {
-      for (let flavour of filterExcludeFlavours) {
-        if (project.flavourNames.includes(flavour)) return false;
-      }
-    }
-
-    if (filterIncludeAssigneeTeams.length) {
-      const includedUserIds = Object.values(teams)
-        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
-        .map((team) => team.members)
-        .flat()
-        .map((o) => o.userId);
-
-      const intersection = project.recruitUsers.filter((value) =>
-        includedUserIds.includes(value)
-      );
-      if (intersection.length === 0) return false;
-    }
-
-    return true;
-  }
 
   const props = {
     filterIncludeTags,
@@ -156,19 +120,22 @@ export default function Presentation({
           {/* TODO center headings*/}
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Competence Review Queue</Typography>
+            <Grid className={classes.queueContainerHeadingFilters}>
+              <ReviewQueueFilterChips
+                orderFilters={competenceOrderFilters}
+                setFiltersMethod={setCompetenceOrderFilters}
+                setSelectedFilterMethod={setSelectedCompetenceOrderFilter}
+              />
+            </Grid>
           </Grid>
           <Grid>
-            {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
             {competenceReviewQueueProjects
               .filter(applyFilters)
-              .sort(
-                (a, b) =>
-                  new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
-              )
-              .map((project, index) => (
+              .sort(selectedCompetenceOrderFilter.sortFunction)
+              .map((project) => (
                 <CompetenceReviewQueueEntry
                   project={project}
-                  key={`${project}_${index}`}
+                  key={project.id}
                 />
               ))}
           </Grid>
@@ -186,19 +153,22 @@ export default function Presentation({
         <Grid item xs={12} md={6} className={classes.queueItem}>
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
+            <Grid className={classes.queueContainerHeadingFilters}>
+              <ReviewQueueFilterChips
+                orderFilters={pullRequestOrderFilters}
+                setFiltersMethod={setPullRequestOrderFilters}
+                setSelectedFilterMethod={setSelectedPullRequestOrderFilter}
+              />
+            </Grid>
           </Grid>
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
-              .sort(
-                (a, b) =>
-                  new Date(b.oldestOpenPrUpdatedTime) -
-                  new Date(a.oldestOpenPrUpdatedTime)
-              )
-              .map((project, index) => (
+              .sort(selectedPullRequestOrderFilter.sortFunction)
+              .map((project) => (
                 <PullRequestReviewQueueEntry
                   project={project}
-                  key={`${project}_${index}`}
+                  key={project.id}
                 />
               ))}
           </Grid>
