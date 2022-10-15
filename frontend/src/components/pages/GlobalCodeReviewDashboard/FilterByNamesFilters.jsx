@@ -96,7 +96,6 @@ export default function FilterByNamesFilters({
             onChange={handleChangeFlavourFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by tag</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
@@ -106,7 +105,6 @@ export default function FilterByNamesFilters({
             onChange={handleChangeTagFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by assignee team</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
