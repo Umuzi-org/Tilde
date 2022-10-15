@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -86,6 +86,10 @@ export default function Presentation({
   handleChangeAssigneeTeamFilter,
   filterIncludeCardNames,
   handleChangeCardNameFilter,
+
+  cardNameFilterSearchTerm,
+  allFoundCardNames,
+  handleOnchangeCardNameFilter,
 }) {
   const classes = useStyles();
 
@@ -93,21 +97,6 @@ export default function Presentation({
   filterExcludeTags = filterExcludeTags || [];
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
-
-  const [cardNameFilterSearchTerm, setCardNameFilterSearchTerm] = useState("");
-  const [allFoundCardNames, setAllFoundCardNames] = useState([]);
-
-  useEffect(() => {
-    setAllFoundCardNames(() =>
-      allCardNames.filter((cardName) =>
-        cardName.toLocaleLowerCase().includes(cardNameFilterSearchTerm)
-      )
-    );
-  }, [cardNameFilterSearchTerm, allCardNames]);
-
-  function handleCardNameFilterSearch(e) {
-    setCardNameFilterSearchTerm(e.target.value);
-  }
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -146,7 +135,7 @@ export default function Presentation({
             variant="outlined"
             placeholder="Card name"
             value={cardNameFilterSearchTerm}
-            onChange={handleCardNameFilterSearch}
+            onChange={handleOnchangeCardNameFilter}
             fullWidth
           />
           <FilterByNames

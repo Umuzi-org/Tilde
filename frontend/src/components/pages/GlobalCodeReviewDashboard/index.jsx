@@ -109,6 +109,9 @@ function GlobalCodeReviewDashboardUnconnected({
     )[0];
   });
 
+  const [cardNameFilterSearchTerm, setCardNameFilterSearchTerm] = useState("");
+  const [allFoundCardNames, setAllFoundCardNames] = useState([]);
+
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
     fetchPullRequestReviewQueuePage({ page: 1 });
@@ -156,6 +159,10 @@ function GlobalCodeReviewDashboardUnconnected({
         .flat() // yes, twice
     ),
   ].sort();
+
+  const allTeamNames = Object.values(teams)
+    .map((o) => o.name)
+    .sort();
 
   const allCardNames = [
     ...new Set(
@@ -277,9 +284,14 @@ function GlobalCodeReviewDashboardUnconnected({
     setIncludes: setFilterIncludeCardNames,
   });
 
-  const allTeamNames = Object.values(teams)
-    .map((o) => o.name)
-    .sort();
+  function handleOnchangeCardNameFilter(e) {
+    setCardNameFilterSearchTerm(e.target.value);
+
+    const newAllCardNames = [...allCardNames].filter((cardName) =>
+      cardName.toLocaleLowerCase().includes(cardNameFilterSearchTerm)
+    );
+    setAllFoundCardNames(newAllCardNames);
+  }
 
   const props = {
     competenceReviewQueueProjects,
@@ -320,6 +332,10 @@ function GlobalCodeReviewDashboardUnconnected({
     handleChangeAssigneeTeamFilter,
     filterIncludeCardNames,
     handleChangeCardNameFilter,
+
+    cardNameFilterSearchTerm,
+    allFoundCardNames,
+    handleOnchangeCardNameFilter,
   };
   return <Presentation {...props} />;
 }
