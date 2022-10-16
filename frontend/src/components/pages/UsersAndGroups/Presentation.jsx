@@ -24,6 +24,11 @@ import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -90,7 +95,6 @@ function TeamSummaryStats({ summaryStats }) {
     </Table>
   );
 }
-//add whitespace around filter text fields 
 
 function TeamCard({
   team,
@@ -103,7 +107,7 @@ function TeamCard({
 
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2}>
+    <Paper variant="outlined" elevation={2} className={classes.root}>
       <Typography
         variant="h6"
         gutterBottom
