@@ -48,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
   bottomMargin: {
     marginBottom: "8px",
   },
+  rightScroll: {
+    overflowX: "auto",
+  },
+  
 }));
 
 function TeamSummaryStats({ summaryStats }) {
@@ -145,7 +149,7 @@ function TeamCard({
 function UserCard({ email, user }) {
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2}>
+    <Paper variant="outlined" elevation={2} className={classes.root}>
       <Typography
         variant="h6"
         gutterBottom
@@ -174,9 +178,9 @@ export default function Presentation({
 }) {
   const classes = useStyles();
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={6}>
-        <Paper variant="outlined" elevation={2}>
+    <Grid container spacing={2} >
+      <Grid item xs={6} className={classes.root} >
+        <Paper variant="outlined" elevation={2} className={classes.root} >
           <Typography
             variant="h5"
             gutterBottom
@@ -206,8 +210,8 @@ export default function Presentation({
           );
         })}
       </Grid>
-      <Grid item xs={6}>
-        <Paper variant="outlined" elevation={2}>
+      <Grid item xs={6} className={classes.root}>
+        <Paper variant="outlined" elevation={2} className={classes.root}>
           <Typography
             variant="h5"
             gutterBottom
