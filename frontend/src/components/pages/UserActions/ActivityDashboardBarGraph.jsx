@@ -1,7 +1,13 @@
-import { yellow } from "@material-ui/core/colors";
-import { DataUsage } from "@material-ui/icons";
 import React from "react";
-import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Cell,
+  Bar,
+  XAxis,
+  Legend,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -24,7 +30,7 @@ export default function ActivityDashboardBarGraph({ activityDayCounts }) {
   });
 
   const unique = Array.from(
-    new Set(userActivityLogs.map((i) => i.events.total))
+    new Set(userActivityLogs.map((index) => index.events.total))
   );
 
   const activityLogValues = Object.values(
@@ -34,6 +40,7 @@ export default function ActivityDashboardBarGraph({ activityDayCounts }) {
       } = curr;
       acc[date] = acc[date] || { date };
       acc[date][total] = (acc[date][total] || 0) + 1;
+      acc[date][total] = curr.events.total;
       return acc;
     }, {})
   );
@@ -55,8 +62,10 @@ export default function ActivityDashboardBarGraph({ activityDayCounts }) {
       <Tooltip />
       <Legend />
 
-      {unique.map((tot) => (
-        <Bar dataKey={tot} fill={"blue"} name="random name" />
+      {unique.map((total) => (
+        <>
+          <Bar dataKey={total} name="name" />
+        </>
       ))}
     </BarChart>
   );
