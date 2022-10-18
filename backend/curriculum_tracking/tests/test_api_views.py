@@ -20,7 +20,6 @@ from curriculum_tracking.models import (
 )
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
-from . import factories
 from curriculum_tracking.tests.factories import (
     RecruitProjectFactory,
     AgileCardFactory,
@@ -28,6 +27,7 @@ from curriculum_tracking.tests.factories import (
 )
 from curriculum_tracking.management.helpers import get_team_cards
 from core.models import Team
+from curriculum_tracking import activity_log_entry_creators as creators
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -963,7 +963,7 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
 
         return project
 
-
+from activity_log.models import LogEntry
 class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "competencereviewqueue-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
@@ -980,7 +980,8 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
         RecruitProjectFactory()
         RecruitProjectFactory()
         card = AgileCardFactory()
-
+        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        
         project = card.recruit_project
         project.request_review()
         project.set_flavours(["foo"])
@@ -1000,6 +1001,7 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
             project = card.recruit_project
             project.reviewer_users.add(UserFactory())
             project.request_review()
+            creators.log_card_moved_to_review_feedback(card, card.assignees.first())
 
         teams = [TeamFactory() for _ in range(5)]
 
