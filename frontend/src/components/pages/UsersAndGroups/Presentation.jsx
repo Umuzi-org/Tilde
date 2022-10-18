@@ -25,7 +25,7 @@ import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
     },
   },
@@ -51,7 +51,13 @@ const useStyles = makeStyles((theme) => ({
   rightScroll: {
     overflowX: "auto",
   },
-  
+  split: {
+    height: "1295px",
+    overflowY: "scroll",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 function TeamSummaryStats({ summaryStats }) {
@@ -174,13 +180,13 @@ export default function Presentation({
   filterFormValues,
   filterUsersByGroupName,
   handleUserGroupClick,
-  handleChangeFilterFormInput
+  handleChangeFilterFormInput,
 }) {
   const classes = useStyles();
   return (
-    <Grid container spacing={2} >
-      <Grid item xs={6} className={classes.root} >
-        <Paper variant="outlined" elevation={2} className={classes.root} >
+    <Grid container spacing={0}>
+      <Grid item xs={6} className={classes.split}>
+        <Paper variant="outlined" elevation={2} className={classes.root}>
           <Typography
             variant="h5"
             gutterBottom
@@ -225,7 +231,6 @@ export default function Presentation({
             variant="outlined"
             value={filterFormValues.user}
             onChange={handleChangeFilterFormInput("user")}
-
             className={classes.textBoxSize}
           />
         </Paper>
