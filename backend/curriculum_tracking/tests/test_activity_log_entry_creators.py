@@ -122,6 +122,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
+        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
         self.login(actor_user)
 
         start_url = f"{self.get_instance_url(card.id)}start_project/"
@@ -179,6 +180,7 @@ class log_multiple_project_competence_review_done_Tests(APITestCase, APITestCase
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
+        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
         project = card.recruit_project
         project.review_request_time = timezone.now() - timezone.timedelta(days=1)
         project.save()
@@ -325,6 +327,7 @@ class log_card_review_requested_and_cancelled_Tests(APITestCase, APITestCaseMixi
             recruit_project=RecruitProjectFactory(content_item=self.content_item),
             content_item=self.content_item,
         )
+        creators.log_card_moved_to_review_feedback(self.card, self.card.assignees.first())
         self.login(self.actor_user)
         self.card.start_project()
         self.assertEqual(self.card.status, AgileCard.IN_PROGRESS)
