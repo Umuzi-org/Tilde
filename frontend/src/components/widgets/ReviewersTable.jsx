@@ -2,13 +2,19 @@ import React from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
+import MuiTableCell from "@material-ui/core/TableCell";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import UserAvatarLink from "./UserAvatarLink";
+
+const TableCell = withStyles({
+  root: {
+    borderBottom: "none",
+  },
+})(MuiTableCell);
 
 const useStyles = makeStyles((theme) => {
   return {

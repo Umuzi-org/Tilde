@@ -4,11 +4,11 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
+import MuiTableCell from "@material-ui/core/TableCell";
 import Typography from "@material-ui/core/Typography";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
@@ -18,6 +18,12 @@ import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
+
+const TableCell = withStyles({
+  root: {
+    borderBottom: "none",
+  },
+})(MuiTableCell);
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -87,7 +93,7 @@ function CardBasicDetails({ card }) {
           {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Typography variant="subtitle2">Assignees:</Typography>
             <AssigneesList
@@ -107,7 +113,7 @@ function CardBasicDetails({ card }) {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Paper className={classes.sectionPaper} variant="outlined">
             <Table>
               <TableBody>
