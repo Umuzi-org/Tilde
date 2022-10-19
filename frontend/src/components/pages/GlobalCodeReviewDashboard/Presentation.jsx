@@ -138,8 +138,8 @@ export default function Presentation({
               .filter(applyFilters)
               .sort(
                 selectedCompetenceOrderFilter.isAscending
-                  ? selectedCompetenceOrderFilter.ascendingSortFunction
-                  : selectedCompetenceOrderFilter.descendingSortFunction
+                  ? selectedCompetenceOrderFilter.sortInAscendingOrder
+                  : selectedCompetenceOrderFilter.sortInDescendingOrder
               )
               .map((project) => (
                 <CompetenceReviewQueueEntry
@@ -175,8 +175,8 @@ export default function Presentation({
               .filter(applyFilters)
               .sort(
                 selectedPullRequestOrderFilter.isAscending
-                  ? selectedPullRequestOrderFilter.ascendingSortFunction
-                  : selectedPullRequestOrderFilter.descendingSortFunction
+                  ? selectedPullRequestOrderFilter.sortInAscendingOrder
+                  : selectedPullRequestOrderFilter.sortInDescendingOrder
               )
               .map((project) => (
                 <PullRequestReviewQueueEntry

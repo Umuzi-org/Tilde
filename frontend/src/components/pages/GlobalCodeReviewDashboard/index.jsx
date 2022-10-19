@@ -48,10 +48,10 @@ function GlobalCodeReviewDashboardUnconnected({
   const initialPullRequestOrderFilters = [
     {
       label: "last updated time",
-      ascendingSortFunction: (a, b) =>
+      sortInAscendingOrder: (a, b) =>
         new Date(b.oldestOpenPrUpdatedTime) -
         new Date(a.oldestOpenPrUpdatedTime),
-      descendingSortFunction: (a, b) =>
+      sortInDescendingOrder: (a, b) =>
         new Date(a.oldestOpenPrUpdatedTime) -
         new Date(b.oldestOpenPrUpdatedTime),
       isSelected: true,
@@ -62,25 +62,25 @@ function GlobalCodeReviewDashboardUnconnected({
   const initialCompetenceOrderFilters = [
     {
       label: "review request time",
-      ascendingSortFunction: (a, b) =>
+      sortInAscendingOrder: (a, b) =>
         new Date(b.reviewRequestTime) - new Date(a.reviewRequestTime),
-      descendingSortFunction: (a, b) =>
+      sortInDescendingOrder: (a, b) =>
         new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime),
       isSelected: true,
       isAscending: false,
     },
     {
       label: "start time",
-      ascendingSortFunction: (a, b) =>
+      sortInAscendingOrder: (a, b) =>
         new Date(b.startTime) - new Date(a.startTime),
-      descendingSortFunction: (a, b) =>
+      sortInDescendingOrder: (a, b) =>
         new Date(a.startTime) - new Date(b.startTime),
       isSelected: false,
       isAscending: false,
     },
     {
       label: "positive reviews",
-      ascendingSortFunction: (a, b) => {
+      sortInAscendingOrder: (a, b) => {
         return (
           a.codeReviewCompetentSinceLastReviewRequest +
           a.codeReviewExcellentSinceLastReviewRequest -
@@ -88,7 +88,7 @@ function GlobalCodeReviewDashboardUnconnected({
             b.codeReviewExcellentSinceLastReviewRequest)
         );
       },
-      descendingSortFunction: (a, b) => {
+      sortInDescendingOrder: (a, b) => {
         return (
           b.codeReviewCompetentSinceLastReviewRequest +
           b.codeReviewExcellentSinceLastReviewRequest -

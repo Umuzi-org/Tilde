@@ -29,7 +29,7 @@ export default function ReviewQueueFilterChips({
       return prev.map((filter) => {
         if (filter.label === selectedFilter.label) {
           let newSelectedFilter;
-          // toggle filter sort order only when a filter is already selected
+          // toggle sort order only when a filter is already selected
           if (filter.isSelected) {
             newSelectedFilter = {
               ...filter,
