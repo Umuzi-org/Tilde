@@ -9,9 +9,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
 import { eventTypeColors } from "../../../colors";
-import {
-  addEventColorsToLogEntries,
-} from "./utils.js";
+import { addEventColorsToLogEntries } from "./utils.js";
 
 function UserActionsUnconnected({
   authedUserId,
@@ -27,6 +25,7 @@ function UserActionsUnconnected({
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
+  userBurndownStats = userBurndownStats || {};
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
     (snapshot) => snapshot.user === userId
   );
@@ -48,7 +47,6 @@ function UserActionsUnconnected({
       page: 1,
     });
   }, [fetchEventTypes]);
-
   if (!userId || !fetchUserBurndownStats) return <Loading />;
   if (!activityLogEntries) return <Loading />;
 
@@ -89,7 +87,9 @@ function UserActionsUnconnected({
   orderedDates = [...new Set(orderedDates)];
 
   activityLogEntries = addEventColorsToLogEntries({
-    eventTypes, eventTypeColors, activityLogEntries
+    eventTypes,
+    eventTypeColors,
+    activityLogEntries,
   });
 
   const props = {
@@ -113,7 +113,7 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     FETCH_ACTIVITY_LOG_ENTRIES: state.FETCH_ACTIVITY_LOG_ENTRIES,
-    userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    userBurndownStats: state.apiEntities.burndownSnapshots,
     eventTypes: state.apiEntities.eventTypes,
     activityLogEntries: state.apiEntities.activityLogEntries,
   };
