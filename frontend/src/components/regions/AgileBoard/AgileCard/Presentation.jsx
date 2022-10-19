@@ -85,7 +85,6 @@ function ListCardUsers({ userNames, userIds }) {
 
 export default function Presentation({
   card,
-  // authUser,
   viewedUser,
   filterUserId,
   repoUrl,
@@ -130,7 +129,6 @@ export default function Presentation({
     handleFinishTopic,
     handleRemoveWorkshopAttendance,
     card,
-    // authUser,
     viewedUser,
     repoUrl,
 
@@ -145,8 +143,6 @@ export default function Presentation({
     // storybook
     forceUser,
   };
-
-  // console.log("agileCardActionProps", agileCardActionProps.authUser);
   // TODO: add an icon for different kinds of content
   return (
     <Card

@@ -1,6 +1,4 @@
 import React from "react";
-
-import { showButtons } from "../../../../utils/cardButtons";
 import Presentation from "./Presentation";
 
 export default function AgileCardUnconnected({
@@ -32,11 +30,6 @@ export default function AgileCardUnconnected({
 }) {
   const props = {
     card,
-    // ...showButtons({
-    //   card,
-    //   authUser,
-    //   viewedUser,
-    // }),
     handleClickAddReview,
 
     repoUrl,

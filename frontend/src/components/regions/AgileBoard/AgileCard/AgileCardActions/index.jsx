@@ -105,7 +105,7 @@ function AgileCardActionsUnconnected({
   }) || { loading: false })["loading"];
 
   authUser = forceUser || authUser;
-  console.log("auth", authUser);
+
   const props = {
     card,
     authUser,
