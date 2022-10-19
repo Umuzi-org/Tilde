@@ -136,7 +136,11 @@ export default function Presentation({
           <Grid>
             {competenceReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedCompetenceOrderFilter.sortFunction)
+              .sort(
+                selectedCompetenceOrderFilter.isAscending
+                  ? selectedCompetenceOrderFilter.ascendingSortFunction
+                  : selectedCompetenceOrderFilter.descendingSortFunction
+              )
               .map((project) => (
                 <CompetenceReviewQueueEntry
                   project={project}
@@ -169,7 +173,11 @@ export default function Presentation({
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedPullRequestOrderFilter.sortFunction)
+              .sort(
+                selectedPullRequestOrderFilter.isAscending
+                  ? selectedPullRequestOrderFilter.ascendingSortFunction
+                  : selectedPullRequestOrderFilter.descendingSortFunction
+              )
               .map((project) => (
                 <PullRequestReviewQueueEntry
                   project={project}
