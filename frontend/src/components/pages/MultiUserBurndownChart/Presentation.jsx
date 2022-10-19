@@ -9,7 +9,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Typography, Button, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
@@ -20,12 +22,16 @@ const useStyles = makeStyles((theme) => ({
   },
   selectedFilter: {
     color: "green",
+    marginRight: "1em"
   },
+  unselectedFilter: {
+    marginRight: "1em"
+  }
 }));
 
-function Presentation({ currentUserBurndownStats, usersOnTeam, authedUser }){
+function Presentation({ usersOnTeam, authedUser }){
   const [metricFilter, setMetricFilter] = useState("TotalProjects");
-
+  console.log(usersOnTeam);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -38,7 +44,7 @@ function Presentation({ currentUserBurndownStats, usersOnTeam, authedUser }){
           onClick={() => setMetricFilter("TotalProjects")}
           variant="outlined"
           className={
-            metricFilter === "TotalProjects" ? classes.selectedFilter : ""
+            metricFilter === "TotalProjects" ? classes.selectedFilter : classes.unselectedFilter
           }
         >
           Total Projects
@@ -47,7 +53,7 @@ function Presentation({ currentUserBurndownStats, usersOnTeam, authedUser }){
           onClick={() => setMetricFilter("CompletedCards")}
           variant="outlined"
           className={
-            metricFilter === "CompletedCards" ? classes.selectedFilter : ""
+            metricFilter === "CompletedCards" ? classes.selectedFilter : classes.unselectedFilter
           }
         >
           Completed Cards
@@ -56,7 +62,7 @@ function Presentation({ currentUserBurndownStats, usersOnTeam, authedUser }){
           onClick={() => setMetricFilter("CompletedProjects")}
           variant="outlined"
           className={
-            metricFilter === "CompletedProjects" ? classes.selectedFilter : ""
+            metricFilter === "CompletedProjects" ? classes.selectedFilter : classes.unselectedFilter
           }
         >
           Completed Projects
@@ -68,7 +74,6 @@ function Presentation({ currentUserBurndownStats, usersOnTeam, authedUser }){
             <LineChart>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
-                data={currentUserBurndownStats}
                 dataKey="timestamp"
                 interval="preserveEnd"
                 allowDuplicatedCategory={false}

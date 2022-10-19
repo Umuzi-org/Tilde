@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import userBurndownStats from "./storyData/burnDownData.json";
+import multiUserBurndownData from "./storyData/multiUserBurnDownData.json";
 import { MultiUserBurndownChartUnconnected } from ".";
 
 export default {
@@ -19,10 +19,11 @@ export const Primary = Template.bind({});
 
 Primary.args = {
   // mapStateToProps
-  currentUserBurndownStats: userBurndownStats,
+  currentUserBurndownStats: multiUserBurndownData.burnDownStats,
+  userTeam: multiUserBurndownData.team,
 
   // mapDispatchToProps
 
   // storybook
-  forceUser: 1,
+  forceUser: 2,
 };
