@@ -111,6 +111,7 @@ export default function Presentation({
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
 
+  //storybook
   forceUser,
 }) {
   const classes = useStyles();
@@ -140,7 +141,7 @@ export default function Presentation({
     loadingStopTopic,
     loadingFinishTopic,
     loadingRemoveWorkshopAttendance,
-    // storybook
+
     forceUser,
   };
   // TODO: add an icon for different kinds of content

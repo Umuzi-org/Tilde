@@ -31,7 +31,6 @@ const Template = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   card: agileCard,
-  // authUser: authUser,
   viewedUser: user,
   filterUserId: user.id,
 
