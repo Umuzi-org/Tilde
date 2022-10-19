@@ -1,5 +1,5 @@
 from factory.declarations import LazyAttribute
-from git_real.models import PullRequest, PullRequestReview
+from git_real.models import PullRequest, PullRequestReview, Push
 from factory.django import DjangoModelFactory
 import factory
 from django.utils import timezone
@@ -30,7 +30,7 @@ def _html_url_generator():
 def _commit_id_generator():
     i = 1
     while True:
-        yield f"{i}21747298a3790fde1710f3aa2d03b55020575aa"
+        yield f"{i}215aa"
         i += 1
 
 
@@ -85,5 +85,20 @@ class PullRequestReviewFactory(DjangoModelFactory):
     submitted_at = factory.lazy_attribute(lambda o: timezone.now())
     body = "A horse walks into a bar, the barman says 'Why the long face?'"
     state = "closed"
-    commit_id = factory.LazyAttribute(lambda *args, **kwargs: next(_commit_id_generator))
+    commit_id = factory.LazyAttribute(
+        lambda *args, **kwargs: next(_commit_id_generator)
+    )
     user = factory.SubFactory(UserFactory)
+
+
+class PushFactory(DjangoModelFactory):
+    class Meta:
+        model = "git_real.Push"
+
+    repository = factory.SubFactory(RepositoryFactory)
+    author_github_name = factory.Faker("first_name")
+    committer_github_name = factory.Faker("first_name")
+    pusher_username = factory.Faker("first_name")
+    message = "message"
+    commit_timestamp = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    pushed_at_time = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())

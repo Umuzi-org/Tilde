@@ -11,6 +11,7 @@ import { Chip, Tooltip } from "@material-ui/core";
 
 import { getAgeString } from "./utils";
 import { repoUrlCleaner } from "./utils";
+import { IN_REVIEW } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
   widgetStyle: {
     textDecoration: "none",
+  },
+  chip: {
+    cursor: "pointer",
   },
 }));
 
@@ -87,6 +91,7 @@ export default ({ card }) => {
       ) : (
         <React.Fragment />
       )}
+
       {codeReviewRedFlagSinceLastReviewRequest ? (
         <Tooltip title="Number of RED FLAG code reviews since your last review request">
           <Badge
@@ -115,7 +120,7 @@ export default ({ card }) => {
                 <Chip
                   avatar={<CallMergeIcon />}
                   className={classes.chip}
-                  label={getAgeString(oldestOpenPrUpdatedTime)}
+                  label={`updated ${getAgeString(oldestOpenPrUpdatedTime)}`}
                 />
               )}
             </Badge>
@@ -123,6 +128,16 @@ export default ({ card }) => {
         </Tooltip>
       ) : (
         <React.Fragment />
+      )}
+
+      {card.status === IN_REVIEW ? (
+        <Chip
+          // avatar={<CallMergeIcon />}
+          className={classes.chip}
+          label={`review requested ${getAgeString(card.reviewRequestTime)}`}
+        />
+      ) : (
+        ""
       )}
     </div>
   );

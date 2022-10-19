@@ -1,17 +1,30 @@
-## Installation
+## Prerequisite knowledge 
 
-make a python3.9 virtual env
+If you are new to Python or Django it would be good for you to learn a few things before digging in here.
 
-```
-pip install -r requirements.txt
-```
+- Python
+- Django 
+- Virtual environments - this is seriously good practice. 
+- Django Rest Framework - this is how we make our web apis
+- Dramatiq - this is worth understanding if you want to do anything with long running requests
 
-## useful management commands
+## Why virtual environments 
 
-In order to do most things you will need to run the development database.
-In a separate terminal:
+The short version is: virtual environments allow you to isolate your base system from your project dependencies. Eg if you have 2 different python projects and they require 2 different versions of package X then you would need to have some kind of isolation between those projects. 
 
-```
+Whenever you make a new Python project, if it has any dependencies at all you should create a virtualenv.
+
+You should not need to use `sudo` or any special flags to install things into your virtual environment. Just activate the environment then install whatever you need to. 
+
+## Getting started
+
+Please refer to the [Quickstart](/quick-start.md) to see how to get up and running.
+
+## Useful management commands
+
+To do most things, you will need to run the development database.
+
+```sh 
 cd ../database/localhost
 docker-compose up
 ```
@@ -41,7 +54,24 @@ Now if you run the development server (`python manage.py runserver`), you'll be 
 
 ##  creating data to play with
 
-You can create some curriculums in the database like this:
+### The easy way 
+
+You have multiple options. An easy way to create data to play with is through the create_demo_data command:
+
+```
+python manage.py create_demo_data
+```
+
+You can see how this command works by looking here:
+
+curriculum_tracking/management/commands/create_demo_data.py
+
+### Fine-grain control
+
+Alternatively, you can make use of individual commands if you want finer grain control of what data gets created.
+
+
+You can create some demo curriculums in the database like this:
 
 ```
 python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
@@ -54,11 +84,17 @@ They will also be available in the api.
 
 There are a few other management commands that can make dev-life a bit more convenient.
 
-If a command's name is `command_name` then you can access it's documentation by typing in:
+If a command's name is `command_name` then you can access its documentation by typing in:
 
 ```
 python manage.py command_name --help
 ```
+
+You can also easily see the code behind any custom command by looking for files that are called `f"{command_name}.py"`
+
+eg: 
+
+The create_demo_data command is defined here: curriculum_tracking/management/commands/create_demo_data.py. Look for the `handel` function.
 
 ### Creating users and teams
 
@@ -73,12 +109,12 @@ python manage.py command_name --help
 - `add_course_reg` Example usage:: `python manage.py add_course_reg "someone.nice@example.com" "Intro to Tilde for tech bootcamps" 0`
 - `delete_and_recreate_user_cards` Example usage: `python manage.py delete_and_recreate_user_cards someone.nice@example.com`
 
-### you can also give people permissions over different things
+### you can also give people permission over different things
 
 - `add_team_permission` Example usage: `python manage.py add_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 - `remove_team_permission` Example usage: `python manage.py remove_team_permission someone.nice@example.com VIEW_ALL "demo team"`
 
-You can see all the team permissions here: `core/models.py`. L:ook at the metaclass inside the `Team` model.
+You can see all the team permissions here: `core/models.py`. Look at the metaclass inside the `Team` model.
 
 ## Getting a picture of the model relationships
 
@@ -110,7 +146,7 @@ python manage.py graph_models -g -o gitignore/core_and_curriculum_tracking_model
 
 ## Interacting with Github
 
-If you aren't making use of the Tilde functionality involved in creating and managing repos, then you dont need to worry about this.
+If you aren't making use of the Tilde functionality involved in creating and managing repos, then you don't need to worry about this.
 
 When a user on the Tilde frontend hits "start project" for any repo project, then the backend needs to interact with github as a specific user. The default here is a user names `umuzibot`.
 
@@ -149,9 +185,6 @@ If your system is set up the same as mine you would edit `~/.Virtualenvs/tilde3.
 export REACT_APP_GOOGLE_CLIENT_ID=??? # used for the login with google function on the frontend
 export GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE=??? # needed for login with google
 
-export REACT_APP_FEATURE_AUTHENTICATION=1 # todo: check if we still use this
-export REACT_APP_FEATURE_BACKEND_API_ON=1 # todo: check if we still use this
-
 export GITHUB_CLIENT_ID=??? Needed for login with github to work
-export GITHUB_CLIENT_SECRET=??? Needed for login with github to
+export GITHUB_CLIENT_SECRET=??? Needed for login with github to work
 ```
