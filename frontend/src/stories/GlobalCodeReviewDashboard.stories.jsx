@@ -23,4 +23,19 @@ Primary.args = {
 
   handleChangeFlavourFilter: () => {},
   handleChangeTagFilter: () => {},
+  applyFilters: () => {},
+  selectedCompetenceOrderFilter: {
+    label: "review request time",
+    sortInAscendingOrder: () => {},
+    sortInDescendingOrder: () => {},
+    isSelected: true,
+    isAscending: false,
+  },
+  selectedPullRequestOrderFilter: {
+    label: "last updated time",
+    sortInAscendingOrder: () => {},
+    sortInDescendingOrder: () => {},
+    isSelected: true,
+    isAscending: false,
+  },
 };
