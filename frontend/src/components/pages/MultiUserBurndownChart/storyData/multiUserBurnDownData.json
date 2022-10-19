@@ -1,0 +1,98 @@
+{
+  "burnDownStats": {
+    "11": {
+      "id": 11,
+      "user": 4,
+      "timestamp": "2022-09-09",
+      "cardsTotalCount": 25,
+      "projectCardsTotalCount": 12,
+      "cardsInCompleteColumnTotalCount": 25,
+      "projectCardsInCompleteColumnTotalCount": 12
+    },
+    "10": {
+      "id": 10,
+      "user": 2,
+      "timestamp": "2022-09-09",
+      "cardsTotalCount": 25,
+      "projectCardsTotalCount": 12,
+      "cardsInCompleteColumnTotalCount": 20,
+      "projectCardsInCompleteColumnTotalCount": 11
+    },
+    "9": {
+      "id": 9,
+      "user": 3,
+      "timestamp": "2022-09-09",
+      "cardsTotalCount": 30,
+      "projectCardsTotalCount": 20,
+      "cardsInCompleteColumnTotalCount": 20,
+      "projectCardsInCompleteColumnTotalCount": 12
+    },
+    "7": {
+      "id": 7,
+      "user": 2,
+      "timestamp": "2022-06-09",
+      "cardsTotalCount": 25,
+      "projectCardsTotalCount": 12,
+      "cardsInCompleteColumnTotalCount": 16,
+      "projectCardsInCompleteColumnTotalCount": 9
+    },
+    "6": {
+      "id": 6,
+      "user": 2,
+      "timestamp": "2022-06-07",
+      "cardsTotalCount": 25,
+      "projectCardsTotalCount": 12,
+      "cardsInCompleteColumnTotalCount": 11,
+      "projectCardsInCompleteColumnTotalCount": 7
+    },
+    "4": {
+      "id": 4,
+      "user": 4,
+      "timestamp": "2022-03-14",
+      "cardsTotalCount": 11,
+      "projectCardsTotalCount": 3,
+      "cardsInCompleteColumnTotalCount": 0,
+      "projectCardsInCompleteColumnTotalCount": 0
+    },
+    "3": {
+      "id": 3,
+      "user": 3,
+      "timestamp": "2022-03-14",
+      "cardsTotalCount": 11,
+      "projectCardsTotalCount": 3,
+      "cardsInCompleteColumnTotalCount": 0,
+      "projectCardsInCompleteColumnTotalCount": 0
+    },
+    "2": {
+      "id": 2,
+      "user": 2,
+      "timestamp": "2022-03-14",
+      "cardsTotalCount": 11,
+      "projectCardsTotalCount": 3,
+      "cardsInCompleteColumnTotalCount": 0,
+      "projectCardsInCompleteColumnTotalCount": 0
+    }
+  },
+  "team": {
+    "id": 29,
+    "name": "Staff Tech Education",
+    "active": true,
+    "members": [
+      {
+        "userId": 2,
+        "userEmail": "khalid.ebrahim@umuzi.org",
+        "userActive": true
+      },
+      {
+        "userId": 3,
+        "userEmail": "someone.nice@example.com",
+        "userActive": true
+      },
+      {
+        "userId": 4,
+        "userEmail": "someone.cool@example.com",
+        "userActive": true
+      }
+    ]
+  }
+}
