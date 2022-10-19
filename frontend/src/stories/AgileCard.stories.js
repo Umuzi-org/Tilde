@@ -31,7 +31,7 @@ const Template = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   card: agileCard,
-  authUser: authUser,
+  // authUser: authUser,
   viewedUser: user,
   filterUserId: user.id,
 
@@ -54,6 +54,8 @@ Primary.args = {
   loadingStopTopic: false,
   loadingFinishTopic: false,
   loadingRemoveWorkshopAttendance: false,
+
+  forceUser: authUser,
 };
 
 export const AssigneeBlue = Template.bind({});

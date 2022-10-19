@@ -85,7 +85,7 @@ function ListCardUsers({ userNames, userIds }) {
 
 export default function Presentation({
   card,
-  authUser,
+  // authUser,
   viewedUser,
   filterUserId,
   repoUrl,
@@ -111,6 +111,8 @@ export default function Presentation({
   loadingStopTopic,
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
+
+  forceUser,
 }) {
   const classes = useStyles();
 
@@ -128,7 +130,7 @@ export default function Presentation({
     handleFinishTopic,
     handleRemoveWorkshopAttendance,
     card,
-    authUser,
+    // authUser,
     viewedUser,
     repoUrl,
 
@@ -140,8 +142,11 @@ export default function Presentation({
     loadingStopTopic,
     loadingFinishTopic,
     loadingRemoveWorkshopAttendance,
+    // storybook
+    forceUser,
   };
 
+  // console.log("agileCardActionProps", agileCardActionProps.authUser);
   // TODO: add an icon for different kinds of content
   return (
     <Card

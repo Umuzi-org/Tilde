@@ -30,6 +30,8 @@ function AgileCardActionsUnconnected({
   CARD_FINISH_TOPIC,
   CARD_REMOVE_WORKSHOP_ATTENDANCE,
   CARD_ADD_WORKSHOP_ATTENDANCE,
+  //storybook
+  forceUser,
 }) {
   const cardId = card.id;
 
@@ -102,8 +104,11 @@ function AgileCardActionsUnconnected({
     requestData: { cardId },
   }) || { loading: false })["loading"];
 
+  authUser = forceUser || authUser;
+  console.log("auth", authUser);
   const props = {
     card,
+    authUser,
     ...showButtons({
       card,
       authUser,
