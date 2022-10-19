@@ -1,38 +1,38 @@
 import React from "react";
 
 import TeamDashboard from "../components/pages/TeamDashboard/Presentation.jsx";
-import { filterByStartDate } from "../utils/filterByStartDate.js";
+import { randomDateBetweenCurrentDayAnd21DaysAgo } from "../utils/randomDateBetweenCurrentDayAnd21DaysAgo.js";
 import team from "./fixtures/team.json";
 
 const activityLogDayCounts = {
   84: [
     {
-      date: filterByStartDate(17),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: filterByStartDate(16),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 20,
     },
     {
-      date: filterByStartDate(15),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: filterByStartDate(14),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: filterByStartDate(13),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: filterByStartDate(12),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
@@ -40,17 +40,17 @@ const activityLogDayCounts = {
 
   26: [
     {
-      date: filterByStartDate(17),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: filterByStartDate(10),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 2,
     },
     {
-      date: filterByStartDate(9),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 1,
     },
@@ -58,17 +58,17 @@ const activityLogDayCounts = {
 
   132: [
     {
-      date: filterByStartDate(8),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 50,
       PR_REVIEWED: 31,
     },
     {
-      date: filterByStartDate(7),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 12,
     },
     {
-      date: filterByStartDate(6),
+      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
       COMPETENCE_REVIEW_DONE: 1,
       PR_REVIEWED: 11,
     },
