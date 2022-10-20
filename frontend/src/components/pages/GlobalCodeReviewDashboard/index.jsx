@@ -16,6 +16,15 @@ function removeNameFromArray({ array, name }) {
   return array;
 }
 
+function filterByCardName(allCards, cardName) {
+  if (cardName) {
+    return allCards.filter((card) =>
+      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
+    );
+  }
+  return allCards;
+}
+
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
 
@@ -44,8 +53,6 @@ function GlobalCodeReviewDashboardUnconnected({
   const [filterIncludeAssigneeTeams, setFilterIncludeAssigneeTeams] = useState(
     []
   );
-
-  const [filterIncludeCardNames, setFilterIncludeCardNames] = useState([]);
 
   const initialPullRequestOrderFilters = [
     {
@@ -109,8 +116,7 @@ function GlobalCodeReviewDashboardUnconnected({
     )[0];
   });
 
-  const [cardNameFilterSearchTerm, setCardNameFilterSearchTerm] = useState("");
-  const [allFoundCardNames, setAllFoundCardNames] = useState([]);
+  const [cardNameSearchValue, setCardNameSearchValue] = useState("");
 
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
@@ -211,11 +217,6 @@ function GlobalCodeReviewDashboardUnconnected({
       if (intersection.length === 0) return false;
     }
 
-    if (filterIncludeCardNames.length) {
-      if (!filterIncludeCardNames.includes(project.contentItemTitle))
-        return false;
-    }
-
     return true;
   }
 
@@ -279,23 +280,19 @@ function GlobalCodeReviewDashboardUnconnected({
     setIncludes: setFilterIncludeAssigneeTeams,
   });
 
-  const handleChangeCardNameFilter = handleChangeFilter({
-    includes: filterIncludeCardNames,
-    setIncludes: setFilterIncludeCardNames,
-  });
-
-  function handleOnchangeCardNameFilter(e) {
-    setCardNameFilterSearchTerm(e.target.value);
-
-    const newAllCardNames = [...allCardNames].filter((cardName) =>
-      cardName.toLocaleLowerCase().includes(cardNameFilterSearchTerm)
-    );
-    setAllFoundCardNames(newAllCardNames);
+  function handleChangeCardNameSearchValue(e) {
+    setCardNameSearchValue(e.target.value);
   }
 
   const props = {
-    competenceReviewQueueProjects,
-    pullRequestReviewQueueProjects,
+    competenceReviewQueueProjects: filterByCardName(
+      competenceReviewQueueProjects,
+      cardNameSearchValue
+    ),
+    pullRequestReviewQueueProjects: filterByCardName(
+      pullRequestReviewQueueProjects,
+      cardNameSearchValue
+    ),
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
@@ -330,12 +327,9 @@ function GlobalCodeReviewDashboardUnconnected({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
-    filterIncludeCardNames,
-    handleChangeCardNameFilter,
 
-    cardNameFilterSearchTerm,
-    allFoundCardNames,
-    handleOnchangeCardNameFilter,
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
   };
   return <Presentation {...props} />;
 }

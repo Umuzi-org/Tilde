@@ -41,9 +41,6 @@ const useStyles = makeStyles((theme) => {
       alignItems: "center",
       flexWrap: "wrap",
     },
-    filterByNameTextField: {
-      marginBottom: theme.spacing(2),
-    },
   };
 });
 
@@ -65,7 +62,6 @@ export default function Presentation({
 
   allFlavours,
   allTagNames,
-  allCardNames,
   applyFilters,
 
   competenceOrderFilters,
@@ -84,12 +80,9 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
-  filterIncludeCardNames,
-  handleChangeCardNameFilter,
 
-  cardNameFilterSearchTerm,
-  allFoundCardNames,
-  handleOnchangeCardNameFilter,
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -131,20 +124,11 @@ export default function Presentation({
         <Typography variant="h6">Filter by card name</Typography>
         <Paper>
           <TextField
-            className={classes.filterByNameTextField}
             variant="outlined"
             placeholder="Card name"
-            value={cardNameFilterSearchTerm}
-            onChange={handleOnchangeCardNameFilter}
+            value={cardNameSearchValue}
+            onChange={handleChangeCardNameSearchValue}
             fullWidth
-          />
-          <FilterByNames
-            allNames={
-              cardNameFilterSearchTerm ? allFoundCardNames : allCardNames
-            }
-            filterInclude={filterIncludeCardNames}
-            filterExclude={[]}
-            onChange={handleChangeCardNameFilter}
           />
         </Paper>
       </Grid>
