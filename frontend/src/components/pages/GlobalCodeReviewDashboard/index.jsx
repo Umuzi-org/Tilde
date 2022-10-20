@@ -170,17 +170,6 @@ function GlobalCodeReviewDashboardUnconnected({
     .map((o) => o.name)
     .sort();
 
-  const allCardNames = [
-    ...new Set(
-      [
-        ...competenceReviewQueueProjects.map((proj) => proj.contentItemTitle),
-        pullRequestReviewQueueProjects.map((proj) => proj.contentItemTitle),
-      ]
-        .flat()
-        .flat() // yes, twice
-    ),
-  ].sort();
-
   function applyFilters(project) {
     if (filterIncludeTags.length) {
       for (const tag of filterIncludeTags) {
@@ -308,7 +297,6 @@ function GlobalCodeReviewDashboardUnconnected({
 
     allFlavours,
     allTagNames,
-    allCardNames,
     applyFilters,
 
     competenceOrderFilters,
