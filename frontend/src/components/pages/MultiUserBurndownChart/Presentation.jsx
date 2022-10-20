@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Presentation({ usersOnTeam, authedUser }){
+function Presentation({ userSnapshotArray, authedUser }){
   const [metricFilter, setMetricFilter] = useState("TotalProjects");
-  console.log(usersOnTeam);
+  console.log(userSnapshotArray);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -83,7 +83,7 @@ function Presentation({ usersOnTeam, authedUser }){
               <Legend className={classes.legend} />
               {metricFilter === "TotalProjects" || metricFilter === "" ? (
                 <>
-                  {usersOnTeam.map((userOnTeam) => (
+                  {userSnapshotArray.map((userOnTeam) => (
                     <Line
                       type="monotone"
                       data={userOnTeam.snapshot}
@@ -98,7 +98,7 @@ function Presentation({ usersOnTeam, authedUser }){
               ) : null}
               {metricFilter === "CompletedCards" || metricFilter === "" ? (
                 <>
-                  {usersOnTeam.map((userOnTeam) => (
+                  {userSnapshotArray.map((userOnTeam) => (
                     <Line
                       type="monotone"
                       data={userOnTeam.snapshot}
@@ -113,7 +113,7 @@ function Presentation({ usersOnTeam, authedUser }){
               ) : null}
               {metricFilter === "CompletedProjects" || metricFilter === "" ? (
                 <>
-                  {usersOnTeam.map((userOnTeam) => (
+                  {userSnapshotArray.map((userOnTeam) => (
                     <Line
                       type="monotone"
                       data={userOnTeam.snapshot}
@@ -133,7 +133,7 @@ function Presentation({ usersOnTeam, authedUser }){
           <Typography variant="h6" component="h2">
             Cohort users
           </Typography>
-          {usersOnTeam.map((userOnTeam) => (
+          {userSnapshotArray.map((userOnTeam) => (
             <Grid item key={userOnTeam.user}>
               <Typography>{userOnTeam.userEmail}</Typography>
             </Grid>

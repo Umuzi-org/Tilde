@@ -25,9 +25,9 @@ export function MultiUserBurndownChartUnconnected({
         .slice(0, 10))
   );
   // organize data from the team, and format it so the chart can use it
-  const usersOnTeam = [];
+  const userSnapshotArray = [];
   currentUserBurndownStats.forEach((snapshot) => {
-    if (!usersOnTeam.some((user) => user.user === snapshot.user)) {
+    if (!userSnapshotArray.some((user) => user.user === snapshot.user)) {
       let currentUserEmail = '';
       userTeam.members.forEach(member => {
         if(member.userId === snapshot.user){
@@ -39,16 +39,16 @@ export function MultiUserBurndownChartUnconnected({
         userEmail: currentUserEmail,
         snapshot: [snapshot],
       };
-      usersOnTeam.push(userSnapshot);
-    } else if (usersOnTeam.some((user) => user.user === snapshot.user)) {
-      const userIndex = usersOnTeam.findIndex((user) => {
+      userSnapshotArray.push(userSnapshot);
+    } else if (userSnapshotArray.some((user) => user.user === snapshot.user)) {
+      const userIndex = userSnapshotArray.findIndex((user) => {
         return user.user === snapshot.user;
       });
-      usersOnTeam[userIndex].snapshot.push(snapshot);
+      userSnapshotArray[userIndex].snapshot.push(snapshot);
     }
   });
 
-  usersOnTeam.forEach((user) => {
+  userSnapshotArray.forEach((user) => {
     user.snapshot.sort(function(a,b){
       return new Date(a.timestamp) - new Date(b.timestamp);
     });
@@ -56,7 +56,7 @@ export function MultiUserBurndownChartUnconnected({
 
 
   const props = {
-    usersOnTeam,
+    userSnapshotArray,
     authedUser,
   };
 
