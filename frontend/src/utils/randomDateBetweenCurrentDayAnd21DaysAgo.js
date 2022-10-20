@@ -1,12 +1,12 @@
 export function randomDateBetweenCurrentDayAnd21DaysAgo() {
   let todayDate = new Date();
-  let _21DaysAgoDate = new Date(new Date().setDate(new Date().getDate() - 21));
+  let daysAgoDate = new Date(new Date().setDate(new Date().getDate() - 21));
 
   todayDate = todayDate.getTime();
-  _21DaysAgoDate = _21DaysAgoDate.getTime();
+  daysAgoDate = daysAgoDate.getTime();
 
   const randomDate = new Date(
-    todayDate + Math.random() * (_21DaysAgoDate - todayDate)
+    todayDate + Math.random() * (daysAgoDate - todayDate)
   );
 
   const formattedRandomDate = `${randomDate.getFullYear()}-${
