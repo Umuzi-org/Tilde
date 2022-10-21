@@ -38,7 +38,10 @@ export default ({ reviewIds, reviews }) => {
     if (reviews.length) {
       body = (
         <React.Fragment>
-          <List className={classes.list}>
+          <List
+            className={classes.list}
+            style={{ maxHeight: "30vh", overflow: "auto" }}
+          >
             {reviews
               .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
               .map((review) => {
