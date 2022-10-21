@@ -52,6 +52,11 @@ Primary.args = {
     helpertext: "",
     required: false,
   },
+  filterFormValues: {
+    team: "",
+    user: "",
+  },
+  handleChangeFilterFormInput: () => {},
 
   handleUserGroupClick: () => {},
 };
