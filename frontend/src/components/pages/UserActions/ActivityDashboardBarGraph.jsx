@@ -7,7 +7,9 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  YAxis,
 } from "recharts";
+import createStyles from "@material-ui/core/styles/createStyles";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -48,11 +50,9 @@ export default function ActivityDashboardBarGraph({
               (userActivityLog) => userActivityLog.date === act.date
             )
           ) {
-            const updated = {};
-            updated.date = act.date;
-            userActivityLogs.push(
-              Object.assign(updated, { [ev.name]: act.total })
-            );
+            const obj = {};
+            obj.date = act.date;
+            userActivityLogs.push(Object.assign(obj, { [ev.name]: act.total }));
           } else {
             const dateIndex = userActivityLogs.findIndex((userActivityLog) => {
               return userActivityLog.date === act.date;
@@ -83,9 +83,10 @@ export default function ActivityDashboardBarGraph({
           barCategoryGap={"20%"}
           barGap="20"
         >
-          <CartesianGrid strokeDasharray="4 1 2" />
-          <XAxis dataKey="date" angle={-20} fontSize="50%" fontWeight="bold" />
-          <Tooltip filterNull />
+          <CartesianGrid strokeDasharray="3 3" opacity={0.4} />
+          <XAxis dataKey="date" angle={-20} fontSize="70%" fontWeight="bold" />
+          <YAxis />
+          <Tooltip filterNull cursor={false} />
           <Legend align="center" />
 
           {eventTypes.map((eventType) => (
