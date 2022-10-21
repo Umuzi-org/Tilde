@@ -15,8 +15,19 @@ const useStyles = makeStyles((theme) => ({
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),
-    maxWidth: "100%",
-    maxHeight: "100%",
+    width: "100%",
+    height: "100%",
+  },
+  text: {
+    [theme.breakpoints.down("md")]: {
+      fontSize: "1.5rem",
+    },
+  },
+  list: {
+    [theme.breakpoints.down("md")]: {
+      maxHeight: "20em",
+      overflow: "auto",
+    },
   },
 }));
 
@@ -27,7 +38,7 @@ export default ({ reviewIds, reviews }) => {
     if (reviews.length) {
       body = (
         <React.Fragment>
-          <List style={{ maxHeight: 200, overflow: "auto" }}>
+          <List className={classes.list}>
             {reviews
               .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
               .map((review) => {
@@ -40,12 +51,18 @@ export default ({ reviewIds, reviews }) => {
       body = <CircularProgress />;
     }
   } else {
-    body = <Typography paragraph>{"No reviews yet"}</Typography>;
+    body = (
+      <Typography paragraph className={classes.text}>
+        {"No reviews yet"}
+      </Typography>
+    );
   }
 
   return (
-    <Paper className={classes.sectionPaper}>
-      <Typography variant="h6">Reviews</Typography>
+    <Paper className={classes.sectionPaper} elevation={3}>
+      <Typography variant="h4" className={classes.text}>
+        Reviews
+      </Typography>
       {body}
     </Paper>
   );

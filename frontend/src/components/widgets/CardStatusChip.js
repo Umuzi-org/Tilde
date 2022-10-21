@@ -19,6 +19,14 @@ const useStyles = makeStyles((theme) => {
     padding: theme.spacing(0.5),
     borderRadius: theme.spacing(2),
     textAlign: "center",
+    [theme.breakpoints.down("md")]: {
+      margin: theme.spacing(0.3),
+      width: theme.spacing(12),
+      padding: theme.spacing(0),
+      borderRadius: theme.spacing(6),
+      textAlign: "center",
+      fontSize: "0.9rem",
+    },
   };
   return {
     [BLOCKED]: { ...card, backgroundColor: cardColors.B },

@@ -22,10 +22,23 @@ const useStyles = makeStyles((theme) => {
       width: theme.spacing(3),
       height: theme.spacing(3),
     },
+    table: {
+      height: "20vh",
+      [theme.breakpoints.down("md")]: {
+        maxHeight: "30vh",
+      },
+      overflow: "auto",
+    },
+    dates: {
+      paddingTop: "6%",
+    },
+    noReviews: {
+      padding: theme.spacing(6),
+    },
   };
 });
 
-function ReviewersTable({
+export default function ReviewersTable({
   reviewerUsers,
   reviewerUserEmails,
   usersThatReviewedSinceLastReviewRequestEmails,
@@ -60,38 +73,40 @@ function ReviewersTable({
 
   allUsers.sort(compare);
 
-  if (allUsers.length === 0) return <Typography>No reviewers!</Typography>;
+  if (allUsers.length === 0)
+    return <Typography className={classes.noReviews}>No reviewers!</Typography>;
 
   return (
-    <Table size="small">
-      <TableBody>
-        {allUsers.map((user) => {
-          return (
-            <TableRow key={user.userId}>
-              <TableCell padding="none">
-                <Checkbox
-                  checked={usersThatReviewedSinceLastReviewRequest.includes(
-                    user.userId
+    <div className={classes.table}>
+      <Table size="small">
+        <TableBody>
+          {allUsers.map((user) => {
+            return (
+              <TableRow key={user.userId}>
+                <TableCell padding="none">
+                  <Checkbox
+                    size="medium"
+                    checked={usersThatReviewedSinceLastReviewRequest.includes(
+                      user.userId
+                    )}
+                    disabled
+                  />
+                </TableCell>
+                <TableCell padding="none">
+                  {reviewerUsers.includes(user.userId) && (
+                    <Tooltip title="this user is an allocated reviewer on this project">
+                      <Avatar className={classes.reviewer}>R</Avatar>
+                    </Tooltip>
                   )}
-                  disabled
-                />
-              </TableCell>
-              <TableCell padding="none">
-                {reviewerUsers.includes(user.userId) && (
-                  <Tooltip title="this user is an allocated reviewer on this project">
-                    <Avatar className={classes.reviewer}>R</Avatar>
-                  </Tooltip>
-                )}
-              </TableCell>
-              <TableCell>
-                <UserAvatarLink email={user.email} userId={user.userId} />
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                </TableCell>
+                <TableCell>
+                  <UserAvatarLink email={user.email} userId={user.userId} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
-
-export default ReviewersTable;

@@ -5,18 +5,31 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 import { getUrl as getUserBoardUrl } from "./LinkToUserBoard";
 
-const useStyles = makeStyles({
-  avatarLink: {
-    textDecoration: "none",
-    marginRight: 8,
-  },
-  container: {
-    display: "flex",
-    alignItems: "center",
-  },
-  emailText: {
-    color: "#000",
-  },
+const useStyles = makeStyles((theme) => {
+  return {
+    avatarLink: {
+      textDecoration: "none",
+      marginRight: 8,
+      padding: 8,
+    },
+    container: {
+      display: "flex",
+      alignItems: "center",
+    },
+    emailText: {
+      color: "#000",
+      [theme.breakpoints.down("md")]: {
+        fontSize: "1rem",
+      },
+    },
+    avatar: {
+      [theme.breakpoints.down("md")]: {
+        height: "35px",
+        width: "35px",
+        fontSize: "0.9rem",
+      },
+    },
+  };
 });
 
 export function getAvatarInitials(email) {
@@ -39,7 +52,7 @@ function UserAvatarLink({ email, userId }) {
   return (
     <div className={classes.container}>
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
-        <Avatar>{getAvatarInitials(email)}</Avatar>
+        <Avatar className={classes.avatar}>{getAvatarInitials(email)}</Avatar>
       </Link>
       <Typography className={classes.emailText}>{email}</Typography>
     </div>

@@ -18,6 +18,7 @@ import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
+import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 
 const TableCell = withStyles({
   root: {
@@ -40,7 +41,9 @@ const useStyles = makeStyles((theme) => {
     },
     sectionPaper: {
       padding: theme.spacing(1),
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(2),
     },
     root: {
       margin: theme.spacing(1),
@@ -49,6 +52,29 @@ const useStyles = makeStyles((theme) => {
     },
     row: {
       padding: 5,
+    },
+    reviewers: {
+      paddingTop: "3%",
+    },
+    addReview: {
+      display: "inline-block",
+      paddingTop: 5,
+      paddingRight: 5,
+      paddingBottom: 5,
+    },
+    viewContent: {
+      display: "inline-block",
+      padding: 5,
+    },
+    titleTypography: {
+      [theme.breakpoints.down("md")]: {
+        fontSize: "1.4rem",
+      },
+    },
+    text: {
+      [theme.breakpoints.down("md")]: {
+        fontSize: "0.9rem",
+      },
     },
   };
 });
@@ -83,7 +109,7 @@ function CardBasicDetails({ card }) {
       <Grid container>
         <Grid item xs={12} sm={12} md={12}>
           <CardBadges card={card} />
-          <Typography variant="h5">
+          <Typography variant="h5" className={classes.titleTypography}>
             {card.contentTypeNice}: {card.title}
           </Typography>
         </Grid>
@@ -95,12 +121,16 @@ function CardBasicDetails({ card }) {
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
           <Paper className={classes.sectionPaper} variant="outlined">
-            <Typography variant="subtitle2">Assignees:</Typography>
+            <Typography variant="subtitle2" className={classes.typography}>
+              Assignees:
+            </Typography>
             <AssigneesList
               userNames={card.assigneeNames}
               userIds={card.assignees}
             />
-            <Typography variant="subtitle2">Reviewers:</Typography>
+            <Typography variant="subtitle2" className={classes.reviewers}>
+              Reviewers:
+            </Typography>
             <ReviewersTable
               reviewerUserEmails={card.reviewerNames}
               reviewerUsers={card.reviewers}
@@ -114,30 +144,42 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Paper className={classes.sectionPaper} variant="outlined">
+          <Paper
+            className={classes.sectionPaper}
+            style={{ paddingTop: "6%" }}
+            elevation={0}
+          >
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell>Due Time</TableCell>
-                  <TableCell>{dueTime}</TableCell>
+                  <TableCell className={classes.text}>Due Time</TableCell>
+                  <TableCell className={classes.text}>{dueTime}</TableCell>
                 </TableRow>
                 {card.startTime && (
                   <TableRow>
-                    <TableCell>Start Time</TableCell>
-                    <TableCell>{startTime}</TableCell>
+                    <TableCell className={classes.text}>Start Time</TableCell>
+                    <TableCell className={classes.text}>{startTime}</TableCell>
                   </TableRow>
                 )}
 
                 {card.reviewRequestTime && (
                   <TableRow>
-                    <TableCell>Review Request Time</TableCell>
-                    <TableCell>{reviewRequestTime}</TableCell>
+                    <TableCell className={classes.text}>
+                      Review Request Time
+                    </TableCell>
+                    <TableCell className={classes.text}>
+                      {reviewRequestTime}
+                    </TableCell>
                   </TableRow>
                 )}
                 {card.completeTime && (
                   <TableRow>
-                    <TableCell>Complete Time </TableCell>
-                    <TableCell>{completeTime}</TableCell>
+                    <TableCell className={classes.text}>
+                      Complete Time{" "}
+                    </TableCell>
+                    <TableCell className={classes.text}>
+                      {completeTime}
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -205,15 +247,23 @@ export default function Presentation({
         ) : (
           <React.Fragment />
         )}
-
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={contentItemUrl}
-              contentItemId={contentItem}
-            />
-          }
-        />
+        <div className={classes.addReview}>
+          <CardButton
+            label="Add Review"
+            startIcon={<RateReviewRoundedIcon />}
+            onClick={handleClickAddReview}
+          />
+        </div>
+        <div className={classes.viewContent}>
+          <CardButton
+            widget={
+              <ViewContentButton
+                contentUrl={contentItemUrl}
+                contentItemId={contentItem}
+              />
+            }
+          />
+        </div>
       </Paper>
     );
   return <React.Fragment />;
