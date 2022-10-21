@@ -1,5 +1,13 @@
 import React from "react";
-import { BarChart, Bar, XAxis, Legend, Tooltip, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  Legend,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 import { eventTypeColors } from "../../../colors";
 
@@ -7,7 +15,9 @@ export default function ActivityDashboardBarGraph({
   eventTypes,
   activityDayCounts,
 }) {
-  const plantColorsToEventTypes = () => {
+  const formatEventTypeName = (str) => str.toLowerCase().replaceAll("_", " ");
+
+  const injectColorsToEventTypes = () => {
     const eventTypeNames = [];
 
     for (const eventName in eventTypes) {
@@ -16,16 +26,16 @@ export default function ActivityDashboardBarGraph({
 
     const colors = [...Object.values(eventTypeColors)];
     const sortedEventTypeNames = eventTypeNames.sort();
-    const keys = [...Object.keys(eventTypeColors)].sort();
+    const evenTypeKeys = [...Object.keys(eventTypeColors)].sort();
 
     for (let i = 0; i < eventTypes.length; i++) {
-      if (sortedEventTypeNames[i] === keys[i]) {
+      if (sortedEventTypeNames[i] === evenTypeKeys[i]) {
         eventTypes[i].color = colors[i];
       }
     }
   };
 
-  plantColorsToEventTypes();
+  injectColorsToEventTypes();
 
   const prepareDataForBarGraph = () => {
     const userActivityLogs = [];
@@ -59,30 +69,34 @@ export default function ActivityDashboardBarGraph({
 
   return (
     <div>
-      <BarChart
-        width={500}
-        height={300}
-        data={prepareDataForBarGraph()}
-        margin={{
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <Tooltip />
-        <Legend />
-        {eventTypes.map((eventType) => (
-          <Bar
-            barSize={50}
-            dataKey={eventType.name}
-            fill={eventType.color}
-            name={eventType.name.toLowerCase().replaceAll("_", " ")}
-          />
-        ))}
-      </BarChart>
+      <ResponsiveContainer width={"100%"} height={300} min-width={300}>
+        <BarChart
+          width={730}
+          height={350}
+          data={prepareDataForBarGraph()}
+          margin={{
+            top: 50,
+            right: 0,
+            left: 0,
+            bottom: 50,
+          }}
+          barCategoryGap={"20%"}
+          barGap="20"
+        >
+          <CartesianGrid strokeDasharray="4 1 2" />
+          <XAxis dataKey="date" angle={-20} fontSize="50%" fontWeight="bold" />
+          <Tooltip filterNull />
+          <Legend align="center" />
+
+          {eventTypes.map((eventType) => (
+            <Bar
+              dataKey={eventType.name}
+              fill={eventType.color}
+              name={formatEventTypeName(eventType.name)}
+            />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
