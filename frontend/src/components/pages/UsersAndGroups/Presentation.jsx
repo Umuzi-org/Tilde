@@ -15,6 +15,7 @@ import {
   TableRow,
   Grid,
   TextField,
+  TableContainer,
 } from "@material-ui/core";
 
 import FilterIcon from "@material-ui/icons/Filter"; //TODO better icon. Need to upgrade material ui
@@ -74,6 +75,7 @@ function TeamSummaryStats({ summaryStats }) {
     classes[getTildeReviewStatus(dateOfOldestTildeReviewRequest)];
 
   return (
+    <TableContainer component={Paper}>
     <Table>
       <TableHead>
         <TableRow>
@@ -103,6 +105,7 @@ function TeamSummaryStats({ summaryStats }) {
         </TableRow>
       </TableBody>
     </Table>
+    </TableContainer>
   );
 }
 
@@ -117,7 +120,7 @@ function TeamCard({
 
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2} className={classes.root}>
+    <Paper variant="outlined" elevation={2} >
       <Typography
         variant="h6"
         gutterBottom
@@ -126,7 +129,7 @@ function TeamCard({
       >
         {team.name}
       </Typography>
-      <Link to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
+      <Link  className={classes.root} to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
         <Button
           variant="outlined"
           color="default"
