@@ -8,7 +8,7 @@ import MuiTableCell from "@material-ui/core/TableCell";
 import Typography from "@material-ui/core/Typography";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles, createStyles } from "@material-ui/core/styles";
 import CardStatusChip from "../../widgets/CardStatusChip";
 import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
@@ -27,35 +27,52 @@ const TableCell = withStyles({
   },
 })(MuiTableCell);
 
-const useStyles = makeStyles((theme) => {
-  return {
-    paper: {
-      padding: theme.spacing(1, 2, 1),
-    },
-
-    commentColumn: {
-      minWidth: 300,
-    },
-
-    tableContainer: {
-      maxHeight: 200,
-    },
-    sectionPaper: {
-      padding: theme.spacing(1),
-      marginBottom: theme.spacing(2),
-      marginTop: theme.spacing(1),
-      marginRight: theme.spacing(2),
-    },
+const useStyles = makeStyles((theme) =>
+  createStyles({
     root: {
-      margin: theme.spacing(1),
-      width: theme.spacing(40),
-      height: theme.spacing(16),
+      flexGrow: 1,
     },
-    row: {
-      padding: 5,
+    paper: {
+      padding: theme.spacing(2),
+      height: "100%",
+      textAlign: "auto",
+      color: theme.palette.text.primary,
+      boxSizing: "border-box",
+    },
+    gridItem: {
+      boxSizing: "border-box",
+      padding: theme.spacing(1),
+    },
+    masonryItemFirst: {
+      boxSizing: "border-box",
+      padding: `0 ${theme.spacing(1)}px ${theme.spacing(1)}px ${theme.spacing(
+        1
+      )}px`,
+      [theme.breakpoints.up("lg")]: {
+        padding: `0px ${theme.spacing(1)}px 0px 0px`,
+      },
+      [theme.breakpoints.down("sm")]: {
+        padding: `0px ${theme.spacing(1)}px 0px 0px`,
+      },
+    },
+    masonryItemSecond: {
+      boxSizing: "border-box",
+      padding: `${theme.spacing(1)}px ${theme.spacing(1)}px 0px ${theme.spacing(
+        1
+      )}px`,
+      [theme.breakpoints.up("lg")]: {
+        padding: `0px 0px 0px ${theme.spacing(1)}px`,
+      },
+      [theme.breakpoints.down("sm")]: {
+        padding: `0px 0px 0px ${theme.spacing(1)}px`,
+      },
+    },
+    grid: {
+      paddingBottom: "20px",
+      paddingRight: "20px",
     },
     reviewers: {
-      paddingTop: "3%",
+      paddingTop: "2%",
     },
     addReview: {
       display: "inline-block",
@@ -67,18 +84,18 @@ const useStyles = makeStyles((theme) => {
       display: "inline-block",
       padding: 5,
     },
-    titleTypography: {
-      [theme.breakpoints.down("md")]: {
-        fontSize: "1.4rem",
-      },
+    // maybe throw?
+    tableContainer: {
+      maxHeight: 200,
     },
-    text: {
-      [theme.breakpoints.down("md")]: {
-        fontSize: "0.9rem",
-      },
+    commentColumn: {
+      minWidth: 300,
     },
-  };
-});
+    space: {
+      padding: theme.spacing(1, 2, 1),
+    },
+  })
+);
 
 function TopicProgressDetails({ topicProgress, reviews }) {
   return (
@@ -106,11 +123,11 @@ function CardBasicDetails({ card }) {
     card.completeTime && new Date(card.completeTime).toLocaleString();
 
   return (
-    <React.Fragment>
-      <Grid container>
+    <div className={classes.root}>
+      <Grid container className={classes.grid}>
         <Grid item xs={12} sm={12} md={12}>
           <CardBadges card={card} />
-          <Typography variant="h5" className={classes.titleTypography}>
+          <Typography variant="h5">
             {card.contentTypeNice}: {card.title}
           </Typography>
         </Grid>
@@ -120,71 +137,65 @@ function CardBasicDetails({ card }) {
           {/* <StoryPoints storyPoints={card.storyPoints} /> */}
           <CardStatusChip card={card} />
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Paper className={classes.sectionPaper} variant="outlined">
-            <Typography variant="subtitle2" className={classes.typography}>
-              Assignees:
-            </Typography>
-            <AssigneesList
-              userNames={card.assigneeNames}
-              userIds={card.assignees}
-            />
-            <Typography variant="subtitle2" className={classes.reviewers}>
-              Reviewers:
-            </Typography>
-            <ReviewersTable
-              reviewerUserEmails={card.reviewerNames}
-              reviewerUsers={card.reviewers}
-              usersThatReviewedSinceLastReviewRequestEmails={
-                card.usersThatReviewedSinceLastReviewRequestEmails
-              }
-              usersThatReviewedSinceLastReviewRequest={
-                card.usersThatReviewedSinceLastReviewRequest
-              }
-            />
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Paper className={classes.sectionPaper} variant="outlined">
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell className={classes.text}>Due Time</TableCell>
-                  <TableCell className={classes.text}>{dueTime}</TableCell>
-                </TableRow>
-                {card.startTime && (
+        <Grid container spacing={3}>
+          <Grid item md={6} xs={12} className={`${classes.gridItem}`}>
+            <Paper className={`${classes.paper}`} variant="outlined">
+              <Typography variant="subtitle2" className={classes.typography}>
+                Assignees:
+              </Typography>
+              <AssigneesList
+                userNames={card.assigneeNames}
+                userIds={card.assignees}
+              />
+              <Typography variant="subtitle2" className={classes.reviewers}>
+                Reviewers:
+              </Typography>
+              <ReviewersTable
+                reviewerUserEmails={card.reviewerNames}
+                reviewerUsers={card.reviewers}
+                usersThatReviewedSinceLastReviewRequestEmails={
+                  card.usersThatReviewedSinceLastReviewRequestEmails
+                }
+                usersThatReviewedSinceLastReviewRequest={
+                  card.usersThatReviewedSinceLastReviewRequest
+                }
+              />
+            </Paper>
+          </Grid>
+          <Grid item md={6} xs={12} className={`${classes.gridItem}`}>
+            <Paper className={`${classes.paper}`} variant="outlined">
+              <Table>
+                <TableBody>
                   <TableRow>
-                    <TableCell className={classes.text}>Start Time</TableCell>
-                    <TableCell className={classes.text}>{startTime}</TableCell>
+                    <TableCell>Due Time</TableCell>
+                    <TableCell>{dueTime}</TableCell>
                   </TableRow>
-                )}
+                  {card.startTime && (
+                    <TableRow>
+                      <TableCell>Start Time</TableCell>
+                      <TableCell>{startTime}</TableCell>
+                    </TableRow>
+                  )}
 
-                {card.reviewRequestTime && (
-                  <TableRow>
-                    <TableCell className={classes.text}>
-                      Review Request Time
-                    </TableCell>
-                    <TableCell className={classes.text}>
-                      {reviewRequestTime}
-                    </TableCell>
-                  </TableRow>
-                )}
-                {card.completeTime && (
-                  <TableRow>
-                    <TableCell className={classes.text}>
-                      Complete Time{" "}
-                    </TableCell>
-                    <TableCell className={classes.text}>
-                      {completeTime}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Paper>
+                  {card.reviewRequestTime && (
+                    <TableRow>
+                      <TableCell>Review Request Time</TableCell>
+                      <TableCell>{reviewRequestTime}</TableCell>
+                    </TableRow>
+                  )}
+                  {card.completeTime && (
+                    <TableRow>
+                      <TableCell>Complete Time </TableCell>
+                      <TableCell>{completeTime}</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </Paper>
+          </Grid>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </div>
   );
 }
 
@@ -213,7 +224,7 @@ export default function Presentation({
   const workshopAttendance = false;
   if (cardId)
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.space}>
         {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
 
         {project ? (

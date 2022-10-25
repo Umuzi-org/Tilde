@@ -32,9 +32,6 @@ const useStyles = makeStyles((theme) => {
     dates: {
       paddingTop: "6%",
     },
-    noReviews: {
-      padding: theme.spacing(6),
-    },
   };
 });
 
@@ -73,8 +70,7 @@ export default function ReviewersTable({
 
   allUsers.sort(compare);
 
-  if (allUsers.length === 0)
-    return <Typography className={classes.noReviews}>No reviewers!</Typography>;
+  if (allUsers.length === 0) return <Typography>No reviewers!</Typography>;
 
   return (
     <div className={classes.table}>
