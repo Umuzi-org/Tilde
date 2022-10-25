@@ -24,9 +24,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
   },
   typography: {
-    margin: "auto",
-    position: "relative",
-    top: 4,
+    padding: "3%",
   },
 }));
 
@@ -40,6 +38,7 @@ export default function Presentation({
   loadMoreCards,
 }) {
   const classes = useStyles();
+
   return (
     <React.Fragment>
       <Grid container wrap="nowrap">
