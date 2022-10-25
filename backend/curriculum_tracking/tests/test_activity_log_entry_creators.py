@@ -11,7 +11,7 @@ from .factories import (
     ContentItemFactory,
 )
 import curriculum_tracking.activity_log_entry_creators as creators
-from activity_log.models import LogEntry
+from activity_log.models import EventType, LogEntry
 
 from curriculum_tracking.models import (
     AgileCard,
@@ -155,10 +155,12 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 # class log_card_review_request_cancelled_Tests(TestCase):
 
 
-class log_card_moved_to_complete_Tests(TestCase):
+class log_card_moved_to_complete_Tests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
 
-    def test_card_moved_to_complete_called(
-        self, log_card_moved_to_complete):
+    def test_card_moved_to_complete_called(self):
         actor_user = UserFactory(is_superuser=True)
         card = AgileCardFactory(
             status=AgileCard.IN_REVIEW,
@@ -168,6 +170,7 @@ class log_card_moved_to_complete_Tests(TestCase):
         )
         self.login(actor_user)
 
+        # first postive review to complete
         add_review_url = f"{self.get_instance_url(card.id)}add_review/"
         response = self.client.post(
             add_review_url, data={"status": COMPETENT, "comments": "woohoo"}
@@ -176,7 +179,40 @@ class log_card_moved_to_complete_Tests(TestCase):
 
         card.refresh_from_db()
         self.assertEqual(card.status, AgileCard.COMPLETE)
-        log_card_moved_to_complete.assert_called_with(card, actor_user)
+        self.assertEqual(LogEntry.objects.last().event_type.name, creators.CARD_MOVED_TO_COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 2)
+
+        # moving card from complete to review feedback then to in review
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+        )
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.REVIEW_FEEDBACK)
+
+        request_review_url = f"{self.get_instance_url(card.id)}request_review/"
+        self.client.post(request_review_url)
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.IN_REVIEW)
+
+        # second postive review to complete
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": COMPETENT, "comments": "woohoo"}
+        )
+        self.assertEqual(response.status_code, 200)
+        card_moved_to_complete_id = EventType.objects.filter(name=creators.COMPETENCE_REVIEW_DONE).first().id
+        print(LogEntry.objects.filter(effected_user=card.assignees.first().id, event_type=card_moved_to_complete_id))
+        for _ in LogEntry.objects.all():
+            print(_.event_type.name)
+        
+
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.COMPLETE)
+        self.assertEqual(LogEntry.objects.last().event_type.name, creators.CARD_MOVED_TO_COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 7)
+
+
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
 
