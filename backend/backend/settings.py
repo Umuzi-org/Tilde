@@ -100,9 +100,9 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "django.contrib.contenttypes",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -374,13 +374,13 @@ REST_AUTH_SERIALIZERS = {
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 DEFAULT_FROM_EMAIL = "noreply@umuzi.org"
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', None)
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", None)
 
 if SENDGRID_API_KEY:
 
     EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-    EMAIL_HOST = 'smtp.sendgrid.net'
-    EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
+    EMAIL_HOST = "smtp.sendgrid.net"
+    EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
     EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
