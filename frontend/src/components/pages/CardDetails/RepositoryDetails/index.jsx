@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../../apiAccess/apiApps";
 import Presentation from "./Presentation";
@@ -14,28 +14,27 @@ function RepositoryDetailsUnconnected({
   repositoryId,
   repositories,
   fetchRepository,
-  fetchCommits,
   fetchPullRequests,
-  commits,
   pullRequests,
 }) {
-  React.useEffect(() => {
+  repositories = repositories || {};
+  pullRequests = pullRequests || {};
+
+  useEffect(() => {
     if (repositoryId) {
       fetchRepository({ repositoryId });
-      // fetchCommits({ repositoryId });
       fetchPullRequests({ repositoryId });
     }
-  }, [repositoryId, fetchRepository, fetchCommits, fetchPullRequests]);
-  const [tabValue, setTabValue] = React.useState(0);
+  }, [repositoryId, fetchRepository, fetchPullRequests]);
+
+  const [tabValue, setTabValue] = useState(0);
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
   };
 
   const repository = repositories[repositoryId];
-  const currentCommits = Object.values(commits).filter(
-    (commit) => commit.repository === repositoryId
-  );
+
   const currentPullRequests = Object.values(pullRequests)
     .filter((pr) => pr.repository === repositoryId)
     .map((pr) => {
@@ -50,7 +49,6 @@ function RepositoryDetailsUnconnected({
 
   const props = {
     repository,
-    currentCommits,
     currentPullRequests,
     tabValue,
     handleChangeTab,
@@ -61,18 +59,8 @@ function RepositoryDetailsUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    repositories:
-      state.apiEntities.repositories === undefined
-        ? {}
-        : state.apiEntities.repositories,
-    commits:
-      state.apiEntities.repoCommits === undefined
-        ? {}
-        : state.apiEntities.repoCommits,
-    pullRequests:
-      state.apiEntities.pullRequests === undefined
-        ? {}
-        : state.apiEntities.pullRequests,
+    repositories: state.apiEntities.repositories,
+    pullRequests: state.apiEntities.pullRequests,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -84,13 +72,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchCommits: ({ repositoryId }) => {
-      dispatch(
-        apiReduxApps.FETCH_COMMITS_PAGE.operations.maybeStart({
-          data: { repositoryId, page: 1 },
-        })
-      );
-    },
+
     fetchPullRequests: ({ repositoryId }) => {
       dispatch(
         apiReduxApps.FETCH_PULL_REQUESTS_PAGE.operations.maybeStart({
