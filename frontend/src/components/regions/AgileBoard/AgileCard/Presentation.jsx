@@ -141,7 +141,9 @@ export default function Presentation({
     loadingFinishTopic,
     loadingRemoveWorkshopAttendance,
   };
+  //AgileCard 
 
+  
   // TODO: add an icon for different kinds of content
   return (
     <Card
