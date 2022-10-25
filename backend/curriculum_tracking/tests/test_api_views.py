@@ -54,7 +54,7 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(recruit_project=project)
         card.reviewers.add(core_factories.UserFactory())
         card.assignees.add(core_factories.UserFactory())
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         return card
 
 
@@ -125,7 +125,7 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.card_1.start_project()
         self.card_2.start_project()
 
-        creators.log_card_moved_to_review_feedback(self.card_1, self.card_1.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
 
         self.login_as_superuser()
         request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
@@ -320,7 +320,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         review.save()
 
         PullRequestFactory(repository=project.repository)
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
 
         return card
 
@@ -329,14 +329,14 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
             content_item=factories.ProjectContentItemFactory(),
             recruit_project=None,  # things can have due dates even when not started
         )
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         self._test_set_due_time_permissions(card, lambda card: card.recruit_project)
 
     def test_set_topic_card_due_time_permissions(self):
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC)
         )
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         self._test_set_due_time_permissions(card, lambda card: card.topic_progress)
 
     def _test_set_due_time_permissions(self, card, get_progress):
@@ -427,7 +427,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card = factories.AgileCardFactory(content_item=content_item)
 
         card.assignees.add(recruit)
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
 
         url = f"{self.get_list_url()}{card.id}/set_project_link/"
 
@@ -744,7 +744,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
     def test_team_members_cannot_bulk_set_due_dates_for_the_team_they_belong_to(self):
         project = RecruitProjectFactory(due_time=None)
         card = AgileCardFactory(recruit_project=project)
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         card.reviewers.add(self.user_one_red)
         card.assignees.add(self.user_two_red)
         self.login(self.user_two_red)
@@ -764,7 +764,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
 
         project = RecruitProjectFactory(due_time=None)
         card = AgileCardFactory(recruit_project=project)
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         card.reviewers.add(self.user_one_blue)
         card.assignees.add(self.user_one_red)
         self.login(self.user_one_blue)
@@ -787,7 +787,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         card = AgileCardFactory(
             recruit_project=project, flavours=["JAVASCRIPT", "PYTHON"]
         )
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         card.reviewers.add(self.user_one_blue)
         card.assignees.add(self.user_two_blue)
         self.assertIsNone(card.due_time)
@@ -820,7 +820,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         project = RecruitProjectFactory(due_time=None)
         card_1 = AgileCardFactory(recruit_project=project, flavours=["JAVASCRIPT"])
         card_1.assignees.add(self.user_one_red)
-        creators.log_card_moved_to_review_feedback(card_1, card_1.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         card_2 = AgileCardFactory(
             recruit_project=RecruitProjectFactory(due_time=None),
             content_item=card_1.content_item,
@@ -870,7 +870,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         project = RecruitProjectFactory(due_time=None)
         card_1 = AgileCardFactory(recruit_project=project, flavours=["JAVASCRIPT"])
         card_1.assignees.add(self.user_one_red)
-        creators.log_card_moved_to_review_feedback(card_1, card_1.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         card_2 = AgileCardFactory(
             recruit_project=RecruitProjectFactory(due_time=None),
             content_item=card_1.content_item,
@@ -972,7 +972,7 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
         pr = PullRequestFactory(state="closed")
         card = AgileCardFactory()
         card.recruit_project.repository = pr.repository
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
 
         return project
 
@@ -993,7 +993,7 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
         RecruitProjectFactory()
         RecruitProjectFactory()
         card = AgileCardFactory()
-        creators.log_card_moved_to_review_feedback(card, card.assignees.first())
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         
         project = card.recruit_project
         project.request_review()
