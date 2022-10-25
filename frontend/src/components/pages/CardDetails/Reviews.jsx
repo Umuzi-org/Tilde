@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),
-    width: "100%",
+    marginRight: theme.spacing(2),
+    width: "99.2%",
     height: "100%",
   },
   text: {

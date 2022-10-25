@@ -23,6 +23,7 @@ import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 const TableCell = withStyles({
   root: {
     borderBottom: "none",
+    padding: "3.24%",
   },
 })(MuiTableCell);
 
@@ -97,13 +98,6 @@ function TopicProgressDetails({ topicProgress, reviews }) {
 function CardBasicDetails({ card }) {
   const classes = useStyles();
 
-  const style = {
-    paddingTop: "6%",
-    "@media (min-width:700)": {
-      backgroundColor: "red",
-    },
-  };
-
   const dueTime = card.dueTime && new Date(card.dueTime).toLocaleString();
   const startTime = card.startTime && new Date(card.startTime).toLocaleString();
   const reviewRequestTime =
@@ -151,7 +145,7 @@ function CardBasicDetails({ card }) {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Paper className={classes.sectionPaper} style={style} elevation={0}>
+          <Paper className={classes.sectionPaper} variant="outlined">
             <Table>
               <TableBody>
                 <TableRow>

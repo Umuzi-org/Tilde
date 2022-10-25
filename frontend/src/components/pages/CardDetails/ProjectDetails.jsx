@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionPaper: {
     padding: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginRight: theme.spacing(2),
   },
   text: {
     [theme.breakpoints.down("md")]: {
