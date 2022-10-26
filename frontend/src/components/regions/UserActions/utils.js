@@ -1,8 +1,6 @@
-export function addEventColorsToLogEntries({
-  eventTypes,
-  eventTypeColors,
-  activityLogEntries,
-}) {
+import { eventTypeColors } from "../../../colors";
+
+export function addEventColorsToLogEntries({ eventTypes, activityLogEntries }) {
   console.log(
     "eventTypes",
     eventTypes,
