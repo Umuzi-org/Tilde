@@ -9,12 +9,15 @@ export default function FilterByNames({
   filterExclude,
   onChange,
 }) {
+  allNames = allNames || [];
+  filterInclude = filterInclude || [];
+  filterExclude = filterExclude || [];
   const allFilters = [...filterInclude, ...filterExclude];
 
   return (
     <React.Fragment>
-      {allNames.map((name) => (
-        <FormGroup>
+      {allNames.map((name, index) => (
+        <FormGroup key={`${name}_${index}`}>
           <FormControlLabel
             control={
               <Switch
