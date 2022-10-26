@@ -162,10 +162,10 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchEventTypes: ({ page }) => {
+    fetchEventTypes: () => {
       dispatch(
         apiReduxApps.FETCH_EVENT_TYPES.operations.start({
-          data: { page },
+          data: { page: 1 },
         })
       );
     },
