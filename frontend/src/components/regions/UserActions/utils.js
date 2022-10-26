@@ -1,13 +1,13 @@
 export function addEventColorsToLogEntries({
-  eventTypes, 
+  eventTypes,
   eventTypeColors,
   activityLogEntries,
 }) {
-
   const eventTypesWithEventNames = [];
-  eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
+  // eventTypes = Object.keys(eventTypes).map((key) => eventTypes[key]);
+  const eventTypesArray = Object.values(eventTypes);
 
-  eventTypes.forEach((eventType) => {
+  eventTypesArray.forEach((eventType) => {
     eventTypesWithEventNames.push({
       id: eventType.id,
       eventName: eventType.name,
