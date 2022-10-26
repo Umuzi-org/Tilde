@@ -45,10 +45,6 @@ const useStyles = makeStyles((theme) => {
       margin: 0,
       width: "100%",
     },
-    filterByNamesContainer: {
-      margin: 0,
-      width: "100%",
-    },
   };
 });
 

@@ -2,12 +2,15 @@ import React from "react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
-
+import TextField from "@material-ui/core/TextField";
 export default function FilterByNames({
   allNames,
   filterInclude,
   filterExclude,
   onChange,
+  searchTerm,
+  handleChangeSearchTerm,
+  groupName,
 }) {
   allNames = allNames || [];
   filterInclude = filterInclude || [];
@@ -16,6 +19,14 @@ export default function FilterByNames({
 
   return (
     <React.Fragment>
+      <TextField
+        variant="outlined"
+        placeholder={groupName}
+        value={searchTerm}
+        onChange={handleChangeSearchTerm}
+        groupName={groupName}
+        fullWidth
+      />
       {allNames.map((name, index) => (
         <FormGroup key={`${name}_${index}`}>
           <FormControlLabel
