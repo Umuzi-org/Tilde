@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FilterByNames from "./FilterByNames";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => {
@@ -29,6 +28,15 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
+function filteByFilterGroup({ allFilters, filter }) {
+  if (filter) {
+    return allFilters.filter((card) =>
+      card.toLowerCase().includes(filter.toLowerCase())
+    );
+  }
+  return allFilters;
+}
+
 export default function FilterByNamesFilters({
   filterIncludeTags,
   filterExcludeTags,
@@ -47,50 +55,34 @@ export default function FilterByNamesFilters({
 }) {
   const classes = useStyles();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [allFoundFlavours, setAllFoundFlavours] = useState([]);
-  const [allFoundTagNames, setAllFoundTagNames] = useState([]);
-  const [allFoundTeamNames, setAllFoundTeamNames] = useState([]);
+  const [flavourSearchTerm, setFlavourSearchTerm] = useState("");
+  const [tagSearchTerm, setTagSearchTerm] = useState("");
+  const [assigneeTeamSearchTerm, setAssigneeTeamSearchTerm] = useState("");
 
-  function handleChangeSearchTerm(e) {
-    setSearchTerm(e.target.value);
+  function handleChangeSearchTerm({ e, setSearchTermMethod }) {
+    setSearchTermMethod(e.target.value);
   }
-
-  useEffect(() => {
-    setAllFoundFlavours(() =>
-      allFlavours.filter((flavour) =>
-        flavour.toLocaleLowerCase().includes(searchTerm)
-      )
-    );
-    setAllFoundTagNames(() =>
-      allTagNames.filter((tagName) =>
-        tagName.toLocaleLowerCase().includes(searchTerm)
-      )
-    );
-    setAllFoundTeamNames(() =>
-      allTeamNames.filter((teamName) =>
-        teamName.toLocaleLowerCase().includes(searchTerm)
-      )
-    );
-  }, [searchTerm, allFlavours, allTagNames, allTeamNames]);
 
   return (
     <Grid className={classes.filterByNamesItem}>
       <Grid className={classes.filterByNamesContainerHeading}>
         <Typography variant="h5">Filters</Typography>
-        <TextField
-          variant="outlined"
-          placeholder="Filters"
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-          fullWidth
-        />
       </Grid>
       <Grid className={classes.filterByNamesItemBody}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
-            allNames={searchTerm ? allFoundFlavours : allFlavours}
+            filterGroupName="Flavour"
+            handleChangeSearchTerm={(e) =>
+              handleChangeSearchTerm({
+                e,
+                setSearchTermMethod: setFlavourSearchTerm,
+              })
+            }
+            allNames={filteByFilterGroup({
+              allFilters: allFlavours,
+              filter: flavourSearchTerm,
+            })}
             filterInclude={filterIncludeFlavours}
             filterExclude={filterExcludeFlavours}
             onChange={handleChangeFlavourFilter}
@@ -99,7 +91,17 @@ export default function FilterByNamesFilters({
         <Typography variant="h6">Filter by tag</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
-            allNames={searchTerm ? allFoundTagNames : allTagNames}
+            filterGroupName="Tag"
+            handleChangeSearchTerm={(e) =>
+              handleChangeSearchTerm({
+                e,
+                setSearchTermMethod: setTagSearchTerm,
+              })
+            }
+            allNames={filteByFilterGroup({
+              allFilters: allTagNames,
+              filter: tagSearchTerm,
+            })}
             filterInclude={filterIncludeTags}
             filterExclude={filterExcludeTags}
             onChange={handleChangeTagFilter}
@@ -108,7 +110,17 @@ export default function FilterByNamesFilters({
         <Typography variant="h6">Filter by assignee team</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
-            allNames={searchTerm ? allFoundTeamNames : allTeamNames}
+            filterGroupName="Assignee team"
+            handleChangeSearchTerm={(e) =>
+              handleChangeSearchTerm({
+                e,
+                setSearchTermMethod: setAssigneeTeamSearchTerm,
+              })
+            }
+            allNames={filteByFilterGroup({
+              allFilters: allTeamNames,
+              filter: assigneeTeamSearchTerm,
+            })}
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}

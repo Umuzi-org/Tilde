@@ -3,6 +3,16 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles((theme) => {
+  return {
+    filtergroupTextbox: {
+      marginBottom: theme.spacing(1),
+    },
+  };
+});
+
 export default function FilterByNames({
   allNames,
   filterInclude,
@@ -10,8 +20,10 @@ export default function FilterByNames({
   onChange,
   searchTerm,
   handleChangeSearchTerm,
-  groupName,
+  filterGroupName,
 }) {
+  const classes = useStyles();
+
   allNames = allNames || [];
   filterInclude = filterInclude || [];
   filterExclude = filterExclude || [];
@@ -20,11 +32,11 @@ export default function FilterByNames({
   return (
     <React.Fragment>
       <TextField
+        className={classes.filtergroupTextbox}
         variant="outlined"
-        placeholder={groupName}
+        placeholder={filterGroupName}
         value={searchTerm}
         onChange={handleChangeSearchTerm}
-        groupName={groupName}
         fullWidth
       />
       {allNames.map((name, index) => (
