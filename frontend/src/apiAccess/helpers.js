@@ -7,7 +7,7 @@ export function getNextPageNumberFromUrl({ url }) {
   return page;
 }
 
-const _toCamel = (s) => {
+export const _toCamel = (s) => {
   let arr = s.split("");
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === "_") {
@@ -26,7 +26,7 @@ const _isObject = function (o) {
   return o === Object(o) && !_isArray(o) && typeof o !== "function";
 };
 
-const fromSnakeToCamel = function (o) {
+export const fromSnakeToCamel = function (o) {
   if (_isObject(o)) {
     const n = {};
 
