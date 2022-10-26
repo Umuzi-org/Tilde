@@ -15,6 +15,7 @@ import CardButton from "../../widgets/CardButton";
 import { makeStyles } from "@material-ui/core/styles";
 import StatusHelp from "./StatusHelp";
 import IconButton from "@material-ui/core/IconButton";
+import { FormHelperText } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -50,14 +51,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Presentation({
   card,
-  hasFailedApiResponse,
-  isFormValueEmpty,
   handleSubmit,
   handleOnChange,
   formValues,
   closeModal,
   statusChoices,
   loading,
+  latestApiCallStatus,
 }) {
   const classes = useStyles();
 
@@ -83,7 +83,7 @@ export default function Presentation({
           </Grid>
         </Grid>
 
-        {hasFailedApiResponse && (
+        {latestApiCallStatus && latestApiCallStatus.responseOk === false && (
           <Alert severity="error" className={classes.alert}>
             An error occured while trying to submit your review
           </Alert>
@@ -112,7 +112,10 @@ export default function Presentation({
                   name="status"
                   value={formValues.status}
                   onChange={handleOnChange}
-                  error={isFormValueEmpty.status ? true : false}
+                  error={
+                    !latestApiCallStatus?.responseOk &&
+                    latestApiCallStatus?.responseData?.status
+                  }
                 >
                   {Object.keys(statusChoices).map((key) => {
                     return (
@@ -122,6 +125,13 @@ export default function Presentation({
                     );
                   })}
                 </Select>
+                {latestApiCallStatus &&
+                  !latestApiCallStatus.responseOk &&
+                  latestApiCallStatus.responseData?.status && (
+                    <FormHelperText>
+                      {latestApiCallStatus.responseData.status.join("\n")}
+                    </FormHelperText>
+                  )}
               </FormControl>
               <Grid className={classes.statusHelp}>
                 <StatusHelp />
@@ -140,12 +150,17 @@ export default function Presentation({
                 name="comments"
                 value={formValues.comments}
                 onChange={handleOnChange}
-                error={isFormValueEmpty.comments ? true : false}
-                helperText={
-                  isFormValueEmpty.comments ? "This field is required" : ""
+                error={
+                  !latestApiCallStatus?.responseOk &&
+                  latestApiCallStatus?.responseData?.comments
                 }
                 required
               />
+              {latestApiCallStatus?.responseData?.comments && (
+                <FormHelperText>
+                  {latestApiCallStatus.responseData.comments.join("\n")}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid container className={classes.buttons}>
               <Grid item>

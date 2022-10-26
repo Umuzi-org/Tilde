@@ -6,7 +6,6 @@ import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntitie
 import operations from "./redux/operations.js";
 import { REVIEW_STATUS_CHOICES } from "../../../constants";
 import { useState } from "react";
-import { useEffect } from "react";
 
 function AddReviewModalUnconnected({
   card,
@@ -20,19 +19,6 @@ function AddReviewModalUnconnected({
     comments: "",
   });
 
-  const [isFormValueEmpty, setIsFormValueEmpty] = useState({
-    status: false,
-    comments: false,
-  });
-
-  const [hasFailedApiResponse, setHasFailedApiResponse] = useState(false);
-
-  useEffect(() => {
-    if (latestApiCallStatus) {
-      if (!latestApiCallStatus.responseOk) setHasFailedApiResponse(true);
-    }
-  }, [latestApiCallStatus]);
-
   const cardId = card && card.id;
 
   const latestCall =
@@ -44,11 +30,6 @@ function AddReviewModalUnconnected({
       : { loading: false };
 
   const handleOnChange = (e) => {
-    setIsFormValueEmpty((prev) => ({
-      ...prev,
-      comments: false,
-      status: false,
-    }));
     const { name, value } = e.target;
     setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
   };
@@ -56,26 +37,21 @@ function AddReviewModalUnconnected({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formValues.status === "")
-      setIsFormValueEmpty((prev) => ({ ...prev, status: true }));
-    if (formValues.comments === "")
-      setIsFormValueEmpty((prev) => ({ ...prev, comments: true }));
-
     if (latestCall.loading) return;
+
     const { comments, status } = formValues;
     saveReview({ status, comments, cardId });
   };
 
   const props = {
     card,
-    hasFailedApiResponse,
-    isFormValueEmpty,
     handleSubmit,
     handleOnChange,
     formValues,
     closeModal,
     statusChoices: REVIEW_STATUS_CHOICES,
     loading: latestCall.loading,
+    latestApiCallStatus,
   };
   return <Presentation {...props} />;
 }
