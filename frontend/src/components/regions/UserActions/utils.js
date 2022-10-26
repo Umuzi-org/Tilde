@@ -3,6 +3,23 @@ export function addEventColorsToLogEntries({
   eventTypeColors,
   activityLogEntries,
 }) {
+  console.log(
+    "eventTypes",
+    eventTypes,
+    "eventTypeColors",
+    eventTypeColors
+    // "activityLogEntries",
+    // activityLogEntries
+  );
+  const v = Object.values(eventTypes).map((value) => {
+    console.log(value);
+    return {
+      id: value,
+      eventName: value,
+      eventColor: value,
+    };
+  });
+  console.log("eventTypesWithEventNames", v);
   const eventTypesWithEventNames = Object.values(eventTypes).map(
     (eventType) => {
       return {
@@ -27,6 +44,7 @@ export function addEventColorsToLogEntries({
       eventColor: data ? data.eventColor : "",
     };
   });
+  console.log("new data", newData);
   return newData;
 }
 
