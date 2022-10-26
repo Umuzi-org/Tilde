@@ -9,6 +9,9 @@ export default function FilterByNames({
   filterExclude,
   onChange,
 }) {
+  allNames = allNames || [];
+  filterInclude = filterInclude || [];
+  filterExclude = filterExclude || [];
   const allFilters = [...filterInclude, ...filterExclude];
 
   return (
