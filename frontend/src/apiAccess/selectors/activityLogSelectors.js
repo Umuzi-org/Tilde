@@ -37,9 +37,9 @@ export const getActivityLogCountsByDayForSingleUser = ({
   const resultByDate = {};
 
   eventTypes.forEach((eventType) => {
-    const userLogsFilteredByType = userLogs.map((type) => {
-      if (!type.id.match(`event_type__name==${eventType}`)) {
-        return type;
+    const userLogsFilteredByType = userLogs.map((entryLog) => {
+      if (!entryLog.id.match(`event_type__name==${eventType}`)) {
+        return entryLog;
       }
       return "";
     });
