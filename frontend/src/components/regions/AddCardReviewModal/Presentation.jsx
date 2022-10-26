@@ -128,7 +128,7 @@ export default function Presentation({
                 {latestApiCallStatus &&
                   !latestApiCallStatus.responseOk &&
                   latestApiCallStatus.responseData?.status && (
-                    <FormHelperText>
+                    <FormHelperText error={true}>
                       {latestApiCallStatus.responseData.status.join("\n")}
                     </FormHelperText>
                   )}
@@ -157,7 +157,7 @@ export default function Presentation({
                 required
               />
               {latestApiCallStatus?.responseData?.comments && (
-                <FormHelperText>
+                <FormHelperText error={true}>
                   {latestApiCallStatus.responseData.comments.join("\n")}
                 </FormHelperText>
               )}
