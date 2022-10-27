@@ -50,16 +50,23 @@ function AddReviewModalUnconnected({
     return false;
   }
 
+  function formFieldError(field) {
+    if (formFieldHasError(field)) {
+      return latestApiCallStatus.responseData[field].join("\n");
+    }
+    return "";
+  }
+
   const props = {
     card,
     handleSubmit,
     handleOnChange,
     formValues,
     formFieldHasError,
+    formFieldError,
     closeModal,
     statusChoices: REVIEW_STATUS_CHOICES,
     loading: latestCall.loading,
-    latestApiCallStatus,
   };
   return <Presentation {...props} />;
 }

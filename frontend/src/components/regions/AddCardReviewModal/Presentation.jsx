@@ -54,11 +54,11 @@ export default function Presentation({
   handleSubmit,
   handleOnChange,
   formValues,
+  formFieldHasError,
+  formFieldError,
   closeModal,
   statusChoices,
   loading,
-  latestApiCallStatus,
-  formFieldHasError,
 }) {
   const classes = useStyles();
 
@@ -126,7 +126,7 @@ export default function Presentation({
               </FormControl>
               {formFieldHasError("status") && (
                 <FormHelperText error={true}>
-                  {latestApiCallStatus.responseData.status.join("\n")}
+                  {formFieldError("status")}
                 </FormHelperText>
               )}
               <Grid className={classes.statusHelp}>
@@ -151,7 +151,7 @@ export default function Presentation({
               />
               {formFieldHasError("comments") && (
                 <FormHelperText error={true}>
-                  {latestApiCallStatus.responseData.comments.join("\n")}
+                  {formFieldError("comments")}
                 </FormHelperText>
               )}
             </Grid>
