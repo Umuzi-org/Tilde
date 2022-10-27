@@ -7,8 +7,8 @@ import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
 import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
 function AgileCardActionsUnconnected({
-  card,
-  authUser,
+  card, //should only take in this
+  authUser, //should only take in this
   viewedUser,
 
   startProject,
