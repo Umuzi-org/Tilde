@@ -3,14 +3,12 @@ import Presentation from "./Presentation";
 
 export default function AgileCardUnconnected({
   card,
-  repoUrl,
   authUser,
   viewedUser,
   filterUserId,
 }) {
   const props = {
     card,
-    repoUrl,
     authUser,
     viewedUser,
     filterUserId,

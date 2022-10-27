@@ -87,61 +87,15 @@ export default function Presentation({
   card,
   viewedUser,
   filterUserId,
-  repoUrl,
-
-  handleClickAddReview,
-  handleClickOpenCardDetails,
-
-  handleRequestReview,
-  handleStartProject,
-  handleCancelReviewRequest,
-
-  handleClickOpenWorkshopAttendanceForm,
-  handleStartTopic,
-  handleStopTopic,
-  handleFinishTopic,
-  handleRemoveWorkshopAttendance,
-
-  loadingStartProject,
-  loadingStartTopic,
-  loadingClickOpenWorkshopAttendanceForm,
-  loadingRequestReview,
-  loadingCancelReviewRequest,
-  loadingStopTopic,
-  loadingFinishTopic,
-  loadingRemoveWorkshopAttendance,
-
   //storybook
   forceUser,
 }) {
   const classes = useStyles();
 
   const agileCardActionProps = {
-    handleClickAddReview,
-    handleClickOpenCardDetails,
-
-    handleRequestReview,
-    handleStartProject,
-    handleCancelReviewRequest,
-
-    handleClickOpenWorkshopAttendanceForm,
-    handleStartTopic,
-    handleStopTopic,
-    handleFinishTopic,
-    handleRemoveWorkshopAttendance,
     card,
     viewedUser,
-    repoUrl,
-
-    loadingStartProject,
-    loadingStartTopic,
-    loadingClickOpenWorkshopAttendanceForm,
-    loadingRequestReview,
-    loadingCancelReviewRequest,
-    loadingStopTopic,
-    loadingFinishTopic,
-    loadingRemoveWorkshopAttendance,
-
+    // storybook
     forceUser,
   };
   // TODO: add an icon for different kinds of content

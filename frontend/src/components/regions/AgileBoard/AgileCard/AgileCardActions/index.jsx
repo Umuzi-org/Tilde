@@ -7,10 +7,11 @@ import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
 import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
 function AgileCardActionsUnconnected({
-  card, //should only take in this
-  authUser, //should only take in this
+  card,
+  authUser,
   viewedUser,
 
+  // mapDispatchToProps
   startProject,
   requestReview,
   cancelReviewRequest,
@@ -22,6 +23,7 @@ function AgileCardActionsUnconnected({
   addWorkshopAttendance,
   openReviewFormModal,
 
+  // mapStateToProps
   CARD_START_PROJECT,
   CARD_REQUEST_REVIEW,
   CARD_CANCEL_REVIEW_REQUEST,
@@ -30,6 +32,7 @@ function AgileCardActionsUnconnected({
   CARD_FINISH_TOPIC,
   CARD_REMOVE_WORKSHOP_ATTENDANCE,
   CARD_ADD_WORKSHOP_ATTENDANCE,
+
   //storybook
   forceUser,
 }) {
