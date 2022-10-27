@@ -43,11 +43,19 @@ function AddReviewModalUnconnected({
     saveReview({ status, comments, cardId });
   };
 
+  function formFieldHasError(field) {
+    if (latestApiCallStatus && latestApiCallStatus.responseOk === false) {
+      return latestApiCallStatus.responseData[field] !== undefined;
+    }
+    return false;
+  }
+
   const props = {
     card,
     handleSubmit,
     handleOnChange,
     formValues,
+    formFieldHasError,
     closeModal,
     statusChoices: REVIEW_STATUS_CHOICES,
     loading: latestCall.loading,

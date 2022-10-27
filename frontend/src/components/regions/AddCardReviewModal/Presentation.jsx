@@ -58,6 +58,7 @@ export default function Presentation({
   statusChoices,
   loading,
   latestApiCallStatus,
+  formFieldHasError,
 }) {
   const classes = useStyles();
 
@@ -83,7 +84,7 @@ export default function Presentation({
           </Grid>
         </Grid>
 
-        {latestApiCallStatus && latestApiCallStatus.responseOk === false && (
+        {(formFieldHasError("status") || formFieldHasError("comments")) && (
           <Alert severity="error" className={classes.alert}>
             An error occured while trying to submit your review
           </Alert>
@@ -112,10 +113,7 @@ export default function Presentation({
                   name="status"
                   value={formValues.status}
                   onChange={handleOnChange}
-                  error={
-                    !latestApiCallStatus?.responseOk &&
-                    latestApiCallStatus?.responseData?.status
-                  }
+                  error={formFieldHasError("status")}
                 >
                   {Object.keys(statusChoices).map((key) => {
                     return (
@@ -125,14 +123,12 @@ export default function Presentation({
                     );
                   })}
                 </Select>
-                {latestApiCallStatus &&
-                  !latestApiCallStatus.responseOk &&
-                  latestApiCallStatus.responseData?.status && (
-                    <FormHelperText error={true}>
-                      {latestApiCallStatus.responseData.status.join("\n")}
-                    </FormHelperText>
-                  )}
               </FormControl>
+              {formFieldHasError("status") && (
+                <FormHelperText error={true}>
+                  {latestApiCallStatus.responseData.status.join("\n")}
+                </FormHelperText>
+              )}
               <Grid className={classes.statusHelp}>
                 <StatusHelp />
               </Grid>
@@ -150,13 +146,10 @@ export default function Presentation({
                 name="comments"
                 value={formValues.comments}
                 onChange={handleOnChange}
-                error={
-                  !latestApiCallStatus?.responseOk &&
-                  latestApiCallStatus?.responseData?.comments
-                }
+                error={formFieldHasError("comments")}
                 required
               />
-              {latestApiCallStatus?.responseData?.comments && (
+              {formFieldHasError("comments") && (
                 <FormHelperText error={true}>
                   {latestApiCallStatus.responseData.comments.join("\n")}
                 </FormHelperText>
