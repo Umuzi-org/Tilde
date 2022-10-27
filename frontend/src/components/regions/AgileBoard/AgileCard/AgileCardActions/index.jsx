@@ -18,7 +18,6 @@ function AgileCardActionsUnconnected({
   startTopic,
   stopTopic,
   finishTopic,
-  handleClickOpenCardDetails,
   removeWorkshopAttendance,
   addWorkshopAttendance,
   openReviewFormModal,
@@ -118,8 +117,6 @@ function AgileCardActionsUnconnected({
       viewedUser,
     }),
     handleClickAddReview,
-    handleClickOpenCardDetails,
-
     handleRequestReview,
     handleStartProject,
     handleCancelReviewRequest,
