@@ -86,7 +86,7 @@ export default function Presentation({
 
         {(formFieldHasError("status") || formFieldHasError("comments")) && (
           <Alert severity="error" className={classes.alert}>
-            An error occured while trying to submit your review
+            An error occurred while trying to submit your review
           </Alert>
         )}
 
