@@ -55,6 +55,19 @@ router.register(
 )
 
 router.register(
+    r"recruit_project_review_qualities",
+    curriculum_tracking_api_views.RecruitProjectReviewQualityViewset,
+    "recruitprojectreviewquality",
+)
+
+router.register(
+    r"pull_request_review_qualities",
+    curriculum_tracking_api_views.PullRequestReviewQualityViewset,
+    "pullrequestreviewquality",
+)
+
+
+router.register(
     r"content_item",
     curriculum_tracking_api_views.ContentItemViewset,
     "contentitem",
@@ -133,19 +146,19 @@ router.register(
 )
 
 router.register(
-    r"activity_log_day_count",
+    r"activity_log_day_counts",
     activity_log_api_views.ActivityLogEntryDayCountViewset,
     "activitylogdaycount",
 )
 
 router.register(
-    r"event_type",
+    r"event_types",
     activity_log_api_views.EventTypeViewSet,
     "eventtype",
 )
 
 router.register(
-    r"activity_log_entry",
+    r"activity_log_entries",
     activity_log_api_views.ActivityLogEntryViewSet,
     "logentry",
 )
@@ -157,17 +170,29 @@ router.register(
 )
 
 
-# router.register(
-#     r"agile_card_add_review",
-#     curriculum_tracking_api_views.AgileCardInteractionAddReview,
-#     "agilecardaddreview",
-# )
+router.register(
+    r"course_registrations",
+    curriculum_tracking_api_views.CourseRegistrationViewset,
+    "courseregistration",
+)
 
-# router.register(
-#     r"/user/<int:user_id>/projects",
-#     curriculum_tracking_api_views.RecruitProjectList,
-#     "user-recrtuitprojects",
-# )
+router.register(
+    r"competence_review_queue",
+    curriculum_tracking_api_views.CompetenceReviewQueueViewSet,
+    r"competencereviewqueue",
+)
+
+router.register(
+    r"pull_request_review_queue",
+    curriculum_tracking_api_views.PullRequestReviewQueueViewSet,
+    r"pullrequestreviewqueue",
+)
+
+router.register(
+    r"curriculum_content_requirements",
+    curriculum_tracking_api_views.CurriculumContentRequirementViewset,
+    "curriculumcontentrequirement",
+)
 
 
 urlpatterns = [
