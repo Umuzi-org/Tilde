@@ -1,38 +1,48 @@
 import React from "react";
 
 import TeamDashboard from "../components/pages/TeamDashboard/Presentation.jsx";
-import { randomDateBetweenCurrentDayAnd21DaysAgo } from "../utils/randomDateBetweenCurrentDayAnd21DaysAgo.js";
 import team from "./fixtures/team.json";
+
+const date = (n) => {
+  const todayDate = new Date();
+  todayDate.setDate(todayDate.getDate() - n);
+
+  const formattedDate = `${todayDate.getFullYear()}-${
+    todayDate.getMonth() + 1
+  }-${todayDate.getDate()}`;
+
+  return formattedDate;
+};
 
 const activityLogDayCounts = {
   84: [
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(7),
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(15),
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 20,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(18),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(11),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(8),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(5),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 0,
     },
@@ -40,17 +50,17 @@ const activityLogDayCounts = {
 
   26: [
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(18),
       COMPETENCE_REVIEW_DONE: 5,
       PR_REVIEWED: 3,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(5),
       COMPETENCE_REVIEW_DONE: 6,
       PR_REVIEWED: 2,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(4),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 1,
     },
@@ -58,17 +68,17 @@ const activityLogDayCounts = {
 
   132: [
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(2),
       COMPETENCE_REVIEW_DONE: 50,
       PR_REVIEWED: 31,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(10),
       COMPETENCE_REVIEW_DONE: 20,
       PR_REVIEWED: 12,
     },
     {
-      date: randomDateBetweenCurrentDayAnd21DaysAgo(),
+      date: date(13),
       COMPETENCE_REVIEW_DONE: 1,
       PR_REVIEWED: 11,
     },
