@@ -18,7 +18,6 @@ import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
-import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 
 const TableCell = withStyles({
   root: {
@@ -38,6 +37,7 @@ const useStyles = makeStyles((theme) =>
       textAlign: "auto",
       color: theme.palette.text.primary,
       boxSizing: "border-box",
+      maxHeight: 350,
     },
     gridItem: {
       boxSizing: "border-box",
@@ -74,24 +74,7 @@ const useStyles = makeStyles((theme) =>
     reviewers: {
       paddingTop: "2%",
     },
-    addReview: {
-      display: "inline-block",
-      paddingTop: 5,
-      paddingRight: 5,
-      paddingBottom: 5,
-    },
-    viewContent: {
-      display: "inline-block",
-      padding: 5,
-    },
-    // maybe throw?
-    tableContainer: {
-      maxHeight: 200,
-    },
-    commentColumn: {
-      minWidth: 300,
-    },
-    space: {
+    paperSpacing: {
       padding: theme.spacing(1, 2, 1),
     },
   })
@@ -224,7 +207,7 @@ export default function Presentation({
   const workshopAttendance = false;
   if (cardId)
     return (
-      <Paper className={classes.space}>
+      <Paper className={classes.paperSpacing}>
         {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
 
         {project ? (
@@ -255,23 +238,15 @@ export default function Presentation({
         ) : (
           <React.Fragment />
         )}
-        <div className={classes.addReview}>
-          <CardButton
-            label="Add Review"
-            startIcon={<RateReviewRoundedIcon />}
-            onClick={handleClickAddReview}
-          />
-        </div>
-        <div className={classes.viewContent}>
-          <CardButton
-            widget={
-              <ViewContentButton
-                contentUrl={contentItemUrl}
-                contentItemId={contentItem}
-              />
-            }
-          />
-        </div>
+
+        <CardButton
+          widget={
+            <ViewContentButton
+              contentUrl={contentItemUrl}
+              contentItemId={contentItem}
+            />
+          }
+        />
       </Paper>
     );
   return <React.Fragment />;
