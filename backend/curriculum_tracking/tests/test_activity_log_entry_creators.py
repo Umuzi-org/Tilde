@@ -177,10 +177,15 @@ class log_card_moved_to_complete_Tests(APITestCase, APITestCaseMixin):
         )
         self.assertEqual(response.status_code, 200)
 
+        entry = LogEntry.objects.last()
+
         card.refresh_from_db()
         self.assertEqual(card.status, AgileCard.COMPLETE)
-        self.assertEqual(LogEntry.objects.last().event_type.name, creators.CARD_MOVED_TO_COMPLETE)
+        self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_COMPLETE)
         self.assertEqual(LogEntry.objects.count(), 2)
+        self.assertEqual(entry.effected_user, card.assignees.first())
+        self.assertEqual(entry.actor_user, actor_user)
+        self.assertEqual(entry.object_1, card.recruit_project)
 
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):
