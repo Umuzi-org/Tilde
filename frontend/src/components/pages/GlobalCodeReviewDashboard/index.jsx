@@ -16,6 +16,15 @@ function removeNameFromArray({ array, name }) {
   return array;
 }
 
+function filterByCardName(allCards, cardName) {
+  if (cardName) {
+    return allCards.filter((card) =>
+      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
+    );
+  }
+  return allCards;
+}
+
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
 
@@ -126,6 +135,8 @@ function GlobalCodeReviewDashboardUnconnected({
       (orderFilter) => orderFilter.isSelected
     )[0];
   });
+
+  const [cardNameSearchValue, setCardNameSearchValue] = useState("");
 
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
@@ -278,9 +289,19 @@ function GlobalCodeReviewDashboardUnconnected({
     setIncludes: setFilterIncludeAssigneeTeams,
   });
 
+  function handleChangeCardNameSearchValue(e) {
+    setCardNameSearchValue(e.target.value);
+  }
+
   const props = {
-    competenceReviewQueueProjects,
-    pullRequestReviewQueueProjects,
+    competenceReviewQueueProjects: filterByCardName(
+      competenceReviewQueueProjects,
+      cardNameSearchValue
+    ),
+    pullRequestReviewQueueProjects: filterByCardName(
+      pullRequestReviewQueueProjects,
+      cardNameSearchValue
+    ),
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
@@ -314,6 +335,9 @@ function GlobalCodeReviewDashboardUnconnected({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
+
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
   };
   return <Presentation {...props} />;
 }
