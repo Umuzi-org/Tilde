@@ -16,7 +16,7 @@ export default ({
 
   handleClickOpenCardDetails,
 
-  handleClickAddReview,
+  //handleClickAddReview,
   handleRequestReview,
   handleStartProject,
   handleCancelReviewRequest,
@@ -31,7 +31,7 @@ export default ({
 
   showButtonRequestReview,
   showButtonCancelReviewRequest,
-  showButtonAddReview,
+  //showButtonAddReview,
   showButtonStartTopic,
   showButtonStopTopic,
   showButtonEndTopic,
@@ -106,7 +106,7 @@ export default ({
           ""
         )}
 
-        {showButtonAddReview ? (
+        {/* {showButtonAddReview ? (
           <CardButton
             label="Add Review"
             startIcon={<RateReviewRoundedIcon />}
@@ -114,7 +114,7 @@ export default ({
           />
         ) : (
           ""
-        )}
+        )} */}
 
         {showButtonStartTopic ? (
           <CardButton
