@@ -45,8 +45,13 @@ const useStyles = makeStyles((theme) => {
     marginLeft: "10px",
     marginTop: "8px",
   };
+  const accordion = {
+    backgroundColor: theme.palette.grey[200],
+    marginTop: "3%",
+  };
   return {
     card,
+    accordion,
     goalCard,
     title,
     blockedCard,
@@ -209,7 +214,7 @@ export default function Presentation({
 
         {card.reviewerNames.length ? (
           <React.Fragment>
-            <Accordion>
+            <Accordion className={classes.accordion}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
