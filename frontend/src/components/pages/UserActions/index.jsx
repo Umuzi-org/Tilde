@@ -33,9 +33,8 @@ function UserActionsUnconnected({
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-
+  FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
 }) {
- 
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authedUserId || 0);
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
@@ -173,12 +172,13 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE:
+      state.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
     fetchProjectReviewsPages: ({ dataSequence }) => {
       dispatch(
         apiReduxApps.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE.operations.startCallSequence(
@@ -197,7 +197,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    
+
     fetchCardCompletions: ({ assigneeUserId, page }) => {
       dispatch(
         apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
@@ -210,6 +210,22 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
           data: { userId: parseInt(userId) },
+        })
+      );
+    },
+
+    fetchEventTypes: ({ page }) => {
+      dispatch(
+        apiReduxApps.FETCH_EVENT_TYPES.maybeStart({
+          data: { page },
+        })
+      );
+    },
+
+    fetchActivityLogDayCountsPage: ({ actorUser, effectedUser, page }) => {
+      dispatch(
+        apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.maybeStart({
+          data: { actorUser, effectedUser, page },
         })
       );
     },
