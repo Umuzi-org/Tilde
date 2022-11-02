@@ -7,7 +7,6 @@ export default ({
   viewedUser,
 
   card,
-  handleClickAddReview,
   handleClickOpenCardDetails,
 
   handleRequestReview,
@@ -35,7 +34,6 @@ export default ({
       authUser,
       viewedUser,
     }),
-    handleClickAddReview,
     handleClickOpenCardDetails,
 
     handleRequestReview,

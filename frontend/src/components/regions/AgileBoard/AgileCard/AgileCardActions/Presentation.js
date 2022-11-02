@@ -5,7 +5,6 @@ import MoreIcon from "@material-ui/icons/More";
 import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
 import ArrowBackRoundedIcon from "@material-ui/icons/ArrowBackRounded";
 import ArrowForwardRounded from "@material-ui/icons/ArrowForwardRounded";
-import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import CardButton from "../../../../widgets/CardButton";
 import ViewContentButton from "../../../../widgets/ViewContentButton";
 
@@ -14,9 +13,6 @@ import { routes } from "../../../../../routes";
 export default ({
   card,
 
-  handleClickOpenCardDetails,
-
-  handleClickAddReview,
   handleRequestReview,
   handleStartProject,
   handleCancelReviewRequest,
@@ -31,7 +27,6 @@ export default ({
 
   showButtonRequestReview,
   showButtonCancelReviewRequest,
-  showButtonAddReview,
   showButtonStartTopic,
   showButtonStopTopic,
   showButtonEndTopic,
@@ -50,14 +45,16 @@ export default ({
   return (
     <CardActions>
       <Grid container>
-        <CardButton
-          widget={
-            <ViewContentButton
-              contentUrl={card.contentItemUrl}
-              contentItemId={card.contentItem}
-            />
-          }
-        />
+        <div style={{ paddingRight: "4%" }}>
+          <CardButton
+            widget={
+              <ViewContentButton
+                contentUrl={card.contentItemUrl}
+                contentItemId={card.contentItem}
+              />
+            }
+          />
+        </div>
 
         {showButtonStartProject ? (
           <CardButton
@@ -106,15 +103,6 @@ export default ({
           ""
         )}
 
-        {showButtonAddReview ? (
-          <CardButton
-            label="Add Review"
-            startIcon={<RateReviewRoundedIcon />}
-            onClick={handleClickAddReview}
-          />
-        ) : (
-          ""
-        )}
 
         {showButtonStartTopic ? (
           <CardButton
