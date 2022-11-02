@@ -2,11 +2,12 @@ import React from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+import { fillInSnapshotDateGaps } from "./utils";
 // import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 export function MultiUserBurndownChartUnconnected({
   //   mapStateToProps
-  currentUserBurndownStats,
+  currentTeamBurndownStats,
   userTeam,
   // mapDispatchToProps
 
@@ -15,10 +16,10 @@ export function MultiUserBurndownChartUnconnected({
 }) {
   let urlParams = useParams() || {};
   const authedUser = forceUser || parseInt(urlParams.userId);
-  currentUserBurndownStats = currentUserBurndownStats
-    ? Object.values(currentUserBurndownStats)
+  currentTeamBurndownStats = currentTeamBurndownStats
+    ? Object.values(currentTeamBurndownStats)
     : {};
-  currentUserBurndownStats.map(
+  currentTeamBurndownStats.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
         .toISOString()
@@ -26,7 +27,7 @@ export function MultiUserBurndownChartUnconnected({
   );
   // organize data from the team, and format it so the chart can use it
   const userSnapshotArray = [];
-  currentUserBurndownStats.forEach((snapshot) => {
+  currentTeamBurndownStats.forEach((snapshot) => {
     if (!userSnapshotArray.some((user) => user.user === snapshot.user)) {
       let currentUserEmail = '';
       userTeam.members.forEach(member => {
@@ -49,11 +50,12 @@ export function MultiUserBurndownChartUnconnected({
   });
 
   userSnapshotArray.forEach((user) => {
-    user.snapshot.sort(function(a,b){
-      return new Date(a.timestamp) - new Date(b.timestamp);
+    const currentUserBurndownStats = user.snapshot;
+    const newUserBurndownStats = fillInSnapshotDateGaps({
+      currentUserBurndownStats,
     });
+    user.snapshot = newUserBurndownStats;
   });
-
 
   const props = {
     userSnapshotArray,

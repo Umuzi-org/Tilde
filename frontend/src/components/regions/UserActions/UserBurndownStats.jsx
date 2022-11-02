@@ -31,13 +31,14 @@ export default ({ burnDownSnapshots }) => {
         .toISOString()
         .slice(0, 10))
   );
-
   const filterStartDate = new Date();
   filterStartDate.setDate(filterStartDate.getDate() - 21);
 
   const burnDownSnapshotsFilledDates = fillInSnapshotDateGaps({
     burnDownSnapshots,
   });
+
+  console.log(burnDownSnapshots);
 
   const classes = useStyles();
   return (

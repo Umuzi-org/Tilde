@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Presentation({ userSnapshotArray, authedUser }){
   const [metricFilter, setMetricFilter] = useState("TotalProjects");
-  console.log(userSnapshotArray);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -91,6 +90,8 @@ function Presentation({ userSnapshotArray, authedUser }){
                       name={`${userOnTeam.userEmail}`}
                       stroke={userOnTeam.user === authedUser ? green[400] : red[400]}
                       activeDot={{ r: 8 }}
+                      strokeWidth={1}
+                      dot={false}
                       key={userOnTeam.user}
                     />
                   ))}
@@ -106,6 +107,8 @@ function Presentation({ userSnapshotArray, authedUser }){
                       name={`${userOnTeam.userEmail}`}
                       stroke={userOnTeam.user === authedUser ? green[400] : red[400]}
                       activeDot={{ r: 8 }}
+                      strokeWidth={1}
+                      dot={false}
                       key={userOnTeam.user}
                     />
                   ))}
@@ -121,6 +124,8 @@ function Presentation({ userSnapshotArray, authedUser }){
                       name={`${userOnTeam.userEmail}`}
                       stroke={userOnTeam.user === authedUser ? green[400] : red[400]}
                       activeDot={{ r: 8 }}
+                      strokeWidth={1}
+                      dot={false}
                       key={userOnTeam.user}
                     />
                   ))}

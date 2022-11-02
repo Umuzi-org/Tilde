@@ -1,5 +1,5 @@
 {
-  "burnDownStats": {
+  "teamBurnDownStats": {
     "11": {
       "id": 11,
       "user": 4,
@@ -26,6 +26,15 @@
       "projectCardsTotalCount": 20,
       "cardsInCompleteColumnTotalCount": 20,
       "projectCardsInCompleteColumnTotalCount": 12
+    },
+    "8": {
+      "id": 8,
+      "user": 4,
+      "timestamp": "2022-07-09",
+      "cardsTotalCount": 25,
+      "projectCardsTotalCount": 12,
+      "cardsInCompleteColumnTotalCount": 10,
+      "projectCardsInCompleteColumnTotalCount": 6
     },
     "7": {
       "id": 7,
