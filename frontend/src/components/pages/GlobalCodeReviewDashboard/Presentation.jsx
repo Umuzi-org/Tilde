@@ -84,6 +84,9 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -104,11 +107,13 @@ export default function Presentation({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
   };
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
-      <Grid item xs={2} className={classes.filterByNamesContainer}>
+      <Grid item xs={2}>
         <FilterByNamesFilters {...props} />
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>

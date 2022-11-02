@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/styles";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -52,6 +53,9 @@ export default function FilterByNamesFilters({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -124,6 +128,16 @@ export default function FilterByNamesFilters({
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}
+          />
+        </Paper>
+        <Typography variant="h6">Filter by card name</Typography>
+        <Paper>
+          <TextField
+            variant="outlined"
+            placeholder="Card name"
+            value={cardNameSearchValue}
+            onChange={handleChangeCardNameSearchValue}
+            fullWidth
           />
         </Paper>
       </Grid>
