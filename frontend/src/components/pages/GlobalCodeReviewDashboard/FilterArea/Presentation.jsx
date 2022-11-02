@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import FilterByNames from "./FilterByNames";
+import React from "react";
+import FilterByNames from "../FilterByNames";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -29,16 +29,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function filteByFilterGroup({ allFilters, filter }) {
-  if (filter) {
-    return allFilters.filter((card) =>
-      card.toLowerCase().includes(filter.toLowerCase())
-    );
-  }
-  return allFilters;
-}
-
-export default function FilterByNamesFilters({
+export default function Presentation({
   filterIncludeTags,
   filterExcludeTags,
 
@@ -56,16 +47,17 @@ export default function FilterByNamesFilters({
 
   cardNameSearchValue,
   handleChangeCardNameSearchValue,
+
+  handleChangeSearchTerm,
+  flavourSearchTerm,
+  setFlavourSearchTerm,
+  tagSearchTerm,
+  setTagSearchTerm,
+  assigneeTeamSearchTerm,
+  setAssigneeTeamSearchTerm,
+  filterByFilterGroup,
 }) {
   const classes = useStyles();
-
-  const [flavourSearchTerm, setFlavourSearchTerm] = useState("");
-  const [tagSearchTerm, setTagSearchTerm] = useState("");
-  const [assigneeTeamSearchTerm, setAssigneeTeamSearchTerm] = useState("");
-
-  function handleChangeSearchTerm({ e, setSearchTermMethod }) {
-    setSearchTermMethod(e.target.value);
-  }
 
   return (
     <Grid className={classes.filterByNamesItem}>
@@ -83,7 +75,7 @@ export default function FilterByNamesFilters({
                 setSearchTermMethod: setFlavourSearchTerm,
               })
             }
-            allNames={filteByFilterGroup({
+            allNames={filterByFilterGroup({
               allFilters: allFlavours,
               filter: flavourSearchTerm,
             })}
@@ -102,7 +94,7 @@ export default function FilterByNamesFilters({
                 setSearchTermMethod: setTagSearchTerm,
               })
             }
-            allNames={filteByFilterGroup({
+            allNames={filterByFilterGroup({
               allFilters: allTagNames,
               filter: tagSearchTerm,
             })}
@@ -121,7 +113,7 @@ export default function FilterByNamesFilters({
                 setSearchTermMethod: setAssigneeTeamSearchTerm,
               })
             }
-            allNames={filteByFilterGroup({
+            allNames={filterByFilterGroup({
               allFilters: allTeamNames,
               filter: assigneeTeamSearchTerm,
             })}
