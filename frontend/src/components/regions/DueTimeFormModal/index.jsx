@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import operations from "./redux/operations";
@@ -14,8 +14,7 @@ function DueTimeFormModalUnconnected({
   setDueTime,
   CARD_SET_DUE_TIME,
 }) {
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (cardId && (cards === undefined || cards === null || cards === {})) {
       fetchAgileCard({ cardId });
     }

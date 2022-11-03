@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 import DateTimePicker from "react-datetime-picker";
 import Modal from "../../widgets/Modal";
-import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles({
   buttons: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   dueTimeButton: {
     marginRight: "0.3rem",
@@ -27,7 +27,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default ({ cards, cardId, handleClose, handleSubmit, loading }) => {
+export default function Presentation({
+  cards,
+  cardId,
+  handleClose,
+  handleSubmit,
+  loading,
+}) {
   const classes = useStyles();
   const [dueTime, setDueTime] = useState(cards.dueTime);
   if (cardId)
@@ -68,4 +74,4 @@ export default ({ cards, cardId, handleClose, handleSubmit, loading }) => {
       </Modal>
     );
   return <React.Fragment />;
-};
+}
