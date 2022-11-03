@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/styles";
 const useStyles = makeStyles((theme) => {
   return {
     filtergroupTextbox: {
-      marginBottom: theme.spacing(1),
+      marginBottom: 16,
     },
   };
 });

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => {
       position: "sticky",
       top: -5,
       padding: "10px",
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: "#fff",
       zIndex: 2,
     },
     filterByNamesItemBody: {
