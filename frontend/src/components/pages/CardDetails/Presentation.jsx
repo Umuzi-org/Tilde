@@ -14,6 +14,7 @@ import TagChips from "../../widgets/TagChips";
 import FlavourChips from "../../widgets/FlavourChips";
 // import StoryPoints from "../../widgets/StoryPoints";
 import CardBadges from "../../widgets/CardBadges";
+import Button from "../../widgets/Button";
 import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
