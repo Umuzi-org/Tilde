@@ -13,40 +13,13 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default function ReviewQueueFilterChips({
+export default function Presentation({
   orderFilters,
   setFiltersMethod,
   setSelectedFilterMethod,
+  handleClick,
 }) {
   const classes = useStyles();
-
-  function handleClick({
-    setFiltersMethod,
-    setSelectedFilterMethod,
-    selectedFilter,
-  }) {
-    setFiltersMethod((prev) => {
-      return prev.map((filter) => {
-        if (filter.label === selectedFilter.label) {
-          let newSelectedFilter;
-          // toggle sort order only when a filter is already selected
-          if (filter.isSelected) {
-            newSelectedFilter = {
-              ...filter,
-              isSelected: true,
-              isAscending: !filter.isAscending,
-            };
-          } else {
-            newSelectedFilter = { ...filter, isSelected: true };
-          }
-          setSelectedFilterMethod(newSelectedFilter);
-          return newSelectedFilter;
-        } else {
-          return { ...filter, isSelected: false };
-        }
-      });
-    });
-  }
 
   return (
     <>
