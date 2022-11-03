@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import Presentation from "./Presentation";
 
-function filterByFilterGroup({ allFilters, filter }) {
-  if (filter) {
-    return allFilters.filter((card) =>
-      card.toLowerCase().includes(filter.toLowerCase())
-    );
-  }
-  return allFilters;
-}
-
 export default function FilterArea({
   filterIncludeTags,
   filterExcludeTags,
@@ -59,7 +50,6 @@ export default function FilterArea({
     setTagSearchTerm,
     assigneeTeamSearchTerm,
     setAssigneeTeamSearchTerm,
-    filterByFilterGroup,
   };
   return <Presentation {...props} />;
 }

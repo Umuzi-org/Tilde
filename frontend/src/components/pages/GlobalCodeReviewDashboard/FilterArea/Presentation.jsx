@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/styles";
 import TextField from "@material-ui/core/TextField";
+import { filterList } from "../utils";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -55,7 +56,6 @@ export default function Presentation({
   setTagSearchTerm,
   assigneeTeamSearchTerm,
   setAssigneeTeamSearchTerm,
-  filterByFilterGroup,
 }) {
   const classes = useStyles();
 
@@ -75,8 +75,8 @@ export default function Presentation({
                 setSearchTermMethod: setFlavourSearchTerm,
               })
             }
-            allNames={filterByFilterGroup({
-              allFilters: allFlavours,
+            allNames={filterList({
+              list: allFlavours,
               filter: flavourSearchTerm,
             })}
             filterInclude={filterIncludeFlavours}
@@ -94,8 +94,8 @@ export default function Presentation({
                 setSearchTermMethod: setTagSearchTerm,
               })
             }
-            allNames={filterByFilterGroup({
-              allFilters: allTagNames,
+            allNames={filterList({
+              list: allTagNames,
               filter: tagSearchTerm,
             })}
             filterInclude={filterIncludeTags}
@@ -113,8 +113,8 @@ export default function Presentation({
                 setSearchTermMethod: setAssigneeTeamSearchTerm,
               })
             }
-            allNames={filterByFilterGroup({
-              allFilters: allTeamNames,
+            allNames={filterList({
+              list: allTeamNames,
               filter: assigneeTeamSearchTerm,
             })}
             filterInclude={filterIncludeAssigneeTeams}
