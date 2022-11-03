@@ -13,21 +13,16 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default function FilterByNames({
+export default function Presentation({
   allNames,
-  filterInclude,
   filterExclude,
   onChange,
   searchTerm,
   handleChangeSearchTerm,
   filterGroupName,
+  allFilters,
 }) {
   const classes = useStyles();
-
-  allNames = allNames || [];
-  filterInclude = filterInclude || [];
-  filterExclude = filterExclude || [];
-  const allFilters = [...filterInclude, ...filterExclude];
 
   return (
     <React.Fragment>
