@@ -41,31 +41,6 @@ const useStyles = makeStyles((theme) =>
     },
     gridItem: {
       boxSizing: "border-box",
-      padding: theme.spacing(1),
-    },
-    masonryItemFirst: {
-      boxSizing: "border-box",
-      padding: `0 ${theme.spacing(1)}px ${theme.spacing(1)}px ${theme.spacing(
-        1
-      )}px`,
-      [theme.breakpoints.up("lg")]: {
-        padding: `0px ${theme.spacing(1)}px 0px 0px`,
-      },
-      [theme.breakpoints.down("sm")]: {
-        padding: `0px ${theme.spacing(1)}px 0px 0px`,
-      },
-    },
-    masonryItemSecond: {
-      boxSizing: "border-box",
-      padding: `${theme.spacing(1)}px ${theme.spacing(1)}px 0px ${theme.spacing(
-        1
-      )}px`,
-      [theme.breakpoints.up("lg")]: {
-        padding: `0px 0px 0px ${theme.spacing(1)}px`,
-      },
-      [theme.breakpoints.down("sm")]: {
-        padding: `0px 0px 0px ${theme.spacing(1)}px`,
-      },
     },
     grid: {
       paddingBottom: "20px",
@@ -121,7 +96,13 @@ function CardBasicDetails({ card }) {
           <CardStatusChip card={card} />
         </Grid>
         <Grid container spacing={3}>
-          <Grid item md={6} xs={12} className={`${classes.gridItem}`}>
+          <Grid
+            item
+          
+            md={6}
+            xs={12}
+            className={`${classes.gridItem}`}
+          >
             <Paper className={`${classes.paper}`} variant="outlined">
               <Typography variant="subtitle2" className={classes.typography}>
                 Assignees:
