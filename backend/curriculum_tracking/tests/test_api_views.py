@@ -458,22 +458,26 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(project.link_submission, link_2)
 
     def test_get_number_of_times_card_moved_to_review_feedback(self):
-        content_item1 = factories.ContentItemFactory(
-            content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-        )
-        recruit = UserFactory(is_superuser=False, is_staff=False)
+        # content_item1 = factories.ContentItemFactory(
+        #     content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
+        # )
+        recruit = UserFactory()
         card1 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=content_item1,
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
+            ),
         )
         card1.assignees.add(recruit)
 
-        content_item2 = factories.ContentItemFactory(
-            content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-        )
+        # content_item2 = factories.ContentItemFactory(
+        #     content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
+        # )
         card2 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=content_item2,
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
+            ),
         )
         card2.assignees.add(recruit)
 
@@ -485,29 +489,37 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
             add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
         )
         self.assertEqual(response.status_code, 200)
+        # card1.refresh_from_db()
+
+        request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
+        response = self.client.post(request_review_url)
+        self.assertEqual(response.status_code, 200)
+        # card1.refresh_from_db()
+
+        add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+        )
+        self.assertEqual(response.status_code, 200)
         card1.refresh_from_db()
 
-        # request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
-        # response = self.client.post(request_review_url)
-        # self.assertEqual(response.status_code, 200)
-        # card1.refresh_from_db()
-
-        # add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
-        # response = self.client.post(
-        #     add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
-        # )
-        # self.assertEqual(response.status_code, 200)
-        # card1.refresh_from_db()
-
-        # add_review_url = f"{self.get_instance_url(card2.id)}add_review/"
-        # response = self.client.post(
-        #     add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
-        # )
-        # self.assertEqual(response.status_code, 200)
-        # card2.refresh_from_db()
+        add_review_url = f"{self.get_instance_url(card2.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+        )
+        self.assertEqual(response.status_code, 200)
+        card2.refresh_from_db()
 
         card_moved_to_review_feedback_id = EventType.objects.filter(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK).first().id
-        c = LogEntry.objects.filter(event_type=card_moved_to_review_feedback_id)
+        c = LogEntry.objects.filter(
+            event_type=card_moved_to_review_feedback_id, 
+            # effected_user=card1.assignees.first(),
+            # object_1_id=card1.content_item.id,
+        )
+        print(f'assignees: {card1.assignees.first()}')
+        print(f'assignees: {card2.assignees.first()}')
+        print(f'content: {card1.content_item}')
+        print(f'content: {card2.content_item}')
         print(recruit.id)
         # print(card1.assignees)
         for i in c:
@@ -515,7 +527,12 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
             print(f'effected: {i.effected_user}')
             print(f'actor: {i.actor_user}')
             print(f'object 1: {i.object_1_id}')
+            print(f'object 1: {i.object_1}')
+            print(f'object 1: {i.object_2}')
             print()
+
+        # for i in ContentItem.objects.all():
+        #     print(i)
             
 
 
