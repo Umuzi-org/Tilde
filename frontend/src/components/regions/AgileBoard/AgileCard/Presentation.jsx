@@ -15,6 +15,10 @@ import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
 import AgileCardActions from "./AgileCardActions";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
   checkIfCardIsInReviewColumn,
   userReviewedSinceLastReviewRequest,
@@ -41,10 +45,22 @@ const useStyles = makeStyles((theme) => {
     marginLeft: "10px",
     marginTop: "8px",
   };
+  const accordion = {
+    backgroundColor: theme.palette.grey[200],
+    marginTop: "3%",
+  };
+  const accordionDetails = {
+    marginLeft: "1px",
+    marginTop: "1px",
+    fontSize: "13px",
+  };
+
   return {
     card,
     goalCard,
     title,
+    accordion,
+    accordionDetails,
     blockedCard,
     blockedGoal: {
       ...goalCard,
@@ -206,14 +222,25 @@ export default function Presentation({
 
         {card.reviewerNames.length ? (
           <React.Fragment>
-            <Typography variant="subtitle2" className={classes.title}>
-              Reviewers:
-            </Typography>
-
-            <ListCardUsers
-              userNames={card.reviewerNames}
-              userIds={card.reviewerIds}
-            />
+            <Accordion className={classes.accordion}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography
+                  variant="subtitle2"
+                  className={classes.accordionDetails}
+                >
+                  Reviewers:
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography className={classes.accordionDetails}>
+                  {card.reviewerNames.join(", ")}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
           </React.Fragment>
         ) : (
           <React.Fragment />
