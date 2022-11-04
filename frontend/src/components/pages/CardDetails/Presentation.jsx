@@ -96,14 +96,8 @@ function CardBasicDetails({ card }) {
           <CardStatusChip card={card} />
         </Grid>
         <Grid container spacing={3}>
-          <Grid
-            item
-          
-            md={6}
-            xs={12}
-            className={`${classes.gridItem}`}
-          >
-            <Paper className={`${classes.paper}`} variant="outlined">
+          <Grid item md={6} xs={12} className={classes.gridItem}>
+            <Paper className={classes.paper} variant="outlined">
               <Typography variant="subtitle2" className={classes.typography}>
                 Assignees:
               </Typography>
@@ -126,8 +120,8 @@ function CardBasicDetails({ card }) {
               />
             </Paper>
           </Grid>
-          <Grid item md={6} xs={12} className={`${classes.gridItem}`}>
-            <Paper className={`${classes.paper}`} variant="outlined">
+          <Grid item md={6} xs={12} className={classes.gridItem}>
+            <Paper className={classes.paper} variant="outlined">
               <Table>
                 <TableBody>
                   <TableRow>
