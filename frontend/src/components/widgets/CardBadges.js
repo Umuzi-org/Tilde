@@ -12,6 +12,9 @@ import { Chip, Tooltip } from "@material-ui/core";
 import { getAgeString } from "./utils";
 import { repoUrlCleaner } from "./utils";
 import { IN_REVIEW } from "../../constants";
+import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import theme from "./theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,93 +55,96 @@ export default ({ card }) => {
     oldestOpenPrUpdatedTime,
   } = card;
   return (
-    <div className={classes.root}>
-      {codeReviewCompetentSinceLastReviewRequest ? (
-        <Tooltip title="Number of COMPETENT code reviews since your last review request">
-          <Badge
-            badgeContent={codeReviewCompetentSinceLastReviewRequest}
-            color="primary"
-          >
-            <CompetentIcon />
-          </Badge>
-        </Tooltip>
-      ) : (
-        <React.Fragment />
-      )}
-
-      {codeReviewExcellentSinceLastReviewRequest ? (
-        <Tooltip title="Number of EXCELLENT code reviews since your last review request">
-          <Badge
-            badgeContent={codeReviewExcellentSinceLastReviewRequest}
-            color="primary"
-          >
-            <ExcellentIcon />
-          </Badge>
-        </Tooltip>
-      ) : (
-        <React.Fragment />
-      )}
-
-      {codeReviewNyCompetentSinceLastReviewRequest ? (
-        <Tooltip title="Number of NOT YET COMPETENT code reviews since your last review request">
-          <Badge
-            badgeContent={codeReviewNyCompetentSinceLastReviewRequest}
-            color="error"
-          >
-            <NotYetCompetentIcon />
-          </Badge>
-        </Tooltip>
-      ) : (
-        <React.Fragment />
-      )}
-
-      {codeReviewRedFlagSinceLastReviewRequest ? (
-        <Tooltip title="Number of RED FLAG code reviews since your last review request">
-          <Badge
-            badgeContent={codeReviewRedFlagSinceLastReviewRequest}
-            color="error"
-          >
-            <RedFlagIcon />
-          </Badge>
-        </Tooltip>
-      ) : (
-        <React.Fragment />
-      )}
-
-      {openPrCount ? (
-        <Tooltip title="Number of open pull requests on this card and their age">
-          <a
-            className={classes.widgetStyle}
-            href={repoUrlCleaner(repoUrl)}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <Badge badgeContent={openPrCount} color="primary">
-              {oldestOpenPrUpdatedTime === null ? (
-                <CallMergeIcon />
-              ) : (
-                <Chip
-                  avatar={<CallMergeIcon />}
-                  className={classes.chip}
-                  label={`updated ${getAgeString(oldestOpenPrUpdatedTime)}`}
-                />
-              )}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className={classes.root}>
+        {codeReviewCompetentSinceLastReviewRequest ? (
+          <Tooltip title="Number of COMPETENT code reviews since your last review request">
+            <Badge
+              badgeContent={codeReviewCompetentSinceLastReviewRequest}
+              color="primary"
+            >
+              <CompetentIcon />
             </Badge>
-          </a>
-        </Tooltip>
-      ) : (
-        <React.Fragment />
-      )}
+          </Tooltip>
+        ) : (
+          <React.Fragment />
+        )}
 
-      {card.status === IN_REVIEW ? (
-        <Chip
-          // avatar={<CallMergeIcon />}
-          className={classes.chip}
-          label={`review requested ${getAgeString(card.reviewRequestTime)}`}
-        />
-      ) : (
-        ""
-      )}
-    </div>
+        {codeReviewExcellentSinceLastReviewRequest ? (
+          <Tooltip title="Number of EXCELLENT code reviews since your last review request">
+            <Badge
+              badgeContent={codeReviewExcellentSinceLastReviewRequest}
+              color="primary"
+            >
+              <ExcellentIcon />
+            </Badge>
+          </Tooltip>
+        ) : (
+          <React.Fragment />
+        )}
+
+        {codeReviewNyCompetentSinceLastReviewRequest ? (
+          <Tooltip title="Number of NOT YET COMPETENT code reviews since your last review request">
+            <Badge
+              badgeContent={codeReviewNyCompetentSinceLastReviewRequest}
+              color="error"
+            >
+              <NotYetCompetentIcon />
+            </Badge>
+          </Tooltip>
+        ) : (
+          <React.Fragment />
+        )}
+
+        {codeReviewRedFlagSinceLastReviewRequest ? (
+          <Tooltip title="Number of RED FLAG code reviews since your last review request">
+            <Badge
+              badgeContent={codeReviewRedFlagSinceLastReviewRequest}
+              color="error"
+            >
+              <RedFlagIcon />
+            </Badge>
+          </Tooltip>
+        ) : (
+          <React.Fragment />
+        )}
+
+        {openPrCount ? (
+          <Tooltip title="Number of open pull requests on this card and their age">
+            <a
+              className={classes.widgetStyle}
+              href={repoUrlCleaner(repoUrl)}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <Badge badgeContent={openPrCount} color="primary">
+                {oldestOpenPrUpdatedTime === null ? (
+                  <CallMergeIcon />
+                ) : (
+                  <Chip
+                    avatar={<CallMergeIcon />}
+                    className={classes.chip}
+                    label={`updated ${getAgeString(oldestOpenPrUpdatedTime)}`}
+                  />
+                )}
+              </Badge>
+            </a>
+          </Tooltip>
+        ) : (
+          <React.Fragment />
+        )}
+
+        {card.status === IN_REVIEW ? (
+          <Chip
+            // avatar={<CallMergeIcon />}
+            className={classes.chip}
+            label={`review requested ${getAgeString(card.reviewRequestTime)}`}
+          />
+        ) : (
+          ""
+        )}
+      </div>
+    </ThemeProvider>
   );
 };
