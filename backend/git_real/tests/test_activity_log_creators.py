@@ -2,7 +2,7 @@
 """
 
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push
+from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push, PullRequest
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -103,4 +103,31 @@ class log_push_event_Tests(APITestCase):
         self.assertEqual(entry.object_1, push)
         self.assertEqual(entry.object_2, push.repository)
         self.assertEqual(entry.event_type.name, creators.GIT_PUSH)
-        
+
+
+class log_pr_opened_Tests(APITestCase):
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_pr_opened(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(PullRequest.objects.all().count(), 0)
+
+        body, headers = get_body_and_headers("pull_request_opened")
+        pull_request_data=body["pull_request"]
+        social_profile = SocialProfileFactory(github_name=pull_request_data["user"]["login"])
+        url = reverse(views.github_webhook)
+        repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        pull_request = PullRequest.create_or_update_from_github_api_data(repo, pull_request_data)
+        self.assertEqual(PullRequest.objects.all().count(), 1)
+         
+        entry = creators.log_pr_opened(pull_request)
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+        self.assertEqual(entry.actor_user, pull_request.user)
+        self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.event_type.name, creators.PR_OPENED)
