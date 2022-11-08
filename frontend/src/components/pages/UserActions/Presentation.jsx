@@ -5,6 +5,7 @@ import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import DayLog from "./DayLog";
 import UserBurnDownChart from "./UserBurndownStats";
+import { foo } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -21,6 +22,7 @@ export default function Presentation({
   anyLoading,
   currentUserBurndownStats,
 }) {
+  foo()
   const classes = useStyles();
   return (
     <div className={classes.column} onScroll={handleScroll}>

@@ -9,6 +9,7 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
+import { eventTypeColors } from "../../../colors";
 
 // TODO: look nice
 
@@ -23,7 +24,6 @@ const days = [
 ];
 
 function UserActionsUnconnected({
-  activityLogDayCounts,
   authedUserId,
   projectReviews,
   cardSummaries,
@@ -31,7 +31,9 @@ function UserActionsUnconnected({
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
+  eventTypes,
   fetchEventTypes,
+  activityLogDayCounts,
   fetchActivityLogDayCountsPage,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
@@ -62,14 +64,9 @@ function UserActionsUnconnected({
   }, [fetchEventTypes]);
 
   useEffect(() => {
-    fetchActivityLogDayCountsPage({
-      actorUser: userId,
-      page: 1,
-    });
+    fetchActivityLogDayCountsPage({ actorUser: userId, page: 1 });
   }, [fetchActivityLogDayCountsPage, userId]);
 
-  // compare the bellow with whats on develop
-  console.log(activityLogDayCounts);
   if (
     !userId ||
     !fetchProjectReviewsPages ||
@@ -167,6 +164,28 @@ function UserActionsUnconnected({
     actionLogByDate[date].push(o);
   });
 
+  const matchColorsToEventTypes = () => {
+    const eventTypeNames = [];
+
+    for (const eventName in eventTypes) {
+      eventTypeNames.push(eventTypes[eventName].name);
+    }
+
+    const colors = [...Object.values(eventTypeColors)];
+    const sortedEventTypeNames = eventTypeNames.sort();
+    const evenTypeColorKeys = [...Object.keys(eventTypeColors)].sort();
+
+    for (let i = 0; i < eventTypes.length; i++) {
+      if (sortedEventTypeNames[i] === evenTypeColorKeys[i]) {
+        eventTypes[i].color = colors[i];
+      }
+    }
+  };
+
+  matchColorsToEventTypes();
+
+  console.log(activityLogDayCounts);
+
   const props = {
     orderedDates,
     actionLogByDate,
@@ -188,6 +207,7 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
+    eventTypes: state.apiEntities.eventTypes,
     activityLogDayCounts: state.apiEntities.activityLogDayCounts,
     FETCH_EVENT_TYPES: state.FETCH_EVENT_TYPES,
     FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE:
@@ -240,10 +260,10 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    fetchActivityLogDayCountsPage: ({ actorUser, effectedUser, page }) => {
+    fetchActivityLogDayCountsPage: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.operations.maybeStart({
-          data: { actorUser, effectedUser, page },
+          data: { actorUser, page },
         })
       );
     },
