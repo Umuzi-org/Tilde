@@ -45,14 +45,19 @@ const useStyles = makeStyles((theme) => {
     marginLeft: "10px",
     marginTop: "8px",
   };
+  const accordionTitle = {
+    marginLeft: "-4px",
+    marginTop: "8px",
+    fontSize: "0.83em",
+  };
   const accordion = {
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: "inherit",
     marginTop: "3%",
   };
   const accordionDetails = {
-    marginLeft: "1px",
-    marginTop: "1px",
-    fontSize: "13px",
+    marginLeft: "-4px",
+    marginTop: "-13px",
+    fontSize: "0.8em",
   };
 
   return {
@@ -61,6 +66,7 @@ const useStyles = makeStyles((theme) => {
     title,
     accordion,
     accordionDetails,
+    accordionTitle,
     blockedCard,
     blockedGoal: {
       ...goalCard,
@@ -230,7 +236,7 @@ export default function Presentation({
               >
                 <Typography
                   variant="subtitle2"
-                  className={classes.accordionDetails}
+                  className={classes.accordionTitle}
                 >
                   Reviewers:
                 </Typography>
