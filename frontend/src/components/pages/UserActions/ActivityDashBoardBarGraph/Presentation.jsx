@@ -1,4 +1,3 @@
-import { Typography } from "@material-ui/core";
 import React from "react";
 import {
   BarChart,
@@ -11,6 +10,7 @@ import {
   YAxis,
   Cell,
 } from "recharts";
+import { Typography } from "@material-ui/core";
 
 export default function ActivityDashboardBarGraph({
   eventTypes,
