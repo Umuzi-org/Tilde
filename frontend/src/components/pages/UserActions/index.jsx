@@ -9,7 +9,6 @@ import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { ACTION_NAMES } from "./constants";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
-import { eventTypeColors } from "../../../colors";
 
 // TODO: look nice
 
