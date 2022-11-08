@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import Button from "../Button";
 import LaunchIcon from "@material-ui/icons/Launch";
 
 export default ({ contentItemId, contentUrl, className }) => {

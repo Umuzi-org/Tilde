@@ -23,7 +23,7 @@ pandas==1.2.3
 
 gspread==3.1.0
 oauth2client==1.5.2
-pyOpenSSL==19.0.0
+pyOpenSSL==22.0.0
 
 google-api-python-client
 google-auth-httplib2
@@ -75,3 +75,6 @@ dramatiq[rabbitmq, watch]
 
 
 django-sql-utils==0.6.1
+
+django-sendgrid-v5==1.2.0
+sendgrid==6.9.7

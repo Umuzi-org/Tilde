@@ -13,7 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user, detailedStats, showTeamsTable, authUser }) => {
+export default ({
+  user,
+  currentUserDetailedStats,
+  showTeamsTable,
+  authUser,
+}) => {
   const classes = useStyles();
   const teams = user ? user.teamMemberships : {};
   if (user)
@@ -22,7 +27,7 @@ export default ({ user, detailedStats, showTeamsTable, authUser }) => {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <UserDetailedStats detailedStats={detailedStats} />
+              <UserDetailedStats detailedStats={currentUserDetailedStats} />
             </Paper>
           </Grid>
           {showTeamsTable && (

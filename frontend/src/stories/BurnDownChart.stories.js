@@ -1,8 +1,9 @@
 import React from "react";
-import BurnDownChart from "../components/regions/BurnDownChart/Presentation";
+import BurnDownChart from "../components/regions/UserActions/UserBurndownStats";
+
 import burnDownData from "./fixtures/burnDownData";
 export default {
-    title: "Tilde/BurnDownChart",
-    component: BurnDownChart,
-}
-export const Primary = () => <BurnDownChart burnDownSnapshots={burnDownData}/>
+  title: "Tilde/UserActions/BurnDownChart",
+  component: BurnDownChart,
+};
+export const Primary = () => <BurnDownChart burnDownSnapshots={burnDownData} />;

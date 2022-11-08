@@ -100,9 +100,9 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "django.contrib.contenttypes",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -365,3 +365,26 @@ CURRICULUM_TRACKING_REVIEW_BOT_EMAIL = "reviewbot@noreply.org"
 CURRICULUM_TRACKING_TRUST_STREAK_LENGTH = 4
 
 OLD_PASSWORD_FIELD_ENABLED = True  # this means that when changing a password via dj-rest-auth, the old password is required
+
+REST_AUTH_SERIALIZERS = {
+    "PASSWORD_RESET_SERIALIZER": "core.serializers.PasswordResetSerializer",
+}
+
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+DEFAULT_FROM_EMAIL = "noreply@umuzi.org"
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", None)
+
+if SENDGRID_API_KEY:
+
+    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+    EMAIL_HOST = "smtp.sendgrid.net"
+    EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
+    EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = "gitignore/sent-emails"

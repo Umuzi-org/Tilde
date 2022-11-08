@@ -79,6 +79,20 @@ def log_pr_reviewed(pull_request_review):
     )
 
 
-def log_push_event():
+def log_push_event(push):
     event_type, _ = EventType.objects.get_or_create(name=GIT_PUSH)
-    todo
+    
+    repo = push.repository
+    effected_project = repo.recruit_projects.first()
+
+    effected_user = effected_project.recruit_users.first() if effected_project else None
+
+    LogEntry.debounce_create(
+        actor_user=repo.user,
+        effected_user=repo.user or effected_user,
+        object_1=push,
+        object_2=push.repository,
+        event_type=event_type,
+        timestamp=push.pushed_at_time,
+        debounce_seconds=False,
+    )

@@ -8,6 +8,8 @@ def process_row(row):
     if bool(int(row["broken"] or 0)):
         return
 
+    print(f"Processing {row}")
+
     ReviewTrust.add_specific_trust_instances(
         who=row["who"],
         content_item_title=row["content_item_title"],

@@ -1,11 +1,12 @@
 import React from "react";
-import { Paper, Button, Grid, Typography, TextField } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
-import ViewContentButton from "../../widgets/ViewContentButton";
-
 import RepositoryDetails from "./RepositoryDetails";
 import CardButton from "../../widgets/CardButton";
-
 import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import Reviews from "./Reviews";
 
@@ -81,16 +82,16 @@ function LinkToYourWork({
   );
 }
 
-export default ({
+export default function Presentation({
   project,
   handleClickUpdateProjectLink,
   showUpdateProjectLinkForm,
   linkSubmission,
   formErrors,
-  showAddReviewButton,
+  // showAddReviewButton,
   handleClickAddReview,
   reviews,
-}) => {
+}) {
   const classes = useStyles();
 
   return (
@@ -117,18 +118,16 @@ export default ({
 
       <Reviews reviewIds={project.projectReviews} reviews={reviews} />
 
-      <ViewContentButton
-        contentItemId={project.contentItem}
-        contentUrl={project.contentUrl}
+      <CardButton
+        label="Add Review"
+        startIcon={<RateReviewRoundedIcon />}
+        onClick={handleClickAddReview}
       />
 
-      {showAddReviewButton && (
-        <CardButton
-          label="Add Review"
-          startIcon={<RateReviewRoundedIcon />}
-          onClick={handleClickAddReview}
+      {/* {showAddReviewButton && (  // TODO FIX
+
         />
-      )}
+      )} */}
     </React.Fragment>
   );
-};
+}

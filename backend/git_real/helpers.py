@@ -7,6 +7,8 @@ from timezone_helpers import (
     timestamp_int_to_tz_aware_datetime,
 )
 from django.http import Http404
+import requests
+from core.models import User
 
 
 def github_timestamp_int_to_tz_aware_datetime(timestamp):
@@ -147,6 +149,10 @@ def add_collaborator(api, repo_full_name, github_user_name, github_auth_login=No
     if response.status_code == 404:
         raise Exception(f"user or repo not found: {repo_full_name} {github_user_name}")
 
+    if response.status_code == 422:
+        # user blocked us
+        return
+
     if response.status_code not in [201, 204]:
         raise Exception(
             f"bad response code {response.status_code} \n\tcontent: '{response.content}'"
@@ -184,3 +190,34 @@ def fetch_and_save_repo(api, repo_full_name):
     o = save_repo(repo_dict)
     assert o != None
     return o
+
+
+from functools import lru_cache
+import time
+
+
+@lru_cache(maxsize=None)
+def github_user_exists(github_name):
+    return True  # this causes other api calls to timeout. We need a better solution
+
+    def inner(attempt=1):
+        url = f"https://github.com/{github_name}"
+        response = requests.get(url)
+        if response.status_code == 404:
+            return False
+        if response.status_code in [200, 201]:
+            return True
+        if response.status_code == 429:
+            # timeout
+            time.sleep(10 * attempt)
+            if attempt <= 4:
+                return inner(attempt + 1)
+            raise Exception(
+                f"Unexpected status code {response.status_code} for GET {url}"
+            )
+
+    return inner()
+
+
+def get_user_from_github_name(github_name):
+    return User.objects.filter(social_profile__github_name__iexact=github_name).first()

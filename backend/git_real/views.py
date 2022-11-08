@@ -26,7 +26,7 @@ def github_webhook(request):
             try:
                 repo = Repository.objects.get(full_name=repo_full_name)
             except Repository.DoesNotExist:
-                return
+                return Response({})
         if event in ["pull_request", "pull_request_review"]:
 
             pr = PullRequest.create_or_update_from_github_api_data(

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { connect } from "react-redux";
@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 
 import { hasPermissionOnUser } from "../../../utils/permissions";
 import { TEAM_PERMISSIONS } from "../../../constants";
+
+import Loading from "../../widgets/Loading";
 
 function DashboardUnconnected({
   authUser,
@@ -16,15 +18,19 @@ function DashboardUnconnected({
 }) {
   let urlParams = useParams() || {};
   const userId = parseInt(urlParams.userId || authUser.userId || 0);
-  const user = users[userId];
-  const detailedStats = userDetailedStats[userId];
+  const user = users && users[userId];
+  const currentUserDetailedStats =
+    userDetailedStats && userDetailedStats[userId];
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (userId) {
       fetchUser({ userId });
       fetchUserDetailedStats({ userId });
     }
   }, [userId, fetchUser, fetchUserDetailedStats]);
+
+  if (users === undefined || userDetailedStats === undefined)
+    return <Loading />;
 
   const showTeamsTable = user
     ? hasPermissionOnUser({ authUser, user, permissions: TEAM_PERMISSIONS })
@@ -32,7 +38,7 @@ function DashboardUnconnected({
 
   const props = {
     user,
-    detailedStats,
+    currentUserDetailedStats,
     showTeamsTable,
     authUser,
   };
@@ -42,10 +48,9 @@ function DashboardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    users: state.apiEntities.users || {},
-    userDetailedStats: state.apiEntities.userDetailedStats || {},
-    // authedUserId: state.App.authUser.userId,
-    authUser: state.App.authUser || {},
+    users: state.apiEntities.users,
+    userDetailedStats: state.apiEntities.userDetailedStats,
+    authUser: state.App.authUser,
   };
 };
 

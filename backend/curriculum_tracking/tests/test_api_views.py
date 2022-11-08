@@ -1,6 +1,8 @@
 # from backend.curriculum_tracking.models import AgileCard
-from git_real.tests.factories import PullRequestFactory
+from git_real.models import PullRequestReview
+from git_real.tests.factories import PullRequestFactory, PullRequestReviewFactory
 from rest_framework.test import APITestCase
+from guardian.shortcuts import assign_perm
 from test_mixins import APITestCaseMixin
 from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
@@ -9,12 +11,23 @@ from django.utils.dateparse import parse_datetime
 from . import factories
 from core.tests import factories as core_factories
 from datetime import timedelta
-from curriculum_tracking.models import ContentItem, RecruitProjectReview, AgileCard
+from curriculum_tracking.models import (
+    ContentItem,
+    RecruitProjectReview,
+    AgileCard,
+    ContentItemAgileWeight,
+    RecruitProject,
+)
 from taggit.models import Tag
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from . import factories
-from curriculum_tracking.tests.factories import RecruitProjectFactory, AgileCardFactory
+from curriculum_tracking.tests.factories import (
+    RecruitProjectFactory,
+    AgileCardFactory,
+    TagFactory,
+)
 from curriculum_tracking.management.helpers import get_team_cards
+from core.models import Team
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -63,7 +76,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         return topic_progress
 
 
-class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
+class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "agilecard-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
     SUPPRESS_TEST_GET_LIST = True
@@ -88,32 +101,35 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def setUp(self):
-        self.content_item_test = factories.ProjectContentItemFactory(
+        self.content_item = factories.ProjectContentItemFactory(
             project_submission_type=ContentItem.LINK, template_repo=None
         )
         self.card_1 = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(
-                content_item=self.content_item_test
+                content_item=self.content_item
             ),
-            content_item=self.content_item_test,
+            content_item=self.content_item,
         )
+
         self.card_2 = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=factories.RecruitProjectFactory(
-                content_item=self.content_item_test
+                content_item=self.content_item
             ),
-            content_item=self.content_item_test,
+            content_item=self.content_item,
         )
 
         self.card_1.start_project()
         self.card_2.start_project()
 
-        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
-        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
+        self.login_as_superuser()
+        request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
+        self.client.post(request_review_url)
+        self.card_2.refresh_from_db()
 
     def test_request_review_permissions_non_superuser_staff(self):
-
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
         self.login(staff_user)
 
@@ -127,7 +143,7 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
 
     def test_request_review_permissions_non_assignee(self):
-
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         recruit_user_non_card_assignee = factories.UserFactory(
             is_superuser=False, is_staff=False
         )
@@ -142,6 +158,7 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
 
     def test_request_review_permissions_superuser(self):
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
         superuser = factories.UserFactory(is_superuser=True, is_staff=False)
         self.login(superuser)
         request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
@@ -153,8 +170,90 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
 
     def test_request_review_permissions_assignee(self):
+        self.assertEqual(self.card_1.status, AgileCard.IN_PROGRESS)
+        self.login(self.card_1.assignees.first())
+        request_review_url = f"{self.get_instance_url(self.card_1.id)}request_review/"
+        response = self.client.post(request_review_url)
 
+        self.assertEqual(response.status_code, 200)
+
+        self.card_1.refresh_from_db()
+        self.assertEqual(self.card_1.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_non_superuser_staff(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+        staff_user = factories.UserFactory(is_superuser=False, is_staff=True)
+        self.login(staff_user)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_non_assignee(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+        recruit_user_non_card_assignee = factories.UserFactory(
+            is_superuser=False, is_staff=False
+        )
+        self.login(recruit_user_non_card_assignee)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"].code, "permission_denied")
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+    def test_cancel_request_review_permissions_superuser(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+        superuser = factories.UserFactory(is_superuser=True, is_staff=False)
+        self.login(superuser)
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
+
+    def test_cancel_request_review_permissions_assignee(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
         self.login(self.card_2.assignees.first())
+        request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.IN_PROGRESS)
+
+    def test_cancel_request_review_card_with_review_feedback(self):
+        self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+        add_review_url = f"{self.get_instance_url(self.card_2.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "boooo"}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
+
         request_review_url = f"{self.get_instance_url(self.card_2.id)}request_review/"
         response = self.client.post(request_review_url)
 
@@ -162,6 +261,16 @@ class RequestReviewViewsetTests(APITestCase, APITestCaseMixin):
 
         self.card_2.refresh_from_db()
         self.assertEqual(self.card_2.status, AgileCard.IN_REVIEW)
+
+        cancel_request_review_url = (
+            f"{self.get_instance_url(self.card_2.id)}cancel_review_request/"
+        )
+        response = self.client.post(cancel_request_review_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.card_2.refresh_from_db()
+        self.assertEqual(self.card_2.status, AgileCard.REVIEW_FEEDBACK)
 
 
 class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
@@ -184,7 +293,10 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "tag_names",
         "can_start",
         "can_force_start",
+        "project_link_submission",
         # "open_pr_count",
+        "users_that_reviewed_open_prs",
+        "users_that_reviewed_open_prs_emails",
     ]
 
     def verbose_instance_factory(self):
@@ -370,23 +482,44 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
         self.assertNotIn("detail", response.data)
         self.assertEqual(response.status_code, 200)
 
-    # def test_recruit_permissions_on_object(self):
-    #     return  # TODO
-    #     recruit1 = UserFactory(is_superuser=False, is_staff=False)
-    #     recruit2 = UserFactory(is_superuser=False, is_staff=False)
 
-    #     project1 = factories.RecruitProjectFactory(recruit_users=[recruit1])
-    #     project2 = factories.RecruitProjectFactory(recruit_users=[recruit2])
+class PullRequestReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "pullrequestreviewquality-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
-    #     self.login(recruit1)
+    def verbose_instance_factory(self):
+        pr_review = PullRequestReviewFactory(validated=PullRequestReview.CONTRADICTED)
+        project = RecruitProjectFactory(repository=pr_review.pull_request.repository)
+        project.set_flavours(["js"])
 
-    #     url = self.get_list_url()
-    #     response = self.client.get(f"{url}{project1.id}/")
+        weight = factories.ContentItemAgileWeightFactory(
+            content_item=project.content_item
+        )
+        weight.set_flavours(["js"])
+        return pr_review
 
-    #     self.assertEqual(response.status_code, 200)
 
-    #     response = self.client.get(f"{url}{project2.id}/")
-    #     self.assertEqual(response.status_code, 403)
+class RecruitProjectReviewQualityViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "recruitprojectreviewquality-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
+
+    def verbose_instance_factory(self):
+        review = factories.RecruitProjectReviewFactory(
+            trusted=True, validated=RecruitProjectReview.CORRECT
+        )
+        review.complete_review_cycle = True
+        review.save()
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        weight = factories.ContentItemAgileWeightFactory(
+            content_item=project.content_item
+        )
+        weight.set_flavours(["js"])
+
+        return review
 
 
 class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
@@ -395,9 +528,13 @@ class RecruitProjectReviewViewsetTests(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = ["agile_card"]
 
     def verbose_instance_factory(self):
-        return factories.RecruitProjectReviewFactory(
+        review = factories.RecruitProjectReviewFactory(
             trusted=True, validated=RecruitProjectReview.CORRECT
         )
+        project: RecruitProject = review.recruit_project
+        project.set_flavours(["js"])
+
+        return review
 
 
 class RecruitTopicReviewViewsetTests(APITestCase, APITestCaseMixin):
@@ -421,7 +558,7 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
     ]
 
     def verbose_instance_factory(self):
-        item = factories.ProjectContentItemFactory(story_points=5)
+        item = factories.ProjectContentItemFactory()
         factories.ContentItemOrderFactory(post=item)
         factories.ContentItemOrderFactory(pre=item)
         item.tags.add(factories.TagFactory())
@@ -755,3 +892,163 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.assertEqual(card_1.due_time, date_expected)
         self.assertIsNone(card_2.due_time)
         self.assertIsNone(card_3.due_time)
+
+
+class ContentItemAgileWeightTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "contentitemagileweight-list"
+
+    def verbose_instance_factory(self):
+        return factories.ContentItemAgileWeightFactory(flavours=["python"])
+
+    def generate_post_create_data(self):
+        item = factories.ContentItemFactory(flavours=["python", "javascript", "ts"])
+        return {
+            "content_item": item.id,
+            "flavour_names": ["python", "ts"],
+            "weight": 123,
+        }
+
+    def test_attributes_set_on_post(self):
+        data = self.generate_post_create_data()
+        self.login_as_superuser()
+        url = self.get_list_url()
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 201)
+        new_instance = ContentItemAgileWeight.objects.first()
+        self.assertEqual(new_instance.content_item.id, data["content_item"])
+        self.assertEqual(new_instance.weight, data["weight"])
+        self.assertEqual(new_instance.flavour_names, data["flavour_names"])
+
+
+class TestCourseRegistrationViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "courseregistration-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        course_registration = factories.CourseRegistrationFactory()
+        return course_registration
+
+
+class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "pullrequestreviewqueue-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "review_request_time",
+        "users_that_reviewed_since_last_review_request",
+        "users_that_reviewed_since_last_review_request_emails",
+    ]
+
+    def verbose_instance_factory(self):
+        card = AgileCardFactory()
+        project = card.recruit_project
+        project.set_flavours(["foo"])
+        project.content_item.tags.add(TagFactory())
+        project.code_review_competent_since_last_review_request = 12
+        project.code_review_excellent_since_last_review_request = 12
+        project.code_review_red_flag_since_last_review_request = 12
+        project.code_review_ny_competent_since_last_review_request = 12
+        project.reviewer_users.add(UserFactory())
+
+        pr = PullRequestFactory(state="open")
+        project.repository = pr.repository
+        project.save()
+
+        pr = PullRequestFactory(state="closed")
+        card = AgileCardFactory()
+        card.recruit_project.repository = pr.repository
+
+        return project
+
+
+class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "competencereviewqueue-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "open_pr_count",
+        "oldest_open_pr_updated_time",
+        "users_that_reviewed_since_last_review_request",
+        "users_that_reviewed_since_last_review_request_emails",
+    ]
+
+    def verbose_instance_factory(self):
+        RecruitProjectFactory()
+        RecruitProjectFactory()
+        card = AgileCardFactory()
+
+        project = card.recruit_project
+        project.request_review()
+        project.set_flavours(["foo"])
+        project.content_item.tags.add(TagFactory())
+        project.code_review_competent_since_last_review_request = 12
+        project.code_review_excellent_since_last_review_request = 12
+        project.code_review_red_flag_since_last_review_request = 12
+        project.code_review_ny_competent_since_last_review_request = 12
+        project.reviewer_users.add(UserFactory())
+        project.save()
+
+        return project
+
+    def test_list_filters_by_what_the_user_is_meant_to_see(self):
+        cards = [AgileCardFactory() for _ in range(10)]
+        for card in cards:
+            project = card.recruit_project
+            project.reviewer_users.add(UserFactory())
+            project.request_review()
+
+        teams = [TeamFactory() for _ in range(5)]
+
+        teams[0].user_set.add(cards[0].recruit_project.recruit_users.first())
+        teams[1].user_set.add(cards[1].recruit_project.recruit_users.first())
+        teams[2].user_set.add(cards[2].recruit_project.reviewer_users.first())
+        teams[3].user_set.add(cards[3].recruit_project.reviewer_users.first())
+        teams[4].user_set.add(cards[4].recruit_project.reviewer_users.first())
+
+        manager_user = UserFactory()
+
+        assign_perm(Team.PERMISSION_MANAGE_CARDS, manager_user, teams[0])
+        assign_perm(Team.PERMISSION_VIEW_ALL, manager_user, teams[1])
+        assign_perm(Team.PERMISSION_REVIEW_CARDS, manager_user, teams[2])
+        assign_perm(Team.PERMISSION_TRUSTED_REVIEWER, manager_user, teams[3])
+
+        url = self.get_list_url()
+
+        # superusers can see everything
+        self.login_as_superuser()
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 10)
+        self.assertEqual(
+            [d["id"] for d in queue], [card.recruit_project.id for card in cards]
+        )
+
+        # random users can't see anything
+        self.login(UserFactory())
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 0)
+
+        # users can see their own projects
+        self.login(cards[5].recruit_project.reviewer_users.first())
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 1)
+        self.assertEqual(queue[0]["id"], cards[5].recruit_project.id)
+
+        # if you have any kind of view access over a team then you can see those projects
+        self.login(manager_user)
+        response = self.client.get(url)
+        queue = response.data
+        self.assertEqual(len(queue), 4)
+        self.assertEqual(
+            [d["id"] for d in queue], [card.recruit_project.id for card in cards[:4]]
+        )
+
+
+class CurriculumContentRequirementViewsetTests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "curriculumcontentrequirement-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+
+    def verbose_instance_factory(self):
+        return factories.CurriculumContentRequirementFactory()

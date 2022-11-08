@@ -13,10 +13,10 @@ from django.db.models import Q
 from django.db.models import Count
 from pathlib import Path
 import csv
-from django.db.models import Sum, F
 from sql_util.utils import SubqueryAggregate
 
 # from git_real.models import PullRequestReview
+BOUNCEY_CARD_MIN_BOUNCES = 2
 
 
 def get_assessment_cards():
@@ -55,7 +55,7 @@ def get_cards_ordered_by_review():
                 aggregate=Count,
             )
         )
-        .filter(negative_review_count__gt=2)
+        .filter(negative_review_count__gt=BOUNCEY_CARD_MIN_BOUNCES)
         .order_by("-negative_review_count")
     )
 

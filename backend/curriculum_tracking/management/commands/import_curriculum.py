@@ -30,10 +30,11 @@ def save_curriculum_to_db(json_file):
     # keys in dictionary `data` (4) `content_item_orders`, `content_items`, `curriculum`, `curriculum_content_requirements`
     create_content_items(data["content_items"])
     create_content_item_orders(data["content_item_orders"])
-    create_curriculum(data["curriculum"])
+    curriculum = create_curriculum(data["curriculum"])
     create_curriculum_content_requirements(
         data["curriculum_content_requirements"], data["curriculum"]["name"]
     )
+    return curriculum
 
 
 def get_content_item_from_url(url):
@@ -50,7 +51,6 @@ def create_content_items(data):
             link_regex=content["link_regex"],
             project_submission_type=content["project_submission_type"],
             slug=content["slug"],
-            story_points=content["story_points"],
             # tags = ','.join(content['tags']),
             template_repo=content["template_repo"],
             title=content["title"],
@@ -61,8 +61,8 @@ def create_content_items(data):
         for tag in content["tags"]:
             content_item.tags.add(tag)
 
-        if content['flavours']:
-            content_item.set_flavours(content['flavours'])
+        if content["flavours"]:
+            content_item.set_flavours(content["flavours"])
 
 
 def create_content_item_orders(data):
@@ -78,6 +78,7 @@ def create_curriculum(data):
     curriculum, created = Curriculum.objects.get_or_create(
         name=data["name"],
     )
+    return curriculum
 
 
 def create_curriculum_content_requirements(data, curriculum_name):

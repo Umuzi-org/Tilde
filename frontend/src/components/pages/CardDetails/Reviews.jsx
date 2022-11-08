@@ -1,5 +1,7 @@
 import React from "react";
-import { Paper, Typography, List } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
 import { makeStyles } from "@material-ui/core/styles";
 
 import CircularProgress from "../../widgets/Loading";

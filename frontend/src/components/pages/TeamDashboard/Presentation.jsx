@@ -72,8 +72,12 @@ export default function ({ team, activityLogDayCounts }) {
     activityLogDayCounts,
   });
 
+  const filterStartDate = new Date();
+  filterStartDate.setDate(filterStartDate.getDate() - 21);
+  
   const updatedActivityLogDayCounts = updateActivityLogDayCounts({
     activityLogDayCounts,
+    filterStartDate,
   });
 
   const classes = useStyles();

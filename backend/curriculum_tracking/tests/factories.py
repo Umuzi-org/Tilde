@@ -1,7 +1,6 @@
 from factory.django import DjangoModelFactory
 import factory
 
-from curriculum_tracking.models import BurndownSnapshot
 from curriculum_tracking import models
 from curriculum_tracking.constants import NOT_YET_COMPETENT
 from core.tests.factories import UserFactory, CurriculumFactory
@@ -92,7 +91,6 @@ class ProjectContentItemFactory(DjangoModelFactory, TagMixin):
     content_type = models.ContentItem.PROJECT
     title = factory.lazy_attribute(lambda *args, **kwargs: next(_content_name_iterator))
     url = factory.lazy_attribute(lambda *args, **kwargs: next(_content_url_iterator))
-    story_points = 5
     project_submission_type = models.ContentItem.REPOSITORY
     template_repo = "https://github.com/Umuzi-org/bwahahhahaaaa"
 
@@ -116,7 +114,6 @@ class ContentItemFactory(DjangoModelFactory):
     content_type = models.ContentItem.TOPIC
     title = factory.lazy_attribute(lambda *args, **kwargs: next(_content_name_iterator))
     url = factory.lazy_attribute(lambda *args, **kwargs: next(_content_url_iterator))
-    story_points = 5
 
     @factory.post_generation
     def flavours(self, *args, **kwargs):
@@ -349,7 +346,7 @@ class WorkshopAttendanceFactory(DjangoModelFactory):
 
 class BurndownSnapshotFactory(DjangoModelFactory):
     class Meta:
-        model = BurndownSnapshot
+        model = models.BurndownSnapshot
 
     user = factory.SubFactory(UserFactory)
     timestamp = timezone.now()
@@ -357,3 +354,15 @@ class BurndownSnapshotFactory(DjangoModelFactory):
     project_cards_total_count = 20
     cards_in_complete_column_total_count = 30
     project_cards_in_complete_column_total_count = 40
+
+
+class ContentItemAgileWeightFactory(DjangoModelFactory):
+    class Meta:
+        model = models.ContentItemAgileWeight
+
+    weight = 1
+    content_item = factory.SubFactory(ContentItemFactory)
+
+    @factory.post_generation
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self, *args, **kwargs)

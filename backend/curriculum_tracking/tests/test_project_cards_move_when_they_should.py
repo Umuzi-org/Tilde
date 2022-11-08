@@ -36,6 +36,9 @@ class RecruitProjectReviewCreationTests(TestCase):
                 flavours=card.recruit_project.flavour_names,
             )
             assert card.recruit_project.is_trusted_reviewer(self.trusted_user)
+            project = card.recruit_project
+            project.review_request_time = timezone.now() - timezone.timedelta(days=1)
+            project.save()
 
     def test_review_knows_it_it_is_trusted_or_not_using_trust_obj(self):
         trusted = factories.RecruitProjectReviewFactory(

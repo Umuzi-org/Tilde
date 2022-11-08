@@ -10,8 +10,7 @@ const LOGOUT = "LOGOUT";
 const FETCH_RECRUIT_PROJECTS_PAGE = "FETCH_RECRUIT_PROJECTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE";
-const FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE =
-  "FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE";
+const FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE = "FETCH_USER_BURNDOWN_SNAPSHOTS_PAGE";
 const FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE =
   "FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE";
 const FETCH_SINGLE_PROJECT_CARD_SUMMARY = "FETCH_SINGLE_PROJECT_CARD_SUMMARY";
@@ -48,13 +47,28 @@ const CARD_REMOVE_WORKSHOP_ATTENDANCE = "CARD_REMOVE_WORKSHOP_ATTENDANCE";
 const CARD_SET_PROJECT_LINK = "CARD_SET_PROJECT_LINK";
 
 const FETCH_SINGLE_AGILE_CARD = "FETCH_SINGLE_AGILE_CARD";
+const FETCH_AGILE_CARDS_THAT_REQUIRE_CARD =
+  "FETCH_AGILE_CARDS_THAT_REQUIRE_CARD";
 
-const FETCH_SINGLE_TOPIC_PRGRESS = "FETCH_SINGLE_TOPIC_PRGRESS"; //spelling mistake. fix please
+const FETCH_SINGLE_TOPIC_PROGRESS = "FETCH_SINGLE_TOPIC_PROGRESS"; //spelling mistake. fix please
 
 const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
 
 const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
+
+const FETCH_ACTIVITY_LOG_ENTRIES = "FETCH_ACTIVITY_LOG_ENTRIES";
+
+const FETCH_COMPETENCE_REVIEW_QUEUE_PAGE = "FETCH_COMPETENCE_REVIEW_QUEUE_PAGE";
+const FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE =
+  "FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE";
+
+const FETCH_EVENT_TYPES = "FETCH_EVENT_TYPES";
+
+const FETCH_COMPETENCE_REVIEW_QUALITY_PAGE =
+  "FETCH_COMPETENCE_REVIEW_QUALITY_PAGE";
+const FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE =
+  "FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE";
 
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
@@ -172,16 +186,23 @@ export const apiReduxApps = {
     responseEntityType: "projects",
   }),
 
-  FETCH_SINGLE_TOPIC_PRGRESS: createReduxApp({
-    BASE_TYPE: FETCH_SINGLE_TOPIC_PRGRESS,
+  FETCH_SINGLE_TOPIC_PROGRESS: createReduxApp({
+    BASE_TYPE: FETCH_SINGLE_TOPIC_PROGRESS,
     apiCaller: apiCallers.topicProgressEntity,
-    responseIsList: true,
+    responseIsList: false,
     responseEntityType: "topicProgress",
   }),
 
   FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE: createReduxApp({
     BASE_TYPE: FETCH_PERSONALLY_ASSIGNED_AGILE_CARDS_PAGE,
     apiCaller: apiCallers.personallyAssignedAgileCardsPage,
+    responseIsList: true,
+    responseEntityType: "cards",
+  }),
+
+  FETCH_AGILE_CARDS_THAT_REQUIRE_CARD: createReduxApp({
+    BASE_TYPE: FETCH_AGILE_CARDS_THAT_REQUIRE_CARD,
+    apiCaller: apiCallers.agileCardsThatRequireCard,
     responseIsList: true,
     responseEntityType: "cards",
   }),
@@ -314,6 +335,48 @@ export const apiReduxApps = {
     apiCaller: apiCallers.agileCardEntity,
     responseEntityType: "cards",
     responseIsList: false,
+  }),
+
+  FETCH_ACTIVITY_LOG_ENTRIES: createReduxApp({
+    BASE_TYPE: FETCH_ACTIVITY_LOG_ENTRIES,
+    apiCaller: apiCallers.activityLogEntries,
+    responseIsList: true,
+    responseEntityType: "activityLogEntries",
+  }),
+
+  FETCH_COMPETENCE_REVIEW_QUEUE_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_COMPETENCE_REVIEW_QUEUE_PAGE,
+    apiCaller: apiCallers.competenceReviewQueue,
+    responseIsList: true,
+    responseEntityType: "competenceReviewQueueProject",
+  }),
+
+  FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_PULL_REQUEST_REVIEW_QUEUE_PAGE,
+    apiCaller: apiCallers.pullRequestReviewQueue,
+    responseIsList: true,
+    responseEntityType: "pullRequestReviewQueueProject",
+  }),
+
+  FETCH_EVENT_TYPES: createReduxApp({
+    BASE_TYPE: FETCH_EVENT_TYPES,
+    apiCaller: apiCallers.eventTypes,
+    responseIsList: true,
+    responseEntityType: "eventTypes",
+  }),
+
+  FETCH_COMPETENCE_REVIEW_QUALITY_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_COMPETENCE_REVIEW_QUALITY_PAGE,
+    apiCaller: apiCallers.competenceReviewQualitiesPage,
+    responseIsList: true,
+    responseEntityType: "competenceReviewQualities",
+  }),
+
+  FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE: createReduxApp({
+    BASE_TYPE: FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE,
+    apiCaller: apiCallers.pullRequestReviewQualitiesPage,
+    responseIsList: true,
+    responseEntityType: "pullRequestReviewQualities",
   }),
 };
 
