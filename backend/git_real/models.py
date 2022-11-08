@@ -7,7 +7,10 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
-from .activity_log_creators import log_push_event
+from .activity_log_creators import (
+    log_push_event,
+    log_pr_opened,
+)
 
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -123,6 +126,10 @@ class PullRequest(models.Model, Mixins):
         pull_request, _ = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
+
+        if pull_request_data['base']['repo']['pushed_at'] == pull_request_data['updated_at']:
+            log_pr_opened(pull_request)
+
         return pull_request
 
 
