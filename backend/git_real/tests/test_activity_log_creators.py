@@ -2,7 +2,7 @@
 """
 
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push, UserFactory
+from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -103,3 +103,4 @@ class log_push_event_Tests(APITestCase):
         self.assertEqual(entry.object_1, push)
         self.assertEqual(entry.object_2, push.repository)
         self.assertEqual(entry.event_type.name, creators.GIT_PUSH)
+        
