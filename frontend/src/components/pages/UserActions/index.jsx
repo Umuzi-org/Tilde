@@ -31,10 +31,6 @@ function UserActionsUnconnected({
   fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
-  eventTypes,
-  fetchEventTypes,
-  activityLogDayCounts,
-  fetchActivityLogDayCountsPage,
   // call logs
   FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
   FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
@@ -58,14 +54,6 @@ function UserActionsUnconnected({
     fetchCardCompletions({ page: 1, assigneeUserId: userId });
     fetchUserBurndownStats({ userId });
   }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
-
-  useEffect(() => {
-    fetchEventTypes({ page: 1 });
-  }, [fetchEventTypes]);
-
-  useEffect(() => {
-    fetchActivityLogDayCountsPage({ actorUser: userId, page: 1 });
-  }, [fetchActivityLogDayCountsPage, userId]);
 
   if (
     !userId ||
@@ -164,35 +152,12 @@ function UserActionsUnconnected({
     actionLogByDate[date].push(o);
   });
 
-  const matchColorsToEventTypes = () => {
-    const eventTypeNames = [];
-
-    for (const eventName in eventTypes) {
-      eventTypeNames.push(eventTypes[eventName].name);
-    }
-
-    const colors = [...Object.values(eventTypeColors)];
-    const sortedEventTypeNames = eventTypeNames.sort();
-    const evenTypeColorKeys = [...Object.keys(eventTypeColors)].sort();
-
-    for (let i = 0; i < eventTypes.length; i++) {
-      if (sortedEventTypeNames[i] === evenTypeColorKeys[i]) {
-        eventTypes[i].color = colors[i];
-      }
-    }
-  };
-
-  matchColorsToEventTypes();
-
-  console.log(activityLogDayCounts);
-
   const props = {
     orderedDates,
     actionLogByDate,
     anyLoading,
     handleScroll,
     currentUserBurndownStats,
-    activityLogDayCounts,
   };
   return <Presentation {...props} />;
 }
@@ -207,11 +172,6 @@ const mapStateToProps = (state) => {
     FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
       state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     userBurndownStats: state.apiEntities.burndownSnapshots || {},
-    eventTypes: state.apiEntities.eventTypes,
-    activityLogDayCounts: state.apiEntities.activityLogDayCounts,
-    FETCH_EVENT_TYPES: state.FETCH_EVENT_TYPES,
-    FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE:
-      state.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE,
   };
 };
 
@@ -248,22 +208,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
           data: { userId: parseInt(userId) },
-        })
-      );
-    },
-
-    fetchEventTypes: ({ page }) => {
-      dispatch(
-        apiReduxApps.FETCH_EVENT_TYPES.operations.maybeStart({
-          data: { page },
-        })
-      );
-    },
-
-    fetchActivityLogDayCountsPage: ({ actorUser, page }) => {
-      dispatch(
-        apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.operations.maybeStart({
-          data: { actorUser, page },
         })
       );
     },

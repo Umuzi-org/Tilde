@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Presentation from "./Presentation";
 
-import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { eventTypeColors } from "../../../../colors";
