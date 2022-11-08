@@ -4,34 +4,17 @@ import Presentation from "./Presentation";
 import { connect } from "react-redux";
 
 import { eventTypeColors } from "../../../../colors";
+import { prepareDataForBarGraph } from "./utils";
 
 export function ActivityDashboardBarGraphUnconnected({
   eventTypes,
   activityLogDayCounts,
 }) {
-  const userActivityLogs = [];
+  const formatEventTypeName = (str) => str.toLowerCase().replaceAll("_", " ");
 
-  activityLogDayCounts.forEach((act) => {
-    eventTypes.forEach((ev) => {
-      if (ev.id === act.eventType) {
-        if (
-          !userActivityLogs.some(
-            (userActivityLog) => userActivityLog.date === act.date
-          )
-        ) {
-          const obj = {};
-          obj.date = act.date;
-          userActivityLogs.push(Object.assign(obj, { [ev.name]: act.total }));
-        } else {
-          const dateIndex = userActivityLogs.findIndex(
-            (userActivityLog) => userActivityLog.date === act.date
-          );
-          Object.assign(userActivityLogs[dateIndex], {
-            [ev.name]: act.total,
-          });
-        }
-      }
-    });
+  const barGraphData = prepareDataForBarGraph({
+    eventTypes,
+    activityLogDayCounts,
   });
 
   const eventTypeNames = [];
@@ -51,8 +34,9 @@ export function ActivityDashboardBarGraphUnconnected({
   }
 
   const props = {
-    userActivityLogs,
+    barGraphData,
     eventTypes,
+    formatEventTypeName,
   };
 
   return <Presentation {...props} />;

@@ -14,17 +14,16 @@ import {
 
 export default function ActivityDashboardBarGraph({
   eventTypes,
-  userActivityLogs,
+  barGraphData,
+  formatEventTypeName,
 }) {
-  const formatEventTypeName = (str) => str.toLowerCase().replaceAll("_", " ");
-
   return (
     <Typography>
       <ResponsiveContainer width={"100%"} height={300} min-width={500}>
         <BarChart
           width={730}
           height={350}
-          data={userActivityLogs}
+          data={barGraphData}
           margin={{
             top: 50,
             right: 0,
@@ -44,7 +43,7 @@ export default function ActivityDashboardBarGraph({
               fill={eventType.color}
               name={formatEventTypeName(eventType.name)}
             >
-              {userActivityLogs.map((entry, index) => {
+              {barGraphData.map((entry, index) => {
                 return (
                   <Cell
                     display={entry[eventType.name] ? "" : "none"}
