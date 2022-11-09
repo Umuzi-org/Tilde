@@ -1,6 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
@@ -8,6 +9,7 @@ import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
 import FilterByNames from "./FilterByNames";
+import ReviewQueueFilterChips from "./ReviewQueueFilterChips";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -31,6 +33,13 @@ const useStyles = makeStyles((theme) => {
       padding: "10px 0px",
       backgroundColor: theme.palette.background.default,
       zIndex: 2,
+      display: "flex",
+      flexDirection: "column",
+    },
+    queueContainerHeadingFilters: {
+      display: "flex",
+      alignItems: "center",
+      flexWrap: "wrap",
     },
   };
 });
@@ -51,13 +60,29 @@ export default function Presentation({
   filterIncludeFlavours,
   filterExcludeFlavours,
 
+  allFlavours,
+  allTagNames,
+  applyFilters,
+
+  competenceOrderFilters,
+  setCompetenceOrderFilters,
+  selectedCompetenceOrderFilter,
+  setSelectedCompetenceOrderFilter,
+
+  pullRequestOrderFilters,
+  setPullRequestOrderFilters,
+  selectedPullRequestOrderFilter,
+  setSelectedPullRequestOrderFilter,
+
   handleChangeFlavourFilter,
   handleChangeTagFilter,
 
-  teams,
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -65,67 +90,6 @@ export default function Presentation({
   filterExcludeTags = filterExcludeTags || [];
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
-
-  const allFlavours = [
-    ...new Set(
-      [
-        ...competenceReviewQueueProjects.map((proj) => proj.flavourNames),
-        pullRequestReviewQueueProjects.map((proj) => proj.flavourNames),
-      ]
-        .flat()
-        .flat() // yes, twice
-    ),
-  ].sort();
-
-  const allTagNames = [
-    ...new Set(
-      [
-        ...competenceReviewQueueProjects.map((proj) => proj.tagNames),
-        pullRequestReviewQueueProjects.map((proj) => proj.tagNames),
-      ]
-        .flat()
-        .flat() // yes, twice
-    ),
-  ].sort();
-
-  function applyFilters(project) {
-    if (filterIncludeTags.length) {
-      for (let tag of filterIncludeTags) {
-        if (!project.tagNames.includes(tag)) return false;
-      }
-    }
-
-    if (filterExcludeTags.length) {
-      for (let tag of filterExcludeTags) {
-        if (project.tagNames.includes(tag)) return false;
-      }
-    }
-    if (filterIncludeFlavours.length) {
-      for (let flavour of filterIncludeFlavours) {
-        if (!project.flavourNames.includes(flavour)) return false;
-      }
-    }
-    if (filterExcludeFlavours.length) {
-      for (let flavour of filterExcludeFlavours) {
-        if (project.flavourNames.includes(flavour)) return false;
-      }
-    }
-
-    if (filterIncludeAssigneeTeams.length) {
-      const includedUserIds = Object.values(teams)
-        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
-        .map((team) => team.members)
-        .flat()
-        .map((o) => o.userId);
-
-      const intersection = project.recruitUsers.filter((value) =>
-        includedUserIds.includes(value)
-      );
-      if (intersection.length === 0) return false;
-    }
-
-    return true;
-  }
 
   return (
     <Grid container spacing={3} className={classes.mainSection}>
@@ -139,7 +103,6 @@ export default function Presentation({
             onChange={handleChangeFlavourFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by tag</Typography>
         <Paper>
           <FilterByNames
@@ -149,7 +112,6 @@ export default function Presentation({
             onChange={handleChangeTagFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by assignee team</Typography>
         <Paper>
           <FilterByNames
@@ -159,23 +121,43 @@ export default function Presentation({
             onChange={handleChangeAssigneeTeamFilter}
           />
         </Paper>
+        <Typography variant="h6">Filter by card name</Typography>
+        <Paper>
+          <TextField
+            variant="outlined"
+            placeholder="Card name"
+            value={cardNameSearchValue}
+            onChange={handleChangeCardNameSearchValue}
+            fullWidth
+          />
+        </Paper>
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
           {/* TODO center headings*/}
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Competence Review Queue</Typography>
+            <Grid className={classes.queueContainerHeadingFilters}>
+              <ReviewQueueFilterChips
+                orderFilters={competenceOrderFilters}
+                setFiltersMethod={setCompetenceOrderFilters}
+                setSelectedFilterMethod={setSelectedCompetenceOrderFilter}
+              />
+            </Grid>
           </Grid>
           <Grid>
-            {/* TODO improve scrolling behavior: keep the heading in view, just scroll the items */}
             {competenceReviewQueueProjects
               .filter(applyFilters)
               .sort(
-                (a, b) =>
-                  new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime)
+                selectedCompetenceOrderFilter.isAscending
+                  ? selectedCompetenceOrderFilter.sortInAscendingOrder
+                  : selectedCompetenceOrderFilter.sortInDescendingOrder
               )
               .map((project) => (
-                <CompetenceReviewQueueEntry project={project} />
+                <CompetenceReviewQueueEntry
+                  project={project}
+                  key={`${project.id}`}
+                />
               ))}
           </Grid>
           <Paper elevation={3} className={classes.project} variant="outlined">
@@ -192,17 +174,27 @@ export default function Presentation({
         <Grid item xs={12} md={6} className={classes.queueItem}>
           <Grid className={classes.queueContainerHeading}>
             <Typography variant="h5">Pull Request Review Queue</Typography>
+            <Grid className={classes.queueContainerHeadingFilters}>
+              <ReviewQueueFilterChips
+                orderFilters={pullRequestOrderFilters}
+                setFiltersMethod={setPullRequestOrderFilters}
+                setSelectedFilterMethod={setSelectedPullRequestOrderFilter}
+              />
+            </Grid>
           </Grid>
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
               .sort(
-                (a, b) =>
-                  new Date(b.oldestOpenPrUpdatedTime) -
-                  new Date(a.oldestOpenPrUpdatedTime)
+                selectedPullRequestOrderFilter.isAscending
+                  ? selectedPullRequestOrderFilter.sortInAscendingOrder
+                  : selectedPullRequestOrderFilter.sortInDescendingOrder
               )
               .map((project) => (
-                <PullRequestReviewQueueEntry project={project} />
+                <PullRequestReviewQueueEntry
+                  project={project}
+                  key={`${project.id}`}
+                />
               ))}
           </Grid>
 

@@ -16,6 +16,15 @@ function removeNameFromArray({ array, name }) {
   return array;
 }
 
+function filterByCardName(allCards, cardName) {
+  if (cardName) {
+    return allCards.filter((card) =>
+      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
+    );
+  }
+  return allCards;
+}
+
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
 
@@ -45,6 +54,90 @@ function GlobalCodeReviewDashboardUnconnected({
     []
   );
 
+  const initialPullRequestOrderFilters = [
+    {
+      label: "last updated time",
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.oldestOpenPrUpdatedTime) -
+        new Date(a.oldestOpenPrUpdatedTime),
+      sortInDescendingOrder: (a, b) =>
+        new Date(a.oldestOpenPrUpdatedTime) -
+        new Date(b.oldestOpenPrUpdatedTime),
+      isSelected: true,
+      isAscending: false,
+    },
+  ];
+
+  const initialCompetenceOrderFilters = [
+    {
+      label: "review request time",
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.reviewRequestTime) - new Date(a.reviewRequestTime),
+      sortInDescendingOrder: (a, b) =>
+        new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime),
+      isSelected: true,
+      isAscending: false,
+    },
+    {
+      label: "start time",
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.startTime) - new Date(a.startTime),
+      sortInDescendingOrder: (a, b) =>
+        new Date(a.startTime) - new Date(b.startTime),
+      isSelected: false,
+      isAscending: false,
+    },
+    {
+      label: "positive reviews",
+      sortInAscendingOrder: (a, b) => {
+        return (
+          a.codeReviewCompetentSinceLastReviewRequest +
+          a.codeReviewExcellentSinceLastReviewRequest -
+          (b.codeReviewCompetentSinceLastReviewRequest +
+            b.codeReviewExcellentSinceLastReviewRequest)
+        );
+      },
+      sortInDescendingOrder: (a, b) => {
+        return (
+          b.codeReviewCompetentSinceLastReviewRequest +
+          b.codeReviewExcellentSinceLastReviewRequest -
+          (a.codeReviewCompetentSinceLastReviewRequest +
+            a.codeReviewExcellentSinceLastReviewRequest)
+        );
+      },
+      isSelected: false,
+      isAscending: false,
+    },
+  ];
+
+  const [pullRequestOrderFilters, setPullRequestOrderFilters] = useState(
+    initialPullRequestOrderFilters
+  );
+
+  const [competenceOrderFilters, setCompetenceOrderFilters] = useState(
+    initialCompetenceOrderFilters
+  );
+
+  const [
+    selectedPullRequestOrderFilter,
+    setSelectedPullRequestOrderFilter,
+  ] = useState(() => {
+    return pullRequestOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
+
+  const [
+    selectedCompetenceOrderFilter,
+    setSelectedCompetenceOrderFilter,
+  ] = useState(() => {
+    return competenceOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
+
+  const [cardNameSearchValue, setCardNameSearchValue] = useState("");
+
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
     fetchPullRequestReviewQueuePage({ page: 1 });
@@ -70,6 +163,71 @@ function GlobalCodeReviewDashboardUnconnected({
   const pullRequestReviewQueueProjects = Object.values(
     pullRequestReviewQueueProjectsObject || {}
   );
+
+  const allFlavours = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.flavourNames),
+        pullRequestReviewQueueProjects.map((proj) => proj.flavourNames),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ].sort();
+
+  const allTagNames = [
+    ...new Set(
+      [
+        ...competenceReviewQueueProjects.map((proj) => proj.tagNames),
+        pullRequestReviewQueueProjects.map((proj) => proj.tagNames),
+      ]
+        .flat()
+        .flat() // yes, twice
+    ),
+  ].sort();
+
+  const allTeamNames = Object.values(teams)
+    .map((o) => o.name)
+    .sort();
+
+  function applyFilters(project) {
+    if (filterIncludeTags.length) {
+      for (const tag of filterIncludeTags) {
+        if (!project.tagNames.includes(tag)) return false;
+      }
+    }
+
+    if (filterExcludeTags.length) {
+      for (const tag of filterExcludeTags) {
+        if (project.tagNames.includes(tag)) return false;
+      }
+    }
+    if (filterIncludeFlavours.length) {
+      for (const flavour of filterIncludeFlavours) {
+        if (!project.flavourNames.includes(flavour)) return false;
+      }
+    }
+    if (filterExcludeFlavours.length) {
+      for (const flavour of filterExcludeFlavours) {
+        if (project.flavourNames.includes(flavour)) return false;
+      }
+    }
+
+    if (filterIncludeAssigneeTeams.length) {
+      const includedUserIds = Object.values(teams)
+        .filter((team) => filterIncludeAssigneeTeams.includes(team.name))
+        .map((team) => team.members)
+        .flat()
+        .map((o) => o.userId);
+
+      const intersection = project.recruitUsers.filter((value) =>
+        includedUserIds.includes(value)
+      );
+      if (intersection.length === 0) return false;
+    }
+
+    return true;
+  }
 
   function fetchNextCompetenceReviewQueuePage() {
     const page = fetchCompetenceReviewQueueLastCall.requestData.page + 1;
@@ -128,18 +286,22 @@ function GlobalCodeReviewDashboardUnconnected({
 
   const handleChangeAssigneeTeamFilter = handleChangeFilter({
     includes: filterIncludeAssigneeTeams,
-    // excludes: [],
     setIncludes: setFilterIncludeAssigneeTeams,
-    // setExcludes:
   });
 
-  const allTeamNames = Object.values(teams)
-    .map((o) => o.name)
-    .sort();
+  function handleChangeCardNameSearchValue(e) {
+    setCardNameSearchValue(e.target.value);
+  }
 
   const props = {
-    competenceReviewQueueProjects,
-    pullRequestReviewQueueProjects,
+    competenceReviewQueueProjects: filterByCardName(
+      competenceReviewQueueProjects,
+      cardNameSearchValue
+    ),
+    pullRequestReviewQueueProjects: filterByCardName(
+      pullRequestReviewQueueProjects,
+      cardNameSearchValue
+    ),
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
@@ -153,13 +315,29 @@ function GlobalCodeReviewDashboardUnconnected({
     filterIncludeFlavours,
     filterExcludeFlavours,
 
+    allFlavours,
+    allTagNames,
+    applyFilters,
+
+    competenceOrderFilters,
+    setCompetenceOrderFilters,
+    selectedCompetenceOrderFilter,
+    setSelectedCompetenceOrderFilter,
+
+    pullRequestOrderFilters,
+    setPullRequestOrderFilters,
+    selectedPullRequestOrderFilter,
+    setSelectedPullRequestOrderFilter,
+
     handleChangeFlavourFilter,
     handleChangeTagFilter,
 
-    teams,
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
+
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
   };
   return <Presentation {...props} />;
 }

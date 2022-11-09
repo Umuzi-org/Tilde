@@ -1,3 +1,33 @@
+import { eventTypeColors } from "../../../colors";
+
+export function addEventColorsToLogEntries({ eventTypes, activityLogEntries }) {
+  const eventTypesWithEventNames = Object.values(eventTypes).map(
+    (eventType) => {
+      return {
+        id: eventType.id,
+        eventName: eventType.name,
+        eventColor: eventTypeColors[eventType.name],
+      };
+    }
+  );
+
+  activityLogEntries = Object.keys(activityLogEntries).map(
+    (key) => activityLogEntries[key]
+  );
+
+  const newData = activityLogEntries.map((item, index) => {
+    const data = eventTypesWithEventNames.find(
+      (elem) => elem.id === item.eventType
+    );
+    return {
+      ...item,
+      eventName: data ? data.eventName : "",
+      eventColor: data ? data.eventColor : "",
+    };
+  });
+  return newData;
+}
+
 export function fillInSnapshotDateGaps({ burnDownSnapshots }) {
   const datesArray = burnDownSnapshots.map((burnDownSnapshot) => {
     return burnDownSnapshot.timestamp;
