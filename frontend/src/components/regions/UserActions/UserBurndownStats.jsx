@@ -38,7 +38,6 @@ export default ({ burnDownSnapshots }) => {
     burnDownSnapshots,
   });
 
-  console.log(burnDownSnapshots);
 
   const classes = useStyles();
   return (
