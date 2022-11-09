@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => {
   const accordionTitle = {
     marginLeft: "-4px",
     marginTop: "8px",
-    fontSize: "0.83em",
   };
   const accordion = {
     backgroundColor: "inherit",
