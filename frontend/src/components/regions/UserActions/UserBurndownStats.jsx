@@ -38,7 +38,6 @@ export default ({ burnDownSnapshots }) => {
     burnDownSnapshots,
   });
 
-
   const classes = useStyles();
   return (
     <React.Fragment>
