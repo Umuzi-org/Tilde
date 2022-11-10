@@ -10,7 +10,7 @@ import {
   YAxis,
   Cell,
 } from "recharts";
-import { Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 export default function ActivityDashboardBarGraph({
   eventTypes,

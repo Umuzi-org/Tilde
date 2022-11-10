@@ -17,19 +17,12 @@ export function ActivityDashboardBarGraphUnconnected({
     activityLogDayCounts,
   });
 
-  const eventTypeNames = [];
-
-  for (const eventName in eventTypes) {
-    eventTypeNames.push(eventTypes[eventName].name);
-  }
-
-  const colors = [...Object.values(eventTypeColors)];
-  const sortedEventTypeNames = eventTypeNames.sort();
-  const evenTypeColorKeys = [...Object.keys(eventTypeColors)].sort();
-
-  for (let i = 0; i < eventTypes.length; i++) {
-    if (sortedEventTypeNames[i] === evenTypeColorKeys[i]) {
-      eventTypes[i].color = colors[i];
+  const colors = Object.entries(eventTypeColors);
+  for (let color in colors) {
+    for (let event in eventTypes) {
+      if (eventTypes[event].name === colors[color][0]) {
+        eventTypes[event].color = colors[color][1];
+      }
     }
   }
 
