@@ -9,8 +9,6 @@ export default {
   component: ActivityDashboardBarGraphUnconnected,
 };
 
-console.log(allActivityData);
-
 const Template = (args) => <ActivityDashboardBarGraphUnconnected {...args} />;
 
 export const Primary = Template.bind({});
