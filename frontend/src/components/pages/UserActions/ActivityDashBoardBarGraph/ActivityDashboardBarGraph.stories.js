@@ -1,7 +1,7 @@
 import React from "react";
 
-import activityBarGraphData from "./storyData/ActivityDashBoardBargraphData.json";
-import eventTypeData from "./storyData/eventTypes.json";
+import allActivityData from "./storyData/allActivityData.json";
+
 import { ActivityDashboardBarGraphUnconnected } from ".";
 
 export default {
@@ -9,11 +9,13 @@ export default {
   component: ActivityDashboardBarGraphUnconnected,
 };
 
+console.log(allActivityData);
+
 const Template = (args) => <ActivityDashboardBarGraphUnconnected {...args} />;
 
 export const Primary = Template.bind({});
 
 Primary.args = {
-  activityLogDayCounts: activityBarGraphData,
-  eventTypes: eventTypeData,
+  activityLogDayCounts: allActivityData.activityLogDayCounts,
+  eventTypes: allActivityData.eventTypes,
 };
