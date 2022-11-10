@@ -35,9 +35,9 @@ const useStyles = makeStyles((theme) =>
       padding: theme.spacing(2),
       height: "100%",
       textAlign: "auto",
-      color: theme.palette.text.primary,
       boxSizing: "border-box",
       maxHeight: 350,
+      overflowY: "auto",
     },
     gridItem: {
       boxSizing: "border-box",

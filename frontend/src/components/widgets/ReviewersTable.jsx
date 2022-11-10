@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => {
       [theme.breakpoints.down("md")]: {
         maxHeight: "30vh",
       },
-      overflow: "auto",
+      overflow: "hidden",
     },
     dates: {
       paddingTop: "6%",
