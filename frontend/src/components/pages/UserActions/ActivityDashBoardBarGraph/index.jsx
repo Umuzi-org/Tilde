@@ -1,0 +1,53 @@
+import React, { useEffect } from "react";
+import Presentation from "./Presentation";
+
+import { connect } from "react-redux";
+
+import { eventTypeColors } from "../../../../colors";
+import { prepareDataForBarGraph } from "./utils";
+
+export function ActivityDashboardBarGraphUnconnected({
+  eventTypes,
+  activityLogDayCounts,
+}) {
+  const formatEventTypeName = (str) => str.toLowerCase().replaceAll("_", " ");
+
+  const barGraphData = prepareDataForBarGraph({
+    eventTypes,
+    activityLogDayCounts,
+  });
+
+  const eventTypeNames = [];
+
+  for (const eventName in eventTypes) {
+    eventTypeNames.push(eventTypes[eventName].name);
+  }
+
+  const colors = [...Object.values(eventTypeColors)];
+  const sortedEventTypeNames = eventTypeNames.sort();
+  const evenTypeColorKeys = [...Object.keys(eventTypeColors)].sort();
+
+  for (let i = 0; i < eventTypes.length; i++) {
+    if (sortedEventTypeNames[i] === evenTypeColorKeys[i]) {
+      eventTypes[i].color = colors[i];
+    }
+  }
+
+  const props = {
+    barGraphData,
+    eventTypes,
+    formatEventTypeName,
+  };
+
+  return <Presentation {...props} />;
+}
+
+const mapStateToProps = (state) => {};
+
+const mapDispatchToProps = (dispatch) => {};
+
+const ActivityDashboardBarGraph = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ActivityDashboardBarGraphUnconnected);
+export default ActivityDashboardBarGraph;
