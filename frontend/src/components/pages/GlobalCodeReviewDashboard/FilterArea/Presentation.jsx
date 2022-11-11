@@ -9,22 +9,18 @@ import { filterList } from "../utils";
 
 const useStyles = makeStyles((theme) => {
   return {
-    filterByNamesContainer: {
-      margin: 0,
-      width: "100%",
-    },
-    filterByNamesItem: {
+    filterByItemNames: {
       maxHeight: "90vh",
       overflowY: "scroll",
     },
-    filterByNamesContainerHeading: {
+    filterByContainerHeadingNames: {
       position: "sticky",
       top: -5,
       padding: "10px",
       backgroundColor: "#fff",
       zIndex: 2,
     },
-    filterByNamesItemBody: {
+    filterByItemBodyNames: {
       padding: "0px 10px",
     },
   };
@@ -60,11 +56,11 @@ export default function Presentation({
   const classes = useStyles();
 
   return (
-    <Grid className={classes.filterByNamesItem}>
-      <Grid className={classes.filterByNamesContainerHeading}>
+    <Grid className={classes.filterByItemNames}>
+      <Grid className={classes.filterByContainerHeadingNames}>
         <Typography variant="h5">Filters</Typography>
       </Grid>
-      <Grid className={classes.filterByNamesItemBody}>
+      <Grid className={classes.filterByItemBodyNames}>
         <Typography variant="h6">Filter by flavour</Typography>
         <Paper className={classes.filterByItemPaper}>
           <FilterByNames
