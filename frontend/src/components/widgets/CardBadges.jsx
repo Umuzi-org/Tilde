@@ -14,7 +14,7 @@ import { repoUrlCleaner } from "./utils";
 import { IN_REVIEW } from "../../constants";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { toolTipTheme } from "./ToolTipTheme";
+import theme from "./theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +55,7 @@ export default ({ card }) => {
     oldestOpenPrUpdatedTime,
   } = card;
   return (
-    <ThemeProvider theme={toolTipTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className={classes.root}>
         {codeReviewCompetentSinceLastReviewRequest ? (
