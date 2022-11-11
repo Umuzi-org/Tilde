@@ -128,6 +128,6 @@ class log_pr_opened_Tests(APITestCase):
 
         self.assertEqual(entry.actor_user, pull_request.user)
         self.assertEqual(entry.effected_user, pull_request.user)
-        # self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.object_1, pull_request)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
         self.assertEqual(pull_request.state, 'open')
