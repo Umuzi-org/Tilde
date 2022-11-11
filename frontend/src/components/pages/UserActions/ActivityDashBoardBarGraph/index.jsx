@@ -18,8 +18,8 @@ export function ActivityDashboardBarGraphUnconnected({
   });
 
   const colors = Object.entries(eventTypeColors);
-  for (let color in colors) {
-    for (let event in eventTypes) {
+  for (const color in colors) {
+    for (const event in eventTypes) {
       if (eventTypes[event].name === colors[color][0]) {
         eventTypes[event].color = colors[color][1];
       }

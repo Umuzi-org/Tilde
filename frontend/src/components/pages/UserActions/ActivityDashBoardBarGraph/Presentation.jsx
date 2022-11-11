@@ -39,6 +39,7 @@ export default function ActivityDashboardBarGraph({
 
           {eventTypes.map((eventType) => (
             <Bar
+              key={eventType.id}
               dataKey={eventType.name}
               fill={eventType.color}
               name={formatEventTypeName(eventType.name)}
