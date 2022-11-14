@@ -69,7 +69,7 @@ function lookForFailures(testOutput) {
     if (line.indexOf("TypeError:") !== -1) {
       return `${
         line.split("TypeError: ")[1]
-      } - please make sure you are following the instructions. Pay close attention to function arguments`;
+      } - please make sure you are following the instructions. Pay close attention to all names (including file paths) and function arguments`;
     }
 
     if (line.indexOf("AssertionError:") !== -1) {
