@@ -484,9 +484,10 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         actor_user = UserFactory(is_superuser=True)
         self.login(actor_user)
 
-        add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
+        # add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
         response = self.client.post(
-            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+            path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
+            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
         )
         self.assertEqual(response.status_code, 200)
         # card1.refresh_from_db()
@@ -496,16 +497,18 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
         # card1.refresh_from_db()
 
-        add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
+        # add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
         response = self.client.post(
-            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+            path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
+            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
         )
         self.assertEqual(response.status_code, 200)
         card1.refresh_from_db()
 
-        add_review_url = f"{self.get_instance_url(card2.id)}add_review/"
+        # add_review_url = f"{self.get_instance_url(card2.id)}add_review/"
         response = self.client.post(
-            add_review_url, data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+            path=f"{self.get_instance_url(pk=card2.id)}add_review/", 
+            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
         )
         self.assertEqual(response.status_code, 200)
         card2.refresh_from_db()
