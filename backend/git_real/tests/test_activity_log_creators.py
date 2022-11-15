@@ -18,6 +18,8 @@ import mock
 # from git_real.models import PullRequest, PullRequestReview, Push
 from social_auth.tests.factories import SocialProfileFactory
 
+from curriculum_tracking.models import RecruitProject
+
 
 class log_pr_reviewed_created_Tests(TestCase):
     def test_that_timestamp_properly_set(self):
@@ -123,11 +125,16 @@ class log_pr_opened_Tests(APITestCase):
         self.assertEqual(PullRequest.objects.count(), 1)
          
         entry = LogEntry.objects.last()
+        project = RecruitProject.objects.filter(
+                repository=pull_request.repository,
+            ).order_by("pk").last()
+
 
         self.assertEqual(LogEntry.objects.count(), 1)
 
         self.assertEqual(entry.actor_user, pull_request.user)
         self.assertEqual(entry.effected_user, pull_request.user)
         self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.object_2, project)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
         self.assertEqual(pull_request.state, 'open')
