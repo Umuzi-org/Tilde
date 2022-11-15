@@ -15,7 +15,6 @@ import {
   TableRow,
   Grid,
   TextField,
-  TableContainer,
 } from "@material-ui/core";
 
 import FilterIcon from "@material-ui/icons/Filter"; //TODO better icon. Need to upgrade material ui
@@ -25,11 +24,6 @@ import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -49,12 +43,24 @@ const useStyles = makeStyles((theme) => ({
   bottomMargin: {
     marginBottom: "8px",
   },
-  rightScroll: {
-    overflowX: "auto",
-  },
-  split: {
-    height: "1295px",
+  cards: {
+    maxHeight: "90vh",
     overflowY: "scroll",
+    padding: "0px 10px",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  filterCards: {
+    position: "sticky",
+    top: -5,
+    padding: "10px 0px",
+    zIndex: 2,
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  ButtonSpaces: {
     "& > *": {
       margin: theme.spacing(1),
     },
@@ -75,7 +81,6 @@ function TeamSummaryStats({ summaryStats }) {
     classes[getTildeReviewStatus(dateOfOldestTildeReviewRequest)];
 
   return (
-    <TableContainer component={Paper}>
     <Table>
       <TableHead>
         <TableRow>
@@ -105,7 +110,6 @@ function TeamSummaryStats({ summaryStats }) {
         </TableRow>
       </TableBody>
     </Table>
-    </TableContainer>
   );
 }
 
@@ -120,7 +124,7 @@ function TeamCard({
 
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2} >
+    <Paper variant="outlined" elevation={2}>
       <Typography
         variant="h6"
         gutterBottom
@@ -129,7 +133,10 @@ function TeamCard({
       >
         {team.name}
       </Typography>
-      <Link  className={classes.root} to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}>
+      <Link
+        className={classes.ButtonSpaces}
+        to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}
+      >
         <Button
           variant="outlined"
           color="default"
@@ -158,7 +165,7 @@ function TeamCard({
 function UserCard({ email, user }) {
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2} className={classes.root}>
+    <Paper variant="outlined" elevation={2} className={classes.ButtonSpaces}>
       <Typography
         variant="h6"
         gutterBottom
@@ -187,9 +194,9 @@ export default function Presentation({
 }) {
   const classes = useStyles();
   return (
-    <Grid container spacing={0}>
-      <Grid item xs={6} className={classes.split}>
-        <Paper variant="outlined" elevation={2} className={classes.root}>
+    <Grid container spacing={2}>
+      <Grid item xs={6} className={classes.cards}>
+        <Paper variant="outlined" elevation={2} className={classes.filterCards}>
           <Typography
             variant="h5"
             gutterBottom
@@ -219,8 +226,8 @@ export default function Presentation({
           );
         })}
       </Grid>
-      <Grid item xs={6} className={classes.root}>
-        <Paper variant="outlined" elevation={2} className={classes.root}>
+      <Grid item xs={6} className={classes.cards}>
+        <Paper variant="outlined" elevation={2} className={classes.filterCards}>
           <Typography
             variant="h5"
             gutterBottom
