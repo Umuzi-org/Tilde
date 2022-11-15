@@ -1,6 +1,6 @@
 import React from "react";
 
-import allUserActions from "./storyData/allUserActions.json";
+import activityLogBarGraphStorybookData from "./storyData/activityLogBarGraphStorybookData.json";
 import { ActivityDashboardBarGraphUnconnected } from ".";
 
 export default {
@@ -13,6 +13,6 @@ const Template = (args) => <ActivityDashboardBarGraphUnconnected {...args} />;
 export const Primary = Template.bind({});
 
 Primary.args = {
-  activityLogDayCounts: allUserActions.activityLogDayCount,
-  eventTypes: allUserActions.eventTypes,
+  activityLogDayCounts: activityLogBarGraphStorybookData.activityLogDayCount,
+  eventTypes: activityLogBarGraphStorybookData.eventTypes,
 };
