@@ -103,5 +103,10 @@
         "userActive": true
       }
     ]
+  },
+  "metrics": {
+    "projectCardsTotalCount": "Total Projects",
+    "cardsInCompleteColumnTotalCount": "Completed Cards",
+    "projectCardsInCompleteColumnTotalCount": "completed Projects"
   }
 }

@@ -20,10 +20,10 @@ export const Primary = Template.bind({});
 Primary.args = {
   // mapStateToProps
   currentTeamBurndownStats: multiUserBurndownData.teamBurnDownStats,
-  userTeam: multiUserBurndownData.team,
+  team: multiUserBurndownData.team,
+  metrics: multiUserBurndownData.metrics,
 
   // mapDispatchToProps
 
   // storybook
-  forceUser: 2,
 };
