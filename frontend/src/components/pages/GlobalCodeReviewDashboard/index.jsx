@@ -16,6 +16,15 @@ function removeNameFromArray({ array, name }) {
   return array;
 }
 
+function filterByCardName(allCards, cardName) {
+  if (cardName) {
+    return allCards.filter((card) =>
+      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
+    );
+  }
+  return allCards;
+}
+
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
 
@@ -48,28 +57,47 @@ function GlobalCodeReviewDashboardUnconnected({
   const initialPullRequestOrderFilters = [
     {
       label: "last updated time",
-      sortFunction: (a, b) =>
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.oldestOpenPrUpdatedTime) -
+        new Date(a.oldestOpenPrUpdatedTime),
+      sortInDescendingOrder: (a, b) =>
         new Date(a.oldestOpenPrUpdatedTime) -
         new Date(b.oldestOpenPrUpdatedTime),
       isSelected: true,
+      isAscending: false,
     },
   ];
 
   const initialCompetenceOrderFilters = [
     {
       label: "review request time",
-      sortFunction: (a, b) =>
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.reviewRequestTime) - new Date(a.reviewRequestTime),
+      sortInDescendingOrder: (a, b) =>
         new Date(a.reviewRequestTime) - new Date(b.reviewRequestTime),
       isSelected: true,
+      isAscending: false,
     },
     {
       label: "start time",
-      sortFunction: (a, b) => new Date(a.startTime) - new Date(b.startTime),
+      sortInAscendingOrder: (a, b) =>
+        new Date(b.startTime) - new Date(a.startTime),
+      sortInDescendingOrder: (a, b) =>
+        new Date(a.startTime) - new Date(b.startTime),
       isSelected: false,
+      isAscending: false,
     },
     {
       label: "positive reviews",
-      sortFunction: (a, b) => {
+      sortInAscendingOrder: (a, b) => {
+        return (
+          a.codeReviewCompetentSinceLastReviewRequest +
+          a.codeReviewExcellentSinceLastReviewRequest -
+          (b.codeReviewCompetentSinceLastReviewRequest +
+            b.codeReviewExcellentSinceLastReviewRequest)
+        );
+      },
+      sortInDescendingOrder: (a, b) => {
         return (
           b.codeReviewCompetentSinceLastReviewRequest +
           b.codeReviewExcellentSinceLastReviewRequest -
@@ -78,6 +106,7 @@ function GlobalCodeReviewDashboardUnconnected({
         );
       },
       isSelected: false,
+      isAscending: false,
     },
   ];
 
@@ -106,6 +135,8 @@ function GlobalCodeReviewDashboardUnconnected({
       (orderFilter) => orderFilter.isSelected
     )[0];
   });
+
+  const [cardNameSearchValue, setCardNameSearchValue] = useState("");
 
   useEffect(() => {
     fetchCompetenceReviewQueuePage({ page: 1 });
@@ -154,6 +185,10 @@ function GlobalCodeReviewDashboardUnconnected({
         .flat() // yes, twice
     ),
   ].sort();
+
+  const allTeamNames = Object.values(teams)
+    .map((o) => o.name)
+    .sort();
 
   function applyFilters(project) {
     if (filterIncludeTags.length) {
@@ -251,18 +286,22 @@ function GlobalCodeReviewDashboardUnconnected({
 
   const handleChangeAssigneeTeamFilter = handleChangeFilter({
     includes: filterIncludeAssigneeTeams,
-    // excludes: [],
     setIncludes: setFilterIncludeAssigneeTeams,
-    // setExcludes:
   });
 
-  const allTeamNames = Object.values(teams)
-    .map((o) => o.name)
-    .sort();
+  function handleChangeCardNameSearchValue(e) {
+    setCardNameSearchValue(e.target.value);
+  }
 
   const props = {
-    competenceReviewQueueProjects,
-    pullRequestReviewQueueProjects,
+    competenceReviewQueueProjects: filterByCardName(
+      competenceReviewQueueProjects,
+      cardNameSearchValue
+    ),
+    pullRequestReviewQueueProjects: filterByCardName(
+      pullRequestReviewQueueProjects,
+      cardNameSearchValue
+    ),
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
@@ -296,6 +335,9 @@ function GlobalCodeReviewDashboardUnconnected({
     allTeamNames,
     filterIncludeAssigneeTeams,
     handleChangeAssigneeTeamFilter,
+
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
   };
   return <Presentation {...props} />;
 }
