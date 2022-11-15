@@ -3,23 +3,24 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Loading from "../../widgets/Loading";
 import { makeStyles } from "@material-ui/core/styles";
-import DayLog from "./DayLog";
 import UserBurnDownChart from "./UserBurndownStats";
+import ActivityLog from "./ActivityLog";
+import Button from "../../widgets/Button";
 
 const useStyles = makeStyles((theme) => ({
   column: {
-    height: "85%", // TODO. Fit viewport
+    height: "100%", // TODO. Fit viewport
     overflowY: "scroll",
   },
 }));
 
 export default function Presentation({
   orderedDates,
-  actionLogByDate,
-  handleClickOpenProjectDetails,
   handleScroll,
   anyLoading,
   currentUserBurndownStats,
+  activityLogEntries,
+  fetchNextPages,
 }) {
   const classes = useStyles();
   return (
@@ -34,14 +35,11 @@ export default function Presentation({
         )}
         <Grid item xs={12}>
           <Paper>
-            {orderedDates.map((date) => (
-              <DayLog
-                date={date}
-                key={date}
-                actions={actionLogByDate[date]}
-                handleClickOpenProjectDetails={handleClickOpenProjectDetails}
-              />
-            ))}
+            <ActivityLog
+              eventList={activityLogEntries}
+              orderedDates={orderedDates}
+            />
+            <Button onClick={fetchNextPages}>Load More</Button>
 
             {anyLoading && <Loading />}
           </Paper>
