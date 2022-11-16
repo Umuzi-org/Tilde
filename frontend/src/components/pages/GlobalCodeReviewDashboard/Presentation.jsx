@@ -1,6 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
@@ -79,6 +80,9 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -99,7 +103,6 @@ export default function Presentation({
             onChange={handleChangeFlavourFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by tag</Typography>
         <Paper>
           <FilterByNames
@@ -109,7 +112,6 @@ export default function Presentation({
             onChange={handleChangeTagFilter}
           />
         </Paper>
-
         <Typography variant="h6">Filter by assignee team</Typography>
         <Paper>
           <FilterByNames
@@ -117,6 +119,16 @@ export default function Presentation({
             filterInclude={filterIncludeAssigneeTeams}
             filterExclude={[]}
             onChange={handleChangeAssigneeTeamFilter}
+          />
+        </Paper>
+        <Typography variant="h6">Filter by card name</Typography>
+        <Paper>
+          <TextField
+            variant="outlined"
+            placeholder="Card name"
+            value={cardNameSearchValue}
+            onChange={handleChangeCardNameSearchValue}
+            fullWidth
           />
         </Paper>
       </Grid>
@@ -136,7 +148,11 @@ export default function Presentation({
           <Grid>
             {competenceReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedCompetenceOrderFilter.sortFunction)
+              .sort(
+                selectedCompetenceOrderFilter.isAscending
+                  ? selectedCompetenceOrderFilter.sortInAscendingOrder
+                  : selectedCompetenceOrderFilter.sortInDescendingOrder
+              )
               .map((project) => (
                 <CompetenceReviewQueueEntry
                   project={project}
@@ -169,7 +185,11 @@ export default function Presentation({
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedPullRequestOrderFilter.sortFunction)
+              .sort(
+                selectedPullRequestOrderFilter.isAscending
+                  ? selectedPullRequestOrderFilter.sortInAscendingOrder
+                  : selectedPullRequestOrderFilter.sortInDescendingOrder
+              )
               .map((project) => (
                 <PullRequestReviewQueueEntry
                   project={project}
