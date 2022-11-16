@@ -4,8 +4,10 @@ import DueTimeFormModal from "../components/regions/DueTimeFormModal/Presentatio
 import agileCard from "./fixtures/agileCard.json";
 
 export default {
-    title: "Tilde/DueTimeFormModal/DueTimeFormModal",
-    component: DueTimeFormModal
-}
+  title: "Tilde/DueTimeFormModal/DueTimeFormModal",
+  component: DueTimeFormModal,
+};
 
-export const Primary = () => <DueTimeFormModal card={agileCard} />
+export const Primary = () => (
+  <DueTimeFormModal cards={agileCard} cardId={agileCard.id} />
+);
