@@ -46,7 +46,6 @@ function DueTimeFormModalUnconnected({
     setDueTime,
     handleClose,
     handleSubmit,
-    loading: latestCall.loading,
   };
 
   return <Presentation {...props} />;

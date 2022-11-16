@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import Button from "../../widgets/Button";
 import DateTimePicker from "react-datetime-picker";
 import Modal from "../../widgets/Modal";
-import CardButton from "../../widgets/CardButton";
 
 const useStyles = makeStyles({
   buttons: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
   dueTimeButton: {
     marginRight: "0.3rem",
@@ -34,7 +34,6 @@ export default function Presentation({
   setDueTime,
   handleClose,
   handleSubmit,
-  loading,
 }) {
   const classes = useStyles();
   if (cardId)
@@ -50,20 +49,20 @@ export default function Presentation({
                 className={classes.dateTimePicker}
               />
               <p className={classes.buttons}>
-                <CardButton
-                  className={classes.dueTimeButton}
-                  variant="outlined"
-                  onClick={() => handleSubmit(dueTime)}
-                  loading={loading}
-                  label={"Save"}
-                />
-                <CardButton
+                <Button
                   className={classes.dueTimeButton}
                   variant="outlined"
                   onClick={handleClose}
-                  loading={loading}
-                  label={"Close"}
-                />
+                >
+                  Close
+                </Button>
+                <Button
+                  className={classes.dueTimeButton}
+                  variant="outlined"
+                  onClick={() => handleSubmit(dueTime)}
+                >
+                  Save
+                </Button>
               </p>
             </form>
           ) : (
