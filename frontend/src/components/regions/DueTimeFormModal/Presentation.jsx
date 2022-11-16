@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import DateTimePicker from "react-datetime-picker";
 import Modal from "../../widgets/Modal";
+import CardButton from "../../widgets/CardButton";
 
 const useStyles = makeStyles({
   buttons: {
@@ -50,22 +50,20 @@ export default function Presentation({
                 className={classes.dateTimePicker}
               />
               <p className={classes.buttons}>
-                <Button
+                <CardButton
                   className={classes.dueTimeButton}
                   variant="outlined"
                   onClick={() => handleSubmit(dueTime)}
                   loading={loading}
-                >
-                  Save
-                </Button>
-                <Button
+                  label={"Save"}
+                />
+                <CardButton
                   className={classes.dueTimeButton}
                   variant="outlined"
                   onClick={handleClose}
-                  loading={false}
-                >
-                  Close
-                </Button>
+                  loading={loading}
+                  label={"Close"}
+                />
               </p>
             </form>
           ) : (
