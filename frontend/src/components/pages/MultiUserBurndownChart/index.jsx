@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import { fillInSnapshotDateGaps } from "./utils";
@@ -12,6 +12,12 @@ export function MultiUserBurndownChartUnconnected({
 
   // storybook
 }) {
+  const [metricFilter, setMetricFilter] = useState("projectCardsTotalCount");
+
+  const handleChangeMetricFilter = (newValue) => {
+    setMetricFilter(newValue);
+  };
+  
   currentTeamBurndownStats = currentTeamBurndownStats
     ? Object.values(currentTeamBurndownStats)
     : {};
@@ -56,6 +62,8 @@ export function MultiUserBurndownChartUnconnected({
   const props = {
     userSnapshotArray,
     metrics,
+    metricFilter,
+    handleChangeMetricFilter,
   };
 
   return <Presentation {...props} />;

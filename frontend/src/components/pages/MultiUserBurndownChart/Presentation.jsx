@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Presentation({ userSnapshotArray, metrics }) {
-  const [metricFilter, setMetricFilter] = useState("projectCardsTotalCount");
+function Presentation({ userSnapshotArray, metrics, metricFilter, handleChangeMetricFilter }) {
+  
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -40,7 +40,7 @@ function Presentation({ userSnapshotArray, metrics }) {
         Filter Metric:{" "}
         {Object.keys(metrics).map((metric) => (
           <Button
-            onClick={() => setMetricFilter(metric)}
+            onClick={() => handleChangeMetricFilter(metric)}
             variant="outlined"
             className={
               metricFilter === metric
