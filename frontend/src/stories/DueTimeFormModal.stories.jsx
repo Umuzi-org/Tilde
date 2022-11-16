@@ -4,7 +4,7 @@ import DueTimeFormModal from "../components/regions/DueTimeFormModal/Presentatio
 import agileCard from "./fixtures/agileCard.json";
 
 export default {
-  title: "Tilde/DueTimeFormModal/DueTimeFormModal",
+  title: "Tilde/DueTimeFormModal",
   component: DueTimeFormModal,
 };
 
