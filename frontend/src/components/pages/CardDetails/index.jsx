@@ -104,7 +104,7 @@ function CardDetailsUnconnected({
     openDueTimeFormModal({ cardId });
   };
 
-  const viewedUser = card && users[card.assignees[0]];
+  const viewedUser = card && users && users[card.assignees[0]];
   // eslint-disable-next-line
 
   const isAssignee =
