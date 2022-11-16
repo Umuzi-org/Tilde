@@ -4,6 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Button from "../../widgets/Button";
 import DateTimePicker from "react-datetime-picker";
 import Modal from "../../widgets/Modal";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({
   buttons: {
@@ -15,7 +16,9 @@ const useStyles = makeStyles({
     marginRight: "0.3rem",
   },
   paper: {
-    padding: "1rem",
+    display: "flex",
+    padding: "32px",
+    gap: "16px",
   },
   exitIcon: {
     position: "relative",
@@ -23,7 +26,13 @@ const useStyles = makeStyles({
     left: "200px",
   },
   dateTimePicker: {
+    minHeight: "40px",
     width: "100%",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
   },
 });
 
@@ -41,14 +50,15 @@ export default function Presentation({
       <Modal open={true} onClose={handleClose}>
         <Paper className={classes.paper}>
           {cards ? (
-            <form noValidate>
+            <form noValidate className={classes.form}>
+              <Typography variant="h6">Set due time</Typography>
               <DateTimePicker
                 onChange={setDueTime}
                 value={dueTime}
                 disableClock
                 className={classes.dateTimePicker}
               />
-              <p className={classes.buttons}>
+              <div className={classes.buttons}>
                 <Button
                   className={classes.dueTimeButton}
                   variant="outlined"
@@ -63,7 +73,7 @@ export default function Presentation({
                 >
                   Save
                 </Button>
-              </p>
+              </div>
             </form>
           ) : (
             <div>Loading...</div>
