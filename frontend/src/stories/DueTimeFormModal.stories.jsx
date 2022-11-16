@@ -9,5 +9,9 @@ export default {
 };
 
 export const Primary = () => (
-  <DueTimeFormModal cards={agileCard} cardId={agileCard.id} />
+  <DueTimeFormModal
+    cards={agileCard}
+    cardId={agileCard.id}
+    handleSubmit={() => {}}
+  />
 );
