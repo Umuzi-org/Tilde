@@ -112,9 +112,6 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
-  // const isReviewer =
-  //   ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
-
   const projectCardStatus = project && project.agileCardStatus;
 
   // const cardWithStatusOnly = { status: projectCardStatus };
