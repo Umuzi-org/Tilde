@@ -22,7 +22,6 @@ import Reviews from "./Reviews";
 const TableCell = withStyles({
   root: {
     borderBottom: "none",
-    padding: "3.24%",
   },
 })(MuiTableCell);
 
