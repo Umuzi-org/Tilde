@@ -30,12 +30,13 @@ const useStyles = makeStyles({
 export default function Presentation({
   cards,
   cardId,
+  dueTime,
+  setDueTime,
   handleClose,
   handleSubmit,
   loading,
 }) {
   const classes = useStyles();
-  const [dueTime, setDueTime] = useState(cards.dueTime);
   if (cardId)
     return (
       <Modal open={true} onClose={handleClose}>

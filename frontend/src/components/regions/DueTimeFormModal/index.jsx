@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Presentation from "./Presentation";
 import { connect } from "react-redux";
 import operations from "./redux/operations";
@@ -11,9 +11,10 @@ function DueTimeFormModalUnconnected({
   cards,
   handleClose,
   fetchAgileCard,
-  setDueTime,
+  setCardDueTime,
   CARD_SET_DUE_TIME,
 }) {
+  const [dueTime, setDueTime] = useState(cards.dueTime || "");
   useEffect(() => {
     if (cardId && (cards === undefined || cards === null || cards === {})) {
       fetchAgileCard({ cardId });
@@ -33,7 +34,7 @@ function DueTimeFormModalUnconnected({
 
   const handleSubmit = (dueTime) => {
     if (latestCall.loading) return;
-    setDueTime({ cardId, dueTime });
+    setCardDueTime({ cardId, dueTime });
     handleClose();
   };
 
@@ -41,6 +42,8 @@ function DueTimeFormModalUnconnected({
     viewedUser,
     cardId,
     cards,
+    dueTime,
+    setDueTime,
     handleClose,
     handleSubmit,
     loading: latestCall.loading,
@@ -76,7 +79,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    setDueTime: ({ cardId, dueTime }) => {
+    setCardDueTime: ({ cardId, dueTime }) => {
       dispatch(
         apiReduxApps.CARD_SET_DUE_TIME.operations.start({
           data: {
