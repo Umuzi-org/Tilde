@@ -22,6 +22,7 @@ import Reviews from "./Reviews";
 const TableCell = withStyles({
   root: {
     borderBottom: "none",
+    fontSize: "calc(0.3rem + 0.5vw)",
   },
 })(MuiTableCell);
 
