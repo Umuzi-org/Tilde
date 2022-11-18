@@ -22,12 +22,6 @@ const useStyles = makeStyles((theme) => {
       width: theme.spacing(3),
       height: theme.spacing(3),
     },
-    table: {
-      height: "20vh",
-      [theme.breakpoints.down("md")]: {
-        maxHeight: "30vh",
-      },
-    },
   };
 });
 

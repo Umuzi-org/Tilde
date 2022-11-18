@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) =>
       height: "100%",
       textAlign: "auto",
       boxSizing: "border-box",
-      maxHeight: 350,
       overflowY: "auto",
     },
     gridItem: {
