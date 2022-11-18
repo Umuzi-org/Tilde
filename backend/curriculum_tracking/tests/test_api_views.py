@@ -458,46 +458,21 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(project.link_submission, link_2)
 
     def test_get_number_of_times_card_moved_to_review_feedback(self):
-        # content_item1 = factories.ContentItemFactory(
-        #     content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-        # )
         recruit = UserFactory()
         card1 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=factories.ContentItemFactory(
-                content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-            ),
         )
-        card1.assignees.add(recruit)
+        card1.assignees.set([recruit])
 
-        # content_item2 = factories.ContentItemFactory(
-        #     content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-        # )
         card2 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
-            content_item=factories.ContentItemFactory(
-                content_type=ContentItem.PROJECT, project_submission_type=ContentItem.LINK
-            ),
         )
-        card2.assignees.add(recruit)
+        card2.assignees.set([recruit])
 
         actor_user = UserFactory(is_superuser=True)
         self.login(actor_user)
 
-        # add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
-        response = self.client.post(
-            path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
-            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
-        )
-        self.assertEqual(response.status_code, 200)
-        # card1.refresh_from_db()
-
-        request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
-        response = self.client.post(request_review_url)
-        self.assertEqual(response.status_code, 200)
-        # card1.refresh_from_db()
-
-        # add_review_url = f"{self.get_instance_url(card1.id)}add_review/"
+        # card 1 first review, timestamp set to 2 day before
         response = self.client.post(
             path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
             data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
@@ -505,7 +480,50 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
         card1.refresh_from_db()
 
-        # add_review_url = f"{self.get_instance_url(card2.id)}add_review/"
+        card_moved_to_review_feedback_id = EventType.objects.filter(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK).first().id
+        c = LogEntry.objects.filter(
+            event_type=card_moved_to_review_feedback_id, 
+            effected_user=card1.assignees.first(),
+            object_1_id=card1.content_item.id,
+        ).last()
+        c.timestamp = c.timestamp - timedelta(days=2)
+        c.save()
+
+        request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
+        response = self.client.post(request_review_url)
+        self.assertEqual(response.status_code, 200)
+        card1.refresh_from_db()
+
+        # card 1 second review, timestamp set to 1 day before
+        response = self.client.post(
+            path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
+            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+        )
+        self.assertEqual(response.status_code, 200)
+        card1.refresh_from_db()
+
+        c = LogEntry.objects.filter(
+            event_type=card_moved_to_review_feedback_id, 
+            effected_user=card1.assignees.first(),
+            object_1_id=card1.content_item.id,
+        ).last()
+        c.timestamp = c.timestamp - timedelta(days=1)
+        c.save()
+
+        request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
+        response = self.client.post(request_review_url)
+        self.assertEqual(response.status_code, 200)
+        card1.refresh_from_db()
+
+        # card 1 third review, timestamp set to now
+        response = self.client.post(
+            path=f"{self.get_instance_url(pk=card1.id)}add_review/", 
+            data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
+        )
+        self.assertEqual(response.status_code, 200)
+        card1.refresh_from_db()
+
+        # card 2 first review, timestamp set to now
         response = self.client.post(
             path=f"{self.get_instance_url(pk=card2.id)}add_review/", 
             data={"status": NOT_YET_COMPETENT, "comments": "nyc"}
@@ -513,30 +531,38 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
         card2.refresh_from_db()
 
-        card_moved_to_review_feedback_id = EventType.objects.filter(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK).first().id
-        c = LogEntry.objects.filter(
+        entry_card1 = LogEntry.objects.filter(
             event_type=card_moved_to_review_feedback_id, 
-            # effected_user=card1.assignees.first(),
-            # object_1_id=card1.content_item.id,
+            effected_user=card1.assignees.first(),
+            object_1_id=card1.content_item.id,
         )
-        print(f'assignees: {card1.assignees.first()}')
-        print(f'assignees: {card2.assignees.first()}')
-        print(f'content: {card1.content_item}')
-        print(f'content: {card2.content_item}')
-        print(recruit.id)
-        # print(card1.assignees)
-        for i in c:
-            print(i.event_type.name)
-            print(f'effected: {i.effected_user}')
-            print(f'actor: {i.actor_user}')
-            print(f'object 1: {i.object_1_id}')
-            print(f'object 1: {i.object_1}')
-            print(f'object 1: {i.object_2}')
-            print()
 
-        # for i in ContentItem.objects.all():
-        #     print(i)
-            
+        self.assertEqual(entry_card1.count(), 3)
+        for entry in entry_card1:
+            self.assertEqual(entry.effected_user, card1.assignees.first())
+            self.assertEqual(entry.actor_user, actor_user)
+            self.assertEqual(entry.object_1_id, card1.content_item.id)
+            self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
+
+        entry_card2 = LogEntry.objects.filter(
+            event_type=card_moved_to_review_feedback_id, 
+            effected_user=card2.assignees.first(),
+            object_1_id=card2.content_item.id,
+        )
+
+        self.assertEqual(entry_card2.count(), 1)
+        for entry in entry_card2:
+            self.assertEqual(entry.effected_user, card2.assignees.first())
+            self.assertEqual(entry.actor_user, actor_user)
+            self.assertEqual(entry.object_1_id, card2.content_item.id)
+            self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
+
+        entry_assignee = LogEntry.objects.filter(
+            event_type=card_moved_to_review_feedback_id, 
+            effected_user=card2.assignees.first(),
+        )
+
+        self.assertEqual(entry_assignee.count(), 4)
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
