@@ -19,6 +19,10 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { formatTimeString } from "./utils";
 
+import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import theme from "../../widgets/theme";
+
 const useStyles = makeStyles((theme) => {
   const avatar = {
     float: "left",
@@ -80,59 +84,63 @@ export default function CompetenceReview({ review }) {
   const style = review.trusted ? { border: `3px solid ${trustedColor}` } : {};
 
   return (
-    <Tooltip
-      title={
-        <React.Fragment>
-          <Typography>{REVIEW_STATUS_CHOICES[review.status]}</Typography>
-          <em>Timestamp:</em> {formatTimeString(review.timestamp)}
-          {REVIEW_STATUS_CHOICES_POSITIVE.includes(review.status) && (
-            <React.Fragment>
-              <br />
-              <em>Validated:</em>{" "}
-              <span
-                style={{
-                  color: reviewValidatedColors[review.validated],
-                }}
-              >
-                {REVIEW_VALIDATED_STATUS_CHOICES[review.validated]}
-              </span>
-            </React.Fragment>
-          )}
-          {REVIEW_STATUS_CHOICES_NEGATIVE.includes(review.status) && (
-            <React.Fragment>
-              <br />
-              <em>feedback cycle:</em>
-              <span
-                style={{
-                  color: completeReviewCycleColors[review.completeReviewCycle],
-                }}
-              >
-                {COMPLETE_REVIEW_CYCLE_CHOICES[review.completeReviewCycle]}
-              </span>
-            </React.Fragment>
-          )}
-          {review.trusted && (
-            <React.Fragment>
-              <br />
-              <span
-                style={{
-                  color: trustedColor,
-                }}
-              >
-                Trusted
-              </span>
-            </React.Fragment>
-          )}
-        </React.Fragment>
-      }
-    >
-      <Avatar
-        className={getClassName({ review })}
-        variant="rounded"
-        style={style}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Tooltip
+        title={
+          <React.Fragment>
+            <Typography>{REVIEW_STATUS_CHOICES[review.status]}</Typography>
+            <em>Timestamp:</em> {formatTimeString(review.timestamp)}
+            {REVIEW_STATUS_CHOICES_POSITIVE.includes(review.status) && (
+              <React.Fragment>
+                <br />
+                <em>Validated:</em>{" "}
+                <span
+                  style={{
+                    color: reviewValidatedColors[review.validated],
+                  }}
+                >
+                  {REVIEW_VALIDATED_STATUS_CHOICES[review.validated]}
+                </span>
+              </React.Fragment>
+            )}
+            {REVIEW_STATUS_CHOICES_NEGATIVE.includes(review.status) && (
+              <React.Fragment>
+                <br />
+                <em>feedback cycle:</em>
+                <span
+                  style={{
+                    color:
+                      completeReviewCycleColors[review.completeReviewCycle],
+                  }}
+                >
+                  {COMPLETE_REVIEW_CYCLE_CHOICES[review.completeReviewCycle]}
+                </span>
+              </React.Fragment>
+            )}
+            {review.trusted && (
+              <React.Fragment>
+                <br />
+                <span
+                  style={{
+                    color: trustedColor,
+                  }}
+                >
+                  Trusted
+                </span>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+        }
       >
-        {review.status}
-      </Avatar>
-    </Tooltip>
+        <Avatar
+          className={getClassName({ review })}
+          variant="rounded"
+          style={style}
+        >
+          {review.status}
+        </Avatar>
+      </Tooltip>
+    </ThemeProvider>
   );
 }

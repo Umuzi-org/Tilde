@@ -9,6 +9,10 @@ import { REVIEW_VALIDATED_STATUS_CHOICES } from "../../../constants";
 
 import { reviewValidatedColors } from "../../../colors";
 
+import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import theme from "../../widgets/theme";
+
 const useStyles = makeStyles((theme) => {
   const avatar = {
     float: "left",
@@ -44,17 +48,20 @@ export default function PullRequestReview({ review }) {
   }
 
   return (
-    <Tooltip
-      title={
-        <React.Fragment>
-          <Typography>{review.state}</Typography>
-          <em>Timestamp:</em> {formatTimeString(review.submittedAt)}
-        </React.Fragment>
-      }
-    >
-      <Avatar variant="rounded" className={getClassName({ review })}>
-        PR {review.state}
-      </Avatar>
-    </Tooltip>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Tooltip
+        title={
+          <React.Fragment>
+            <Typography>{review.state}</Typography>
+            <em>Timestamp:</em> {formatTimeString(review.submittedAt)}
+          </React.Fragment>
+        }
+      >
+        <Avatar variant="rounded" className={getClassName({ review })}>
+          PR {review.state}
+        </Avatar>
+      </Tooltip>
+    </ThemeProvider>
   );
 }
