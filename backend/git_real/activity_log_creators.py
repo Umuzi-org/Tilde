@@ -1,5 +1,7 @@
 from django.utils import timezone
 from activity_log.models import LogEntry, EventType
+from django.contrib.contenttypes.models import ContentType
+import curriculum_tracking 
 
 
 PR_MERGED = "PR_MERGED"
@@ -25,16 +27,21 @@ def log_pr_closed(pull_request):
     match = LogEntry.objects.filter(
         actor_user=None,
         effected_user=pull_request.user,
-        object_1=pull_request,
         event_type=event_type,
         timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
-    ).first()
+        object_1_content_type = ContentType.objects.get_for_model(pull_request)
+        ).filter(
+            object_1_id = pull_request.id
+        ).first()
 
     if match == None:
         LogEntry.objects.create(
             actor_user=None,  # we dont care who clicked the close button. Maybe we'll fill this in later
             effected_user=pull_request.user,
             object_1=pull_request,
+            object_2= curriculum_tracking.models.RecruitProject.objects.filter(
+                repository=pull_request.repository,
+            ).order_by("pk").last(),
             event_type=event_type,
         )
 
