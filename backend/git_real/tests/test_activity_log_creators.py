@@ -19,6 +19,7 @@ import mock
 from social_auth.tests.factories import SocialProfileFactory
 
 from curriculum_tracking.models import RecruitProject
+from curriculum_tracking.tests.factories import RecruitProjectFactory
 from core.models import User
 
 
@@ -124,6 +125,7 @@ class log_pr_opened_Tests(APITestCase):
         user = User.objects.filter(social_profile__github_name__iexact=github_name).first()
         repo = RepositoryFactory(full_name=body["repository"]["full_name"], user=user)
 
+        RecruitProjectFactory(repository=repo)
         self.client.post(url, format="json", data=body, extra=headers)
 
         pull_request = PullRequest.create_or_update_from_github_api_data(repo, pull_request_data)
@@ -144,7 +146,3 @@ class log_pr_opened_Tests(APITestCase):
         self.assertEqual(entry.object_2, project)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
         self.assertEqual(pull_request.state, 'open')
-
-
-        print([f.name for f in LogEntry._meta.get_fields()])
-        print(f'OBJECT 2: {entry.object_2}')
