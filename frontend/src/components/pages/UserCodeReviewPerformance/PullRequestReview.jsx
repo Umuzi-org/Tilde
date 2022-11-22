@@ -11,7 +11,7 @@ import { reviewValidatedColors } from "../../../colors";
 
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import theme from "../../widgets/theme";
+import theme from "./theme";
 
 const useStyles = makeStyles((theme) => {
   const avatar = {
