@@ -19,7 +19,7 @@ export default function Presentation({
   onChange,
   searchTerm,
   handleChangeSearchTerm,
-  filterGroupName,
+  // filterGroupName,
   allFilters,
 }) {
   const classes = useStyles();
@@ -29,7 +29,7 @@ export default function Presentation({
       <TextField
         className={classes.filtergroupTextbox}
         variant="outlined"
-        placeholder={filterGroupName}
+        // placeholder={filterGroupName}
         value={searchTerm}
         onChange={handleChangeSearchTerm}
         fullWidth

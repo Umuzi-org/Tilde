@@ -16,13 +16,13 @@ export default function FilterArea({
   cardNameSearchValue,
   handleChangeCardNameSearchValue,
 }) {
-  const [flavourSearchTerm, setFlavourSearchTerm] = useState("");
-  const [tagSearchTerm, setTagSearchTerm] = useState("");
-  const [assigneeTeamSearchTerm, setAssigneeTeamSearchTerm] = useState("");
+  // const [flavourSearchTerm, setFlavourSearchTerm] = useState("");
+  // const [tagSearchTerm, setTagSearchTerm] = useState("");
+  // const [assigneeTeamSearchTerm, setAssigneeTeamSearchTerm] = useState("");
 
-  function handleChangeSearchTerm({ e, setSearchTermMethod }) {
-    setSearchTermMethod(e.target.value);
-  }
+  // function handleChangeSearchTerm({ e, setSearchTermMethod }) {
+  //   setSearchTermMethod(e.target.value);
+  // }
 
   const props = {
     filterIncludeTags,
@@ -43,13 +43,13 @@ export default function FilterArea({
     cardNameSearchValue,
     handleChangeCardNameSearchValue,
 
-    handleChangeSearchTerm,
-    flavourSearchTerm,
-    setFlavourSearchTerm,
-    tagSearchTerm,
-    setTagSearchTerm,
-    assigneeTeamSearchTerm,
-    setAssigneeTeamSearchTerm,
+    // handleChangeSearchTerm,
+    // flavourSearchTerm,
+    // setFlavourSearchTerm,
+    // tagSearchTerm,
+    // setTagSearchTerm,
+    // assigneeTeamSearchTerm,
+    // setAssigneeTeamSearchTerm,
   };
   return <Presentation {...props} />;
 }
