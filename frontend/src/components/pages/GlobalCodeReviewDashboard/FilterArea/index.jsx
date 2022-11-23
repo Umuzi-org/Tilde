@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Presentation from "./Presentation";
 
 export default function FilterArea({
@@ -16,14 +16,6 @@ export default function FilterArea({
   cardNameSearchValue,
   handleChangeCardNameSearchValue,
 }) {
-  // const [flavourSearchTerm, setFlavourSearchTerm] = useState("");
-  // const [tagSearchTerm, setTagSearchTerm] = useState("");
-  // const [assigneeTeamSearchTerm, setAssigneeTeamSearchTerm] = useState("");
-
-  // function handleChangeSearchTerm({ e, setSearchTermMethod }) {
-  //   setSearchTermMethod(e.target.value);
-  // }
-
   const props = {
     filterIncludeTags,
     filterExcludeTags,
@@ -42,14 +34,6 @@ export default function FilterArea({
 
     cardNameSearchValue,
     handleChangeCardNameSearchValue,
-
-    // handleChangeSearchTerm,
-    // flavourSearchTerm,
-    // setFlavourSearchTerm,
-    // tagSearchTerm,
-    // setTagSearchTerm,
-    // assigneeTeamSearchTerm,
-    // setAssigneeTeamSearchTerm,
   };
   return <Presentation {...props} />;
 }
