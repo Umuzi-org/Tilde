@@ -7,6 +7,7 @@ import AgileBoard from "../components/pages/AgileBoard/redux";
 import CardDetails from "../components/pages/CardDetails/redux";
 
 import AddCardReviewModal from "../components/regions/AddCardReviewModal/redux";
+import apiUtilities from "../apiAccess/redux";
 import MarkSingleCardAttendanceModal from "../components/regions/MarkSingleCardAttendanceModal/redux";
 
 // import Entities from "../apiAccess/redux";
@@ -43,6 +44,8 @@ export const store = createStore(
     utilities,
     apiEntities,
     ...authReducers,
+
+    apiUtilities,
   }),
   // composeEnhancers(applyMiddleware(sagaMiddleware, logger))
   composeEnhancers(applyMiddleware(sagaMiddleware))

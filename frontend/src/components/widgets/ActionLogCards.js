@@ -2,6 +2,7 @@ import React from "react";
 import LaunchIcon from "@material-ui/icons/Launch";
 import ReviewValidationIcons from "./ReviewValidationIcons";
 import ReviewStatus from "./ReviewStatus";
+import Button from "./Button";
 import { routes } from "../../routes";
 
 import {
@@ -10,7 +11,6 @@ import {
   CardContent,
   Tooltip,
   CardActions,
-  Button,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -35,14 +35,15 @@ const useStyles = makeStyles((theme) => ({
     variant: "outlined",
     color: "default",
     size: "small",
-    ['@media (max-width:620px)']: { // eslint-disable-line no-useless-computed-key
+    "@media (max-width:620px)": {
       fontSize: "0.7rem",
-    }, 
+    },
   },
-  title: {  
-    ['@media (max-width:620px)']: { // eslint-disable-line no-useless-computed-key
-    fontSize: "1rem",
-  }, }
+  title: {
+    "@media (max-width:620px)": {
+      fontSize: "1rem",
+    },
+  },
 }));
 
 const BaseActionCard = ({ action, children, footer }) => {

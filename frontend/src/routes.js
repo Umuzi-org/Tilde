@@ -7,7 +7,7 @@ import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
 import TeamDashboard from "./components/pages/TeamDashboard";
 import UserDashboard from "./components/pages/UserDashboard";
-
+import GlobalCodeReviewDashboard from "./components/pages/GlobalCodeReviewDashboard";
 import { TEAM_PERMISSIONS } from "./constants";
 
 import UserNavBar from "./components/regions/UserNavBar";
@@ -15,6 +15,7 @@ import TeamNavBar from "./components/regions/TeamNavBar";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ForgotPasswordConfirm from "./components/pages/ForgotPasswordConfirm";
 import LoginForm from "./components/pages/Login";
+import UserCodeReviewPerformance from "./components/pages/UserCodeReviewPerformance";
 
 const exact = true;
 
@@ -88,6 +89,31 @@ export const routes = {
     userMustBeLoggedIn: true,
   },
 
+  globalCodeReviewDashboard: {
+    route: {
+      exact,
+      path: "/code_review_dashboard",
+    },
+    component: GlobalCodeReviewDashboard,
+    sliderNavigation: {
+      //these get used to draw buttons in the left hand side slider/hamburger menu
+      icon: () => "R",
+      label: "Code Review Dash",
+      helpText: "Code review dashboard",
+    },
+    show: ({ authUser }) => {
+      if (authUser.isSuperuser) return true;
+
+      for (let teamId in authUser.permissions.teams) {
+        for (let permission of authUser.permissions.teams[teamId].permissions) {
+          if (TEAM_PERMISSIONS.includes(permission)) return true;
+          throw new Error(`Team permission not implemented: ${permission}`);
+        }
+      }
+    },
+    userMustBeLoggedIn: true,
+  },
+
   userBoard: {
     route: {
       exact,
@@ -144,6 +170,15 @@ export const routes = {
       path: "/users/:userId/dashboard",
     },
     component: UserDashboard,
+    navBarComponent: UserNavBar,
+  },
+
+  userCodeReviewPerformance: {
+    route: {
+      exact,
+      path: "/users/:userId/review_performance",
+    },
+    component: UserCodeReviewPerformance,
     navBarComponent: UserNavBar,
   },
 

@@ -17,8 +17,11 @@ from curriculum_tracking.serializers import (
     CardSummarySerializer,
     UserDetailedStatsSerializer,
 )
+
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
+from django.contrib.postgres.aggregates import StringAgg
+from django.utils import timezone
 
 
 @api_view(["POST"])
@@ -204,6 +207,38 @@ class UserViewSet(viewsets.ModelViewSet):
 
     filterset_fields = ["groups"]
 
+    # @action(
+    #     detail=True,
+    #     methods=["GET"],
+    #     permission_classes=[
+    #         IsAdminUser
+    #         | core_permissions.IsMyUser
+    #         | core_permissions.HasObjectPermission(
+    #             permissions=models.Team.PERMISSION_VIEW,
+    #             get_objects=_get_teams_from_user,
+    #         )
+    #     ],
+    # )
+    # def review_performance(self, request, pk=None):
+    #     from curriculum_tracking.models import RecruitProjectReview
+    # from curriculum_tracking.models import *
+    # from django.utils import timezone
+    # from django.db.models import  F
+    # from django.contrib.postgres.aggregates import *
+    #      grouped =
+    #     reviews = (
+    #         RecruitProjectReview.objects.filter(reviewer_user=self.get_object())
+    #         .filter(timestamp__gte=timezone.now() - timezone.timedelta(days=28))
+    #         .annotate(
+    #             flavour_names=StringAgg(
+    #                 "recruit_project__flavours__name",
+    #                 delimiter=",",
+    #                 ordering="recruit_project__flavours__name",
+    #             )
+    #         )
+    #         .values("id","flavour_names", "recruit_project__content_item_id", "validated")
+    # )
+
     @action(
         detail=True,
         methods=["GET"],
@@ -229,11 +264,15 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=["DELETE"],
         serializer_class=serializers.NoArgs,
-        permission_classes=[
-            IsAdminUser]
+        permission_classes=[IsAdminUser],
     )
-    def danger_delete_all_progress(self, request,pk=None):
-        from curriculum_tracking.models import AgileCard, RecruitProject,TopicProgress,WorkshopAttendance
+    def danger_delete_all_progress(self, request, pk=None):
+        from curriculum_tracking.models import (
+            AgileCard,
+            RecruitProject,
+            TopicProgress,
+            WorkshopAttendance,
+        )
 
         user = self.get_object()
 
@@ -242,16 +281,15 @@ class UserViewSet(viewsets.ModelViewSet):
         TopicProgress.objects.filter(user=user).delete()
         WorkshopAttendance.objects.filter(attendee_user=user).delete()
 
-        return Response({'status': 'OK'})
+        return Response({"status": "OK"})
 
     @action(
         detail=True,
-        methods=["POST","GET"],
+        methods=["POST", "GET"],
         serializer_class=serializers.NoArgs,
-        permission_classes=[
-            IsAdminUser]
+        permission_classes=[IsAdminUser],
     )
-    def danger_delete_and_recreate_user_board(self, request,pk=None):
+    def danger_delete_and_recreate_user_board(self, request, pk=None):
         if request.method == "GET":
             return Response(
                 {
@@ -259,23 +297,21 @@ class UserViewSet(viewsets.ModelViewSet):
                 }
             )
         else:
-            from long_running_request_actors import delete_and_recreate_user_cards as actor
+            from long_running_request_actors import (
+                delete_and_recreate_user_cards as actor,
+            )
 
             user = self.get_object()
-            response = actor.send_with_options(kwargs={
-                'user_id': user.id
-            })
+            response = actor.send_with_options(kwargs={"user_id": user.id})
             return Response({"status": "OK", "data": response.asdict()})
 
-
-    @action(detail=True,
-    methods=["POST","GET"],
+    @action(
+        detail=True,
+        methods=["POST", "GET"],
         serializer_class=serializers.NoArgs,
-        permission_classes=[
-            IsAdminUser]
-
+        permission_classes=[IsAdminUser],
     )
-    def invite_to_github_org(self,request,pk=None):
+    def invite_to_github_org(self, request, pk=None):
         if request.method == "GET":
             return Response(
                 {
@@ -286,14 +322,8 @@ class UserViewSet(viewsets.ModelViewSet):
             from long_running_request_actors import invite_user_to_github_org as actor
 
             user = self.get_object()
-            response = actor.send_with_options(kwargs={
-                'user_id': user.id
-            })
+            response = actor.send_with_options(kwargs={"user_id": user.id})
             return Response({"status": "OK", "data": response.asdict()})
-
-
-
-
 
     # @action(
     #     detail=False,

@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 
+import Loading from "../../widgets/Loading";
+
 function arrayToObjectWithIdKeys({ data }) {
   let dataAsObject = {};
 
@@ -80,7 +82,7 @@ function getStudentUserDisplayData({ userGroup }) {
   if (!userGroup) return {};
   let ret = {};
   userGroup.members.forEach((member) => {
-    ret[member.userId] = member.userEmail;
+    if (member.userActive === true) ret[member.userId] = member.userEmail;
   });
   return ret;
 }
@@ -110,8 +112,9 @@ function GroupCardSummaryUnconnected({
   fetchUserGroupSummaryCards,
   fetchUserGroupSummaryCardsByDataSequence,
 }) {
+
   const { teamId } = useParams();
-  const userGroup = teams[teamId];
+  const userGroup = teams && teams[teamId];
 
   useEffect(() => {
     if (userGroup === undefined) {
@@ -120,6 +123,13 @@ function GroupCardSummaryUnconnected({
       fetchUserGroupSummaryCards({ userGroup });
     }
   }, [userGroup, fetchSingleUserGroup, teamId, fetchUserGroupSummaryCards]);
+
+  if (
+    cards === undefined ||
+    teams === undefined ||
+    FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE === undefined
+  )
+    return <Loading />;
 
   const apiCallData = userGroup
     ? getApiCallData({
@@ -179,8 +189,8 @@ function GroupCardSummaryUnconnected({
 }
 
 const mapStateToProps = (state) => {
-  const cards = state.apiEntities.projectSummaryCards || {};
-  const teams = state.apiEntities.teams || {};
+  const cards = state.apiEntities.projectSummaryCards;
+  const teams = state.apiEntities.teams;
   const { FETCH_PERSONALLY_ASSIGNED_PROJECT_CARD_SUMMARY_PAGE } = state;
 
   return {
