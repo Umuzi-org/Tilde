@@ -10,8 +10,6 @@ export function ActivityDashboardBarGraphUnconnected({
   eventTypes,
   activityLogDayCounts,
 }) {
-  const formatEventTypeName = (str) => str.toLowerCase().replaceAll("_", " ");
-
   const barGraphData = prepareDataForBarGraph({
     eventTypes,
     activityLogDayCounts,
@@ -29,7 +27,6 @@ export function ActivityDashboardBarGraphUnconnected({
   const props = {
     barGraphData,
     eventTypes: Object.values(eventTypes),
-    formatEventTypeName,
   };
 
   return <Presentation {...props} />;

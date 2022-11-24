@@ -11,11 +11,11 @@ import {
   Cell,
 } from "recharts";
 import Typography from "@material-ui/core/Typography";
+import { replaceUnderscoresWithSpace } from "./utils";
 
 export default function ActivityDashboardBarGraph({
   eventTypes,
   barGraphData,
-  formatEventTypeName,
 }) {
   return (
     <Typography>
@@ -42,7 +42,7 @@ export default function ActivityDashboardBarGraph({
               key={eventType.id}
               dataKey={eventType.name}
               fill={eventType.color}
-              name={formatEventTypeName(eventType.name)}
+              name={replaceUnderscoresWithSpace(eventType.name)}
             >
               {barGraphData.map((entry, index) => {
                 return (
