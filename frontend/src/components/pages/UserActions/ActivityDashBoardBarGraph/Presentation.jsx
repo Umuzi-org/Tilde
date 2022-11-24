@@ -32,7 +32,7 @@ export default function ActivityDashboardBarGraph({
           }}
         >
           <CartesianGrid strokeDasharray="3 3" opacity={0.4} />
-          <XAxis dataKey="date" angle={-20} fontSize="70%" fontWeight="bold" />
+          <XAxis dataKey="date" fontSize="70%" fontWeight="bold" />
           <YAxis />
           <Tooltip />
           <Legend align="center" />

@@ -1,28 +1,16 @@
 export function prepareDataForBarGraph({ eventTypes, activityLogDayCounts }) {
-  const userActivityLogs = [];
+  const eventNames = {};
+  Object.values(eventTypes).forEach(
+    (eventType) => (eventNames[eventType.id] = eventType["name"])
+  );
 
-  activityLogDayCounts.forEach((act) => {
-    eventTypes.forEach((ev) => {
-      if (ev.id === act.eventType) {
-        if (
-          !userActivityLogs.some(
-            (userActivityLog) => userActivityLog.date === act.date
-          )
-        ) {
-          const obj = {};
-          obj.date = act.date;
-          userActivityLogs.push(Object.assign(obj, { [ev.name]: act.total }));
-        } else {
-          const dateIndex = userActivityLogs.findIndex(
-            (userActivityLog) => userActivityLog.date === act.date
-          );
-          Object.assign(userActivityLogs[dateIndex], {
-            [ev.name]: act.total,
-          });
-        }
-      }
-    });
+  const result = {};
+  Object.values(activityLogDayCounts).forEach((dayCount) => {
+    const { date, eventType } = dayCount;
+    const eventName = eventNames[eventType];
+    result[date] = result[date] || { date };
+    result[date][eventName] = dayCount.total;
   });
 
-  return userActivityLogs;
+  return Object.values(result);
 }

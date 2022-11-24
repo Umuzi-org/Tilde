@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Presentation from "./Presentation";
 
 import { connect } from "react-redux";
@@ -28,7 +28,7 @@ export function ActivityDashboardBarGraphUnconnected({
 
   const props = {
     barGraphData,
-    eventTypes,
+    eventTypes: Object.values(eventTypes),
     formatEventTypeName,
   };
 
