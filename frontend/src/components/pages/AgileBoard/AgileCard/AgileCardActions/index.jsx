@@ -3,7 +3,7 @@ import Presentation from "./Presentation";
 import { showButtons } from "../../../../../utils/cardButtons";
 import { connect } from "react-redux";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
-import { addCardReviewOperations } from "../../../AddCardReviewModal/redux";
+import { addCardReviewOperations } from "../../../../regions/AddCardReviewModal/redux";
 import { apiReduxApps } from "../../../../../apiAccess/apiApps";
 
 function AgileCardActionsUnconnected({
