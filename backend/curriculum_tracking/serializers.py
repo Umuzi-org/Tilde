@@ -749,6 +749,8 @@ class BurnDownSnapShotSerializer(serializers.ModelSerializer):
             "cards_in_complete_column_total_count",
             "project_cards_in_complete_column_total_count",
         ]
+        
+        
 class ReviewTrustSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewTrust
