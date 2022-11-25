@@ -11,7 +11,7 @@ from .factories import (
     ContentItemFactory,
 )
 import curriculum_tracking.activity_log_entry_creators as creators
-from activity_log.models import LogEntry
+from activity_log.models import EventType, LogEntry
 
 from curriculum_tracking.models import (
     AgileCard,
@@ -157,7 +157,36 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
 # class log_card_review_request_cancelled_Tests(TestCase):
 
 
-# class log_card_moved_to_complete_Tests(TestCase):
+class log_card_moved_to_complete_Tests(APITestCase, APITestCaseMixin):
+    LIST_URL_NAME = "agilecard-list"
+    SUPPRESS_TEST_POST_TO_CREATE = True
+    SUPPRESS_TEST_GET_LIST = True
+
+    def test_card_moved_to_complete_called(self):
+        actor_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(
+            status=AgileCard.IN_REVIEW,
+            content_item=ProjectContentItemFactory(
+                project_submission_type=ContentItem.LINK, template_repo=None
+            ),
+        )
+        self.login(actor_user)
+
+        add_review_url = f"{self.get_instance_url(card.id)}add_review/"
+        response = self.client.post(
+            add_review_url, data={"status": COMPETENT, "comments": "woohoo"}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        entry = LogEntry.objects.last()
+
+        card.refresh_from_db()
+        self.assertEqual(card.status, AgileCard.COMPLETE)
+        self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_COMPLETE)
+        self.assertEqual(LogEntry.objects.count(), 2)
+        self.assertEqual(entry.effected_user, card.assignees.first())
+        self.assertEqual(entry.actor_user, actor_user)
+        self.assertEqual(entry.object_1, card.recruit_project)
 
 
 # class log_card_moved_to_review_feedback_Tests(TestCase):

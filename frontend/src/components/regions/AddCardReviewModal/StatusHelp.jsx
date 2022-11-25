@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Help from "../../widgets/Help";
+import Help from "../../widgets/Help/Help";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";

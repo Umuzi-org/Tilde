@@ -383,11 +383,6 @@ class CardSummarySerializer(serializers.ModelSerializer):
         return 0
 
 
-class NoArgs(serializers.Serializer):
-    class Meta:
-        fields = []
-
-
 class NewReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruitProjectReview
