@@ -172,6 +172,8 @@ class log_card_moved_to_complete_Tests(APITestCase, APITestCaseMixin):
         )
         self.login(actor_user)
 
+        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
+
         add_review_url = f"{self.get_instance_url(card.id)}add_review/"
         response = self.client.post(
             add_review_url, data={"status": COMPETENT, "comments": "woohoo"}

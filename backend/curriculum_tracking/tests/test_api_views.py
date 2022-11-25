@@ -462,12 +462,10 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card1 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
         )
-        card1.assignees.set([recruit])
 
         card2 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
         )
-        card2.assignees.set([recruit])
 
         actor_user = UserFactory(is_superuser=True)
         self.login(actor_user)
@@ -481,13 +479,12 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         card1.refresh_from_db()
 
         card_moved_to_review_feedback_id = EventType.objects.filter(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK).first().id
-        c = LogEntry.objects.filter(
+        entry = LogEntry.objects.filter(
             event_type=card_moved_to_review_feedback_id, 
             effected_user=card1.assignees.first(),
-            object_1_id=card1.content_item.id,
         ).last()
-        c.timestamp = c.timestamp - timedelta(days=2)
-        c.save()
+        entry.timestamp = entry.timestamp - timedelta(days=2)
+        entry.save()
 
         request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
         response = self.client.post(request_review_url)
@@ -502,13 +499,12 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(response.status_code, 200)
         card1.refresh_from_db()
 
-        c = LogEntry.objects.filter(
+        entry = LogEntry.objects.filter(
             event_type=card_moved_to_review_feedback_id, 
             effected_user=card1.assignees.first(),
-            object_1_id=card1.content_item.id,
         ).last()
-        c.timestamp = c.timestamp - timedelta(days=1)
-        c.save()
+        entry.timestamp = entry.timestamp - timedelta(days=1)
+        entry.save()
 
         request_review_url = f"{self.get_instance_url(card1.id)}request_review/"
         response = self.client.post(request_review_url)
@@ -534,35 +530,24 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         entry_card1 = LogEntry.objects.filter(
             event_type=card_moved_to_review_feedback_id, 
             effected_user=card1.assignees.first(),
-            object_1_id=card1.content_item.id,
         )
 
         self.assertEqual(entry_card1.count(), 3)
         for entry in entry_card1:
             self.assertEqual(entry.effected_user, card1.assignees.first())
             self.assertEqual(entry.actor_user, actor_user)
-            self.assertEqual(entry.object_1_id, card1.content_item.id)
             self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
 
         entry_card2 = LogEntry.objects.filter(
             event_type=card_moved_to_review_feedback_id, 
             effected_user=card2.assignees.first(),
-            object_1_id=card2.content_item.id,
         )
 
         self.assertEqual(entry_card2.count(), 1)
         for entry in entry_card2:
             self.assertEqual(entry.effected_user, card2.assignees.first())
             self.assertEqual(entry.actor_user, actor_user)
-            self.assertEqual(entry.object_1_id, card2.content_item.id)
             self.assertEqual(entry.event_type.name, creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
-
-        entry_assignee = LogEntry.objects.filter(
-            event_type=card_moved_to_review_feedback_id, 
-            effected_user=card2.assignees.first(),
-        )
-
-        self.assertEqual(entry_assignee.count(), 4)
 
 
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
