@@ -142,8 +142,36 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
 
-    # def test_start_topic(self):
-    # TODO
+    def test_start_topic(self):
+
+        actor_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(
+            status=AgileCard.READY,
+            content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
+        )
+        card.assignees.set([UserFactory()])
+        self.login(actor_user)
+
+        start_url = f"{self.get_instance_url(card.id)}start_topic/"
+        response = self.client.post(start_url)
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+
+        # sanity check
+        self.assertEqual(card.assignees.count(), 1)
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        # breakpoint()
+
+        self.assertEqual(entry.actor_user, actor_user)
+        self.assertEqual(entry.effected_user, card.assignees.first())
+        # in my view object_1 should == card.topic_progress but currenly it == card.recruit_project - investigate how progress_instance works
+        self.assertEqual(entry.object_1, card.topic_progress)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
 
 
 # class log_card_stopped_Tests(TestCase):

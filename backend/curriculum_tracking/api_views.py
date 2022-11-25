@@ -455,6 +455,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
         if not card.can_start():
             raise HttpResponseForbidden()
         card.start_topic()
+        log_creators.log_card_started(card=card, actor_user=request.user)
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(
@@ -1195,9 +1196,7 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
                 state="open"
             )
         )
-        .exclude(
-            agile_card__status=models.AgileCard.COMPLETE
-        )
+        .exclude(agile_card__status=models.AgileCard.COMPLETE)
         .annotate(
             pr_time=Max("repository__pull_requests__updated_at"),
         )
