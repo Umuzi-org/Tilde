@@ -27,6 +27,7 @@ from guardian.shortcuts import get_objects_for_user
 from django.db.models import Q, Max
 from django.db.models import Count
 from sql_util.utils import SubqueryAggregate
+from core import serializers as core_serializers
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -317,7 +318,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -347,7 +348,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -374,7 +375,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             (
                 curriculum_permissions.IsCardAssignee
@@ -433,7 +434,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             (
                 curriculum_permissions.IsCardAssignee
@@ -460,7 +461,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -480,7 +481,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -501,7 +502,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -528,7 +529,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -900,7 +901,7 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
 
 class ManagementActionsViewSet(viewsets.ViewSet):
 
-    serializer_class = serializers.NoArgs
+    serializer_class = core_serializers.NoArgs
 
     def list(self, request):
         return Response([])
@@ -929,7 +930,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[permissions.IsAdminUser],
     )
     def auto_assign_reviewers(self, request, pk=None):
