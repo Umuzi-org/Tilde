@@ -49,7 +49,7 @@ def log_pr_opened(pull_request):
         effected_user=pull_request.user,
         event_type=event_type,
         timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
-        object_1_content_type = ContentType.objects.get_for_model(pull_request)
+        object_1_content_type = ContentType.objects.get(model='pullrequest')
         ).filter(
             object_1_id = pull_request.id
         ).first()

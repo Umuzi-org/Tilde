@@ -96,8 +96,10 @@ class PullRequest(models.Model, Mixins):
         unique_together = [["repository", "number"]]
 
     @classmethod
-    def create_or_update_from_github_api_data(cls, repo, pull_request_data):
+    def create_or_update_from_github_api_data(cls, repo, repo_data):
         assert repo != None, "repo is missing"
+        action = repo_data["action"]
+        pull_request_data = repo_data["pull_request"]
         number = pull_request_data["number"]
 
         github_name = pull_request_data["user"]["login"]
@@ -127,7 +129,7 @@ class PullRequest(models.Model, Mixins):
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
 
-        if pull_request_data['base']['repo']['pushed_at'] == pull_request_data['updated_at']:
+        if action == "opened":
             log_pr_opened(pull_request)
 
         return pull_request

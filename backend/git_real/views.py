@@ -31,7 +31,7 @@ def github_webhook(request):
 
             pr = PullRequest.create_or_update_from_github_api_data(
                 repo=repo,
-                pull_request_data=request.data["pull_request"],
+                repo_data=request.data,
             )
 
             if event == "pull_request_review":

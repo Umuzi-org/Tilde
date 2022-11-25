@@ -121,14 +121,14 @@ class log_pr_opened_Tests(APITestCase):
         url = reverse(views.github_webhook)
 
         github_name = pull_request_data["user"]["login"]
-        SocialProfileFactory(github_name=github_name)
-        user = User.objects.filter(social_profile__github_name__iexact=github_name).first()
+        social_profile = SocialProfileFactory(github_name=github_name)
+        user = social_profile.user
         repo = RepositoryFactory(full_name=body["repository"]["full_name"], user=user)
 
         RecruitProjectFactory(repository=repo)
         self.client.post(url, format="json", data=body, extra=headers)
 
-        pull_request = PullRequest.create_or_update_from_github_api_data(repo, pull_request_data)
+        pull_request = PullRequest.create_or_update_from_github_api_data(repo, body)
         self.assertEqual(PullRequest.objects.count(), 1)
 
          
@@ -142,6 +142,7 @@ class log_pr_opened_Tests(APITestCase):
 
         self.assertEqual(entry.actor_user, pull_request.user)
         self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertNotEqual(pull_request.user, None)
         self.assertEqual(entry.object_1, pull_request)
         self.assertEqual(entry.object_2, project)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
