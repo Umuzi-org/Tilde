@@ -26,6 +26,7 @@ function filterByCardName(allCards, cardName) {
 }
 
 function GlobalCodeReviewDashboardUnconnected({
+  card,
   // mapStateToProps
 
   competenceReviewQueueProjectsObject,
@@ -118,23 +119,19 @@ function GlobalCodeReviewDashboardUnconnected({
     initialCompetenceOrderFilters
   );
 
-  const [
-    selectedPullRequestOrderFilter,
-    setSelectedPullRequestOrderFilter,
-  ] = useState(() => {
-    return pullRequestOrderFilters.filter(
-      (orderFilter) => orderFilter.isSelected
-    )[0];
-  });
+  const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
+    useState(() => {
+      return pullRequestOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
 
-  const [
-    selectedCompetenceOrderFilter,
-    setSelectedCompetenceOrderFilter,
-  ] = useState(() => {
-    return competenceOrderFilters.filter(
-      (orderFilter) => orderFilter.isSelected
-    )[0];
-  });
+  const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
+    useState(() => {
+      return competenceOrderFilters.filter(
+        (orderFilter) => orderFilter.isSelected
+      )[0];
+    });
 
   const [cardNameSearchValue, setCardNameSearchValue] = useState("");
 
@@ -294,6 +291,8 @@ function GlobalCodeReviewDashboardUnconnected({
   }
 
   const props = {
+    card,
+
     competenceReviewQueueProjects: filterByCardName(
       competenceReviewQueueProjects,
       cardNameSearchValue
@@ -344,6 +343,7 @@ function GlobalCodeReviewDashboardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
+    authUser: state.App.authUser,
     competenceReviewQueueProjectsObject:
       state.apiEntities.competenceReviewQueueProject,
     pullRequestReviewQueueProjectsObject:

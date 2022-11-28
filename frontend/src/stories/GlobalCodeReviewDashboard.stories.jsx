@@ -3,6 +3,7 @@ import GlobalCodeReviewDashboard from "../components/pages/GlobalCodeReviewDashb
 import { BrowserRouter as Router } from "react-router-dom";
 import competenceReviewProjects from "./fixtures/GlobalCodeReviewDashboard/competenceReviewQueueProjects.json";
 import pullRequestReviewProjects from "./fixtures/GlobalCodeReviewDashboard/pullRequestReviewQueueProjects.json";
+import agileCard from "./fixtures/agileCard.json";
 
 export default {
   title: "Tilde/pages/GlobalCodeReviewDashboard",
@@ -53,6 +54,7 @@ const selectedCompetenceOrderFilter = initialCompetenceOrderFilters[0];
 const selectedPullRequestOrderFilter = initialCompetenceOrderFilters[0];
 
 Primary.args = {
+  card: agileCard,
   competenceReviewQueueProjects: competenceReviewProjects,
   pullRequestReviewQueueProjects: pullRequestReviewProjects,
   competenceReviewQueueLoading: false,
