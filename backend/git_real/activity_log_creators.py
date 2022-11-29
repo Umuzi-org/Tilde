@@ -55,13 +55,23 @@ def log_pr_opened(pull_request):
         ).first()
     
     if match == None:
+        recruit_projects = curriculum_tracking.models.RecruitProject.objects.filter(
+                repository=pull_request.repository,
+            )
+        recruit_project_start_time = None
+        for recruit_project in recruit_projects[::-1]:
+            recruit_project_start_time = recruit_project.start_time
+            if not recruit_project_start_time:
+                continue
+            if pull_request.created_at >= recruit_project_start_time:
+                break
         LogEntry.objects.create(
             actor_user=pull_request.user,
             effected_user=pull_request.user,
             object_1=pull_request,
             object_2= curriculum_tracking.models.RecruitProject.objects.filter(
-                repository=pull_request.repository,
-            ).order_by("pk").last(),
+                start_time=recruit_project_start_time
+            ).first(),
             event_type=event_type,
         )
 

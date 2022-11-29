@@ -21,6 +21,7 @@ from social_auth.tests.factories import SocialProfileFactory
 from curriculum_tracking.models import RecruitProject
 from curriculum_tracking.tests.factories import RecruitProjectFactory
 from core.models import User
+from django.utils import timezone
 
 
 class log_pr_reviewed_created_Tests(TestCase):
@@ -125,7 +126,7 @@ class log_pr_opened_Tests(APITestCase):
         user = social_profile.user
         repo = RepositoryFactory(full_name=body["repository"]["full_name"], user=user)
 
-        RecruitProjectFactory(repository=repo)
+        RecruitProjectFactory(repository=repo, start_time=timezone.now())
         self.client.post(url, format="json", data=body, extra=headers)
 
         pull_request = PullRequest.create_or_update_from_github_api_data(repo, body)
