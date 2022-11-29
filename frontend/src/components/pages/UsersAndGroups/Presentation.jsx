@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cards: {
     maxHeight: "90vh",
-    overflowY: "scroll",
     padding: "0px 10px",
     "& > *": {
       margin: theme.spacing(1),
