@@ -1,6 +1,7 @@
 from django.db.models import manager
 from django.test import TestCase
-from core.tests.factories import TeamFactory, UserFactory
+from core.tests.factories import UserFactory
+from curriculum_tracking.tests.factories import TeamFactory
 from guardian.shortcuts import assign_perm
 from core.models import Team
 

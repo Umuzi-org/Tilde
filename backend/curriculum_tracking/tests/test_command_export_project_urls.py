@@ -1,5 +1,6 @@
 from django.test import TestCase
-from core.tests.factories import TeamFactory, UserFactory
+from core.tests.factories import UserFactory
+from curriculum_tracking.tests.factories import TeamFactory
 from curriculum_tracking.tests.factories import ProjectContentItemFactory, RecruitProjectFactory
 from curriculum_tracking.management.commands.export_project_urls import get_user_and_projectlink
 

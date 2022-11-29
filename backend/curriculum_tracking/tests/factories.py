@@ -49,6 +49,15 @@ def _next_int_generator():
 _next_int_iterator = _next_int_generator()
 
 
+def _team_name_generator():
+    i = 1
+    while True:
+        yield f"GROUP NAME {i}"
+        i += 1
+
+_team_name_iterator = _team_name_generator()
+
+
 class FlavourMixin:
     @staticmethod
     def flavours(self, create, extracted, **kwargs):
@@ -366,3 +375,11 @@ class ContentItemAgileWeightFactory(DjangoModelFactory):
     @factory.post_generation
     def flavours(self, *args, **kwargs):
         FlavourMixin.flavours(self, *args, **kwargs)
+
+
+class TeamFactory(DjangoModelFactory):
+    class Meta:
+        model = "core.Team"
+
+    name = factory.lazy_attribute(lambda *args, **kwargs: next(_team_name_iterator))
+    active = True
