@@ -7,6 +7,7 @@ import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 function removeNameFromArray({ array, name }) {
   const index = array.indexOf(name);
@@ -26,7 +27,7 @@ function filterByCardName(allCards, cardName) {
 }
 
 function GlobalCodeReviewDashboardUnconnected({
-  card,
+  cards,
   // mapStateToProps
 
   competenceReviewQueueProjectsObject,
@@ -41,6 +42,9 @@ function GlobalCodeReviewDashboardUnconnected({
   fetchPullRequestReviewQueuePage,
   fetchTeamsPages,
 }) {
+  let urlParams = useParams() || {};
+  const { cardId } = urlParams;
+  const card = cards && cards[cardId];
   teams = teams || {};
 
   const [filterIncludeTags, setFilterIncludeTags] = useState([]);

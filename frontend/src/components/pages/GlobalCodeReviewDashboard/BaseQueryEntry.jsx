@@ -38,8 +38,11 @@ const useStyles = makeStyles((theme) => {
 export default function BaseReviewQueueEntry({
   project,
   showAllocatedReviewers,
+  reviewers,
 }) {
   const classes = useStyles();
+  // console.log("reviewers", reviewers ? reviewers : []);
+
   return (
     <Paper elevation={3} className={classes.project} variant="outlined">
       <div className={classes.flexContainer}>
@@ -81,12 +84,8 @@ export default function BaseReviewQueueEntry({
           <ReviewersTable
             reviewerUsers={project.reviewerUsers}
             reviewerUserEmails={project.reviewerUserEmails}
-            usersThatReviewedSinceLastReviewRequest={
-              project.usersThatReviewedSinceLastReviewRequest
-            }
-            usersThatReviewedSinceLastReviewRequestEmails={
-              project.usersThatReviewedSinceLastReviewRequestEmails
-            }
+            usersThatReviewedSinceLastReviewRequest={reviewers}
+            usersThatReviewedSinceLastReviewRequestEmails={reviewers}
           />
         </React.Fragment>
       )}

@@ -10,6 +10,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
 import UserAvatarLink from "./UserAvatarLink";
 
+import Loading from "../widgets/Loading";
+
 const useStyles = makeStyles((theme) => {
   return {
     reviewer: {
@@ -26,10 +28,15 @@ function ReviewersTable({
   usersThatReviewedSinceLastReviewRequest,
 }) {
   const classes = useStyles();
+  if (!usersThatReviewedSinceLastReviewRequestEmails) {
+    return <Loading />;
+  }
+
   const allEmails = [
     ...reviewerUserEmails,
     ...usersThatReviewedSinceLastReviewRequestEmails,
   ];
+
   const allIds = [...reviewerUsers, ...usersThatReviewedSinceLastReviewRequest];
 
   function compare(a, b) {

@@ -1,12 +1,16 @@
 import React from "react";
 import BaseReviewQueueEntry from "./BaseQueryEntry";
 
-export default function PullRequestReviewQueueEntry({ project, card }) {
-  console.log(project.openPrCount);
+export default function PullRequestReviewQueueEntry({ project }) {
+  console.log(
+    project.recruitUserEmails,
+    project.usersThatReviewedOpenPrsEmails
+  );
   return (
     <BaseReviewQueueEntry
       project={project}
-      //showAllocatedReviewers={true}
+      showAllocatedReviewers={true}
+      reviewers={project.usersThatReviewedOpenPrsEmails}
     />
   );
 }

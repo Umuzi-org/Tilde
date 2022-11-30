@@ -21,7 +21,13 @@
     "recruitUserEmails": ["gilbert.mphahlele@umuzi.org"],
     "reviewerUserEmails": [],
     "usersThatReviewedSinceLastReviewRequest": [729],
-    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"]
+    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"],
+    "usersThatReviewedOpenPrs": [967, 786, 739],
+    "usersThatReviewedOpenPrsEmails": [
+      "sibusiso.ndlovu@umuzi.org",
+      "sinenhlanhla.magubane@umuzi.org",
+      "philasande.ngcamu@umuzi.org"
+    ]
   },
   {
     "id": 19290,
@@ -41,24 +47,19 @@
     "oldestOpenPrUpdatedTime": null,
     "repoUrl": "git@github.com:Umuzi-org/Sibusiso-Ndlovu-280-node-file-io-javascript.git",
     "recruitUsers": [967],
-    "reviewerUsers": [5, 26, 185, 739, 786, 891, 962, 1084],
+    "reviewerUsers": [920, 1084, 786, 739],
     "recruitUserEmails": ["sibusiso.ndlovu@umuzi.org"],
     "reviewerUserEmails": [
-      "joshua.ritson@umuzi.org",
-      "sbonelo.mkhize@umuzi.org",
-      "kaleem.mohammad@umuzi.org",
-      "philasande.ngcamu@umuzi.org",
-      "sinenhlanhla.magubane@umuzi.org",
-      "vuyisanani.meteni@umuzi.org",
-      "rmawina@gmail.com",
-      "tasneem.titus@umuzi.org"
-    ],
-    "usersThatReviewedSinceLastReviewRequest": [26, 449, 962, 1084, 786, 739],
-    "usersThatReviewedSinceLastReviewRequestEmails": [
-      "sbonelo.mkhize@umuzi.org",
-      "ngoako.ramokgopa@umuzi.org",
-      "rmawina@gmail.com",
+      "gilbert.mphahlele@umuzi.org",
       "tasneem.titus@umuzi.org",
+      "sinenhlanhla.magubane@umuzi.org",
+      "philasande.ngcamu@umuzi.org"
+    ],
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [920, 786, 739],
+    "usersThatReviewedOpenPrsEmails": [
+      "gilbert.mphahlele@umuzi.org",
       "sinenhlanhla.magubane@umuzi.org",
       "philasande.ngcamu@umuzi.org"
     ]
@@ -85,7 +86,12 @@
     "recruitUserEmails": ["maureen.mashitisho@gmail.com"],
     "reviewerUserEmails": [],
     "usersThatReviewedSinceLastReviewRequest": [],
-    "usersThatReviewedSinceLastReviewRequestEmails": []
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [1084, 786],
+    "usersThatReviewedOpenPrsEmails": [
+      "tasneem.titus@umuzi.org",
+      "sinenhlanhla.magubane@umuzi.org"
+    ]
   },
   {
     "id": 19516,
@@ -108,8 +114,13 @@
     "reviewerUsers": [],
     "recruitUserEmails": ["jaco.oosthuizen@umuzi.org"],
     "reviewerUserEmails": [],
-    "usersThatReviewedSinceLastReviewRequest": [729],
-    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"]
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [786, 739],
+    "usersThatReviewedOpenPrsEmails": [
+      "sinenhlanhla.magubane@umuzi.org",
+      "philasande.ngcamu@umuzi.org"
+    ]
   },
   {
     "id": 19517,
@@ -132,8 +143,10 @@
     "reviewerUsers": [],
     "recruitUserEmails": ["jaco.oosthuizen@umuzi.org"],
     "reviewerUserEmails": [],
-    "usersThatReviewedSinceLastReviewRequest": [729],
-    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"]
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [786],
+    "usersThatReviewedOpenPrsEmails": ["sinenhlanhla.magubane@umuzi.org"]
   },
   {
     "id": 19547,
@@ -156,8 +169,13 @@
     "reviewerUsers": [],
     "recruitUserEmails": ["natasha.ngoma@umuzi.org"],
     "reviewerUserEmails": [],
-    "usersThatReviewedSinceLastReviewRequest": [729],
-    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"]
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [786, 739],
+    "usersThatReviewedOpenPrsEmails": [
+      "sinenhlanhla.magubane@umuzi.org",
+      "philasande.ngcamu@umuzi.org"
+    ]
   },
   {
     "id": 19563,
@@ -180,7 +198,12 @@
     "reviewerUsers": [],
     "recruitUserEmails": ["brandon.sunguti@umuzi.org"],
     "reviewerUserEmails": [],
-    "usersThatReviewedSinceLastReviewRequest": [729],
-    "usersThatReviewedSinceLastReviewRequestEmails": ["reviewbot@noreply.org"]
+    "usersThatReviewedSinceLastReviewRequest": [],
+    "usersThatReviewedSinceLastReviewRequestEmails": [],
+    "usersThatReviewedOpenPrs": [1084, 739],
+    "usersThatReviewedOpenPrsEmails": [
+      "tasneem.titus@umuzi.org",
+      "philasande.ngcamu@umuzi.org"
+    ]
   }
 ]
