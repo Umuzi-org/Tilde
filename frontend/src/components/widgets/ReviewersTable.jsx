@@ -60,13 +60,43 @@ function ReviewersTable({
   });
 
   allUsers.sort(compare);
+  const stringIds = allUsers.filter((user) => typeof user.userId === "string");
+  const numberIds = allUsers.filter((user) => typeof user.userId !== "string");
+  // console.log(stringIds);
+  // console.log(numberIds);
+  const arr2 = numberIds.map((obj) =>
+    // filtered.find((o) => o.email === obj.email)
+    {
+      stringIds.map((o) => {
+        if (o.email === obj.email) {
+          obj = o;
+          // console.log("ooooo", o);
+        }
+        // return o;
+      });
 
-  if (allUsers.length === 0) return <Typography>No reviewers!</Typography>;
+      return obj;
+
+      // || obj
+    }
+  );
+  // const valueArr = allUsers.map(function (item) {
+  //   return item.email;
+  // });n
+  // const isDuplicate = valueArr.some(function (item, idx) {
+  //   if (valueArr.indexOf(item) !== idx) {
+  //     return { ...idx };
+  //   }
+  // });
+  console.log(arr2);
+  // console.log("all", allUsers);
+
+  if (arr2.length === 0) return <Typography>No reviewers!</Typography>;
 
   return (
     <Table size="small">
       <TableBody>
-        {allUsers.map((user) => {
+        {arr2.map((user) => {
           return (
             <TableRow key={user.userId}>
               <TableCell padding="none">
