@@ -147,6 +147,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         actor_user = UserFactory(is_superuser=True)
         card = AgileCardFactory(
             status=AgileCard.READY,
+            topic_progress=None,
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
         )
         card.assignees.set([UserFactory()])
