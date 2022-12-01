@@ -1,5 +1,5 @@
 {
-  "activityLogDayCount": {
+  "activityLogDayCounts": {
     "date=2022-08-12&event_type=1&filter_by_actor_user=2&filter_by_effected_user=": {
       "id": "date=2022-08-12&event_type=1&filter_by_actor_user=2&filter_by_effected_user=",
       "date": "2022-08-12",

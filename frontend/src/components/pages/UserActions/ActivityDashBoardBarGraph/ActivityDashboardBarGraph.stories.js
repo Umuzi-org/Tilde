@@ -13,6 +13,6 @@ const Template = (args) => <ActivityDashboardBarGraphUnconnected {...args} />;
 export const Primary = Template.bind({});
 
 Primary.args = {
-  activityLogDayCounts: activityLogBarGraphStorybookData.activityLogDayCount,
+  activityLogDayCounts: activityLogBarGraphStorybookData.activityLogDayCounts,
   eventTypes: activityLogBarGraphStorybookData.eventTypes,
 };
