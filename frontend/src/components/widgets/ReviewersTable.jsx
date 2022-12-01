@@ -64,22 +64,31 @@ function ReviewersTable({
   const numberIds = allUsers.filter((user) => typeof user.userId !== "string");
   // console.log(stringIds);
   // console.log(numberIds);
-  const arr2 = numberIds.map((obj) =>
-    // filtered.find((o) => o.email === obj.email)
-    {
-      stringIds.map((o) => {
-        if (o.email === obj.email) {
-          obj = o;
-          // console.log("ooooo", o);
-        }
-        // return o;
-      });
+  const arr2 = numberIds.map((obj) => {
+    stringIds.map((o) => {
+      if (o.email === obj.email) {
+        obj = o;
+      }
+    });
+    return obj;
+  });
+  // console.log("arr2888", arr2);v vv
+  let arr4 = arr2;
+  // const arr3 = arr2.map((obj) => {
+  //   allUsers.map((o) => {
+  //     // arr
+  //     // arr4 = [];
+  //     if (o.email !== obj.email) {
+  //       // console.log("arr2888", o.email, obj.email);
 
-      return obj;
+  //       // arr4.push(o);
+  //       obj = o;
+  //     }
+  //   });
+  //   return obj;
+  // });
+  console.log("arr2888", arr2, "alll", allUsers);
 
-      // || obj
-    }
-  );
   // const valueArr = allUsers.map(function (item) {
   //   return item.email;
   // });n
@@ -88,7 +97,8 @@ function ReviewersTable({
   //     return { ...idx };
   //   }
   // });
-  console.log(arr2);
+  // console.log(allUsers);
+  // console.log("hello", arr4);
   // console.log("all", allUsers);
 
   if (arr2.length === 0) return <Typography>No reviewers!</Typography>;
