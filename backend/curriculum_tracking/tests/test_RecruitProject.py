@@ -1,5 +1,4 @@
-from core.tests.factories import UserFactory
-from curriculum_tracking.tests.factories import TeamFactory
+from core.tests.factories import TeamFactory, UserFactory
 from django.test import TestCase
 
 from curriculum_tracking import models

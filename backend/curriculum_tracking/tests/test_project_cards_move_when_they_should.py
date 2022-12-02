@@ -55,7 +55,7 @@ class RecruitProjectReviewCreationTests(TestCase):
     def test_that_user_given_permission_trusted_reviewer_makes_trusted_review(self):
         user = core_factories.UserFactory()
 
-        recruit_team = factories.TeamFactory()
+        recruit_team = core_factories.TeamFactory()
         assign_perm(Team.PERMISSION_TRUSTED_REVIEWER, user, recruit_team)
 
         untrusted = factories.RecruitProjectReviewFactory(

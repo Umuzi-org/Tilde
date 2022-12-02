@@ -11,7 +11,7 @@ from curriculum_tracking.models import (
     BurndownSnapshot,
 )
 from . import factories
-from core.tests.factories import UserFactory
+from core.tests.factories import UserFactory, TeamFactory
 from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
 from datetime import timedelta
 from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT

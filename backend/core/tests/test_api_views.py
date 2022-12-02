@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from test_mixins import APITestCaseMixin
 from . import factories
-from curriculum_tracking.tests.factories import TeamFactory
 from core.models import Team
 from guardian.shortcuts import assign_perm
 from django.contrib.auth.models import Group
@@ -47,7 +46,7 @@ class TestUserStatsPermissions(APITestCase, APITestCaseMixin):
 
     def test_can_see_stats_if_has_view_access(self):
         user = factories.UserFactory()
-        team = TeamFactory()
+        team = factories.TeamFactory()
         team.user_set.add(user)
 
         manager = factories.UserFactory()

@@ -2,8 +2,7 @@ from curriculum_tracking.serializers import TeamStatsSerializer
 from django.test import TestCase
 from . import factories
 from git_real.tests.factories import PullRequestFactory
-from core.tests.factories import UserFactory
-from curriculum_tracking.tests.factories import TeamFactory
+from core.tests.factories import TeamFactory, UserFactory
 from django.utils import timezone
 from config.models import NameSpace, Value
 from taggit.models import Tag

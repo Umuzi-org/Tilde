@@ -8,8 +8,7 @@ from curriculum_tracking.management.auto_assign_reviewers import (
     get_reviewer_users_by_permission,
     CONFIGURATION_NAMESPACE,
 )
-from core.tests.factories import UserFactory
-from curriculum_tracking.tests.factories import TeamFactory
+from core.tests.factories import TeamFactory, UserFactory
 from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,

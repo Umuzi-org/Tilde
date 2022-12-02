@@ -2,14 +2,13 @@ from core.tests import factories
 from django.test import TestCase
 from core.admin import TeamAdmin
 from mock import patch
-from curriculum_tracking.tests.factories import TeamFactory
 
 
 class TestMakeTeamMembersInactiveForATeam(TestCase):
 
     def setUp(self):
-        self.active_team = TeamFactory()
-        self.inactive_team = TeamFactory(active=False)
+        self.active_team = factories.TeamFactory()
+        self.inactive_team = factories.TeamFactory(active=False)
         self.user = factories.UserFactory()
         self.active_team.users.add(self.user)
         self.inactive_team.users.add(self.user)

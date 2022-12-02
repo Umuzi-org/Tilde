@@ -4,12 +4,11 @@ from git_real.tests.factories import PullRequestFactory, PullRequestReviewFactor
 from rest_framework.test import APITestCase
 from guardian.shortcuts import assign_perm
 from test_mixins import APITestCaseMixin
-from core.tests.factories import UserFactory
+from core.tests.factories import UserFactory, TeamFactory
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from . import factories
-from core.tests import factories as core_factories
 from datetime import timedelta
 from curriculum_tracking.models import (
     ContentItem,
@@ -52,8 +51,8 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
             due_time=timezone.now(), review_request_time=timezone.now()
         )
         card = factories.AgileCardFactory(recruit_project=project)
-        card.reviewers.add(core_factories.UserFactory())
-        card.assignees.add(core_factories.UserFactory())
+        card.reviewers.add(UserFactory())
+        card.assignees.add(UserFactory())
         return card
 
 
@@ -303,8 +302,8 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
     def verbose_instance_factory(self):
         project = factories.RecruitProjectFactory()
         card = factories.AgileCardFactory(recruit_project=project)
-        card.reviewers.add(core_factories.UserFactory())
-        card.assignees.add(core_factories.UserFactory())
+        card.reviewers.add(UserFactory())
+        card.assignees.add(UserFactory())
         card.flavours.add(Tag.objects.create(name="asdsasa"))
         project.review_request_time = timezone.now() - timedelta(days=5)
         project.save()
@@ -461,7 +460,7 @@ class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
             )
         )
         factories.RecruitProjectReviewFactory(recruit_project=project)
-        project.reviewer_users.add(core_factories.UserFactory())
+        project.reviewer_users.add(UserFactory())
         factories.AgileCardFactory(recruit_project=project)
         return project
 
@@ -662,7 +661,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
 
     def setUp(self):
         self.api_url = self.get_list_url()
-        self.team1 = factories.TeamFactory()
+        self.team1 = TeamFactory()
         self.team1_users = [UserFactory() for _ in range(3)]
 
     def test_staff_member_can_view_all_burndown_snapshot_objects(self):
@@ -693,7 +692,7 @@ class BurndownSnapShotViewsetTests(APITestCase, APITestCaseMixin):
             self.assertEqual(response.status_code, 200)
 
     def test_team1_users_cannot_view_team2_burndown_snapshot_objects(self):
-        team2 = factories.TeamFactory()
+        team2 = TeamFactory()
         team2_users = [UserFactory() for _ in range(3)]
 
         for user in self.team1_users:
@@ -710,21 +709,21 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_GET_LIST = True
 
     def setUp(self):
-        self.blue_team = factories.TeamFactory(name="BLUE TEAM")
-        self.red_team = factories.TeamFactory(name="RED TEAM")
-        self.user_one_blue = core_factories.UserFactory(
+        self.blue_team = TeamFactory(name="BLUE TEAM")
+        self.red_team = TeamFactory(name="RED TEAM")
+        self.user_one_blue = UserFactory(
             first_name="one_blue", is_superuser=False, is_staff=False
         )
-        self.user_two_blue = core_factories.UserFactory(
+        self.user_two_blue = UserFactory(
             first_name="two_blue", is_superuser=False, is_staff=False
         )
-        self.user_one_red = core_factories.UserFactory(
+        self.user_one_red = UserFactory(
             first_name="one_red", is_superuser=False, is_staff=False
         )
-        self.user_two_red = core_factories.UserFactory(
+        self.user_two_red = UserFactory(
             first_name="two_red", is_superuser=False, is_staff=False
         )
-        self.super_user = core_factories.UserFactory(
+        self.super_user = UserFactory(
             first_name="super_user", is_superuser=True
         )
 
@@ -998,7 +997,7 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
             project.reviewer_users.add(UserFactory())
             project.request_review()
 
-        teams = [factories.TeamFactory() for _ in range(5)]
+        teams = [TeamFactory() for _ in range(5)]
 
         teams[0].user_set.add(cards[0].recruit_project.recruit_users.first())
         teams[1].user_set.add(cards[1].recruit_project.recruit_users.first())
@@ -1060,7 +1059,7 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
     SUPPRESS_TEST_POST_TO_CREATE = True
 
     def verbose_instance_factory(self):
-        team = factories.TeamFactory()
+        team = TeamFactory()
         user = factories.UserFactory()
         team.user_set.add(user)
         return team
@@ -1072,8 +1071,8 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         staff_user = factories.UserFactory(is_staff=True)
         normal_user = factories.UserFactory()
 
-        team_1 = factories.TeamFactory()
-        factories.TeamFactory()
+        team_1 = TeamFactory()
+        TeamFactory()
 
         self.login(super_user)
 
@@ -1115,7 +1114,7 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
     def test_staff_users_cant_see_all_teams(self):
         user = factories.UserFactory(is_superuser=False, is_staff=True)
 
-        factories.TeamFactory()
+        TeamFactory()
 
         self.login(user)
         url = self.get_list_url()
