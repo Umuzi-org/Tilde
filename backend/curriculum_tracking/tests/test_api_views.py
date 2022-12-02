@@ -458,7 +458,6 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         self.assertEqual(project.link_submission, link_2)
 
     def test_get_number_of_times_card_moved_to_review_feedback(self):
-        recruit = UserFactory()
         card1 = factories.AgileCardFactory(
             status=AgileCard.IN_REVIEW,
         )
