@@ -18,7 +18,7 @@ import { Provider } from "react-redux";
 import { store } from "../redux/store";
 
 export default {
-  title: "Tilde/pages/AgileCard",
+  title: "Tilde/AgileCard",
   component: AgileCard,
 };
 
