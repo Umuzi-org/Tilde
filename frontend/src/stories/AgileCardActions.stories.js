@@ -1,5 +1,5 @@
 import React from "react";
-import AgileCardActions from "../components/regions/AgileBoard/AgileCard/AgileCardActions/Presentation.jsx";
+import AgileCardActions from "../components/pages/AgileBoard/AgileCard/AgileCardActions/Presentation.jsx";
 import card from "../stories/fixtures/AgileCards/openPrCard.json";
 
 export default {
