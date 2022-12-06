@@ -64,6 +64,14 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  queueContainerHeading: {
+    position: "sticky",
+    top: 0,
+    padding: "10px 0px",
+    backgroundColor: "black",
+    //backgroundColor: theme.palette.background.default,
+    zIndex: 2,
+  },
 }));
 
 function TeamSummaryStats({ summaryStats }) {
@@ -195,59 +203,75 @@ export default function Presentation({
   return (
     <Grid container spacing={2}>
       <Grid item xs={6} className={classes.cards}>
-        <Paper variant="outlined" elevation={2} className={classes.filterCards}>
-          <Typography
-            variant="h5"
-            gutterBottom
-            component="div"
-            className={classes.marginsAlignment}
-          >
-            Teams
-          </Typography>
-
-          <TextField
-            label="Teams"
+        <Grid className={classes.queueContainerHeading}>
+          <Paper
             variant="outlined"
-            value={filterFormValues.team}
-            className={classes.textBoxSize}
-            onChange={handleChangeFilterFormInput("team")}
-          />
-        </Paper>
-        {teams.map((team) => {
-          return (
-            <TeamCard
-              key={team.id}
-              team={team}
-              summaryStats={teamSummaryStats[team.id]}
-              handleUserGroupClick={handleUserGroupClick}
-              filterUsersByGroupName={filterUsersByGroupName}
+            elevation={2}
+            className={classes.filterCards}
+          >
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              className={classes.marginsAlignment}
+            >
+              Teams
+            </Typography>
+
+            <TextField
+              label="Teams"
+              variant="outlined"
+              value={filterFormValues.team}
+              className={classes.textBoxSize}
+              onChange={handleChangeFilterFormInput("team")}
             />
-          );
-        })}
+          </Paper>
+        </Grid>
+        <Grid>
+          {teams.map((team) => {
+            return (
+              <TeamCard
+                key={team.id}
+                team={team}
+                summaryStats={teamSummaryStats[team.id]}
+                handleUserGroupClick={handleUserGroupClick}
+                filterUsersByGroupName={filterUsersByGroupName}
+              />
+            );
+          })}
+        </Grid>
       </Grid>
       <Grid item xs={6} className={classes.cards}>
-        <Paper variant="outlined" elevation={2} className={classes.filterCards}>
-          <Typography
-            variant="h5"
-            gutterBottom
-            component="div"
-            className={classes.marginsAlignment}
-          >
-            Users
-          </Typography>
-          <TextField
-            label={`${filterUsersByGroupName} Users`}
+        <Grid className={classes.queueContainerHeading}>
+          <Paper
             variant="outlined"
-            value={filterFormValues.user}
-            onChange={handleChangeFilterFormInput("user")}
-            className={classes.textBoxSize}
-          />
-        </Paper>
-        {Object.keys(users)
-          .sort()
-          .map((email) => {
-            return <UserCard key={email} email={email} user={users[email]} />;
-          })}
+            elevation={2}
+            className={classes.filterCards}
+          >
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              className={classes.marginsAlignment}
+            >
+              Users
+            </Typography>
+            <TextField
+              label={`${filterUsersByGroupName} Users`}
+              variant="outlined"
+              value={filterFormValues.user}
+              onChange={handleChangeFilterFormInput("user")}
+              className={classes.textBoxSize}
+            />
+          </Paper>
+        </Grid>
+        <Grid>
+          {Object.keys(users)
+            .sort()
+            .map((email) => {
+              return <UserCard key={email} email={email} user={users[email]} />;
+            })}
+        </Grid>
       </Grid>
     </Grid>
   );
