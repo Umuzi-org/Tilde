@@ -926,5 +926,7 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         return [o.email for o in instance.reviewer_users.all()]
 
     def get_status(self, instance):
-        if instance.agile_card:
+        try:
             return instance.agile_card.status
+        except models.AgileCard.DoesNotExist:
+            return None
