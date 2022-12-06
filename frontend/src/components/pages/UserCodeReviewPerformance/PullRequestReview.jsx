@@ -1,5 +1,7 @@
 import React from "react";
-import { Typography, Avatar, Tooltip } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -9,7 +11,7 @@ import { REVIEW_VALIDATED_STATUS_CHOICES } from "../../../constants";
 
 import { reviewValidatedColors } from "../../../colors";
 
-import { ThemeProvider } from "@material-ui/styles";
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "./theme";
 
