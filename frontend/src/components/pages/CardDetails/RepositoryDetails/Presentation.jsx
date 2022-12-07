@@ -40,7 +40,7 @@ function TabPanel(props) {
   );
 }
 
-function PullRequestsTable ({ pullRequests, repository }) {
+function PullRequestsTable({ pullRequests, repository }) {
   const classes = useStyles();
   return (
     <TableContainer className={classes.container}>
@@ -80,7 +80,7 @@ function PullRequestsTable ({ pullRequests, repository }) {
       </Table>
     </TableContainer>
   );
-};
+}
 
 export default ({
   repository,

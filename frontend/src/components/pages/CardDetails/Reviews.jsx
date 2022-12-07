@@ -19,11 +19,6 @@ const useStyles = makeStyles((theme) => ({
     width: "99.2%",
     height: "100%",
   },
-  text: {
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1.5rem",
-    },
-  },
   list: {
     [theme.breakpoints.down("md")]: {
       maxHeight: "20em",
@@ -55,18 +50,12 @@ export default ({ reviewIds, reviews }) => {
       body = <CircularProgress />;
     }
   } else {
-    body = (
-      <Typography paragraph className={classes.text}>
-        {"No reviews yet"}
-      </Typography>
-    );
+    body = <Typography paragraph>{"No reviews yet"}</Typography>;
   }
 
   return (
     <Paper className={classes.sectionPaper} elevation={3}>
-      <Typography variant="h4" className={classes.text}>
-        Reviews
-      </Typography>
+      <Typography variant="h6">Reviews</Typography>
       {body}
     </Paper>
   );

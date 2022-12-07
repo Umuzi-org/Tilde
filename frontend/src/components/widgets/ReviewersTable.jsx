@@ -63,7 +63,7 @@ export default function ReviewersTable({
   if (allUsers.length === 0) return <Typography>No reviewers!</Typography>;
 
   return (
-    <div className={classes.table}>
+    <div>
       <Table size="small">
         <TableBody>
           {allUsers.map((user) => {
