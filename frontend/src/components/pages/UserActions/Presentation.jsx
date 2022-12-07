@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import UserBurnDownChart from "./UserBurndownStats";
 import ActivityLog from "./ActivityLog";
 import Button from "../../widgets/Button";
+import ActivityDashboardBarGraph from "./ActivityDashboardBarGraph";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -33,6 +34,9 @@ export default function Presentation({
             </Paper>
           </Grid>
         )}
+        <Grid item xs={12}>
+          <ActivityDashboardBarGraph />
+        </Grid>
         <Grid item xs={12}>
           <Paper>
             <ActivityLog

@@ -18,7 +18,10 @@ export default function ActivityDashboardBarGraph({
   barGraphData,
 }) {
   return (
-    <Typography>
+    <React.Fragment>
+      <Typography variant="h6" component="h2">
+        Activity Log Bar Graph
+      </Typography>
       <ResponsiveContainer width={"100%"} height={300} min-width={500}>
         <BarChart
           width={730}
@@ -56,6 +59,6 @@ export default function ActivityDashboardBarGraph({
           ))}
         </BarChart>
       </ResponsiveContainer>
-    </Typography>
+    </React.Fragment>
   );
 }
