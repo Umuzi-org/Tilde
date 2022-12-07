@@ -7,7 +7,7 @@ import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
-import FilterByNames from "./FilterByNames";
+import FilterArea from "./FilterArea";
 import ReviewQueueFilterChips from "./ReviewQueueFilterChips";
 
 const useStyles = makeStyles((theme) => {
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => {
     },
     queueItem: {
       maxHeight: "90vh",
+
       overflowY: "scroll",
       padding: "0px 10px",
     },
@@ -39,6 +40,10 @@ const useStyles = makeStyles((theme) => {
       display: "flex",
       alignItems: "center",
       flexWrap: "wrap",
+    },
+    filterByNamesContainer: {
+      margin: 0,
+      width: "100%",
     },
   };
 });
@@ -79,6 +84,9 @@ export default function Presentation({
   allTeamNames,
   filterIncludeAssigneeTeams,
   handleChangeAssigneeTeamFilter,
+
+  cardNameSearchValue,
+  handleChangeCardNameSearchValue,
 }) {
   const classes = useStyles();
 
@@ -87,38 +95,26 @@ export default function Presentation({
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
 
+  const props = {
+    filterIncludeTags,
+    filterExcludeTags,
+    filterIncludeFlavours,
+    filterExcludeFlavours,
+    handleChangeFlavourFilter,
+    handleChangeTagFilter,
+    allTagNames,
+    allFlavours,
+    allTeamNames,
+    filterIncludeAssigneeTeams,
+    handleChangeAssigneeTeamFilter,
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
+  };
+
   return (
     <Grid container spacing={3} className={classes.mainSection}>
       <Grid item xs={2}>
-        <Typography variant="h6">Filter by flavour</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allFlavours}
-            filterInclude={filterIncludeFlavours}
-            filterExclude={filterExcludeFlavours}
-            onChange={handleChangeFlavourFilter}
-          />
-        </Paper>
-
-        <Typography variant="h6">Filter by tag</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTagNames}
-            filterInclude={filterIncludeTags}
-            filterExclude={filterExcludeTags}
-            onChange={handleChangeTagFilter}
-          />
-        </Paper>
-
-        <Typography variant="h6">Filter by assignee team</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTeamNames}
-            filterInclude={filterIncludeAssigneeTeams}
-            filterExclude={[]}
-            onChange={handleChangeAssigneeTeamFilter}
-          />
-        </Paper>
+        <FilterArea {...props} />
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
@@ -136,11 +132,15 @@ export default function Presentation({
           <Grid>
             {competenceReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedCompetenceOrderFilter.sortFunction)
+              .sort(
+                selectedCompetenceOrderFilter.isAscending
+                  ? selectedCompetenceOrderFilter.sortInAscendingOrder
+                  : selectedCompetenceOrderFilter.sortInDescendingOrder
+              )
               .map((project) => (
                 <CompetenceReviewQueueEntry
                   project={project}
-                  key={`${project.id}`}
+                  key={project.id}
                 />
               ))}
           </Grid>
@@ -169,11 +169,15 @@ export default function Presentation({
           <Grid>
             {pullRequestReviewQueueProjects
               .filter(applyFilters)
-              .sort(selectedPullRequestOrderFilter.sortFunction)
+              .sort(
+                selectedPullRequestOrderFilter.isAscending
+                  ? selectedPullRequestOrderFilter.sortInAscendingOrder
+                  : selectedPullRequestOrderFilter.sortInDescendingOrder
+              )
               .map((project) => (
                 <PullRequestReviewQueueEntry
                   project={project}
-                  key={`${project.id}`}
+                  key={project.id}
                 />
               ))}
           </Grid>

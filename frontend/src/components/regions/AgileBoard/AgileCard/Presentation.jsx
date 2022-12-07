@@ -14,7 +14,7 @@ import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
-import AgileCardActions from "./AgileCardActions";
+import AgileCardActions from "./AgileCardActions/index.jsx";
 import {
   checkIfCardIsInReviewColumn,
   userReviewedSinceLastReviewRequest,
@@ -85,63 +85,19 @@ function ListCardUsers({ userNames, userIds }) {
 
 export default function Presentation({
   card,
-  authUser,
   viewedUser,
   filterUserId,
-  repoUrl,
-
-  handleClickAddReview,
-  handleClickOpenCardDetails,
-
-  handleRequestReview,
-  handleStartProject,
-  handleCancelReviewRequest,
-
-  handleClickOpenWorkshopAttendanceForm,
-  handleStartTopic,
-  handleStopTopic,
-  handleFinishTopic,
-  handleRemoveWorkshopAttendance,
-
-  loadingStartProject,
-  loadingStartTopic,
-  loadingClickOpenWorkshopAttendanceForm,
-  loadingRequestReview,
-  loadingCancelReviewRequest,
-  loadingStopTopic,
-  loadingFinishTopic,
-  loadingRemoveWorkshopAttendance,
+  //storybook
+  forceUser,
 }) {
   const classes = useStyles();
 
   const agileCardActionProps = {
-    handleClickAddReview,
-    handleClickOpenCardDetails,
-
-    handleRequestReview,
-    handleStartProject,
-    handleCancelReviewRequest,
-
-    handleClickOpenWorkshopAttendanceForm,
-    handleStartTopic,
-    handleStopTopic,
-    handleFinishTopic,
-    handleRemoveWorkshopAttendance,
     card,
-    authUser,
     viewedUser,
-    repoUrl,
-
-    loadingStartProject,
-    loadingStartTopic,
-    loadingClickOpenWorkshopAttendanceForm,
-    loadingRequestReview,
-    loadingCancelReviewRequest,
-    loadingStopTopic,
-    loadingFinishTopic,
-    loadingRemoveWorkshopAttendance,
+    // storybook
+    forceUser,
   };
-
   // TODO: add an icon for different kinds of content
   return (
     <Card
