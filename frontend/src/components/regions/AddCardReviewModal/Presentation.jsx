@@ -140,7 +140,7 @@ export default function Presentation({
                 id="outlined-multiline-static"
                 label="Your comments"
                 multiline
-                rows={5}
+                rows={15}
                 placeholder="Nicely done :)"
                 fullWidth
                 name="comments"
