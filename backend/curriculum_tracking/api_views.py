@@ -476,6 +476,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             type_or_404=models.ContentItem.TOPIC,
         )
         card.stop_topic()
+        log_creators.log_card_stopped(card=card, actor_user=request.user)
         return Response(serializers.AgileCardSerializer(card).data)
 
     @action(

@@ -1,6 +1,7 @@
 """for each of the log entry creators in curriculum_tracking.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 
+
 from django.test import TestCase
 from .factories import (
     RecruitProjectReviewFactory,
@@ -147,7 +148,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         actor_user = UserFactory(is_superuser=True)
         card = AgileCardFactory(
             status=AgileCard.READY,
-            topic_progress=None,
+            recruit_project=None,
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
         )
         card.assignees.set([UserFactory()])
@@ -165,14 +166,77 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
 
-        # breakpoint()
-
         self.assertEqual(entry.actor_user, actor_user)
         self.assertEqual(entry.effected_user, card.assignees.first())
-        # in my view object_1 should == card.topic_progress but currenly it == card.recruit_project - investigate how progress_instance works
         self.assertEqual(entry.object_1, card.topic_progress)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_STARTED)
+
+    def test_start_topic_multiple_times(self):
+
+        actor_user = UserFactory(is_superuser=True)
+        card = AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=None,
+            content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
+        )
+        card.assignees.set([UserFactory()])
+        self.login(actor_user)
+
+        # start card
+        start_url = f"{self.get_instance_url(card.id)}start_topic/"
+        response = self.client.post(start_url)
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+
+        # sanity check
+        self.assertEqual(card.assignees.count(), 1)
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+        # update log entry timestamp to ensure next entry created given debounce period
+        start_entry = LogEntry.objects.first()
+        start_entry.timestamp = timezone.now() - timezone.timedelta(days=2)
+        card.topic_progress.start_time = start_entry.timestamp
+        card.refresh_from_db()
+
+        # stop card
+        stop_url = f"{self.get_instance_url(card.id)}stop_topic/"
+        response = self.client.post(stop_url)
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+
+        self.assertEqual(LogEntry.objects.count(), 2)
+
+        # update log entry timestamp to ensure next entry created given debounce period
+        stop_entry = LogEntry.objects.last()
+        stop_entry.timestamp = timezone.now() - timezone.timedelta(days=1)
+        card.topic_progress.stop_time = stop_entry.timestamp
+        card.refresh_from_db()
+
+        self.assertEqual(stop_entry.actor_user, actor_user)
+        self.assertEqual(stop_entry.effected_user, card.assignees.first())
+        self.assertEqual(stop_entry.object_1, card.topic_progress)
+        self.assertEqual(stop_entry.object_2, None)
+        self.assertEqual(stop_entry.event_type.name, creators.CARD_STOPPED)
+
+        # start card again
+        response = self.client.post(start_url)
+        self.assertEqual(response.status_code, 200)
+
+        card.refresh_from_db()
+
+        # breakpoint()
+        self.assertEqual(LogEntry.objects.count(), 3)
+        start_again_entry = LogEntry.objects.last()
+
+        self.assertEqual(start_again_entry.actor_user, actor_user)
+        self.assertEqual(start_again_entry.effected_user, card.assignees.first())
+        self.assertEqual(start_again_entry.object_1, card.topic_progress)
+        self.assertEqual(start_again_entry.object_2, None)
+        self.assertEqual(start_again_entry.event_type.name, creators.CARD_STARTED)
 
 
 # class log_card_stopped_Tests(TestCase):
