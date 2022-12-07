@@ -28,30 +28,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Presentation({ userSnapshotArray, metrics, metricFilter, handleChangeMetricFilter }) {
-  
+function Presentation({
+  userSnapshotArray,
+  metrics,
+  metricFilter,
+  handleChangeMetricFilter,
+}) {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Typography variant="h6" component="h2">
-        Burndown
-      </Typography>
-      <Typography variant="h6" component="h1">
-        Filter Metric:{" "}
-        {Object.keys(metrics).map((metric) => (
-          <Button
-            onClick={() => handleChangeMetricFilter(metric)}
-            variant="outlined"
-            className={
-              metricFilter === metric
-                ? classes.selectedFilter
-                : classes.unselectedFilter
-            }
-          >
-            {metrics[metric]}
-          </Button>
-        ))}
-      </Typography>
+      {Object.keys(metrics).map((metric) => (
+        <Button
+          onClick={() => handleChangeMetricFilter(metric)}
+          variant="outlined"
+          size="small"
+          className={
+            metricFilter === metric
+              ? classes.selectedFilter
+              : classes.unselectedFilter
+          }
+        >
+          {metrics[metric]}
+        </Button>
+      ))}
       <Grid container>
         <Grid item xs={10}>
           <ResponsiveContainer height={500} width="100%">

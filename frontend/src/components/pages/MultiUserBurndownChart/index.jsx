@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { fillInSnapshotDateGaps } from "./utils";
 
 export function MultiUserBurndownChartUnconnected({
+  team,
   //   mapStateToProps
   currentTeamBurndownStats,
-  team,
   metrics,
   // mapDispatchToProps
 

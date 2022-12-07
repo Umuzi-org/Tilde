@@ -1,5 +1,4 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 
 import multiUserBurndownData from "./storyData/multiUserBurnDownData.json";
 import { MultiUserBurndownChartUnconnected } from ".";
@@ -10,17 +9,15 @@ export default {
 };
 
 const Template = (args) => (
-  <Router>
-    <MultiUserBurndownChartUnconnected {...args} />{" "}
-  </Router>
+  <MultiUserBurndownChartUnconnected {...args} />
 );
 
 export const Primary = Template.bind({});
 
 Primary.args = {
+  team: multiUserBurndownData.team,
   // mapStateToProps
   currentTeamBurndownStats: multiUserBurndownData.teamBurnDownStats,
-  team: multiUserBurndownData.team,
   metrics: multiUserBurndownData.metrics,
 
   // mapDispatchToProps
