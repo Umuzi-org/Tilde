@@ -200,6 +200,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         start_entry.timestamp = timezone.now() - timezone.timedelta(days=2)
         card.topic_progress.start_time = start_entry.timestamp
         card.refresh_from_db()
+        start_entry.refresh_from_db()
 
         # stop card
         stop_url = f"{self.get_instance_url(card.id)}stop_topic/"
@@ -215,6 +216,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
         stop_entry.timestamp = timezone.now() - timezone.timedelta(days=1)
         card.topic_progress.stop_time = stop_entry.timestamp
         card.refresh_from_db()
+        stop_entry.refresh_from_db()
 
         self.assertEqual(stop_entry.actor_user, actor_user)
         self.assertEqual(stop_entry.effected_user, card.assignees.first())
