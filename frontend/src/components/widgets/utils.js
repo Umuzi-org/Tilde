@@ -16,3 +16,27 @@ export function repoUrlCleaner(repoUrl) {
     .slice(0, repoUrl.lastIndexOf(".git"))
     .replace(/git@github.com:/i, "https://github.com/")}/pulls`;
 }
+
+export function filterUsers(allUsers) {
+  const stringIds = allUsers.filter((user) => typeof user.userId === "string");
+  const numberIds = allUsers.filter((user) => typeof user.userId !== "string");
+
+  const reviewers = numberIds.map((obj) => {
+    stringIds.map((o) => {
+      if (o.email === obj.email) {
+        return (obj = o);
+      }
+    });
+    return obj;
+  });
+
+  const reviewedUsers = stringIds.filter(
+    (firstArrayItem) =>
+      !numberIds.some(
+        (secondArrayItem) => firstArrayItem.email === secondArrayItem.email
+      )
+  );
+
+  Array.prototype.push.apply(reviewers, reviewedUsers);
+  return reviewers;
+}
