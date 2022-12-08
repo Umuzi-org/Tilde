@@ -25,9 +25,9 @@ function GlobalCodeReviewDashboardUnconnected({
   fetchPullRequestReviewQueuePage,
   fetchTeamsPages,
 }) {
-  let urlParams = useParams() || {};
-  const { cardId } = urlParams;
-  const card = cards && cards[cardId];
+  // let urlParams = useParams() || {};
+  // const { cardId } = urlParams;
+  // const card = cards && cards[cardId];
   teams = teams || {};
 
   const [filterIncludeTags, setFilterIncludeTags] = useState([]);

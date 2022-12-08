@@ -64,16 +64,44 @@ function ReviewersTable({
   const numberIds = allUsers.filter((user) => typeof user.userId !== "string");
   // console.log(stringIds);
   // console.log(numberIds);
+  // const arr = [];
   const arr2 = numberIds.map((obj) => {
+    // console.log(obj);
+    // let res;
     stringIds.map((o) => {
       if (o.email === obj.email) {
         obj = o;
       }
+      // console.log("arrrrr", o.email === obj.email ? obj : o);
+      // res = o.email === obj.email ? o : obj;
     });
     return obj;
   });
-  // console.log("arr2888", arr2);v vv
-  let arr4 = arr2;
+  // const results = numberIds.filter(
+  // ({ value: obj }) => !stringIds.some(({ value: o }) => obj === o)
+  // );
+  // const results = numberIds.filter(
+  //   ({ value: obj }) => !stringIds.some(({ value: o }) => obj.email === o.email)
+  // );
+  // const results = stringIds.filter(
+  //   ({ value: id1 }) =>
+  //     !numberIds.some(({ value: id2 }) => {
+  //       // console.log(value: ids);
+  //       return id2 === id1;
+  //     })
+  // );
+  const resultFilter = (firstArray, secondArray) => {
+    return firstArray.filter(
+      (firstArrayItem) =>
+        !secondArray.some(
+          (secondArrayItem) => firstArrayItem.email === secondArrayItem.email
+        )
+    );
+  };
+  // console.log(resultFilter(stringIds, numberIds));
+  Array.prototype.push.apply(arr2, resultFilter(stringIds, numberIds));
+  // console.log("arr2888", arr2);
+  // let arr4 = arr2;
   // const arr3 = arr2.map((obj) => {
   //   allUsers.map((o) => {
   //     // arr
@@ -87,7 +115,7 @@ function ReviewersTable({
   //   });
   //   return obj;
   // });
-  console.log("arr2888", arr2, "alll", allUsers);
+  // console.log("arr2888", arr2);
 
   // const valueArr = allUsers.map(function (item) {
   //   return item.email;
