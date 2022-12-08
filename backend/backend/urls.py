@@ -33,7 +33,7 @@ router.register(r"user_profiles", core_views.UserProfileViewSet, "userprofile")
 router.register(r"curriculums", core_views.CurriculumViewSet, "curriculum")
 
 
-router.register(r"teams", core_views.TeamViewSet, "team")
+router.register(r"teams", curriculum_tracking_api_views.TeamViewSet, "team")
 
 
 router.register(
