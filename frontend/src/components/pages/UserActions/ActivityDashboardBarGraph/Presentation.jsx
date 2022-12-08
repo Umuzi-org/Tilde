@@ -11,6 +11,7 @@ import {
   Cell,
 } from "recharts";
 import Typography from "@material-ui/core/Typography";
+
 import { replaceUnderscoresWithSpace } from "./utils";
 
 export default function ActivityDashboardBarGraph({
