@@ -12,18 +12,18 @@ import { useEffect } from "react";
 export function ActivityDashboardBarGraphUnconnected({
   eventTypes,
   activityLogDayCounts,
-  fetchEventTypes,
+  // fetchEventTypes,
   fetchActivityLogDayCountsPage,
 }) {
   const { userId } = useParams() || {};
   eventTypes = eventTypes || {};
   activityLogDayCounts = activityLogDayCounts || {};
 
-  useEffect(() => {
-    fetchEventTypes({
-      page: 1,
-    });
-  }, [fetchEventTypes]);
+  // useEffect(() => {
+  //   fetchEventTypes({
+  //     page: 1,
+  //   });
+  // }, [fetchEventTypes]);
 
   useEffect(() => {
     fetchActivityLogDayCountsPage({
@@ -56,20 +56,20 @@ export function ActivityDashboardBarGraphUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    eventTypes: state.apiEntities.eventTypes,
+    // eventTypes: state.apiEntities.eventTypes,
     activityLogDayCounts: state.apiEntities.activityLogDayCounts,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchEventTypes: () => {
-      dispatch(
-        apiReduxApps.FETCH_EVENT_TYPES.operations.start({
-          data: { page: 1 },
-        })
-      );
-    },
+    // fetchEventTypes: () => {
+    //   dispatch(
+    //     apiReduxApps.FETCH_EVENT_TYPES.operations.start({
+    //       data: { page: 1 },
+    //     })
+    //   );
+    // },
     fetchActivityLogDayCountsPage: ({ actorUser, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE.operations.start({

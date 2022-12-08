@@ -22,6 +22,7 @@ export default function Presentation({
   currentUserBurndownStats,
   activityLogEntries,
   fetchNextPages,
+  eventTypes,
 }) {
   const classes = useStyles();
   return (
@@ -35,7 +36,7 @@ export default function Presentation({
           </Grid>
         )}
         <Grid item xs={12}>
-          <ActivityDashboardBarGraph />
+          <ActivityDashboardBarGraph eventTypes={eventTypes} />
         </Grid>
         <Grid item xs={12}>
           <Paper>

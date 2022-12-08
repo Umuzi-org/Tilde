@@ -97,6 +97,7 @@ function UserActionsUnconnected({
     currentUserBurndownStats,
     activityLogEntries,
     fetchNextPages,
+    eventTypes,
   };
   return <Presentation {...props} />;
 }
