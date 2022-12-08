@@ -1,4 +1,4 @@
-import { repoUrlCleaner, getAgeString } from "./utils";
+import { repoUrlCleaner, getAgeString, filterUsers } from "./utils";
 
 test("getAgeString function doesn't break if null date", () => {
   expect(getAgeString(null)).toBe("");
@@ -62,4 +62,10 @@ test("git repo url should be able to direct to pull request index' of any extern
   expect(repoUrlCleaner(gitRepo2)).toBe(
     "https://github.com/facebook/react/pulls"
   );
+});
+
+test("filterUsers should filter allUsers and keep users who have reviewed and those who are assigned on the card", () => {
+  const allUsers = [];
+  const filteredUsers = [];
+  expect(filterUsers(allUsers)).toBe(filteredUsers);
 });
