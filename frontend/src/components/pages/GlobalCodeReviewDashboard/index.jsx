@@ -7,28 +7,7 @@ import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { useState } from "react";
-<<<<<<< HEAD
-import { useParams } from "react-router-dom";
-
-function removeNameFromArray({ array, name }) {
-  const index = array.indexOf(name);
-  if (index !== -1) {
-    array.splice(index, 1);
-  }
-  return array;
-}
-
-function filterByCardName(allCards, cardName) {
-  if (cardName) {
-    return allCards.filter((card) =>
-      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
-    );
-  }
-  return allCards;
-}
-=======
 import { removeNameFromArray, filterList } from "./utils";
->>>>>>> a6ce78d4d16dc95bb7ea90b552cb3cdb2916e981
 
 function GlobalCodeReviewDashboardUnconnected({
   cards,
@@ -127,19 +106,23 @@ function GlobalCodeReviewDashboardUnconnected({
     initialCompetenceOrderFilters
   );
 
-  const [selectedPullRequestOrderFilter, setSelectedPullRequestOrderFilter] =
-    useState(() => {
-      return pullRequestOrderFilters.filter(
-        (orderFilter) => orderFilter.isSelected
-      )[0];
-    });
+  const [
+    selectedPullRequestOrderFilter,
+    setSelectedPullRequestOrderFilter,
+  ] = useState(() => {
+    return pullRequestOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
 
-  const [selectedCompetenceOrderFilter, setSelectedCompetenceOrderFilter] =
-    useState(() => {
-      return competenceOrderFilters.filter(
-        (orderFilter) => orderFilter.isSelected
-      )[0];
-    });
+  const [
+    selectedCompetenceOrderFilter,
+    setSelectedCompetenceOrderFilter,
+  ] = useState(() => {
+    return competenceOrderFilters.filter(
+      (orderFilter) => orderFilter.isSelected
+    )[0];
+  });
 
   const [cardNameSearchValue, setCardNameSearchValue] = useState("");
 
@@ -299,18 +282,6 @@ function GlobalCodeReviewDashboardUnconnected({
   }
 
   const props = {
-<<<<<<< HEAD
-    card,
-
-    competenceReviewQueueProjects: filterByCardName(
-      competenceReviewQueueProjects,
-      cardNameSearchValue
-    ),
-    pullRequestReviewQueueProjects: filterByCardName(
-      pullRequestReviewQueueProjects,
-      cardNameSearchValue
-    ),
-=======
     competenceReviewQueueProjects: filterList({
       list: competenceReviewQueueProjects,
       filter: cardNameSearchValue,
@@ -321,7 +292,6 @@ function GlobalCodeReviewDashboardUnconnected({
       filter: cardNameSearchValue,
       listItemProperty: "contentItemTitle",
     }),
->>>>>>> a6ce78d4d16dc95bb7ea90b552cb3cdb2916e981
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
