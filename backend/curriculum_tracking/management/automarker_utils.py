@@ -98,6 +98,9 @@ def automark_card(card, debug_mode):
 
         # step_name = result['actionName']
         result = result["result"]
+        print("============")
+        print(result)
+        print("============")
 
         comments = f"*{result['message']}*"
         if errors := result.get("errors"):

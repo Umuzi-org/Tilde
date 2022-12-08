@@ -7,6 +7,7 @@ import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { useState } from "react";
+<<<<<<< HEAD
 import { useParams } from "react-router-dom";
 
 function removeNameFromArray({ array, name }) {
@@ -25,6 +26,9 @@ function filterByCardName(allCards, cardName) {
   }
   return allCards;
 }
+=======
+import { removeNameFromArray, filterList } from "./utils";
+>>>>>>> a6ce78d4d16dc95bb7ea90b552cb3cdb2916e981
 
 function GlobalCodeReviewDashboardUnconnected({
   cards,
@@ -295,6 +299,7 @@ function GlobalCodeReviewDashboardUnconnected({
   }
 
   const props = {
+<<<<<<< HEAD
     card,
 
     competenceReviewQueueProjects: filterByCardName(
@@ -305,6 +310,18 @@ function GlobalCodeReviewDashboardUnconnected({
       pullRequestReviewQueueProjects,
       cardNameSearchValue
     ),
+=======
+    competenceReviewQueueProjects: filterList({
+      list: competenceReviewQueueProjects,
+      filter: cardNameSearchValue,
+      listItemProperty: "contentItemTitle",
+    }),
+    pullRequestReviewQueueProjects: filterList({
+      list: pullRequestReviewQueueProjects,
+      filter: cardNameSearchValue,
+      listItemProperty: "contentItemTitle",
+    }),
+>>>>>>> a6ce78d4d16dc95bb7ea90b552cb3cdb2916e981
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,
