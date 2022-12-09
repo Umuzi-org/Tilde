@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 import { getUrl as getUserBoardUrl } from "./LinkToUserBoard";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   avatarLink: {
     textDecoration: "none",
     marginRight: 8,
@@ -17,7 +17,12 @@ const useStyles = makeStyles({
   emailText: {
     color: "#000",
   },
-});
+  small: {
+    width: 30,
+    height: 30,
+    fontSize: 15,
+  },
+}));
 
 export function getAvatarInitials(email) {
   const alphanumerals = /[a-zA-Z0-9]/;
@@ -39,7 +44,7 @@ function UserAvatarLink({ email, userId }) {
   return (
     <div className={classes.container}>
       <Link to={getUserBoardUrl({ userId })} className={classes.avatarLink}>
-        <Avatar>{getAvatarInitials(email)}</Avatar>
+        <Avatar className={classes.small}>{getAvatarInitials(email)}</Avatar>
       </Link>
       <Typography className={classes.emailText}>{email}</Typography>
     </div>
