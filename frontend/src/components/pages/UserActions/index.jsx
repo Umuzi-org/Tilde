@@ -75,24 +75,28 @@ function UserActionsUnconnected({
 
   let orderedDates = [];
 
-  Object.keys(activityLogEntries)
-    .map((o) => {
-      const date = activityLogEntries[o].timestamp;
-      orderedDates.push(date.substring(0, 10));
-      return orderedDates.sort((time1, time2) => {
-        return new Date(time1) < new Date(time2) ? 1 : -1;
-      });
-    })
-    .filter(
-      (event) => event.actorUser === userId || event.effectedUser === userId
-    );
+  Object.keys(activityLogEntries).map((o) => {
+    const date = activityLogEntries[o].timestamp;
+    orderedDates.push(date.substring(0, 10));
+    return orderedDates.sort((time1, time2) => {
+      return new Date(time1) < new Date(time2) ? 1 : -1;
+    });
+  });
+  // .filter(
+  //   (event) => event.actorUser === userId || event.effectedUser === userId
+  // );
 
   orderedDates = [...new Set(orderedDates)];
 
   activityLogEntries = addEventColorsToLogEntries({
     eventTypes,
     activityLogEntries,
-  });
+  }).filter(
+    (event) => event.actorUser === userId || event.effectedUser === userId
+  );
+  // .sort((event1, event2) =>
+  //   new Date(event1.timestamp) < new Date(event2.timestamp) ? 1 : -1
+  // );
 
   const props = {
     orderedDates,

@@ -9,7 +9,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import orange from "@material-ui/core/colors/orange";
 import green from "@material-ui/core/colors/green";
@@ -41,52 +40,47 @@ export default ({ burnDownSnapshots }) => {
 
   const classes = useStyles();
   return (
-    <React.Fragment>
-      <Typography variant="h6" component="h2">
-        Burndown
-      </Typography>
-      <ResponsiveContainer height={500} width="100%">
-        <LineChart data={burnDownSnapshotsFilledDates}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" interval="preserveEnd" />
-          <YAxis />
-          <Tooltip />
-          <Legend className={classes.legend} />
-          <Line
-            type="monotone"
-            dataKey="cardsTotalCount"
-            name="Total Cards"
-            stroke={orange[400]}
-            activeDot={{ r: 8 }}
-            strokeWidth={1}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="projectCardsTotalCount"
-            name="Total Project Cards"
-            stroke={green[400]}
-            strokeWidth={1}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="cardsInCompleteColumnTotalCount"
-            name="Completed Cards"
-            stroke={blue[400]}
-            strokeWidth={1}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="projectCardsInCompleteColumnTotalCount"
-            name="Completed Project Cards"
-            stroke={red[400]}
-            strokeWidth={1}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </React.Fragment>
+    <ResponsiveContainer height={500} width="100%">
+      <LineChart data={burnDownSnapshotsFilledDates}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="timestamp" interval="preserveEnd" />
+        <YAxis />
+        <Tooltip />
+        <Legend className={classes.legend} />
+        <Line
+          type="monotone"
+          dataKey="cardsTotalCount"
+          name="Total Cards"
+          stroke={orange[400]}
+          activeDot={{ r: 8 }}
+          strokeWidth={1}
+          dot={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="projectCardsTotalCount"
+          name="Total Project Cards"
+          stroke={green[400]}
+          strokeWidth={1}
+          dot={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="cardsInCompleteColumnTotalCount"
+          name="Completed Cards"
+          stroke={blue[400]}
+          strokeWidth={1}
+          dot={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="projectCardsInCompleteColumnTotalCount"
+          name="Completed Project Cards"
+          stroke={red[400]}
+          strokeWidth={1}
+          dot={false}
+        />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
