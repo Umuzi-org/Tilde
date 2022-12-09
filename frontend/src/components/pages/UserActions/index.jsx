@@ -82,21 +82,21 @@ function UserActionsUnconnected({
       return new Date(time1) < new Date(time2) ? 1 : -1;
     });
   });
-  // .filter(
-  //   (event) => event.actorUser === userId || event.effectedUser === userId
-  // );
 
   orderedDates = [...new Set(orderedDates)];
 
   activityLogEntries = addEventColorsToLogEntries({
     eventTypes,
     activityLogEntries,
-  }).filter(
-    (event) => event.actorUser === userId || event.effectedUser === userId
-  );
-  // .sort((event1, event2) =>
-  //   new Date(event1.timestamp) < new Date(event2.timestamp) ? 1 : -1
-  // );
+  })
+    .filter(
+      (event) => event.actorUser === userId || event.effectedUser === userId
+    )
+    .sort((event1, event2) =>
+      new Date(event1.timestamp) < new Date(event2.timestamp) ? 1 : -1
+    );
+
+  console.log(activityLogEntries);
 
   const props = {
     orderedDates,

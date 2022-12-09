@@ -1,15 +1,11 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import TodayIcon from "@material-ui/icons/Today";
-import Chip from "@material-ui/core/Chip";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import MoreIcon from "@material-ui/icons/More";
 import { routes } from "../../../routes";
-import CardButton from "../../widgets/CardButton";
 import Button from "../../widgets/Button";
-import { Avatar } from "@material-ui/core";
 import UserAvatarLink from "../../widgets/UserAvatarLink";
 
 const useStyles = makeStyles((theme) => ({
@@ -75,7 +71,7 @@ export default function ActivityLog({ eventList, orderedDates }) {
             {new Date(timestamp.substring(0, 10)).toDateString()}
           </Typography>
 
-          {eventList.reverse().map((item) => (
+          {eventList.map((item) => (
             <>
               {item.timestamp.substring(0, 10) ===
                 timestamp.substring(0, 10) && (
