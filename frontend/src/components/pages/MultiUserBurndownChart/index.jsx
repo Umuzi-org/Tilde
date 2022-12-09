@@ -24,7 +24,7 @@ export function MultiUserBurndownChartUnconnected({
   
   currentTeamBurndownStats = currentTeamBurndownStats
     ? Object.values(currentTeamBurndownStats)
-    : {};
+    : [];
   currentTeamBurndownStats.map(
     (burnDownSnapshot) =>
       (burnDownSnapshot.timestamp = new Date(burnDownSnapshot.timestamp)
