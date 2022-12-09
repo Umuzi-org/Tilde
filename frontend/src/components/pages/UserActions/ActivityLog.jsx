@@ -32,7 +32,7 @@ function EventEntry({ item }) {
     <Paper
       className={classes.event}
       timestamp={item.timestamp}
-      style={{ borderLeft: `3px solid ${item.eventColor}` }}
+      style={{ borderLeft: `5px solid ${item.eventColor}` }}
       variant="outlined"
     >
       <div className={classes.flex}>

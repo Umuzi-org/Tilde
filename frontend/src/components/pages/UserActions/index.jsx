@@ -12,7 +12,7 @@ import { addEventColorsToLogEntries } from "./utils.js";
 
 function UserActionsUnconnected({
   authedUserId,
-  fetchCardCompletions,
+  // fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
   fetchActivityLogEntries,
@@ -30,9 +30,9 @@ function UserActionsUnconnected({
   );
 
   useEffect(() => {
-    fetchCardCompletions({ page: 1, assigneeUserId: userId });
+    // fetchCardCompletions({ page: 1, assigneeUserId: userId });
     fetchUserBurndownStats({ userId });
-  }, [fetchCardCompletions, fetchUserBurndownStats, userId]);
+  }, [fetchUserBurndownStats, userId]);
 
   useEffect(() => {
     fetchActivityLogEntries({
@@ -108,8 +108,8 @@ const mapStateToProps = (state) => {
     authedUserId: state.App.authUser.userId,
     FETCH_RECRUIT_PROJECT_REVIEWS_PAGE:
       state.FETCH_RECRUIT_PROJECT_REVIEWS_PAGE,
-    FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
-      state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+    // FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE:
+    //   state.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
     FETCH_ACTIVITY_LOG_ENTRIES: state.FETCH_ACTIVITY_LOG_ENTRIES,
     userBurndownStats: state.apiEntities.burndownSnapshots,
     eventTypes: state.apiEntities.eventTypes,
@@ -138,13 +138,13 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
 
-    fetchCardCompletions: ({ assigneeUserId, page }) => {
-      dispatch(
-        apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
-          data: { assigneeUserId, page },
-        })
-      );
-    },
+    // fetchCardCompletions: ({ assigneeUserId, page }) => {
+    //   dispatch(
+    //     apiReduxApps.FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE.operations.start({
+    //       data: { assigneeUserId, page },
+    //     })
+    //   );
+    // },
 
     fetchUser: ({ userId }) => {
       dispatch(
