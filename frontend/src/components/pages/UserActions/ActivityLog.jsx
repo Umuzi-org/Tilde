@@ -49,7 +49,9 @@ function EventEntry({ item }) {
         {item.object1Summary.title}
       </Typography>
       <div className={classes.flex}>
-        <UserAvatarLink email={item.actorUserEmail} userId={item.actorUser} />
+        {item.actorUserEmail && (
+          <UserAvatarLink email={item.actorUserEmail} userId={item.actorUser} />
+        )}
         <Link
           to={routes.cardDetails.route.path.replace(
             ":cardId",

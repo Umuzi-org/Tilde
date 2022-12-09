@@ -36,7 +36,7 @@ function UserActionsUnconnected({
 
   useEffect(() => {
     fetchActivityLogEntries({
-      actorUser: userId,
+      user: userId,
       page: 1,
     });
   }, [fetchActivityLogEntries, userId]);
@@ -60,7 +60,7 @@ function UserActionsUnconnected({
     if (anyLoading) return;
     if (latestActivityLogPage.responseData.results.length > 0) {
       const nextCardPage = latestActivityLogPage.requestData.page + 1;
-      fetchActivityLogEntries({ page: nextCardPage, actorUser: userId });
+      fetchActivityLogEntries({ page: nextCardPage, user: userId });
     }
   };
 
@@ -75,13 +75,17 @@ function UserActionsUnconnected({
 
   let orderedDates = [];
 
-  Object.keys(activityLogEntries).map((o) => {
-    const date = activityLogEntries[o].timestamp;
-    orderedDates.push(date.substring(0, 10));
-    return orderedDates.sort((time1, time2) => {
-      return new Date(time1) < new Date(time2) ? 1 : -1;
-    });
-  });
+  Object.keys(activityLogEntries)
+    .map((o) => {
+      const date = activityLogEntries[o].timestamp;
+      orderedDates.push(date.substring(0, 10));
+      return orderedDates.sort((time1, time2) => {
+        return new Date(time1) < new Date(time2) ? 1 : -1;
+      });
+    })
+    .filter(
+      (event) => event.actorUser === userId || event.effectedUser === userId
+    );
 
   orderedDates = [...new Set(orderedDates)];
 
@@ -153,11 +157,22 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchActivityLogEntries: ({ actorUser, page }) => {
+    fetchActivityLogEntries: ({ user, page }) => {
+      // dispatch(
+      //   apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
+      //     data: { actorUser: user, page },
+      //   })
+      // );
+
       dispatch(
-        apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
-          data: { actorUser, page },
-        })
+        apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.maybeStartCallSequence(
+          {
+            dataSequence: [
+              { actorUser: user, page },
+              { effectedUser: user, page },
+            ],
+          }
+        )
       );
     },
     fetchEventTypes: () => {
