@@ -18,7 +18,6 @@ Primary.args = {
   team: multiUserBurndownData.team,
   // mapStateToProps
   currentTeamBurndownStats: multiUserBurndownData.teamBurnDownStats,
-  metrics: multiUserBurndownData.metrics,
 
   // mapDispatchToProps
 

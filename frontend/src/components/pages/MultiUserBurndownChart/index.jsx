@@ -7,12 +7,16 @@ export function MultiUserBurndownChartUnconnected({
   team,
   //   mapStateToProps
   currentTeamBurndownStats,
-  metrics,
   // mapDispatchToProps
 
   // storybook
 }) {
   const [metricFilter, setMetricFilter] = useState("projectCardsTotalCount");
+  const metrics = {
+    "projectCardsTotalCount": "Total Projects",
+    "cardsInCompleteColumnTotalCount": "Completed Cards",
+    "projectCardsInCompleteColumnTotalCount": "Completed Projects"
+  }
 
   const handleChangeMetricFilter = (newValue) => {
     setMetricFilter(newValue);
