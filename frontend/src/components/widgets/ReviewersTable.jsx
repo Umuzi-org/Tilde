@@ -62,10 +62,6 @@ function ReviewersTable({
 
   allUsers.sort(compare);
   const filteredAllUsers = filterUsers(allUsers);
-  // filteredAllUsers.map((user) => {
-  //   console.log(reviewerUsers, user.userId, allUsers.includes(user.userId));
-  // });
-  // console.log(allIds);
 
   if (filteredAllUsers.length === 0)
     return <Typography>No reviewers!</Typography>;
@@ -74,11 +70,9 @@ function ReviewersTable({
     <Table size="small">
       <TableBody>
         {filteredAllUsers.map((user) => {
-          const filteredUserId = allUsers.map((reviewer) => {
-            return reviewerUsers.map((user) => {
-              return user.id === reviewer.id;
-            });
-          });
+          const cardReviewer = reviewerUserEmails.find(
+            (email) => email === user.email
+          );
 
           return (
             <TableRow key={user.userId}>
@@ -91,7 +85,7 @@ function ReviewersTable({
                 />
               </TableCell>
               <TableCell padding="none">
-                {filteredUserId && (
+                {(reviewerUsers.includes(user.userId) || cardReviewer) && (
                   <Tooltip title="this user is an allocated reviewer on this project">
                     <Avatar className={classes.reviewer}>R</Avatar>
                   </Tooltip>
