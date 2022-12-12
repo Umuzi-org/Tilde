@@ -1,73 +1,86 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import TodayIcon from "@material-ui/icons/Today";
-import Chip from "@material-ui/core/Chip";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
+import MoreIcon from "@material-ui/icons/More";
+import { routes } from "../../../routes";
+import Button from "../../widgets/Button";
+import UserAvatarLink from "../../widgets/UserAvatarLink";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    width: "50rem",
-    ["@media (max-width:620px)"]: { // eslint-disable-line no-useless-computed-key
-      fontSize: "1rem",
-    },
-  },
-  time: {
-    marginLeft: theme.spacing(2),
-  },
-  filler: {
-    marginTop: theme.spacing(2),
-  },
-  label: {
-    marginBottom: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-  },
-  title: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-  },
-  calendarIcon: {
-    margin: theme.spacing(1),
-  },
   dateTypography: {
     marginTop: theme.spacing(2),
+    fontSize: 25,
+  },
+  title: { fontWeight: "bold" },
+  event: { padding: theme.spacing(1), marginTop: theme.spacing(1) },
+  flex: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 }));
+
+function EventEntry({ item }) {
+  const classes = useStyles();
+  return (
+    <Paper
+      className={classes.event}
+      timestamp={item.timestamp}
+      style={{ borderLeft: `5px solid ${item.eventColor}` }}
+      variant="outlined"
+    >
+      <div className={classes.flex}>
+        <Typography>
+          {item.eventName.split("_").join(" ").toUpperCase()}
+        </Typography>
+
+        <Typography>
+          {new Date(item.timestamp).toTimeString().substring(0, 8)}
+        </Typography>
+      </div>
+
+      <Typography className={classes.title}>
+        {item.object1Summary.title}
+      </Typography>
+      <div className={classes.flex}>
+        {item.actorUserEmail && (
+          <UserAvatarLink email={item.actorUserEmail} userId={item.actorUser} />
+        )}
+        <Link
+          to={routes.cardDetails.route.path.replace(
+            ":cardId",
+            item.object1Summary.card
+          )}
+        >
+          <Button label="" startIcon={<MoreIcon />} variant="text" />{" "}
+        </Link>
+      </div>
+    </Paper>
+  );
+}
 
 export default function ActivityLog({ eventList, orderedDates }) {
   const classes = useStyles();
   return (
-    <React.Fragment>
+    <>
       {orderedDates.map((timestamp) => (
-        <Paper className={classes.paper}>
-          <Typography variant="h6" className={classes.dateTypography}>
-            <TodayIcon className={classes.calendarIcon} />
+        <>
+          <Typography variant="h3" className={classes.dateTypography}>
             {new Date(timestamp.substring(0, 10)).toDateString()}
           </Typography>
-          {eventList.reverse().map((item) => (
+
+          {eventList.map((item) => (
             <>
               {item.timestamp.substring(0, 10) ===
                 timestamp.substring(0, 10) && (
-                <Paper colors={item.eventColor} timestamp={item.timestamp}>
-                  <p className={classes.time}>
-                    {new Date(item.timestamp).toTimeString().substring(0, 8)}
-                  </p>
-                  <Typography variant="h6" className={classes.title}>
-                    {item.object1Summary.title}
-                  </Typography>
-                  <Paper className={classes.filler}>
-                    <Chip
-                      className={classes.label}
-                      style={{ backgroundColor: item.eventColor }}
-                      label={item.eventName.split("_").join(" ").toLowerCase()}
-                    />
-                  </Paper>
-                </Paper>
+                <EventEntry item={item} key={item.id} />
               )}
             </>
           ))}
-        </Paper>
+        </>
       ))}
-    </React.Fragment>
+    </>
   );
 }
