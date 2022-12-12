@@ -39,6 +39,8 @@ export default function BaseReviewQueueEntry({
   project,
   showAllocatedReviewers,
   reviewers,
+  // reviewerEmails,
+  // reviewerIds,
 }) {
   const classes = useStyles();
 
