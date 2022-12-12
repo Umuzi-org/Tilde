@@ -41,7 +41,6 @@ export default function BaseReviewQueueEntry({
   reviewers,
 }) {
   const classes = useStyles();
-  // console.log("reviewers", reviewers ? reviewers : []);
 
   return (
     <Paper elevation={3} className={classes.project} variant="outlined">

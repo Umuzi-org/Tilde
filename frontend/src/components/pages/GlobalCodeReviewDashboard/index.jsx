@@ -10,7 +10,6 @@ import { useState } from "react";
 import { removeNameFromArray, filterList } from "./utils";
 
 function GlobalCodeReviewDashboardUnconnected({
-  cards,
   // mapStateToProps
 
   competenceReviewQueueProjectsObject,
@@ -25,9 +24,6 @@ function GlobalCodeReviewDashboardUnconnected({
   fetchPullRequestReviewQueuePage,
   fetchTeamsPages,
 }) {
-  // let urlParams = useParams() || {};
-  // const { cardId } = urlParams;
-  // const card = cards && cards[cardId];
   teams = teams || {};
 
   const [filterIncludeTags, setFilterIncludeTags] = useState([]);
@@ -334,7 +330,6 @@ function GlobalCodeReviewDashboardUnconnected({
 
 const mapStateToProps = (state) => {
   return {
-    authUser: state.App.authUser,
     competenceReviewQueueProjectsObject:
       state.apiEntities.competenceReviewQueueProject,
     pullRequestReviewQueueProjectsObject:
