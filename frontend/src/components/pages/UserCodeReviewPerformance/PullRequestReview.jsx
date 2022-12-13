@@ -9,6 +9,8 @@ import { formatTimeString } from "./utils";
 
 import { REVIEW_VALIDATED_STATUS_CHOICES } from "../../../constants";
 
+import { getReviewStatus } from "./utils";
+
 import { reviewValidatedColors } from "../../../colors";
 
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
@@ -55,7 +57,7 @@ export default function PullRequestReview({ review }) {
       <Tooltip
         title={
           <React.Fragment>
-            <Typography>{review.state}</Typography>
+            <Typography>{getReviewStatus({ review })}</Typography>
             <em>Timestamp:</em> {formatTimeString(review.submittedAt)}
           </React.Fragment>
         }
