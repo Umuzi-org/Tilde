@@ -12,14 +12,12 @@ import { addEventColorsToLogEntries } from "./utils.js";
 
 function UserActionsUnconnected({
   authedUserId,
-  // fetchCardCompletions,
   userBurndownStats,
   fetchUserBurndownStats,
   fetchActivityLogEntries,
   fetchEventTypes,
   eventTypes,
   activityLogEntries,
-  // call logs
   FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
   let urlParams = useParams() || {};
@@ -95,8 +93,6 @@ function UserActionsUnconnected({
     .sort((event1, event2) =>
       new Date(event1.timestamp) < new Date(event2.timestamp) ? 1 : -1
     );
-
-  console.log(activityLogEntries);
 
   const props = {
     orderedDates,
