@@ -11,7 +11,7 @@ When opening a Pull request, there is a checklist of points that appears on the 
 - [ ] I have performed a self-review of my own code
 - [ ] My changes generate no new warnings
 - [ ] New and existing unit tests pass locally with my changes
-- [ ] I have tested new or existing tests and made sure they pass
+- [ ] I have tested new or existing tests and made sure that they pass
 
 By ticking the points on the checklist, you are acknowledging that you have followed the description on that point. So don’t just tick the boxes.
 
