@@ -87,6 +87,7 @@ export const CARD_REVIEW_REQUESTED = "CARD_REVIEW_REQUESTED";
 export const CARD_STARTED = "CARD_STARTED";
 export const COMPETENCE_REVIEW_DONE = "COMPETENCE_REVIEW_DONE";
 export const PR_REVIEWED = "PR_REVIEWED";
+export const GIT_PUSH = "GIT_PUSH";
 
 // TODO: remove this default export. Just export things individually
 export default {

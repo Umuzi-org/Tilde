@@ -42,20 +42,22 @@ function EventEntry({ item }) {
       </div>
 
       <Typography className={classes.title}>
-        {item.object1Summary.title}
+        {(item.object1Summary && item.object1Summary.title) || "UNKNOWN"}
       </Typography>
       <div className={classes.flex}>
-        {item.actorUserEmail && (
+        {(item.actorUserEmail && (
           <UserAvatarLink email={item.actorUserEmail} userId={item.actorUser} />
+        )) || <div></div>}
+        {item.object1Summary && (
+          <Link
+            to={routes.cardDetails.route.path.replace(
+              ":cardId",
+              item.object1Summary.card
+            )}
+          >
+            <Button label="" startIcon={<MoreIcon />} variant="text" />{" "}
+          </Link>
         )}
-        <Link
-          to={routes.cardDetails.route.path.replace(
-            ":cardId",
-            item.object1Summary.card
-          )}
-        >
-          <Button label="" startIcon={<MoreIcon />} variant="text" />{" "}
-        </Link>
       </div>
     </Paper>
   );
