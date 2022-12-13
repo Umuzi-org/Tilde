@@ -680,7 +680,7 @@ class RecruitProject(
             return self.agile_card._get_repo_to_continue_from()
 
         raise Exception(
-            f"Cannot get or create a repo for content with submission_type {self.content_item.submission_type}"
+            f"Cannot get or create a repo for content with submission_type {self.content_item.project_submission_type}"
         )
 
     def setup_repository(self, add_collaborators=True):
@@ -1577,23 +1577,24 @@ class BurndownSnapshot(models.Model):
             - timedelta(hours=Cls.MIN_HOURS_BETWEEN_SNAPSHOTS),
         ).first()
 
-        if match:
-            # there was a snapshot taken recently, no need to store another one
-            return match
-
         cards = AgileCard.objects.filter(assignees=user)
         project_cards = cards.filter(content_item__content_type=ContentItem.PROJECT)
 
         complete_cards = cards.filter(status=AgileCard.COMPLETE)
         complete_project_cards = project_cards.filter(status=AgileCard.COMPLETE)
 
-        return Cls.objects.create(
-            user=user,
-            cards_total_count=cards.count(),
-            project_cards_total_count=project_cards.count(),
-            cards_in_complete_column_total_count=complete_cards.count(),
-            project_cards_in_complete_column_total_count=complete_project_cards.count(),
-        )
+        snapshot_values = {
+            "cards_total_count": cards.count(),
+            "project_cards_total_count": project_cards.count(),
+            "cards_in_complete_column_total_count": complete_cards.count(),
+            "project_cards_in_complete_column_total_count": complete_project_cards.count(),
+        }
+
+        if match:
+            # there was a snapshot taken recently, it will be updated
+            return Cls.objects.filter(pk=match.id).update(**snapshot_values)
+
+        return Cls.objects.create(user=user, **snapshot_values)
 
 
 class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):

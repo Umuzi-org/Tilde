@@ -27,6 +27,15 @@ from guardian.shortcuts import get_objects_for_user
 from django.db.models import Q, Max
 from django.db.models import Count
 from sql_util.utils import SubqueryAggregate
+from core import serializers as core_serializers
+from core.filters import ObjectPermissionsFilter
+from rest_framework import permissions as drf_permissions
+from curriculum_tracking.serializers import (
+    TeamStatsSerializer,
+    CardSummarySerializer,
+)
+from rest_framework.permissions import IsAdminUser
+from .management.helpers import get_team_cards
 
 
 def _get_teams_from_topic_progress(self, request, view):
@@ -317,7 +326,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -347,7 +356,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -374,7 +383,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             (
                 curriculum_permissions.IsCardAssignee
@@ -433,7 +442,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             (
                 curriculum_permissions.IsCardAssignee
@@ -460,7 +469,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -480,7 +489,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             curriculum_permissions.IsCardAssignee
             | HasObjectPermission(
@@ -501,7 +510,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -528,7 +537,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[
             HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
@@ -900,7 +909,7 @@ class WorkshopAttendanceViewset(viewsets.ModelViewSet):
 
 class ManagementActionsViewSet(viewsets.ViewSet):
 
-    serializer_class = serializers.NoArgs
+    serializer_class = core_serializers.NoArgs
 
     def list(self, request):
         return Response([])
@@ -929,7 +938,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["post", "get"],
-        serializer_class=serializers.NoArgs,
+        serializer_class=core_serializers.NoArgs,
         permission_classes=[permissions.IsAdminUser],
     )
     def auto_assign_reviewers(self, request, pk=None):
@@ -1137,6 +1146,10 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
+
+        return self.filter_by_view_permission(queryset, user)
+
+    def filter_by_view_permission(self, queryset, user):
         if user.is_superuser:
             return queryset
 
@@ -1158,16 +1171,7 @@ class _ProjectReviewQueueViewSetBase(viewsets.ModelViewSet):
 
 
 class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
-    queryset = (
-        models.RecruitProject.objects.filter(
-            agile_card__status=models.AgileCard.IN_REVIEW
-        )
-        .exclude(
-            content_item__tags__name="technical-assessment"
-        )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
-        .filter(recruit_users__active__in=[True])
-        .order_by("review_request_time")
-    )
+
     filterset_fields = [
         "recruit_users",
         "reviewer_users",
@@ -1177,6 +1181,20 @@ class CompetenceReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
         "code_review_ny_competent_since_last_review_request",
     ]
 
+    def get_queryset(self, *args, **kwargs):
+        queryset = (
+            models.RecruitProject.objects.filter(
+                agile_card__status=models.AgileCard.IN_REVIEW
+            )
+            .exclude(
+                content_item__tags__name="technical-assessment"
+            )  # TODO: remove this once LX have sorted out the problem with assessment cards never ever being closed :/ Two bugs do make a right sometimes
+            .filter(recruit_users__active__in=[True])
+            .order_by("review_request_time")
+        )
+        user = self.request.user
+        return self.filter_by_view_permission(queryset, user)
+
 
 class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
     queryset = (
@@ -1185,6 +1203,9 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
             repository__pull_requests__in=git_models.PullRequest.objects.filter(
                 state="open"
             )
+        )
+        .exclude(
+            agile_card__status=models.AgileCard.COMPLETE
         )
         .annotate(
             pr_time=Max("repository__pull_requests__updated_at"),
@@ -1213,3 +1234,90 @@ class CurriculumContentRequirementViewset(viewsets.ModelViewSet):
 # from django.contrib.postgres.aggregates import *
 # # class UserReviewPerformance(viewsets.ModelViewSet):
 #     RecruitProjectReview.objects.filter(reviewer_user__email="vuyisanani.meteni@umuzi.org").filter(timestamp__gte = timezone.now() - timezone.timedelta(days=7)).annotate(flavour_names=StringAgg('recruit_project__flavours__name',delimiter=",", ordering= 'recruit_project__flavours__name')).values('id','flavour_names','recruit_project__content_item_id')
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    serializer_class = core_serializers.TeamSerializer
+    filter_backends = [
+        DjangoFilterBackend,
+        ObjectPermissionsFilter(models.Team.PERMISSION_VIEW),
+    ]
+    filterset_fields = ["active"]
+
+    permission_classes = [
+        drf_permissions.IsAuthenticated and core_permissions.IsReadOnly
+    ]
+
+    def get_queryset(self):
+        queryset = (
+            models.Team.objects.all()
+            .order_by("name")
+            .prefetch_related("user_set")
+            # .prefetch_related("team_memberships__user")
+        )
+        return queryset
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        serializer_class=TeamStatsSerializer,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+            )
+        ],
+    )
+    def summary_stats(self, request, pk=None):
+
+        page = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        #     team = self.get_object()
+        #     return Response(TeamStatsSerializer(team).data)
+        # else:
+        #     return Response(serializer.errors, status="BAD_REQUEST")
+
+    # @action(
+    #     detail=True,
+    #     methods=["get"],
+    #     permission_classes=[
+    #         core_permissions.HasObjectPermission(
+    #             models.Team.PERMISSION_ASSIGN_REVIEWERS
+    #         )
+    #     ],
+    # )
+    # def shuffle_reviewers(self, request, pk=None):
+    #     return Response("TODO")
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        serializer_class=core_serializers.BulkSetDueTimeSerializer,
+        permission_classes=[
+            HasObjectPermission(permissions=Team.PERMISSION_MANAGE_CARDS)
+        ],
+    )
+    def bulk_set_due_dates(self, request, pk=None):
+
+        team: models.Team = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            team_cards = get_team_cards(
+                team, serializer.validated_data.get("content_item")
+            )
+            for card in team_cards:
+                if card.flavour_ids_match(serializer.validated_data.get("flavours")):
+
+                    card.set_due_time(request.data.get("due_time"))
+
+        return Response([CardSummarySerializer(card).data for card in team_cards])

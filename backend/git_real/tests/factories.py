@@ -1,5 +1,5 @@
 from factory.declarations import LazyAttribute
-from git_real.models import PullRequest, PullRequestReview
+from git_real.models import PullRequest, PullRequestReview, Push
 from factory.django import DjangoModelFactory
 import factory
 from django.utils import timezone
@@ -89,3 +89,16 @@ class PullRequestReviewFactory(DjangoModelFactory):
         lambda *args, **kwargs: next(_commit_id_generator)
     )
     user = factory.SubFactory(UserFactory)
+
+
+class PushFactory(DjangoModelFactory):
+    class Meta:
+        model = "git_real.Push"
+
+    repository = factory.SubFactory(RepositoryFactory)
+    author_github_name = factory.Faker("first_name")
+    committer_github_name = factory.Faker("first_name")
+    pusher_username = factory.Faker("first_name")
+    message = "message"
+    commit_timestamp = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    pushed_at_time = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())

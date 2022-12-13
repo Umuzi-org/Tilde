@@ -14,8 +14,6 @@ import { routes } from "../../../../../routes";
 export default ({
   card,
 
-  handleClickOpenCardDetails,
-
   handleClickAddReview,
   handleRequestReview,
   handleStartProject,
