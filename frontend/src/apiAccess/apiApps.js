@@ -53,8 +53,8 @@ const FETCH_AGILE_CARDS_THAT_REQUIRE_CARD =
 
 const FETCH_SINGLE_TOPIC_PROGRESS = "FETCH_SINGLE_TOPIC_PROGRESS"; //spelling mistake. fix please
 
-const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
-  "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
+// const FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE =
+//   "FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE";
 
 const FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE = "FETCH_ACTIVITY_LOG_DAY_COUNTS_PAGE";
 
@@ -323,12 +323,12 @@ export const apiReduxApps = {
     responseEntityType: "projectSummaryCards", // TODO: rename to summaryCards
   }),
 
-  FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: createReduxApp({
-    BASE_TYPE: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
-    apiCaller: apiCallers.userActionsCardsCompletedPage,
-    responseIsList: true,
-    responseEntityType: "projectSummaryCards",
-  }),
+  // FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE: createReduxApp({
+  //   BASE_TYPE: FETCH_USER_ACTIONS_CARDS_COMPLETED_PAGE,
+  //   apiCaller: apiCallers.userActionsCardsCompletedPage,
+  //   responseIsList: true,
+  //   responseEntityType: "projectSummaryCards",
+  // }),
 
   FETCH_SINGLE_PROJECT_CARD_SUMMARY: createReduxApp({
     BASE_TYPE: FETCH_SINGLE_PROJECT_CARD_SUMMARY,

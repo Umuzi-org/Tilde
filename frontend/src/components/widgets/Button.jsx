@@ -5,14 +5,18 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: "!important",
-    border: "1px solid grey",
   },
 }));
 
-export default ({ children, onClick, startIcon }) => {
+export default ({ children, onClick, startIcon, variant = "outlined" }) => {
   const classes = useStyles();
   return (
-    <Button className={classes.button} onClick={onClick} startIcon={startIcon}>
+    <Button
+      className={classes.button}
+      onClick={onClick}
+      startIcon={startIcon}
+      variant={variant}
+    >
       {children}
     </Button>
   );

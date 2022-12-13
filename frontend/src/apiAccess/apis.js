@@ -148,15 +148,15 @@ async function topicProgressReviewsPage({ topicProgressId, page }) {
   return { response, responseData };
 }
 
-async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
-  const limit = 20;
+// async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
+//   const limit = 20;
 
-  const offset = calculateOffset({ page, limit });
+//   const offset = calculateOffset({ page, limit });
 
-  let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
-  const { response, responseData } = await fetchAndClean({ url });
-  return { response, responseData };
-}
+//   let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
+//   const { response, responseData } = await fetchAndClean({ url });
+//   return { response, responseData };
+// }
 
 // async function userActionsCardsStarted({
 //     assigneeUserId,
@@ -521,7 +521,7 @@ export default {
   stopTopic,
   finishTopic,
   setProjectLinkSubmission,
-  userActionsCardsCompletedPage,
+  // userActionsCardsCompletedPage,
   cohortsPage,
   cohortRecruits,
   markWorkshopAttendance,
