@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => {
 export default function BaseReviewQueueEntry({
   project,
   showAllocatedReviewers,
-  reviewers,
   reviewerEmails,
   reviewerIds,
 }) {
