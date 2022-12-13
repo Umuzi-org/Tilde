@@ -6,7 +6,8 @@ export default function CompetenceReviewQueueEntry({ project }) {
     <BaseReviewQueueEntry
       project={project}
       showAllocatedReviewers={true}
-      reviewers={project.usersThatReviewedSinceLastReviewRequestEmails}
+      reviewerEmails={project.usersThatReviewedSinceLastReviewRequestEmails}
+      reviewerIds={project.usersThatReviewedSinceLastReviewRequest}
     />
   );
 }

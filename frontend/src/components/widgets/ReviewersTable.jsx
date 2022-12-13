@@ -9,9 +9,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
 import UserAvatarLink from "./UserAvatarLink";
-import { filterUsers } from "./utils";
-
-import Loading from "../widgets/Loading";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -29,15 +26,10 @@ function ReviewersTable({
   usersThatReviewedSinceLastReviewRequest,
 }) {
   const classes = useStyles();
-  if (!usersThatReviewedSinceLastReviewRequestEmails) {
-    return <Loading />;
-  }
-
   const allEmails = [
     ...reviewerUserEmails,
     ...usersThatReviewedSinceLastReviewRequestEmails,
   ];
-
   const allIds = [...reviewerUsers, ...usersThatReviewedSinceLastReviewRequest];
 
   function compare(a, b) {
@@ -61,19 +53,13 @@ function ReviewersTable({
   });
 
   allUsers.sort(compare);
-  const filteredAllUsers = filterUsers(allUsers);
 
-  if (filteredAllUsers.length === 0)
-    return <Typography>No reviewers!</Typography>;
+  if (allUsers.length === 0) return <Typography>No reviewers!</Typography>;
 
   return (
     <Table size="small">
       <TableBody>
-        {filteredAllUsers.map((user) => {
-          const cardReviewer = reviewerUserEmails.find(
-            (email) => email === user.email
-          );
-
+        {allUsers.map((user) => {
           return (
             <TableRow key={user.userId}>
               <TableCell padding="none">
@@ -85,7 +71,7 @@ function ReviewersTable({
                 />
               </TableCell>
               <TableCell padding="none">
-                {(reviewerUsers.includes(user.userId) || cardReviewer) && (
+                {reviewerUsers.includes(user.userId) && (
                   <Tooltip title="this user is an allocated reviewer on this project">
                     <Avatar className={classes.reviewer}>R</Avatar>
                   </Tooltip>

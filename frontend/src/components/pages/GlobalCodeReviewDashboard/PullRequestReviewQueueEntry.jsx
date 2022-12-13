@@ -6,7 +6,8 @@ export default function PullRequestReviewQueueEntry({ project }) {
     <BaseReviewQueueEntry
       project={project}
       showAllocatedReviewers={true}
-      reviewers={project.usersThatReviewedOpenPrsEmails}
+      reviewerEmails={project.usersThatReviewedOpenPrsEmails}
+      reviewerIds={project.usersThatReviewedOpenPrs}
     />
   );
 }

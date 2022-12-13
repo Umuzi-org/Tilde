@@ -39,8 +39,8 @@ export default function BaseReviewQueueEntry({
   project,
   showAllocatedReviewers,
   reviewers,
-  // reviewerEmails,
-  // reviewerIds,
+  reviewerEmails,
+  reviewerIds,
 }) {
   const classes = useStyles();
 
@@ -85,8 +85,8 @@ export default function BaseReviewQueueEntry({
           <ReviewersTable
             reviewerUsers={project.reviewerUsers}
             reviewerUserEmails={project.reviewerUserEmails}
-            usersThatReviewedSinceLastReviewRequest={reviewers}
-            usersThatReviewedSinceLastReviewRequestEmails={reviewers}
+            usersThatReviewedSinceLastReviewRequest={reviewerIds}
+            usersThatReviewedSinceLastReviewRequestEmails={reviewerEmails}
           />
         </React.Fragment>
       )}
