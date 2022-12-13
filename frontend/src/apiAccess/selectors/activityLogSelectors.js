@@ -51,8 +51,6 @@ export const getActivityLogCountsByDayForSingleUser = ({
           ...zeroes,
           [eventType]: entry.total,
         };
-      } else {
-        resultByDate[entry.date][eventType] = entry.total;
       }
     });
   });
