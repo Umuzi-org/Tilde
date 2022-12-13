@@ -22,7 +22,6 @@ import Reviews from "./Reviews";
 const TableCell = withStyles({
   root: {
     borderBottom: "none",
-    fontSize: "calc(0.3rem + 0.5vw)",
   },
 })(MuiTableCell);
 
@@ -97,9 +96,7 @@ function CardBasicDetails({ card }) {
         <Grid container spacing={3}>
           <Grid item md={6} xs={12} className={classes.gridItem}>
             <Paper className={classes.paper} variant="outlined">
-              <Typography variant="subtitle2" className={classes.typography}>
-                Assignees:
-              </Typography>
+              <Typography variant="subtitle2">Assignees:</Typography>
               <AssigneesList
                 userNames={card.assigneeNames}
                 userIds={card.assignees}

@@ -9,9 +9,6 @@ import CircularProgress from "../../widgets/Loading";
 import Review from "./Review";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1, 2, 1),
-  },
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(1),

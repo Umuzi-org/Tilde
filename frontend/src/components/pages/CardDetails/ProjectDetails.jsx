@@ -11,17 +11,6 @@ import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1, 2, 1),
-  },
-
-  commentColumn: {
-    minWidth: 300,
-  },
-
-  tableContainer: {
-    maxHeight: 200,
-  },
   sectionPaper: {
     padding: theme.spacing(1),
     marginBottom: theme.spacing(2),
