@@ -116,4 +116,4 @@ class LogEntrySerializer(serializers.ModelSerializer):
         return instance.effected_user.email
 
     def get_actor_user_email(self, instance):
-        return instance.actor_user.email
+        return instance.actor_user and instance.actor_user.email

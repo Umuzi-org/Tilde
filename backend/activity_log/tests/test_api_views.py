@@ -4,7 +4,6 @@ from test_mixins import APITestCaseMixin
 from . import factories
 from django.utils import timezone
 from curriculum_tracking.tests.factories import AgileCardFactory
-from datetime import datetime
 
 
 class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
