@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
-  ButtonSpaces: {
+  buttonSpaces: {
     "& > *": {
       margin: theme.spacing(1),
     },
@@ -67,9 +67,8 @@ const useStyles = makeStyles((theme) => ({
   queueContainerHeading: {
     position: "sticky",
     top: 0,
-    padding: "10px 0px",
-    backgroundColor: "black",
-    //backgroundColor: theme.palette.background.default,
+    padding: "10px 18px",
+    backgroundColor: theme.palette.background.default,
     zIndex: 2,
   },
 }));
@@ -141,7 +140,7 @@ function TeamCard({
         {team.name}
       </Typography>
       <Link
-        className={classes.ButtonSpaces}
+        className={classes.buttonSpaces}
         to={routes.groupCardSummary.route.path.replace(":teamId", team.id)}
       >
         <Button
@@ -172,7 +171,7 @@ function TeamCard({
 function UserCard({ email, user }) {
   const classes = useStyles();
   return (
-    <Paper variant="outlined" elevation={2} className={classes.ButtonSpaces}>
+    <Paper variant="outlined" elevation={2} className={classes.buttonSpaces}>
       <Typography
         variant="h6"
         gutterBottom
@@ -202,32 +201,32 @@ export default function Presentation({
   const classes = useStyles();
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6} className={classes.cards}>
+      <Grid item xs={6}>
         <Grid className={classes.queueContainerHeading}>
           <Paper
             variant="outlined"
             elevation={2}
             className={classes.filterCards}
           >
-            <Typography
-              variant="h5"
-              gutterBottom
-              component="div"
-              className={classes.marginsAlignment}
-            >
-              Teams
-            </Typography>
+              <Typography
+                variant="h5"
+                gutterBottom
+                component="div"
+                className={classes.marginsAlignment}
+              >
+                Teams
+              </Typography>
 
-            <TextField
-              label="Teams"
-              variant="outlined"
-              value={filterFormValues.team}
-              className={classes.textBoxSize}
-              onChange={handleChangeFilterFormInput("team")}
-            />
+              <TextField
+                label="Teams"
+                variant="outlined"
+                value={filterFormValues.team}
+                className={classes.textBoxSize}
+                onChange={handleChangeFilterFormInput("team")}
+              />
           </Paper>
         </Grid>
-        <Grid>
+        <Grid className={classes.cards}>
           {teams.map((team) => {
             return (
               <TeamCard
@@ -241,31 +240,32 @@ export default function Presentation({
           })}
         </Grid>
       </Grid>
-      <Grid item xs={6} className={classes.cards}>
+      <Grid item xs={6}>
         <Grid className={classes.queueContainerHeading}>
           <Paper
             variant="outlined"
             elevation={2}
             className={classes.filterCards}
           >
-            <Typography
-              variant="h5"
-              gutterBottom
-              component="div"
-              className={classes.marginsAlignment}
-            >
-              Users
-            </Typography>
-            <TextField
-              label={`${filterUsersByGroupName} Users`}
-              variant="outlined"
-              value={filterFormValues.user}
-              onChange={handleChangeFilterFormInput("user")}
-              className={classes.textBoxSize}
-            />
+              <Typography
+                variant="h5"
+                gutterBottom
+                component="div"
+                className={classes.marginsAlignment}
+              >
+                Users
+              </Typography>
+
+              <TextField
+                label={`${filterUsersByGroupName} Users`}
+                variant="outlined"
+                value={filterFormValues.user}
+                onChange={handleChangeFilterFormInput("user")}
+                className={classes.textBoxSize}
+              />
           </Paper>
         </Grid>
-        <Grid>
+        <Grid className={classes.cards}>
           {Object.keys(users)
             .sort()
             .map((email) => {
