@@ -15,4 +15,5 @@ export const Primary = Template.bind({});
 Primary.args = {
   activityLogDayCounts: activityLogBarGraphStorybookData.activityLogDayCounts,
   eventTypes: activityLogBarGraphStorybookData.eventTypes,
+  fetchActivityLogDayCountsPage: () => {},
 };

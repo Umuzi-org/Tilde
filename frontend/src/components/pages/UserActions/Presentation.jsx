@@ -7,7 +7,7 @@ import UserBurnDownChart from "./UserBurndownStats";
 import ActivityLog from "./ActivityLog";
 import Button from "../../widgets/Button";
 import ActivityDashboardBarGraph from "./ActivityDashboardBarGraph";
-import { Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   column: {
@@ -47,7 +47,12 @@ export default function Presentation({
           </Grid>
         )}
         <Grid item xs={12}>
-          <ActivityDashboardBarGraph eventTypes={eventTypes} />
+          <Paper className={classes.paper}>
+            <Typography variant="h2" className={classes.sectionHeading}>
+              Event Log Graph
+            </Typography>
+            <ActivityDashboardBarGraph eventTypes={eventTypes} />
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
