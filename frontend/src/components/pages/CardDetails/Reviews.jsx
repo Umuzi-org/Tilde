@@ -51,8 +51,8 @@ export default ({ reviewIds, reviews }) => {
   }
 
   return (
-    <Paper className={classes.sectionPaper} elevation={3}>
-      <Typography variant="h6">Reviews</Typography>
+    <Paper className={classes.sectionPaper} variant={"outlined"}>
+      <Typography variant="h6">Reviews:</Typography>
       {body}
     </Paper>
   );

@@ -33,9 +33,7 @@ function LinkToYourWork({
   const classes = useStyles();
   return (
     <Paper className={classes.sectionPaper} variant="outlined">
-      <Typography variant="subtitle2" className={classes.text}>
-        Link to your work:
-      </Typography>
+      <Typography variant="h6">Link to your work:</Typography>
 
       {currentLinkSubmission ? (
         <Typography className={classes.text}>

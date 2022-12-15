@@ -81,7 +81,7 @@ function CardBasicDetails({ card }) {
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item>
           <CardBadges card={card} />
           <Typography variant="h5">
             {card.contentTypeNice}: {card.title}
@@ -96,12 +96,12 @@ function CardBasicDetails({ card }) {
         <Grid container spacing={3}>
           <Grid item md={6} xs={12} className={classes.gridItem}>
             <Paper className={classes.paper} variant="outlined">
-              <Typography variant="subtitle2">Assignees:</Typography>
+              <Typography variant="h6">Assignees:</Typography>
               <AssigneesList
                 userNames={card.assigneeNames}
                 userIds={card.assignees}
               />
-              <Typography variant="subtitle2" className={classes.reviewers}>
+              <Typography variant="h6" className={classes.reviewers}>
                 Reviewers:
               </Typography>
               <ReviewersTable
