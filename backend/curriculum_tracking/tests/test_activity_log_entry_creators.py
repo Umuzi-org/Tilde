@@ -122,7 +122,7 @@ class log_card_started_Tests(APITestCase, APITestCaseMixin):
                 project_submission_type=ContentItem.LINK, template_repo=None
             ),
         )
-        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
+        # creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
         self.login(actor_user)
 
         start_url = f"{self.get_instance_url(card.id)}start_project/"

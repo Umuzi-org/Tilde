@@ -26,12 +26,9 @@ from curriculum_tracking.tests.factories import (
 )
 from curriculum_tracking.management.helpers import get_team_cards
 from core.models import Team
-<<<<<<< HEAD
 from curriculum_tracking import activity_log_entry_creators as creators
 from activity_log.models import LogEntry, EventType
-=======
 from django.contrib.auth.models import Group
->>>>>>> develop
 
 
 class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
@@ -56,14 +53,8 @@ class CardSummaryViewsetTests(APITestCase, APITestCaseMixin):
             due_time=timezone.now(), review_request_time=timezone.now()
         )
         card = factories.AgileCardFactory(recruit_project=project)
-<<<<<<< HEAD
-        card.reviewers.add(core_factories.UserFactory())
-        card.assignees.add(core_factories.UserFactory())
-        creators.EventType.objects.get_or_create(name=creators.CARD_MOVED_TO_REVIEW_FEEDBACK)
-=======
         card.reviewers.add(UserFactory())
         card.assignees.add(UserFactory())
->>>>>>> develop
         return card
 
 

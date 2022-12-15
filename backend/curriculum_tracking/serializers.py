@@ -964,6 +964,8 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         number_of_times_card_moved_to_review_feedback = len(
             LogEntry.objects.filter(effected_user=instance.recruit_users.first(),
             object_1_id=instance.pk, 
-            event_type=EventType.objects.get(name='CARD_MOVED_TO_REVIEW_FEEDBACK')),
+            # event_type=EventType.objects.get(name='CARD_MOVED_TO_REVIEW_FEEDBACK')),
+            # )
+            event_type=EventType.objects.filter(event_type__name='CARD_MOVED_TO_REVIEW_FEEDBACK')),
             )
         return number_of_times_card_moved_to_review_feedback
