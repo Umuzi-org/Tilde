@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "16px",
   },
   textBoxSize: {
-    width: "62%",
+    width: "98%",
   },
   warning: {
     color: theme.palette.warning.dark,
@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
     },
+    overflowY: "scroll",
   },
   filterCards: {
     position: "sticky",
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
     },
+    width: "100%",
   },
   buttonSpaces: {
     "& > *": {
@@ -208,22 +210,22 @@ export default function Presentation({
             elevation={2}
             className={classes.filterCards}
           >
-              <Typography
-                variant="h5"
-                gutterBottom
-                component="div"
-                className={classes.marginsAlignment}
-              >
-                Teams
-              </Typography>
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              className={classes.marginsAlignment}
+            >
+              Teams
+            </Typography>
 
-              <TextField
-                label="Teams"
-                variant="outlined"
-                value={filterFormValues.team}
-                className={classes.textBoxSize}
-                onChange={handleChangeFilterFormInput("team")}
-              />
+            <TextField
+              label="Teams"
+              variant="outlined"
+              value={filterFormValues.team}
+              className={classes.textBoxSize}
+              onChange={handleChangeFilterFormInput("team")}
+            />
           </Paper>
         </Grid>
         <Grid className={classes.cards}>
@@ -247,22 +249,22 @@ export default function Presentation({
             elevation={2}
             className={classes.filterCards}
           >
-              <Typography
-                variant="h5"
-                gutterBottom
-                component="div"
-                className={classes.marginsAlignment}
-              >
-                Users
-              </Typography>
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              className={classes.marginsAlignment}
+            >
+              Users
+            </Typography>
 
-              <TextField
-                label={`${filterUsersByGroupName} Users`}
-                variant="outlined"
-                value={filterFormValues.user}
-                onChange={handleChangeFilterFormInput("user")}
-                className={classes.textBoxSize}
-              />
+            <TextField
+              label={`${filterUsersByGroupName} Users`}
+              variant="outlined"
+              value={filterFormValues.user}
+              onChange={handleChangeFilterFormInput("user")}
+              className={classes.textBoxSize}
+            />
           </Paper>
         </Grid>
         <Grid className={classes.cards}>
