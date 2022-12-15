@@ -21,6 +21,8 @@ export default class CheckPytestInRequirements extends Action {
     }
     return {
       status: STATUS_FAIL,
+      message:
+        "it looks like pytest is not in your requirements.txt file. Please make sure you install and use pytest appropriately",
     };
   };
 }

@@ -954,8 +954,11 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         return [o.email for o in instance.reviewer_users.all()]
 
     def get_status(self, instance):
-        if instance.agile_card:
+        try:
             return instance.agile_card.status
+
+        except models.AgileCard.DoesNotExist:
+            return None
 
     def get_number_of_times_card_moved_to_review_feedback(self, instance):
         number_of_times_card_moved_to_review_feedback = len(
@@ -964,4 +967,3 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             event_type=EventType.objects.get(name='CARD_MOVED_TO_REVIEW_FEEDBACK')),
             )
         return number_of_times_card_moved_to_review_feedback
-        

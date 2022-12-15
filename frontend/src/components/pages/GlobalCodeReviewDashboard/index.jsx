@@ -7,23 +7,7 @@ import { apiUtilitiesOperations } from "../../../apiAccess/redux";
 
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { useState } from "react";
-
-function removeNameFromArray({ array, name }) {
-  const index = array.indexOf(name);
-  if (index !== -1) {
-    array.splice(index, 1);
-  }
-  return array;
-}
-
-function filterByCardName(allCards, cardName) {
-  if (cardName) {
-    return allCards.filter((card) =>
-      card.contentItemTitle.toLowerCase().includes(cardName.toLowerCase())
-    );
-  }
-  return allCards;
-}
+import { removeNameFromArray, filterList } from "./utils";
 
 function GlobalCodeReviewDashboardUnconnected({
   // mapStateToProps
@@ -294,14 +278,16 @@ function GlobalCodeReviewDashboardUnconnected({
   }
 
   const props = {
-    competenceReviewQueueProjects: filterByCardName(
-      competenceReviewQueueProjects,
-      cardNameSearchValue
-    ),
-    pullRequestReviewQueueProjects: filterByCardName(
-      pullRequestReviewQueueProjects,
-      cardNameSearchValue
-    ),
+    competenceReviewQueueProjects: filterList({
+      list: competenceReviewQueueProjects,
+      filter: cardNameSearchValue,
+      listItemProperty: "contentItemTitle",
+    }),
+    pullRequestReviewQueueProjects: filterList({
+      list: pullRequestReviewQueueProjects,
+      filter: cardNameSearchValue,
+      listItemProperty: "contentItemTitle",
+    }),
 
     competenceReviewQueueLoading: fetchCompetenceReviewQueueLastCall.loading,
     pullRequestReviewQueueLoading: fetchPullRequestQueueLastCall.loading,

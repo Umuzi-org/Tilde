@@ -15,6 +15,7 @@ import {
   INCORRECT,
   CORRECT,
   CONTRADICTED,
+  GIT_PUSH,
 } from "./constants";
 import { colors } from "@material-ui/core";
 
@@ -35,6 +36,7 @@ export const eventTypeColors = {
   [CARD_STARTED]: colors.green[600],
   [PR_REVIEWED]: colors.purple[600],
   [COMPETENCE_REVIEW_DONE]: colors.blue[600],
+  [GIT_PUSH]: colors.lime[600],
 };
 
 export const reviewValidatedColors = {
