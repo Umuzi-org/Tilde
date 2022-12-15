@@ -1,14 +1,13 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../widgets/Button";
 import Loading from "../../widgets/Loading";
 import CompetenceReviewQueueEntry from "./CompetenceReviewQueueEntry";
 import PullRequestReviewQueueEntry from "./PullRequestReviewQueueEntry";
-import FilterByNames from "./FilterByNames";
+import FilterArea from "./FilterArea";
 import ReviewQueueFilterChips from "./ReviewQueueFilterChips";
 
 const useStyles = makeStyles((theme) => {
@@ -24,6 +23,7 @@ const useStyles = makeStyles((theme) => {
     },
     queueItem: {
       maxHeight: "90vh",
+
       overflowY: "scroll",
       padding: "0px 10px",
     },
@@ -40,6 +40,10 @@ const useStyles = makeStyles((theme) => {
       display: "flex",
       alignItems: "center",
       flexWrap: "wrap",
+    },
+    filterByNamesContainer: {
+      margin: 0,
+      width: "100%",
     },
   };
 });
@@ -91,46 +95,26 @@ export default function Presentation({
   filterIncludeFlavours = filterIncludeFlavours || [];
   filterExcludeFlavours = filterExcludeFlavours || [];
 
+  const props = {
+    filterIncludeTags,
+    filterExcludeTags,
+    filterIncludeFlavours,
+    filterExcludeFlavours,
+    handleChangeFlavourFilter,
+    handleChangeTagFilter,
+    allTagNames,
+    allFlavours,
+    allTeamNames,
+    filterIncludeAssigneeTeams,
+    handleChangeAssigneeTeamFilter,
+    cardNameSearchValue,
+    handleChangeCardNameSearchValue,
+  };
+
   return (
     <Grid container spacing={3} className={classes.mainSection}>
       <Grid item xs={2}>
-        <Typography variant="h6">Filter by flavour</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allFlavours}
-            filterInclude={filterIncludeFlavours}
-            filterExclude={filterExcludeFlavours}
-            onChange={handleChangeFlavourFilter}
-          />
-        </Paper>
-        <Typography variant="h6">Filter by tag</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTagNames}
-            filterInclude={filterIncludeTags}
-            filterExclude={filterExcludeTags}
-            onChange={handleChangeTagFilter}
-          />
-        </Paper>
-        <Typography variant="h6">Filter by assignee team</Typography>
-        <Paper>
-          <FilterByNames
-            allNames={allTeamNames}
-            filterInclude={filterIncludeAssigneeTeams}
-            filterExclude={[]}
-            onChange={handleChangeAssigneeTeamFilter}
-          />
-        </Paper>
-        <Typography variant="h6">Filter by card name</Typography>
-        <Paper>
-          <TextField
-            variant="outlined"
-            placeholder="Card name"
-            value={cardNameSearchValue}
-            onChange={handleChangeCardNameSearchValue}
-            fullWidth
-          />
-        </Paper>
+        <FilterArea {...props} />
       </Grid>
       <Grid item xs={10} container className={classes.queueContainer}>
         <Grid item xs={12} md={6} className={classes.queueItem}>
@@ -156,7 +140,7 @@ export default function Presentation({
               .map((project) => (
                 <CompetenceReviewQueueEntry
                   project={project}
-                  key={`${project.id}`}
+                  key={project.id}
                 />
               ))}
           </Grid>
@@ -193,7 +177,7 @@ export default function Presentation({
               .map((project) => (
                 <PullRequestReviewQueueEntry
                   project={project}
-                  key={`${project.id}`}
+                  key={project.id}
                 />
               ))}
           </Grid>

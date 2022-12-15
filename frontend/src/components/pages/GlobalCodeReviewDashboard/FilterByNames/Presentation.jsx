@@ -2,20 +2,36 @@ import React from "react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/styles";
 
-export default function FilterByNames({
+const useStyles = makeStyles((theme) => {
+  return {
+    filtergroupTextbox: {
+      marginBottom: 16,
+    },
+  };
+});
+
+export default function Presentation({
   allNames,
-  filterInclude,
   filterExclude,
   onChange,
+  allFilters,
+  searchTerm,
+  handleChangeSearchTerm,
 }) {
-  allNames = allNames || [];
-  filterInclude = filterInclude || [];
-  filterExclude = filterExclude || [];
-  const allFilters = [...filterInclude, ...filterExclude];
+  const classes = useStyles();
 
   return (
     <React.Fragment>
+      <TextField
+        className={classes.filtergroupTextbox}
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleChangeSearchTerm}
+        fullWidth
+      />
       {allNames.map((name, index) => (
         <FormGroup key={`${name}_${index}`}>
           <FormControlLabel

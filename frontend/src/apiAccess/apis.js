@@ -148,15 +148,15 @@ async function topicProgressReviewsPage({ topicProgressId, page }) {
   return { response, responseData };
 }
 
-async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
-  const limit = 20;
+// async function userActionsCardsCompletedPage({ assigneeUserId, page }) {
+//   const limit = 20;
 
-  const offset = calculateOffset({ page, limit });
+//   const offset = calculateOffset({ page, limit });
 
-  let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
-  const { response, responseData } = await fetchAndClean({ url });
-  return { response, responseData };
-}
+//   let url = `${API_BASE_URL}/api/card_summaries/?limit=${limit}&offset=${offset}&assignees=${assigneeUserId}&content_item__content_type=&ordering=-recruit_project__complete_time&status=C`;
+//   const { response, responseData } = await fetchAndClean({ url });
+//   return { response, responseData };
+// }
 
 // async function userActionsCardsStarted({
 //     assigneeUserId,
@@ -383,6 +383,7 @@ async function activityLogDayCountsPage({
 
 async function activityLogEntries({
   eventTypeName,
+  timestamp,
   effectedUser,
   actorUser,
   object1ContentType,
@@ -405,6 +406,8 @@ async function activityLogEntries({
   if (object1Id) params["object_1_id"] = object1Id;
   if (object2ContentType) params["object_2_content_type"] = object2ContentType;
   if (object2Id) params["object_2_id"] = object2Id;
+  if (timestamp) params["timestamp"] = timestamp;
+
   const getParams = objectToGetQueryString(params);
 
   const url = `${API_BASE_URL}/api/activity_log_entries/?${getParams}`;
@@ -507,7 +510,7 @@ export default {
   stopTopic,
   finishTopic,
   setProjectLinkSubmission,
-  userActionsCardsCompletedPage,
+  // userActionsCardsCompletedPage,
   cohortsPage,
   cohortRecruits,
   markWorkshopAttendance,

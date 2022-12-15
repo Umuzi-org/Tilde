@@ -8,12 +8,14 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
 import Button from "../../widgets/Button";
 import CardButton from "../../widgets/CardButton";
 import { makeStyles } from "@material-ui/core/styles";
 import StatusHelp from "./StatusHelp";
+import IconButton from "@material-ui/core/IconButton";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -23,25 +25,37 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   paper: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   },
   textArea: {
     width: "100%",
   },
-  rightButton: {
-    float: "right",
+  modalHeadingSection: {
+    marginBottom: theme.spacing(1),
   },
-  exitIcon: {
-    marginBottom: "0.5rem",
+  exitIconContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    height: "0%",
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: theme.spacing(1),
+  },
+  statusHelp: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
 export default function Presentation({
   card,
   handleSubmit,
-  status,
-  comments,
-  formErrors,
+  handleOnChange,
+  formValues,
+  formFieldHasError,
+  formFieldError,
   closeModal,
   statusChoices,
   loading,
@@ -55,18 +69,26 @@ export default function Presentation({
   return (
     <Modal open={!!card} onClose={closeModal}>
       <Paper className={classes.paper}>
-        <Grid container>
-          <Grid item xs={10} sm={11}>
+        <Grid container className={classes.modalHeadingSection}>
+          <Grid item xs={10}>
             <Typography variant="h5">
               Add Review for {card.contentType}: {card.title}
             </Typography>
           </Grid>
-          <Grid item xs={2} sm={1} className={classes.exitIcon}>
-            <Button variant="outlined" onClick={closeModal}>
-              <CloseIcon />
-            </Button>
+          <Grid item xs={2} className={classes.exitIconContainer}>
+            <IconButton
+              children={<CloseIcon />}
+              className={classes.exitIcon}
+              onClick={closeModal}
+            />
           </Grid>
         </Grid>
+
+        {(formFieldHasError("status") || formFieldHasError("comments")) && (
+          <Alert severity="error" className={classes.alert}>
+            An error occurred while trying to submit your review
+          </Alert>
+        )}
 
         <Alert severity="info" className={classes.alert}>
           Whatever you write here will be visible to staff and to the person you
@@ -74,9 +96,7 @@ export default function Presentation({
         </Alert>
 
         <form noValidate onSubmit={handleSubmit}>
-          {formErrors}
-
-          <Grid container spacing={1}>
+          <Grid container>
             <Grid item xs={12}>
               <FormControl
                 variant="outlined"
@@ -90,7 +110,10 @@ export default function Presentation({
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  {...status}
+                  name="status"
+                  value={formValues.status}
+                  onChange={handleOnChange}
+                  error={formFieldHasError("status")}
                 >
                   {Object.keys(statusChoices).map((key) => {
                     return (
@@ -101,31 +124,52 @@ export default function Presentation({
                   })}
                 </Select>
               </FormControl>
-              <StatusHelp />
+              {formFieldHasError("status") && (
+                <FormHelperText error={true}>
+                  {formFieldError("status")}
+                </FormHelperText>
+              )}
+              <Grid className={classes.statusHelp}>
+                <StatusHelp />
+              </Grid>
             </Grid>
             <Grid item xs={12}>
-              <TextareaAutosize
-                className={classes.textArea}
-                aria-label="your comments"
-                rowsMin={5}
-                placeholder="Your comments*"
-                {...comments}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant="outlined" onClick={closeModal}>
-                Cancel
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <CardButton
-                type="submit"
+              <TextField
                 variant="outlined"
-                className={classes.rightButton}
-                loading={loading}
-                label="Submit your review"
-                onClick={handleSubmit}
-              ></CardButton>
+                aria-label="your comments"
+                id="outlined-multiline-static"
+                label="Your comments"
+                multiline
+                rows={15}
+                placeholder="Nicely done :)"
+                fullWidth
+                name="comments"
+                value={formValues.comments}
+                onChange={handleOnChange}
+                error={formFieldHasError("comments")}
+                required
+              />
+              {formFieldHasError("comments") && (
+                <FormHelperText error={true}>
+                  {formFieldError("comments")}
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid container className={classes.buttons}>
+              <Grid item>
+                <Button variant="outlined" onClick={closeModal}>
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <CardButton
+                  type="submit"
+                  variant="outlined"
+                  loading={loading}
+                  label="Submit your review"
+                  onClick={handleSubmit}
+                ></CardButton>
+              </Grid>
             </Grid>
           </Grid>
         </form>
