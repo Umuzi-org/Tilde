@@ -4,8 +4,7 @@ export function formatTimeString(timestamp) {
 }
 
 export function getReviewStatus({ review }) {
-  if (review.state === "changes_requested") {
-    return "changes requested";
-  }
-  return review.state;
+  return review.state === "changes_requested"
+    ? review.state.split("_").join(" ")
+    : review.state;
 }

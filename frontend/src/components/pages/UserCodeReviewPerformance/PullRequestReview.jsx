@@ -63,7 +63,7 @@ export default function PullRequestReview({ review }) {
         }
       >
         <Avatar variant="rounded" className={getClassName({ review })}>
-          PR {review.state}
+          PR {getReviewStatus({ review })}
         </Avatar>
       </Tooltip>
     </ThemeProvider>
