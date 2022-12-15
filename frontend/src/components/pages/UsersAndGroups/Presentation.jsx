@@ -24,6 +24,11 @@ import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
 
 const useStyles = makeStyles((theme) => ({
+  mainSection: {
+    width: "100%",
+    paddingTop: 0,
+    height: "calc(100vh - 84px)",
+  },
   marginsAlignment: {
     marginTop: "8px",
     marginLeft: "16px",
@@ -70,7 +75,8 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
     padding: "10px 18px",
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
+    backgroundColor: "black",
     zIndex: 2,
   },
 }));
@@ -202,7 +208,7 @@ export default function Presentation({
 }) {
   const classes = useStyles();
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} className={classes.mainSection}>
       <Grid item xs={6}>
         <Grid className={classes.queueContainerHeading}>
           <Paper
