@@ -75,8 +75,7 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
     padding: "10px 18px",
-    // backgroundColor: theme.palette.background.default,
-    backgroundColor: "black",
+    backgroundColor: theme.palette.background.default,
     zIndex: 2,
   },
 }));
