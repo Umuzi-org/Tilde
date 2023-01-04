@@ -16,4 +16,4 @@ What are you up to? Fill us in :)
 - [ ] I have commented my code in hard-to-understand areas
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
+- [ ] I have tested new or existing tests and made sure that they pass
