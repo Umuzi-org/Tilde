@@ -12,7 +12,7 @@ metadata:
   labels:
     app: tilde-backend
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: tilde-backend
@@ -118,7 +118,7 @@ spec:
               path: /readiness
               port: 8080
             initialDelaySeconds: 20
-            timeoutSeconds: 5
+            timeoutSeconds: 10
 
         # [START proxy_container]
         - image: gcr.io/cloudsql-docker/gce-proxy:1.16
