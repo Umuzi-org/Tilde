@@ -1,5 +1,5 @@
 // import UserProfile from "./components/regions/UserProfile";
-import AgileBoard from "./components/regions/AgileBoard";
+import AgileBoard from "./components/pages/AgileBoard";
 import UserActions from "./components/pages/UserActions";
 import UsersAndGroups from "./components/pages/UsersAndGroups";
 import GroupCardSummary from "./components/pages/GroupCardSummary";
