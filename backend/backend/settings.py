@@ -125,6 +125,7 @@ INSTALLED_APPS = [
     "dev_helpers.apps.DevHelpersConfig",
     "config.apps.ConfigConfig",
     "activity_log.apps.ActivityLogConfig",
+    "open_ai_integrations.apps.OpenAiIntegrationsConfig",
 ]
 
 SITE_ID = 1  # from allauth docs

@@ -383,7 +383,8 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 
     def update_previous_reviews(self):
         if self.content_item.content_type == ContentItem.TOPIC:
-            raise NotImplementedError()
+            # raise NotImplementedError()
+            return
 
         previous_untrusted_reviews = RecruitProjectReview.objects.filter(
             reviewer_user=self.user,
@@ -433,6 +434,10 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
         """
         users = User.get_users_from_identifier(who)
         content_item = ContentItem.objects.get(title=content_item_title)
+        if content_item.content_type != ContentItem.PROJECT:
+            raise Exception(
+                f"Can't add trust for non-project content: {content_item_title}"
+            )
         available_flavours = content_item.flavours.all()
         available_flavour_names = [o.name for o in available_flavours]
         for flavour_name in flavours:
