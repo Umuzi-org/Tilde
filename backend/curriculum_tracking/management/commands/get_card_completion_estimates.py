@@ -1,3 +1,5 @@
+Deprecated
+
 #     - [ ] from card date export => avg, median, max min time per card per flavour (don't count C25s)
 #     - [ ] add time to each card in ordered card list. Format in minutes
 #     - [ ] check which cards have been completed by Telkom recruits

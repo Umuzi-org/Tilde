@@ -1,4 +1,7 @@
 """ look at all the ContentItems and create/update cards as needed"""
+
+Deprecated  # Or test it
+
 from django.core.management.base import BaseCommand
 from core import models as core_models
 from django.db.models import Q

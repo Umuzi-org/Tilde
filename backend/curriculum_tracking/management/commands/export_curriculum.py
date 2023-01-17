@@ -1,4 +1,8 @@
 """
+Takes a curriculum and turns it into a json object. That object could be imported using import_curriculum.
+
+This exists to help set up demo data for for easy dev.
+
 eg:
 
 python manage.py export_curriculum 33 dev_helpers/data/intro-to-tilde-course.json

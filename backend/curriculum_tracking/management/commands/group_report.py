@@ -1,5 +1,4 @@
-dont use
-from git_real.models import PullRequest, PullRequestReview
+Deprecatedfrom git_real.models import PullRequest, PullRequestReview
 from django.core.management.base import BaseCommand
 import datetime
 from core.models import Team

@@ -6,6 +6,9 @@ import pandas as pd
 from ..course_streams import COURSES_BY_STREAM
 
 
+DEPRECATED
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for stream, curriculum_names in COURSES_BY_STREAM.items():

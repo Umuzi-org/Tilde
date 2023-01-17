@@ -1,3 +1,5 @@
+Deprecated. It looks like nothing is using this
+
 from django.core.management.base import BaseCommand
 from core.models import User
 from curriculum_tracking.models import AgileCard, ContentItem

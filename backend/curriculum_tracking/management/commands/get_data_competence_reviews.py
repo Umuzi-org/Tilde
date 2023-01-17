@@ -1,3 +1,5 @@
+Deprecated
+
 """
 example usage:
 python manage.py get_data_competence_reviews "Staff Tech Education"
