@@ -327,6 +327,8 @@ def create_or_update_content_cards_for_user(user, ordered_content_items, start_o
 
         requires_cards = []
 
+        flavour_names = [o.name for o in flavours]
+
         for required_item in hard_prereqesites:
             # since the cards are dealt with in order, the prerequisites already exist as
             # cards in the database
@@ -341,14 +343,22 @@ def create_or_update_content_cards_for_user(user, ordered_content_items, start_o
             else:
                 # only a pre-req if the flavours match
                 exact_flavour_match = [
-                    o for o in prereq if o.flavours_match([o.name for o in flavours])
+                    o for o in prereq if o.flavours_match(flavour_names)
                 ]
                 if len(exact_flavour_match) == 1:
                     requires_cards.append(exact_flavour_match[0])
                 elif len(exact_flavour_match) == 0:
-                    breakpoint()
-                    print("TODO!!!!!!!!!!")
-                    print("FIX!!!!!!!!!!")
+                    inexact_flavour_matches = []
+                    for o in prereq:
+                        match = True
+                        for name in o.flavour_names:
+                            if name not in flavour_names:
+                                match = False
+                                break
+                        if match:
+                            inexact_flavour_matches.append(o)
+                    requires_cards.extend(inexact_flavour_matches)
+
                 else:
                     breakpoint()
                     requires_cards.extend(exact_flavour_match)
