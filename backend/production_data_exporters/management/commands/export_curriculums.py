@@ -91,6 +91,8 @@ class Command(BaseCommand):
         with open(f"gitignore/{today}_streams.csv", "w") as f:
             writer = csv.writer(f)
             writer.writerow(["stream name", "course name", "outcomes"])
+            for row in stream_rows:
+                writer.writerow(row)
 
 
 def _format_outcomes(outcomes):
