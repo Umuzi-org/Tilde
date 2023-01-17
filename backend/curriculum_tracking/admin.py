@@ -30,6 +30,7 @@ class ContentItemAdmin(admin.ModelAdmin):
     list_display = ["content_type", "title", "tag_list"]
     search_fields = ["title"]
     list_filter = ["content_type"]
+    ordering = ["title"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("tags")
@@ -50,6 +51,7 @@ class CurriculumContentInline(
 @admin.register(core_models.Curriculum)
 class CurriculumAdmin(admin.ModelAdmin):
     inlines = (CurriculumContentInline,)
+    ordering = ["name"]
 
 
 class RecruitProjectReviewInLine(admin.TabularInline):

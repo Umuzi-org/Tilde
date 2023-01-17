@@ -36,6 +36,7 @@ class TeamAdmin(GuardedModelAdmin):
     )
     inlines = [UserSetInline]
     actions = [deactivate_team_members]
+    ordering = ["name"]
 
 
 admin.site.register(models.UserProfile)
@@ -50,6 +51,7 @@ class StreamCurriculumInline(
 @admin.register(models.Stream)
 class StreamAdmin(admin.ModelAdmin):
     inlines = (StreamCurriculumInline,)
+    ordering = ["name"]
 
 
 @admin.register(models.StreamRegistration)
