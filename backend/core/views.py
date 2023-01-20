@@ -17,7 +17,6 @@ from django.contrib.postgres.aggregates import StringAgg
 from django.utils import timezone
 
 
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def delete_auth_token(request):
@@ -231,6 +230,31 @@ class UserViewSet(viewsets.ModelViewSet):
             user = self.get_object()
             response = actor.send_with_options(kwargs={"user_id": user.id})
             return Response({"status": "OK", "data": response.asdict()})
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        serializer_class=serializers.NoArgs,
+        permission_classes=[
+            IsAdminUser
+            | core_permissions.IsMyUser
+            | core_permissions.HasObjectPermission(
+                permissions=models.Team.PERMISSION_VIEW,
+                get_objects=_get_teams_from_user,
+            )
+        ],
+    )
+    def competence_reviews_outstanding(self, request, pk=None):
+        from curriculum_tracking.helpers import agile_card_reviews_outstanding
+        from curriculum_tracking.serializers import (
+            OutstandingCompetenceReviewSerializer,
+        )
+
+        user = self.get_object()
+        cards = agile_card_reviews_outstanding(user)
+        return Response(
+            OutstandingCompetenceReviewSerializer(card).data for card in cards
+        )
 
     # @action(
     #     detail=False,

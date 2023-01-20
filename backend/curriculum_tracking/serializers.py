@@ -930,3 +930,20 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             return instance.agile_card.status
         except models.AgileCard.DoesNotExist:
             return None
+
+
+class OutstandingCompetenceReviewSerializer(serializers.ModelSerializer):
+    """This is use for showing which cards a user needs to review."""
+
+    class Meta:
+        model = models.AgileCard
+        fields = [
+            "id",
+            "title",
+            "assignees",
+            "assignee_names",
+            "reviewer_names",
+            "tag_names",
+            "flavour_names",
+            "review_request_time",
+        ]
