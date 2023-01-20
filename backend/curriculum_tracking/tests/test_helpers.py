@@ -1,6 +1,11 @@
 from django.test import TestCase
 from curriculum_tracking import card_generation_helpers as gen_helpers
 from curriculum_tracking.tests import factories
+from curriculum_tracking import helpers
+from curriculum_tracking import models
+from django.utils import timezone
+from curriculum_tracking.constants import COMPETENT
+from backend.settings import REVIEW_SPAM_THRESHOLD
 
 JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
@@ -58,7 +63,7 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual(l[1].flavours, [])
 
     def test_prereq_with_no_flavours(self):
-        """ requirements have flavours and prereq doesnt """
+        """requirements have flavours and prereq doesnt"""
 
         content_item = factories.ContentItemFactory()
 
@@ -105,7 +110,7 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual([o.name for o in l[2].flavours], [JAVASCRIPT])
 
     def test_prereq_with_flavours(self):
-        """ requirements have flavours and prereq does too, therefore moar cards """
+        """requirements have flavours and prereq does too, therefore moar cards"""
 
         content_item = factories.ContentItemFactory(flavours=[TYPESCRIPT, JAVASCRIPT])
 
@@ -154,3 +159,71 @@ class get_ordered_content_items_Tests(TestCase):
         self.assertEqual(l[3].is_hard_milestone, False)
         self.assertEqual(l[3].is_soft_milestone, True)
         self.assertEqual([o.name for o in l[3].flavours], [JAVASCRIPT])
+
+
+class agile_card_reviews_outstanding_Tests(TestCase):
+    def setUp(self):
+        self.user = factories.UserFactory()
+
+        self.review_cards = [
+            factories.AgileCardFactory(
+                reviewers=[self.user],
+                status=models.AgileCard.IN_REVIEW,
+                recruit_project=factories.RecruitProjectFactory(
+                    review_request_time=timezone.now() - timezone.timedelta(days=1),
+                ),
+            )
+            for _ in range(3)
+        ]
+
+        in_progress_cards = [
+            factories.AgileCardFactory(
+                reviewers=[self.user], status=models.AgileCard.IN_PROGRESS
+            )
+            for _ in range(2)
+        ]
+
+        other_cards = [
+            factories.AgileCardFactory(status=models.AgileCard.IN_PROGRESS)
+            for _ in range(2)
+        ]
+
+    def test_empty_review_column(self):
+        user = factories.UserFactory()
+        self.assertEqual(helpers.agile_card_reviews_outstanding(user), [])
+
+    def test_cards_in_review_column(self):
+        queue = helpers.agile_card_reviews_outstanding(self.user)
+        self.assertEqual(queue, self.review_cards)
+
+    def test_excluded_if_already_reviewed_by_user(self):
+        factories.RecruitProjectReviewFactory(
+            recruit_project=self.review_cards[0].recruit_project,
+            reviewer_user=self.user,
+            status=COMPETENT,
+        )
+        factories.RecruitProjectReviewFactory(
+            recruit_project=self.review_cards[1].recruit_project, status=COMPETENT
+        )
+        queue = helpers.agile_card_reviews_outstanding(self.user)
+        self.assertEqual(queue, self.review_cards[1:])
+
+    def test_excluded_if_has_enough_reviews(self):
+
+        # add some recent reviews to the first card
+        for _ in range(REVIEW_SPAM_THRESHOLD):
+            factories.RecruitProjectReviewFactory(
+                recruit_project=self.review_cards[0].recruit_project, status=COMPETENT
+            )
+
+        # add some old reviews to another card
+        for _ in range(REVIEW_SPAM_THRESHOLD):
+            o = factories.RecruitProjectReviewFactory(
+                recruit_project=self.review_cards[1].recruit_project,
+                status=COMPETENT,
+            )
+            o.timestamp = timezone.now() - timezone.timedelta(days=365)
+            o.save()
+
+        queue = helpers.agile_card_reviews_outstanding(self.user)
+        self.assertEqual(queue, self.review_cards[1:])

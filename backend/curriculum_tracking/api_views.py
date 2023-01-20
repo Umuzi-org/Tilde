@@ -328,7 +328,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         methods=["post"],
         serializer_class=core_serializers.NoArgs,
         permission_classes=[
-            curriculum_permissions.IsCardAssignee
+            (
+                curriculum_permissions.IsCardAssignee
+                & curriculum_permissions.AssigneeHasFinishedReviews
+            )
             | HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
                 get_objects=_get_teams_from_card,
@@ -388,6 +391,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             (
                 curriculum_permissions.IsCardAssignee
                 & curriculum_permissions.CardCanStart
+                & curriculum_permissions.AssigneeHasFinishedReviews
             )
             | (
                 HasObjectPermission(
@@ -447,6 +451,7 @@ class AgileCardViewset(viewsets.ModelViewSet):
             (
                 curriculum_permissions.IsCardAssignee
                 & curriculum_permissions.CardCanStart
+                & curriculum_permissions.AssigneeHasFinishedReviews
             )
             | (
                 HasObjectPermission(
@@ -491,7 +496,10 @@ class AgileCardViewset(viewsets.ModelViewSet):
         methods=["post"],
         serializer_class=core_serializers.NoArgs,
         permission_classes=[
-            curriculum_permissions.IsCardAssignee
+            (
+                curriculum_permissions.IsCardAssignee
+                & curriculum_permissions.AssigneeHasFinishedReviews
+            )
             | HasObjectPermission(
                 permissions=Team.PERMISSION_MANAGE_CARDS,
                 get_objects=_get_teams_from_card,
@@ -1204,9 +1212,7 @@ class PullRequestReviewQueueViewSet(_ProjectReviewQueueViewSetBase):
                 state="open"
             )
         )
-        .exclude(
-            agile_card__status=models.AgileCard.COMPLETE
-        )
+        .exclude(agile_card__status=models.AgileCard.COMPLETE)
         .annotate(
             pr_time=Max("repository__pull_requests__updated_at"),
         )

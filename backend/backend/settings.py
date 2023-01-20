@@ -391,3 +391,6 @@ if SENDGRID_API_KEY:
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
     EMAIL_FILE_PATH = "gitignore/sent-emails"
+
+
+REVIEW_SPAM_THRESHOLD = 3  # if there are this many positive reviews on a card then we don't expect any more learners to review it

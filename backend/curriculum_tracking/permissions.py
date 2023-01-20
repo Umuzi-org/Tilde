@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission
 from . import models
 from git_real import models as git_models
+from . import helpers
 
 
 class IsProjectAssignee(BasePermission):
@@ -189,3 +190,17 @@ class IsWorkshopAttendee(BasePermission):
         user = request.user
         workshop_attendance = view.get_object()
         return workshop_attendance.attendee_user == user
+
+
+class AssigneeHasFinishedReviews(BasePermission):
+    """This is used when an assignee tries to move their own card. A learner can't move forward until they have done their share of code review. This means that the learner will need to add a review to every single card in their review column"""
+
+    message = "Please make sure you have finished"
+
+    def has_permission(self, request, view):
+        user = request.user
+        if len(helpers.agile_card_reviews_outstanding(user)):
+            return False
+        if len(helpers.pull_request_reviews_outstanding(user)):
+            return False
+        return True
