@@ -943,6 +943,7 @@ class OutstandingCompetenceReviewSerializer(serializers.ModelSerializer):
             "assignees",
             "assignee_names",
             "reviewer_names",
+            "reviewers",
             "tag_names",
             "flavour_names",
             "review_request_time",

@@ -1,14 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
-
-# from django.template.loader import render_to_string
-# from django.utils.html import strip_tags
-# from django.core.mail import send_mail
-# import secrets
-# import re
-
-# from rest_framework.generics import RetrieveAPIView
 from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup

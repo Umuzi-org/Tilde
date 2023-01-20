@@ -155,6 +155,7 @@ def agile_card_reviews_outstanding(user):
     cards = (
         models.AgileCard.objects.filter(reviewers__in=[user])
         .filter(status=models.AgileCard.IN_REVIEW)
+        .filter(assignees__active=True)
         .annotate(
             recent_review_count=SubqueryAggregate(
                 "recruit_project__project_reviews",

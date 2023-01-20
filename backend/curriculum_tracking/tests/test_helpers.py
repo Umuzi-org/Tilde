@@ -196,6 +196,13 @@ class agile_card_reviews_outstanding_Tests(TestCase):
         queue = helpers.agile_card_reviews_outstanding(self.user)
         self.assertEqual(queue, self.review_cards)
 
+    def test_excludes_inactive_users(self):
+        for assignee in self.review_cards[0].assignees.all():
+            assignee.active = False
+            assignee.save()
+        queue = helpers.agile_card_reviews_outstanding(self.user)
+        self.assertEqual(queue, self.review_cards[1:])
+
     def test_excluded_if_already_reviewed_by_user(self):
         factories.RecruitProjectReviewFactory(
             recruit_project=self.review_cards[0].recruit_project,
