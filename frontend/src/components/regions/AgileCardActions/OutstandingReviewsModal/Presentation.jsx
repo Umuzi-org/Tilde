@@ -15,14 +15,18 @@ export default function Presentation({
   handleClose,
 }) {
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Typography variant="h4" gutterBottom>
-        People are awaiting your feedback
-      </Typography>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      title="There are people waiting for your feedback"
+    >
       <Typography>
-        The following cards need your review. You need to complete your reviews
-        before you can move on with your own assigned cards.
+        Your colleagues need your feedback so that they can move forward with
+        their work. When reviewing other people's work it's important that you
+        pay close attention and do a good job. We review each other's work in
+        order to maximize learning.
       </Typography>
+      <Typography>Please review the follwing cards:</Typography>
 
       {cardsNeedingCompetenceReview.map((card) => (
         <Card variant="outlined">
