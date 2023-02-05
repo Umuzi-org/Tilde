@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Presentation from "./Presentation";
-import { showButtons } from "./utils";
+import { showButtons, getTeamPermissions } from "./utils";
 import { connect } from "react-redux";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import { addCardReviewOperations } from "../AddCardReviewModal/redux";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
+import { MANAGE_CARDS } from "../../../constants";
 
 function AgileCardActionsUnconnected({
   card,
@@ -20,7 +21,7 @@ function AgileCardActionsUnconnected({
   stopTopic,
   finishTopic,
   openReviewFormModal,
-  fetchCompetenceReviewsOutstanding,
+  fetchcardsNeedingCompetenceReview,
 
   // mapStateToProps
   authUser,
@@ -30,15 +31,47 @@ function AgileCardActionsUnconnected({
   CARD_START_TOPIC,
   CARD_STOP_TOPIC,
   CARD_FINISH_TOPIC,
+  cardsNeedingCompetenceReview,
+  FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
 
   //storybook
   forceUser,
 }) {
+  const [
+    outstandingReviewsModalOpen,
+    setOutstandingReviewsModalOpen,
+  ] = useState(false);
+
+  const permissions = getTeamPermissions({ authUser, viewedUser });
+  const canManageCards = permissions[MANAGE_CARDS];
+
+  cardsNeedingCompetenceReview = Object.values(
+    cardsNeedingCompetenceReview || {}
+  ).filter((o) => o.reviewers.includes(viewedUser.id));
+
+  const noReviewsOwed = cardsNeedingCompetenceReview.length === 0;
+  useEffect(() => fetchcardsNeedingCompetenceReview({ user: viewedUser.id }), [
+    fetchcardsNeedingCompetenceReview,
+    viewedUser,
+  ]);
+
   const cardId = card.id;
   variant = variant || "card";
 
+  function openOutstandingReviewsModal() {
+    setOutstandingReviewsModalOpen(true);
+  }
+
+  function handleCloseOutstandingReviewsModal() {
+    setOutstandingReviewsModalOpen(false);
+  }
+
   const handleStartTopic = () => {
-    startTopic({ cardId });
+    if (canManageCards || noReviewsOwed) {
+      startTopic({ cardId });
+    } else {
+      openOutstandingReviewsModal();
+    }
   };
 
   const handleStopTopic = () => {
@@ -46,7 +79,11 @@ function AgileCardActionsUnconnected({
   };
 
   const handleFinishTopic = () => {
-    finishTopic({ cardId });
+    if (canManageCards || noReviewsOwed) {
+      finishTopic({ cardId });
+    } else {
+      openOutstandingReviewsModal();
+    }
   };
 
   const handleClickAddReview = () => {
@@ -54,15 +91,29 @@ function AgileCardActionsUnconnected({
   };
 
   const handleRequestReview = () => {
-    requestReview({ cardId });
+    if (canManageCards || noReviewsOwed) {
+      requestReview({ cardId });
+    } else {
+      openOutstandingReviewsModal();
+    }
   };
 
   const handleStartProject = () => {
-    startProject({ cardId });
+    if (canManageCards || noReviewsOwed) {
+      startProject({ cardId });
+    } else {
+      openOutstandingReviewsModal();
+    }
   };
+
   const handleCancelReviewRequest = () => {
     cancelReviewRequest({ cardId });
   };
+
+  const loadingGetOutstandingCompetenceReviews = (getLatestMatchingCall({
+    callLog: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
+    requestData: { user: viewedUser.id },
+  }) || { loading: false })["loading"];
 
   const loadingStartProject = (getLatestMatchingCall({
     callLog: CARD_START_PROJECT,
@@ -92,6 +143,10 @@ function AgileCardActionsUnconnected({
   authUser = forceUser || authUser;
 
   const props = {
+    outstandingReviewsModalOpen,
+    handleCloseOutstandingReviewsModal,
+    cardsNeedingCompetenceReview,
+
     card,
     variant,
     authUser,
@@ -104,21 +159,17 @@ function AgileCardActionsUnconnected({
     handleRequestReview,
     handleStartProject,
     handleCancelReviewRequest,
-
-    // handleClickOpenWorkshopAttendanceForm,
     handleStartTopic,
     handleStopTopic,
     handleFinishTopic,
-    // handleRemoveWorkshopAttendance,
 
+    loadingGetOutstandingCompetenceReviews,
     loadingStartProject,
     loadingStartTopic,
-    // loadingClickOpenWorkshopAttendanceForm,
     loadingRequestReview,
     loadingCancelReviewRequest,
     loadingStopTopic,
     loadingFinishTopic,
-    // loadingRemoveWorkshopAttendance,
   };
   return <Presentation {...props} />;
 }
@@ -132,6 +183,10 @@ const mapStateToProps = (state) => {
     CARD_START_TOPIC: state.CARD_START_TOPIC,
     CARD_STOP_TOPIC: state.CARD_STOP_TOPIC,
     CARD_FINISH_TOPIC: state.CARD_FINISH_TOPIC,
+    FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER:
+      state.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
+    cardsNeedingCompetenceReview:
+      state.apiEntities.cardsNeedingCompetenceReview,
     // CARD_REMOVE_WORKSHOP_ATTENDANCE: state.CARD_REMOVE_WORKSHOP_ATTENDANCE,
     // CARD_ADD_WORKSHOP_ATTENDANCE: state.CARD_ADD_WORKSHOP_ATTENDANCE,
   };
@@ -167,9 +222,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
     },
 
-    fetchCompetenceReviewsOutstanding: ({ user }) => {
+    fetchcardsNeedingCompetenceReview: ({ user }) => {
       dispatch(
-        apiReduxApps.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER.operations.start(
+        apiReduxApps.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER.operations.maybeStart(
           { data: { user } }
         )
       );

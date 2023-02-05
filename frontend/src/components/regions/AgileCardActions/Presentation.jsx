@@ -8,10 +8,19 @@ import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
 import { routes } from "../../../routes";
+import Loading from "../../widgets/Loading";
+
+import OutstandingReviewsModal from "./OutstandingReviewsModal";
 
 export default ({
   card,
   variant,
+
+  // if a user tries to move one of their cards, and they owe reviews, then a
+  // modal will pop up and tell them what they need to do
+  outstandingReviewsModalOpen,
+  handleCloseOutstandingReviewsModal,
+  cardsNeedingCompetenceReview,
 
   handleClickAddReview,
   handleRequestReview,
@@ -43,121 +52,134 @@ export default ({
   loadingStopTopic,
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
+  loadingGetOutstandingCompetenceReviews,
 }) => {
+  if (loadingGetOutstandingCompetenceReviews) return <Loading />;
+  console.log({
+    outstandingReviewsModalOpen,
+    handleCloseOutstandingReviewsModal,
+  });
   return (
-    <Grid container>
-      <CardButton
-        widget={
-          <ViewContentButton
-            contentUrl={card.contentItemUrl}
-            contentItemId={card.contentItem}
-          />
-        }
+    <React.Fragment>
+      <OutstandingReviewsModal
+        cardsNeedingCompetenceReview={cardsNeedingCompetenceReview}
+        open={outstandingReviewsModalOpen}
+        handleClose={handleCloseOutstandingReviewsModal}
       />
-
-      {showButtonStartProject ? (
+      <Grid container>
         <CardButton
-          label="Start Project"
-          startIcon={<PlayCircleFilledWhiteIcon />}
-          onClick={handleStartProject}
-          loading={loadingStartProject}
+          widget={
+            <ViewContentButton
+              contentUrl={card.contentItemUrl}
+              contentItemId={card.contentItem}
+            />
+          }
         />
-      ) : (
-        ""
-      )}
 
-      {variant === "card" && (
-        <a href={routes.cardDetails.route.path.replace(":cardId", card.id)}>
-          <CardButton label="Details" startIcon={<MoreIcon />} />{" "}
-        </a>
-      )}
+        {showButtonStartProject ? (
+          <CardButton
+            label="Start Project"
+            startIcon={<PlayCircleFilledWhiteIcon />}
+            onClick={handleStartProject}
+            loading={loadingStartProject}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonRequestReview ? (
-        <CardButton
-          label="Request Review"
-          startIcon={<ArrowForwardRounded />}
-          onClick={handleRequestReview}
-          loading={loadingRequestReview}
-        />
-      ) : (
-        ""
-      )}
+        {variant === "card" && (
+          <a href={routes.cardDetails.route.path.replace(":cardId", card.id)}>
+            <CardButton label="Details" startIcon={<MoreIcon />} />{" "}
+          </a>
+        )}
 
-      {showButtonCancelReviewRequest ? (
-        <CardButton
-          label="Cancel Review Request"
-          startIcon={<ArrowBackRoundedIcon />}
-          onClick={handleCancelReviewRequest}
-          loading={loadingCancelReviewRequest}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonRequestReview ? (
+          <CardButton
+            label="Request Review"
+            startIcon={<ArrowForwardRounded />}
+            onClick={handleRequestReview}
+            loading={loadingRequestReview}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonAddReview && variant === "details" ? (
-        <CardButton
-          label="Add Review"
-          startIcon={<RateReviewRoundedIcon />}
-          onClick={handleClickAddReview}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonCancelReviewRequest ? (
+          <CardButton
+            label="Cancel Review Request"
+            startIcon={<ArrowBackRoundedIcon />}
+            onClick={handleCancelReviewRequest}
+            loading={loadingCancelReviewRequest}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonStartTopic ? (
-        <CardButton
-          label="Start Topic"
-          startIcon={<ArrowForwardRounded />}
-          onClick={handleStartTopic}
-          loading={loadingStartTopic}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonAddReview && variant === "details" ? (
+          <CardButton
+            label="Add Review"
+            startIcon={<RateReviewRoundedIcon />}
+            onClick={handleClickAddReview}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonStopTopic ? (
-        <CardButton
-          label="Cancel"
-          startIcon={<ArrowBackRoundedIcon />}
-          onClick={handleStopTopic}
-          loading={loadingStopTopic}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonStartTopic ? (
+          <CardButton
+            label="Start Topic"
+            startIcon={<ArrowForwardRounded />}
+            onClick={handleStartTopic}
+            loading={loadingStartTopic}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonEndTopic ? (
-        <CardButton
-          label="I'm done"
-          startIcon={<ArrowForwardRounded />}
-          onClick={handleFinishTopic}
-          loading={loadingFinishTopic}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonStopTopic ? (
+          <CardButton
+            label="Cancel"
+            startIcon={<ArrowBackRoundedIcon />}
+            onClick={handleStopTopic}
+            loading={loadingStopTopic}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonNoteWorkshopAttendance ? (
-        <CardButton
-          label="Mark Attendance"
-          startIcon={<ArrowForwardRounded />}
-          onClick={handleClickOpenWorkshopAttendanceForm}
-          loading={loadingClickOpenWorkshopAttendanceForm}
-        />
-      ) : (
-        ""
-      )}
+        {showButtonEndTopic ? (
+          <CardButton
+            label="I'm done"
+            startIcon={<ArrowForwardRounded />}
+            onClick={handleFinishTopic}
+            loading={loadingFinishTopic}
+          />
+        ) : (
+          ""
+        )}
 
-      {showButtonCancelWorkshopAttendance ? (
-        <CardButton
-          label="Cancel"
-          startIcon={<ArrowBackRoundedIcon />}
-          onClick={handleRemoveWorkshopAttendance}
-          loading={loadingRemoveWorkshopAttendance}
-        />
-      ) : (
-        ""
-      )}
-    </Grid>
+        {showButtonNoteWorkshopAttendance ? (
+          <CardButton
+            label="Mark Attendance"
+            startIcon={<ArrowForwardRounded />}
+            onClick={handleClickOpenWorkshopAttendanceForm}
+            loading={loadingClickOpenWorkshopAttendanceForm}
+          />
+        ) : (
+          ""
+        )}
+
+        {showButtonCancelWorkshopAttendance ? (
+          <CardButton
+            label="Cancel"
+            startIcon={<ArrowBackRoundedIcon />}
+            onClick={handleRemoveWorkshopAttendance}
+            loading={loadingRemoveWorkshopAttendance}
+          />
+        ) : (
+          ""
+        )}
+      </Grid>
+    </React.Fragment>
   );
 };

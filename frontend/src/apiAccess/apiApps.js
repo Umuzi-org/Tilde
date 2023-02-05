@@ -386,7 +386,7 @@ export const apiReduxApps = {
     BASE_TYPE: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
     apiCaller: apiCallers.competenceReviewsOutstanding,
     responseIsList: true,
-    responseEntityType: "competenceReviewsOutstanding",
+    responseEntityType: "cardsNeedingCompetenceReview",
   }),
 };
 

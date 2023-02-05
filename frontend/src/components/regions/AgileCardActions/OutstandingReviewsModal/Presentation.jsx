@@ -6,13 +6,17 @@ import { getAgeString } from "../../../widgets/utils";
 import MoreIcon from "@material-ui/icons/More";
 import { routes } from "../../../../routes";
 import CardButton from "../../../widgets/CardButton";
-
+import Paper from "@material-ui/core/Paper";
 import Modal from "../../../widgets/Modal";
 
-export default function Presentation({ cardsNeedingCompetenceReview }) {
+export default function Presentation({
+  cardsNeedingCompetenceReview,
+  open,
+  handleClose,
+}) {
   return (
-    <Modal open={true} onClose={() => 1}>
-      <Typography variant="h3" gutterBottom>
+    <Modal open={open} onClose={handleClose}>
+      <Typography variant="h4" gutterBottom>
         People are awaiting your feedback
       </Typography>
       <Typography>
