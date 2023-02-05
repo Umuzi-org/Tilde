@@ -1,17 +1,13 @@
 import React, { useEffect } from "react";
 import Presentation from "./Presentation";
-// import { useParams } from "react-router-dom";
-// https://api.github.com/users/sheenarbw/events
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
 import Loading from "../../widgets/Loading";
 import { addEventColorsToLogEntries } from "./utils.js";
 
 function UserActionsUnconnected({
-  authedUserId,
   userBurndownStats,
   fetchUserBurndownStats,
   fetchActivityLogEntries,
@@ -21,7 +17,7 @@ function UserActionsUnconnected({
   FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
   let urlParams = useParams() || {};
-  const userId = parseInt(urlParams.userId || authedUserId || 0);
+  const userId = urlParams.userId;
   userBurndownStats = userBurndownStats || {};
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
     (snapshot) => snapshot.user === userId
@@ -44,8 +40,9 @@ function UserActionsUnconnected({
       page: 1,
     });
   }, [fetchEventTypes]);
-  if (!userId || !fetchUserBurndownStats) return <Loading />;
-  if (!activityLogEntries) return <Loading />;
+
+  if (activityLogEntries === undefined) return <Loading />;
+  if (eventTypes === undefined) return <Loading />;
 
   const latestActivityLogPage = getLatestMatchingCall({
     callLog: FETCH_ACTIVITY_LOG_ENTRIES,
@@ -157,13 +154,8 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    fetchActivityLogEntries: ({ user, page }) => {
-      // dispatch(
-      //   apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.start({
-      //     data: { actorUser: user, page },
-      //   })
-      // );
 
+    fetchActivityLogEntries: ({ user, page }) => {
       dispatch(
         apiReduxApps.FETCH_ACTIVITY_LOG_ENTRIES.operations.maybeStartCallSequence(
           {
@@ -175,6 +167,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       );
     },
+
     fetchEventTypes: () => {
       dispatch(
         apiReduxApps.FETCH_EVENT_TYPES.operations.start({

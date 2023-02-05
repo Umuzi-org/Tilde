@@ -148,6 +148,7 @@ function CardBasicDetails({ card }) {
 
 export default function Presentation({
   card,
+  viewedUser,
   cardId,
   topicProgress,
   project,
@@ -163,6 +164,7 @@ export default function Presentation({
   const classes = useStyles();
 
   if (card === undefined) return <Loading />;
+  if (viewedUser === undefined) return <Loading />;
 
   const { contentItemUrl, contentItem } = card.contentItemUrl;
 
@@ -207,7 +209,11 @@ export default function Presentation({
             />
           }
         />
-        <AgileCardActions card={card} variant="details" />{" "}
+        <AgileCardActions
+          card={card}
+          viewedUser={viewedUser}
+          variant="details"
+        />{" "}
       </Paper>
     );
   return <React.Fragment />;

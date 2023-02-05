@@ -482,7 +482,17 @@ async function pullRequestReviewQualitiesPage({
   return { response, responseData };
 }
 
+async function competenceReviewsOutstanding({ user }) {
+  const url = `${API_BASE_URL}/api/users/${user}/competence_reviews_outstanding/`;
+  const { response, responseData } = await fetchAndClean({
+    url,
+  });
+  return { response, responseData };
+}
+
 export default {
+  // TODO: just export things in a normal way
+  competenceReviewsOutstanding,
   whoAmI,
   logout,
   authenticateWithOneTimeToken,

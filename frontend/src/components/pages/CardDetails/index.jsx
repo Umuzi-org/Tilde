@@ -9,24 +9,28 @@ import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
 
 function CardDetailsUnconnected({
+  // mapStateToProps
   cards,
+  users,
   projects,
   topicProgressArray,
   projectReviews,
   topicReviews,
   authUser,
-  // viewedUser,
 
+  // mapDispatchToProps
   updateProjectLink,
   fetchProject,
   fetchProjectReviews,
   fetchTopicProgress,
   fetchTopicReviews,
   fetchAgileCard,
+  fetchUser,
 }) {
   let urlParams = useParams() || {};
   const { cardId } = urlParams;
   const card = cards && cards[cardId];
+  const viewedUser = users && card && users[card.assignees[0]];
 
   const projectId =
     card && card.contentTypeNice === "project" && card.recruitProject;
@@ -50,6 +54,7 @@ function CardDetailsUnconnected({
       fetchTopicProgress({ topicProgressId });
       fetchTopicReviews({ topicProgressId });
     }
+
     if (cardId && (card === undefined || card === null || card === {})) {
       fetchAgileCard({ cardId });
     }
@@ -64,6 +69,12 @@ function CardDetailsUnconnected({
     fetchAgileCard,
     card,
   ]);
+
+  useEffect(() => {
+    if (card === undefined) return;
+
+    fetchUser({ userId: card.assignees[0] });
+  }, [card, fetchUser]);
 
   const [
     formState,
@@ -85,20 +96,8 @@ function CardDetailsUnconnected({
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
-  // const isReviewer =
-  //   ((project || {}).reviewerUsers || []).indexOf(authUser.userId) !== -1;
-
   const projectCardStatus = project && project.agileCardStatus;
 
-  // const cardWithStatusOnly = { status: projectCardStatus };
-
-  // const permissions = getTeamPermissions({ authUser, viewedUser });
-
-  // const showAddReviewButton = getShowAddReviewButton({   // TODO: fix
-  //   card: cardWithStatusOnly,
-  //   permissions,
-  //   isReviewer,
-  // });
   const showUpdateProjectLinkForm =
     isAssignee &&
     [REVIEW_FEEDBACK, IN_PROGRESS].indexOf(projectCardStatus) !== -1;
@@ -122,6 +121,7 @@ function CardDetailsUnconnected({
     projectId,
     cardId,
     card,
+    viewedUser,
     topicProgressId,
     topicProgress,
     topicReviews: currentTopicReviews,
@@ -140,17 +140,25 @@ function CardDetailsUnconnected({
 const mapStateToProps = (state) => {
   return {
     cards: state.apiEntities.cards,
+    users: state.apiEntities.users,
     projects: state.apiEntities.projects,
     topicProgressArray: state.apiEntities.topicProgress,
     projectReviews: state.apiEntities.projectReviews,
     topicReviews: state.apiEntities.topicReviews,
-
     authUser: state.App.authUser,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchUser: ({ userId }) => {
+      dispatch(
+        apiReduxApps.FETCH_SINGLE_USER.operations.maybeStart({
+          data: { userId: parseInt(userId) },
+        })
+      );
+    },
+
     fetchAgileCard: ({ cardId }) => {
       dispatch(
         apiReduxApps.FETCH_SINGLE_AGILE_CARD.operations.maybeStart({

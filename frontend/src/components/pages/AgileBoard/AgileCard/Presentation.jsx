@@ -97,7 +97,6 @@ export default function Presentation({
     viewedUser,
     forceUser,
   };
-  console.log(agileCardActionProps);
   // TODO: add an icon for different kinds of content
   return (
     <Card

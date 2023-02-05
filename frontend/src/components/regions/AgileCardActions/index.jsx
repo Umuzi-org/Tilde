@@ -187,13 +187,13 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
     },
 
-    // openWorkshopAttendanceModal: ({ cardId }) => {
-    //   dispatch(
-    //     markSingleCardWorkshopAttendanceOperations.openWorkshopCardAttendanceForm(
-    //       { cardId }
-    //     )
-    //   );
-    // },
+    fetchCompetenceReviewsOutstanding: ({ user }) => {
+      dispatch(
+        apiReduxApps.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER.operations.start(
+          { data: { user } }
+        )
+      );
+    },
 
     startTopic: ({ cardId }) => {
       dispatch(

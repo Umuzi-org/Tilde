@@ -70,6 +70,9 @@ const FETCH_COMPETENCE_REVIEW_QUALITY_PAGE =
 const FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE =
   "FETCH_PULL_REQUEST_REVIEW_QUALITY_PAGE";
 
+const FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER =
+  "FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER";
+
 export const apiReduxApps = {
   WHO_AM_I: createReduxApp({
     BASE_TYPE: WHO_AM_I,
@@ -377,6 +380,13 @@ export const apiReduxApps = {
     apiCaller: apiCallers.pullRequestReviewQualitiesPage,
     responseIsList: true,
     responseEntityType: "pullRequestReviewQualities",
+  }),
+
+  FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER: createReduxApp({
+    BASE_TYPE: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
+    apiCaller: apiCallers.competenceReviewsOutstanding,
+    responseIsList: true,
+    responseEntityType: "competenceReviewsOutstanding",
   }),
 };
 
