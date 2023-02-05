@@ -87,63 +87,6 @@ test("showButtons DOES NOT show start project button to assignee if start is NOT
   expect(showButtonStartProject).toBe(false);
 });
 
-test("showButton returns showButtonNoteWorkshopAttendance=False for people without manage permission", () => {
-  const authUser = { permissions: { teams: {} }, userId: 3 };
-  const card = {
-    reviewers: [],
-    canStart: false,
-    canForceStart: false,
-    assignees: [authUser.userId],
-    contentTypeNice: "workshop",
-    status: READY,
-  };
-
-  const {
-    showButtonNoteWorkshopAttendance,
-    showButtonCancelWorkshopAttendance,
-  } = showButtons({ authUser, card });
-  expect(showButtonNoteWorkshopAttendance).toBe(false);
-  expect(showButtonCancelWorkshopAttendance).toBe(false);
-});
-
-test("showButton shows showButtonNoteWorkshopAttendance for people with manage permission if WORKSHOP card is READY", () => {
-  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
-  const card = {
-    reviewers: [],
-    canStart: false,
-    canForceStart: false,
-    assignees: [authUser.userId + 1],
-    contentTypeNice: "workshop",
-    status: READY,
-  };
-
-  const {
-    showButtonNoteWorkshopAttendance,
-    showButtonCancelWorkshopAttendance,
-  } = showButtons({ authUser, card });
-  expect(showButtonNoteWorkshopAttendance).toBe(true);
-  expect(showButtonCancelWorkshopAttendance).toBe(false);
-});
-
-test("showButton shows showButton NoteWorkshopAttendance for people with manage permission if WORKSHOP card is BLOCKED", () => {
-  const authUser = { permissions: { teams: {} }, userId: 3, isSuperuser: 1 };
-  const card = {
-    reviewers: [],
-    canStart: false,
-    canForceStart: false,
-    assignees: [authUser.userId + 1],
-    contentTypeNice: "workshop",
-    status: BLOCKED,
-  };
-
-  const {
-    showButtonNoteWorkshopAttendance,
-    showButtonCancelWorkshopAttendance,
-  } = showButtons({ authUser, card });
-  expect(showButtonNoteWorkshopAttendance).toBe(true);
-  expect(showButtonCancelWorkshopAttendance).toBe(false);
-});
-
 test("showButton returns showButtonStartTopic=true for card assignee if canStart", () => {
   const authUser = { permissions: { teams: {} }, userId: 3 };
   const card = {

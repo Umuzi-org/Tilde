@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Presentation from "./Presentation";
 import { showButtons } from "./utils";
 import { connect } from "react-redux";
@@ -19,9 +19,8 @@ function AgileCardActionsUnconnected({
   startTopic,
   stopTopic,
   finishTopic,
-  removeWorkshopAttendance,
-  addWorkshopAttendance,
   openReviewFormModal,
+  fetchCompetenceReviewsOutstanding,
 
   // mapStateToProps
   authUser,
@@ -31,19 +30,12 @@ function AgileCardActionsUnconnected({
   CARD_START_TOPIC,
   CARD_STOP_TOPIC,
   CARD_FINISH_TOPIC,
-  CARD_REMOVE_WORKSHOP_ATTENDANCE,
-  CARD_ADD_WORKSHOP_ATTENDANCE,
 
   //storybook
   forceUser,
 }) {
   const cardId = card.id;
   variant = variant || "card";
-
-  const handleClickOpenWorkshopAttendanceForm = () => {
-    // openWorkshopAttendanceModal({ cardId });
-    addWorkshopAttendance({ cardId });
-  };
 
   const handleStartTopic = () => {
     startTopic({ cardId });
@@ -55,10 +47,6 @@ function AgileCardActionsUnconnected({
 
   const handleFinishTopic = () => {
     finishTopic({ cardId });
-  };
-
-  const handleRemoveWorkshopAttendance = () => {
-    removeWorkshopAttendance({ cardId });
   };
 
   const handleClickAddReview = () => {
@@ -100,14 +88,6 @@ function AgileCardActionsUnconnected({
     callLog: CARD_FINISH_TOPIC,
     requestData: { cardId },
   }) || { loading: false })["loading"];
-  const loadingRemoveWorkshopAttendance = (getLatestMatchingCall({
-    callLog: CARD_REMOVE_WORKSHOP_ATTENDANCE,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
-  const loadingClickOpenWorkshopAttendanceForm = (getLatestMatchingCall({
-    callLog: CARD_ADD_WORKSHOP_ATTENDANCE,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
 
   authUser = forceUser || authUser;
 
@@ -125,20 +105,20 @@ function AgileCardActionsUnconnected({
     handleStartProject,
     handleCancelReviewRequest,
 
-    handleClickOpenWorkshopAttendanceForm,
+    // handleClickOpenWorkshopAttendanceForm,
     handleStartTopic,
     handleStopTopic,
     handleFinishTopic,
-    handleRemoveWorkshopAttendance,
+    // handleRemoveWorkshopAttendance,
 
     loadingStartProject,
     loadingStartTopic,
-    loadingClickOpenWorkshopAttendanceForm,
+    // loadingClickOpenWorkshopAttendanceForm,
     loadingRequestReview,
     loadingCancelReviewRequest,
     loadingStopTopic,
     loadingFinishTopic,
-    loadingRemoveWorkshopAttendance,
+    // loadingRemoveWorkshopAttendance,
   };
   return <Presentation {...props} />;
 }
@@ -152,8 +132,8 @@ const mapStateToProps = (state) => {
     CARD_START_TOPIC: state.CARD_START_TOPIC,
     CARD_STOP_TOPIC: state.CARD_STOP_TOPIC,
     CARD_FINISH_TOPIC: state.CARD_FINISH_TOPIC,
-    CARD_REMOVE_WORKSHOP_ATTENDANCE: state.CARD_REMOVE_WORKSHOP_ATTENDANCE,
-    CARD_ADD_WORKSHOP_ATTENDANCE: state.CARD_ADD_WORKSHOP_ATTENDANCE,
+    // CARD_REMOVE_WORKSHOP_ATTENDANCE: state.CARD_REMOVE_WORKSHOP_ATTENDANCE,
+    // CARD_ADD_WORKSHOP_ATTENDANCE: state.CARD_ADD_WORKSHOP_ATTENDANCE,
   };
 };
 
@@ -214,22 +194,6 @@ const mapDispatchToProps = (dispatch) => {
     finishTopic: ({ cardId }) => {
       dispatch(
         apiReduxApps.CARD_FINISH_TOPIC.operations.start({
-          data: { cardId },
-        })
-      );
-    },
-
-    removeWorkshopAttendance: ({ cardId }) => {
-      dispatch(
-        apiReduxApps.CARD_REMOVE_WORKSHOP_ATTENDANCE.operations.start({
-          data: { cardId },
-        })
-      );
-    },
-
-    addWorkshopAttendance: ({ cardId }) => {
-      dispatch(
-        apiReduxApps.CARD_ADD_WORKSHOP_ATTENDANCE.operations.start({
           data: { cardId },
         })
       );

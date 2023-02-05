@@ -1,8 +1,6 @@
 import {
-  READY,
   REVIEW_FEEDBACK,
   COMPLETE,
-  BLOCKED,
   IN_PROGRESS,
   IN_REVIEW,
   TEAM_PERMISSIONS,
@@ -60,8 +58,6 @@ function getReviewRequestButtons({ card, permissions, isAssignee }) {
 
 export function showButtons({ card, authUser, viewedUser }) {
   let showButtonStartProject = false;
-  let showButtonNoteWorkshopAttendance = false;
-  let showButtonCancelWorkshopAttendance = false;
 
   let showButtonStartTopic = false;
   let showButtonStopTopic = false;
@@ -95,14 +91,6 @@ export function showButtons({ card, authUser, viewedUser }) {
     showButtonRequestReview = reviewRequestButtons.showButtonRequestReview;
     showButtonCancelReviewRequest =
       reviewRequestButtons.showButtonCancelReviewRequest;
-  } else if (card.contentTypeNice === "workshop") {
-    // WORKSHOP CARDS
-    if (permissions[MANAGE_CARDS] & (card.status === READY))
-      showButtonNoteWorkshopAttendance = true;
-    if (permissions[MANAGE_CARDS] & (card.status === BLOCKED))
-      showButtonNoteWorkshopAttendance = true;
-    if (permissions[MANAGE_CARDS] & (card.status === COMPLETE))
-      showButtonCancelWorkshopAttendance = true;
   } else if (card.contentTypeNice === "topic") {
     // TOPIC CARDS
     if (isAssignee && card.canStart) showButtonStartTopic = true;
@@ -148,8 +136,5 @@ export function showButtons({ card, authUser, viewedUser }) {
     showButtonStartTopic,
     showButtonStopTopic,
     showButtonEndTopic,
-    showButtonNoteWorkshopAttendance,
-    showButtonCancelWorkshopAttendance,
-    // showButtonPauseProject // TODO. unstart project
   };
 }
