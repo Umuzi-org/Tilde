@@ -98,13 +98,13 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAdminUser
         | core_permissions.ActionIs("retrieve")
-        & (
-            core_permissions.IsMyUser
-            | core_permissions.HasObjectPermission(
-                permissions=models.Team.PERMISSION_VIEW,
-                get_objects=_get_teams_from_user,
-            )
-        )
+        # & (
+        #     core_permissions.IsMyUser
+        #     | core_permissions.HasObjectPermission(
+        #         permissions=models.Team.PERMISSION_VIEW,
+        #         get_objects=_get_teams_from_user,
+        #     )
+        # )
     ]
 
     queryset = models.User.objects.all().order_by("last_name")

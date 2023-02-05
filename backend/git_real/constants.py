@@ -15,7 +15,9 @@ CLONE_DESTINATION = Path(os.environ.get("GIT_REAL_CLONE_DIR", "gitignore/sync_gi
 GITHUB_BASE_URL = "https://api.github.com"
 GITHUB_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"  #'2017-02-11T15:09:20Z'
 
-PERSONAL_GITHUB_NAME = os.environ.get("GIT_REAL_PERSONAL_GITHUB_NAME")
+PERSONAL_GITHUB_NAME = os.environ.get(
+    "GIT_REAL_PERSONAL_GITHUB_NAME",
+)
 
 
 # https://developer.github.com/v3/#timezones

@@ -712,12 +712,10 @@ class PullRequestReviewQualityViewset(viewsets.ModelViewSet):
         & (
             curriculum_permissions.IsCurrentUserInRecruitsForFilteredProject
             | curriculum_permissions.IsCurrentUserInReviewersForFilteredProject
-            | core_permissions.IsCurrentUserInSpecificFilter("reviewer_user")
+            | core_permissions.IsCurrentUserInSpecificFilter("user")
             | core_permissions.HasObjectPermission(
                 permissions=Team.PERMISSION_VIEW,
-                get_objects=core_permissions.get_teams_from_user_filter(
-                    "reviewer_user"
-                ),
+                get_objects=core_permissions.get_teams_from_user_filter("user"),
             )
         )
         | ActionIs("retrieve")

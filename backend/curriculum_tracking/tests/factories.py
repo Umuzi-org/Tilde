@@ -177,6 +177,10 @@ class RecruitProjectInReviewFactory(RecruitProjectFactory):
         lambda *a, **k: timezone.now() - timedelta(days=10)
     )
 
+    # @classmethod
+    # def _create(cls, model_class, *args, **kwargs):
+    #     manager = cls._get_manager(model_class)
+
     # agile_card = factory.SubFactory(AgileCardFactory)
 
 

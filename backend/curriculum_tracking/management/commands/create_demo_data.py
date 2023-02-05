@@ -1,9 +1,8 @@
 from django.core.management.base import BaseCommand
 from core.models import User
-from curriculum_tracking.tests.factories import RecruitProjectInReviewFactory
 from social_auth.models import SocialProfile
 from config.models import NameSpace, Value
-from curriculum_tracking.models import AgileCard, CourseRegistration
+from curriculum_tracking.models import AgileCard, CourseRegistration, ContentItem
 from curriculum_tracking.card_generation_helpers import (
     generate_and_update_all_cards_for_user,
 )
@@ -73,6 +72,20 @@ def create_config_value(
     )
 
 
+def setup_peer_reviewers(users):
+    for user in users:
+        peers = [u for u in users if u != user]
+
+        cards = AgileCard.objects.filter(assignees__in=[user]).filter(
+            content_item__content_type=ContentItem.PROJECT
+        )
+
+        for card in cards:
+            card.reviewers.set(peers)
+            card._create_project_progress_if_not_exists()
+            card.recruit_project.reviewer_users.set(peers)
+
+
 def create_team_of_learners(team_name, curriculum):
     team, _ = Team.objects.get_or_create(name=team_name)
     learners = [
@@ -88,7 +101,7 @@ def create_team_of_learners(team_name, curriculum):
         team.user_set.add(user)
         print(f"\ncreated learner user: {user.email}\n")
 
-        [RecruitProjectInReviewFactory(reviewer_user=user) for i in range(5)]
+    setup_peer_reviewers(learners)
 
     for permission, _ in Team._meta.permissions:
         user = create_user(
