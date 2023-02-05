@@ -6,7 +6,6 @@ import { getAgeString } from "../../../widgets/utils";
 import MoreIcon from "@material-ui/icons/More";
 import { routes } from "../../../../routes";
 import CardButton from "../../../widgets/CardButton";
-import Paper from "@material-ui/core/Paper";
 import Modal from "../../../widgets/Modal";
 
 export default function Presentation({
@@ -26,7 +25,7 @@ export default function Presentation({
         pay close attention and do a good job. We review each other's work in
         order to maximize learning.
       </Typography>
-      <Typography>Please review the follwing cards:</Typography>
+      <Typography>Please review the following cards:</Typography>
 
       {cardsNeedingCompetenceReview.map((card) => (
         <Card variant="outlined">

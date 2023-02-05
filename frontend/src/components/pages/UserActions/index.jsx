@@ -17,7 +17,7 @@ function UserActionsUnconnected({
   FETCH_ACTIVITY_LOG_ENTRIES,
 }) {
   let urlParams = useParams() || {};
-  const userId = urlParams.userId;
+  const userId = parseInt(urlParams.userId);
   userBurndownStats = userBurndownStats || {};
   const currentUserBurndownStats = Object.values(userBurndownStats).filter(
     (snapshot) => snapshot.user === userId
