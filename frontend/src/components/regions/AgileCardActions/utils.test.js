@@ -1,4 +1,4 @@
-import { showButtons } from "../../../../../utils/cardButtons";
+import { showButtons } from "./utils";
 
 import {
   READY,
@@ -7,7 +7,7 @@ import {
   REVIEW_FEEDBACK,
   IN_REVIEW,
   COMPLETE,
-} from "../../../../../constants";
+} from "../../../constants";
 
 test("showButtons shows DOESNT show start project on topics", () => {
   const authUser = { permissions: { teams: {} }, userId: 3 };

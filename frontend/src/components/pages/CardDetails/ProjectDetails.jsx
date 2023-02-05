@@ -6,8 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import RepositoryDetails from "./RepositoryDetails";
-import CardButton from "../../widgets/CardButton";
-import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import Reviews from "./Reviews";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,8 +86,6 @@ export default function Presentation({
   showUpdateProjectLinkForm,
   linkSubmission,
   formErrors,
-  // showAddReviewButton,
-  handleClickAddReview,
   reviews,
 }) {
   const classes = useStyles();
@@ -117,17 +113,6 @@ export default function Presentation({
       )}
 
       <Reviews reviewIds={project.projectReviews} reviews={reviews} />
-
-      <CardButton
-        label="Add Review"
-        startIcon={<RateReviewRoundedIcon />}
-        onClick={handleClickAddReview}
-      />
-
-      {/* {showAddReviewButton && (  // TODO FIX
-
-        />
-      )} */}
     </React.Fragment>
   );
 }

@@ -9,7 +9,7 @@ import {
   MANAGE_CARDS,
   REVIEW_CARDS,
   TRUSTED_REVIEWER,
-} from "../constants";
+} from "../../../constants";
 
 export function getTeamPermissions({ authUser, viewedUser }) {
   let results = {};

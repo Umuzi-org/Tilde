@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
-import { addCardReviewOperations } from "../../regions/AddCardReviewModal/redux";
 import useMaterialUiFormState from "../../../utils/useMaterialUiFormState";
 
 import { REVIEW_FEEDBACK, IN_PROGRESS } from "../../../constants";
@@ -18,7 +17,6 @@ function CardDetailsUnconnected({
   authUser,
   // viewedUser,
 
-  openReviewFormModal,
   updateProjectLink,
   fetchProject,
   fetchProjectReviews,
@@ -84,10 +82,6 @@ function CardDetailsUnconnected({
     updateProjectLink({ linkSubmission, cardId: project.agileCard });
   };
 
-  const handleClickAddReview = () => {
-    openReviewFormModal({ cardId: project.agileCard });
-  };
-
   const isAssignee =
     ((project || {}).recruitUsers || []).indexOf(authUser.userId) !== -1;
 
@@ -133,8 +127,6 @@ function CardDetailsUnconnected({
     topicReviews: currentTopicReviews,
     projectReviews: currentProjectReviews,
 
-    handleClickAddReview,
-    // showAddReviewButton,
     showUpdateProjectLinkForm,
     handleClickUpdateProjectLink,
 
@@ -206,10 +198,6 @@ const mapDispatchToProps = (dispatch) => {
           },
         })
       );
-    },
-
-    openReviewFormModal: ({ cardId }) => {
-      dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
     },
 
     updateProjectLink: ({ cardId, linkSubmission }) => {

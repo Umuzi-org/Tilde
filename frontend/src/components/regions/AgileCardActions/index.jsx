@@ -1,14 +1,15 @@
 import React from "react";
 import Presentation from "./Presentation";
-import { showButtons } from "../../../../../utils/cardButtons";
+import { showButtons } from "./utils";
 import { connect } from "react-redux";
 import { getLatestMatchingCall } from "@prelude/redux-api-toolbox/src/apiEntities/selectors";
-import { addCardReviewOperations } from "../../../../regions/AddCardReviewModal/redux";
-import { apiReduxApps } from "../../../../../apiAccess/apiApps";
+import { addCardReviewOperations } from "../AddCardReviewModal/redux";
+
+import { apiReduxApps } from "../../../apiAccess/apiApps";
 
 function AgileCardActionsUnconnected({
   card,
-  authUser,
+  variant,
   viewedUser,
 
   // mapDispatchToProps
@@ -23,6 +24,7 @@ function AgileCardActionsUnconnected({
   openReviewFormModal,
 
   // mapStateToProps
+  authUser,
   CARD_START_PROJECT,
   CARD_REQUEST_REVIEW,
   CARD_CANCEL_REVIEW_REQUEST,
@@ -36,6 +38,7 @@ function AgileCardActionsUnconnected({
   forceUser,
 }) {
   const cardId = card.id;
+  variant = variant || "card";
 
   const handleClickOpenWorkshopAttendanceForm = () => {
     // openWorkshopAttendanceModal({ cardId });
@@ -110,6 +113,7 @@ function AgileCardActionsUnconnected({
 
   const props = {
     card,
+    variant,
     authUser,
     ...showButtons({
       card,

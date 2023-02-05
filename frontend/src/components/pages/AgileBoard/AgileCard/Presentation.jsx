@@ -14,11 +14,12 @@ import TagChips from "../../../widgets/TagChips";
 import FlavourChips from "../../../widgets/FlavourChips";
 import blue from "@material-ui/core/colors/blue";
 import orange from "@material-ui/core/colors/orange";
-import AgileCardActions from "./AgileCardActions/index.jsx";
+import AgileCardActions from "../../../regions/AgileCardActions";
 import {
   checkIfCardIsInReviewColumn,
   userReviewedSinceLastReviewRequest,
 } from "./utils";
+import CardActions from "@material-ui/core/CardActions";
 
 const useStyles = makeStyles((theme) => {
   const card = {
@@ -87,7 +88,6 @@ export default function Presentation({
   card,
   viewedUser,
   filterUserId,
-  //storybook
   forceUser,
 }) {
   const classes = useStyles();
@@ -95,9 +95,9 @@ export default function Presentation({
   const agileCardActionProps = {
     card,
     viewedUser,
-    // storybook
     forceUser,
   };
+  console.log(agileCardActionProps);
   // TODO: add an icon for different kinds of content
   return (
     <Card
@@ -175,7 +175,9 @@ export default function Presentation({
           <React.Fragment />
         )}
       </CardContent>
-      <AgileCardActions {...agileCardActionProps} />{" "}
+      <CardActions>
+        <AgileCardActions {...agileCardActionProps} />{" "}
+      </CardActions>
     </Card>
   );
 }

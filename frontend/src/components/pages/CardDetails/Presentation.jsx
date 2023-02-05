@@ -18,6 +18,9 @@ import ProjectDetails from "./ProjectDetails";
 import AssigneesList from "../../widgets/AssigneesList";
 import ReviewersTable from "../../widgets/ReviewersTable";
 import Reviews from "./Reviews";
+import Loading from "../../widgets/Loading";
+
+import AgileCardActions from "../../regions/AgileCardActions";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -159,18 +162,15 @@ export default function Presentation({
 }) {
   const classes = useStyles();
 
-  let contentItemUrl, contentItem;
-  if (card !== undefined) {
-    contentItemUrl = card.contentItemUrl;
-    contentItem = card.contentItem;
-  }
+  if (card === undefined) return <Loading />;
+
+  const { contentItemUrl, contentItem } = card.contentItemUrl;
 
   const workshopAttendance = false;
   if (cardId)
     return (
       <Paper className={classes.paper}>
         {card ? <CardBasicDetails card={card} /> : <div>Loading...</div>}
-
         {project ? (
           <ProjectDetails
             project={project}
@@ -199,7 +199,6 @@ export default function Presentation({
         ) : (
           <React.Fragment />
         )}
-
         <CardButton
           widget={
             <ViewContentButton
@@ -208,6 +207,7 @@ export default function Presentation({
             />
           }
         />
+        <AgileCardActions card={card} variant="details" />{" "}
       </Paper>
     );
   return <React.Fragment />;
