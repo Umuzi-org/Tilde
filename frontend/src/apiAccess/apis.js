@@ -356,7 +356,7 @@ async function setProjectLinkSubmission({ cardId, linkSubmission }) {
 }
 
 async function activityLogDayCountsPage({
-  eventTypeName,
+  eventType,
   actorUser,
   effectedUser,
   page,
@@ -368,7 +368,7 @@ async function activityLogDayCountsPage({
     offset,
   };
 
-  if (eventTypeName) params["event_type__name"] = eventTypeName;
+  if (eventType) params["event_type"] = eventType;
   if (actorUser) params["actor_user"] = actorUser;
   if (effectedUser) params["effected_user"] = effectedUser;
   const getParams = objectToGetQueryString(params);

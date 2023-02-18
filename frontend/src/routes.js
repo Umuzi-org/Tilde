@@ -5,7 +5,7 @@ import UsersAndGroups from "./components/pages/UsersAndGroups";
 import GroupCardSummary from "./components/pages/GroupCardSummary";
 import CardDetails from "./components/pages/CardDetails";
 import Redirector from "./components/regions/Redirector";
-import TeamDashboard from "./components/pages/TeamDashboard";
+// import TeamDashboard from "./components/pages/TeamDashboard";
 import UserDashboard from "./components/pages/UserDashboard";
 import GlobalCodeReviewDashboard from "./components/pages/GlobalCodeReviewDashboard";
 import { TEAM_PERMISSIONS } from "./constants";
@@ -144,16 +144,16 @@ export const routes = {
     show: () => true,
   },
 
-  teamDashboard: {
-    // todo Rename this to teamCardSummary
-    route: {
-      exact,
-      path: "/teams/:teamId/dashboard",
-    },
-    component: TeamDashboard,
-    navBarComponent: TeamNavBar,
-    show: () => true,
-  },
+  // teamDashboard: {
+  //   // todo Rename this to teamCardSummary
+  //   route: {
+  //     exact,
+  //     path: "/teams/:teamId/dashboard",
+  //   },
+  //   component: TeamDashboard,
+  //   navBarComponent: TeamNavBar,
+  //   show: () => true,
+  // },
 
   // profile: {
   //   // TODO: What is in this component? Can we just delete it?

@@ -14,57 +14,72 @@ import {
 import { getActivityLogCountsByDayForUsers } from "../../../apiAccess/selectors/activityLogSelectors";
 
 function DashboardUnconnected({
+  // mapStateToProps
   teams,
+  eventTypes,
   activityLogDayCounts,
+
+  // mapDispatchToProps
   fetchTeam,
   fetchUserActivityLogDayCountsSequence,
+  fetchEventTypes,
 }) {
   let urlParams = useParams() || {};
-
   const teamId = parseInt(urlParams.teamId, 10);
   const team = teams && teams[teamId];
-  activityLogDayCounts = activityLogDayCounts ? Object.values(activityLogDayCounts) : []
 
+  const eventTypeNames = [
+    // we'll graph these
+    ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
+    ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
+  ];
+
+  const eventTypeIds =
+    eventTypes &&
+    eventTypeNames.map(
+      (name) =>
+        Object.values(eventTypes).find((element) => element.name === name).id
+    );
+
+  activityLogDayCounts = activityLogDayCounts
+    ? Object.values(activityLogDayCounts)
+    : [];
+
+  useEffect(() => fetchEventTypes(), [fetchEventTypes]);
   useEffect(() => {
     if (teamId) {
       fetchTeam({ teamId });
     }
+  }, [fetchTeam, teamId]);
 
-    if (team) {
+  useEffect(() => {
+    if (team && eventTypes) {
       const dataSequence = team.members
-        .map((member) => [
-          {
-            eventTypeName: ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
+        .map((member) =>
+          eventTypeIds.map((id) => ({
+            eventType: id,
             actorUser: member.userId,
             page: 1,
-          },
-          {
-            eventTypeName: ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
-            actorUser: member.userId,
-            page: 1,
-          },
-        ])
+          }))
+        )
         .flat();
-
       fetchUserActivityLogDayCountsSequence({ dataSequence });
     }
-  }, [teamId, fetchTeam, team, fetchUserActivityLogDayCountsSequence]);
+  }, [team, fetchUserActivityLogDayCountsSequence, eventTypes, eventTypeIds]);
 
   if (teams === undefined) return <Loading />;
-
-  const eventTypes = [
-    ACTIVITY_LOG_EVENT_TYPE_COMPETENCE_REVIEW_DONE,
-    ACTIVITY_LOG_EVENT_TYPE_PR_REVIEWED,
-  ];
+  if (eventTypes === undefined) return <Loading />;
 
   const props = {
     team,
     activityLogDayCounts: getActivityLogCountsByDayForUsers({
       activityLogDayCounts,
-      eventTypes,
+      eventTypes: eventTypeIds,
       userIds: team ? team.members.map((member) => member.userId) : [],
     }),
   };
+
+  console.log({ activityLogDayCounts: props.activityLogDayCounts });
 
   return <Presentation {...props} />;
 }
@@ -72,7 +87,7 @@ function DashboardUnconnected({
 function mapStateToProps(state) {
   return {
     teams: state.apiEntities.teams,
-    authUser: state.App.authUser,
+    eventTypes: state.apiEntities.eventTypes,
     activityLogDayCounts: state.apiEntities.activityLogDayCounts,
   };
 }
@@ -94,6 +109,14 @@ function mapDispatchToProps(dispatch) {
             dataSequence,
           }
         )
+      );
+    },
+
+    fetchEventTypes: function () {
+      dispatch(
+        apiReduxApps.FETCH_EVENT_TYPES.operations.maybeStart({
+          data: { page: 1 },
+        })
       );
     },
   };

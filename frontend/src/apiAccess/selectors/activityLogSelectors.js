@@ -3,6 +3,11 @@ export const getActivityLogCountsByDayForUsers = ({
   activityLogDayCounts,
   eventTypes,
 }) => {
+  // console.log({
+  //   userIds,
+  //   activityLogDayCounts,
+  //   eventTypes,
+  // });
   let result = {};
 
   userIds.forEach(
@@ -30,10 +35,10 @@ export const getActivityLogCountsByDayForSingleUser = ({
 
   const userLogs = activityLogDayCounts.filter(
     (element) =>
-      element.id.match(`actor_user=${userId}$`) ||
-      element.id.match(`actor_user=${userId}&`) ||
-      element.id.match(`effected_user=${userId}$`) ||
-      element.id.match(`effected_user=${userId}&`)
+      element.id.match(`filter_by_actor_user=${userId}$`) ||
+      element.id.match(`filter_by_actor_user=${userId}&`) ||
+      element.id.match(`filter_by_effected_user=${userId}$`) ||
+      element.id.match(`filter_by_effected_user=${userId}&`)
   );
 
   const resultByDate = {};
@@ -48,8 +53,8 @@ export const getActivityLogCountsByDayForSingleUser = ({
 
     const userLogsFilteredByType = userLogs.filter(
       (element) =>
-        element.id.match(`event_type__name=${eventType}&`) ||
-        element.id.match(`event_type__name=${eventType}$`)
+        element.id.match(`event_type=${eventType}&`) ||
+        element.id.match(`event_type=${eventType}$`)
     );
 
     userLogsFilteredByType.forEach((entry) => {

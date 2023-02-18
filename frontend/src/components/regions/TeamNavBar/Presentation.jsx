@@ -11,10 +11,10 @@ export default function Presentation({ team, selectedTab, teamId }) {
   );
 
   const tabs = [
-    {
-      to: routes.teamDashboard.route.path.replace(":teamId", teamId),
-      label: "Dashboard",
-    },
+    // {
+    //   to: routes.teamDashboard.route.path.replace(":teamId", teamId),
+    //   label: "Dashboard",
+    // },
     {
       to: routes.groupCardSummary.route.path.replace(":teamId", teamId),
       label: "Card Summary",

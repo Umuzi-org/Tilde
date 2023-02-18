@@ -170,7 +170,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchEventTypes: () => {
       dispatch(
-        apiReduxApps.FETCH_EVENT_TYPES.operations.start({
+        apiReduxApps.FETCH_EVENT_TYPES.operations.maybeStart({
           data: { page: 1 },
         })
       );
