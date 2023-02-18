@@ -78,11 +78,6 @@ spec:
               value: umuzi-prod:europe-west2:prod
             - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
               value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
-            - name: PROD_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: miscbackend
-                  key: PROD_SECRET_KEY
             - name: RABBITMQ_USER
               value: rabbit
             - name: RABBITMQ_HOST
