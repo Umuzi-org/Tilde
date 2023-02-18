@@ -23,6 +23,7 @@ export const getActivityLogCountsByDayForSingleUser = ({
   eventTypes,
 }) => {
   const zeroes = {};
+
   eventTypes.forEach((element) => {
     zeroes[element] = 0;
   });
@@ -38,12 +39,18 @@ export const getActivityLogCountsByDayForSingleUser = ({
   const resultByDate = {};
 
   eventTypes.forEach((eventType) => {
-    const userLogsFilteredByType = userLogs.map((entryLog) => {
-      if (!entryLog.id.match(`event_type__name==${eventType}`)) {
-        return entryLog;
-      }
-      return "";
-    });
+    // const userLogsFilteredByType = userLogs.map((entryLog) => {
+    //   if (!entryLog.id.match(`event_type__name==${eventType}`)) {
+    //     return entryLog;
+    //   }
+    //   return "";
+    // });
+
+    const userLogsFilteredByType = userLogs.filter(
+      (element) =>
+        element.id.match(`event_type__name=${eventType}&`) ||
+        element.id.match(`event_type__name=${eventType}$`)
+    );
 
     userLogsFilteredByType.forEach((entry) => {
       if (resultByDate[entry.date] === undefined) {
