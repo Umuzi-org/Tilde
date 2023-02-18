@@ -52,7 +52,7 @@ DEBUG = True
 
 # CORS
 
-# see here for opitons: https://pypi.org/project/django-cors-headers/
+# see here for options: https://pypi.org/project/django-cors-headers/
 
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_URLS_REGEX = r"^/api/.*$"  # we should only allow cors on certain url patterns. Feel free to change this if you have APIs elsewhere
@@ -65,7 +65,7 @@ except ValueError:
 if PROD_MODE:
     SECRET_KEY = os.environ["PROD_SECRET_KEY"]
     assert len(SECRET_KEY) >= 50
-    DEBUG = False
+    DEBUG = True
     # ALLOWED_HOSTS = [
     #     "tilde-dot-umuzi-prod.nw.r.appspot.com",  # prod
     #     "tilde.umuzi.org",
