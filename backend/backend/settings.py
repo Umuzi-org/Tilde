@@ -65,7 +65,6 @@ except ValueError:
 if PROD_MODE:
     SECRET_KEY = os.environ["PROD_SECRET_KEY"]
     assert len(SECRET_KEY) >= 50
-    DEBUG = True
     # ALLOWED_HOSTS = [
     #     "tilde-dot-umuzi-prod.nw.r.appspot.com",  # prod
     #     "tilde.umuzi.org",
