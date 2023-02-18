@@ -46,7 +46,6 @@ function AppUnconnected({ authUser, whoAmIStart }) {
   if (token === null) {
     if (!currentlyAtAnonymousRoute) {
       // this route requires login
-      // console.log(routes.login.route.path);
       window.location = routes.login.route.path;
       return <React.Fragment />;
     }

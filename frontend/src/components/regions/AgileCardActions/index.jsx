@@ -7,8 +7,6 @@ import { addCardReviewOperations } from "../AddCardReviewModal/redux";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { MANAGE_CARDS } from "../../../constants";
-import { useApiCallbacks } from "../../../hooks";
-// import { useApiCallbacks } from "../../../hooks";
 
 function AgileCardActionsUnconnected({
   card,
@@ -53,21 +51,12 @@ function AgileCardActionsUnconnected({
   const permissions = getTeamPermissions({ authUser, viewedUser });
   const canManageCards = permissions[MANAGE_CARDS];
 
-  // cardsNeedingCompetenceReview = Object.values(
-  //   cardsNeedingCompetenceReview || {}
-  // ).filter((o) => o.reviewers.includes(viewedUser.id));
-
   const defaultLatestCall = { loading: false };
 
   const latestGetOutstandingCompetenceReviewsCall = getLatestMatchingCall({
     callLog: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
     requestData: { user: viewedUser.id },
   });
-
-  // useApiCallbacks({
-  //   lastCallEntry: latestGetOutstandingCompetenceReviewsCall,
-  //   successResponseCallback: takeActionOrOpenModal,
-  // });
 
   useEffect(() => {
     if (!latestGetOutstandingCompetenceReviewsCall) return;
@@ -76,11 +65,6 @@ function AgileCardActionsUnconnected({
 
     const { cardId, action } = attemptedCardAction;
     setAttemptedCardAction(null);
-
-    console.log({
-      latestGetOutstandingCompetenceReviewsCall,
-      attemptedCardAction,
-    });
 
     setCardsNeedingCompetenceReview(
       latestGetOutstandingCompetenceReviewsCall.responseData

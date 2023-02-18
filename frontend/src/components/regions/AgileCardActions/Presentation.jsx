@@ -8,7 +8,6 @@ import RateReviewRoundedIcon from "@material-ui/icons/RateReviewRounded";
 import CardButton from "../../widgets/CardButton";
 import ViewContentButton from "../../widgets/ViewContentButton";
 import { routes } from "../../../routes";
-import Loading from "../../widgets/Loading";
 
 import OutstandingReviewsModal from "./OutstandingReviewsModal";
 
@@ -52,13 +51,7 @@ export default ({
   loadingStopTopic,
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
-  // loadingGetOutstandingCompetenceReviews,
 }) => {
-  // if (loadingGetOutstandingCompetenceReviews) return <Loading />;
-  // console.log({
-  //   outstandingReviewsModalOpen,
-  //   handleCloseOutstandingReviewsModal,
-  // });
   return (
     <React.Fragment>
       <OutstandingReviewsModal
