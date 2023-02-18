@@ -28,7 +28,7 @@ export default function Presentation({
       <Typography>Please review the following cards:</Typography>
 
       {cardsNeedingCompetenceReview.map((card) => (
-        <Card variant="outlined">
+        <Card variant="outlined" key={card.id}>
           <CardContent>
             <Typography variant="h6">{card.title}</Typography>
             <TagChips tagNames={card.tagNames} />

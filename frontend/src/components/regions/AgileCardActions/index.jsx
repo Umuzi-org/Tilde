@@ -7,6 +7,8 @@ import { addCardReviewOperations } from "../AddCardReviewModal/redux";
 
 import { apiReduxApps } from "../../../apiAccess/apiApps";
 import { MANAGE_CARDS } from "../../../constants";
+import { useApiCallbacks } from "../../../hooks";
+// import { useApiCallbacks } from "../../../hooks";
 
 function AgileCardActionsUnconnected({
   card,
@@ -21,7 +23,7 @@ function AgileCardActionsUnconnected({
   stopTopic,
   finishTopic,
   openReviewFormModal,
-  fetchcardsNeedingCompetenceReview,
+  fetchCardsNeedingCompetenceReview,
 
   // mapStateToProps
   authUser,
@@ -31,7 +33,7 @@ function AgileCardActionsUnconnected({
   CARD_START_TOPIC,
   CARD_STOP_TOPIC,
   CARD_FINISH_TOPIC,
-  cardsNeedingCompetenceReview,
+  // cardsNeedingCompetenceReview,
   FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
 
   //storybook
@@ -42,17 +44,69 @@ function AgileCardActionsUnconnected({
     setOutstandingReviewsModalOpen,
   ] = useState(false);
 
+  const [attemptedCardAction, setAttemptedCardAction] = useState(null);
+  const [
+    cardsNeedingCompetenceReview,
+    setCardsNeedingCompetenceReview,
+  ] = useState([]);
+
   const permissions = getTeamPermissions({ authUser, viewedUser });
   const canManageCards = permissions[MANAGE_CARDS];
 
-  cardsNeedingCompetenceReview = Object.values(
-    cardsNeedingCompetenceReview || {}
-  ).filter((o) => o.reviewers.includes(viewedUser.id));
+  // cardsNeedingCompetenceReview = Object.values(
+  //   cardsNeedingCompetenceReview || {}
+  // ).filter((o) => o.reviewers.includes(viewedUser.id));
 
-  const noReviewsOwed = cardsNeedingCompetenceReview.length === 0;
-  useEffect(() => fetchcardsNeedingCompetenceReview({ user: viewedUser.id }), [
-    fetchcardsNeedingCompetenceReview,
-    viewedUser,
+  const defaultLatestCall = { loading: false };
+
+  const latestGetOutstandingCompetenceReviewsCall = getLatestMatchingCall({
+    callLog: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
+    requestData: { user: viewedUser.id },
+  });
+
+  // useApiCallbacks({
+  //   lastCallEntry: latestGetOutstandingCompetenceReviewsCall,
+  //   successResponseCallback: takeActionOrOpenModal,
+  // });
+
+  useEffect(() => {
+    if (!latestGetOutstandingCompetenceReviewsCall) return;
+    if (attemptedCardAction === null) return;
+    if (latestGetOutstandingCompetenceReviewsCall.loading) return;
+
+    const { cardId, action } = attemptedCardAction;
+    setAttemptedCardAction(null);
+
+    console.log({
+      latestGetOutstandingCompetenceReviewsCall,
+      attemptedCardAction,
+    });
+
+    setCardsNeedingCompetenceReview(
+      latestGetOutstandingCompetenceReviewsCall.responseData
+    );
+
+    if (latestGetOutstandingCompetenceReviewsCall.responseData.length) {
+      openOutstandingReviewsModal();
+      return;
+    }
+
+    ({
+      startTopic,
+      startProject,
+      requestReview,
+      finishTopic,
+    }[action]({ cardId }));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    latestGetOutstandingCompetenceReviewsCall,
+    // attemptedCardAction,
+    // cardsNeedingCompetenceReview,
+    // finishTopic,
+    // requestReview,
+    // startProject,
+    // startTopic,
   ]);
 
   const cardId = card.id;
@@ -66,11 +120,17 @@ function AgileCardActionsUnconnected({
     setOutstandingReviewsModalOpen(false);
   }
 
+  function maybeTakeCardAction({ cardId, action }) {
+    console.log("maybeTakeCardAction");
+    setAttemptedCardAction({ cardId, action });
+    fetchCardsNeedingCompetenceReview({ user: viewedUser.id });
+  }
+
   const handleStartTopic = () => {
-    if (canManageCards || noReviewsOwed) {
+    if (canManageCards) {
       startTopic({ cardId });
     } else {
-      openOutstandingReviewsModal();
+      maybeTakeCardAction({ cardId, action: "startTopic" });
     }
   };
 
@@ -79,10 +139,10 @@ function AgileCardActionsUnconnected({
   };
 
   const handleFinishTopic = () => {
-    if (canManageCards || noReviewsOwed) {
+    if (canManageCards) {
       finishTopic({ cardId });
     } else {
-      openOutstandingReviewsModal();
+      maybeTakeCardAction({ cardId, action: "finishTopic" });
     }
   };
 
@@ -91,18 +151,18 @@ function AgileCardActionsUnconnected({
   };
 
   const handleRequestReview = () => {
-    if (canManageCards || noReviewsOwed) {
+    if (canManageCards) {
       requestReview({ cardId });
     } else {
-      openOutstandingReviewsModal();
+      maybeTakeCardAction({ cardId, action: "requestReview" });
     }
   };
 
   const handleStartProject = () => {
-    if (canManageCards || noReviewsOwed) {
+    if (canManageCards) {
       startProject({ cardId });
     } else {
-      openOutstandingReviewsModal();
+      maybeTakeCardAction({ cardId, action: "startProject" });
     }
   };
 
@@ -110,35 +170,52 @@ function AgileCardActionsUnconnected({
     cancelReviewRequest({ cardId });
   };
 
-  const loadingGetOutstandingCompetenceReviews = (getLatestMatchingCall({
-    callLog: FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER,
-    requestData: { user: viewedUser.id },
-  }) || { loading: false })["loading"];
+  const latestStartProjectCall =
+    getLatestMatchingCall({
+      callLog: CARD_START_PROJECT,
+      requestData: { cardId },
+    }) ||
+    latestGetOutstandingCompetenceReviewsCall ||
+    defaultLatestCall;
 
-  const loadingStartProject = (getLatestMatchingCall({
-    callLog: CARD_START_PROJECT,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
-  const loadingStartTopic = (getLatestMatchingCall({
-    callLog: CARD_START_TOPIC,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
-  const loadingRequestReview = (getLatestMatchingCall({
-    callLog: CARD_REQUEST_REVIEW,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
+  const latestStartTopicCall =
+    getLatestMatchingCall({
+      callLog: CARD_START_TOPIC,
+      requestData: { cardId },
+    }) ||
+    latestGetOutstandingCompetenceReviewsCall ||
+    defaultLatestCall;
+
+  const latestRequestReviewCall =
+    getLatestMatchingCall({
+      callLog: CARD_REQUEST_REVIEW,
+      requestData: { cardId },
+    }) ||
+    latestGetOutstandingCompetenceReviewsCall ||
+    defaultLatestCall;
+
+  const latestFinishTopicCall =
+    getLatestMatchingCall({
+      callLog: CARD_FINISH_TOPIC,
+      requestData: { cardId },
+    }) ||
+    latestGetOutstandingCompetenceReviewsCall ||
+    defaultLatestCall;
+
+  // const loadingGetOutstandingCompetenceReviews = latestGetOutstandingCompetenceReviewsCall["loading"];
+
+  const loadingStartProject = latestStartProjectCall["loading"];
+  const loadingStartTopic = latestStartTopicCall["loading"];
+  const loadingRequestReview = latestRequestReviewCall["loading"];
   const loadingCancelReviewRequest = (getLatestMatchingCall({
     callLog: CARD_CANCEL_REVIEW_REQUEST,
     requestData: { cardId },
-  }) || { loading: false })["loading"];
+  }) || defaultLatestCall)["loading"];
   const loadingStopTopic = (getLatestMatchingCall({
     callLog: CARD_STOP_TOPIC,
     requestData: { cardId },
-  }) || { loading: false })["loading"];
-  const loadingFinishTopic = (getLatestMatchingCall({
-    callLog: CARD_FINISH_TOPIC,
-    requestData: { cardId },
-  }) || { loading: false })["loading"];
+  }) || defaultLatestCall)["loading"];
+  const loadingFinishTopic = latestFinishTopicCall["loading"];
 
   authUser = forceUser || authUser;
 
@@ -163,7 +240,7 @@ function AgileCardActionsUnconnected({
     handleStopTopic,
     handleFinishTopic,
 
-    loadingGetOutstandingCompetenceReviews,
+    // loadingGetOutstandingCompetenceReviews,
     loadingStartProject,
     loadingStartTopic,
     loadingRequestReview,
@@ -222,9 +299,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addCardReviewOperations.openCardReviewForm({ cardId }));
     },
 
-    fetchcardsNeedingCompetenceReview: ({ user }) => {
+    fetchCardsNeedingCompetenceReview: ({ user }) => {
       dispatch(
-        apiReduxApps.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER.operations.maybeStart(
+        apiReduxApps.FETCH_COMPETENCE_REVIEWS_OUTSTANDING_FOR_USER.operations.start(
           { data: { user } }
         )
       );

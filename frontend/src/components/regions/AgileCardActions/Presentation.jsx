@@ -52,13 +52,13 @@ export default ({
   loadingStopTopic,
   loadingFinishTopic,
   loadingRemoveWorkshopAttendance,
-  loadingGetOutstandingCompetenceReviews,
+  // loadingGetOutstandingCompetenceReviews,
 }) => {
-  if (loadingGetOutstandingCompetenceReviews) return <Loading />;
-  console.log({
-    outstandingReviewsModalOpen,
-    handleCloseOutstandingReviewsModal,
-  });
+  // if (loadingGetOutstandingCompetenceReviews) return <Loading />;
+  // console.log({
+  //   outstandingReviewsModalOpen,
+  //   handleCloseOutstandingReviewsModal,
+  // });
   return (
     <React.Fragment>
       <OutstandingReviewsModal
