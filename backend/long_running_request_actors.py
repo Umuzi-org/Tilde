@@ -2,6 +2,14 @@
 These are dramatiq actors
 
 See https://dramatiq.io/guide.html
+
+
+# Retries
+
+https://dramatiq.io/guide.html#message-retries
+
+If retrying a task is especially expensive or weird, then make sure you configure retry behavior. Otherwise dramatiq might keep retrying things for as long as a month!
+
 """
 
 import dramatiq
@@ -74,7 +82,7 @@ def auto_assign_reviewers():
     work()
 
 
-@dramatiq.actor()
+@dramatiq.actor(max_retries = 3)
 def delete_and_recreate_user_cards(user_id):
     from curriculum_tracking.card_generation_helpers import (
         generate_and_update_all_cards_for_user,
