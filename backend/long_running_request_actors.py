@@ -9,7 +9,6 @@ See https://dramatiq.io/guide.html
 https://dramatiq.io/guide.html#message-retries
 
 If retrying a task is especially expensive or weird, then make sure you configure retry behavior. Otherwise dramatiq might keep retrying things for as long as a month!
-
 """
 
 import dramatiq
