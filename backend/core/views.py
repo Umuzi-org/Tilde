@@ -103,8 +103,8 @@ class UserViewSet(viewsets.ModelViewSet):
             | core_permissions.HasObjectPermission(
                 permissions=models.Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_user,
-            )
-        )
+            ) | IsAuthenticated # TODO: remove this. it's a dodgy fix
+        ) 
     ]
 
     queryset = models.User.objects.all().order_by("last_name")
