@@ -1121,3 +1121,4 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
 
+

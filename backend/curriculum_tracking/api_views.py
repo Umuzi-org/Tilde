@@ -1266,10 +1266,11 @@ class TeamViewSet(viewsets.ModelViewSet):
         methods=["GET"],
         serializer_class=TeamStatsSerializer,
         permission_classes=[
-            IsAdminUser
-            | core_permissions.HasObjectPermission(
-                permissions=models.Team.PERMISSION_VIEW,
-            )
+            drf_permissions.IsAuthenticated
+            # | core_permissions.HasObjectPermission(
+            #     permissions=models.Team.PERMISSION_VIEW,
+            # )
+        
         ],
     )
     def summary_stats(self, request, pk=None):
@@ -1282,24 +1283,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data)
 
-        # serializer = self.get_serializer(data=request.data)
-        # if serializer.is_valid():
-        #     team = self.get_object()
-        #     return Response(TeamStatsSerializer(team).data)
-        # else:
-        #     return Response(serializer.errors, status="BAD_REQUEST")
 
-    # @action(
-    #     detail=True,
-    #     methods=["get"],
-    #     permission_classes=[
-    #         core_permissions.HasObjectPermission(
-    #             models.Team.PERMISSION_ASSIGN_REVIEWERS
-    #         )
-    #     ],
-    # )
-    # def shuffle_reviewers(self, request, pk=None):
-    #     return Response("TODO")
 
     @action(
         detail=True,

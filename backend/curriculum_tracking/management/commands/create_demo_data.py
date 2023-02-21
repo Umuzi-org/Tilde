@@ -6,7 +6,7 @@ from curriculum_tracking.models import AgileCard, CourseRegistration, ContentIte
 from curriculum_tracking.card_generation_helpers import (
     generate_and_update_all_cards_for_user,
 )
-from core.models import Team
+from core.models import Team, PERMISSION_VIEW_ALL
 from guardian.shortcuts import assign_perm
 
 
@@ -112,7 +112,16 @@ def create_team_of_learners(team_name, curriculum):
 
         assign_perm(permission, user, team)
 
-        print(f"\ncreated permissioned user: {user.email}\n")
+        print(f"\ncreated permission user: {user.email}\n")
+
+    # create a JTL 
+    jtl_user = create_user(
+        f"jtl_{team_name.lower()}@email.com",
+        make_github_name(),
+        False
+    )
+    assign_perm(PERMISSION_VIEW_ALL, jtl_user, team)
+    print(f"\ncreated JTL user: {user.email}\n")
 
 
 class Command(BaseCommand):

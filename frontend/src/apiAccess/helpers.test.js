@@ -5,7 +5,7 @@ test("_toCamel should format all snake case variables to camel case", () => {
   expect(_toCamel("object_1_Id")).toBe("object1Id");
 });
 
-test("camelCaseToSnake should format all camel case properties of an object to snake case", () => {
+test("fromSnakeToCamel should format all camel case properties of an object to snake case", () => {
   const entryLog = {
     id: 137,
     timestamp: "2022-10-12T08:31:32.819526Z",

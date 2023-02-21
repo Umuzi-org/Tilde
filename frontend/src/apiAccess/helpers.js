@@ -7,6 +7,10 @@ export function getNextPageNumberFromUrl({ url }) {
   return page;
 }
 
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(find, "g"), replace);
+}
+
 export const _toCamel = (s) => {
   let arr = s.split("");
   for (let i = 0; i < arr.length; i++) {
@@ -14,8 +18,8 @@ export const _toCamel = (s) => {
       arr[i + 1] = arr[i + 1].replace(arr[i + 1], arr[i + 1].toUpperCase());
     }
   }
-  arr = arr.join("").replaceAll("_", "");
-  return arr;
+  arr = arr.join("");
+  return replaceAll(arr, "_", "");
 };
 
 const _isArray = function (a) {

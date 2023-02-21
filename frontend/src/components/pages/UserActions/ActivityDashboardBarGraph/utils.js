@@ -16,5 +16,5 @@ export function prepareDataForBarGraph({ eventTypes, activityLogDayCounts }) {
 }
 
 export function replaceUnderscoresWithSpace(str) {
-  return str.toLowerCase().replaceAll("_", " ");
+  return str.toLowerCase().replace(/_/g, " ");
 }

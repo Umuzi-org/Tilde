@@ -5,16 +5,6 @@ from core.models import Team
 from guardian.shortcuts import assign_perm
 from django.contrib.auth.models import Group
 
-
-# class TestUserViewSet(APITestCase, APITestCaseMixin):
-#     LIST_URL_NAME = "user-list"
-#     SUPPRESS_TEST_POST_TO_CREATE = True
-
-#     def verbose_instance_factory(self):
-#         user = factories.UserFactory()
-#         return user
-
-
 class TestUserStatsPermissions(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "user-list"
     SUPPRESS_TEST_GET_LIST = True

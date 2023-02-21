@@ -113,38 +113,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     filterset_fields = ["groups"]
 
-    # @action(
-    #     detail=True,
-    #     methods=["GET"],
-    #     permission_classes=[
-    #         IsAdminUser
-    #         | core_permissions.IsMyUser
-    #         | core_permissions.HasObjectPermission(
-    #             permissions=models.Team.PERMISSION_VIEW,
-    #             get_objects=_get_teams_from_user,
-    #         )
-    #     ],
-    # )
-    # def review_performance(self, request, pk=None):
-    #     from curriculum_tracking.models import RecruitProjectReview
-    # from curriculum_tracking.models import *
-    # from django.utils import timezone
-    # from django.db.models import  F
-    # from django.contrib.postgres.aggregates import *
-    #      grouped =
-    #     reviews = (
-    #         RecruitProjectReview.objects.filter(reviewer_user=self.get_object())
-    #         .filter(timestamp__gte=timezone.now() - timezone.timedelta(days=28))
-    #         .annotate(
-    #             flavour_names=StringAgg(
-    #                 "recruit_project__flavours__name",
-    #                 delimiter=",",
-    #                 ordering="recruit_project__flavours__name",
-    #             )
-    #         )
-    #         .values("id","flavour_names", "recruit_project__content_item_id", "validated")
-    # )
-
     @action(
         detail=True,
         methods=["GET"],
