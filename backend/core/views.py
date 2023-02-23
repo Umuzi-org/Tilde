@@ -103,7 +103,7 @@ class UserViewSet(viewsets.ModelViewSet):
             | core_permissions.HasObjectPermission(
                 permissions=models.Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_user,
-            ) | IsAuthenticated # TODO: remove this. it's a dodgy fix
+            ) | IsAuthenticated # TODO: remove this. it's a dodgy fix. A user needs to be able to view users if they can see that user's card. As in, reviewers should see reviewees. 
         ) 
     ]
 
