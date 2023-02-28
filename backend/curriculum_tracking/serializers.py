@@ -788,7 +788,7 @@ class RegisterNewLearnerSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    github_name = serializers.CharField(required=True)
+    github_name = serializers.CharField(required=False)
     stream_name = serializers.CharField(required=True)
     team_name = serializers.CharField(required=True)
 

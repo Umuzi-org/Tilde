@@ -1020,7 +1020,7 @@ class ManagementActionsViewSet(viewsets.ViewSet):
             email = serializer.data["email"]
             first_name = serializer.data["first_name"]
             last_name = serializer.data["last_name"]
-            github_name = serializer.data["github_name"]
+            github_name = serializer.data.get("github_name")
             stream_name = serializer.data["stream_name"]
             team_name = serializer.data["team_name"]
 
