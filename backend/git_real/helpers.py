@@ -87,7 +87,7 @@ def _protection_settings(restrictions_users=None, restrictions_teams=None):
             "dismissal_restrictions": {},
             "dismiss_stale_reviews": True,
             "require_code_owner_reviews": False,
-            "required_approving_review_count": 2,
+            "required_approving_review_count": 1,
         },
         "dismissal_restrictions": {
             "users": restrictions_users,
