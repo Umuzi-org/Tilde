@@ -34,16 +34,14 @@ def has_social_profile(user):
 
 
 def shuffle_project_reviewers(cards, users):
-    # print("shuffle")
     cards = list(cards)
     filtered_users = [o for o in users if has_social_profile(o) and o.active]
+    random.shuffle(filtered_users)
 
-    user_permutations = list(itertools.permutations(filtered_users))
+    user_permutations = itertools.permutations(filtered_users)
 
-    # breakpoint()
-    random.shuffle(user_permutations)
-
-    for permutation in user_permutations:
+    for i,permutation in enumerate(user_permutations):
+        print(f"checking permutation {i}")
         permutation = list(permutation)
         valid = True
         while len(permutation) < len(cards):
@@ -73,6 +71,9 @@ def team_self_review(team_name, content_item, reviewer=None):
     team = get_team(team_name)
     cards = get_team_cards(team, content_item)
     users = team.active_users
+
+    print(f"user count = {len(users)}")
+    
     assign_random_reviewers(cards, users)
 
 
@@ -86,12 +87,10 @@ def team_review_other(team_name, content_item, reviewer):
 
 def assign_random_reviewers(cards, users):
     api = Api(PERSONAL_GITHUB_NAME)
-    shuffled_reviewers = list(
-        shuffle_project_reviewers(cards, [o for o in users if o.active])
-    )
+    shuffled_reviewers = shuffle_project_reviewers(cards, [o for o in users if o.active])
 
     for card, user in shuffled_reviewers:
-        print(user)
+        print(f"adding user to card: {card} {user}")
 
         if card.recruit_project:
             project = card.recruit_project
