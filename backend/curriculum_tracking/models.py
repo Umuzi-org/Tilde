@@ -677,8 +677,6 @@ class RecruitProject(
 
             repo_full_name = f"{ORGANISATION}/{repo_name}"
 
-        
-
             repo = create_org_repo(
                 api=api, repo_full_name=repo_full_name, exists_ok=True, private=True
             )
@@ -1146,7 +1144,7 @@ class AgileCard(
         return self.READY
 
     def get_teams(self, assignees_only=False):
-        """return the teams of the users invoved in this project"""
+        """return the teams of the users involved in this project"""
         user_ids = [user.id for user in self.assignees.all()]
         if not assignees_only:
             user_ids.extend([user.id for user in self.reviewers.all()])
