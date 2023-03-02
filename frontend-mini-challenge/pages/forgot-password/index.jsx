@@ -1,4 +1,4 @@
-import Page from "../../components/Page";
+import Page from "../../components/LoggedOutPage";
 import {
   Container,
   Title,
@@ -7,12 +7,17 @@ import {
   Text,
   Group,
   Box,
-  PasswordInput,
+  LoadingOverlay,
+  Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Link from "next/link";
+import { usePasswordReset } from "../../apiHooks";
+import { InfoIcon } from "../../brand";
 
 export default function ForgotPassword() {
+  const { call, requestData, isLoading } = usePasswordReset();
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -22,27 +27,53 @@ export default function ForgotPassword() {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
     },
   });
+
+  const sentTo = isLoading ? null : requestData && requestData.email;
+
+  function handleSubmit({ email }) {
+    call({ email });
+  }
+
   return (
     <Page>
       <Container>
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <Title>Forgot Password</Title>
-          <form onSubmit={form.onSubmit((values) => console.log(values))}>
-            <TextInput
+
+          {sentTo && (
+            <Alert
+              icon={<InfoIcon size={16} />}
               mt="md"
-              withAsterisk
-              label="Email"
-              placeholder="your@email.com"
-              {...form.getInputProps("email")}
-            />
-            <Group position="center" mt="md">
-              <Link href="/login">
-                <Text mt="md">Back to login</Text>
-              </Link>
-            </Group>
-            <Group position="center" mt="md">
-              <Button type="submit">Reset Password</Button>
-            </Group>
+              title="Password reset message sent "
+              color="blue"
+              variant="outline"
+            >
+              We sent a message to {sentTo}. Please keep an eye on your inbox.
+              And your spam folder just in case.
+            </Alert>
+          )}
+
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <div style={{ position: "relative" }}>
+              <LoadingOverlay visible={isLoading} overlayBlur={1} />
+              <TextInput
+                mt="md"
+                withAsterisk
+                label="Email"
+                placeholder="your@email.com"
+                {...form.getInputProps("email")}
+              />
+              <Group position="center" mt="md">
+                <Link href="/login">
+                  <Text mt="md">Back to login</Text>
+                </Link>
+              </Group>
+              <Group position="center" mt="md">
+                <Button type="submit" disabled={isLoading}>
+                  Reset Password
+                </Button>
+              </Group>
+            </div>
           </form>
         </Box>
       </Container>{" "}

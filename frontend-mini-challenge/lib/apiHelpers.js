@@ -84,7 +84,8 @@ export async function fetchAndClean({ url, method, data, token }) {
     response,
     status: response.status,
     statusText: response.statusText,
-    jsonData: fromSnakeToCamel(responseData),
+    responseData: fromSnakeToCamel(responseData),
+    requestData: data,
   });
 }
 

@@ -1,5 +1,4 @@
 import { steps } from "../../../data";
-// import { statusLooks } from "../../brand";
 import Page from "../../../components/Page";
 import { Container, Title, Text } from "@mantine/core";
 import { useRouter } from "next/router";

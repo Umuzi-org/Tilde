@@ -11,7 +11,7 @@ import {
   LoadingOverlay,
   Alert,
 } from "@mantine/core";
-import { FormErrorIcon } from "../../brand";
+import { ErrorIcon } from "../../brand";
 
 import { useForm } from "@mantine/form";
 import Link from "next/link";
@@ -34,14 +34,14 @@ export default function Login() {
   });
 
   const login = useLogin();
-  const { call, isLoading, status, jsonData } = login;
+  const { call, isLoading, status, responseData } = login;
 
   useEffect(() => {
     if (status === 200) router.push("/");
   }, [router, status]);
 
-  function handleSubmit(values) {
-    call(values);
+  function handleSubmit({ email, password }) {
+    call({ email, password });
   }
 
   return (
@@ -52,13 +52,13 @@ export default function Login() {
 
           {status === 400 && (
             <Alert
-              icon={<FormErrorIcon size={16} />}
+              icon={<ErrorIcon size={16} />}
               mt="md"
               title="Bummer!"
               color="red"
               variant="outline"
             >
-              {jsonData.nonFieldErrors}
+              {responseData.nonFieldErrors}
             </Alert>
           )}
 
@@ -84,17 +84,15 @@ export default function Login() {
                 {...form.getInputProps("password")}
                 //   description="Password must include at least one letter, number and special character"
               />
+              <Group position="center" mt="md">
+                <Link href="/forgot-password">
+                  <Text mt="md">Forgot password?</Text>
+                </Link>
+              </Group>
+              <Group position="center" mt="md">
+                <Button type="submit">Login</Button>
+              </Group>
             </div>
-            <Group position="center" mt="md">
-              <Link href="/forgot-password">
-                <Text mt="md">Forgot password?</Text>
-              </Link>
-            </Group>
-            <Group position="center" mt="md">
-              <Button type="submit" disabled={isLoading}>
-                Login
-              </Button>
-            </Group>
           </form>
         </Box>
       </Container>{" "}

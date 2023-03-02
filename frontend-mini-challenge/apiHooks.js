@@ -8,7 +8,7 @@ import {
 } from "./lib/authTokenStorage";
 import { useState } from "react";
 
-// const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export function useLogin() {
   const [data, setData] = useState({});
@@ -32,7 +32,7 @@ export function useLogin() {
     });
     setData(data);
     setLoading(false);
-    setAuthToken({ value: data.jsonData.key, keep: true });
+    setAuthToken({ value: data.responseData.key, keep: true });
     mutate();
   }
 
@@ -65,6 +65,57 @@ export function useLogout() {
     setLoading(false);
     clearAuthToken();
     mutate();
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}
+
+export function usePasswordReset() {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = urlJoin({
+    base: REST_AUTH_BASE_URL,
+    tail: "password/reset/",
+  });
+
+  async function call({ email }) {
+    setLoading(true);
+    const data = await fetchAndClean({
+      url,
+      method: POST,
+      data: { email },
+    });
+    // await delay(5000);
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}
+
+export function useConfirmPasswordReset() {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = urlJoin({
+    base: REST_AUTH_BASE_URL,
+    tail: "password/reset/confirm/",
+  });
+
+  async function call({ newPassword1, newPassword2, token, uid }) {
+    setLoading(true);
+    const data = await fetchAndClean({
+      url,
+      method: POST,
+      data: { newPassword1, newPassword2, token, uid },
+    });
+    setData(data);
+    setLoading(false);
   }
   return {
     call,

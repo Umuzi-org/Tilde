@@ -1,6 +1,6 @@
 // TODO: make sure it's responsive: https://mantine.dev/core/app-shell/
 
-import { AppShell, Header, Group, Menu, ActionIcon } from "@mantine/core";
+import { AppShell, Header, Group, Menu, ActionIcon, Text } from "@mantine/core";
 import { useWhoAmI, useLogout } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ import { getAuthToken } from "../lib/authTokenStorage";
 
 export default function Page({ children }) {
   const {
-    jsonData: userData,
+    responseData: userData,
     isLoading: isLoadingWhoAmI,
     status: whoAmIStatus,
   } = useWhoAmI();
@@ -44,7 +44,9 @@ export default function Page({ children }) {
         <Header height={60} p="xs">
           {whoAmIStatus === 200 && (
             <Group sx={{ height: "100%" }} px={20} position="right">
-              {userData.firstName || userData.email}
+              <Text>
+                You are logged in as {userData.firstName || userData.email}
+              </Text>
               <Menu shadow="md" width={200}>
                 <Menu.Target>
                   <ActionIcon variant="light">

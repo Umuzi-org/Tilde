@@ -8,6 +8,7 @@ import {
   IoPersonCircleOutline,
   IoSettingsOutline,
   IoLogOutOutline,
+  IoInformationCircleOutline,
 } from "react-icons/io5";
 // https://react-icons.github.io/react-icons/icons?name=io5
 
@@ -26,7 +27,9 @@ export const statusLooks = {
   },
 };
 
-export const FormErrorIcon = IoAlertCircleOutline;
+export const ErrorIcon = IoAlertCircleOutline;
+export const InfoIcon = IoInformationCircleOutline;
+
 export const ProfileIcon = IoPersonCircleOutline;
 export const SettingsIcon = IoSettingsOutline;
 export const LogoutIcon = IoLogOutOutline;
