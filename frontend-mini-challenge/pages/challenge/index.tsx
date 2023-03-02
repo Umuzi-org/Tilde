@@ -8,7 +8,7 @@ import {
   // Group,
   // RingProgress,
 } from "@mantine/core";
-import Page from "../../components/Page";
+import Page from "../../components/LoggedInPage";
 
 // import { statusLooks } from "../../brand";
 import { steps } from "../../data";

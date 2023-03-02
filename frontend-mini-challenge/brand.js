@@ -4,7 +4,12 @@ import {
   IoPlayOutline,
   IoCheckmarkOutline,
   IoLockClosedOutline,
+  IoAlertCircleOutline,
+  IoPersonCircleOutline,
+  IoSettingsOutline,
+  IoLogOutOutline,
 } from "react-icons/io5";
+// https://react-icons.github.io/react-icons/icons?name=io5
 
 export const statusLooks = {
   [STATUS_DONE]: {
@@ -19,6 +24,9 @@ export const statusLooks = {
     Icon: IoLockClosedOutline,
     color: "grey",
   },
-
-  // IoSyncOutline
 };
+
+export const FormErrorIcon = IoAlertCircleOutline;
+export const ProfileIcon = IoPersonCircleOutline;
+export const SettingsIcon = IoSettingsOutline;
+export const LogoutIcon = IoLogOutOutline;
