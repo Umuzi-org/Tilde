@@ -300,19 +300,42 @@ def _manage_prerequisites(meta: Dict, content_item):
 
 
 def _update_tags(meta, content_item):
-    todo_tag, _ = taggit.models.Tag.objects.get_or_create(name=TODO)
-    ready = meta.get("ready", False)
-    if ready:
-        assert ready == True, f"{ready} {type(ready)}"
-        content_item.tags.remove(todo_tag)
-    else:
-        content_item.tags.add(todo_tag)
-    if meta.get(TODO):
-        content_item.tags.add(todo_tag)
+    # todo_tag, _ = taggit.models.Tag.objects.get_or_create(name=TODO)
 
-    for tag_str in meta.get(TAGS, []):
-        tag, _ = taggit.models.Tag.objects.get_or_create(name=tag_str.lower())
+    final_tag_names = [s.lower() for s in meta.get(TAGS, [])]
+    if meta.get("ready", False) or meta.get(TODO):
+        final_tag_names.append(TODO)
+
+    final_tags = [
+        t[0]
+        for t in [
+            taggit.models.Tag.objects.get_or_create(name=name)
+            for name in final_tag_names
+        ]
+    ]
+
+    for tag in final_tags:
         content_item.tags.add(tag)
+    for tag in content_item.tags.all():
+        if tag not in final_tags:
+            content_item.tags.remove(tag)
+
+    assert sorted(content_item.tag_names) == sorted(
+        final_tag_names
+    ), f"Tags don't match: Expected {sorted(content_item.tag_names)} == {sorted(final_tag_names)}"
+    # if ready:
+    #     assert ready == True, f"{ready} {type(ready)}"
+    #     content_item.tags.remove(todo_tag)
+    # else:
+    #     content_item.tags.add(todo_tag)
+    # if meta.get(TODO):
+    #     content_item.tags.add(todo_tag)
+
+    # for tag_str in meta.get(TAGS, []):
+    #     tag, _ = taggit.models.Tag.objects.get_or_create(name=tag_str.lower())
+    #     content_item.tags.add(tag)
+
+    # for tag in list(content_item.tags.all()):
 
 
 def set_learning_outcomes(content_item, outcome_names):
