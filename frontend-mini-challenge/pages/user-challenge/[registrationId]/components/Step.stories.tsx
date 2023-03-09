@@ -39,7 +39,7 @@ Ready.args = {
 };
 
 export const Blocked = Template.bind({});
-Ready.args = {
+Blocked.args = {
   index,
   title,
   blurb,
@@ -47,7 +47,7 @@ Ready.args = {
 };
 
 export const Done = Template.bind({});
-Ready.args = {
+Done.args = {
   index,
   title,
   blurb,
@@ -55,7 +55,7 @@ Ready.args = {
 };
 
 export const Review = Template.bind({});
-Ready.args = {
+Review.args = {
   index,
   title,
   blurb,
@@ -63,7 +63,7 @@ Ready.args = {
 };
 
 export const Error = Template.bind({});
-Ready.args = {
+Error.args = {
   index,
   title,
   blurb,

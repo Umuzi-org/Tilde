@@ -32,7 +32,6 @@ export default function Home() {
           {challengeDetails.steps.map((step, index) => (
             <Step
               key={index}
-              // number={index + 1}
               index={index}
               title={step.title}
               blurb={step.blurb}

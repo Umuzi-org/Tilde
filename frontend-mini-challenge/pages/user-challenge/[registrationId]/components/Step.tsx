@@ -14,6 +14,7 @@ import {
   STATUS_DONE,
   STATUS_READY,
   STATUS_UNDER_REVIEW,
+  STATUS_ERROR,
 } from "../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -22,6 +23,7 @@ export default function Step({ index, title, blurb, status }) {
   const router = useRouter();
 
   const theme = useMantineTheme();
+  console.log({ statusLooks, status });
   const { Icon, color } = statusLooks[status];
 
   const styles = {
@@ -42,6 +44,12 @@ export default function Step({ index, title, blurb, status }) {
       },
     },
     [STATUS_UNDER_REVIEW]: {
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "#eee",
+      },
+    },
+    [STATUS_ERROR]: {
       cursor: "pointer",
       "&:hover": {
         backgroundColor: "#eee",
