@@ -182,6 +182,15 @@ class Helper:
             "link_message": meta.get("link_message"),
         }
 
+        if defaults["link_regex"]:
+            print(defaults["link_regex"])
+            import re
+
+            match = re.match(
+                defaults["link_regex"],
+                "https://sheenarbw.github.io/pres-djangocon-2022-tilde/",
+            )
+
         print(f"saving {defaults['title']}")
 
         if DB_ID in meta and meta[DB_ID]:
@@ -192,7 +201,7 @@ class Helper:
                 content_item.update(**defaults)
                 content_item.save()
             except models.ContentItem.DoesNotExist as e:
-                breakpoint()
+                # breakpoint()
                 content_item, created = models.ContentItem.get_or_create_or_update(
                     pk=meta[DB_ID], defaults=defaults, overrides=defaults
                 )

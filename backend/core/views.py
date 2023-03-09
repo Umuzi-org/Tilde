@@ -84,6 +84,8 @@ class CurriculumViewSet(viewsets.ModelViewSet):
     queryset = models.Curriculum.objects.all().order_by("name")
     serializer_class = serializers.CurriculumSerializer
 
+    permission_classes = [core_permissions.IsReadOnly]
+
 
 def _get_teams_from_user(self, request, view):
     user = view.get_object()
@@ -103,8 +105,9 @@ class UserViewSet(viewsets.ModelViewSet):
             | core_permissions.HasObjectPermission(
                 permissions=models.Team.PERMISSION_VIEW,
                 get_objects=_get_teams_from_user,
-            ) | IsAuthenticated # TODO: remove this. it's a dodgy fix. A user needs to be able to view users if they can see that user's card. As in, reviewers should see reviewees. 
-        ) 
+            )
+            | IsAuthenticated  # TODO: remove this. it's a dodgy fix. A user needs to be able to view users if they can see that user's card. As in, reviewers should see reviewees.
+        )
     ]
 
     queryset = models.User.objects.all().order_by("last_name")

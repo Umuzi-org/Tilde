@@ -7,162 +7,183 @@
     },
     {
       "hard_requirement": true,
-      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
+      "post": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/",
       "pre": "http://syllabus.africacode.net/environment-setup/"
-    },
-    {
-      "hard_requirement": true,
-      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
-      "pre": "http://syllabus.africacode.net/topics/github/intro/"
-    },
-    {
-      "hard_requirement": true,
-      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/",
-      "pre": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/"
     }
   ],
   "content_items": [
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "introduction-to-tilde",
-      "tags": [],
+      "tags": [
+        "todo"
+      ],
       "template_repo": null,
       "title": "Introduction to Tilde",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/tilde/intro-to-tilde/"
     },
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "tilde-tutorial-how-cards-work",
-      "tags": [],
+      "tags": [
+        "todo"
+      ],
       "template_repo": null,
       "title": "Tilde tutorial: How cards work",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/tilde/different-kinds-of-cards/"
     },
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "success-in-bootcamp",
-      "tags": [],
+      "tags": [
+        "todo"
+      ],
       "template_repo": null,
-      "title": "Success in bootcamp",
+      "title": "How to succeed in this course",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/bootcamp/success-in-bootcamp/"
     },
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "contentitem",
-      "tags": [],
+      "tags": [
+        "todo"
+      ],
       "template_repo": null,
-      "title": "SUPER IMPORTANT STUFF: how to not fail",
+      "title": "SUPER IMPORTANT STUFF: How to not fail",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/bootcamp/failure-at-bootcamp/"
     },
     {
+      "blurb": null,
       "content_type": "P",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": "L",
       "slug": "tilde-project-tutorial-how-to-submit-a-link",
-      "tags": [],
+      "tags": [
+        "todo",
+        "close_on_peer_reviews"
+      ],
       "template_repo": null,
       "title": "Tilde project tutorial: How to submit a link",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tilde/link-card-tutorial/"
     },
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Basic introduction to Github - Helloworld",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "data-science-bootcamp-setup",
-      "tags": [],
+      "tags": [
+        "todo"
+      ],
       "template_repo": null,
       "title": "Getting set up to write code on your device",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/environment-setup/"
     },
     {
-      "content_type": "T",
-      "continue_from_repo": null,
-      "flavours": [],
-      "link_regex": null,
-      "project_submission_type": null,
-      "slug": "basic-introduction-to-github",
-      "tags": [
-        "git",
-        "github"
-      ],
-      "template_repo": null,
-      "title": "Basic introduction to Github",
-      "topic_needs_review": false,
-      "url": "http://syllabus.africacode.net/topics/github/intro/"
-    },
-    {
+      "blurb": null,
       "content_type": "P",
       "continue_from_repo": null,
       "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": "R",
-      "slug": "tilde-project-tutorial-how-repo-projects-work",
-      "tags": [],
-      "template_repo": null,
-      "title": "Tilde project tutorial: How Repo projects work",
-      "topic_needs_review": false,
-      "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/"
-    },
-    {
-      "content_type": "P",
-      "continue_from_repo": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
-      "flavours": [],
-      "link_regex": null,
-      "project_submission_type": "C",
       "slug": "contentitem",
-      "tags": [],
+      "tags": [
+        "todo",
+        "close_on_peer_reviews"
+      ],
       "template_repo": null,
-      "title": "Tilde project tutorial: How Continue Repo projects work",
+      "title": "Tilde project tutorial: Simple repository projects",
       "topic_needs_review": false,
-      "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/"
+      "url": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/"
     },
     {
+      "blurb": null,
       "content_type": "T",
       "continue_from_repo": null,
       "flavours": [],
-      "link_regex": null,
-      "project_submission_type": null,
-      "slug": "understanding-the-review-column",
-      "tags": [],
-      "template_repo": null,
-      "title": "Understanding the review column",
-      "topic_needs_review": true,
-      "url": "http://syllabus.africacode.net/topics/tilde/understanding-the-review-column/"
-    },
-    {
-      "content_type": "T",
-      "continue_from_repo": null,
-      "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
       "slug": "honor-code",
       "tags": [
+        "todo",
         "ethics",
         "professionalism"
       ],
@@ -170,53 +191,80 @@
       "title": "Honor Code",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/messaging/honor-code/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Reopening a Pull request",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/reopening-pull-request/"
     }
   ],
   "curriculum": {
+    "blurb": null,
+    "id": 33,
     "name": "Intro to Tilde for tech bootcamps"
   },
   "curriculum_content_requirements": [
     {
       "content_item": "http://syllabus.africacode.net/topics/tilde/different-kinds-of-cards/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 1
     },
     {
       "content_item": "http://syllabus.africacode.net/topics/bootcamp/success-in-bootcamp/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 2
     },
     {
       "content_item": "http://syllabus.africacode.net/topics/bootcamp/failure-at-bootcamp/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 3
     },
     {
       "content_item": "http://syllabus.africacode.net/projects/tilde/link-card-tutorial/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 4
     },
     {
-      "content_item": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/",
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 5
     },
     {
-      "content_item": "http://syllabus.africacode.net/topics/tilde/understanding-the-review-column/",
+      "content_item": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 6
     },
     {
       "content_item": "http://syllabus.africacode.net/topics/messaging/honor-code/",
       "flavours": [],
-      "hard_requirement": false,
+      "hard_requirement": true,
       "order": 7
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/reopening-pull-request/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 8
     }
   ]
 }

@@ -20,7 +20,7 @@ from rest_framework import routers
 from core import views as core_views
 from curriculum_tracking import api_views as curriculum_tracking_api_views
 from activity_log import api_views as activity_log_api_views
-
+from zero_marginal_cost_challenges import api_views as zmc_views
 
 # from rest_framework.schemas import get_schema_view
 
@@ -192,6 +192,12 @@ router.register(
     r"curriculum_content_requirements",
     curriculum_tracking_api_views.CurriculumContentRequirementViewset,
     "curriculumcontentrequirement",
+)
+
+router.register(
+    "challenge_registrations",
+    zmc_views.ChallengeRegistrationViewset,
+    "challengeregistrationviewset",
 )
 
 

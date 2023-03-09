@@ -59,6 +59,10 @@ def create_content_items(data):
             title=content["title"],
             topic_needs_review=content["topic_needs_review"],
             url=content["url"],
+            blurb=content["blurb"],
+            link_name=content["link_name"],
+            link_example=content["link_example"],
+            link_message=content["link_message"],
         )
 
         for tag in content["tags"]:
@@ -79,7 +83,7 @@ def create_content_item_orders(data):
 
 def create_curriculum(data):
     curriculum, created = Curriculum.objects.get_or_create(
-        name=data["name"],
+        name=data["name"], id=data["id"], blurb=data["blurb"]
     )
     return curriculum
 

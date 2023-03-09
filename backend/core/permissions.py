@@ -93,6 +93,17 @@ def IsCurrentUserInSpecificFilter(filter_name):
     return IsCurrentUserInFilter
 
 
+def IsCurrentUserInRequestData(key):
+    class _IsCurrentUserInRequestData(BasePermission):
+        def has_permission(self, request, view):
+            user = request.user
+            if not user.id:
+                return False
+            return request.data[key] == user.id
+
+    return _IsCurrentUserInRequestData
+
+
 class IsReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in ["GET", "OPTIONS"]:

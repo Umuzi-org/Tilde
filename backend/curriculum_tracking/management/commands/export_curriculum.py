@@ -47,6 +47,8 @@ def get_export_dict(curriculum):
     export = {
         "curriculum": {
             "name": curriculum.name,
+            "blurb": curriculum.blurb,
+            "id": curriculum.id,
         },
         "curriculum_content_requirements": [
             {
@@ -70,6 +72,10 @@ def get_export_dict(curriculum):
                 "continue_from_repo": o.continue_from_repo and o.continue_from_repo.url,
                 "template_repo": o.template_repo,
                 "link_regex": o.link_regex,
+                "blurb": o.blurb,
+                "link_name": o.link_name,
+                "link_example": o.link_example,
+                "link_message": o.link_message,
             }
             for o in all_content_items
         ],

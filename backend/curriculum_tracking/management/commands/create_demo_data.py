@@ -8,11 +8,14 @@ from curriculum_tracking.card_generation_helpers import (
 )
 from core.models import Team, PERMISSION_VIEW_ALL
 from guardian.shortcuts import assign_perm
-
+from faker import Faker
 
 from curriculum_tracking.management.commands.import_curriculum import (
     save_curriculum_to_db,
 )  # Note: these kinds of imports are actually bad practice. We need a refactor
+
+
+faker = Faker()
 
 
 def _number_iter():
@@ -31,18 +34,25 @@ def make_github_name():
     return name
 
 
-def create_user(email, github_name, is_staff=False, is_superuser=False):
+import factory
+
+
+def create_user(email, github_name=None, is_staff=False, is_superuser=False):
     user, created = User.objects.get_or_create(
         email=email,
         defaults={
             "is_staff": is_staff,
             "is_superuser": is_superuser,
+            "first_name": faker.first_name(),
+            "last_name": faker.last_name(),
         },
     )
     user.set_password(email)
-    social_profile, created = SocialProfile.objects.get_or_create(
-        user=user, defaults={"github_name": github_name}
-    )
+    if github_name:
+        social_profile, created = SocialProfile.objects.get_or_create(
+            user=user, defaults={"github_name": github_name}
+        )
+
     user.save()
 
     return user
@@ -114,14 +124,19 @@ def create_team_of_learners(team_name, curriculum):
 
         print(f"\ncreated permission user: {user.email}\n")
 
-    # create a JTL 
+    # create a JTL
     jtl_user = create_user(
-        f"jtl_{team_name.lower()}@email.com",
-        make_github_name(),
-        False
+        f"jtl_{team_name.lower()}@email.com", make_github_name(), False
     )
     assign_perm(PERMISSION_VIEW_ALL, jtl_user, team)
     print(f"\ncreated JTL user: {user.email}\n")
+
+
+def create_challenge_users(count=10):
+    for i in range(count):
+        create_user(
+            f"challenger_{i}@email.com",
+        )
 
 
 class Command(BaseCommand):
@@ -143,3 +158,7 @@ class Command(BaseCommand):
 
         create_team_of_learners(team_name="A", curriculum=curriculum)
         create_team_of_learners(team_name="B", curriculum=curriculum)
+
+        challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
+
+        create_challenge_users()

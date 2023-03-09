@@ -102,6 +102,7 @@ class CurriculumSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "blurb",
         ]
 
 
@@ -123,7 +124,6 @@ class WhoAmISerializer(serializers.ModelSerializer):
         fields = [
             "email",
             "token",
-            # "id",
             "user_id",
             "active",
             "first_name",
@@ -202,7 +202,6 @@ class BulkSetDueTimeSerializer(serializers.Serializer):
     flavours = serializers.ListField(child=serializers.IntegerField())
     content_item = serializers.IntegerField()
 
-    
 
 class NoArgs(serializers.Serializer):
     class Meta:
