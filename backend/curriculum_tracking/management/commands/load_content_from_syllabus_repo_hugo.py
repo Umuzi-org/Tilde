@@ -18,6 +18,7 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
+
 # these constants are keys in the hugo page frontmatter
 TITLE = "title"
 READY = "ready"
@@ -111,7 +112,7 @@ class Helper:
             cls.available_content_flavours = yaml.load(f, Loader=Loader)
 
     @classmethod
-    def save_content(cls, file_path):
+    def save_content_item(cls, file_path):
         print(f"processing {file_path}")
 
         content_item_post = frontmatter.load(file_path)
@@ -120,13 +121,8 @@ class Helper:
         assert meta["title"], f"Title missing in frontmatter: {file_path} => {meta}"
 
         content_sub_dir = str(file_path).replace(str(cls.repo_base_dir), "").strip("/")
-        # url = helpers.get_full_url_from_content_link_param(content_sub_dir)
         url = Helper.get_full_url_from_partial(content_sub_dir)
-        # assert requests.get(url).status_code != 404, f"{file_path} {content_type} => {url}"
 
-        # actual_content_type = content_type
-        # if (content_type == models.ContentItem.PROJECT) and meta.get(NO_FORM):
-        #     actual_content_type = models.ContentItem.TOPIC
         reverse_content_types = {t[1]: t[0] for t in models.ContentItem.CONTENT_TYPES}
         reverse_submission_types = {
             t[1]: t[0] for t in models.ContentItem.PROJECT_SUBMISSION_TYPES
@@ -148,7 +144,7 @@ class Helper:
                 )
 
                 print(f"continue from existing content item: {continue_from_repo}")
-                continue_from_repo = cls.save_content(  # saving it anyway because there are new fields...
+                continue_from_repo = cls.save_content_item(  # saving it anyway because there are new fields...
                     file_path=cls.repo_base_dir
                     / "content"
                     / meta["from_repo"]
@@ -157,7 +153,7 @@ class Helper:
 
             except models.ContentItem.DoesNotExist:
 
-                continue_from_repo = cls.save_content(
+                continue_from_repo = cls.save_content_item(
                     file_path=cls.repo_base_dir
                     / "content"
                     / meta["from_repo"]
@@ -174,12 +170,16 @@ class Helper:
             "content_type": actual_content_type,
             "title": meta["title"],
             "url": url,
-            # "flavours": meta.get("flavours"),
+            "blurb": meta.get("blurb"),
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,
             "continue_from_repo": continue_from_repo,
             "template_repo": meta.get("template_repo"),
             "protect_main_branch": meta.get(PROTECT_MAIN_BRANCH, True),
+            "link_regex": meta.get("link_regex"),
+            "link_example": meta.get("link_example"),
+            "link_name": meta.get("link_name"),
+            "link_message": meta.get("link_message"),
         }
 
         print(f"saving {defaults['title']}")
@@ -226,7 +226,7 @@ class Helper:
             content_item.content_type
         ), f"{content_item.id} {content_item} has no content_type"
 
-        _update_tags(meta, content_item)
+        _update_tags_for_content_item(meta, content_item)
         content_item.save()
 
         nice_content_type = dict(models.ContentItem.CONTENT_TYPES)[actual_content_type]
@@ -299,12 +299,16 @@ def _manage_prerequisites(meta: Dict, content_item):
             o.delete()
 
 
-def _update_tags(meta, content_item):
-    # todo_tag, _ = taggit.models.Tag.objects.get_or_create(name=TODO)
+def _update_tags_for_content_item(meta, content_item):
 
     final_tag_names = [s.lower() for s in meta.get(TAGS, [])]
     if meta.get("ready", False) or meta.get(TODO):
         final_tag_names.append(TODO)
+
+    _set_tags(final_tag_names=final_tag_names, taggable_instance=content_item)
+
+
+def _set_tags(final_tag_names, taggable_instance):
 
     final_tags = [
         t[0]
@@ -315,27 +319,14 @@ def _update_tags(meta, content_item):
     ]
 
     for tag in final_tags:
-        content_item.tags.add(tag)
-    for tag in content_item.tags.all():
+        taggable_instance.tags.add(tag)
+    for tag in taggable_instance.tags.all():
         if tag not in final_tags:
-            content_item.tags.remove(tag)
+            taggable_instance.tags.remove(tag)
 
-    assert sorted(content_item.tag_names) == sorted(
+    assert sorted(taggable_instance.tag_names) == sorted(
         final_tag_names
-    ), f"Tags don't match: Expected {sorted(content_item.tag_names)} == {sorted(final_tag_names)}"
-    # if ready:
-    #     assert ready == True, f"{ready} {type(ready)}"
-    #     content_item.tags.remove(todo_tag)
-    # else:
-    #     content_item.tags.add(todo_tag)
-    # if meta.get(TODO):
-    #     content_item.tags.add(todo_tag)
-
-    # for tag_str in meta.get(TAGS, []):
-    #     tag, _ = taggit.models.Tag.objects.get_or_create(name=tag_str.lower())
-    #     content_item.tags.add(tag)
-
-    # for tag in list(content_item.tags.all()):
+    ), f"Tags don't match: Expected {sorted(taggable_instance.tag_names)} == {sorted(final_tag_names)}"
 
 
 def set_learning_outcomes(content_item, outcome_names):
@@ -425,7 +416,7 @@ def load_all_content_items_with_known_ids():
             db_id not in seen_ids
         ), f"Same ID on two content items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
         seen_ids[db_id] = file_path
-        Helper.save_content(
+        Helper.save_content_item(
             file_path,
         )
 
@@ -519,7 +510,7 @@ def load_all_content_items_with_unknown_ids():
         if DB_ID in content_item_post:
             continue
 
-        Helper.save_content(
+        Helper.save_content_item(
             file_path=file_path,
         )
 
@@ -538,10 +529,12 @@ def check_content_urls_exist():
             item.tags.remove(four04_tag)
 
 
-def set_up_single_curriculum_from_file(curriculum, file_path):
+def set_up_single_curriculum_from_file(curriculum, file_path, syllabus_frontmatter):
     if not file_path.exists():
         print(f"curriculum not available at {file_path}. SKIPPING")
         return
+
+    _set_tags(syllabus_frontmatter.get("tags", []), taggable_instance=curriculum)
 
     expected_ids = []
     print(f"processing: {file_path}")
@@ -640,9 +633,10 @@ def curriculum_file_paths(curriculums_base_dir):
         yield child
 
 
-def get_creation_args_from_curricum_frontmatter(syllabus_frontmatter):
+def _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter):
     return {
         "name": syllabus_frontmatter["title"],
+        "blurb": syllabus_frontmatter.get("blurb"),
     }
 
 
@@ -661,14 +655,15 @@ def load_all_curriculums_with_known_ids(curriculums_base_dir):
         ), f"Same ID on two content items!!\n\tid={db_id}\n\t{seen_ids[db_id]}\n\t{file_path}"
         seen_ids[db_id] = file_path
 
-        defaults = get_creation_args_from_curricum_frontmatter(syllabus_frontmatter)
+        defaults = _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter)
 
         print("======================")
         print(defaults)
         curriculum, _ = Curriculum.get_or_create_or_update(
             id=db_id, defaults=defaults, overrides=defaults
         )
-        set_up_single_curriculum_from_file(curriculum, file_path)
+
+        set_up_single_curriculum_from_file(curriculum, file_path, syllabus_frontmatter)
 
 
 def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
@@ -677,7 +672,7 @@ def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
         if DB_ID in syllabus_frontmatter:
             # this one already has an id. Skip it
             continue
-        defaults = get_creation_args_from_curricum_frontmatter(syllabus_frontmatter)
+        defaults = _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter)
 
         curriculum = Curriculum.objects.create(
             id=Curriculum.get_next_available_id(), **defaults
@@ -686,7 +681,7 @@ def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
         with open(file_path, "wb") as f:
             frontmatter.dump(syllabus_frontmatter, f)
 
-        set_up_single_curriculum_from_file(curriculum, file_path)
+        set_up_single_curriculum_from_file(curriculum, file_path, syllabus_frontmatter)
 
 
 def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):

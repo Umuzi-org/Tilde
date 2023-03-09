@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import List
 from django.db import models
-from core.models import Curriculum, User, Team
+from core.models import Curriculum, User, Team, TagMixin
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -153,12 +153,6 @@ class ContentItemProxyMixin:
         return self.content_item.protect_main_branch
 
 
-class TagMixin:
-    @property
-    def tag_names(self):
-        return [o.name for o in self.tags.all()]
-
-
 class CourseRegistration(models.Model):
     """associates a user with a curriculum"""
 
@@ -242,6 +236,8 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         max_length=1, choices=CONTENT_TYPES, null=False, blank=False
     )
     title = models.CharField(max_length=150)
+    blurb = models.TextField(null=True, blank=True)
+
     slug = AutoSlugField(populate_from="title", max_length=150)
 
     url = models.URLField(
@@ -278,11 +274,15 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         "ContentItem", null=True, blank=True, on_delete=models.PROTECT
     )
     template_repo = models.URLField(null=True, blank=True)  # should be a github repo
+
     link_regex = models.CharField(max_length=250, null=True, blank=True)
+    link_name = models.CharField(max_length=250, null=True, blank=True)
+    link_example = models.CharField(max_length=250, null=True, blank=True)
+    link_message = models.TextField(null=True, blank=True)
 
     protect_main_branch = models.BooleanField(
         default=True
-    )  # this is used in repo projects. If this is True then standard branch protection ruiles are applied. Otherwise they are not.
+    )  # this is used in repo projects. If this is True then standard branch protection rules are applied. Otherwise they are not.
 
     class Meta:
         unique_together = [["content_type", "title"]]

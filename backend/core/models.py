@@ -5,6 +5,13 @@ from model_mixins import Mixins
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.models import PermissionsMixin
+from taggit.managers import TaggableManager
+
+
+class TagMixin:
+    @property
+    def tag_names(self):
+        return [o.name for o in self.tags.all()]
 
 
 class UserManager(BaseUserManager):
@@ -144,8 +151,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
 
-class Curriculum(models.Model, Mixins):
+class Curriculum(models.Model, Mixins, TagMixin):
     name = models.CharField(max_length=100)  # eg: data engineering
+    blurb = models.TextField(null=True, blank=True)
+    tags = TaggableManager(blank=True)
+
     url = models.URLField(
         max_length=2083,
         blank=True,
