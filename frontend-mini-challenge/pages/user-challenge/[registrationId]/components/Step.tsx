@@ -13,6 +13,7 @@ import {
   STATUS_BLOCKED,
   STATUS_DONE,
   STATUS_READY,
+  STATUS_UNDER_REVIEW,
 } from "../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -20,7 +21,6 @@ import Link from "next/link";
 export default function Step({ index, title, blurb, status }) {
   const router = useRouter();
 
-  console.log(router);
   const theme = useMantineTheme();
   const { Icon, color } = statusLooks[status];
 
@@ -36,6 +36,12 @@ export default function Step({ index, title, blurb, status }) {
     },
     [STATUS_READY]: {
       border: `3px solid ${statusLooks[STATUS_READY].color}`,
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "#eee",
+      },
+    },
+    [STATUS_UNDER_REVIEW]: {
       cursor: "pointer",
       "&:hover": {
         backgroundColor: "#eee",

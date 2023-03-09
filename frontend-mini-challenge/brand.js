@@ -1,4 +1,10 @@
-import { STATUS_BLOCKED, STATUS_DONE, STATUS_READY } from "./constants";
+import {
+  STATUS_BLOCKED,
+  STATUS_DONE,
+  STATUS_READY,
+  STATUS_UNDER_REVIEW,
+  STATUS_ERROR,
+} from "./constants";
 
 import {
   IoPlayOutline,
@@ -9,6 +15,7 @@ import {
   IoSettingsOutline,
   IoLogOutOutline,
   IoInformationCircleOutline,
+  IoSyncOutline,
 } from "react-icons/io5";
 // https://react-icons.github.io/react-icons/icons?name=io5
 
@@ -24,6 +31,14 @@ export const statusLooks = {
   [STATUS_BLOCKED]: {
     Icon: IoLockClosedOutline,
     color: "grey",
+  },
+  [STATUS_UNDER_REVIEW]: {
+    Icon: IoSyncOutline,
+    color: "orange",
+  },
+  [STATUS_ERROR]: {
+    Icon: IoAlertCircleOutline,
+    color: "red",
   },
 };
 
