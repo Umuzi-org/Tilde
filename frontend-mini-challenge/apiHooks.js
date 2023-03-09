@@ -164,3 +164,40 @@ export function useGetUserActiveChallenges({ user }) {
   );
   return { error, isLoading, mutate, ...data };
 }
+
+// export function useGetChallengeDetails({ challengeId }) {
+//   const url = `${API_BASE_URL}/api/curriculums/${challengeId}/`;
+
+//   const { data, error, isLoading, mutate } = useSWR(
+//     {
+//       url,
+//       method: GET,
+//     },
+//     fetchAndClean
+//   );
+//   return { error, isLoading, mutate, ...data };
+// }
+
+export function useRegisterForChallenge() {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = `${API_BASE_URL}/api/challenge_registrations/`;
+
+  async function call({ user, curriculum }) {
+    setLoading(true);
+    const token = getAuthToken();
+    const data = await fetchAndClean({
+      token,
+      url,
+      method: POST,
+      data: { user, curriculum },
+    });
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}

@@ -12,19 +12,23 @@ import {
 } from "@mantine/core";
 // import Page from "../components/LoggedInPage";
 import { useEffect } from "react";
-import { useWhoAmI, useGetUserActiveChallenges } from "../apiHooks";
+import {
+  useWhoAmI,
+  useGetUserActiveChallenges,
+  useRegisterForChallenge,
+} from "../apiHooks";
 import { getAuthToken } from "../lib/authTokenStorage";
 import { useRouter } from "next/router";
+
+const curriculum = 1;
 
 export default function Home() {
   const router = useRouter();
   const getWhoAmI = useWhoAmI();
-
   const getUserActiveChallenges = useGetUserActiveChallenges({
     user: getWhoAmI.status === 200 && getWhoAmI.responseData.userId,
   });
-
-  console.log({ getUserActiveChallenges });
+  const registerForChallenge = useRegisterForChallenge();
 
   useEffect(() => {
     const token = getAuthToken();
@@ -35,19 +39,40 @@ export default function Home() {
       return;
     }
 
-    if (getUserActiveChallenges.status === 200) {
-      if (getUserActiveChallenges.responseData.length === 0) {
-        router.push("/challenge-intro");
-      } else {
-        router.push("/challenge/TODO");
+    if (
+      getUserActiveChallenges.status === 200 &&
+      getUserActiveChallenges.isLoading === false
+    ) {
+      if (
+        getUserActiveChallenges.responseData.length === 0 &&
+        registerForChallenge.isLoading === false &&
+        registerForChallenge.status !== 201
+      ) {
+        // the user isn't registered for anything yet. Just sign them up
+        registerForChallenge.call({
+          user: getWhoAmI.responseData.userId,
+          curriculum,
+        });
+      }
+      if (getUserActiveChallenges.responseData.length === 1) {
+        const registrationId = getUserActiveChallenges.responseData[0].id;
+        router.push(`user-challenge/${registrationId}`);
+      }
+      if (getUserActiveChallenges.responseData.length > 1) {
+        console.log("TODO");
       }
     }
   }, [
-    getUserActiveChallenges.responseData,
-    getUserActiveChallenges.status,
+    getUserActiveChallenges,
+    getWhoAmI.responseData,
     getWhoAmI.status,
+    registerForChallenge,
     router,
   ]);
+
+  useEffect(() => {
+    if (registerForChallenge.status === 201) getUserActiveChallenges.mutate();
+  }, [getUserActiveChallenges, registerForChallenge.status]);
 
   return (
     <AppShell>
