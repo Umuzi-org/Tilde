@@ -7,7 +7,7 @@ import {
   Group,
 } from "@mantine/core";
 
-import { statusLooks } from "../../../brand";
+import { statusLooks } from "../../../../brand";
 
 export default function Step({ number, title, blurb, status }) {
   const theme = useMantineTheme();

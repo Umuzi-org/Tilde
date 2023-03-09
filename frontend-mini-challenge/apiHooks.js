@@ -165,18 +165,22 @@ export function useGetUserActiveChallenges({ user }) {
   return { error, isLoading, mutate, ...data };
 }
 
-// export function useGetChallengeDetails({ challengeId }) {
-//   const url = `${API_BASE_URL}/api/curriculums/${challengeId}/`;
+export function useGetUserChallengeDetails({ registrationId }) {
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/`;
+  const token = getAuthToken();
 
-//   const { data, error, isLoading, mutate } = useSWR(
-//     {
-//       url,
-//       method: GET,
-//     },
-//     fetchAndClean
-//   );
-//   return { error, isLoading, mutate, ...data };
-// }
+  const { data, error, isLoading, mutate } = useSWR(
+    registrationId
+      ? {
+          url,
+          method: GET,
+          token,
+        }
+      : null,
+    fetchAndClean
+  );
+  return { error, isLoading, mutate, ...data };
+}
 
 export function useRegisterForChallenge() {
   const [data, setData] = useState({});
