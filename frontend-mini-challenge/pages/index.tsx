@@ -20,7 +20,7 @@ import {
 import { getAuthToken } from "../lib/authTokenStorage";
 import { useRouter } from "next/router";
 
-const curriculum = 1;
+const curriculum = 90; //
 
 export default function Home() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function Home() {
       }
       if (getUserActiveChallenges.responseData.length === 1) {
         const registrationId = getUserActiveChallenges.responseData[0].id;
-        router.push(`user-challenge/${registrationId}`);
+        router.push(`/user-challenge/${registrationId}`);
       }
       if (getUserActiveChallenges.responseData.length > 1) {
         console.log("TODO");

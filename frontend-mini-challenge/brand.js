@@ -1,4 +1,4 @@
-import { STATUS_BLOCKED, STATUS_DONE, STATUS_READY } from "./data";
+import { STATUS_BLOCKED, STATUS_DONE, STATUS_READY } from "./constants";
 
 import {
   IoPlayOutline,
