@@ -261,6 +261,9 @@ class Team(AuthGroup, Mixins):
 
     created_date = models.DateField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    hidden = models.BooleanField(
+        default=False
+    )  # hidden teams don't show up on the main Tilde instance
 
     class Meta:
         # Team._meta.permissions

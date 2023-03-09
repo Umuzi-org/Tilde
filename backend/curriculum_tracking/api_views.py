@@ -1254,7 +1254,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            models.Team.objects.all()
+            models.Team.objects.filter(hidden=False)
             .order_by("name")
             .prefetch_related("user_set")
             # .prefetch_related("team_memberships__user")
@@ -1270,7 +1270,6 @@ class TeamViewSet(viewsets.ModelViewSet):
             # | core_permissions.HasObjectPermission(
             #     permissions=models.Team.PERMISSION_VIEW,
             # )
-        
         ],
     )
     def summary_stats(self, request, pk=None):
@@ -1282,8 +1281,6 @@ class TeamViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data)
-
-
 
     @action(
         detail=True,
