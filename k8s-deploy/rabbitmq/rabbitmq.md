@@ -1,10 +1,10 @@
 # Setting up and accessing rabbit mq
 
-We followed intructions to set up rabbit MQ from here. Started from this repo:
+We followed instructions to set up rabbit MQ from here. Started from this repo:
 
 ```
 git clone https://github.com/GoogleCloudPlatform/click-to-deploy.git googleCloudPlatformClickToDeploy
-git checkpt d367a22a0daa93082c14e7f9c63b45960375ddcc
+git checkout d367a22a0daa93082c14e7f9c63b45960375ddcc
 ```
 
 This happens once in order to define the Application type.
@@ -13,7 +13,7 @@ This happens once in order to define the Application type.
 kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
 ```
 
-Please Note: the passwords generated here are random. If you use tis in multiple shells you would just need to be sure that you get the right values.
+Please Note: the passwords generated here are random. If you use this in multiple shells you would just need to be sure that you get the right values.
 
 ```
 cd  googleCloudPlatformClickToDeploy/k8s/rabbitmq
@@ -66,5 +66,5 @@ To access any part of the rabbit mq deployment, do some port forwarding:
 kubectl port-forward svc/$APP_INSTANCE_NAME-rabbitmq-svc --namespace $NAMESPACE 15672 25672 56720:5672 5671 43690:4369
 ```
 
-Now the rabbitmq gui is accessable at: `http://127.0.0.1:15672/#/`
+Now the rabbitmq gui is accessible at: `http://127.0.0.1:15672/#/`
 And you can add stuff to the queue (to be consumed by our live dramatiq worker) by interacting here

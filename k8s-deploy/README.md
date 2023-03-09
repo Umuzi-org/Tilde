@@ -16,8 +16,6 @@ kubectl logs tilde-backend-5fc8f7cdc8-kmnvb tilde-backend-app -f
 
 kubectl get services tilde-backend
 
-
-
 ## To open a shell into a running pod:
 
 kubectl get pods
