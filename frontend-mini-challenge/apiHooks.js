@@ -146,35 +146,21 @@ export function useWhoAmI() {
   }
 
   return { error, isLoading, mutate, ...data };
-
-  // async function whoAmI() {
-  //     const { response, responseData } = await fetchAndClean({ url });
-  //     if (responseData.detail === "Invalid token.") clearAuthToken();
-  //     return { response, responseData };
-  //   }
 }
 
-// export function useLogout() {
-//   // const { data: user } = useSWR(url, token}, )
-// }
+export function useGetUserActiveChallenges({ user }) {
+  const url = `${API_BASE_URL}/api/challenge_registrations/?user=${user}`;
+  const token = getAuthToken();
 
-// const AUTH_TOKEN = '_auth_token';
-
-// export const getAuthToken = () => {
-//   const token =
-//     sessionStorage.getItem(AUTH_TOKEN) || localStorage.getItem(AUTH_TOKEN);
-
-//   if (token !== 'undefined') return token;
-// };
-
-// export const clearAuthToken = () => {
-//   sessionStorage.removeItem(AUTH_TOKEN);
-//   localStorage.removeItem(AUTH_TOKEN);
-// };
-
-// export const setAuthToken = ({ value, keep }) => {
-//   if (value) {
-//     if (keep) localStorage.setItem(AUTH_TOKEN, value);
-//     else sessionStorage.setItem(AUTH_TOKEN, value);
-//   } else clearAuthToken();
-// };
+  const { data, error, isLoading, mutate } = useSWR(
+    token && user
+      ? {
+          url,
+          method: GET,
+          token,
+        }
+      : null,
+    fetchAndClean
+  );
+  return { error, isLoading, mutate, ...data };
+}

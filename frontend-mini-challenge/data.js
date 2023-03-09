@@ -20,7 +20,6 @@ export const steps = [
     blurb:
       "If you're going to be a coder, you're going to need to get Git. This is the first step",
     status: STATUS_BLOCKED,
-    // content: ""
   },
   {
     title: "Your first website",
