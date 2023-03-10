@@ -232,3 +232,51 @@ export function useRegisterForChallenge() {
     ...data,
   };
 }
+
+export function useStartStep({ registrationId }) {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/start_step/`;
+
+  async function call({ index }) {
+    setLoading(true);
+    const token = getAuthToken();
+    const data = await fetchAndClean({
+      token,
+      url,
+      method: POST,
+      data: { index },
+    });
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}
+
+export function useFinishStep({ registrationId }) {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/finish_step/`;
+
+  async function call({ index }) {
+    setLoading(true);
+    const token = getAuthToken();
+    const data = await fetchAndClean({
+      token,
+      url,
+      method: POST,
+      data: { index },
+    });
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}

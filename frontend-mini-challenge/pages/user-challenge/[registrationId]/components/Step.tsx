@@ -55,7 +55,7 @@ export default function Step({ index, title, blurb, status }) {
     <Paper withBorder p="md" sx={styles[status]}>
       <Stack align="flex-start">
         <Group>
-          <Icon size={theme.spacing.xl * 3} color={color} />
+          <Icon size={"3rem"} color={color} />
           <Title order={2}>
             {index + 1}. {title}
           </Title>
