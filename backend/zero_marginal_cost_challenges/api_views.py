@@ -1,13 +1,16 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django_filters.rest_framework import DjangoFilterBackend
 import core.permissions as core_permissions
-import core.serializers as core_serializers
+
+# import core.serializers as core_serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from curriculum_tracking.models import ContentItem, RecruitProject, TopicProgress
 from . import serializers
 from . import models
 from . import permissions
+from django.utils import timezone
 
 
 class ChallengeRegistrationViewset(viewsets.ModelViewSet):
@@ -43,12 +46,29 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
         permission_classes=[permissions.IsInstanceUser, permissions.StepCanStart],
     )
     def start_step(self, request, pk=None):
+        # TODO: flavours
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             registration = self.get_object()
+            user = registration.user
             steps = registration.get_steps()
-            steps[request.data["index"]]
+            step = steps[serializer.data["index"]]
+
+            if not step.progress:
+                if step.content_item.content_type == ContentItem.PROJECT:
+                    progress = RecruitProject.objects.create(
+                        content_item=step.content_item
+                    )
+                    progress.recruit_users.add(user)
+                    progress.save()
+                elif step.content_item.content_type == ContentItem.TOPIC:
+                    progress = TopicProgress.objects.create(
+                        user=user, content_item=step.content_item
+                    )
+            if not progress.start_time:
+                progress.start_time = timezone.now()
+                progress.save()
 
             return Response({"success": "OK"})  # TODO..
         else:
