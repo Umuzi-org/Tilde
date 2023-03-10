@@ -37,13 +37,15 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ["list", "create"]:
             return serializers.ChallengeRegistrationListSerializer
-        return serializers.ChallengeRegistrationDetailsSerializer
+        if self.action in ["retrieve"]:
+            return serializers.ChallengeRegistrationDetailsSerializer
+        return super(ChallengeRegistrationViewset, self).get_serializer_class()
 
     @action(
         detail=True,
         methods=["post"],
         serializer_class=serializers.StepIndexSerializer,
-        permission_classes=[permissions.IsInstanceUser, permissions.StepCanStart],
+        permission_classes=[permissions.IsInstanceUser & permissions.StepCanStart],
     )
     def start_step(self, request, pk=None):
         # TODO: flavours
@@ -66,10 +68,35 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
                     progress = TopicProgress.objects.create(
                         user=user, content_item=step.content_item
                     )
-            if not progress.start_time:
-                progress.start_time = timezone.now()
-                progress.save()
+                step.progress = progress
+
+            if not step.progress.start_time:
+                step.progress.start_time = timezone.now()
+                step.progress.save()
 
             return Response({"success": "OK"})  # TODO..
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        serializer_class=serializers.StepIndexSerializer,
+        permission_classes=[permissions.IsInstanceUser & permissions.StepCanFinish],
+    )
+    def finish_step(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            registration = self.get_object()
+            user = registration.user
+            steps = registration.get_steps()
+            step = steps[serializer.data["index"]]
+
+            step.progress.complete_time = timezone.now()
+            step.progress.save()
+
+            return Response({"success": "OK"})  # TODO..
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def submit_link_for_review

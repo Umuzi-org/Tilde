@@ -59,6 +59,7 @@ class ChallengeRegistration(models.Model):
 
         latest_complete_or_review = -1
         latest_status = ""
+
         for i, p in enumerate(progress_entries):
             if p == None:
                 break
@@ -88,6 +89,8 @@ class ChallengeRegistration(models.Model):
                 return latest_status
             if index == latest_complete_or_review + 1:
                 if latest_status == self.STATUS_DONE:
+                    return self.STATUS_READY
+                elif not latest_status:
                     return self.STATUS_READY
                 else:
                     return self.STATUS_BLOCKED
