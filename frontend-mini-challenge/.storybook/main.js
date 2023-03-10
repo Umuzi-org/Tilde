@@ -12,5 +12,5 @@ module.exports = {
     builder: "@storybook/builder-webpack5",
   },
 
-  titlePrefix: "",
+  titlePrefix: "", // makes storybook automatically generate titles
 };

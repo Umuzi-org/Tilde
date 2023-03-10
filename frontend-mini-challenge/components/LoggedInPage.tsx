@@ -37,6 +37,21 @@ export default function Page({ children }) {
     callLogout();
   }
 
+  const props = {
+    whoAmIStatus,
+    userData,
+    handleLogout,
+  };
+
+  return <Presentation {...props}>{children}</Presentation>;
+}
+
+export function Presentation({
+  whoAmIStatus,
+  userData,
+  handleLogout,
+  children,
+}) {
   return (
     <AppShell
       padding="md"

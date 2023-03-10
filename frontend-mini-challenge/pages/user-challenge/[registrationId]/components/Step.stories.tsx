@@ -9,6 +9,7 @@ import {
 } from "../../../../constants";
 
 import Step from "./Step";
+import { Stack } from "@mantine/core";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -67,3 +68,15 @@ Error.args = {
   blurb,
   status: STATUS_ERROR,
 };
+
+export function AllSteps() {
+  return (
+    <Stack>
+      <Template {...Done.args} />
+      <Template {...Error.args} />
+      <Template {...Ready.args} />
+      <Template {...Blocked.args} />
+      <Template {...Review.args} />
+    </Stack>
+  );
+}
