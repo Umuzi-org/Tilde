@@ -7,13 +7,12 @@ import {
   Box,
   PasswordInput,
   LoadingOverlay,
-  Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useConfirmPasswordReset } from "../../../apiHooks";
-import { ErrorIcon } from "../../../brand";
+import { ErrorAlert } from "../../../components/Alerts";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -33,7 +32,6 @@ export default function ResetPassword() {
 
   const { call, status, isLoading, responseData } = useConfirmPasswordReset();
 
-  console.log(responseData);
   useEffect(() => {
     if (status === 200) router.push("/password-reset-complete");
     // TODO: Toast: The password has been reset with the new password. Or redurect do a "page that just says "complete"
@@ -50,17 +48,11 @@ export default function ResetPassword() {
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <Title>Reset Password</Title>
           {status === 400 && (
-            <Alert
-              icon={<ErrorIcon size={16} />}
-              mt="md"
-              title="Bummer!"
-              color="red"
-              variant="outline"
-            >
+            <ErrorAlert>
               {responseData.token || responseData.uid
                 ? "This password reset link is invalid. Have you already used it? When you attempt to reset your password then it is important that you follow the password reset link in the latest email you received."
                 : Object.values(responseData)}
-            </Alert>
+            </ErrorAlert>
           )}
 
           <form onSubmit={form.onSubmit(handleSubmit)}>

@@ -14,6 +14,7 @@ import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { usePasswordReset } from "../../apiHooks";
 import { InfoIcon } from "../../brand";
+import { InfoAlert } from "../../components/Alerts";
 
 export default function ForgotPassword() {
   const { call, requestData, isLoading } = usePasswordReset();
@@ -41,16 +42,10 @@ export default function ForgotPassword() {
           <Title>Forgot Password</Title>
 
           {sentTo && (
-            <Alert
-              icon={<InfoIcon size={16} />}
-              mt="md"
-              title="Password reset message sent "
-              color="blue"
-              variant="outline"
-            >
+            <InfoAlert title="Password reset message sent">
               We sent a message to {sentTo}. Please keep an eye on your inbox.
               And your spam folder just in case.
-            </Alert>
+            </InfoAlert>
           )}
 
           <form onSubmit={form.onSubmit(handleSubmit)}>

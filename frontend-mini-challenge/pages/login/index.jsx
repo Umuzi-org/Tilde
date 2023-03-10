@@ -9,15 +9,15 @@ import {
   Box,
   PasswordInput,
   LoadingOverlay,
-  Alert,
 } from "@mantine/core";
-import { ErrorIcon } from "../../brand";
 
 import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useLogin } from "../../apiHooks";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
+import { ErrorAlert } from "../../components/Alerts";
 
 export default function Login() {
   const router = useRouter();
@@ -51,15 +51,7 @@ export default function Login() {
           <Title>Login</Title>
 
           {status === 400 && (
-            <Alert
-              icon={<ErrorIcon size={16} />}
-              mt="md"
-              title="Bummer!"
-              color="red"
-              variant="outline"
-            >
-              {responseData.nonFieldErrors}
-            </Alert>
+            <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>
           )}
 
           <form onSubmit={form.onSubmit(handleSubmit)}>

@@ -124,6 +124,33 @@ export function useConfirmPasswordReset() {
   };
 }
 
+export function useChangePassword() {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = urlJoin({
+    base: REST_AUTH_BASE_URL,
+    tail: "password/change/",
+  });
+
+  async function call({ newPassword1, newPassword2, oldPassword }) {
+    const token = getAuthToken();
+    setLoading(true);
+    const data = await fetchAndClean({
+      url,
+      method: POST,
+      data: { newPassword1, newPassword2, oldPassword },
+      token,
+    });
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}
+
 export function useWhoAmI() {
   const url = `${API_BASE_URL}/api/who_am_i/`;
 

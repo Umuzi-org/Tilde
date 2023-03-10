@@ -6,6 +6,7 @@ import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { getAuthToken } from "../lib/authTokenStorage";
+import Link from "next/link";
 
 export default function Page({ children }) {
   const {
@@ -52,6 +53,7 @@ export function Presentation({
   handleLogout,
   children,
 }) {
+  const router = useRouter();
   return (
     <AppShell
       padding="md"
@@ -69,7 +71,12 @@ export function Presentation({
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item icon={<SettingsIcon size={14} />}>
+                  <Menu.Item
+                    icon={<SettingsIcon size={14} />}
+                    onClick={() => {
+                      router.push("/settings");
+                    }}
+                  >
                     Settings
                   </Menu.Item>
                   <Menu.Divider />
