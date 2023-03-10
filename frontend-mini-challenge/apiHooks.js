@@ -37,9 +37,9 @@ export function useLogin() {
   }
 
   return {
+    ...data,
     call,
     isLoading,
-    ...data,
   };
 }
 

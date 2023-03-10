@@ -13,13 +13,15 @@ import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useChangePassword } from "../../apiHooks";
-import { ErrorAlert } from "../../components/Alerts";
+import { ErrorAlert, InfoAlert } from "../../components/Alerts";
+// import { showNotification } from "@mantine/notifications";
+// import { useEffect } from "react";
 
 export default function Settings() {
   const router = useRouter();
   const { call, isLoading, status, responseData } = useChangePassword();
 
-  console.log(responseData);
+  console.log({ status });
   const form = useForm({
     initialValues: {
       oldPassword: "",
@@ -34,6 +36,15 @@ export default function Settings() {
         value === newPassword1 ? null : "Passwords do not match",
     },
   });
+
+  // useEffect(() => {
+  //   if (status === 200) {
+  //     showNotification({
+  //       title: "Password changed",
+  //       message: "Your password has been updated successfully",
+  //     });
+  //   }
+  // }, [status]);
 
   function goBack(e) {
     e.preventDefault();
@@ -66,6 +77,11 @@ export default function Settings() {
             <ErrorAlert>
               Something went wrong. See form field errors below
             </ErrorAlert>
+          )}
+          {status === 200 && (
+            <InfoAlert title={"Success"}>
+              Your password has been updated
+            </InfoAlert>
           )}
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <div style={{ position: "relative" }}>
