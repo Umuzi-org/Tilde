@@ -10,7 +10,7 @@ import { getAuthToken } from "../lib/authTokenStorage";
 export default function Page({ children }) {
   const {
     responseData: userData,
-    isLoading: isLoadingWhoAmI,
+    // isLoading: isLoadingWhoAmI,
     status: whoAmIStatus,
   } = useWhoAmI();
 

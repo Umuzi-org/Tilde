@@ -8,12 +8,10 @@ import {
   STATUS_ERROR,
 } from "../../../../constants";
 
-// import { Button } from "./Button";
 import Step from "./Step";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: "pages/user-challenge/[registrationId]/components/Step",
   component: Step,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {},

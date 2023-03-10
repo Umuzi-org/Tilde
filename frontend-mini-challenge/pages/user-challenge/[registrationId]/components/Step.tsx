@@ -4,8 +4,9 @@ import {
   Text,
   Title,
   useMantineTheme,
-  Group,
   Tooltip,
+  Grid,
+  Group,
 } from "@mantine/core";
 
 import { statusLooks } from "../../../../brand";
@@ -23,54 +24,45 @@ export default function Step({ index, title, blurb, status }) {
   const router = useRouter();
 
   const theme = useMantineTheme();
-  console.log({ statusLooks, status });
   const { Icon, color } = statusLooks[status];
 
+  const clickableStyle = {
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#eee",
+    },
+  };
   const styles = {
     [STATUS_BLOCKED]: {
       cursor: "not-allowed",
     },
     [STATUS_DONE]: {
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "#eee",
-      },
+      ...clickableStyle,
     },
     [STATUS_READY]: {
       border: `3px solid ${statusLooks[STATUS_READY].color}`,
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "#eee",
-      },
+      ...clickableStyle,
     },
     [STATUS_UNDER_REVIEW]: {
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "#eee",
-      },
+      ...clickableStyle,
     },
     [STATUS_ERROR]: {
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "#eee",
-      },
+      border: `3px solid ${statusLooks[STATUS_ERROR].color}`,
+      ...clickableStyle,
     },
   };
 
   const inner = (
     <Paper withBorder p="md" sx={styles[status]}>
-      <Group position="apart">
+      <Stack align="flex-start">
         <Group>
-          <Text fz={theme.spacing.xl * 2} ml="md" mr="md">
-            {index + 1}
-          </Text>
-          <Stack>
-            <Title order={2}>{title}</Title>
-            <Text>{blurb}</Text>
-          </Stack>
+          <Icon size={theme.spacing.xl * 3} color={color} />
+          <Title order={2}>
+            {index + 1}. {title}
+          </Title>
         </Group>
-        <Icon size={theme.spacing.xl * 3} color={color} />
-      </Group>
+        <Text>{blurb}</Text>
+      </Stack>
     </Paper>
   );
 
