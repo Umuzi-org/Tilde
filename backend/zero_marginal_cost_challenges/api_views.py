@@ -57,7 +57,9 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
             steps = registration.get_steps()
             step = steps[serializer.data["index"]]
 
-            if not step.progress:
+            progress = step.progress
+
+            if not progress:
                 if step.content_item.content_type == ContentItem.PROJECT:
                     progress = RecruitProject.objects.create(
                         content_item=step.content_item
@@ -68,11 +70,10 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
                     progress = TopicProgress.objects.create(
                         user=user, content_item=step.content_item
                     )
-                step.progress = progress
 
-            if not step.progress.start_time:
-                step.progress.start_time = timezone.now()
-                step.progress.save()
+            if not progress.start_time:
+                progress.start_time = timezone.now()
+                progress.save()
 
             return Response({"success": "OK"})  # TODO..
         else:
