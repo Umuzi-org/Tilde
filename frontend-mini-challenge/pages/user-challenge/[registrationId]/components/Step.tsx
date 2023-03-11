@@ -57,7 +57,7 @@ export default function Step({ index, title, blurb, status }) {
         <Group>
           <Icon size={"3rem"} color={color} />
           <Title order={2}>
-            {index + 1}. {title}
+            Step {index + 1} - {title}
           </Title>
         </Group>
         <Text>{blurb}</Text>

@@ -4,11 +4,14 @@ import {
   STATUS_READY,
   STATUS_UNDER_REVIEW,
   STATUS_ERROR,
+  COMPETENT,
+  NOT_YET_COMPETENT,
 } from "./constants";
 
 import {
   IoPlayOutline,
   IoCheckmarkOutline,
+  IoCheckmarkCircleOutline,
   IoLockClosedOutline,
   IoAlertCircleOutline,
   IoPersonCircleOutline,
@@ -16,6 +19,9 @@ import {
   IoLogOutOutline,
   IoInformationCircleOutline,
   IoSyncOutline,
+  IoArrowBackOutline,
+  IoArrowForwardOutline,
+  IoCloseCircleOutline,
 } from "react-icons/io5";
 // https://react-icons.github.io/react-icons/icons?name=io5
 
@@ -48,3 +54,15 @@ export const InfoIcon = IoInformationCircleOutline;
 export const ProfileIcon = IoPersonCircleOutline;
 export const SettingsIcon = IoSettingsOutline;
 export const LogoutIcon = IoLogOutOutline;
+
+export const ReviewStatusLooks = {
+  COMPETENT: {
+    Icon: IoCheckmarkCircleOutline,
+  },
+  NOT_YET_COMPETENT: {
+    Icon: IoCloseCircleOutline,
+  },
+};
+
+export const BackArrowIcon = IoArrowBackOutline;
+export const ForwardArrowIcon = IoArrowForwardOutline;

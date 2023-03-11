@@ -7,19 +7,28 @@ import {
   Stack,
   Loader,
   Group,
-  Paper,
   Button,
   Breadcrumbs,
+  Box,
+  Divider,
+  Center,
+  Grid,
+  Tooltip,
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import {
   useGetUserChallengeDetails,
   useStartStep,
   useFinishStep,
+  useGetStepDetails,
+  useSubmitStepProjectLink,
 } from "../../../../apiHooks";
-import { statusLooks } from "../../../../brand";
+import {
+  BackArrowIcon,
+  ForwardArrowIcon,
+  statusLooks,
+} from "../../../../brand";
 import { useEffect } from "react";
-// import { useForm } from "@mantine/form";
 
 import {
   STATUS_BLOCKED,
@@ -30,16 +39,33 @@ import {
 } from "../../../../constants";
 
 import Link from "next/link";
+import ProjectReviews from "./components/ProjectReviews";
+import LinkForm from "./components/LinkForm";
 
 export default function ChallengeStep() {
   const router = useRouter();
-  const { stepIndex, registrationId } = router.query;
+  const { stepIndex: stepIndexStr, registrationId: registrationIdStr } =
+    router.query;
+
+  const stepIndex = parseInt(stepIndexStr);
+  const registrationId = parseInt(registrationIdStr);
 
   const getUserChallengeDetails = useGetUserChallengeDetails({
     registrationId,
   });
   const startStep = useStartStep({ registrationId });
   const finishStep = useFinishStep({ registrationId });
+  const getStepDetails = useGetStepDetails({ registrationId, stepIndex });
+
+  const submitProjectLink = useSubmitStepProjectLink({
+    registrationId,
+  });
+
+  function handleSubmitLinkForm({ linkSubmission }) {
+    call({ linkSubmission, stepIndex });
+  }
+
+  const stepDetails = getStepDetails.responseData;
 
   const registration = getUserChallengeDetails.responseData;
   const stepSummary = registration
@@ -71,10 +97,50 @@ export default function ChallengeStep() {
       };
 
   function handleNext() {
-    finishStep.call({ index: stepIndex });
-    getUserChallengeDetails.mutate();
+    if (stepSummary.status === STATUS_READY) {
+      finishStep.call({ index: stepIndex });
+      getUserChallengeDetails.mutate();
+    }
+    if (stepIndex + 1 === registration.steps.length) {
+      router.push(`/user-challenge/${registrationId}`);
+    } else {
+      router.push(`/user-challenge/${registrationId}/steps/${stepIndex + 1}`);
+    }
   }
 
+  function handlePrevious() {
+    if (stepIndex > 0)
+      router.push(`/user-challenge/${registrationId}/steps/${stepIndex - 1}`);
+    else router.push(`/user-challenge/${registrationId}/`);
+  }
+
+  const showFinishButton = registration
+    ? stepIndex + 1 === registration.steps.length
+    : false;
+  const showNextButton = registration ? !showFinishButton : false;
+
+  const showLinkForm = stepDetails
+    ? stepDetails.contentType === "P" &&
+      stepDetails.projectSubmissionType === "L"
+    : false;
+
+  const isProject = stepDetails ? stepDetails.contentType === "P" : false;
+
+  const nextIsBlockedByProject = isProject
+    ? stepDetails.status !== STATUS_DONE
+    : false;
+
+  const nextButton = (
+    <Button
+      disabled={nextIsBlockedByProject}
+      onClick={handleNext}
+      rightIcon={<ForwardArrowIcon />}
+    >
+      {registration && stepIndex + 1 === registration.steps.length
+        ? "Finish"
+        : "Next"}
+    </Button>
+  );
   const crumbs = [
     {
       title: getUserChallengeDetails.responseData
@@ -111,14 +177,71 @@ export default function ChallengeStep() {
             </Text>
           </div>
 
-          <Paper shadow="xs" p="md">
-            TODO: figure out how to actually display the content.
-          </Paper>
+          <div style={{ position: "relative" }}>
+            <LoadingOverlay
+              visible={getStepDetails.isLoading}
+              overlayBlur={1}
+              loaderProps={{ size: "xl" }}
+            />
 
-          <Button>Update Link</Button>
-          <Button onClick={handleNext}>Next</Button>
-          <Button>Finished!</Button>
-          <Button>Previous</Button>
+            <Box mt="md">
+              <Text>
+                The content for this step can be found at the following link.
+                Please follow the instructions in link and come back here when
+                you are done
+              </Text>
+              <Center>
+                <a href={stepDetails && stepDetails.url} target="_blank">
+                  <Text fz="xl">View content</Text>
+                </a>
+              </Center>
+            </Box>
+
+            {isProject && (
+              <>
+                <Divider mt="md" />
+
+                <Stack spacing={"md"} mt="md">
+                  <Title order={2}>Project details</Title>
+                  <Text>
+                    This step is a project. That means you need to submit your
+                    work before you can continue with the next step. Once you
+                    have submitted your work you'll need to wait a little while
+                    for us to mark it.
+                  </Text>
+                  <Grid>
+                    <Grid.Col span="auto">
+                      <LinkForm
+                        linkExample={stepDetails.linkExample}
+                        linkName={stepDetails.linkName}
+                        handleSubmit={handleSubmitLinkForm}
+                        status={submitProjectLink.status}
+                        responseData={submitProjectLink.responseData}
+                        isLoading={submitProjectLink.isLoading}
+                      />
+                    </Grid.Col>
+                    <Grid.Col span="auto">
+                      <ProjectReviews reviews={stepDetails.reviews} />
+                    </Grid.Col>
+                  </Grid>
+                </Stack>
+              </>
+            )}
+          </div>
+          <Divider mt="md" />
+          <Group position="apart">
+            <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
+              Back
+            </Button>
+
+            {nextIsBlockedByProject ? (
+              <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
+                {nextButton}
+              </Tooltip>
+            ) : (
+              nextButton
+            )}
+          </Group>
         </Stack>
       </Container>
     </Page>

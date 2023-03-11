@@ -21,7 +21,6 @@ export default function Settings() {
   const router = useRouter();
   const { call, isLoading, status, responseData } = useChangePassword();
 
-  console.log({ status });
   const form = useForm({
     initialValues: {
       oldPassword: "",

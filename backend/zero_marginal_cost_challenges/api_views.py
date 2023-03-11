@@ -88,7 +88,6 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             registration = self.get_object()
-            user = registration.user
             steps = registration.get_steps()
             step = steps[serializer.data["index"]]
 
@@ -99,4 +98,20 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def submit_link_for_review
+    @action(
+        detail=True,
+        methods=["get"],
+        serializer_class=serializers.StepIndexSerializer,
+        permission_classes=[permissions.IsInstanceUser],
+    )
+    def step_details(self, request, pk=None):
+        # breakpoint()
+        serializer = self.get_serializer(data=request.query_params)
+        if serializer.is_valid():
+            registration = self.get_object()
+            steps = registration.get_steps()
+            step = steps[serializer.data["index"]]
+
+            return Response(serializers.StepDetailsSerializer(step).data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

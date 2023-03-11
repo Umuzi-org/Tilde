@@ -13,7 +13,6 @@ import {
 import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { usePasswordReset } from "../../apiHooks";
-import { InfoIcon } from "../../brand";
 import { InfoAlert } from "../../components/Alerts";
 
 export default function ForgotPassword() {

@@ -280,3 +280,57 @@ export function useFinishStep({ registrationId }) {
     ...data,
   };
 }
+
+export function useGetStepDetails({ registrationId, stepIndex }) {
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/step_details/?index=${stepIndex}`;
+
+  const token = getAuthToken();
+
+  console.log({
+    token,
+    registrationId,
+    stepIndex,
+  });
+
+  const { data, error, isLoading, mutate } = useSWR(
+    token && registrationId && stepIndex !== undefined
+      ? {
+          url,
+          method: GET,
+          token,
+        }
+      : null,
+    fetchAndClean
+  );
+
+  if (data && data.status === 401) {
+    // unauthorized
+    clearAuthToken();
+  }
+
+  return { error, isLoading, mutate, ...data };
+}
+
+export function useSubmitStepProjectLink({ registrationId }) {
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/submit_link/`;
+
+  async function call({ index, linkSubmission }) {
+    setLoading(true);
+    const token = getAuthToken();
+    const data = await fetchAndClean({
+      token,
+      url,
+      method: POST,
+      data: { index, linkSubmission },
+    });
+    setData(data);
+    setLoading(false);
+  }
+  return {
+    call,
+    isLoading,
+    ...data,
+  };
+}
