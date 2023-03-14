@@ -43,6 +43,8 @@ class Command(BaseCommand):
         ncit_tag = Tag.objects.get(name="ncit")
         docx_tag = Tag.objects.get(name="docx")
 
+        self.handle_close_on_peer_reviews()
+
         self.handle_downloads(
             tag=ncit_tag, destination=NCIT_DESTINATION, service=service
         )
@@ -76,8 +78,8 @@ class Command(BaseCommand):
             )
 
             if reviews_since_last_review_request >= 2:
+
                 self.add_review(
-                    self,
                     card,
                     COMPETENT,
                     "Your peers say this is all good, I believe them. Beep beep",
