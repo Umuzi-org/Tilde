@@ -39,3 +39,15 @@ class StepCanFinish(BasePermission, StepPermissionMixin):
                 and step.progress
                 and step.progress.start_time
             )
+
+
+class StepCanSubmitLink(BasePermission, StepPermissionMixin):
+    def has_permission(self, request, view):
+        step = self.get_step(request, view)
+        if step:
+            return (
+                step.content_item.content_type == ContentItem.PROJECT
+                and step.content_item.project_submission_type == ContentItem.LINK
+                and step.progress
+                and step.progress.start_time
+            )

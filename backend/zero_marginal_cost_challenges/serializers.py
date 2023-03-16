@@ -124,3 +124,11 @@ class StepDetailsSerializer(serializers.Serializer):
             }
             for o in progress.project_reviews.order_by("timestamp")
         ]
+
+
+class SubmitLinkSerializer(serializers.Serializer):
+    class Meta:
+        fields = ["index", "link_submission"]
+
+    index = serializers.IntegerField()
+    link_submission = serializers.URLField()

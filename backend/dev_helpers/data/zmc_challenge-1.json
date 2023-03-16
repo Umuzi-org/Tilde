@@ -2,6 +2,26 @@
   "content_item_orders": [],
   "content_items": [
     {
+      "blurb": "There are lots of different kinds of coding and non-coding careers. We'd like to show you why we're focusing on web dev and why it's probably worth your while to do take on this challenge",
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/why-learn-web-development/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "internal/zmc-challenge"
+      ],
+      "template_repo": null,
+      "title": "Why learn web development?",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/zmc-challenges/first-website/why-learn-web-development/"
+    },
+    {
       "blurb": "Web dev is cool because you don't need to be a super expert in any part of it in order to start making stuff. In this section you'll learn just enough HTML that you can start writing basic websites with simple content",
       "content_type": "T",
       "continue_from_repo": null,
@@ -11,12 +31,13 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/web-dev-languages/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
       "title": "What is HTML?",
       "topic_needs_review": false,
-      "url": "http://syllabus.africacode.net/zmc-challenges/first-website/what-is-html/"
+      "url": "http://syllabus.africacode.net/zmc-challenges/first-website/web-dev-languages/"
     },
     {
       "blurb": "Every profession has it's tools: carpenters use hammers, mechanics use spanners, painters use paintbrushes.  Coders have tools too. Here you'll learn about one of the major tools of the trade.",
@@ -28,12 +49,13 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/html-on-phone-or-computer/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
-      "title": "How to get setup to author HTML code on your own device",
+      "title": "How to get setup to author web code on your own device",
       "topic_needs_review": false,
-      "url": "http://syllabus.africacode.net/environment-setup/html-on-phone-or-computer/"
+      "url": "http://syllabus.africacode.net/zmc-challenges/first-website/html-on-phone-or-computer/"
     },
     {
       "blurb": "Time to flex your skills! In this step you'll be writing a web page from scratch on your own device.",
@@ -45,6 +67,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/your-first-html-page/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -53,7 +76,7 @@
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/your-first-html-page/"
     },
     {
-      "blurb": "This section will be downright empowering. Once you have done this you'll be able to make websites and share them on the internet whenever you want, for free, forever. Feel the power!",
+      "blurb": "This section will be downright empowering. Once you have done this you'll be able to make websites and share them on the internet whenever you want, for free,  forever. Feel the power!",
       "content_type": "P",
       "continue_from_repo": null,
       "flavours": [],
@@ -62,6 +85,7 @@
       "link_name": "Github page url",
       "link_regex": "https://.*\\.github.io/.*/$",
       "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/hosting-your-page-on-github-pages/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -78,7 +102,8 @@
       "link_message": null,
       "link_name": null,
       "link_regex": null,
-      "project_submission_type": "N",
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/adding-images/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -95,7 +120,8 @@
       "link_message": null,
       "link_name": null,
       "link_regex": null,
-      "project_submission_type": "N",
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/adding-more-pages/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -112,7 +138,8 @@
       "link_message": null,
       "link_name": null,
       "link_regex": null,
-      "project_submission_type": "N",
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/intro-to-css/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -130,10 +157,11 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/different-kinds-of-coders/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
-      "title": "Different strokes for different folks",
+      "title": "Continue learning",
       "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/different-kinds-of-coders/"
     },
@@ -147,6 +175,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/how-are-we-doing/_index.md",
       "slug": "contentitem",
       "tags": [],
       "template_repo": null,
@@ -162,58 +191,64 @@
   },
   "curriculum_content_requirements": [
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/what-is-html/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/why-learn-web-development/",
       "flavours": [],
       "hard_requirement": true,
       "order": 1
     },
     {
-      "content_item": "http://syllabus.africacode.net/environment-setup/html-on-phone-or-computer/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/web-dev-languages/",
       "flavours": [],
       "hard_requirement": true,
       "order": 2
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/your-first-html-page/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/html-on-phone-or-computer/",
       "flavours": [],
       "hard_requirement": true,
       "order": 3
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/hosting-your-page-on-github-pages/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/your-first-html-page/",
       "flavours": [],
       "hard_requirement": true,
       "order": 4
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-images/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/hosting-your-page-on-github-pages/",
       "flavours": [],
       "hard_requirement": true,
       "order": 5
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-more-pages/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-images/",
       "flavours": [],
       "hard_requirement": true,
       "order": 6
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/intro-to-css/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-more-pages/",
       "flavours": [],
       "hard_requirement": true,
       "order": 7
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/different-kinds-of-coders/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/intro-to-css/",
       "flavours": [],
       "hard_requirement": true,
       "order": 8
     },
     {
-      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/how-are-we-doing/",
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/different-kinds-of-coders/",
       "flavours": [],
       "hard_requirement": true,
       "order": 9
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/zmc-challenges/first-website/how-are-we-doing/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 10
     }
   ]
 }

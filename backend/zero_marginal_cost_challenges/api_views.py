@@ -11,6 +11,7 @@ from . import serializers
 from . import models
 from . import permissions
 from django.utils import timezone
+import re
 
 
 class ChallengeRegistrationViewset(viewsets.ModelViewSet):
@@ -106,7 +107,6 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
         permission_classes=[permissions.IsInstanceUser],
     )
     def step_details(self, request, pk=None):
-        # breakpoint()
         serializer = self.get_serializer(data=request.query_params)
         if serializer.is_valid():
             registration = self.get_object()
@@ -114,5 +114,32 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
             step = steps[serializer.data["index"]]
 
             return Response(serializers.StepDetailsSerializer(step).data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        serializer_class=serializers.SubmitLinkSerializer,
+        permission_classes=[permissions.IsInstanceUser, permissions.StepCanSubmitLink],
+    )
+    def submit_link(self, request, pk=None):
+        serializer = self.get_serializer(data=request.query_params)
+        if serializer.is_valid():
+            registration = self.get_object()
+            steps = registration.get_steps()
+            step = steps[serializer.data["index"]]
+
+            content_item: ContentItem = step.content_item
+            content_item.link_regex
+            content_item.link_message
+
+            TODO(validation)
+
+            project = step.progress.link_submission = serializer.data["link_submission"]
+            project.review_request_time = timezone.now()
+            project.save()
+
+            return Response({"success": "OK"})  # TODO..
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

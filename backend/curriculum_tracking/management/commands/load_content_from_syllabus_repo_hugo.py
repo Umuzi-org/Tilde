@@ -44,7 +44,7 @@ class Helper:
             part = part[: -len("/_index.md")]
         if part.startswith("content/"):
             part = part[len("content/") :]
-        assert not part.endswith("index.md"), f"invalid url part: {part}"
+        assert not part.endswith("_index.md"), f"invalid url part: {part}"
         assert not part.startswith("content/"), f"invalid url part: {part}"
 
         return (
@@ -174,7 +174,7 @@ class Helper:
             "content_type": actual_content_type,
             "title": meta["title"],
             "url": url,
-            "raw_url": url,
+            "raw_url": raw_url,
             "blurb": meta.get("blurb"),
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,

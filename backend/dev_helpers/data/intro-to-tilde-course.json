@@ -27,6 +27,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/tilde/intro-to-tilde/",
       "slug": "introduction-to-tilde",
       "tags": [
         "todo"
@@ -46,6 +47,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/tilde/different-kinds-of-cards/",
       "slug": "tilde-tutorial-how-cards-work",
       "tags": [
         "todo"
@@ -65,6 +67,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/bootcamp/success-in-bootcamp/",
       "slug": "success-in-bootcamp",
       "tags": [
         "todo"
@@ -84,6 +87,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/bootcamp/failure-at-bootcamp/",
       "slug": "contentitem",
       "tags": [
         "todo"
@@ -103,6 +107,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": "L",
+      "raw_url": "http://syllabus.africacode.net/projects/tilde/link-card-tutorial/",
       "slug": "tilde-project-tutorial-how-to-submit-a-link",
       "tags": [
         "todo",
@@ -123,6 +128,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/",
       "slug": "contentitem",
       "tags": [
         "todo"
@@ -142,6 +148,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/environment-setup/",
       "slug": "data-science-bootcamp-setup",
       "tags": [
         "todo"
@@ -161,6 +168,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": "R",
+      "raw_url": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/",
       "slug": "contentitem",
       "tags": [
         "todo",
@@ -181,6 +189,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/messaging/honor-code/",
       "slug": "honor-code",
       "tags": [
         "todo",
@@ -202,6 +211,7 @@
       "link_name": null,
       "link_regex": null,
       "project_submission_type": null,
+      "raw_url": "http://syllabus.africacode.net/topics/reopening-pull-request/",
       "slug": "contentitem",
       "tags": [
         "todo"
