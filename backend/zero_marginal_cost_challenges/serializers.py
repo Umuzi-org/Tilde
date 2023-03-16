@@ -63,7 +63,7 @@ class StepDetailsSerializer(serializers.Serializer):
     class Meta:
         fields = [
             "content_type",
-            "url",
+            "raw_url",
             "project_submission_type",
             "link_name",
             "link_example",
@@ -73,7 +73,7 @@ class StepDetailsSerializer(serializers.Serializer):
         ]
 
     content_type = serializers.SerializerMethodField("get_content_type")
-    url = serializers.SerializerMethodField("get_url")
+    raw_url = serializers.SerializerMethodField("get_raw_url")
     project_submission_type = serializers.SerializerMethodField(
         "get_project_submission_type"
     )
@@ -86,8 +86,8 @@ class StepDetailsSerializer(serializers.Serializer):
     def get_content_type(self, instance):
         return instance.content_item.content_type
 
-    def get_url(self, instance):
-        return instance.content_item.url
+    def get_raw_url(self, instance):
+        url = instance.content_item.url
 
     def get_project_submission_type(self, instance):
         return instance.content_item.project_submission_type

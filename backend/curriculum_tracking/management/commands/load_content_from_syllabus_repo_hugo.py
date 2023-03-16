@@ -37,7 +37,7 @@ class Helper:
     content_items_seen_by_id: Dict[int, str] = {}
 
     @classmethod
-    def get_full_url_from_partial(cls, part: str):
+    def get_full_urls_from_partial(cls, part: str):
         part = str(part)
         part = part.strip("/")
         if part.endswith("_index.md"):
@@ -47,7 +47,10 @@ class Helper:
         assert not part.endswith("index.md"), f"invalid url part: {part}"
         assert not part.startswith("content/"), f"invalid url part: {part}"
 
-        return cls.url_template.format(url_part=part)
+        return (
+            cls.url_template.format(url_part=part),
+            cls.raw_url_template.format(part),
+        )
 
     @classmethod
     def set_url_template(cls, url_template: str):
@@ -121,7 +124,7 @@ class Helper:
         assert meta["title"], f"Title missing in frontmatter: {file_path} => {meta}"
 
         content_sub_dir = str(file_path).replace(str(cls.repo_base_dir), "").strip("/")
-        url = Helper.get_full_url_from_partial(content_sub_dir)
+        url, raw_url = Helper.get_full_urls_from_partial(content_sub_dir)
 
         reverse_content_types = {t[1]: t[0] for t in models.ContentItem.CONTENT_TYPES}
         reverse_submission_types = {
@@ -140,7 +143,7 @@ class Helper:
             try:
                 continue_from_repo = models.ContentItem.objects.get(
                     # url=helpers.get_full_url_from_content_link_param(meta["from_repo"])
-                    url=Helper.get_full_url_from_partial(meta["from_repo"])
+                    url=Helper.get_full_urls_from_partial(meta["from_repo"])[0]
                 )
 
                 print(f"continue from existing content item: {continue_from_repo}")
@@ -170,6 +173,7 @@ class Helper:
             "content_type": actual_content_type,
             "title": meta["title"],
             "url": url,
+            "raw_url": url,
             "blurb": meta.get("blurb"),
             "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,
@@ -181,15 +185,6 @@ class Helper:
             "link_name": meta.get("link_name"),
             "link_message": meta.get("link_message"),
         }
-
-        if defaults["link_regex"]:
-            print(defaults["link_regex"])
-            import re
-
-            match = re.match(
-                defaults["link_regex"],
-                "https://sheenarbw.github.io/pres-djangocon-2022-tilde/",
-            )
 
         print(f"saving {defaults['title']}")
 
@@ -255,7 +250,7 @@ def _add_prerequisite(
     content_item: models.ContentItem, prerequisite: str, hard_requirement: bool
 ) -> models.ContentItemOrder:
 
-    url = Helper.get_full_url_from_partial(prerequisite)
+    url, raw_url = Helper.get_full_urls_from_partial(prerequisite)
 
     print(content_item)
     print(f"processing preprequisite: {prerequisite}")
@@ -462,7 +457,7 @@ def add_all_prereq():
 
         # file_path = content_item_file_path(repo_base_dir, content_item)
         meta = dict(frontmatter.load(file_path))
-        url = Helper.get_full_url_from_partial(content_sub_dir)
+        url, raw_url = Helper.get_full_urls_from_partial(content_sub_dir)
         try:
             content_item = models.ContentItem.objects.get(url=url)
         except models.ContentItem.DoesNotExist:
@@ -597,7 +592,7 @@ def _get_ordered_curriculum_items_from_page(file_stream):
             # assert len(l) in [1, 2], f"malformed content link {match}"
             hard_requirement = not (bool(int(params.get("optional", 0))))
             # url = helpers.get_full_url_from_content_link_param(params["path"])
-            url = Helper.get_full_url_from_partial(params["path"])
+            url, raw_url = Helper.get_full_urls_from_partial(params["path"])
 
             try:
                 content_item = models.ContentItem.objects.get(url=url)

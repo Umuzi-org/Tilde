@@ -247,6 +247,13 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         unique=True,
     )
 
+    raw_url = models.URLField(
+        max_length=2083,
+        blank=True,
+        null=True,
+        unique=True,
+    )
+
     prerequisites = models.ManyToManyField(
         "ContentItem",
         related_name="unlocks",
