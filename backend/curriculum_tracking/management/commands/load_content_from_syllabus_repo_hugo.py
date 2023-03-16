@@ -49,12 +49,13 @@ class Helper:
 
         return (
             cls.url_template.format(url_part=part),
-            cls.raw_url_template.format(part),
+            cls.raw_url_template.format(url_part=part),
         )
 
     @classmethod
-    def set_url_template(cls, url_template: str):
+    def set_url_templates(cls, url_template: str, raw_url_template: str):
         cls.url_template = url_template
+        cls.raw_url_template = raw_url_template
 
     @classmethod
     def set_repo_base_dir(cls, repo_base_dir):
@@ -704,11 +705,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         url_template = "http://syllabus.africacode.net/{url_part}/"  # TODO: get this from command line instead
+        raw_url_template = "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/{url_part}/_index.md"
         path_to_repo = options.get("path_to_tech_dept_repo", "")
         process_content = options["process_content"]
         process_curriculums = options["process_curriculums"]
 
-        Helper.set_url_template(url_template)
+        Helper.set_url_templates(url_template, raw_url_template)
         Helper.set_repo_base_dir(path_to_repo)
         Helper.load_available_content_flavours()
 

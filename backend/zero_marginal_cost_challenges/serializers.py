@@ -87,7 +87,7 @@ class StepDetailsSerializer(serializers.Serializer):
         return instance.content_item.content_type
 
     def get_raw_url(self, instance):
-        url = instance.content_item.url
+        return instance.content_item.raw_url
 
     def get_project_submission_type(self, instance):
         return instance.content_item.project_submission_type

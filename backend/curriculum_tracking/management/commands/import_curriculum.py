@@ -59,6 +59,7 @@ def create_content_items(data):
             title=content["title"],
             topic_needs_review=content["topic_needs_review"],
             url=content["url"],
+            raw_url=content["raw_url"],
             blurb=content["blurb"],
             link_name=content["link_name"],
             link_example=content["link_example"],

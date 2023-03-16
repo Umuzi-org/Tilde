@@ -65,6 +65,7 @@ def get_export_dict(curriculum):
                 "title": o.title,
                 "slug": o.slug,
                 "url": o.url,
+                "raw_url": o.raw_url,
                 "tags": o.tag_names,
                 "flavours": o.flavour_names,
                 "topic_needs_review": o.topic_needs_review,
