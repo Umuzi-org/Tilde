@@ -75,6 +75,7 @@ export default function ChallengeStep({ contentHtml }) {
   }
 
   const stepDetails = getStepDetails.responseData;
+  console.log({ stepDetails });
 
   const registration = getUserChallengeDetails.responseData;
   const stepSummary = registration
@@ -84,25 +85,9 @@ export default function ChallengeStep({ contentHtml }) {
         blurb: "Loading...",
       };
 
-  // useEffect(() => {
-  //   if (stepIndex !== undefined && registration) {
-  //     console.log("here---------------------");
-  //     console.log(stepSummary.status);
-  //     console.log(startStep.status);
-  //     if (stepSummary.status === STATUS_READY && !startStep.status)
-  //       // TODO: debounce. This gets called twice. Or call it in server side
-  //       startStep.call({ index: stepIndex });
-  //   }
-  // }, [
-  //   registration,
-  //   router.query.stepIndex,
-  //   startStep,
-  //   stepIndex,
-  //   stepSummary.status,
-  // ]);
-
   useEffect(() => {
     getUserChallengeDetails.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleNext() {
@@ -222,7 +207,8 @@ function Presentation({
         {stepSummary.status === STATUS_BLOCKED ? (
           <Center>
             <Text>
-              You can't do this step until you've completed the last one
+              You can&apos;t do this step until you&apos;ve completed the last
+              one
             </Text>
           </Center>
         ) : (
@@ -256,6 +242,7 @@ function Presentation({
                         status={submitProjectLink.status}
                         responseData={submitProjectLink.responseData}
                         isLoading={submitProjectLink.isLoading}
+                        linkSubmission={stepDetails.linkSubmission}
                       />
                     </Grid.Col>
                     <Grid.Col span="auto">
@@ -298,8 +285,6 @@ export async function getServerSideProps({ query, req }) {
     req,
   });
 
-  console.log({ startStatus: startStepResponse.status });
-  // TODO: get the content url
   // TODO: consider upgrading to contentlayer later on.
 
   const stepDetails = await serverSideGetStepDetails({
@@ -310,7 +295,7 @@ export async function getServerSideProps({ query, req }) {
 
   const raw_url = stepDetails.responseData.rawUrl;
 
-  // console.log({ stepDetails });
+  console.log({ stepDetails });
   // Fetch data from repo
   const res = await fetch(raw_url);
 

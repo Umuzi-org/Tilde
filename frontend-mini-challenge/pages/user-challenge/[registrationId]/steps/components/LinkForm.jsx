@@ -21,7 +21,7 @@ export default function LinkForm({
 }) {
   const form = useForm({
     initialValues: {
-      linkSubmission,
+      linkSubmission: linkSubmission || "",
     },
 
     validate: {
@@ -42,11 +42,7 @@ export default function LinkForm({
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto" mt="md">
       <Title order={3}>Project submission</Title>
-      {status === 400 && (
-        <ErrorAlert>
-          Something went wrong. See form field errors below
-        </ErrorAlert>
-      )}
+      {status === 400 && <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>}
       {status === 200 && (
         <InfoAlert title={"Success"}>
           Your project link has been updated{" "}
@@ -65,7 +61,10 @@ export default function LinkForm({
           />
           <Group position="right" mt="md">
             <Button type="submit" variant={"outline"}>
-              Submit Link
+              Update Link
+            </Button>
+            <Button type="submit" variant={"outline"}>
+              Resubmit for review
             </Button>
           </Group>
         </div>

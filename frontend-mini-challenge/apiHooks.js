@@ -41,7 +41,7 @@ export function useLogin() {
 
     setCookie(TOKEN_COOKIE, data.responseData.key, {
       path: "/",
-      maxAge: 3600, // Expires after 1hr
+      // maxAge: 3600, // Expires after 1hr
       sameSite: true,
     });
 
@@ -319,11 +319,12 @@ export async function serverSideGetStepDetails({
   const token = req.cookies[TOKEN_COOKIE];
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/step_details/?index=${stepIndex}`;
 
+  console.log({ token });
+
   const data = await fetchAndClean({
     token,
     url,
     method: GET,
-    // data: { index },
   });
 
   return data;
