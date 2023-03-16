@@ -46,48 +46,46 @@ export default function Login() {
 
   return (
     <Page>
-      <Container>
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <Title>Login</Title>
+      <Box sx={{ maxWidth: 300 }} mx="auto">
+        <Title>Login</Title>
 
-          {status === 400 && (
-            <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>
-          )}
+        {status === 400 && (
+          <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>
+        )}
 
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <div style={{ position: "relative" }}>
-              <LoadingOverlay
-                visible={isLoading}
-                overlayBlur={1}
-                // loaderProps={{ size: "xl" }}
-              />
-              <TextInput
-                mt="md"
-                withAsterisk
-                label="Email"
-                placeholder="your@email.com"
-                {...form.getInputProps("email")}
-              />
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="Password"
-                {...form.getInputProps("password")}
-                //   description="Password must include at least one letter, number and special character"
-              />
-              <Group position="center" mt="md">
-                <Link href="/forgot-password">
-                  <Text mt="md">Forgot password?</Text>
-                </Link>
-              </Group>
-              <Group position="center" mt="md">
-                <Button type="submit">Login</Button>
-              </Group>
-            </div>
-          </form>
-        </Box>
-      </Container>{" "}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <div style={{ position: "relative" }}>
+            <LoadingOverlay
+              visible={isLoading}
+              overlayBlur={1}
+              // loaderProps={{ size: "xl" }}
+            />
+            <TextInput
+              mt="md"
+              withAsterisk
+              label="Email"
+              placeholder="your@email.com"
+              {...form.getInputProps("email")}
+            />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="Password"
+              {...form.getInputProps("password")}
+              //   description="Password must include at least one letter, number and special character"
+            />
+            <Group position="center" mt="md">
+              <Link href="/forgot-password">
+                <Text mt="md">Forgot password?</Text>
+              </Link>
+            </Group>
+            <Group position="center" mt="md">
+              <Button type="submit">Login</Button>
+            </Group>
+          </div>
+        </form>
+      </Box>
     </Page>
   );
 }

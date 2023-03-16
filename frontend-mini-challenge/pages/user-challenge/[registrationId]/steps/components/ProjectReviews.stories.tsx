@@ -1,5 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
+import { Container } from "@mantine/core";
 import ProjectReviews from "./ProjectReviews";
 import {
   COMPETENT,
@@ -13,7 +14,11 @@ export default {
 } as ComponentMeta<typeof ProjectReviews>;
 
 const Template: ComponentStory<typeof ProjectReviews> = (args) => {
-  return <ProjectReviews {...args} />;
+  return (
+    <Container sx={{ maxWidth: "20rem" }}>
+      <ProjectReviews {...args} />
+    </Container>
+  );
 };
 
 export const NoReviews = Template.bind({});
@@ -29,7 +34,7 @@ Positive.args = {
 };
 
 export const Negative = Template.bind({});
-Positive.args = {
+Negative.args = {
   review: {
     timestamp: "2023-03-02T15:27:37Z",
     status: NOT_YET_COMPETENT,

@@ -64,62 +64,60 @@ export default function Settings() {
 
   return (
     <Page>
-      <Container>
-        <Breadcrumbs>
-          <Link onClick={goBack} href="">
-            Back
-          </Link>
-        </Breadcrumbs>
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <Title>Change Password</Title>
-          {status === 400 && (
-            <ErrorAlert>
-              Something went wrong. See form field errors below
-            </ErrorAlert>
-          )}
-          {status === 200 && (
-            <InfoAlert title={"Success"}>
-              Your password has been updated
-            </InfoAlert>
-          )}
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <div style={{ position: "relative" }}>
-              <LoadingOverlay visible={isLoading} overlayBlur={1} />
+      <Breadcrumbs>
+        <Link onClick={goBack} href="">
+          Back
+        </Link>
+      </Breadcrumbs>
+      <Box sx={{ maxWidth: 300 }} mx="auto">
+        <Title>Change Password</Title>
+        {status === 400 && (
+          <ErrorAlert>
+            Something went wrong. See form field errors below
+          </ErrorAlert>
+        )}
+        {status === 200 && (
+          <InfoAlert title={"Success"}>
+            Your password has been updated
+          </InfoAlert>
+        )}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <div style={{ position: "relative" }}>
+            <LoadingOverlay visible={isLoading} overlayBlur={1} />
 
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="Old password"
-                {...form.getInputProps("oldPassword")}
-                {...formErrors.oldPassword}
-              />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="Old password"
+              {...form.getInputProps("oldPassword")}
+              {...formErrors.oldPassword}
+            />
 
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="New password"
-                {...form.getInputProps("newPassword1")}
-                {...formErrors.newPassword1}
-              />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="New password"
+              {...form.getInputProps("newPassword1")}
+              {...formErrors.newPassword1}
+            />
 
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="Confirm password"
-                {...form.getInputProps("newPassword2")}
-                {...formErrors.newPassword2}
-              />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="Confirm password"
+              {...form.getInputProps("newPassword2")}
+              {...formErrors.newPassword2}
+            />
 
-              <Group position="center" mt="md">
-                <Button type="submit">Save Password</Button>
-              </Group>
-            </div>
-          </form>
-        </Box>
-      </Container>{" "}
+            <Group position="center" mt="md">
+              <Button type="submit">Save Password</Button>
+            </Group>
+          </div>
+        </form>
+      </Box>
     </Page>
   );
 }

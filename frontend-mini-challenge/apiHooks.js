@@ -286,12 +286,6 @@ export function useGetStepDetails({ registrationId, stepIndex }) {
 
   const token = getAuthToken();
 
-  console.log({
-    token,
-    registrationId,
-    stepIndex,
-  });
-
   const { data, error, isLoading, mutate } = useSWR(
     token && registrationId && stepIndex !== undefined
       ? {

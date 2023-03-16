@@ -26,7 +26,9 @@ export default function LinkForm({
 
     validate: {
       linkSubmission: (value) =>
-        value.startsWith("https://") ? null : "Please fill in a valid url",
+        value && value.startsWith("https://")
+          ? null
+          : "Please fill in a valid url",
     },
   });
   const formErrors = {};

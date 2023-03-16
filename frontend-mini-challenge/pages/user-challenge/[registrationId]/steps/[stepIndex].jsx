@@ -1,6 +1,7 @@
+// TODO: implement as much server side rendering as possible. There is more to be done here
+
 import Page from "../../../../components/LoggedInPage";
 import {
-  Container,
   Title,
   Text,
   LoadingOverlay,
@@ -9,11 +10,10 @@ import {
   Group,
   Button,
   Breadcrumbs,
-  Box,
   Divider,
-  Center,
   Grid,
   Tooltip,
+  Paper,
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import {
@@ -42,7 +42,11 @@ import Link from "next/link";
 import ProjectReviews from "./components/ProjectReviews";
 import LinkForm from "./components/LinkForm";
 
-export default function ChallengeStep() {
+import { remark } from "remark";
+import html from "remark-html";
+import matter from "gray-matter";
+
+export default function ChallengeStep({ contentHtml }) {
   const router = useRouter();
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } =
     router.query;
@@ -53,6 +57,7 @@ export default function ChallengeStep() {
   const getUserChallengeDetails = useGetUserChallengeDetails({
     registrationId,
   });
+
   const startStep = useStartStep({ registrationId });
   const finishStep = useFinishStep({ registrationId });
   const getStepDetails = useGetStepDetails({ registrationId, stepIndex });
@@ -89,13 +94,6 @@ export default function ChallengeStep() {
     stepSummary.status,
   ]);
 
-  const { Icon, color } = stepSummary.status
-    ? statusLooks[stepSummary.status]
-    : {
-        Icon: Loader,
-        color: "",
-      };
-
   function handleNext() {
     if (stepSummary.status === STATUS_READY) {
       finishStep.call({ index: stepIndex });
@@ -114,18 +112,46 @@ export default function ChallengeStep() {
     else router.push(`/user-challenge/${registrationId}/`);
   }
 
-  const showFinishButton = registration
-    ? stepIndex + 1 === registration.steps.length
-    : false;
-  const showNextButton = registration ? !showFinishButton : false;
+  const props = {
+    registrationId,
+    stepIndex,
 
-  const showLinkForm = stepDetails
-    ? stepDetails.contentType === "P" &&
-      stepDetails.projectSubmissionType === "L"
-    : false;
+    // TODO try simplify props by removing hook things. Just pass in what is strictly required
+    getUserChallengeDetails,
+    getStepDetails,
+    submitProjectLink,
 
+    registration,
+    stepSummary,
+    stepDetails,
+    currentPath: router.asPath,
+    contentHtml,
+
+    handleNext,
+    handlePrevious,
+    handleSubmitLinkForm,
+  };
+  return <Presentation {...props} />;
+}
+
+function Presentation({
+  registrationId,
+  stepIndex,
+  getUserChallengeDetails,
+  getStepDetails,
+  submitProjectLink,
+  stepSummary,
+  stepDetails,
+  currentPath,
+  contentHtml,
+  registration,
+
+  handleNext,
+  handlePrevious,
+  handleSubmitLinkForm,
+}) {
+  console.log({ stepDetails });
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
-
   const nextIsBlockedByProject = isProject
     ? stepDetails.status !== STATUS_DONE
     : false;
@@ -141,14 +167,22 @@ export default function ChallengeStep() {
         : "Next"}
     </Button>
   );
+
+  const { Icon, color } = stepSummary.status
+    ? statusLooks[stepSummary.status]
+    : {
+        Icon: Loader,
+        color: "",
+      };
+
   const crumbs = [
     {
       title: getUserChallengeDetails.responseData
         ? getUserChallengeDetails.responseData.name
         : "Loading...",
-      href: `/user-challenge/${router.query.registrationId}`,
+      href: `/user-challenge/${registrationId}`,
     },
-    { title: stepSummary.title, href: router.asPath },
+    { title: stepSummary.title, href: currentPath },
   ].map((item, index) => (
     <Link href={item.href} key={index}>
       {item.title}
@@ -157,93 +191,111 @@ export default function ChallengeStep() {
 
   return (
     <Page>
-      <Container>
-        <Stack spacing={"md"}>
-          <Breadcrumbs>{crumbs}</Breadcrumbs>
-          <div style={{ position: "relative" }}>
-            <LoadingOverlay
-              visible={getUserChallengeDetails.isLoading}
-              overlayBlur={1}
-              loaderProps={{ size: "xl" }}
-            />
-            <Group>
-              <Icon size="4rem" color={color} />
-              <Title>
-                Step {parseInt(router.query.stepIndex) + 1}: {stepSummary.title}
-              </Title>
-            </Group>
-            <Text mt="md" c="dimmed">
-              {stepSummary.blurb}
-            </Text>
-          </div>
-
-          <div style={{ position: "relative" }}>
-            <LoadingOverlay
-              visible={getStepDetails.isLoading}
-              overlayBlur={1}
-              loaderProps={{ size: "xl" }}
-            />
-
-            <Box mt="md">
-              <Text>
-                The content for this step can be found at the following link.
-                Please follow the instructions in link and come back here when
-                you are done
-              </Text>
-              <Center>
-                <a href={stepDetails && stepDetails.url} target="_blank">
-                  <Text fz="xl">View content</Text>
-                </a>
-              </Center>
-            </Box>
-
-            {isProject && (
-              <>
-                <Divider mt="md" />
-
-                <Stack spacing={"md"} mt="md">
-                  <Title order={2}>Project details</Title>
-                  <Text>
-                    This step is a project. That means you need to submit your
-                    work before you can continue with the next step. Once you
-                    have submitted your work you'll need to wait a little while
-                    for us to mark it.
-                  </Text>
-                  <Grid>
-                    <Grid.Col span="auto">
-                      <LinkForm
-                        linkExample={stepDetails.linkExample}
-                        linkName={stepDetails.linkName}
-                        handleSubmit={handleSubmitLinkForm}
-                        status={submitProjectLink.status}
-                        responseData={submitProjectLink.responseData}
-                        isLoading={submitProjectLink.isLoading}
-                      />
-                    </Grid.Col>
-                    <Grid.Col span="auto">
-                      <ProjectReviews reviews={stepDetails.reviews} />
-                    </Grid.Col>
-                  </Grid>
-                </Stack>
-              </>
-            )}
-          </div>
-          <Divider mt="md" />
-          <Group position="apart">
-            <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
-              Back
-            </Button>
-
-            {nextIsBlockedByProject ? (
-              <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
-                {nextButton}
-              </Tooltip>
-            ) : (
-              nextButton
-            )}
+      <Stack spacing={"md"}>
+        <Breadcrumbs>{crumbs}</Breadcrumbs>
+        <div style={{ position: "relative" }}>
+          <LoadingOverlay
+            visible={getUserChallengeDetails.isLoading}
+            overlayBlur={1}
+            loaderProps={{ size: "xl" }}
+          />
+          <Group>
+            <Icon size="4rem" color={color} />
+            <Title>
+              Step {parseInt(stepIndex) + 1}: {stepSummary.title}
+            </Title>
           </Group>
-        </Stack>
-      </Container>
+          <Text mt="md" c="dimmed">
+            {stepSummary.blurb}
+          </Text>
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <LoadingOverlay
+            visible={getStepDetails.isLoading}
+            overlayBlur={1}
+            loaderProps={{ size: "xl" }}
+          />
+
+          <Paper p="md" shadow="sm" withBorder>
+            <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+          </Paper>
+
+          {isProject && (
+            <>
+              {/* <Divider mt="md" /> */}
+
+              <Stack spacing={"md"} mt="md">
+                <Title order={2}>Project details</Title>
+                <Text>
+                  This step is a project. That means you need to submit your
+                  work before you can continue with the next step. Once you have
+                  submitted your work you&apos;ll need to wait a little while
+                  for us to mark it.
+                </Text>
+                <Grid>
+                  <Grid.Col span="auto">
+                    <LinkForm
+                      linkExample={stepDetails.linkExample}
+                      linkName={stepDetails.linkName}
+                      handleSubmit={handleSubmitLinkForm}
+                      status={submitProjectLink.status}
+                      responseData={submitProjectLink.responseData}
+                      isLoading={submitProjectLink.isLoading}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span="auto">
+                    <ProjectReviews reviews={stepDetails.reviews} />
+                  </Grid.Col>
+                </Grid>
+              </Stack>
+            </>
+          )}
+        </div>
+        <Divider mt="md" />
+        <Group position="apart">
+          <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
+            Back
+          </Button>
+
+          {nextIsBlockedByProject ? (
+            <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
+              {nextButton}
+            </Tooltip>
+          ) : (
+            nextButton
+          )}
+        </Group>
+      </Stack>
     </Page>
   );
+}
+
+export async function getServerSideProps({ query }) {
+  const { stepIndex: stepIndexStr, registrationId: registrationIdStr } = query;
+
+  const stepIndex = parseInt(stepIndexStr);
+  const registrationId = parseInt(registrationIdStr);
+
+  // const getUserChallengeDetails = useGetUserChallengeDetails({
+  //   registrationId,
+  // });
+  // TODO: get the content url
+  // TODO: consider upgrading to contentlayer later on.
+
+  // Fetch data from repo
+  const res = await fetch(
+    `https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/adding-images/_index.md`
+  );
+
+  const body = await res.text();
+  const matterResult = matter(body);
+
+  const processedContent = await remark()
+    .use(html)
+    .process(matterResult.content);
+  const contentHtml = processedContent.toString();
+
+  // Pass data to the page via props
+  return { props: { contentHtml } };
 }

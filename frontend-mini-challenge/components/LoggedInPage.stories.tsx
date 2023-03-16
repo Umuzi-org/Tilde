@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Presentation } from "./LoggedInPage";
-import { Container } from "@mantine/core";
+import { Text } from "@mantine/core";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -15,7 +15,7 @@ export default {
 const Template: ComponentStory<typeof Presentation> = (args) => {
   return (
     <Presentation {...args}>
-      <Container>Content goes here</Container>
+      <Text>Content goes here</Text>
     </Presentation>
   );
 };

@@ -1,6 +1,5 @@
 import Page from "../../components/LoggedOutPage";
 import {
-  Container,
   Title,
   TextInput,
   Button,
@@ -8,7 +7,6 @@ import {
   Group,
   Box,
   LoadingOverlay,
-  Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Link from "next/link";
@@ -36,41 +34,39 @@ export default function ForgotPassword() {
 
   return (
     <Page>
-      <Container>
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <Title>Forgot Password</Title>
+      <Box sx={{ maxWidth: 300 }} mx="auto">
+        <Title>Forgot Password</Title>
 
-          {sentTo && (
-            <InfoAlert title="Password reset message sent">
-              We sent a message to {sentTo}. Please keep an eye on your inbox.
-              And your spam folder just in case.
-            </InfoAlert>
-          )}
+        {sentTo && (
+          <InfoAlert title="Password reset message sent">
+            We sent a message to {sentTo}. Please keep an eye on your inbox. And
+            your spam folder just in case.
+          </InfoAlert>
+        )}
 
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <div style={{ position: "relative" }}>
-              <LoadingOverlay visible={isLoading} overlayBlur={1} />
-              <TextInput
-                mt="md"
-                withAsterisk
-                label="Email"
-                placeholder="your@email.com"
-                {...form.getInputProps("email")}
-              />
-              <Group position="center" mt="md">
-                <Link href="/login">
-                  <Text mt="md">Back to login</Text>
-                </Link>
-              </Group>
-              <Group position="center" mt="md">
-                <Button type="submit" disabled={isLoading}>
-                  Reset Password
-                </Button>
-              </Group>
-            </div>
-          </form>
-        </Box>
-      </Container>{" "}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <div style={{ position: "relative" }}>
+            <LoadingOverlay visible={isLoading} overlayBlur={1} />
+            <TextInput
+              mt="md"
+              withAsterisk
+              label="Email"
+              placeholder="your@email.com"
+              {...form.getInputProps("email")}
+            />
+            <Group position="center" mt="md">
+              <Link href="/login">
+                <Text mt="md">Back to login</Text>
+              </Link>
+            </Group>
+            <Group position="center" mt="md">
+              <Button type="submit" disabled={isLoading}>
+                Reset Password
+              </Button>
+            </Group>
+          </div>
+        </form>
+      </Box>
     </Page>
   );
 }

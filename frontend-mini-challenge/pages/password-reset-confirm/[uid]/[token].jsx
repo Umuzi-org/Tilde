@@ -1,6 +1,5 @@
 import Page from "../../../components/LoggedOutPage";
 import {
-  Container,
   Title,
   Button,
   Group,
@@ -44,47 +43,45 @@ export default function ResetPassword() {
 
   return (
     <Page>
-      <Container>
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-          <Title>Reset Password</Title>
-          {status === 400 && (
-            <ErrorAlert>
-              {responseData.token || responseData.uid
-                ? "This password reset link is invalid. Have you already used it? When you attempt to reset your password then it is important that you follow the password reset link in the latest email you received."
-                : Object.values(responseData)}
-            </ErrorAlert>
-          )}
+      <Box sx={{ maxWidth: 300 }} mx="auto">
+        <Title>Reset Password</Title>
+        {status === 400 && (
+          <ErrorAlert>
+            {responseData.token || responseData.uid
+              ? "This password reset link is invalid. Have you already used it? When you attempt to reset your password then it is important that you follow the password reset link in the latest email you received."
+              : Object.values(responseData)}
+          </ErrorAlert>
+        )}
 
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <div style={{ position: "relative" }}>
-              <LoadingOverlay
-                visible={isLoading}
-                overlayBlur={1}
-                // loaderProps={{ size: "xl" }}
-              />
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="New password"
-                {...form.getInputProps("newPassword1")}
-              />
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <div style={{ position: "relative" }}>
+            <LoadingOverlay
+              visible={isLoading}
+              overlayBlur={1}
+              // loaderProps={{ size: "xl" }}
+            />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="New password"
+              {...form.getInputProps("newPassword1")}
+            />
 
-              <PasswordInput
-                mt="md"
-                withAsterisk
-                placeholder="Password"
-                label="Confirm password"
-                {...form.getInputProps("newPassword2")}
-              />
+            <PasswordInput
+              mt="md"
+              withAsterisk
+              placeholder="Password"
+              label="Confirm password"
+              {...form.getInputProps("newPassword2")}
+            />
 
-              <Group position="center" mt="md">
-                <Button type="submit">Confirm</Button>
-              </Group>
-            </div>
-          </form>
-        </Box>
-      </Container>{" "}
+            <Group position="center" mt="md">
+              <Button type="submit">Confirm</Button>
+            </Group>
+          </div>
+        </form>
+      </Box>
     </Page>
   );
 }

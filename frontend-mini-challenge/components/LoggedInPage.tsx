@@ -1,12 +1,19 @@
 // TODO: make sure it's responsive: https://mantine.dev/core/app-shell/
 
-import { AppShell, Header, Group, Menu, ActionIcon, Text } from "@mantine/core";
+import {
+  AppShell,
+  Header,
+  Group,
+  Menu,
+  ActionIcon,
+  Text,
+  Container,
+} from "@mantine/core";
 import { useWhoAmI, useLogout } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { getAuthToken } from "../lib/authTokenStorage";
-import Link from "next/link";
 
 export default function Page({ children }) {
   const {
@@ -93,7 +100,7 @@ export function Presentation({
         </Header>
       }
     >
-      {children}
+      <Container style={{ minHeight: "100%" }}>{children}</Container>
     </AppShell>
   );
 }

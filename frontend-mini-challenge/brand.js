@@ -56,11 +56,13 @@ export const SettingsIcon = IoSettingsOutline;
 export const LogoutIcon = IoLogOutOutline;
 
 export const ReviewStatusLooks = {
-  COMPETENT: {
+  [COMPETENT]: {
     Icon: IoCheckmarkCircleOutline,
+    color: statusLooks[STATUS_DONE].color,
   },
-  NOT_YET_COMPETENT: {
+  [NOT_YET_COMPETENT]: {
     Icon: IoCloseCircleOutline,
+    color: statusLooks[STATUS_ERROR].color,
   },
 };
 

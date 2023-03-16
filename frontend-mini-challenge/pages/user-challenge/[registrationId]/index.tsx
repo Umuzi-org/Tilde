@@ -16,30 +16,28 @@ export default function Home() {
 
   return (
     <Page>
-      <Container>
-        <div>
-          <LoadingOverlay
-            visible={getUserChallengeDetails.isLoading}
-            overlayBlur={1}
-            loaderProps={{ size: "xl" }}
+      <div>
+        <LoadingOverlay
+          visible={getUserChallengeDetails.isLoading}
+          overlayBlur={1}
+          loaderProps={{ size: "xl" }}
+        />
+      </div>
+      <Stack>
+        <Title align="center">{challengeDetails.name}</Title>
+
+        <Text>{challengeDetails.blurb}</Text>
+
+        {challengeDetails.steps.map((step, index) => (
+          <Step
+            key={index}
+            index={index}
+            title={step.title}
+            blurb={step.blurb}
+            status={step.status}
           />
-        </div>
-        <Stack>
-          <Title align="center">{challengeDetails.name}</Title>
-
-          <Text>{challengeDetails.blurb}</Text>
-
-          {challengeDetails.steps.map((step, index) => (
-            <Step
-              key={index}
-              index={index}
-              title={step.title}
-              blurb={step.blurb}
-              status={step.status}
-            />
-          ))}
-        </Stack>
-      </Container>
+        ))}
+      </Stack>
     </Page>
   );
 }

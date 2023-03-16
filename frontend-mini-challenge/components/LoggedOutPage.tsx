@@ -1,6 +1,6 @@
 // TODO: make sure it's responsive: https://mantine.dev/core/app-shell/
 
-import { AppShell, Header } from "@mantine/core";
+import { AppShell, Container, Header } from "@mantine/core";
 import { useWhoAmI } from "../apiHooks";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -24,7 +24,7 @@ export default function Page({ children }) {
 
   return (
     <AppShell padding="md" header={<Header height={60} p="xs"></Header>}>
-      {children}
+      <Container>{children}</Container>
     </AppShell>
   );
 }
