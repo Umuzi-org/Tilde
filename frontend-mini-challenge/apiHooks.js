@@ -319,8 +319,6 @@ export async function serverSideGetStepDetails({
   const token = req.cookies[TOKEN_COOKIE];
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/step_details/?index=${stepIndex}`;
 
-  console.log({ token });
-
   const data = await fetchAndClean({
     token,
     url,
@@ -354,12 +352,20 @@ export function useGetStepDetails({ registrationId, stepIndex }) {
   return { error, isLoading, mutate, ...data };
 }
 
-export function useSubmitStepProjectLink({ registrationId }) {
+export function useSubmitStepProjectLink({ stepIndex, registrationId }) {
+  const { mutate: mutateChallenge } = useGetUserChallengeDetails({
+    registrationId,
+  });
+  const { mutate: mutateStepDetails } = useGetStepDetails({
+    registrationId,
+    stepIndex,
+  });
+
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/submit_link/`;
 
-  async function call({ stepIndex, linkSubmission }) {
+  async function call({ linkSubmission }) {
     setLoading(true);
     const token = getAuthToken();
     const data = await fetchAndClean({
@@ -370,6 +376,8 @@ export function useSubmitStepProjectLink({ registrationId }) {
     });
     setData(data);
     setLoading(false);
+    mutateChallenge();
+    mutateStepDetails();
   }
   return {
     call,

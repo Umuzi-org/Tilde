@@ -14,8 +14,6 @@ export default function Home() {
     steps: [],
   };
 
-  console.log(challengeDetails);
-
   return (
     <Page>
       <div>

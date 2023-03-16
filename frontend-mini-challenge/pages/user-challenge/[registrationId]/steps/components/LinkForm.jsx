@@ -45,7 +45,7 @@ export default function LinkForm({
       {status === 400 && <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>}
       {status === 200 && (
         <InfoAlert title={"Success"}>
-          Your project link has been updated{" "}
+          Your project link has been submitted for review{" "}
         </InfoAlert>
       )}
       <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -61,10 +61,7 @@ export default function LinkForm({
           />
           <Group position="right" mt="md">
             <Button type="submit" variant={"outline"}>
-              Update Link
-            </Button>
-            <Button type="submit" variant={"outline"}>
-              Resubmit for review
+              Update and submit for review
             </Button>
           </Group>
         </div>

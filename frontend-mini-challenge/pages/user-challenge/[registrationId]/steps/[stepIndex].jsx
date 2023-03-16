@@ -68,14 +68,14 @@ export default function ChallengeStep({ contentHtml }) {
 
   const submitProjectLink = useSubmitStepProjectLink({
     registrationId,
+    stepIndex,
   });
 
   function handleSubmitLinkForm({ linkSubmission }) {
-    submitProjectLink.call({ linkSubmission, stepIndex });
+    submitProjectLink.call({ linkSubmission });
   }
 
   const stepDetails = getStepDetails.responseData;
-  console.log({ stepDetails });
 
   const registration = getUserChallengeDetails.responseData;
   const stepSummary = registration
@@ -246,7 +246,10 @@ function Presentation({
                       />
                     </Grid.Col>
                     <Grid.Col span="auto">
-                      <ProjectReviews reviews={stepDetails.reviews} />
+                      <ProjectReviews
+                        reviews={stepDetails.reviews}
+                        status={stepSummary.status}
+                      />
                     </Grid.Col>
                   </Grid>
                 </Stack>
@@ -295,7 +298,6 @@ export async function getServerSideProps({ query, req }) {
 
   const raw_url = stepDetails.responseData.rawUrl;
 
-  console.log({ stepDetails });
   // Fetch data from repo
   const res = await fetch(raw_url);
 

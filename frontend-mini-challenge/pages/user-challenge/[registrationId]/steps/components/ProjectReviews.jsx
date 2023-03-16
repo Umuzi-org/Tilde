@@ -16,12 +16,6 @@ export default function ProjectReviews({ review, status }) {
     reviewStatus
   ] || { Icon: null, color: "" };
 
-  //   console.log({
-  //     review,
-  //     reviewStatus
-
-  //   })
-
   return (
     <Stack spacing={"md"} mt="md">
       <Group>
