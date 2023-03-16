@@ -21,6 +21,7 @@ import {
   useStartStep,
   useFinishStep,
   useGetStepDetails,
+  serverSideGetStepDetails,
   useSubmitStepProjectLink,
 } from "../../../../apiHooks";
 import {
@@ -150,7 +151,6 @@ function Presentation({
   handlePrevious,
   handleSubmitLinkForm,
 }) {
-  console.log({ stepDetails });
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
   const nextIsBlockedByProject = isProject
     ? stepDetails.status !== STATUS_DONE
@@ -271,7 +271,7 @@ function Presentation({
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, req }) {
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } = query;
 
   const stepIndex = parseInt(stepIndexStr);
@@ -282,6 +282,15 @@ export async function getServerSideProps({ query }) {
   // });
   // TODO: get the content url
   // TODO: consider upgrading to contentlayer later on.
+
+  console.log("----------------");
+
+  const stepDetails = await serverSideGetStepDetails({
+    stepIndex,
+    registrationId,
+    req,
+  });
+  console.log({ stepDetails });
 
   // Fetch data from repo
   const res = await fetch(

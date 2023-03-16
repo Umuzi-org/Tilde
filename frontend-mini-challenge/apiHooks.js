@@ -7,12 +7,17 @@ import {
   setAuthToken,
 } from "./lib/authTokenStorage";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+const TOKEN_COOKIE = "token";
 
 export function useLogin() {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
+  const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+
   const { mutate } = useWhoAmI();
 
   const url = urlJoin({
@@ -33,6 +38,13 @@ export function useLogin() {
     setData(data);
     setLoading(false);
     setAuthToken({ value: data.responseData.key, keep: true });
+
+    setCookie(TOKEN_COOKIE, data.responseData.key, {
+      path: "/",
+      maxAge: 3600, // Expires after 1hr
+      sameSite: true,
+    });
+
     mutate();
   }
 
@@ -279,6 +291,24 @@ export function useFinishStep({ registrationId }) {
     isLoading,
     ...data,
   };
+}
+
+export async function serverSideGetStepDetails({
+  registrationId,
+  stepIndex,
+  req,
+}) {
+  const token = req.cookies[TOKEN_COOKIE];
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/step_details/?index=${stepIndex}`;
+
+  const data = await fetchAndClean({
+    token,
+    url,
+    method: GET,
+    // data: { index },
+  });
+
+  return data;
 }
 
 export function useGetStepDetails({ registrationId, stepIndex }) {
