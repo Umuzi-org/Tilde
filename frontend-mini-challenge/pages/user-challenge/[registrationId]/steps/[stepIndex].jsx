@@ -14,14 +14,16 @@ import {
   Grid,
   Tooltip,
   Paper,
+  Center,
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import {
   useGetUserChallengeDetails,
-  useStartStep,
+  // useStartStep,
   useFinishStep,
   useGetStepDetails,
   serverSideGetStepDetails,
+  serverSideStartStep,
   useSubmitStepProjectLink,
 } from "../../../../apiHooks";
 import {
@@ -46,6 +48,7 @@ import LinkForm from "./components/LinkForm";
 import { remark } from "remark";
 import html from "remark-html";
 import matter from "gray-matter";
+import { ErrorAlert } from "../../../../components/Alerts";
 
 export default function ChallengeStep({ contentHtml }) {
   const router = useRouter();
@@ -59,7 +62,7 @@ export default function ChallengeStep({ contentHtml }) {
     registrationId,
   });
 
-  const startStep = useStartStep({ registrationId });
+  // const startStep = useStartStep({ registrationId });
   const finishStep = useFinishStep({ registrationId });
   const getStepDetails = useGetStepDetails({ registrationId, stepIndex });
 
@@ -68,7 +71,7 @@ export default function ChallengeStep({ contentHtml }) {
   });
 
   function handleSubmitLinkForm({ linkSubmission }) {
-    call({ linkSubmission, stepIndex });
+    submitProjectLink.call({ linkSubmission, stepIndex });
   }
 
   const stepDetails = getStepDetails.responseData;
@@ -81,24 +84,30 @@ export default function ChallengeStep({ contentHtml }) {
         blurb: "Loading...",
       };
 
-  useEffect(() => {
-    if (stepIndex !== undefined && registration) {
-      if (stepSummary.status === STATUS_READY && !startStep.status)
-        // TODO: debounce. This gets called twice.
-        startStep.call({ index: stepIndex });
-    }
-  }, [
-    registration,
-    router.query.stepIndex,
-    startStep,
-    stepIndex,
-    stepSummary.status,
-  ]);
+  // useEffect(() => {
+  //   if (stepIndex !== undefined && registration) {
+  //     console.log("here---------------------");
+  //     console.log(stepSummary.status);
+  //     console.log(startStep.status);
+  //     if (stepSummary.status === STATUS_READY && !startStep.status)
+  //       // TODO: debounce. This gets called twice. Or call it in server side
+  //       startStep.call({ index: stepIndex });
+  //   }
+  // }, [
+  //   registration,
+  //   router.query.stepIndex,
+  //   startStep,
+  //   stepIndex,
+  //   stepSummary.status,
+  // ]);
 
-  function handleNext() {
+  useEffect(() => {
+    getUserChallengeDetails.mutate();
+  }, []);
+
+  async function handleNext() {
     if (stepSummary.status === STATUS_READY) {
-      finishStep.call({ index: stepIndex });
-      getUserChallengeDetails.mutate();
+      await finishStep.call({ index: stepIndex });
     }
     if (stepIndex + 1 === registration.steps.length) {
       router.push(`/user-challenge/${registrationId}`);
@@ -153,12 +162,12 @@ function Presentation({
 }) {
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
   const nextIsBlockedByProject = isProject
-    ? stepDetails.status !== STATUS_DONE
+    ? stepSummary.status !== STATUS_DONE
     : false;
 
   const nextButton = (
     <Button
-      disabled={nextIsBlockedByProject}
+      disabled={nextIsBlockedByProject || stepSummary.status === STATUS_BLOCKED}
       onClick={handleNext}
       rightIcon={<ForwardArrowIcon />}
     >
@@ -210,48 +219,55 @@ function Presentation({
           </Text>
         </div>
 
-        <div style={{ position: "relative" }}>
-          <LoadingOverlay
-            visible={getStepDetails.isLoading}
-            overlayBlur={1}
-            loaderProps={{ size: "xl" }}
-          />
+        {stepSummary.status === STATUS_BLOCKED ? (
+          <Center>
+            <Text>
+              You can't do this step until you've completed the last one
+            </Text>
+          </Center>
+        ) : (
+          <>
+            <div style={{ position: "relative" }}>
+              <LoadingOverlay
+                visible={getStepDetails.isLoading}
+                overlayBlur={1}
+                loaderProps={{ size: "xl" }}
+              />
 
-          <Paper p="md" shadow="sm" withBorder>
-            <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
-          </Paper>
+              <Paper p="md" shadow="sm" withBorder>
+                <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+              </Paper>
 
-          {isProject && (
-            <>
-              {/* <Divider mt="md" /> */}
+              {isProject && (
+                <Stack spacing={"md"} mt="md">
+                  <Title order={2}>Project details</Title>
+                  <Text>
+                    This step is a project. That means you need to submit your
+                    work before you can continue with the next step. Once you
+                    have submitted your work you&apos;ll need to wait a little
+                    while for us to mark it.
+                  </Text>
+                  <Grid>
+                    <Grid.Col span="auto">
+                      <LinkForm
+                        linkExample={stepDetails.linkExample}
+                        linkName={stepDetails.linkName}
+                        handleSubmit={handleSubmitLinkForm}
+                        status={submitProjectLink.status}
+                        responseData={submitProjectLink.responseData}
+                        isLoading={submitProjectLink.isLoading}
+                      />
+                    </Grid.Col>
+                    <Grid.Col span="auto">
+                      <ProjectReviews reviews={stepDetails.reviews} />
+                    </Grid.Col>
+                  </Grid>
+                </Stack>
+              )}
+            </div>
+          </>
+        )}
 
-              <Stack spacing={"md"} mt="md">
-                <Title order={2}>Project details</Title>
-                <Text>
-                  This step is a project. That means you need to submit your
-                  work before you can continue with the next step. Once you have
-                  submitted your work you&apos;ll need to wait a little while
-                  for us to mark it.
-                </Text>
-                <Grid>
-                  <Grid.Col span="auto">
-                    <LinkForm
-                      linkExample={stepDetails.linkExample}
-                      linkName={stepDetails.linkName}
-                      handleSubmit={handleSubmitLinkForm}
-                      status={submitProjectLink.status}
-                      responseData={submitProjectLink.responseData}
-                      isLoading={submitProjectLink.isLoading}
-                    />
-                  </Grid.Col>
-                  <Grid.Col span="auto">
-                    <ProjectReviews reviews={stepDetails.reviews} />
-                  </Grid.Col>
-                </Grid>
-              </Stack>
-            </>
-          )}
-        </div>
         <Divider mt="md" />
         <Group position="apart">
           <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
@@ -273,29 +289,30 @@ function Presentation({
 
 export async function getServerSideProps({ query, req }) {
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } = query;
-
   const stepIndex = parseInt(stepIndexStr);
   const registrationId = parseInt(registrationIdStr);
 
-  // const getUserChallengeDetails = useGetUserChallengeDetails({
-  //   registrationId,
-  // });
+  const startStepResponse = await serverSideStartStep({
+    stepIndex,
+    registrationId,
+    req,
+  });
+
+  console.log({ startStatus: startStepResponse.status });
   // TODO: get the content url
   // TODO: consider upgrading to contentlayer later on.
-
-  console.log("----------------");
 
   const stepDetails = await serverSideGetStepDetails({
     stepIndex,
     registrationId,
     req,
   });
-  console.log({ stepDetails });
 
+  const raw_url = stepDetails.responseData.rawUrl;
+
+  // console.log({ stepDetails });
   // Fetch data from repo
-  const res = await fetch(
-    `https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/zmc-challenges/first-website/adding-images/_index.md`
-  );
+  const res = await fetch(raw_url);
 
   const body = await res.text();
   const matterResult = matter(body);

@@ -245,6 +245,20 @@ export function useRegisterForChallenge() {
   };
 }
 
+export async function serverSideStartStep({ stepIndex, registrationId, req }) {
+  const token = req.cookies[TOKEN_COOKIE];
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/start_step/`;
+
+  const data = await fetchAndClean({
+    token,
+    url,
+    method: POST,
+    data: { index: stepIndex },
+  });
+
+  return data;
+}
+
 export function useStartStep({ registrationId }) {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
@@ -270,6 +284,9 @@ export function useStartStep({ registrationId }) {
 }
 
 export function useFinishStep({ registrationId }) {
+  const getUserChallengeDetails = useGetUserChallengeDetails({
+    registrationId,
+  });
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/finish_step/`;
@@ -283,6 +300,7 @@ export function useFinishStep({ registrationId }) {
       method: POST,
       data: { index },
     });
+    getUserChallengeDetails.mutate();
     setData(data);
     setLoading(false);
   }
@@ -340,14 +358,14 @@ export function useSubmitStepProjectLink({ registrationId }) {
   const [isLoading, setLoading] = useState(false);
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/submit_link/`;
 
-  async function call({ index, linkSubmission }) {
+  async function call({ stepIndex, linkSubmission }) {
     setLoading(true);
     const token = getAuthToken();
     const data = await fetchAndClean({
       token,
       url,
       method: POST,
-      data: { index, linkSubmission },
+      data: { index: stepIndex, linkSubmission },
     });
     setData(data);
     setLoading(false);
