@@ -26,7 +26,13 @@ class StepCanStart(BasePermission, StepPermissionMixin):
         """return True if the step either can start or has already started"""
         step = self.get_step(request, view)
         if step:
-            return step.status == models.ChallengeRegistration.STATUS_READY
+            result = step.status in [
+                models.ChallengeRegistration.STATUS_READY,
+                models.ChallengeRegistration.STATUS_DONE,
+            ]
+            # if not result:
+            #     breakpoint()
+            return result
 
 
 class StepCanFinish(BasePermission, StepPermissionMixin):

@@ -32,6 +32,13 @@ export default function ProjectReviews({ review, status }) {
           <Group position="center">
             <Loader variant="dots" />
           </Group>
+          <Group position="center">
+            <Text c="dimmed">
+              Please REFRESH THE PAGE to see your feedback. Reviews take a few
+              minutes. Once you have received a positive review you&apos;ll be
+              able to move onto the next step
+            </Text>
+          </Group>
         </>
       )}
       {showEmpty && (

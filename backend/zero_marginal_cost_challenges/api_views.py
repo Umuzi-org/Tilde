@@ -124,19 +124,30 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
         permission_classes=[permissions.IsInstanceUser, permissions.StepCanSubmitLink],
     )
     def submit_link(self, request, pk=None):
-        serializer = self.get_serializer(data=request.query_params)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             registration = self.get_object()
             steps = registration.get_steps()
             step = steps[serializer.data["index"]]
 
             content_item: ContentItem = step.content_item
-            content_item.link_regex
-            content_item.link_message
 
-            TODO(validation)
+            if not re.match(
+                content_item.link_regex, serializer.data["link_submission"]
+            ):
 
-            project = step.progress.link_submission = serializer.data["link_submission"]
+                return Response(
+                    {
+                        "nonFieldErrors": [content_item.link_message],
+                        "link_submission": [
+                            f"expected url format: {content_item.link_example}"
+                        ],
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            project = step.progress
+            project.link_submission = serializer.data["link_submission"]
             project.review_request_time = timezone.now()
             project.save()
 

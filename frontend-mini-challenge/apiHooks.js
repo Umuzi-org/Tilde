@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const TOKEN_COOKIE = "token";
 

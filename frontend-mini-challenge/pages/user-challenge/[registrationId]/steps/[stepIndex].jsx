@@ -25,6 +25,7 @@ import {
   serverSideGetStepDetails,
   serverSideStartStep,
   useSubmitStepProjectLink,
+  delay,
 } from "../../../../apiHooks";
 import {
   BackArrowIcon,
@@ -89,6 +90,14 @@ export default function ChallengeStep({ contentHtml }) {
     getUserChallengeDetails.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // useEffect(() => {
+  //   if (stepSummary.status === STATUS_UNDER_REVIEW)
+  //     delay(2000).then(() => {
+  //       console.log("fetch");
+  //       getUserChallengeDetails.mutate();
+  //     });
+  // }, [getUserChallengeDetails, stepSummary.status]);
 
   async function handleNext() {
     if (stepSummary.status === STATUS_READY) {
