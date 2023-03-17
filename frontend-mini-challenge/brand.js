@@ -59,10 +59,12 @@ export const ReviewStatusLooks = {
   [COMPETENT]: {
     Icon: IoCheckmarkCircleOutline,
     color: statusLooks[STATUS_DONE].color,
+    title: "Your submission looks good",
   },
   [NOT_YET_COMPETENT]: {
     Icon: IoCloseCircleOutline,
     color: statusLooks[STATUS_ERROR].color,
+    title: "There are some problems",
   },
 };
 

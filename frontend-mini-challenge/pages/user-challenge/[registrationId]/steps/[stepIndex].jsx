@@ -154,6 +154,7 @@ function Presentation({
   handlePrevious,
   handleSubmitLinkForm,
 }) {
+  console.log({ stepDetails });
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
   const nextIsBlockedByProject = isProject
     ? stepSummary.status !== STATUS_DONE

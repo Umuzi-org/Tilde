@@ -5,7 +5,7 @@ import { CLONE_PATH, CONFIGURATION_REPO_PATH } from "../env.mjs";
 export function dirNameFromRepoUrl({ repoUrl }) {
   const repoMatches = repoUrl.match(/(?<=git@github.com:).*(?=.git)/);
   if (repoMatches !== null) {
-    console.assert(matches.length === 1);
+    console.assert(repoMatches.length === 1);
     return repoMatches[0].replace("/", "-");
   }
   return repoUrl

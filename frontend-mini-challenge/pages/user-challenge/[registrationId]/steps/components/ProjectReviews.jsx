@@ -1,4 +1,13 @@
-import { Title, Text, Stack, Loader, Group, Spoiler } from "@mantine/core";
+import {
+  Title,
+  Text,
+  Stack,
+  Loader,
+  Group,
+  Spoiler,
+  Paper,
+  ScrollArea,
+} from "@mantine/core";
 import {
   STATUS_UNDER_REVIEW,
   COMPETENT,
@@ -6,21 +15,48 @@ import {
 } from "../../../../../constants";
 import { ReviewStatusLooks } from "../../../../../brand";
 
-export default function ProjectReviews({ review, status }) {
-  const showInProgress = status === STATUS_UNDER_REVIEW;
-  const showEmpty = !review && !showInProgress;
-  const showReview = !showInProgress && !showEmpty;
+import { remark } from "remark";
+import html from "remark-html";
+import { useState } from "react";
 
-  const reviewStatus = review && review.status;
-  const { Icon: StatusIcon, color: reviewStatusColor } = ReviewStatusLooks[
-    reviewStatus
-  ] || { Icon: null, color: "" };
+function useMarkdown(comments) {
+  const [contentHtml, setContentHtml] = useState("");
+
+  async function convert() {
+    const processedContent = await remark().use(html).process(comments);
+    setContentHtml(processedContent.toString());
+  }
+  convert();
+
+  return contentHtml;
+}
+
+function Review({ comments, status, timestamp }) {
+  const contentHtml = useMarkdown(comments);
+  const { Icon, color, title } = ReviewStatusLooks[status];
+
+  return (
+    <>
+      <Group>
+        <Icon color={color} size="3rem" />
+        <Title order={4}>{title} </Title>
+      </Group>
+      <Paper withBorder p="md">
+        <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+      </Paper>
+    </>
+  );
+}
+
+export default function ProjectReviews({ reviews, status }) {
+  const showInProgress = status === STATUS_UNDER_REVIEW;
+  const showEmpty = !reviews && !showInProgress;
+  const showReview = !showInProgress && !showEmpty;
 
   return (
     <Stack spacing={"md"} mt="md">
       <Group>
         <Title order={3}>Feedback</Title>
-        {showReview && <StatusIcon color={reviewStatusColor} size="3rem" />}
       </Group>
       {showInProgress && (
         <>
@@ -51,11 +87,11 @@ export default function ProjectReviews({ review, status }) {
       )}
 
       {showReview && (
-        <>
-          <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
-            {review.comments}
-          </Spoiler>
-        </>
+        <ScrollArea h={250} type="always" scrollbarSize={12} pr="md">
+          {reviews.map((review, index) => (
+            <Review key={`review-${index}`} {...review} />
+          ))}
+        </ScrollArea>
       )}
     </Stack>
   );
