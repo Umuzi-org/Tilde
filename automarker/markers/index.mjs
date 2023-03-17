@@ -15,3 +15,5 @@ export {
   JavaJUnit5OnlyOurTests,
   JavaJUnit5Katas,
 } from "./java.mjs";
+
+export { WebScraper } from "./webscraper.mjs";

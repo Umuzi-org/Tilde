@@ -1,4 +1,6 @@
-// const { clone, review, listAllowedProjectChoices } = require("./lib");
+// TODO: add an error message if config object is incorrect. Eg has missing perfect project path
+// TODO: maybe change repoUrl to Url. We need to mark other kinds of projects
+// TODO: rearchitect to make tests more DRY. Eg zmc site tests have a lot of repitition. Maybe allow copying tests from multiple locations
 
 import express from "express";
 import cors from "cors";
@@ -36,13 +38,6 @@ app.post("/test-config", async function (req, res) {
     });
     return;
   }
-
-  // {
-  //   contentItemId: 273,
-  //   flavours: [ 'javascript' ],
-  //   perfectProjectPath: 'projects/simple_calculator_js',
-  //   marker: 'javascriptJasmine'
-  // }
 
   const Marker = markers[config.marker];
 

@@ -4,7 +4,7 @@ import fs from "fs";
 import { CONFIGURATION_REPO_PATH } from "./env.mjs";
 
 export function getProjectConfig({ contentItemId, flavours }) {
-  console.log("getProjectConfig");
+  console.log("calling getProjectConfig");
   console.log({ contentItemId, flavours });
   const configFilePath = `${CONFIGURATION_REPO_PATH}/config.yaml`;
   const allConfig = yaml.load(fs.readFileSync(configFilePath, "utf8"));
@@ -18,8 +18,6 @@ export function getProjectConfig({ contentItemId, flavours }) {
     return config;
   }
 }
-
-export function getMarker({ MarkerName }) {}
 
 function arraysEqual(a, b) {
   a.sort();

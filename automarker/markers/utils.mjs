@@ -13,14 +13,19 @@ export function clonePathFromRepoUrl({ repoUrl }) {
 }
 
 export class Step {
-  constructor({ name, Action }) {
+  constructor({ name, Action, actionArgs }) {
     this.name = name;
     this.Action = Action;
+    this.actionArgs = actionArgs || {};
   }
 }
 
 export class Marker {
   async mark({ perfectProjectPath, repoUrl, test }) {
+    console.log({
+      CONFIGURATION_REPO_PATH,
+      perfectProjectPath,
+    });
     const fullPerfectProjectPath = join(
       CONFIGURATION_REPO_PATH,
       perfectProjectPath
@@ -39,6 +44,7 @@ export class Marker {
         perfectProjectPath: fullPerfectProjectPath,
         destinationPath,
         repoUrl,
+        ...step.actionArgs,
       });
 
       if (result === undefined) {
