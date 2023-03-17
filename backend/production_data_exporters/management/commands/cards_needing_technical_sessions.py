@@ -85,11 +85,14 @@ def make_row(card, reason):
         .count()
     )
 
-    positive_review_count = (
+    positive_reviews = (
         RecruitProjectReview.objects.filter(recruit_project__agile_card=card)
         .filter(Q(status=COMPETENT) | Q(status=EXCELLENT))
-        .count()
+        .order_by("timestamp")
+        .prefetch_related("reviewer_user")
     )
+
+    positive_review_count = positive_reviews.count()
 
     if card.status == AgileCard.IN_REVIEW:
         project = card.recruit_project
@@ -105,6 +108,13 @@ def make_row(card, reason):
         staff_who_think_its_competent = []
 
     assignee = card.assignees.first()
+
+    positive_reviewer_emails = []
+    for review in positive_reviews:
+        email = review.reviewer_user.email
+        if email not in positive_reviewer_emails:
+            positive_reviewer_emails.append(email)
+
     return {
         "reason": reason,
         "email": assignee.email,
@@ -121,6 +131,7 @@ def make_row(card, reason):
         + card.code_review_ny_competent_since_last_review_request,
         "board url": f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{assignee.id}/board",
         "card url": f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}",
+        "positive reviewer emails in order": "\n".join(positive_reviewer_emails),
     }
 
 

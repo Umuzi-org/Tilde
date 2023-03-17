@@ -2,7 +2,12 @@ from django.core.management.base import BaseCommand
 from core.models import User
 from social_auth.models import SocialProfile
 from config.models import NameSpace, Value
-from curriculum_tracking.models import AgileCard, CourseRegistration, ContentItem
+from curriculum_tracking.models import (
+    AgileCard,
+    CourseRegistration,
+    ContentItem,
+    ReviewTrust,
+)
 from curriculum_tracking.card_generation_helpers import (
     generate_and_update_all_cards_for_user,
 )
@@ -13,6 +18,8 @@ from faker import Faker
 from curriculum_tracking.management.commands.import_curriculum import (
     save_curriculum_to_db,
 )  # Note: these kinds of imports are actually bad practice. We need a refactor
+
+from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
 
 
 faker = Faker()
@@ -139,8 +146,25 @@ def create_challenge_users(count=10):
         )
 
 
+from curriculum_tracking.card_generation_helpers import get_ordered_content_items
+
+
+def add_bot_trust_to_projects_in_curriculum(curriculum):
+    bot, _ = User.objects.get_or_create(email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL)
+    for x in get_ordered_content_items(curriculum):
+        content_item = x.content_item
+        assert len(x.flavours) == 0, "TODO: this doesn't handle flavours for now"
+
+        o, _ = ReviewTrust.objects.get_or_create(content_item=content_item, user=bot)
+        # o.flavours.set(x.flavours)
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
+        create_challenge_users()
+
+        add_bot_trust_to_projects_in_curriculum(challenge)
 
         create_config_value(
             "curriculum_tracking/serializers/TeamStatsSerializer",
@@ -158,7 +182,3 @@ class Command(BaseCommand):
 
         create_team_of_learners(team_name="A", curriculum=curriculum)
         create_team_of_learners(team_name="B", curriculum=curriculum)
-
-        challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
-
-        create_challenge_users()

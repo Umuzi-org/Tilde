@@ -1,9 +1,9 @@
 """
 example usage
 
-python manage.py run_automarker "simple-calculator part 1" ""
-python manage.py run_automarker "Person" ""
-python manage.py run_automarker "password-checker" ""
+python manage.py run_specific_automarker "simple-calculator part 1" ""
+python manage.py run_specific_automarker "Person" ""
+python manage.py run_specific_automarker "password-checker" ""
 """
 from django.core.management.base import BaseCommand
 from curriculum_tracking.models import ContentItem

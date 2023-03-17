@@ -1,15 +1,16 @@
 """
 example usage
 
-python manage.py run_automarker "simple-calculator part 1" ""
-python manage.py run_automarker "Person" ""
-python manage.py run_automarker "password-checker" ""
+python manage.py run_automarkers prod
+python manage.py run_automarkers debug
+
 """
 from django.core.management.base import BaseCommand
 import yaml
 from pathlib import Path
 import os
 from curriculum_tracking.models import ContentItem
+from core.models import Curriculum
 
 try:
     from yaml import CLoader as Loader
@@ -21,16 +22,25 @@ from curriculum_tracking.management.automarker_utils import (
     automark_card,
 )
 
+from curriculum_tracking.card_generation_helpers import get_ordered_content_items
+
 
 CONFIG_PATH = Path(os.getenv("AUTO_MARKER_CONFIGURATION_REPO_PATH")) / "config.yaml"
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-
         parser.add_argument("mode", type=str, default="prod")
+        parser.add_argument("curriculum", type=str, nargs="?")
 
     def handle(self, *args, **options):
+        curriculum_name = options.get("curriculum")
+        if curriculum_name:
+            curriculum = Curriculum.objects.get(name=curriculum_name)
+            content_items = [
+                o.content_item for o in get_ordered_content_items(curriculum)
+            ]
+
         with open(CONFIG_PATH, "r") as f:
             config = yaml.load(f, Loader)
 
@@ -40,6 +50,8 @@ class Command(BaseCommand):
         for item in [d for d in config if d["mode"] == mode]:
             print(item)
             content_item = ContentItem.objects.get(id=item["contentItemId"])
+            if curriculum_name and content_item not in content_items:
+                continue
 
             for card in get_cards_needing_review(content_item=content_item):
                 automark_card(card, debug_mode=item["mode"] == "debug")
