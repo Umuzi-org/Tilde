@@ -42,7 +42,11 @@ export default function LinkForm({
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto" mt="md">
       <Title order={3}>Project submission</Title>
-      {status === 400 && <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>}
+      {status === 400 && (
+        <ErrorAlert>
+          {responseData.nonFieldErrors || "Please correct the errors below"}
+        </ErrorAlert>
+      )}
       {status === 200 && (
         <InfoAlert title={"Success"}>
           Your project link has been submitted for review{" "}

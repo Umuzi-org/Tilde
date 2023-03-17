@@ -13,12 +13,12 @@ def _get_bot_user():
     return bot_user
 
 
-def _get_automark_result(repo_url, content_item_id, flavours):
+def _get_automark_result(repo_url, link_submission, content_item_id, flavours):
 
     url = "http://localhost:1337/mark-project"  # TODO. use configuration
     headers = {"Content-Type": "application/json"}
     json = {
-        "repoUrl": repo_url,
+        "repoUrl": repo_url or link_submission,
         "contentItemId": content_item_id,
         "flavours": flavours,
     }
@@ -39,7 +39,7 @@ def confirm_continue(message):
     return answer == "Y"
 
 
-def add_review(card, status, comments):
+def add_review(project, status, comments):
     base_comments = (
         "Hello! I'm a robot 🤖\n\nI'm here to give you quick feedback about your code."
     )
@@ -52,7 +52,7 @@ def add_review(card, status, comments):
         status=status,
         timestamp=timezone.now(),
         comments=full_comments,
-        recruit_project=card.recruit_project,
+        recruit_project=project,
         reviewer_user=_get_bot_user(),
     )
 
@@ -84,16 +84,17 @@ def get_cards_needing_review(content_item, flavours=None):
         yield card
 
 
-def automark_card(card, debug_mode):
+def automark_project(project, debug_mode):
     result = _get_automark_result(
-        repo_url=card.recruit_project.repository.ssh_url,
-        content_item_id=card.content_item_id,
-        flavours=card.flavour_names,
+        link_submission=project.link_submission,
+        repo_url=project.repository.ssh_url if project.repository else None,
+        content_item_id=project.content_item_id,
+        flavours=project.flavour_names,
     )
     pprint(result)
     if result["status"] == "OK":
 
-        add_review(card=card, status=COMPETENT, comments="All our checks passed")
+        add_review(project=project, status=COMPETENT, comments="All our checks passed")
     elif result["status"] == "FAIL":
 
         # step_name = result['actionName']
@@ -108,22 +109,28 @@ def automark_card(card, debug_mode):
             comments = f"{comments}\n{errors}"
 
         if debug_mode:
-            # print(f"comments:\n\n{comments}")
             message = f"You are about to leave a negative review:\n\n"
-            message += f"Repo url: {card.recruit_project.repository.ssh_url}\n"
-            message += f"Card url: https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}\n"
+            if project.repository:
+                message += f"Repo url: {project.repository.ssh_url}\n"
+            message += f"Link url: {project.link_submission}\n"
+            try:
+                card = project.agile_card
+                message += f"Card url: https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{card.id}\n"
+            except AgileCard.DoesNotExist:
+                pass
+
             message += f"review comments:\n\n{comments}"
 
             if confirm_continue(message):
                 add_review(
-                    card=card,
+                    project=project,
                     status=NOT_YET_COMPETENT,
                     comments=comments,
                 )
         else:
 
             add_review(
-                card=card,
+                project=project,
                 status=NOT_YET_COMPETENT,
                 comments=comments,
             )

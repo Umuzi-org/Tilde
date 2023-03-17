@@ -48,7 +48,7 @@ def get_content_item_from_url(url):
 def create_content_items(data):
     for content in data:
         content_item, created = ContentItem.objects.get_or_create(
-            # flavours = ','.join(content['flavours']),
+            id=content["id"],
             content_type=content["content_type"],
             continue_from_repo=get_content_item_from_url(content["continue_from_repo"]),
             link_regex=content["link_regex"],

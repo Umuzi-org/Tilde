@@ -20,7 +20,7 @@ except ImportError:
 
 from curriculum_tracking.management.automarker_utils import (
     get_cards_needing_review,
-    automark_card,
+    automark_project,
 )
 
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
@@ -58,4 +58,6 @@ class Command(BaseCommand):
                 content_item=content_item, flavours=item["flavours"]
             ):
 
-                automark_card(card, debug_mode=item["mode"] == "debug")
+                automark_project(
+                    card.recruit_project, debug_mode=item["mode"] == "debug"
+                )

@@ -3,9 +3,15 @@ import { join, basename } from "path";
 import { CLONE_PATH, CONFIGURATION_REPO_PATH } from "../env.mjs";
 
 export function dirNameFromRepoUrl({ repoUrl }) {
-  const matches = repoUrl.match(/(?<=git@github.com:).*(?=.git)/);
-  console.assert(matches.length === 1);
-  return matches[0].replace("/", "-");
+  const repoMatches = repoUrl.match(/(?<=git@github.com:).*(?=.git)/);
+  if (repoMatches !== null) {
+    console.assert(matches.length === 1);
+    return repoMatches[0].replace("/", "-");
+  }
+  return repoUrl
+    .replace("https://", "")
+    .replace("http://", "")
+    .replaceAll("/", "-");
 }
 
 export function clonePathFromRepoUrl({ repoUrl }) {

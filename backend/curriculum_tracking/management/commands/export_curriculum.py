@@ -61,6 +61,7 @@ def get_export_dict(curriculum):
         ],
         "content_items": [
             {
+                "id": o.id,
                 "content_type": o.content_type,
                 "title": o.title,
                 "slug": o.slug,

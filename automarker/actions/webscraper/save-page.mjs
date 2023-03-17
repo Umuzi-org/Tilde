@@ -3,6 +3,7 @@ import { CLONE_PATH } from "../../env.mjs";
 import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 import fs from "fs";
+import { join } from "path";
 
 export default class SavePage extends Action {
   name = "fetching page";
@@ -30,27 +31,27 @@ export default class SavePage extends Action {
   };
 
   action = async function ({ repoUrl, destinationPath }) {
-    TODO;
-    // const clonerScriptPath = "./actions/language-agnostic/clone_repo.sh";
+    const response = await fetch(repoUrl);
 
-    // const cloneCommand = `CLONE_PATH=${CLONE_PATH} FULL_CLONE_PATH=${destinationPath} REPO_URL=${repoUrl}  /bin/bash -c '${clonerScriptPath}'`;
+    if (response.status !== 200) {
+      return {
+        status: STATUS_ERROR,
+        message: `Could not fetch page ${repoUrl}. Response status ${response.status}`,
+      };
+    }
 
-    // const cloneOutput = await shell.exec(cloneCommand);
+    const textPromise = response.text();
 
-    // if (cloneOutput.stderr.indexOf("Repository not found.") !== -1) {
-    //   return {
-    //     status: STATUS_ERROR,
-    //     message:
-    //       "Please check that your repo URL is valid and that it is public",
-    //   };
-    // }
+    if (fs.existsSync(destinationPath)) {
+      console.log("directory already exists, deleting");
+      fs.rmSync(destinationPath, { recursive: true, force: true });
+    }
 
-    // if (!fs.existsSync(destinationPath))
-    //   return {
-    //     status: STATUS_ERROR,
-    //     message:
-    //       "CLone didn't work, the directory isn't where we expect it to be ",
-    //   };
+    fs.mkdirSync(destinationPath, { recursive: true });
+
+    const text = await textPromise;
+
+    fs.writeFileSync(join(destinationPath, "index.html"), text);
 
     return {
       status: STATUS_OK,
