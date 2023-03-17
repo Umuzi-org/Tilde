@@ -3,6 +3,7 @@ example usage
 
 python manage.py run_automarkers prod
 python manage.py run_automarkers debug
+python manage.py run_automarkers "Build your own website and host it on the web\!"
 
 """
 from django.core.management.base import BaseCommand
@@ -53,5 +54,8 @@ class Command(BaseCommand):
             if curriculum_name and content_item not in content_items:
                 continue
 
-            for card in get_cards_needing_review(content_item=content_item):
+            for card in get_cards_needing_review(
+                content_item=content_item, flavours=item["flavours"]
+            ):
+
                 automark_card(card, debug_mode=item["mode"] == "debug")
