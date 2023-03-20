@@ -73,6 +73,8 @@ sudo cp $KEY_PATH .
 sudo chown $USER:$USER privkey.pem
 sudo chown $USER:$USER fullchain.pem
 
+kubectl delete secret tilde-domain-ssl
+
 kubectl create secret tls tilde-domain-ssl \
   --cert fullchain.pem --key privkey.pem
 
