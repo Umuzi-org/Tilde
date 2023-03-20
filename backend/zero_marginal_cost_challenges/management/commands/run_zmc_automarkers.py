@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 import os
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
-from curriculum_tracking.models import ContentItem, RecruitProject
+from curriculum_tracking.models import RecruitProjectReview, RecruitProject
 from core.models import Curriculum
 from curriculum_tracking.management.automarker_utils import (
     automark_project,
@@ -42,8 +42,7 @@ class Command(BaseCommand):
         content_and_flavours = list(get_ordered_content_items(curriculum))
 
         for d in config:
-            print()
-            print(d)
+
             if d["mode"] != mode:
                 continue
 
@@ -51,11 +50,6 @@ class Command(BaseCommand):
             for content_and_flavour in content_and_flavours:
                 if content_and_flavour.content_item.id != int(d["contentItemId"]):
                     continue
-                print("content match, checking flavours")
-
-                print(sorted(content_and_flavour.flavours))
-                print(sorted(d["flavours"]))
-                print(sorted(content_and_flavour.flavours) == sorted(d["flavours"]))
 
                 if sorted(content_and_flavour.flavours) != sorted(d["flavours"]):
                     continue
@@ -77,6 +71,18 @@ class Command(BaseCommand):
             for project in projects:
                 if not project.flavours_match(d["flavours"]):
                     continue
+
+                has_reviews = (
+                    RecruitProjectReview.objects.filter(
+                        timestamp__gte=project.review_request_time
+                    )
+                    .filter(recruit_project=project)
+                    .count()
+                )
+
+                if has_reviews:
+                    continue
+
                 # we have something to mark!!
 
                 automark_project(project, mode)
