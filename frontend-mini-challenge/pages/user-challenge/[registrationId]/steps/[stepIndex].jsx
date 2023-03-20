@@ -4,7 +4,6 @@ import Page from "../../../../components/LoggedInPage";
 import {
   Title,
   Text,
-  LoadingOverlay,
   Stack,
   Loader,
   Group,
@@ -18,21 +17,17 @@ import {
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import {
-  useGetUserChallengeDetails,
-  // useStartStep,
   useFinishStep,
-  useGetStepDetails,
-  serverSideGetStepDetails,
-  serverSideStartStep,
   useSubmitStepProjectLink,
-  delay,
+  serverSideGetStepDetails,
+  serverSideGetUserChallengeDetails,
+  serverSideStartStep,
 } from "../../../../apiHooks";
 import {
   BackArrowIcon,
   ForwardArrowIcon,
   statusLooks,
 } from "../../../../brand";
-import { useEffect } from "react";
 
 import {
   STATUS_BLOCKED,
@@ -51,7 +46,11 @@ import html from "remark-html";
 import matter from "gray-matter";
 import { ErrorAlert } from "../../../../components/Alerts";
 
-export default function ChallengeStep({ contentHtml }) {
+export default function ChallengeStep({
+  contentHtml,
+  registration,
+  stepDetails,
+}) {
   const router = useRouter();
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } =
     router.query;
@@ -59,13 +58,9 @@ export default function ChallengeStep({ contentHtml }) {
   const stepIndex = parseInt(stepIndexStr);
   const registrationId = parseInt(registrationIdStr);
 
-  const getUserChallengeDetails = useGetUserChallengeDetails({
-    registrationId,
-  });
+  const stepSummary = registration.steps[stepIndex];
 
-  // const startStep = useStartStep({ registrationId });
   const finishStep = useFinishStep({ registrationId });
-  const getStepDetails = useGetStepDetails({ registrationId, stepIndex });
 
   const submitProjectLink = useSubmitStepProjectLink({
     registrationId,
@@ -73,31 +68,9 @@ export default function ChallengeStep({ contentHtml }) {
   });
 
   function handleSubmitLinkForm({ linkSubmission }) {
+    // console.log({ linkSubmission });
     submitProjectLink.call({ linkSubmission });
   }
-
-  const stepDetails = getStepDetails.responseData;
-
-  const registration = getUserChallengeDetails.responseData;
-  const stepSummary = registration
-    ? registration.steps[stepIndex]
-    : {
-        title: "Loading...",
-        blurb: "Loading...",
-      };
-
-  useEffect(() => {
-    getUserChallengeDetails.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // useEffect(() => {
-  //   if (stepSummary.status === STATUS_UNDER_REVIEW)
-  //     delay(2000).then(() => {
-  //       console.log("fetch");
-  //       getUserChallengeDetails.mutate();
-  //     });
-  // }, [getUserChallengeDetails, stepSummary.status]);
 
   async function handleNext() {
     if (stepSummary.status === STATUS_READY) {
@@ -116,20 +89,17 @@ export default function ChallengeStep({ contentHtml }) {
     else router.push(`/user-challenge/${registrationId}/`);
   }
 
+  const currentPath = router.asPath;
   const props = {
+    contentHtml,
     registrationId,
     stepIndex,
 
-    // TODO try simplify props by removing hook things. Just pass in what is strictly required
-    getUserChallengeDetails,
-    getStepDetails,
-    submitProjectLink,
-
     registration,
-    stepSummary,
     stepDetails,
-    currentPath: router.asPath,
-    contentHtml,
+
+    submitProjectLink,
+    currentPath,
 
     handleNext,
     handlePrevious,
@@ -139,23 +109,24 @@ export default function ChallengeStep({ contentHtml }) {
 }
 
 function Presentation({
+  contentHtml,
   registrationId,
   stepIndex,
-  getUserChallengeDetails,
-  getStepDetails,
-  submitProjectLink,
-  stepSummary,
-  stepDetails,
-  currentPath,
-  contentHtml,
+
   registration,
+  stepDetails,
+
+  submitProjectLink,
+  currentPath,
 
   handleNext,
   handlePrevious,
   handleSubmitLinkForm,
 }) {
-  console.log({ stepDetails });
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
+
+  const stepSummary = registration.steps[stepIndex];
+
   const nextIsBlockedByProject = isProject
     ? stepSummary.status !== STATUS_DONE
     : false;
@@ -166,9 +137,7 @@ function Presentation({
       onClick={handleNext}
       rightIcon={<ForwardArrowIcon />}
     >
-      {registration && stepIndex + 1 === registration.steps.length
-        ? "Finish"
-        : "Next"}
+      {stepIndex + 1 === registration.steps.length ? "Finish" : "Next"}
     </Button>
   );
 
@@ -181,9 +150,7 @@ function Presentation({
 
   const crumbs = [
     {
-      title: getUserChallengeDetails.responseData
-        ? getUserChallengeDetails.responseData.name
-        : "Loading...",
+      title: registration.name,
       href: `/user-challenge/${registrationId}`,
     },
     { title: stepSummary.title, href: currentPath },
@@ -197,22 +164,16 @@ function Presentation({
     <Page>
       <Stack spacing={"md"}>
         <Breadcrumbs>{crumbs}</Breadcrumbs>
-        <div style={{ position: "relative" }}>
-          <LoadingOverlay
-            visible={getUserChallengeDetails.isLoading}
-            overlayBlur={1}
-            loaderProps={{ size: "xl" }}
-          />
-          <Group>
-            <Icon size="4rem" color={color} />
-            <Title>
-              Step {parseInt(stepIndex) + 1}: {stepSummary.title}
-            </Title>
-          </Group>
-          <Text mt="md" c="dimmed">
-            {stepSummary.blurb}
-          </Text>
-        </div>
+
+        <Group>
+          <Icon size="4rem" color={color} />
+          <Title>
+            Step {parseInt(stepIndex) + 1}: {stepSummary.title}
+          </Title>
+        </Group>
+        <Text mt="md" c="dimmed">
+          {stepSummary.blurb}
+        </Text>
 
         {stepSummary.status === STATUS_BLOCKED ? (
           <Center>
@@ -223,48 +184,40 @@ function Presentation({
           </Center>
         ) : (
           <>
-            <div style={{ position: "relative" }}>
-              <LoadingOverlay
-                visible={getStepDetails.isLoading}
-                overlayBlur={1}
-                loaderProps={{ size: "xl" }}
-              />
+            <Paper p="md" shadow="sm" withBorder>
+              <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+            </Paper>
 
-              <Paper p="md" shadow="sm" withBorder>
-                <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
-              </Paper>
-
-              {isProject && (
-                <Stack spacing={"md"} mt="md">
-                  <Title order={2}>Project details</Title>
-                  <Text>
-                    This step is a project. That means you need to submit your
-                    work before you can continue with the next step. Once you
-                    have submitted your work you&apos;ll need to wait a little
-                    while for us to mark it.
-                  </Text>
-                  <Grid>
-                    <Grid.Col span="auto">
-                      <LinkForm
-                        linkExample={stepDetails.linkExample}
-                        linkName={stepDetails.linkName}
-                        handleSubmit={handleSubmitLinkForm}
-                        status={submitProjectLink.status}
-                        responseData={submitProjectLink.responseData}
-                        isLoading={submitProjectLink.isLoading}
-                        linkSubmission={stepDetails.linkSubmission}
-                      />
-                    </Grid.Col>
-                    <Grid.Col span="auto">
-                      <ProjectReviews
-                        reviews={stepDetails.reviews}
-                        status={stepSummary.status}
-                      />
-                    </Grid.Col>
-                  </Grid>
-                </Stack>
-              )}
-            </div>
+            {isProject && (
+              <Stack spacing={"md"} mt="md">
+                <Title order={2}>Project details</Title>
+                <Text>
+                  This step is a project. That means you need to submit your
+                  work before you can continue with the next step. Once you have
+                  submitted your work you&apos;ll need to wait a little while
+                  for us to mark it.
+                </Text>
+                <Grid>
+                  <Grid.Col span="auto">
+                    <LinkForm
+                      linkExample={stepDetails.linkExample}
+                      linkName={stepDetails.linkName}
+                      handleSubmit={handleSubmitLinkForm}
+                      status={submitProjectLink.status}
+                      responseData={submitProjectLink.responseData}
+                      isLoading={submitProjectLink.isLoading}
+                      linkSubmission={stepDetails.linkSubmission}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span="auto">
+                    <ProjectReviews
+                      reviews={stepDetails.reviews}
+                      status={stepSummary.status}
+                    />
+                  </Grid.Col>
+                </Grid>
+              </Stack>
+            )}
           </>
         )}
 
@@ -306,10 +259,10 @@ export async function getServerSideProps({ query, req }) {
     req,
   });
 
-  const raw_url = stepDetails.responseData.rawUrl;
+  const rawUrl = stepDetails.responseData.rawUrl;
 
   // Fetch data from repo
-  const res = await fetch(raw_url);
+  const res = await fetch(rawUrl);
 
   const body = await res.text();
   const matterResult = matter(body);
@@ -319,6 +272,16 @@ export async function getServerSideProps({ query, req }) {
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 
-  // Pass data to the page via props
-  return { props: { contentHtml } };
+  const registration = await serverSideGetUserChallengeDetails({
+    registrationId,
+    req,
+  });
+
+  return {
+    props: {
+      contentHtml,
+      registration: registration.responseData,
+      stepDetails: stepDetails.responseData,
+    },
+  };
 }

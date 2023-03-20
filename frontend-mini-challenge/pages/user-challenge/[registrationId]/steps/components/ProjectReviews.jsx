@@ -17,23 +17,26 @@ import { ReviewStatusLooks } from "../../../../../brand";
 
 import { remark } from "remark";
 import html from "remark-html";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function useMarkdown(comments) {
   const [contentHtml, setContentHtml] = useState("");
 
-  async function convert() {
+  async function convertToHtml() {
     const processedContent = await remark().use(html).process(comments);
     setContentHtml(processedContent.toString());
   }
-  convert();
 
-  return contentHtml;
+  return { contentHtml, convertToHtml };
 }
 
 function Review({ comments, status, timestamp }) {
-  const contentHtml = useMarkdown(comments);
+  const { contentHtml, convertToHtml } = useMarkdown(comments);
   const { Icon, color, title } = ReviewStatusLooks[status];
+
+  useEffect(() => {
+    convertToHtml();
+  }, [convertToHtml]);
 
   return (
     <>
