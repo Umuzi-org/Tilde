@@ -58,6 +58,6 @@ class Command(BaseCommand):
                 content_item=content_item, flavours=item["flavours"]
             ):
 
-                automark_project(
-                    card.recruit_project, debug_mode=item["mode"] == "debug"
-                )
+                debug_mode = item["mode"] == "debug"
+
+                automark_project(card.recruit_project, debug_mode=debug_mode)
