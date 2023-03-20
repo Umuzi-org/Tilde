@@ -1,6 +1,8 @@
 import { Action } from "../index.mjs";
 import shell from "shelljs";
 import { STATUS_OK, STATUS_ERROR, STATUS_FAIL } from "../../consts.mjs";
+import { join } from "path";
+import fs from "fs";
 
 export default class DoRequirementsInstall extends Action {
   name = "installing requirements.txt";
@@ -13,6 +15,25 @@ export default class DoRequirementsInstall extends Action {
     const requirementsDirectory = useOurs
       ? perfectProjectPath
       : destinationPath;
+
+    const requirementsFilePath = join(
+      requirementsDirectory,
+      "requirements.txt"
+    );
+
+    console.log({
+      requirementsDirectory,
+      destinationPath,
+      perfectProjectPath,
+    });
+
+    if (!fs.existsSync(requirementsFilePath)) {
+      return {
+        status: STATUS_FAIL,
+        message:
+          "Your requirements.txt file seems to be missing. Please make sure you include all required files.",
+      };
+    }
 
     const scriptPath = "./actions/python/do-requirements-install.sh";
     const command = `DESTINATION_PATH=${destinationPath} REQUIREMENTS_DIRECTORY=${requirementsDirectory} /bin/bash -c ${scriptPath}`;

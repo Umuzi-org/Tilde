@@ -1,5 +1,5 @@
 import { STATUS_ERROR, STATUS_OK, STATUS_FAIL } from "../consts.mjs";
-import { join, basename } from "path";
+import { join, basename, resolve } from "path";
 import { CLONE_PATH, CONFIGURATION_REPO_PATH } from "../env.mjs";
 
 export function dirNameFromRepoUrl({ repoUrl }) {
@@ -47,8 +47,8 @@ export class Marker {
       console.log(`\n--- ACTION: ${actionName} --- `);
       const result = await action.execute({
         test,
-        perfectProjectPath: fullPerfectProjectPath,
-        destinationPath,
+        perfectProjectPath: resolve(fullPerfectProjectPath),
+        destinationPath: resolve(destinationPath),
         repoUrl,
         ...step.actionArgs,
       });
