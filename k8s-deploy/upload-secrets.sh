@@ -16,6 +16,5 @@ kubectl create secret generic gitrealwebhook --from-literal=GIT_REAL_WEBHOOK_SEC
 # LOGIN WITH GOOGLE
 kubectl create secret generic google-oauth-onetime-creds --from-file=google-oauth-onetime-creds.json=$GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
 
-
 # SENGRID
 kubectl create secret generic sendgrid --from-literal=SENDGRID_API_KEY=$SENDGRID_API_KEY

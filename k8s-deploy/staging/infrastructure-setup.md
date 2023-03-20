@@ -70,9 +70,6 @@ Select the version that most closely matches that in prod.
 
 Note: prod is currently using version 1.23.14-gke.1800. This is no longer available at time of writing. 
 
-
-
-
 ## Step 4: deploy staging
 
 source your secrets then:
@@ -95,6 +92,13 @@ TODO: add deploy static stuffs.
 
 ## Reserve static ip 
 
+```
+gcloud compute addresses create tilde-staging-ip --global --project umuzi-staging
+
+gcloud compute addresses describe tilde-staging-ip --global --project umuzi-staging
+```
+
+Configure DNS A record. We just put this in the prod project because we could use a tilde.umuzi.org address
 
 ## Step : SSL cert 
 

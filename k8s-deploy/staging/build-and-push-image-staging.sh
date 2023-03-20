@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ../backend 
+cd ../../backend 
 
 GIT_COMMIT="$(git show --format="%h" --no-patch)"
 DATE_STR=$(date '+%Y-%m-%d-t-%H-%M')

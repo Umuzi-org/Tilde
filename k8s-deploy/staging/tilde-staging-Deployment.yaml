@@ -12,7 +12,7 @@ metadata:
   labels:
     app: tilde-backend
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: tilde-backend
