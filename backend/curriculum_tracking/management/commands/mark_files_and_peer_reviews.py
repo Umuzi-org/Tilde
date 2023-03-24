@@ -30,8 +30,8 @@ TODAY = timezone.now().date().strftime("%a %d %b %Y")
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
-        os.makedirs(NCIT_DESTINATION, exists_ok=True)
-        os.makedirs(MISC_DESTINATION, exists_ok=True)
+        os.makedirs(NCIT_DESTINATION, exist_ok=True)
+        os.makedirs(MISC_DESTINATION, exist_ok=True)
 
         credentials = authorize_creds()
         service = build("drive", "v3", credentials=credentials)
