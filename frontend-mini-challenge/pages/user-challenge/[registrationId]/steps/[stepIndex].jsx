@@ -101,10 +101,14 @@ export default function ChallengeStep({
     handlePrevious,
     handleSubmitLinkForm,
   };
-  return <Presentation {...props} />;
+  return (
+    <Page>
+      <Presentation {...props} />
+    </Page>
+  );
 }
 
-function Presentation({
+export function Presentation({
   contentHtml,
   registrationId,
   stepIndex,
@@ -119,6 +123,18 @@ function Presentation({
   handlePrevious,
   handleSubmitLinkForm,
 }) {
+  console.log({
+    contentHtml,
+    registrationId,
+    stepIndex,
+
+    registration,
+    stepDetails,
+
+    submitProjectLink,
+    currentPath,
+  });
+
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
 
   const nextIsBlockedByProject = isProject
@@ -155,83 +171,80 @@ function Presentation({
   ));
 
   return (
-    <Page>
-      <Stack spacing={"md"}>
-        <Breadcrumbs>{crumbs}</Breadcrumbs>
+    <Stack spacing={"md"}>
+      <Breadcrumbs>{crumbs}</Breadcrumbs>
 
-        <Group>
-          <Icon size="4rem" color={color} />
-          <Title>
-            Step {parseInt(stepIndex) + 1}: {stepDetails.title}
-          </Title>
-        </Group>
-        <Text mt="md" c="dimmed">
-          {stepDetails.blurb}
-        </Text>
+      <Group>
+        <Icon size="4rem" color={color} />
+        <Title>
+          Step {parseInt(stepIndex) + 1}: {stepDetails.title}
+        </Title>
+      </Group>
+      <Text mt="md" c="dimmed">
+        {stepDetails.blurb}
+      </Text>
 
-        {stepDetails.status === STATUS_BLOCKED ? (
-          <Center>
-            <Text>
-              You can&apos;t do this step until you&apos;ve completed the last
-              one
-            </Text>
-          </Center>
-        ) : (
-          <>
-            <Paper p="md" shadow="sm" withBorder>
-              <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
-            </Paper>
+      {stepDetails.status === STATUS_BLOCKED ? (
+        <Center>
+          <Text>
+            You can&apos;t do this step until you&apos;ve completed the last one
+          </Text>
+        </Center>
+      ) : (
+        <>
+          <Paper p="md" shadow="sm" withBorder>
+            <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+          </Paper>
 
-            {isProject && (
-              <Stack spacing={"md"} mt="md">
-                <Title order={2}>Project details</Title>
-                <Text>
-                  This step is a project. That means you need to submit your
-                  work before you can continue with the next step. Once you have
-                  submitted your work you&apos;ll need to wait a little while
-                  for us to mark it.
-                </Text>
-                <Grid>
-                  <Grid.Col span="auto">
-                    <LinkForm
-                      linkExample={stepDetails.linkExample}
-                      linkName={stepDetails.linkName}
-                      handleSubmit={handleSubmitLinkForm}
-                      status={submitProjectLink.status}
-                      responseData={submitProjectLink.responseData}
-                      isLoading={submitProjectLink.isLoading}
-                      linkSubmission={stepDetails.linkSubmission}
-                    />
-                  </Grid.Col>
-                  <Grid.Col span="auto">
-                    <ProjectReviews
-                      reviews={stepDetails.reviews}
-                      status={stepDetails.status}
-                    />
-                  </Grid.Col>
-                </Grid>
-              </Stack>
-            )}
-          </>
-        )}
-
-        <Divider mt="md" />
-
-        <Group position="apart">
-          <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
-            Back
-          </Button>
-
-          {nextIsBlockedByProject ? (
-            <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
-              {nextButton}
-            </Tooltip>
-          ) : (
-            nextButton
+          {isProject && (
+            <Stack spacing={"md"} mt="md">
+              <Title order={2}>Project details</Title>
+              <Text>
+                This step is a project. That means you need to submit your work
+                before you can continue with the next step. Once you have
+                submitted your work you&apos;ll need to wait a little while for
+                us to mark it.
+              </Text>
+              <Grid>
+                <Grid.Col span="auto">
+                  <LinkForm
+                    linkExample={stepDetails.linkExample}
+                    linkName={stepDetails.linkName}
+                    handleSubmit={handleSubmitLinkForm}
+                    status={submitProjectLink.status}
+                    responseData={submitProjectLink.responseData}
+                    isLoading={submitProjectLink.isLoading}
+                    linkSubmission={stepDetails.linkSubmission}
+                  />
+                </Grid.Col>
+                <Grid.Col span="auto">
+                  <ProjectReviews
+                    reviews={stepDetails.reviews}
+                    status={stepDetails.status}
+                  />
+                </Grid.Col>
+              </Grid>
+            </Stack>
           )}
-        </Group>
-      </Stack>
-    </Page>
+        </>
+      )}
+
+      <Divider mt="md" />
+
+      <Group position="apart">
+        <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
+          Back
+        </Button>
+
+        {nextIsBlockedByProject ? (
+          <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
+            {nextButton}
+          </Tooltip>
+        ) : (
+          nextButton
+        )}
+      </Group>
+    </Stack>
   );
 }
 
