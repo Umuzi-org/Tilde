@@ -70,6 +70,9 @@ class StepDetailsSerializer(serializers.Serializer):
             "link_message",
             "link_submission",
             "reviews",
+            "title",
+            "status",
+            "blurb",
         ]
 
     content_type = serializers.SerializerMethodField("get_content_type")
@@ -82,6 +85,9 @@ class StepDetailsSerializer(serializers.Serializer):
     link_message = serializers.SerializerMethodField("get_link_message")
     link_submission = serializers.SerializerMethodField("get_link_submission")
     reviews = serializers.SerializerMethodField("get_reviews")
+    title = serializers.SerializerMethodField("get_title")
+    status = serializers.SerializerMethodField("get_status")
+    blurb = serializers.SerializerMethodField("get_blurb")
 
     def get_content_type(self, instance):
         return instance.content_item.content_type
@@ -124,6 +130,15 @@ class StepDetailsSerializer(serializers.Serializer):
             }
             for o in progress.project_reviews.order_by("timestamp")
         ]
+
+    def get_title(self, instance):
+        return instance.content_item.title
+
+    def get_status(self, instance):
+        return instance.status
+
+    def get_blurb(self, instance):
+        return instance.content_item.blurb
 
 
 class SubmitLinkSerializer(serializers.Serializer):

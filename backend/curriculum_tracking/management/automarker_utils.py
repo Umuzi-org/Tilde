@@ -129,7 +129,6 @@ def automark_project(project, debug_mode):
                 )
         else:
 
-            breakpoint()
             add_review(
                 project=project,
                 status=NOT_YET_COMPETENT,

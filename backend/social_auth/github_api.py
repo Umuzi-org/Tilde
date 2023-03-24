@@ -230,6 +230,7 @@ class Api:
                 headers={"accept": "application/vnd.github.v3+json"},
                 data={},
             )
+            assert "state" in response, response
             assert response["state"] in ["pending", "active"], response
         return False
 
