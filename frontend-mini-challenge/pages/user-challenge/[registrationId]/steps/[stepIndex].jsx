@@ -44,7 +44,6 @@ import LinkForm from "./components/LinkForm";
 import { remark } from "remark";
 import html from "remark-html";
 import matter from "gray-matter";
-import { ErrorAlert } from "../../../../components/Alerts";
 
 export default function ChallengeStep({
   contentHtml,
@@ -58,8 +57,6 @@ export default function ChallengeStep({
   const stepIndex = parseInt(stepIndexStr);
   const registrationId = parseInt(registrationIdStr);
 
-  const stepSummary = registration.steps[stepIndex];
-
   const finishStep = useFinishStep({ registrationId });
 
   const submitProjectLink = useSubmitStepProjectLink({
@@ -67,13 +64,12 @@ export default function ChallengeStep({
     stepIndex,
   });
 
-  function handleSubmitLinkForm({ linkSubmission }) {
-    // console.log({ linkSubmission });
-    submitProjectLink.call({ linkSubmission });
+  async function handleSubmitLinkForm({ linkSubmission }) {
+    await submitProjectLink.call({ linkSubmission });
   }
 
   async function handleNext() {
-    if (stepSummary.status === STATUS_READY) {
+    if (stepDetails.status === STATUS_READY) {
       await finishStep.call({ index: stepIndex });
     }
     if (stepIndex + 1 === registration.steps.length) {
@@ -125,15 +121,13 @@ function Presentation({
 }) {
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
 
-  const stepSummary = registration.steps[stepIndex];
-
   const nextIsBlockedByProject = isProject
-    ? stepSummary.status !== STATUS_DONE
+    ? stepDetails.status !== STATUS_DONE
     : false;
 
   const nextButton = (
     <Button
-      disabled={nextIsBlockedByProject || stepSummary.status === STATUS_BLOCKED}
+      disabled={nextIsBlockedByProject || stepDetails.status === STATUS_BLOCKED}
       onClick={handleNext}
       rightIcon={<ForwardArrowIcon />}
     >
@@ -141,8 +135,8 @@ function Presentation({
     </Button>
   );
 
-  const { Icon, color } = stepSummary.status
-    ? statusLooks[stepSummary.status]
+  const { Icon, color } = stepDetails.status
+    ? statusLooks[stepDetails.status]
     : {
         Icon: Loader,
         color: "",
@@ -153,7 +147,7 @@ function Presentation({
       title: registration.name,
       href: `/user-challenge/${registrationId}`,
     },
-    { title: stepSummary.title, href: currentPath },
+    { title: stepDetails.title, href: currentPath },
   ].map((item, index) => (
     <Link href={item.href} key={index}>
       {item.title}
@@ -168,14 +162,14 @@ function Presentation({
         <Group>
           <Icon size="4rem" color={color} />
           <Title>
-            Step {parseInt(stepIndex) + 1}: {stepSummary.title}
+            Step {parseInt(stepIndex) + 1}: {stepDetails.title}
           </Title>
         </Group>
         <Text mt="md" c="dimmed">
-          {stepSummary.blurb}
+          {stepDetails.blurb}
         </Text>
 
-        {stepSummary.status === STATUS_BLOCKED ? (
+        {stepDetails.status === STATUS_BLOCKED ? (
           <Center>
             <Text>
               You can&apos;t do this step until you&apos;ve completed the last
@@ -212,7 +206,7 @@ function Presentation({
                   <Grid.Col span="auto">
                     <ProjectReviews
                       reviews={stepDetails.reviews}
-                      status={stepSummary.status}
+                      status={stepDetails.status}
                     />
                   </Grid.Col>
                 </Grid>
@@ -222,6 +216,7 @@ function Presentation({
         )}
 
         <Divider mt="md" />
+
         <Group position="apart">
           <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
             Back

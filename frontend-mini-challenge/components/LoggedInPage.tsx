@@ -16,11 +16,7 @@ import { useRouter } from "next/router";
 import { getAuthToken } from "../lib/authTokenStorage";
 
 export default function Page({ children }) {
-  const {
-    responseData: userData,
-    // isLoading: isLoadingWhoAmI,
-    status: whoAmIStatus,
-  } = useWhoAmI();
+  const { responseData: userData, status: whoAmIStatus } = useWhoAmI();
 
   const { call: callLogout, isLoading } = useLogout();
   const router = useRouter();

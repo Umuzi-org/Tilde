@@ -302,7 +302,7 @@ export function useStartStep({ registrationId }) {
 export function useFinishStep({ registrationId }) {
   const getUserChallengeDetails = useGetUserChallengeDetails({
     registrationId,
-  });
+  }); // TODO: Do we need this? Maybe just remove it..
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/finish_step/`;

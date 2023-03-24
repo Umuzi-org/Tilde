@@ -18,6 +18,7 @@ import { ReviewStatusLooks } from "../../../../../brand";
 import { remark } from "remark";
 import html from "remark-html";
 import { useEffect, useState } from "react";
+import { DateTime } from "../../../../../components/DateTime";
 
 function useMarkdown(comments) {
   const [contentHtml, setContentHtml] = useState("");
@@ -43,6 +44,7 @@ function Review({ comments, status, timestamp }) {
       <Group>
         <Icon color={color} size="3rem" />
         <Title order={4}>{title} </Title>
+        <DateTime timestamp={timestamp} />
       </Group>
       <Paper withBorder p="md">
         <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
