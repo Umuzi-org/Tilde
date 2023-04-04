@@ -33,13 +33,26 @@ def get_automark_result(repo_url, link_submission, content_item_id, flavours):
     return response.json()
 
 
+FAIL_REVIEW_TEMPLATE = """Something went wrong when I marked your code. Most people don't get things right on the first try, just keep trying, I'm sure you'll figure it out!
+
+Here are some details:
+
+*{action_name}*
+
+{errors}
+"""
+
+
 def get_fail_review_comments(api_result):
-    errors = "\n".join([f"- {s}" for s in api_result["errors"]])
-    return f"Something went wrong when I marked your code. Most people don't get things right on the first try, just keep trying, I'm sure you'll figure it out! \n\nHere are some details:\n\n*{api_result['message']}*{errors}"
+    errors = "\n".join([f"- {s}" for s in api_result["result"]["errors"]])
+    return FAIL_REVIEW_TEMPLATE.format(
+        action_name=api_result["actionName"],
+        errors=errors,
+        message=api_result["result"]["message"],
+    )
 
 
 def add_review(project, api_result):
-    breakpoint()
 
     if api_result["status"] == STATUS_OK:
         status = COMPETENT
