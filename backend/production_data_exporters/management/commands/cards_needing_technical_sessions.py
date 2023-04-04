@@ -111,7 +111,10 @@ def make_row(card, reason):
 
     positive_reviewer_emails = []
     for review in positive_reviews:
-        email = review.reviewer_user.email
+        reviewer_user = review.reviewer_user
+        if not reviewer_user.active:
+            continue
+        email = reviewer_user.email
         if email not in positive_reviewer_emails:
             positive_reviewer_emails.append(email)
 
