@@ -8,19 +8,12 @@ python manage.py run_zmc_automarkers debug "Build your own website and host it o
 """
 from django.core.management.base import BaseCommand
 from pathlib import Path
-import yaml
 import os
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 from curriculum_tracking.models import RecruitProjectReview, RecruitProject
 from core.models import Curriculum
-from curriculum_tracking.management.automarker_utils import (
-    automark_project,
-)
+from automarker.management.command_utils import automark_project, get_config_from_file
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
 
 CONFIG_PATH = Path(os.getenv("AUTO_MARKER_CONFIGURATION_REPO_PATH")) / "config.yaml"
 
@@ -31,8 +24,7 @@ class Command(BaseCommand):
         parser.add_argument("curriculum", type=str)
 
     def handle(self, *args, **options):
-        with open(CONFIG_PATH, "r") as f:
-            config = yaml.load(f, Loader)
+        config = get_config_from_file()
 
         mode = options["mode"]
         assert mode in ["prod", "debug"]

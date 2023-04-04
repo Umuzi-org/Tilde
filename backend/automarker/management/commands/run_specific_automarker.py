@@ -9,9 +9,9 @@ from django.core.management.base import BaseCommand
 from curriculum_tracking.models import ContentItem
 
 
-from curriculum_tracking.management.automarker_utils import (
+from automarker.management.command_utils import (
     get_cards_needing_review,
-    automark_card,
+    automark_project,
 )
 
 
@@ -32,4 +32,4 @@ class Command(BaseCommand):
             content_item=content_item, flavours=flavours
         ):
 
-            automark_card(card, debug_mode)
+            automark_project(card.recruit_project, debug_mode=debug_mode)

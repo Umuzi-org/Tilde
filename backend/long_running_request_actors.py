@@ -33,7 +33,6 @@ from backend.settings import (
     RABBITMQ_PORT,
 )
 
-from social_auth.models import SocialProfile
 
 connection = {}
 if RABBITMQ_PASSWORD:
@@ -81,17 +80,17 @@ def auto_assign_reviewers():
     work()
 
 
-@dramatiq.actor(max_retries = 3)
+@dramatiq.actor(max_retries=3)
 def delete_and_recreate_user_cards(user_id):
     from curriculum_tracking.card_generation_helpers import (
         generate_and_update_all_cards_for_user,
     )
     from curriculum_tracking.models import AgileCard
     from core.models import User
+
     user = User.objects.get(pk=user_id)
     AgileCard.objects.filter(assignees__in=[user]).delete()
     generate_and_update_all_cards_for_user(user, None)
-
 
 
 @dramatiq.actor()
@@ -99,6 +98,12 @@ def invite_user_to_github_org(user_id):
     from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
     from social_auth.github_api import Api
     from core.models import User
+
     user = User.objects.get(pk=user_id)
     api = Api(GIT_REAL_BOT_USERNAME)
-    api.add_user_to_org_return_accepted(organisation_name=ORGANISATION,github_name=user.github_name)
+    api.add_user_to_org_return_accepted(
+        organisation_name=ORGANISATION, github_name=user.github_name
+    )
+
+
+from automarker.long_running_request_actors import *

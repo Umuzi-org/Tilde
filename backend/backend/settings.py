@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
-
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     "open_ai_integrations.apps.OpenAiIntegrationsConfig",
     "production_data_exporters.apps.ProductionDataExportersConfig",
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
+    "automarker.apps.AutomarkerConfig",
 ]
 
 SITE_ID = 1  # from allauth docs
@@ -396,3 +397,11 @@ else:
 
 
 REVIEW_SPAM_THRESHOLD = 3  # if there are this many positive reviews on a card then we don't expect any more learners to review it
+
+
+AUTO_MARKER_CONFIGURATION_PATH = (
+    Path(os.getenv("AUTO_MARKER_CONFIGURATION_REPO_PATH")) / "config.yaml"
+)
+AUTOMARKER_SERVICE_BASE_URL = os.getenv(
+    "AUTOMARKER_SERVICE_BASE_URL", "http://localhost:1337"
+)

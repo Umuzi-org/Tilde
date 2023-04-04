@@ -7,26 +7,15 @@ python manage.py run_automarkers "Build your own website and host it on the web\
 
 """
 from django.core.management.base import BaseCommand
-import yaml
-from pathlib import Path
-import os
 from curriculum_tracking.models import ContentItem
 from core.models import Curriculum
-
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
-
-from curriculum_tracking.management.automarker_utils import (
+from automarker.management.command_utils import (
     get_cards_needing_review,
     automark_project,
+    get_config_from_file,
 )
 
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
-
-
-CONFIG_PATH = Path(os.getenv("AUTO_MARKER_CONFIGURATION_REPO_PATH")) / "config.yaml"
 
 
 class Command(BaseCommand):
@@ -42,8 +31,7 @@ class Command(BaseCommand):
                 o.content_item for o in get_ordered_content_items(curriculum)
             ]
 
-        with open(CONFIG_PATH, "r") as f:
-            config = yaml.load(f, Loader)
+        config = get_config_from_file()
 
         mode = options["mode"]
         assert mode in ["prod", "debug"]
