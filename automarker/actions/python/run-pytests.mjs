@@ -74,18 +74,18 @@ function lookForFailures(testOutput) {
       return line.split("AssertionError: ")[1];
     }
 
-    const match = line.match(/(\w*\.py:\d+:.*)/g);
+    const match = line.match(/(\w*\.(py|pxi):\d+:.*)/g);
     // eg: line = "/home/sheena/workspace/Tilde/gitignore/automark_clone_path/Umuzi-org-Kopano-Mosai-758-contentitem-python/task6.py:12: UnboundLocalError: local variable 'maximum' referenced before assignment"
+    // eg: src/lxml/parser.pxi:655: OSError: Error reading file 'https://umuzi-org.github.io/zmc-first-website-automark-demo-site/another_page.html': failed to load external entity "https://umuzi-org.github.io/zmc-first-website-automark-demo-site/another_page.html"
+
     // match  = ["task6.py:12: UnboundLocalError: local variable 'maximum' referenced before assignment"]
 
+    if (match === null) {
+      throw new Error(
+        `Could not find error in line:\n \'\'\'\n\t${line}\n\`\`\``
+      );
+    }
     if (match.length === 1) return match[0];
-
-    console.log("==============================");
-    console.log("==============================");
-    console.log(lines);
-    console.log("==============================");
-    console.log("==============================");
-    throw new Error(`Unknown error type:\n \'\'\'\n\t${line}\n\`\`\``);
   });
 }
 
