@@ -132,7 +132,7 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
 
             content_item: ContentItem = step.content_item
 
-            if not re.match(
+            if content_item.link_regex and not re.match(
                 content_item.link_regex, serializer.data["link_submission"]
             ):
 
