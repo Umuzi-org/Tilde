@@ -22,7 +22,7 @@ PRIORITY_HIGH = 0
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
-#### NB dont import any models until ADTER django.setup is called
+#### NB dont import any models until AFTER django.setup is called
 
 
 from dramatiq.brokers.rabbitmq import RabbitmqBroker

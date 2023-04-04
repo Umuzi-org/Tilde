@@ -770,7 +770,8 @@ class RecruitProject(
         return project_name
 
     def request_review(self, force_timestamp=None):
-        from automarker.long_running_request_actors import automark_single_project
+        # we import it from here because the broker needs to be set up.
+        from long_running_request_actors import automark_single_project
 
         assert (
             self.start_time

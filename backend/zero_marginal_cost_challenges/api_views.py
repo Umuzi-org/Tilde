@@ -148,8 +148,9 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
 
             project = step.progress
             project.link_submission = serializer.data["link_submission"]
-            project.review_request_time = timezone.now()
-            project.save()
+            # project.review_request_time = timezone.now()
+            # project.save()
+            project.request_review()
 
             return Response({"success": "OK"})  # TODO..
         else:
