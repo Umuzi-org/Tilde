@@ -7,3 +7,4 @@ git add -f git_real/migrations/*.py
 git add -f social_auth/migrations/*.py
 git add -f config/migrations/*.py
 git add -f activity_log/migrations/*.py
+git add -f automarker/migrations/*.py
