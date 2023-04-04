@@ -37,3 +37,19 @@ RTK has a more complicated set up and needs more boilerplate.
 Often, when using a framework it's best to just go with what the framework suggests.
 
 And the winner is.... SWR
+
+# UI testing
+
+The bare minimum is to make sure nothing is explicitly broken. Use https://storybook.js.org/docs/react/writing-tests/test-runner
+
+To run it:
+
+```
+# terminal 1
+
+npm run storybook
+
+# terminal 2
+
+npm run test-storybook
+```
