@@ -65,7 +65,6 @@ def automark_project(project, debug_mode):
     )
     pprint(result)
     if result["status"] == STATUS_OK:
-
         add_review(project=project, api_result=result)
     elif result["status"] == STATUS_FAIL:
 
