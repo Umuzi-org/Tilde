@@ -1,6 +1,6 @@
 FROM node:14.19
 
-# Install Python3.7
+# Install Python3.9.5
 WORKDIR /home/downloads
 
 RUN apt-get update && apt-get install -y \
@@ -26,6 +26,7 @@ RUN python3.9 --version
 RUN pip install virtualenv
 
 # Install Java
+
 RUN echo 'deb http://ftp.debian.org/debian stretch-backports main' | tee /etc/apt/sources.list.d/stretch-backports.list
 RUN apt-get -y update
 RUN apt-get -y install default-jdk
@@ -40,12 +41,12 @@ RUN npm install -g jasmine
 RUN npm install
 
 ENV CLONE_PATH /clone
-# ENV CONFIGURATION_REPO_PATH /home/node/app/project_config
 RUN mkdir $CLONE_PATH
+
+ENV AUTO_MARKER_CONFIGURATION_REPO_PATH /home/node/app/project_config
+COPY automarker-config $AUTO_MARKER_CONFIGURATION_REPO_PATH
 
 ENV AUTO_MARKER_PORT 8080
 EXPOSE $AUTO_MARKER_PORT
-
-
 
 CMD [ "node", "app.mjs" ]

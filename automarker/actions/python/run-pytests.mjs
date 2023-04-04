@@ -14,8 +14,6 @@ export default class RunPytests extends Action {
       scriptOutput.stderr
     );
 
-    console.log({ problems });
-
     if (problems.length) {
       return {
         status: STATUS_FAIL,

@@ -5,6 +5,5 @@ services:
     restart: always
     ports:
       - "1337:8080"
-    # environment:
-    #   CLONE_PATH: todo
-    #   CONFIGURATION_REPO_PATH: todo
+    volumes:
+      - ~/.ssh:/root/.ssh
