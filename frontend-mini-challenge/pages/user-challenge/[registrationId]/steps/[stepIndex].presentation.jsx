@@ -104,7 +104,9 @@ function ProjectSmallDeviceLayout({
           <Stack spacing={"md"} mt="md">
             <Grid>
               <Grid.Col xs="auto" sm={4} md={3} lg={3} xl={3}>
-                <Title order={3}>Project submission</Title>
+                <Center>
+                  <Title order={3}>Project submission</Title>
+                </Center>
 
                 <LinkForm
                   linkExample={stepDetails.linkExample}
@@ -117,8 +119,9 @@ function ProjectSmallDeviceLayout({
                 />
               </Grid.Col>
               <Grid.Col span="auto">
-                <Title order={3}>Feedback</Title>
-
+                <Center>
+                  <Title order={3}>Feedback</Title>
+                </Center>
                 <ProjectReviews
                   reviews={stepDetails.reviews}
                   status={stepDetails.status}
