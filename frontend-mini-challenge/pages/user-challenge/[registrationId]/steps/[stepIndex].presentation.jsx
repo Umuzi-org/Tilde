@@ -154,18 +154,6 @@ export default function Presentation({
   handlePrevious,
   handleSubmitLinkForm,
 }) {
-  console.log({
-    contentHtml,
-    registrationId,
-    stepIndex,
-
-    registration,
-    stepDetails,
-
-    submitProjectLink,
-    currentPath,
-  });
-
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
   const isTopic = stepDetails ? stepDetails.contentType === "T" : false;
 

@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { fetchAndClean, urlJoin, GET, POST } from "./lib/apiHelpers";
 import { REST_AUTH_BASE_URL, API_BASE_URL } from "./config";
+import { STATUS_UNDER_REVIEW } from "./constants";
 import {
   getAuthToken,
   clearAuthToken,
@@ -365,13 +366,48 @@ export function useGetStepDetails({ registrationId, stepIndex }) {
 
   const { data, error, isLoading, mutate } = useSWR(
     token && registrationId && stepIndex !== undefined
-      ? {
+      ? // token && currentStatus === STATUS_UNDER_REVIEW
+        {
           url,
           method: GET,
           token,
         }
       : null,
     fetchAndClean
+    // { refreshInterval: 20000 }
+  );
+
+  if (data && data.status === 401) {
+    // unauthorized
+    clearAuthToken();
+  }
+
+  return { error, isLoading, mutate, ...data };
+}
+
+export function useRefreshReviewStepDetails({
+  registrationId,
+  stepIndex,
+  currentStepStatus,
+}) {
+  const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/step_details/?index=${stepIndex}`;
+
+  const token = getAuthToken();
+
+  const { data, error, isLoading, mutate } = useSWR(
+    token &&
+      registrationId &&
+      stepIndex !== undefined &&
+      currentStepStatus === STATUS_UNDER_REVIEW
+      ? // token && currentStatus === STATUS_UNDER_REVIEW
+        {
+          url,
+          method: GET,
+          token,
+        }
+      : null,
+    fetchAndClean,
+    { refreshInterval: 1000 }
   );
 
   if (data && data.status === 401) {

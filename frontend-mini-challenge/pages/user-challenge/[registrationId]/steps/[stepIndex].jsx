@@ -10,28 +10,27 @@ import {
   useSubmitStepProjectLink,
   serverSideGetStepDetails,
   serverSideGetUserChallengeDetails,
+  useRefreshReviewStepDetails,
   serverSideStartStep,
 } from "../../../../apiHooks";
 
-import { STATUS_READY } from "../../../../constants";
+import { STATUS_READY, STATUS_UNDER_REVIEW } from "../../../../constants";
 
 import { remark } from "remark";
 import html from "remark-html";
 import matter from "gray-matter";
 import Presentation from "./[stepIndex].presentation";
+import { useEffect, useState } from "react";
 
 export default function ChallengeStep({
   contentHtml,
   registration,
   stepDetails,
   loggedInPageProps,
+  stepIndex,
+  registrationId,
 }) {
   const router = useRouter();
-  const { stepIndex: stepIndexStr, registrationId: registrationIdStr } =
-    router.query;
-
-  const stepIndex = parseInt(stepIndexStr);
-  const registrationId = parseInt(registrationIdStr);
 
   const finishStep = useFinishStep({ registrationId });
 
@@ -40,8 +39,44 @@ export default function ChallengeStep({
     stepIndex,
   });
 
+  const [currentStepStatus, setCurrentStepStatus] = useState(
+    stepDetails.status
+  );
+
+  const stepDetailsClientSideRefreshed = useRefreshReviewStepDetails({
+    registrationId,
+    stepIndex,
+    currentStepStatus,
+  });
+
+  const [finalStepDetails, setFinalStepDetails] = useState(stepDetails);
+
+  useEffect(() => {
+    if (
+      stepDetailsClientSideRefreshed &&
+      stepDetailsClientSideRefreshed.responseData
+    ) {
+      setCurrentStepStatus(stepDetailsClientSideRefreshed.responseData.status);
+      setFinalStepDetails(stepDetailsClientSideRefreshed.responseData);
+    }
+  }, [stepDetailsClientSideRefreshed]);
+
+  /* Whenever we submit a project link then we set the status to reviewing.
+  When the status is STATUS_UNDER_REVIEW then the refresher will constantly refetch
+  */
+  useEffect(() => {
+    if (
+      submitProjectLink.isLoading === false &&
+      submitProjectLink.status === 200
+    ) {
+      setCurrentStepStatus(STATUS_UNDER_REVIEW);
+    }
+  }, [submitProjectLink]);
+
+  // stepDetails = stepDetailsClientSideRefreshed.responseData || stepDetails;
+
   async function handleSubmitLinkForm({ linkSubmission }) {
-    await submitProjectLink.call({ linkSubmission });
+    submitProjectLink.call({ linkSubmission });
   }
 
   async function handleNext() {
@@ -68,7 +103,7 @@ export default function ChallengeStep({
     stepIndex,
 
     registration,
-    stepDetails,
+    stepDetails: finalStepDetails,
 
     submitProjectLink,
     currentPath,
@@ -141,6 +176,8 @@ export async function getServerSideProps({ query, req }) {
       registration,
       stepDetails,
       loggedInPageProps,
+      stepIndex,
+      registrationId,
     },
   };
 }
