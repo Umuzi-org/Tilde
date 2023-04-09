@@ -7,6 +7,7 @@ import {
   Spoiler,
   Paper,
   ScrollArea,
+  Divider,
 } from "@mantine/core";
 import {
   STATUS_UNDER_REVIEW,
@@ -41,12 +42,17 @@ function Review({ comments, status, timestamp }) {
 
   return (
     <>
-      <Group>
-        <Icon color={color} size="3rem" />
-        <Title order={4}>{title} </Title>
-        <DateTime timestamp={timestamp} />
-      </Group>
-      <Paper withBorder p="md">
+      <Paper withBorder pl="md" pr="md" pt="md">
+        <Group position="apart">
+          <Group>
+            <Icon color={color} size="2rem" />
+            <Text>{title}</Text>
+          </Group>
+          <Text c="dimmed" fz="sm">
+            <DateTime timestamp={timestamp} />
+          </Text>
+        </Group>
+        <Divider mt="md" />
         <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
       </Paper>
     </>
@@ -60,9 +66,6 @@ export default function ProjectReviews({ reviews, status }) {
 
   return (
     <Stack spacing={"md"} mt="md">
-      <Group>
-        <Title order={3}>Feedback</Title>
-      </Group>
       {showInProgress && (
         <>
           <Group position="center">

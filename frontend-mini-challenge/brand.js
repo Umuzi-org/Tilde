@@ -22,6 +22,8 @@ import {
   IoArrowBackOutline,
   IoArrowForwardOutline,
   IoCloseCircleOutline,
+  IoHammerOutline,
+  IoBookOutline,
 } from "react-icons/io5";
 // https://react-icons.github.io/react-icons/icons?name=io5
 
@@ -59,14 +61,17 @@ export const ReviewStatusLooks = {
   [COMPETENT]: {
     Icon: IoCheckmarkCircleOutline,
     color: statusLooks[STATUS_DONE].color,
-    title: "Your submission looks good",
+    title: "You passed",
   },
   [NOT_YET_COMPETENT]: {
     Icon: IoCloseCircleOutline,
     color: statusLooks[STATUS_ERROR].color,
-    title: "There are some problems",
+    title: "Not yet competent, please try again",
   },
 };
 
 export const BackArrowIcon = IoArrowBackOutline;
 export const ForwardArrowIcon = IoArrowForwardOutline;
+
+export const ProjectIcon = IoHammerOutline;
+export const ContentIcon = IoBookOutline;

@@ -26,11 +26,13 @@ NoReviews.args = {};
 
 export const Positive = Template.bind({});
 Positive.args = {
-  review: {
-    timestamp: "2023-03-02T15:27:37Z",
-    status: COMPETENT,
-    comments: "Looks good",
-  },
+  reviews: [
+    {
+      timestamp: "2023-03-02T15:27:37Z",
+      status: COMPETENT,
+      comments: "Looks good",
+    },
+  ],
 };
 
 export const Negative = Template.bind({});

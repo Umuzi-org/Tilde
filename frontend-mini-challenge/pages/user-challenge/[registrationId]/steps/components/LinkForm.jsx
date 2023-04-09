@@ -40,8 +40,7 @@ export default function LinkForm({
   }
 
   return (
-    <Box sx={{ maxWidth: 300 }} mx="auto" mt="md">
-      <Title order={3}>Project submission</Title>
+    <>
       {status === 400 && (
         <ErrorAlert>
           {responseData.nonFieldErrors || "Please correct the errors below"}
@@ -70,6 +69,6 @@ export default function LinkForm({
           </Group>
         </div>
       </form>
-    </Box>
+    </>
   );
 }

@@ -8,7 +8,8 @@ import {
   STATUS_UNDER_REVIEW,
 } from "../../../../constants";
 
-import { Presentation } from "./[stepIndex]";
+// import { Presentation } from "./[stepIndex]";
+import Presentation from "./[stepIndex].presentation";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
