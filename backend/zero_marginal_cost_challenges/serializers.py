@@ -128,7 +128,7 @@ class StepDetailsSerializer(serializers.Serializer):
                 "status": o.status,
                 "comments": o.comments,
             }
-            for o in progress.project_reviews.order_by("timestamp")
+            for o in progress.project_reviews.order_by("-timestamp")
         ]
 
     def get_title(self, instance):
