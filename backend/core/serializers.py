@@ -39,8 +39,9 @@ class _PasswordResetForm(PasswordResetForm):
 
 class PasswordResetSerializer(PasswordResetSerializerBase):
     def get_email_options(self):
-
-        return {"domain_override": settings.FRONTEND_URL}
+        request = self.context.get("request")
+        domain_override = request.data.get("origin", settings.FRONTEND_URL)
+        return {"domain_override": domain_override}
 
     @property
     def password_reset_form_class(self):

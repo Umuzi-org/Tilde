@@ -29,7 +29,7 @@ export default function ForgotPassword() {
   const sentTo = isLoading ? null : requestData && requestData.email;
 
   function handleSubmit({ email }) {
-    call({ email });
+    call({ email, origin: window.location.origin });
   }
 
   return (

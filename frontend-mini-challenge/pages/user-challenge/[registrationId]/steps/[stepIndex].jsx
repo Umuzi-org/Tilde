@@ -12,6 +12,7 @@ import {
   serverSideGetUserChallengeDetails,
   useRefreshReviewStepDetails,
   serverSideStartStep,
+  delay,
 } from "../../../../apiHooks";
 
 import { STATUS_READY, STATUS_UNDER_REVIEW } from "../../../../constants";
@@ -43,6 +44,7 @@ export default function ChallengeStep({
     stepDetails.status
   );
 
+  // console.log({ submitProjectLink, currentStepStatus });
   const stepDetailsClientSideRefreshed = useRefreshReviewStepDetails({
     registrationId,
     stepIndex,
@@ -56,6 +58,9 @@ export default function ChallengeStep({
       stepDetailsClientSideRefreshed &&
       stepDetailsClientSideRefreshed.responseData
     ) {
+      console.log({
+        refreshedStep: stepDetailsClientSideRefreshed.responseData,
+      });
       setCurrentStepStatus(stepDetailsClientSideRefreshed.responseData.status);
       setFinalStepDetails(stepDetailsClientSideRefreshed.responseData);
     }
@@ -70,10 +75,13 @@ export default function ChallengeStep({
       submitProjectLink.status === 200
     ) {
       setCurrentStepStatus(STATUS_UNDER_REVIEW);
+      // there is a race condition. when submitting a link for review then
+      // the step doesn't always get the review status.
+      // TODO: make sure we aren't making duplicate calls
+      delay(2000).then(() => setCurrentStepStatus(STATUS_UNDER_REVIEW));
     }
-  }, [submitProjectLink]);
-
-  // stepDetails = stepDetailsClientSideRefreshed.responseData || stepDetails;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submitProjectLink.isLoading]);
 
   async function handleSubmitLinkForm({ linkSubmission }) {
     submitProjectLink.call({ linkSubmission });

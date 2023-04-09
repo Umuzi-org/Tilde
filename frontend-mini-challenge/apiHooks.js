@@ -96,12 +96,12 @@ export function usePasswordReset() {
     tail: "password/reset/",
   });
 
-  async function call({ email }) {
+  async function call({ email, origin }) {
     setLoading(true);
     const data = await fetchAndClean({
       url,
       method: POST,
-      data: { email },
+      data: { email, origin },
     });
     // await delay(5000);
     setData(data);
