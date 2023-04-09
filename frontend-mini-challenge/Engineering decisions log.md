@@ -1,6 +1,6 @@
 # Why Next?
 
-Next is React based - compatable with team's existing skillset + hella powerful
+Next is React based - compatible with team's existing skillset + hella powerful
 There are a few different frameworks built on top of React:
 
 - Create React app: This is a painful thing to upgrade and somewhat bloated
@@ -22,7 +22,7 @@ The main Tilde frontend makes use of some redux-saga based data fetching and cac
 Options considered:
 
 - SWR: It's the Next.js way of doing things
-- Redux toolkit RTK: Redux is hella powerful and given our use of the tool, it makes sense to see if we can just modernise what we are already doing
+- Redux toolkit RTK: Redux is hella powerful and given our use of the tool, it makes sense to see if we can just modernize what we are already doing
 
 According to this https://sveltequery.vercel.app/comparison RTK has more features. But none of those seem like a deal-breaker. Most of what looks useful there can likely be handled by another tool or workaround.
 

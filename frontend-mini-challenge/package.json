@@ -9,7 +9,8 @@
     "lint": "next lint",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "test-ts": "tsc --noEmit --incremental"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

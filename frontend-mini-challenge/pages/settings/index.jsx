@@ -1,6 +1,5 @@
 import Page from "../../components/LoggedInPage";
 import {
-  Container,
   Title,
   Button,
   Group,
@@ -14,8 +13,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useChangePassword } from "../../apiHooks";
 import { ErrorAlert, InfoAlert } from "../../components/Alerts";
-// import { showNotification } from "@mantine/notifications";
-// import { useEffect } from "react";
 
 export default function Settings() {
   const router = useRouter();
