@@ -11,7 +11,7 @@ import { useCookies } from "react-cookie";
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-const TOKEN_COOKIE = "token";
+export const TOKEN_COOKIE = "token";
 
 export function useLogin() {
   const [data, setData] = useState({});
@@ -56,9 +56,9 @@ export function useLogin() {
 }
 
 export function useLogout() {
-  const { mutate } = useWhoAmI();
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
+  const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
 
   const url = urlJoin({
     base: REST_AUTH_BASE_URL,
@@ -76,7 +76,9 @@ export function useLogout() {
     setData(data);
     setLoading(false);
     clearAuthToken();
-    mutate();
+    removeCookie(TOKEN_COOKIE, {
+      path: "/",
+    });
   }
   return {
     call,
@@ -161,6 +163,18 @@ export function useChangePassword() {
     isLoading,
     ...data,
   };
+}
+
+export async function serverSideWhoAmI({ req }) {
+  const token = req.cookies[TOKEN_COOKIE];
+  const url = `${API_BASE_URL}/api/who_am_i/`;
+  const data = await fetchAndClean({
+    token,
+    url,
+    method: GET,
+  });
+
+  return data;
 }
 
 export function useWhoAmI() {

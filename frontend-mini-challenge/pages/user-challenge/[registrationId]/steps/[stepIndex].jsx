@@ -1,6 +1,8 @@
 // TODO: implement as much server side rendering as possible. There is more to be done here
 
-import Page from "../../../../components/LoggedInPage";
+import Page, {
+  getServerSidePropsForLoggedInPage,
+} from "../../../../components/LoggedInPage";
 
 import { useRouter } from "next/router";
 import {
@@ -11,13 +13,7 @@ import {
   serverSideStartStep,
 } from "../../../../apiHooks";
 
-import {
-  STATUS_BLOCKED,
-  STATUS_DONE,
-  STATUS_READY,
-  STATUS_UNDER_REVIEW,
-  STATUS_ERROR,
-} from "../../../../constants";
+import { STATUS_READY } from "../../../../constants";
 
 import { remark } from "remark";
 import html from "remark-html";
@@ -28,6 +24,7 @@ export default function ChallengeStep({
   contentHtml,
   registration,
   stepDetails,
+  loggedInPageProps,
 }) {
   const router = useRouter();
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } =
@@ -81,8 +78,8 @@ export default function ChallengeStep({
     handleSubmitLinkForm,
   };
   return (
-    <Page>
-      <Presentation {...props} />
+    <Page {...loggedInPageProps}>
+      {loggedInPageProps.isLoggedIn && <Presentation {...props} />}
     </Page>
   );
 }
@@ -92,43 +89,58 @@ export async function getServerSideProps({ query, req }) {
   const stepIndex = parseInt(stepIndexStr);
   const registrationId = parseInt(registrationIdStr);
 
-  const startStepResponse = await serverSideStartStep({
-    stepIndex,
-    registrationId,
+  const loggedInPageProps = await getServerSidePropsForLoggedInPage({
+    query,
     req,
   });
 
-  // TODO: consider upgrading to contentlayer later on.
+  let stepDetails = null;
+  let registration = null;
+  let contentHtml = null;
 
-  const stepDetails = await serverSideGetStepDetails({
-    stepIndex,
-    registrationId,
-    req,
-  });
+  if (loggedInPageProps.isLoggedIn) {
+    await serverSideStartStep({
+      stepIndex,
+      registrationId,
+      req,
+    });
 
-  const rawUrl = stepDetails.responseData.rawUrl;
+    // TODO: consider upgrading to contentlayer later on.
 
-  // Fetch data from repo
-  const res = await fetch(rawUrl);
+    const stepDetailsResponse = await serverSideGetStepDetails({
+      stepIndex,
+      registrationId,
+      req,
+    });
 
-  const body = await res.text();
-  const matterResult = matter(body);
+    stepDetails = stepDetailsResponse.responseData;
 
-  const processedContent = await remark()
-    .use(html)
-    .process(matterResult.content);
-  const contentHtml = processedContent.toString();
+    const rawUrl = stepDetails.rawUrl;
 
-  const registration = await serverSideGetUserChallengeDetails({
-    registrationId,
-    req,
-  });
+    // Fetch data from repo
+    const res = await fetch(rawUrl);
+    const body = await res.text();
+    const matterResult = matter(body);
+
+    const processedContent = await remark()
+      .use(html)
+      .process(matterResult.content);
+    contentHtml = processedContent.toString();
+
+    const registrationResponse = await serverSideGetUserChallengeDetails({
+      registrationId,
+      req,
+    });
+
+    registration = registrationResponse.responseData;
+  }
 
   return {
     props: {
       contentHtml,
-      registration: registration.responseData,
-      stepDetails: stepDetails.responseData,
+      registration,
+      stepDetails,
+      loggedInPageProps,
     },
   };
 }

@@ -1,16 +1,4 @@
-import {
-  Container,
-  LoadingOverlay,
-  AppShell,
-  // Paper,
-  // Stack,
-  // Text,
-  // Title,
-  // useMantineTheme,
-  // Group,
-  // RingProgress,
-} from "@mantine/core";
-// import Page from "../components/LoggedInPage";
+import { Container, LoadingOverlay, AppShell } from "@mantine/core";
 import { useEffect } from "react";
 import {
   useWhoAmI,

@@ -1,4 +1,6 @@
-import Page from "../../components/LoggedInPage";
+import Page, {
+  getServerSidePropsForLoggedInPage,
+} from "../../components/LoggedInPage";
 import {
   Title,
   Button,
@@ -14,7 +16,7 @@ import { useRouter } from "next/router";
 import { useChangePassword } from "../../apiHooks";
 import { ErrorAlert, InfoAlert } from "../../components/Alerts";
 
-export default function Settings() {
+export default function Settings({ loggedInPageProps }) {
   const router = useRouter();
   const { call, isLoading, status, responseData } = useChangePassword();
 
@@ -32,15 +34,6 @@ export default function Settings() {
         value === newPassword1 ? null : "Passwords do not match",
     },
   });
-
-  // useEffect(() => {
-  //   if (status === 200) {
-  //     showNotification({
-  //       title: "Password changed",
-  //       message: "Your password has been updated successfully",
-  //     });
-  //   }
-  // }, [status]);
 
   function goBack(e) {
     e.preventDefault();
@@ -60,7 +53,7 @@ export default function Settings() {
   }
 
   return (
-    <Page>
+    <Page {...loggedInPageProps}>
       <Breadcrumbs>
         <Link onClick={goBack} href="">
           Back
@@ -89,6 +82,7 @@ export default function Settings() {
               label="Old password"
               {...form.getInputProps("oldPassword")}
               {...formErrors.oldPassword}
+              autoComplete="password"
             />
 
             <PasswordInput
@@ -98,6 +92,7 @@ export default function Settings() {
               label="New password"
               {...form.getInputProps("newPassword1")}
               {...formErrors.newPassword1}
+              autoComplete="new-password"
             />
 
             <PasswordInput
@@ -107,6 +102,7 @@ export default function Settings() {
               label="Confirm password"
               {...form.getInputProps("newPassword2")}
               {...formErrors.newPassword2}
+              autoComplete="new-password"
             />
 
             <Group position="center" mt="md">
@@ -117,4 +113,20 @@ export default function Settings() {
       </Box>
     </Page>
   );
+}
+
+export async function getServerSideProps({ query, req }) {
+  const loggedInPageProps = await getServerSidePropsForLoggedInPage({
+    query,
+    req,
+  });
+
+  // any other server side logic you need to run
+
+  return {
+    props: {
+      loggedInPageProps,
+      // ...anyOtherPropsYouCareAbout
+    },
+  };
 }
