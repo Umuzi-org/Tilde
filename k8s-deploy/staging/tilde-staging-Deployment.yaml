@@ -67,7 +67,8 @@ spec:
 
             # [START reset password and email config]
             - name: FRONTEND_URL
-              value: https://tilde-front-staging-dot-umuzi-prod.nw.r.appspot.com     # TODO: Changed for staging
+              value: https://tilde-front-staging-dot-umuzi-prod.nw.r.appspot.com     
+
             - name: SENDGRID_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -87,7 +88,7 @@ spec:
                   key: PROD_SECRET_KEY
 
             - name: SQL_CONNECTION_NAME
-              value: umuzi-staging:europe-west2:staging      # Changed for staging
+              value: umuzi-staging:europe-west2:staging      
             - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
               value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
 
@@ -103,6 +104,10 @@ spec:
                   name: tilde-rabbitmq-rabbitmq-secret
                   key: rabbitmq-pass
 
+
+            - name: AUTOMARKER_SERVICE_BASE_URL
+              value: 
+ TODO             
           volumeMounts:
             - name: google-oauth-onetime-creds
               mountPath: /secrets/google-oauth-onetime-creds

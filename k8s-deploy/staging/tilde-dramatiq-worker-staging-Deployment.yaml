@@ -14,7 +14,7 @@ metadata:
   labels:
     app: tilde-dramatiq-worker
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: tilde-dramatiq-worker
@@ -89,6 +89,10 @@ spec:
                 secretKeyRef:
                   name: tilde-rabbitmq-rabbitmq-secret
                   key: rabbitmq-pass
+
+            - name: AUTOMARKER_SERVICE_BASE_URL
+              value: 
+ TODO             
 
           volumeMounts:
             - name: google-oauth-onetime-creds

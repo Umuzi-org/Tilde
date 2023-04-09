@@ -89,7 +89,10 @@ spec:
                 secretKeyRef:
                   name: tilde-rabbitmq-rabbitmq-secret
                   key: rabbitmq-pass
-
+            - name: AUTOMARKER_SERVICE_BASE_URL
+              value: 
+ TODO  
+ 
           volumeMounts:
             - name: google-oauth-onetime-creds
               mountPath: /secrets/google-oauth-onetime-creds
