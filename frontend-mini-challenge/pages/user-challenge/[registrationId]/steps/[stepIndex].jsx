@@ -44,7 +44,6 @@ export default function ChallengeStep({
     stepDetails.status
   );
 
-  // console.log({ submitProjectLink, currentStepStatus });
   const stepDetailsClientSideRefreshed = useRefreshReviewStepDetails({
     registrationId,
     stepIndex,
@@ -54,13 +53,14 @@ export default function ChallengeStep({
   const [finalStepDetails, setFinalStepDetails] = useState(stepDetails);
 
   useEffect(() => {
+    setFinalStepDetails(stepDetails);
+  }, [stepDetails]);
+
+  useEffect(() => {
     if (
       stepDetailsClientSideRefreshed &&
       stepDetailsClientSideRefreshed.responseData
     ) {
-      console.log({
-        refreshedStep: stepDetailsClientSideRefreshed.responseData,
-      });
       setCurrentStepStatus(stepDetailsClientSideRefreshed.responseData.status);
       setFinalStepDetails(stepDetailsClientSideRefreshed.responseData);
     }
