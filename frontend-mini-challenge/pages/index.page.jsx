@@ -8,7 +8,7 @@ import {
 import { getAuthToken } from "../lib/authTokenStorage";
 import { useRouter } from "next/router";
 
-const curriculum = 90; //
+const curriculum = 90; // TODO. When we have more challenges we wont be able to hrd-code this value
 
 export default function Home() {
   const router = useRouter();

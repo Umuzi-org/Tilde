@@ -13,7 +13,7 @@ import { useLogout, serverSideWhoAmI, TOKEN_COOKIE } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { clearAuthToken, getAuthToken } from "../lib/authTokenStorage";
+import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
 
 export default function Page({

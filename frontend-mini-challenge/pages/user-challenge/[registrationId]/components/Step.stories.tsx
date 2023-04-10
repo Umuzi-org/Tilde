@@ -69,14 +69,14 @@ Error.args = {
   status: STATUS_ERROR,
 };
 
-export function AllSteps() {
-  return (
-    <Stack>
-      <Template {...Done.args} />
-      <Template {...Error.args} />
-      <Template {...Ready.args} />
-      <Template {...Blocked.args} />
-      <Template {...Review.args} />
-    </Stack>
-  );
-}
+// export function AllSteps() {
+//   return (
+//     <Stack>
+//       <Template {...Done.args} />
+//       <Template {...Error.args} />
+//       <Template {...Ready.args} />
+//       <Template {...Blocked.args} />
+//       <Template {...Review.args} />
+//     </Stack>
+//   );
+// }
