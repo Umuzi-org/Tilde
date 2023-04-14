@@ -17,7 +17,4 @@ docker push gcr.io/umuzi-staging/tilde-frontend-mini-challenge:$GIT_COMMIT-$DATE
 docker push gcr.io/umuzi-staging/tilde-frontend-mini-challenge:latest
 
 
-# docker run -p 3000:3000 gcr.io/umuzi-staging/tilde-frontend-mini-challenge
-
-# rm .env.local
 
