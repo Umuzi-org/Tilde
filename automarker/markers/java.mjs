@@ -24,3 +24,13 @@ export class JavaJUnit5Katas extends Marker {
     new Step({ Action: RunJunitJupiterTests, name: "running our tests" }),
   ];
 }
+
+export class JavaJUnit5KatasAllowImports extends Marker {
+  steps = [
+    new Step({ Action: Clone }),
+    new Step({ Action: PrepForKataSelfTest }),
+    // new Step({ Action: CheckNoImports }),
+    new Step({ Action: PutKataFilesIntoPerfectProjectStructure }),
+    new Step({ Action: RunJunitJupiterTests, name: "running our tests" }),
+  ];
+}
