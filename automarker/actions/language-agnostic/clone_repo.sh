@@ -16,5 +16,10 @@ if [ -d "$FULL_CLONE_PATH" ]; then
   rm -rf $FULL_CLONE_PATH
 fi
 
+
+echo "cloning---------"
+echo "git clone $REPO_URL $FULL_CLONE_PATH"
+
+
 git clone $REPO_URL $FULL_CLONE_PATH
 
