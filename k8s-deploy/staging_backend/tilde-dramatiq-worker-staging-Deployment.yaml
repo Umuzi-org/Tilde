@@ -14,7 +14,7 @@ metadata:
   labels:
     app: tilde-dramatiq-worker
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: tilde-dramatiq-worker
@@ -26,7 +26,7 @@ spec:
       containers:
         - name: tilde-dramatiq-worker-app
           # Replace  with your project ID or use `make template`
-          image: gcr.io/umuzi-prod/tilde-backend:latest
+          image: gcr.io/umuzi-staging/tilde-backend:latest
           # This setting makes nodes pull the docker image every time before
           # starting the pod. This is useful when debugging, but should be turned
           # off in production.
@@ -75,7 +75,7 @@ spec:
                   name: miscbackend
                   key: PROD_SECRET_KEY
             - name: SQL_CONNECTION_NAME
-              value: umuzi-prod:europe-west2:prod
+              value: umuzi-staging:europe-west2:staging 
             - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
               value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
             - name: RABBITMQ_USER
@@ -117,7 +117,7 @@ spec:
             [
               "/cloud_sql_proxy",
               "--dir=/cloudsql",
-              "-instances=umuzi-prod:europe-west2:prod=tcp:5432",
+              "-instances=umuzi-staging:europe-west2:staging=tcp:5432",
               "-credential_file=/secrets/cloudsql/credentials.json",
             ]
           volumeMounts:
