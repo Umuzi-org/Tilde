@@ -7,7 +7,7 @@ export default class CreateVirtualEnv extends Action {
 
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/create-virtual-env.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
     const scriptErrorOutput = await shell.exec(command).stderr.trim();
 
     if (scriptErrorOutput.length) {

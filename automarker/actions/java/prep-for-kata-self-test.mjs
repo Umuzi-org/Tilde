@@ -14,9 +14,9 @@ export default class PrepForKataSelfTest extends Action {
 
   testAction = async function ({ destinationPath }) {
     const scriptPath = "./actions/java/prep-for-kata-self-test.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
     await shell.exec(command).stdout;
-    
+
     return {
       status: STATUS_OK,
     };

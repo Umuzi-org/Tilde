@@ -36,7 +36,7 @@ export default class DoRequirementsInstall extends Action {
     }
 
     const scriptPath = "./actions/python/do-requirements-install.sh";
-    const command = `DESTINATION_PATH=${destinationPath} REQUIREMENTS_DIRECTORY=${requirementsDirectory} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} REQUIREMENTS_DIRECTORY=${requirementsDirectory} bash -c ${scriptPath}`;
     const scriptErrorOutput = await shell.exec(command).stderr.trim();
 
     if (

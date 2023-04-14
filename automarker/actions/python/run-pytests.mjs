@@ -6,7 +6,7 @@ export default class RunPytests extends Action {
   name = "running pytest";
   action = async function ({ destinationPath, repoUrl = "" }) {
     const scriptPath = "actions/python/run-pytests.sh";
-    const command = `DESTINATION_PATH=${destinationPath} SUBMISSION_URL=${repoUrl} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} SUBMISSION_URL=${repoUrl} bash -c ${scriptPath}`;
 
     const scriptOutput = await shell.exec(command);
     const problems = lookForTestProblems(

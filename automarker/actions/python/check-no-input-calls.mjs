@@ -6,7 +6,7 @@ export default class CheckNoInputCalls extends Action {
   name = "checking for calls to input() function";
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/check-no-input-calls.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
 
     const output = await shell.exec(command).stdout;
     if (output.length) {

@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   automarker:
-    image: eu.gcr.io/umuzi-prod/automarker:latest
+    image: gcr.io/umuzi-prod/automarker:latest
     restart: always
     ports:
-      - "1337:8080"
+      - "1337:1337"
     volumes:
       - ~/.ssh:/root/.ssh

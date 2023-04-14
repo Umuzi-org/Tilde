@@ -29,7 +29,7 @@ export class JavaJUnit5KatasAllowImports extends Marker {
   steps = [
     new Step({ Action: Clone }),
     new Step({ Action: PrepForKataSelfTest }),
-    // new Step({ Action: CheckNoImports }),
+    // new Step({ Action: CheckNoImports }), // a little dodgy. It would be better to allow certain imports only.
     new Step({ Action: PutKataFilesIntoPerfectProjectStructure }),
     new Step({ Action: RunJunitJupiterTests, name: "running our tests" }),
   ];
