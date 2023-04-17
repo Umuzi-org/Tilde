@@ -80,7 +80,7 @@ spec:
             - name: STATIC_URL
               value: https://storage.googleapis.com/tilde-backend-collectstatic/static/
             - name: PROD_MODE
-              value: "1"
+              value: "0"  # staging env, we want error messages so things are easier to fix
             - name: PROD_SECRET_KEY
               valueFrom:
                 secretKeyRef:

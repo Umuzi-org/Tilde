@@ -3,14 +3,14 @@ This script gets run after a bunch of people get accepted from a bootcamp. They 
 """
 
 from django.core.management.base import BaseCommand
-from core.models import Team
+from core.models import Team, Stream
 from ..rocketchat import Rocketchat, GROUP
 from core.models import User
 from google_helpers.utils import fetch_sheet
 from curriculum_tracking.models import ContentItem, Curriculum, CourseRegistration
 import os
 
-from curriculum_tracking.management.course_streams import COURSES_BY_STREAM
+# from curriculum_tracking.management.course_streams import COURSES_BY_STREAM
 
 OLD_EMAIL = "Old Email"
 NEW_EMAIL = "New Email"
@@ -75,25 +75,29 @@ def update_user_email(row):
 
 def set_up_course_registrations(row):
     user = User.objects.get(email=row[NEW_EMAIL])
-    course_names = COURSES_BY_STREAM[row[DEPARTMENT]]
-    set_course_reg(user, course_names)
+    stream = Stream.objects.get(name=row[DEPARTMENT])
+    # stream = COURSES_BY_STREAM[row[DEPARTMENT]]
+    curriculums = [o.curriculum for o in stream.stream_curriculums.order_by("order")]
+    set_course_reg(user, curriculums)
 
 
-def set_course_reg(user, course_names):
-    curriculums = []
-    print(user)
-    for name in course_names:
-        print(name)
-        curriculums.append(Curriculum.objects.get(name=name))
+def set_course_reg(user, curriculums):
+    # curriculums = []
+    # print(user)
+    # for name in course_names:
+    #     print(name)
+    #     curriculums.append(Curriculum.objects.get(name=name))
 
-    course_ids = [curriculum.id for curriculum in curriculums]
+    # course_ids = [curriculum.id for curriculum in curriculums]
+    curriculums = list(curriculums)
     existing = CourseRegistration.objects.filter(user=user)
     for o in existing:
-        if o.curriculum_id not in course_ids:
+        if o.curriculum not in curriculums:
             o.delete()
-    for i, curriculum_id in enumerate(course_ids):
+
+    for i, curriculum in enumerate(curriculums):
         o, created = CourseRegistration.objects.get_or_create(
-            user=user, curriculum_id=curriculum_id, defaults={"order": i}
+            user=user, curriculum=curriculum, defaults={"order": i}
         )
         if not created:
             o.order = i

@@ -398,10 +398,15 @@ else:
 
 REVIEW_SPAM_THRESHOLD = 3  # if there are this many positive reviews on a card then we don't expect any more learners to review it
 
-
-AUTO_MARKER_CONFIGURATION_PATH = (
-    Path(os.getenv("AUTO_MARKER_CONFIGURATION_REPO_PATH")) / "config.yaml"
+OS_AUTO_MARKER_CONFIGURATION_REPO_PATH = os.getenv(
+    "AUTO_MARKER_CONFIGURATION_REPO_PATH"
 )
+AUTO_MARKER_CONFIGURATION_PATH = (
+    (Path(OS_AUTO_MARKER_CONFIGURATION_REPO_PATH) / "config.yaml")
+    if OS_AUTO_MARKER_CONFIGURATION_REPO_PATH
+    else None
+)
+
 AUTOMARKER_SERVICE_BASE_URL = os.getenv(
     "AUTOMARKER_SERVICE_BASE_URL", "http://localhost:1337"
 )

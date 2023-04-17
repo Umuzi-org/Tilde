@@ -24,6 +24,10 @@ RUN mkdir $AUTO_MARKER_CLONE_PATH
 
 ENV AUTO_MARKER_CONFIGURATION_REPO_PATH /home/node/app/project_config
 
+# RUN mkdir ~/.ssh
+# RUN ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+
 EXPOSE 1337
 
 CMD [ "node", "app.mjs" ]
