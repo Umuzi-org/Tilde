@@ -6,8 +6,8 @@ This exists to help set up demo data for for easy dev.
 eg:
 
 python manage.py export_curriculum 33 dev_helpers/data/intro-to-tilde-course.json
-
 python manage.py export_curriculum 4 dev_helpers/data/data-eng-part-1.json
+python manage.py export_curriculum 81 dev_helpers/data/web-dev-bootcamp-automarked.json
 
 """
 

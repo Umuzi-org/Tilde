@@ -1,0 +1,1522 @@
+{
+  "content_item_orders": [
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_1/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_1/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_2/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_2/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_3/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_3/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_4/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_4/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_5/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_5/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_6/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_6/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_7/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_7/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_8/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_8/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_9/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_9/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_10/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_10/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/git-exercises/",
+      "pre": "http://syllabus.africacode.net/topics/git/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/git-exercises/",
+      "pre": "http://syllabus.africacode.net/projects/bash-for-bootcamp/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/git-exercises/",
+      "pre": "http://syllabus.africacode.net/environment-setup/git/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/git-exercises/",
+      "pre": "http://syllabus.africacode.net/topics/bootcamp/git-for-bootcamp/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/git-exercises/",
+      "pre": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/clean-code/java-script/",
+      "pre": "http://syllabus.africacode.net/topics/clean-code/general/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
+      "pre": "http://syllabus.africacode.net/environment-setup/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
+      "pre": "http://syllabus.africacode.net/topics/github/intro/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
+      "pre": "http://syllabus.africacode.net/topics/reopening-pull-request/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/",
+      "pre": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/katas/level-1/",
+      "pre": "http://syllabus.africacode.net/topics/reopening-pull-request/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/katas/level-2/",
+      "pre": "http://syllabus.africacode.net/projects/katas/level-1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/oop/animals/part1/",
+      "pre": "http://syllabus.africacode.net/projects/oop/person/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/2-basic-css/",
+      "pre": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/1-basic-html-and-html-5/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/simple-website/",
+      "pre": "http://syllabus.africacode.net/topics/what-to-put-in-your-cv/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/simple-website/",
+      "pre": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/1-basic-html-and-html-5/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/simple-website/",
+      "pre": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/2-basic-css/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/morse-code/",
+      "pre": "http://syllabus.africacode.net/topics/intro-to-assertive-programming/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/topics/test-driven-development/",
+      "pre": "http://syllabus.africacode.net/topics/unit-testing/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/",
+      "pre": "http://syllabus.africacode.net/topics/test-driven-development/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/language-agnostic/validate-id-number/",
+      "pre": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "pre": "http://syllabus.africacode.net/language-agnostic/validate-id-number/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "pre": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "hard_requirement": true,
+      "post": "http://syllabus.africacode.net/projects/tdd/password-checker/part2/",
+      "pre": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/"
+    }
+  ],
+  "content_items": [
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "markdown"
+      ],
+      "id": 429,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/writing-assignment/_index.md",
+      "slug": "bootcamp-writing-assignment",
+      "tags": [
+        "todo",
+        "writing-assignment"
+      ],
+      "template_repo": null,
+      "title": "Writing Assignment",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/writing-assignment/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 755,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/how_to_name_files/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "IMPORTANT!! Naming your files and functions",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 766,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/introduction_to_github/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Basic introduction to Github - Helloworld",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 757,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/introduction/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Introduction to coding challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 756,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_1/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 1",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 764,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_2/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 2",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_2/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 760,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_3/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 3",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_3/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 759,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_4/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 4",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_4/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 763,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_5/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 5",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_5/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 758,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_6/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 6",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_6/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 765,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_7/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 7",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_7/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 762,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_8/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 8",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_8/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 761,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_9/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 9",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_9/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 754,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/coding_aptitude_assessment/coding_challenges/task_10/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Coding aptitude assessment challenge: Task 10",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_10/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 143,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/git/_index.md",
+      "slug": "git-basics",
+      "tags": [
+        "todo",
+        "git"
+      ],
+      "template_repo": null,
+      "title": "Git Basics",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/git/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 394,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/bash-for-bootcamp/_index.md",
+      "slug": "bash-for-bootcamp",
+      "tags": [
+        "todo",
+        "bash"
+      ],
+      "template_repo": null,
+      "title": "Beginning Bash",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/bash-for-bootcamp/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 634,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/environment-setup/git/_index.md",
+      "slug": "getting-git-set-up",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Getting Git set up",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/environment-setup/git/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 393,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/bootcamp/git-for-bootcamp/_index.md",
+      "slug": "useful-git-commands",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Useful Git commands",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/bootcamp/git-for-bootcamp/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 288,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/git-exercises/_index.md",
+      "slug": "git-basic-exercises",
+      "tags": [
+        "todo",
+        "git"
+      ],
+      "template_repo": null,
+      "title": "Git Basic Exercises",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/git-exercises/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 89,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/clean-code/general/_index.md",
+      "slug": "general-clean-code-guidelines",
+      "tags": [
+        "todo",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "General Clean Code Guidelines",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/clean-code/general/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 83,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/clean-code/java-script/_index.md",
+      "slug": "clean-code-for-javascript",
+      "tags": [
+        "todo",
+        "javascript",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Clean Code For JavaScript",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/clean-code/java-script/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 396,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/environment-setup/_index.md",
+      "slug": "data-science-bootcamp-setup",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Getting set up to write code on your device",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/environment-setup/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 587,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/github/intro/_index.md",
+      "slug": "basic-introduction-to-github",
+      "tags": [
+        "todo",
+        "git",
+        "github"
+      ],
+      "template_repo": null,
+      "title": "Basic introduction to Github",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/github/intro/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 788,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/reopening-pull-request/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Reopening a Pull request",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/reopening-pull-request/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 606,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/tilde/repo-card-tutorial/part-1/_index.md",
+      "slug": "tilde-project-tutorial-how-repo-projects-work",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Tilde project tutorial: How Repo projects work",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/",
+      "flavours": [],
+      "id": 608,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "C",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/tilde/repo-card-tutorial/part-2/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Tilde project tutorial: How Continue Repo projects work",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 585,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/tilde/understanding-the-review-column/_index.md",
+      "slug": "understanding-the-review-column",
+      "tags": [
+        "todo"
+      ],
+      "template_repo": null,
+      "title": "Understanding the review column",
+      "topic_needs_review": true,
+      "url": "http://syllabus.africacode.net/topics/tilde/understanding-the-review-column/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 219,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/katas/level-1/_index.md",
+      "slug": "level-1-programming-katas",
+      "tags": [
+        "todo",
+        "algorithms",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Level 1 coding challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/katas/level-1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": "http://syllabus.africacode.net/projects/katas/level-1/",
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 637,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "C",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/katas/level-2/_index.md",
+      "slug": "level-2-coding-challenges",
+      "tags": [
+        "todo",
+        "algorithms",
+        "clean-code"
+      ],
+      "template_repo": null,
+      "title": "Level 2 coding challenges",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/katas/level-2/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 312,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/free-code-camp/javascript-data-structures-and-algorithms/7-object-oriented-programming/_index.md",
+      "slug": "object-orientated-programming",
+      "tags": [
+        "todo",
+        "oop",
+        "javascript",
+        "free-code-camp"
+      ],
+      "template_repo": null,
+      "title": "FreeCodeCamp - Object Oriented Programming",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/free-code-camp/javascript-data-structures-and-algorithms/7-object-oriented-programming/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 223,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/oop/person/_index.md",
+      "slug": "person",
+      "tags": [
+        "todo",
+        "oop"
+      ],
+      "template_repo": null,
+      "title": "Person",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/oop/person/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 224,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/oop/animals/part1/_index.md",
+      "slug": "animals-part-1-oop-basics",
+      "tags": [
+        "todo",
+        "oop"
+      ],
+      "template_repo": null,
+      "title": "Animals Part 1. OOP basics",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/oop/animals/part1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 50,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/what-to-put-in-your-cv/_index.md",
+      "slug": "what-to-put-in-your-cv",
+      "tags": [
+        "todo",
+        "getting a job",
+        "professionalism"
+      ],
+      "template_repo": null,
+      "title": "What to put in your CV",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/what-to-put-in-your-cv/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 307,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/free-code-camp/responsive-web-design/1-basic-html-and-html-5/_index.md",
+      "slug": "basic-html-and-htm5",
+      "tags": [
+        "todo",
+        "html",
+        "responsive web design",
+        "html5",
+        "free-code-camp"
+      ],
+      "template_repo": null,
+      "title": "FreeCodeCamp - Basic HTML and HTML5",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/1-basic-html-and-html-5/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 310,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/free-code-camp/responsive-web-design/2-basic-css/_index.md",
+      "slug": "basic-css",
+      "tags": [
+        "todo",
+        "css",
+        "responsive web design",
+        "free-code-camp"
+      ],
+      "template_repo": null,
+      "title": "FreeCodeCamp - Basic CSS",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/2-basic-css/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 772,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "L",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/simple-website/_index.md",
+      "slug": "contentitem",
+      "tags": [
+        "todo",
+        "html",
+        "css"
+      ],
+      "template_repo": null,
+      "title": "Simple Website - Build your first personal website",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/simple-website/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 145,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/intro-to-assertive-programming/_index.md",
+      "slug": "introduction-to-assertive-programming",
+      "tags": [
+        "todo",
+        "defensive-programming"
+      ],
+      "template_repo": null,
+      "title": "Introduction to assertive programming",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/intro-to-assertive-programming/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 184,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/morse-code/_index.md",
+      "slug": "assertive-programming-kata",
+      "tags": [
+        "todo",
+        "data structures",
+        "problem solving",
+        "defensive programming"
+      ],
+      "template_repo": null,
+      "title": "Morse code",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/morse-code/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 54,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/unit-testing/_index.md",
+      "slug": "unit-testing-language-agnostic-concepts",
+      "tags": [
+        "todo",
+        "unit testing"
+      ],
+      "template_repo": null,
+      "title": "Unit testing (language agnostic concepts)",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/unit-testing/"
+    },
+    {
+      "blurb": null,
+      "content_type": "T",
+      "continue_from_repo": null,
+      "flavours": [],
+      "id": 178,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": null,
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/topics/test-driven-development/_index.md",
+      "slug": "test-driven-development",
+      "tags": [
+        "todo",
+        "tdd"
+      ],
+      "template_repo": null,
+      "title": "Test Driven Development",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/topics/test-driven-development/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 273,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/tdd/simple-calculator-part1/_index.md",
+      "slug": "simple-calculator-part-1",
+      "tags": [
+        "todo",
+        "tdd"
+      ],
+      "template_repo": null,
+      "title": "simple-calculator part 1",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 625,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/language-agnostic/validate-id-number/_index.md",
+      "slug": "validate-a-south-african-id-number",
+      "tags": [
+        "todo",
+        "tdd",
+        "problem-solving",
+        "validation"
+      ],
+      "template_repo": null,
+      "title": "Validate a South African ID number",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/language-agnostic/validate-id-number/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": null,
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 269,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "R",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/tdd/password-checker/part1/_index.md",
+      "slug": "password-checker",
+      "tags": [
+        "todo",
+        "tdd",
+        "error-checking"
+      ],
+      "template_repo": null,
+      "title": "password-checker",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/"
+    },
+    {
+      "blurb": null,
+      "content_type": "P",
+      "continue_from_repo": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/",
+      "flavours": [
+        "bash",
+        "python",
+        "kotlin",
+        "javascript",
+        "java",
+        "swift",
+        "typescript"
+      ],
+      "id": 270,
+      "link_example": null,
+      "link_message": null,
+      "link_name": null,
+      "link_regex": null,
+      "project_submission_type": "C",
+      "raw_url": "https://raw.githubusercontent.com/Umuzi-org/ACN-syllabus/develop/content/projects/tdd/password-checker/part2/_index.md",
+      "slug": "add-logging-to-password-checker",
+      "tags": [
+        "todo",
+        "logging"
+      ],
+      "template_repo": null,
+      "title": "Add logging to password checker",
+      "topic_needs_review": false,
+      "url": "http://syllabus.africacode.net/projects/tdd/password-checker/part2/"
+    }
+  ],
+  "curriculum": {
+    "blurb": null,
+    "id": 81,
+    "name": "Web development boot camp (with automarked katas)"
+  },
+  "curriculum_content_requirements": [
+    {
+      "content_item": "http://syllabus.africacode.net/projects/writing-assignment/",
+      "flavours": [
+        "markdown"
+      ],
+      "hard_requirement": true,
+      "order": 1
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_1/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 2
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_2/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 3
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_3/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 4
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_4/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 5
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_5/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 6
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_6/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 7
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_7/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 8
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_8/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 9
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_9/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 10
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_10/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 11
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/git-exercises/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 12
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/clean-code/java-script/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 13
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 14
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/tilde/understanding-the-review-column/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 15
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/katas/level-1/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 16
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/katas/level-2/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 17
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/topics/free-code-camp/javascript-data-structures-and-algorithms/7-object-oriented-programming/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 18
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/oop/animals/part1/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 19
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/simple-website/",
+      "flavours": [],
+      "hard_requirement": true,
+      "order": 20
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/morse-code/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 21
+    },
+    {
+      "content_item": "http://syllabus.africacode.net/projects/tdd/password-checker/part2/",
+      "flavours": [
+        "javascript"
+      ],
+      "hard_requirement": true,
+      "order": 22
+    }
+  ]
+}

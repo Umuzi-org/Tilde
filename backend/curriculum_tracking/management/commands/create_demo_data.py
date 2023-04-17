@@ -161,6 +161,8 @@ def add_bot_trust_to_projects_in_curriculum(curriculum):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        # zmc challenge
+
         challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
         create_challenge_users()
 
@@ -174,6 +176,8 @@ class Command(BaseCommand):
             Value.STRING,
         )
 
+        # all features
+
         curriculum = save_curriculum_to_db(
             "dev_helpers/data/intro-to-tilde-course.json"
         )
@@ -182,3 +186,8 @@ class Command(BaseCommand):
 
         create_team_of_learners(team_name="A", curriculum=curriculum)
         create_team_of_learners(team_name="B", curriculum=curriculum)
+
+        # bootcamp users
+        curriculum = save_curriculum_to_db(
+            "dev_helpers/data/web-dev-bootcamp-automarked.json"
+        )
