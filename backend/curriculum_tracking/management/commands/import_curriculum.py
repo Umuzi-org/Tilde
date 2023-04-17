@@ -102,3 +102,5 @@ def create_curriculum_content_requirements(data, curriculum_name):
             hard_requirement=requirement["hard_requirement"],
             order=requirement["order"],
         )
+
+        curriculum_content_requirements.set_flavours(requirement["flavours"])

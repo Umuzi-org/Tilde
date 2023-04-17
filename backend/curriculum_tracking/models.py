@@ -770,9 +770,9 @@ class RecruitProject(
         return project_name
 
     def request_review(self, force_timestamp=None):
-        # self.review_request_time = (
-        #     force_timestamp or self.review_request_time or timezone.now()
-        # )
+        # we import it from here because the broker needs to be set up.
+        from long_running_request_actors import automark_single_project
+
         assert (
             self.start_time
         ), f"cannot request a review if the project isn't started - {self}"
@@ -785,6 +785,11 @@ class RecruitProject(
         self.code_review_red_flag_since_last_review_request = 0
         self.save()
         self.update_associated_card_status()
+
+        breakpoint()
+        automark_single_project.send_with_options(
+            kwargs={"project_id": self.id},
+        )
 
     @property
     def recruit_user_names(self):
@@ -1615,11 +1620,3 @@ class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
     )
     flavours = TaggableManager(blank=True)
     weight = models.IntegerField()
-
-
-class ContentItemAutoMarkerConfig(models.Model, FlavourMixin, ContentItemProxyMixin):
-    content_item = models.ForeignKey(
-        ContentItem, on_delete=models.PROTECT, related_name="automarker_configs"
-    )
-    flavours = TaggableManager(blank=True)
-    trigger_marker_when_card_in_review = models.BooleanField(default=False)

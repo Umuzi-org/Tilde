@@ -1,0 +1,146 @@
+# The bookshelf frontend replication controller ensures that at least 3
+# instances of the bookshelf app are running on the cluster.
+# For more info about Pods see:
+#   https://cloud.google.com/container-engine/docs/pods/
+# For more info about Deployments:
+#   https://kubernetes.io/docs/user-guide/deployments/
+
+# apiVersion: extensions/v1beta1
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: tilde-dramatiq-worker
+  labels:
+    app: tilde-dramatiq-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tilde-dramatiq-worker
+  template:
+    metadata:
+      labels:
+        app: tilde-dramatiq-worker
+    spec:
+      containers:
+        - name: tilde-dramatiq-worker-app
+          # Replace  with your project ID or use `make template`
+          image: gcr.io/umuzi-prod/tilde-backend:latest
+          # This setting makes nodes pull the docker image every time before
+          # starting the pod. This is useful when debugging, but should be turned
+          # off in production.
+          command: ["dramatiq"]
+          args: ["long_running_request_actors"]
+          imagePullPolicy: Always
+          env:
+            # [START cloudsql_secrets]
+            - name: TILDE_SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: TILDE_SQL_USER
+            - name: TILDE_SQL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: TILDE_SQL_PASS
+
+            - name: TILDE_SQL_DB
+              value: tilde_staging
+            - name: TILDE_SQL_PORT
+              value: "5432"
+
+            # [START git real secrets]
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gitreal
+                  key: GITHUB_CLIENT_ID
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gitreal
+                  key: GITHUB_CLIENT_SECRET
+
+            # [START git misc config]
+
+            # - name: STATIC_URL
+            #   value: ""
+            - name: PROD_MODE
+              value: "1"
+            - name: PROD_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: miscbackend
+                  key: PROD_SECRET_KEY
+            - name: SQL_CONNECTION_NAME
+              value: umuzi-prod:europe-west2:prod
+            - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
+              value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
+            - name: RABBITMQ_USER
+              value: rabbit
+            - name: RABBITMQ_HOST
+              value: tilde-rabbitmq-rabbitmq-discovery
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tilde-rabbitmq-rabbitmq-secret
+                  key: rabbitmq-pass
+            - name: AUTOMARKER_SERVICE_BASE_URL
+              value: http://automarker # using ClusterIP service
+ 
+          volumeMounts:
+            - name: google-oauth-onetime-creds
+              mountPath: /secrets/google-oauth-onetime-creds
+              readOnly: true
+
+          # ports:
+          #   - containerPort: 8080
+
+          # readinessProbe:
+          #   # an http probe
+          #   httpGet:
+          #     path: /readiness
+          #     port: 8080
+          #   initialDelaySeconds: 20
+          #   timeoutSeconds: 5
+
+        # [START proxy_container]
+        - image: gcr.io/cloudsql-docker/gce-proxy:1.16
+          name: cloudsql-proxy
+          command:
+            [
+              "/cloud_sql_proxy",
+              "--dir=/cloudsql",
+              "-instances=umuzi-prod:europe-west2:prod=tcp:5432",
+              "-credential_file=/secrets/cloudsql/credentials.json",
+            ]
+          volumeMounts:
+            - name: cloudsql-oauth-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+      # [END proxy_container]
+      # [START volumes]
+      volumes:
+        - name: google-oauth-onetime-creds
+          secret:
+            secretName: google-oauth-onetime-creds
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+
+      # [END volumes]
+# [END kubernetes_deployment]
+

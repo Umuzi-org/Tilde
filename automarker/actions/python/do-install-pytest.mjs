@@ -6,7 +6,7 @@ export default class DoInstallPytest extends Action {
   name = "installing pytest";
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/python/do-install-pytest.sh";
-    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
     const scriptErrorOutput = await shell.exec(command).stderr.trim();
 
     if (scriptErrorOutput.length) {

@@ -8,7 +8,8 @@ import {
   STATUS_UNDER_REVIEW,
 } from "../../../../constants";
 
-import { Presentation } from "./[stepIndex]";
+// import { Presentation } from "./[stepIndex]";
+import Presentation from "./[stepIndex].presentation";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -221,15 +222,8 @@ ProjectReady.args = {
     linkExample: "https://your-name.github.io/your-repo-name/",
     linkMessage:
       "Please make sure you are linking to your github page, not just your repo. If someone follows the link then they should sww your website",
-    linkSubmission: "https://sheenarbw.github.io/pres-app-engine-node/",
-    reviews: [
-      {
-        timestamp: "2023-03-20T14:53:10.039920Z",
-        status: "NYC",
-        comments:
-          "Hello! I'm a robot 🤖\n\nI'm here to give you quick feedback about your code. Something went wrong when I marked your code. Most people don't get things right on the first try, just keep trying, I'm sure you'll figure it out! \n\nHere are some details:\n\n*Pytest errors*\n- Your character set should be UTF-8. Please double check that you followed the instructions, it's all explained\n- Your HTML is not valid. Here's some output from the validator. If it's confusing just go back to basics. Are all your tags closed? Are all the tags included? : - An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.. - The “width” attribute on the “td” element is obsolete. Use CSS instead.. - An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.. - Bad value “assets/comparison of products.png” for attribute “src” on element “img”: Illegal character in path segment: space is not allowed.. - An “img” element must have an “alt” attribute, except under certain conditions. For details, consult guidance on providing text alternatives for images.\n- Please make sure you include at least one paragraph in your site. Something like this: `<p>Your text here</p>`\n- You are missing a required tag. Please make sure each of the following tags are in your website. They need to be in the right places: html, head, meta, title, body\n\nIf the feedback doesn't make sense please reach out to one of the humans that work here and they'll be happy to help you understand. Humans are great like that",
-      },
-    ],
+    linkSubmission: "",
+    reviews: [],
     title: "Hosting your website on the web",
     status: STATUS_READY,
     blurb:

@@ -10,7 +10,7 @@ export default class PutKataFilesIntoPerfectProjectStructure extends Action {
     const scriptPath =
       "./actions/java/put-kata-files-into-perfect-project-structure.sh";
 
-    const command = `DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath}  /bin/bash -c '${scriptPath}'`;
+    const command = `DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath}  bash -c '${scriptPath}'`;
 
     await shell.exec(command).stdout;
 

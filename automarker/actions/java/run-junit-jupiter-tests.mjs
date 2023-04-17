@@ -8,7 +8,7 @@ export default class RunJunitJupiterTests extends Action {
   action = async function ({ destinationPath }) {
     const scriptPath = "./actions/java/run-junit-jupiter-tests.sh";
 
-    const command = `DESTINATION_PATH=${destinationPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
 
     const scriptOutput = await shell.exec(command);
     const problems = lookForTestProblems(

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.models import User
-from social_auth.models import SocialProfile
+from social_auth.models import SocialProfile, GithubOAuthToken
 from config.models import NameSpace, Value
 from curriculum_tracking.models import (
     AgileCard,
@@ -14,13 +14,19 @@ from curriculum_tracking.card_generation_helpers import (
 from core.models import Team, PERMISSION_VIEW_ALL
 from guardian.shortcuts import assign_perm
 from faker import Faker
-
+from curriculum_tracking.card_generation_helpers import get_ordered_content_items
+from automarker.management.commands.ingest_automarker_config import (
+    ingest_automarker_config,
+)
 from curriculum_tracking.management.commands.import_curriculum import (
     save_curriculum_to_db,
 )  # Note: these kinds of imports are actually bad practice. We need a refactor
 
-from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL, GIT_REAL_BOT_USERNAME
+import os
 
+
+GIT_REAL_BOT_ACCESS_TOKEN = os.getenv("GIT_REAL_BOT_ACCESS_TOKEN")
 
 faker = Faker()
 
@@ -39,9 +45,6 @@ def make_github_name():
     name = f"test-github-user-{next(_numbers)}"
     print(name)
     return name
-
-
-import factory
 
 
 def create_user(email, github_name=None, is_staff=False, is_superuser=False):
@@ -106,7 +109,10 @@ def setup_peer_reviewers(users):
 def create_team_of_learners(team_name, curriculum):
     team, _ = Team.objects.get_or_create(name=team_name)
     learners = [
-        create_user(f"learner_{team_name.lower()}_{i+1}@email.com", make_github_name())
+        create_user(
+            email=f"learner_{team_name.lower()}_{i+1}@email.com",
+            github_name=make_github_name(),
+        )
         for i in range(3)
     ]
 
@@ -122,9 +128,9 @@ def create_team_of_learners(team_name, curriculum):
 
     for permission, _ in Team._meta.permissions:
         user = create_user(
-            f"{permission.lower()}_{team_name.lower()}@email.com",
-            make_github_name(),
-            True,
+            email=f"{permission.lower()}_{team_name.lower()}@email.com",
+            github_name=make_github_name(),
+            is_staff=True,
         )
 
         assign_perm(permission, user, team)
@@ -133,7 +139,9 @@ def create_team_of_learners(team_name, curriculum):
 
     # create a JTL
     jtl_user = create_user(
-        f"jtl_{team_name.lower()}@email.com", make_github_name(), False
+        email=f"jtl_{team_name.lower()}@email.com",
+        github_name=make_github_name(),
+        is_staff=False,
     )
     assign_perm(PERMISSION_VIEW_ALL, jtl_user, team)
     print(f"\ncreated JTL user: {user.email}\n")
@@ -142,11 +150,8 @@ def create_team_of_learners(team_name, curriculum):
 def create_challenge_users(count=10):
     for i in range(count):
         create_user(
-            f"challenger_{i}@email.com",
+            email=f"challenger_{i}@email.com",
         )
-
-
-from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 
 
 def add_bot_trust_to_projects_in_curriculum(curriculum):
@@ -161,6 +166,26 @@ def add_bot_trust_to_projects_in_curriculum(curriculum):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+
+        bot, _ = User.objects.get_or_create(email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL)
+
+        github_bot = create_user(
+            email="code@umuzi.org",
+            github_name=GIT_REAL_BOT_USERNAME,
+            is_staff=True,
+            is_superuser=True,
+        )
+
+        if GIT_REAL_BOT_ACCESS_TOKEN:
+            GithubOAuthToken.objects.get_or_create(
+                user=github_bot,
+                access_token=GIT_REAL_BOT_ACCESS_TOKEN,
+                token_type="bearer",
+                scope="repo",
+            )
+
+        # zmc challenge
+
         challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
         create_challenge_users()
 
@@ -174,11 +199,27 @@ class Command(BaseCommand):
             Value.STRING,
         )
 
+        # frontend features
+
         curriculum = save_curriculum_to_db(
             "dev_helpers/data/intro-to-tilde-course.json"
         )
 
-        create_user("super@email.com", make_github_name(), True, True)
+        create_user(
+            email="super@email.com",
+            github_name=make_github_name(),
+            is_staff=True,
+            is_superuser=True,
+        )
 
         create_team_of_learners(team_name="A", curriculum=curriculum)
         create_team_of_learners(team_name="B", curriculum=curriculum)
+
+        # bootcamp users
+        bootcamp_curriculum = save_curriculum_to_db(
+            "dev_helpers/data/web-dev-bootcamp-automarked.json"
+        )
+
+        create_team_of_learners(team_name="boot", curriculum=bootcamp_curriculum)
+
+        ingest_automarker_config("dev_helpers/data/demo-automarker-config.yaml")

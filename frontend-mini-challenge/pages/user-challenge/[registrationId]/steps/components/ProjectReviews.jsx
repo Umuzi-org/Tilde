@@ -1,18 +1,13 @@
 import {
-  Title,
   Text,
   Stack,
   Loader,
   Group,
-  Spoiler,
   Paper,
   ScrollArea,
+  Divider,
 } from "@mantine/core";
-import {
-  STATUS_UNDER_REVIEW,
-  COMPETENT,
-  NOT_YET_COMPETENT,
-} from "../../../../../constants";
+import { STATUS_UNDER_REVIEW } from "../../../../../constants";
 import { ReviewStatusLooks } from "../../../../../brand";
 
 import { remark } from "remark";
@@ -41,12 +36,17 @@ function Review({ comments, status, timestamp }) {
 
   return (
     <>
-      <Group>
-        <Icon color={color} size="3rem" />
-        <Title order={4}>{title} </Title>
-        <DateTime timestamp={timestamp} />
-      </Group>
-      <Paper withBorder p="md">
+      <Paper withBorder pl="md" pr="md" pt="md">
+        <Group position="apart">
+          <Group>
+            <Icon color={color} size="2rem" />
+            <Text>{title}</Text>
+          </Group>
+          <Text c="dimmed" fz="xs">
+            <DateTime timestamp={timestamp} />
+          </Text>
+        </Group>
+        <Divider mt="md" />
         <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
       </Paper>
     </>
@@ -55,14 +55,14 @@ function Review({ comments, status, timestamp }) {
 
 export default function ProjectReviews({ reviews, status }) {
   const showInProgress = status === STATUS_UNDER_REVIEW;
-  const showEmpty = !reviews && !showInProgress;
-  const showReview = !showInProgress && !showEmpty;
+  const showEmpty = reviews.length === 0 && !showInProgress;
+  const showReviews = !showInProgress && !showEmpty;
+
+  const olderReviews = reviews.slice(1);
+  const firstReview = reviews[0];
 
   return (
     <Stack spacing={"md"} mt="md">
-      <Group>
-        <Title order={3}>Feedback</Title>
-      </Group>
       {showInProgress && (
         <>
           <Group position="center">
@@ -91,11 +91,19 @@ export default function ProjectReviews({ reviews, status }) {
         </Group>
       )}
 
-      {showReview && (
+      {showReviews && (
         <ScrollArea h={250} type="always" scrollbarSize={12} pr="md">
-          {reviews.map((review, index) => (
-            <Review key={`review-${index}`} {...review} />
-          ))}
+          <Stack>
+            {firstReview && <Review {...firstReview} />}
+            {olderReviews.length > 0 && (
+              <>
+                <Divider label="Older reviews" labelPosition="center" />
+                {olderReviews.map((review, index) => (
+                  <Review key={`review-${index}`} {...review} />
+                ))}
+              </>
+            )}
+          </Stack>
         </ScrollArea>
       )}
     </Stack>

@@ -15,7 +15,7 @@ export default class SavePage extends Action {
   }) {
     const clonerScriptPath = "./actions/language-agnostic/copy_dir.sh";
 
-    const cloneCommand = `CLONE_PATH=${CLONE_PATH} DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} /bin/bash -c '${clonerScriptPath}'`;
+    const cloneCommand = `CLONE_PATH=${CLONE_PATH} DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} bash -c '${clonerScriptPath}'`;
 
     const stderr = await shell.exec(cloneCommand).stderr;
     if (stderr.match(/No such file or directory/)) {

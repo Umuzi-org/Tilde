@@ -2,10 +2,11 @@ from django.contrib import admin
 from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
+from automarker import models as automarker_models
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
-    model = models.ContentItemAutoMarkerConfig
+    model = automarker_models.ContentItemAutoMarkerConfig
 
 
 class ContentItemOrderPostAdmin(admin.TabularInline):

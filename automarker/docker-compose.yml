@@ -1,10 +1,11 @@
 version: "3.3"
 services:
   automarker:
-    image: eu.gcr.io/umuzi-prod/automarker:latest
+    # image: gcr.io/umuzi-prod/automarker:latest
+    build: .
     restart: always
     ports:
-      - "1337:8080"
-    # environment:
-    #   CLONE_PATH: todo
-    #   CONFIGURATION_REPO_PATH: todo
+      - "1337:1337"
+    volumes:
+      - ~/.ssh:/root/.ssh
+      - $AUTO_MARKER_CONFIGURATION_REPO_PATH:/home/node/app/project_config

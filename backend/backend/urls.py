@@ -212,7 +212,7 @@ urlpatterns = [
     path("social_auth/", include("social_auth.urls")),
     # path("api/", include("curriculum_tracking.api_urls")),
     path(
-        "password_reset_confirm/<uidb64>/<token>/",
+        "password-reset-confirm/<uidb64>/<token>/",
         lambda *a, **k: None,  # we don't actually need a view here. We redirect to the frontend
         name="password_reset_confirm",
     ),

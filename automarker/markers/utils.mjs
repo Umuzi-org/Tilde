@@ -1,6 +1,7 @@
 import { STATUS_ERROR, STATUS_OK, STATUS_FAIL } from "../consts.mjs";
 import { join, basename, resolve } from "path";
 import { CLONE_PATH, CONFIGURATION_REPO_PATH } from "../env.mjs";
+import TearDown from "../actions/language-agnostic/tear-down.mjs";
 
 export function dirNameFromRepoUrl({ repoUrl }) {
   const repoMatches = repoUrl.match(/(?<=git@github.com:).*(?=.git)/);
@@ -41,7 +42,14 @@ export class Marker {
       ? join(CLONE_PATH, basename(perfectProjectPath))
       : clonePathFromRepoUrl({ repoUrl });
 
-    for (let step of this.steps) {
+    const finalSteps = [
+      ...this.steps,
+      new Step({
+        Action: TearDown,
+      }),
+    ];
+
+    for (let step of finalSteps) {
       const action = new step.Action();
       const actionName = step.name || action.name;
       console.log(`\n--- ACTION: ${actionName} --- `);

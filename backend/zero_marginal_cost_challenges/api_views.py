@@ -132,7 +132,7 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
 
             content_item: ContentItem = step.content_item
 
-            if not re.match(
+            if content_item.link_regex and not re.match(
                 content_item.link_regex, serializer.data["link_submission"]
             ):
 
@@ -148,8 +148,9 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
 
             project = step.progress
             project.link_submission = serializer.data["link_submission"]
-            project.review_request_time = timezone.now()
-            project.save()
+            # project.review_request_time = timezone.now()
+            # project.save()
+            project.request_review()
 
             return Response({"success": "OK"})  # TODO..
         else:

@@ -188,7 +188,7 @@ def maybe_move_card_because_of_project_review(sender, instance, created, **kwarg
     try:
         card = models.AgileCard.objects.get(recruit_project=instance.recruit_project)
     except models.AgileCard.DoesNotExist:
-        return  # no card to update
+        card = None
 
     project_needs_some_work = instance.status in [
         NOT_YET_COMPETENT,
@@ -197,8 +197,9 @@ def maybe_move_card_because_of_project_review(sender, instance, created, **kwarg
 
     if project_needs_some_work:
         # move the card back
-        card.status = models.AgileCard.REVIEW_FEEDBACK
-        card.save()
+        if card:
+            card.status = models.AgileCard.REVIEW_FEEDBACK
+            card.save()
         return
 
     assert instance.status in [
@@ -212,10 +213,11 @@ def maybe_move_card_because_of_project_review(sender, instance, created, **kwarg
 
     if user_is_trusted:
         recruit_project = instance.recruit_project
-        card.status = models.AgileCard.COMPLETE
-        card.save()
         recruit_project.complete_time = instance.timestamp
         recruit_project.save()
+        if card:
+            card.status = models.AgileCard.COMPLETE
+            card.save()
 
 
 @receiver([post_save], sender=models.RecruitProjectReview)

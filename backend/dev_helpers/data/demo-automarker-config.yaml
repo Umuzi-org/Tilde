@@ -1,0 +1,113 @@
+##################################################################
+# Auto bootcamp - Javascript
+#
+# The Kata markers are used for really early projects. We don't allow the
+# learner to import/require anything for security reasons
+
+- contentItemId: 756
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task1_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 764
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task2_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 760
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task3_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 759
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task4_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 763
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task5_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 758
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task6_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 765
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task7_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 762
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task8_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 761
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task9_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+- contentItemId: 754
+  flavours: ["javascript"]
+  perfectProjectPath: projects/coding_aptitude_mini_course/task10_js
+  marker: JavascriptJasmineKatas
+  mode: prod
+
+
+
+
+## ZMC challenge 1
+
+#  Hosting your website on the web P
+- contentItemId: 866
+  flavours: []
+  perfectProjectPath: projects/zmc_simple_website/first_site
+  marker: WebScraper
+  mode: prod
+
+# curl \
+# --request POST \
+# --header "Content-Type: application/json" \
+# --data '{"contentItemId":866, "flavours": []}' \
+# http://localhost:1337/test-config
+
+#  Adding images to your website P
+- contentItemId: 869
+  flavours: []
+  perfectProjectPath: projects/zmc_simple_website/adding_images
+  marker: WebScraper
+  mode: prod
+  copyTests: # we'll use the configured tests, but also copy the tests from the following paths
+    - projects/zmc_simple_website/first_site
+
+#  Adding more pages P
+- contentItemId: 867
+  flavours: []
+  perfectProjectPath: projects/zmc_simple_website/more_pages
+  marker: WebScraper
+  mode: prod
+  copyTests: # we'll use the configured tests, but also copy the tests from the following paths
+    - projects/zmc_simple_website/first_site
+    - projects/zmc_simple_website/adding_images
+
+#  Introducing CSS P
+- contentItemId: 871
+  flavours: []
+  perfectProjectPath: projects/zmc_simple_website/intro_to_css
+  marker: WebScraper
+  mode: prod
+  copyTests: # we'll use the configured tests, but also copy the tests from the following paths
+    - projects/zmc_simple_website/first_site
+    - projects/zmc_simple_website/adding_images
+    - projects/zmc_simple_website/more_pages

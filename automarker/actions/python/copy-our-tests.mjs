@@ -6,7 +6,7 @@ export default class CopyOurTests extends Action {
   name = "copying in our tests";
   action = async function ({ perfectProjectPath, destinationPath }) {
     const scriptPath = "./actions/python/copy-our-tests.sh";
-    const command = `DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} /bin/bash -c ${scriptPath}`;
+    const command = `DESTINATION_PATH=${destinationPath} PERFECT_PROJECT_PATH=${perfectProjectPath} bash -c ${scriptPath}`;
     await shell.exec(command);
 
     return {

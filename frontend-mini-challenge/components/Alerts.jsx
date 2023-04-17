@@ -1,10 +1,12 @@
 import { Alert } from "@mantine/core";
 import { ErrorIcon, InfoIcon } from "../brand";
 
+const ICON_SIZE = "2rem";
+
 export function ErrorAlert({ children, title }) {
   return (
     <Alert
-      icon={<ErrorIcon size={16} />}
+      icon={<ErrorIcon size={ICON_SIZE} />}
       mt="md"
       title={title || "Bummer!"}
       color="red"
@@ -15,10 +17,12 @@ export function ErrorAlert({ children, title }) {
   );
 }
 
-export function InfoAlert({ children, title }) {
+export function InfoAlert({ children, title, Icon }) {
+  Icon = Icon || InfoIcon;
+
   return (
     <Alert
-      icon={<InfoIcon size={16} />}
+      icon={<Icon size={ICON_SIZE} />}
       mt="md"
       title={title}
       color="blue"
