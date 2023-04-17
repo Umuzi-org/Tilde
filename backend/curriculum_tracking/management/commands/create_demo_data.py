@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.models import User
-from social_auth.models import SocialProfile
+from social_auth.models import SocialProfile, GithubOAuthToken
 from config.models import NameSpace, Value
 from curriculum_tracking.models import (
     AgileCard,
@@ -15,13 +15,18 @@ from core.models import Team, PERMISSION_VIEW_ALL
 from guardian.shortcuts import assign_perm
 from faker import Faker
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
-
+from automarker.management.commands.ingest_automarker_config import (
+    ingest_automarker_config,
+)
 from curriculum_tracking.management.commands.import_curriculum import (
     save_curriculum_to_db,
 )  # Note: these kinds of imports are actually bad practice. We need a refactor
 
-from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
+from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL, GIT_REAL_BOT_USERNAME
+import os
 
+
+GIT_REAL_BOT_ACCESS_TOKEN = os.getenv("GIT_REAL_BOT_ACCESS_TOKEN")
 
 faker = Faker()
 
@@ -164,6 +169,21 @@ class Command(BaseCommand):
 
         bot, _ = User.objects.get_or_create(email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL)
 
+        github_bot = create_user(
+            email="code@umuzi.org",
+            github_name=GIT_REAL_BOT_USERNAME,
+            is_staff=True,
+            is_superuser=True,
+        )
+
+        if GIT_REAL_BOT_ACCESS_TOKEN:
+            GithubOAuthToken.objects.get_or_create(
+                user=github_bot,
+                access_token=GIT_REAL_BOT_ACCESS_TOKEN,
+                token_type="bearer",
+                scope="repo",
+            )
+
         # zmc challenge
 
         challenge = save_curriculum_to_db("dev_helpers/data/zmc-challenge-1.json")
@@ -201,3 +221,5 @@ class Command(BaseCommand):
         )
 
         create_team_of_learners(team_name="boot", curriculum=bootcamp_curriculum)
+
+        ingest_automarker_config("dev_helpers/data/demo-automarker-config.yaml")

@@ -786,6 +786,7 @@ class RecruitProject(
         self.save()
         self.update_associated_card_status()
 
+        breakpoint()
         automark_single_project.send_with_options(
             kwargs={"project_id": self.id},
         )

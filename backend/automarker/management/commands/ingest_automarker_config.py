@@ -6,48 +6,50 @@ from automarker.models import ContentItemAutoMarkerConfig
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        config = get_config_from_file()
+        ingest_automarker_config(options.get("config_file_path"))
 
-        seen_instances_in_file = []
-        seen_config_ids = []
 
-        for item in config:
+def ingest_automarker_config(config_file_path):
+    config = get_config_from_file(config_file_path)
 
-            content_item = ContentItem.objects.get(pk=item["contentItemId"])
-            flavour_names = item["flavours"]
-            mode = item["mode"]
+    seen_instances_in_file = []
+    seen_config_ids = []
 
-            fingerprint = f"{content_item.id} {sorted(flavour_names)}"
-            assert (
-                fingerprint not in seen_instances_in_file
-            ), "duplicate config in config.yaml file. {fingerprint}"
+    for item in config:
 
-            seen_instances_in_file.append(fingerprint)
+        content_item = ContentItem.objects.get(pk=item["contentItemId"])
+        flavour_names = item["flavours"]
+        mode = item["mode"]
 
-            item_configs = ContentItemAutoMarkerConfig.objects.filter(
-                content_item=content_item
+        fingerprint = f"{content_item.id} {sorted(flavour_names)}"
+        assert (
+            fingerprint not in seen_instances_in_file
+        ), "duplicate config in config.yaml file. {fingerprint}"
+
+        seen_instances_in_file.append(fingerprint)
+
+        item_configs = ContentItemAutoMarkerConfig.objects.filter(
+            content_item=content_item
+        )
+        matching_configs = [o for o in item_configs if o.flavours_match(flavour_names)]
+
+        if len(matching_configs) == 0:
+            # create one
+            o = ContentItemAutoMarkerConfig.objects.create(
+                content_item=content_item, mode=mode
             )
-            matching_configs = [
-                o for o in item_configs if o.flavours_match(flavour_names)
-            ]
+            o.set_flavours(flavour_names)
+        else:
+            assert (
+                len(matching_configs) == 1
+            ), f"Too many config instances in the db, {content_item} {flavour_names}"
+            o = matching_configs[0]
+            o.mode = mode
+            o.save()
+        seen_config_ids.append(o.id)
 
-            if len(matching_configs) == 0:
-                # create one
-                o = ContentItemAutoMarkerConfig.objects.create(
-                    content_item=content_item, mode=mode
-                )
-                o.set_flavours(flavour_names)
-            else:
-                assert (
-                    len(matching_configs) == 1
-                ), f"Too many config instances in the db, {content_item} {flavour_names}"
-                o = matching_configs[0]
-                o.mode = mode
-                o.save()
-            seen_config_ids.append(o.id)
+    # remove what shouldn't be there
 
-        # remove what shouldn't be there
-
-        for o in list(ContentItemAutoMarkerConfig.objects.all()):
-            if o.id not in seen_config_ids:
-                o.delete()
+    for o in list(ContentItemAutoMarkerConfig.objects.all()):
+        if o.id not in seen_config_ids:
+            o.delete()

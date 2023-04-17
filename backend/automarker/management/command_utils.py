@@ -99,6 +99,6 @@ def automark_project(project, debug_mode):
         raise Exception(f"result['status'] = {result['status']}")
 
 
-def get_config_from_file():
-    with open(AUTO_MARKER_CONFIGURATION_PATH, "r") as f:
+def get_config_from_file(config_file_path=None):
+    with open(config_file_path or AUTO_MARKER_CONFIGURATION_PATH, "r") as f:
         return yaml.load(f, Loader)
