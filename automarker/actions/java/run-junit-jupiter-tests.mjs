@@ -34,9 +34,15 @@ export default class RunJunitJupiterTests extends Action {
 
 function lookForTestProblems(standardOut, standardErr) {
   if (standardOut.match("BUILD SUCCESSFUL")) return [];
-  if (!standardErr.match("BUILD FAILED")) {
-    throw new Error("Sanity check failed.");
-  }
+  // if (standardErr.match("BUILD FAILED")) {
+
+  // }
+
+  console.log("=========================================");
+  console.log("=========================================");
+  console.log(standardErr);
+  console.log("=========================================");
+  console.log("=========================================");
 
   if (standardErr.match("error: cannot find symbol")) {
     return [
@@ -64,6 +70,7 @@ function lookForTestProblems(standardOut, standardErr) {
     ];
   }
 
+  // x="> There were failing tests"
   const testErrors = [...standardOut.matchAll(/<>(.*)<\/>/g)].map(
     (match) => match[1]
   );
