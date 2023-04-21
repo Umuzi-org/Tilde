@@ -1,3 +1,3 @@
 cd $DESTINATION_PATH 
 
-./gradlew build --info
+./gradlew build -x app:test --info

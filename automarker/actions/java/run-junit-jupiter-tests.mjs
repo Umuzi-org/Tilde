@@ -34,9 +34,6 @@ export default class RunJunitJupiterTests extends Action {
 
 function lookForTestProblems(standardOut, standardErr) {
   if (standardOut.match("BUILD SUCCESSFUL")) return [];
-  // if (standardErr.match("BUILD FAILED")) {
-
-  // }
 
   console.log("=========================================");
   console.log("=========================================");
@@ -70,12 +67,29 @@ function lookForTestProblems(standardOut, standardErr) {
     ];
   }
 
-  // x="> There were failing tests"
   const testErrors = [...standardOut.matchAll(/<>(.*)<\/>/g)].map(
     (match) => match[1]
   );
 
   if (testErrors.length) return testErrors;
 
+  const remainingErrors = [
+    ...standardErr.matchAll(/.*\/.*java:\d*: error: (.*)\n/g),
+  ]
+    .map((match) => match[1])
+    .map((err) => {
+      if (err.match("incompatible types"))
+        return `${err}. It looks like one of your functions doesn't accept the right types of arguments, or it might be returning the wrong thing`;
+      if (err.match("cannot be applied to given types"))
+        return `${err}. It looks like one of your functions doesn't accept the right types of arguments, or it might be returning the wrong thing`;
+      if (err.match("no suitable method found"))
+        return `${err}. It looks like you need to overload your function. Make sure it can be called exactly as described in the project specification.`;
+      if (err.match("type not allowed here"))
+        return `${err}. It looks like you are using the wrong datatype somewhere. Double check all your function arguments and returned values`;
+
+      throw new Error(`Unhandled error:\n\n${err}`);
+    });
+
+  if (remainingErrors.length) return remainingErrors;
   throw new Error(`Unhandled failure:\n\n ${standardErr}`);
 }

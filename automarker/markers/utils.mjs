@@ -52,7 +52,7 @@ export class Marker {
     for (let step of finalSteps) {
       const action = new step.Action();
       const actionName = step.name || action.name;
-      console.log(`\n--- ACTION: ${actionName} --- `);
+      console.log(`\n--- ACTION: ${actionName} --- \n`);
       const result = await action.execute({
         test,
         perfectProjectPath: resolve(fullPerfectProjectPath),

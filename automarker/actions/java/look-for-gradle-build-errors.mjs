@@ -22,7 +22,10 @@ export default class LookForGradleBuildErrors extends Action {
       return {
         status: STATUS_FAIL,
         message: "Your code wont wont run",
-        errors: problems,
+        errors: [
+          "Your code is so broken that it wont run at all. Don't hand code in if you can't run it",
+          ...problems,
+        ],
       };
     } else {
       return {
