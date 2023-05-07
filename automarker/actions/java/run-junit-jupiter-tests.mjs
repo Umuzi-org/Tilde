@@ -91,5 +91,11 @@ function lookForTestProblems(standardOut, standardErr) {
     });
 
   if (remainingErrors.length) return remainingErrors;
-  throw new Error(`Unhandled failure:\n\n ${standardErr}`);
+
+  if (standardErr.match("FAILURE: Build failed with an exception."))
+    return [
+      "Something went wrong when we tried to test your code. Please make sure you are using all the right data-types for your function arguments and returns. You need to write code that exactly matches the specification!",
+    ];
+
+  throw new Error(`Unhandled failure:\n\n'''\n${standardErr}\n'''`);
 }
