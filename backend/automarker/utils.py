@@ -44,7 +44,7 @@ Here are some details:
 
 
 def get_fail_review_comments(api_result):
-    errors = "\n".join([f"- {s}" for s in api_result["result"]["errors"]])
+    errors = "\n".join([f"- {s}" for s in api_result["result"].get("errors", [])])
     return FAIL_REVIEW_TEMPLATE.format(
         action_name=api_result["actionName"],
         errors=errors,
@@ -53,7 +53,6 @@ def get_fail_review_comments(api_result):
 
 
 def add_review(project, api_result):
-
     if api_result["status"] == STATUS_OK:
         status = COMPETENT
         comments = "Keep up the good work :)"

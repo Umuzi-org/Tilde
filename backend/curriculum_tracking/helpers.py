@@ -18,7 +18,6 @@ def get_projects(cohort=None, user=None):
             ):
                 yield project
     else:
-
         for o in models.RecruitProject.objects.all():
             yield o
 
@@ -41,7 +40,6 @@ def generate_repo_name_for_project(user, project, flavour_names):
         f"{first_name}-{last_name}-{project.id}-{slug}-{'-'.join(flavour_names)}"
     )
     if len(project_name) > 100:
-
         diff = len(project_name) - 100
         slug = slug[:-diff]
         project_name = (
@@ -90,7 +88,6 @@ def update_card_from_topic_progress(card, progress):
 
 
 def _create_card_from_project(project):
-
     query = None
     for user in project.recruit_users.all():
         query = query or models.AgileCard.objects.filter(
