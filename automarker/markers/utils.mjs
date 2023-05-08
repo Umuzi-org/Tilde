@@ -40,15 +40,18 @@ export class Step {
       : clonePathFromRepoUrl({ repoUrl });
 
     const action = new this.Action();
-    const actionName = this.name || action.name;
-    console.log(`\n--- ACTION: ${actionName} --- \n`);
-    return await action.execute({
+    // const actionName = this.name || action.name;
+    console.log(`\n--- ACTION: ${this.getActionName()} --- \n`);
+
+    const result = await action.execute({
       test,
       perfectProjectPath: resolve(fullPerfectProjectPath),
       destinationPath: resolve(destinationPath),
       repoUrl,
       ...this.actionArgs,
     });
+
+    return result;
   }
 }
 
