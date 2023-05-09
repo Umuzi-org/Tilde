@@ -1,6 +1,5 @@
 import Page from "../../components/LoggedOutPage";
 import {
-  Container,
   Title,
   TextInput,
   Button,
@@ -52,7 +51,6 @@ export default function Login() {
         {status === 400 && (
           <ErrorAlert>{responseData.nonFieldErrors}</ErrorAlert>
         )}
-
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <div style={{ position: "relative" }}>
             <LoadingOverlay
