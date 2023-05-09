@@ -196,7 +196,7 @@ export default function Presentation({
 
       <Stack spacing={"md"}>
         <Link href={`/user-challenge/${registrationId}`}>
-          <Text fz="xs" c="dimmed">
+          <Text fz="sm" c="dimmed">
             Back to challenge
           </Text>
         </Link>
