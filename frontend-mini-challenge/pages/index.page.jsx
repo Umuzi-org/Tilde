@@ -7,8 +7,9 @@ import {
 } from "../apiHooks";
 import { getAuthToken } from "../lib/authTokenStorage";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-const curriculum = 90; // TODO. When we have more challenges we wont be able to hrd-code this value
+const curriculum = 90; // TODO. When we have more challenges we wont be able to hard-code this value
 
 export default function Home() {
   const router = useRouter();
@@ -18,12 +19,19 @@ export default function Home() {
   });
   const registerForChallenge = useRegisterForChallenge();
 
+  const [calledPush, setCalledPush] = useState(false);
+
   useEffect(() => {
+    function routerPushOnce(path) {
+      if (calledPush) return;
+      setCalledPush(true);
+      router.push(path);
+    }
     const token = getAuthToken();
 
     if (!token) {
       console.log("no token. redirecting");
-      router.push("/login");
+      routerPushOnce("/login");
       return;
     }
 
@@ -44,7 +52,7 @@ export default function Home() {
       }
       if (getUserActiveChallenges.responseData.length === 1) {
         const registrationId = getUserActiveChallenges.responseData[0].id;
-        router.push(`/user-challenge/${registrationId}`);
+        routerPushOnce(`/user-challenge/${registrationId}`);
       }
       if (getUserActiveChallenges.responseData.length > 1) {
         console.log("TODO");
@@ -55,6 +63,8 @@ export default function Home() {
     getWhoAmI.responseData,
     getWhoAmI.status,
     registerForChallenge,
+    calledPush,
+    setCalledPush,
     router,
   ]);
 
