@@ -14,7 +14,7 @@ import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useLogin } from "../../apiHooks";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { ErrorAlert } from "../../components/Alerts";
 
@@ -35,9 +35,16 @@ export default function Login() {
   const login = useLogin();
   const { call, isLoading, status, responseData } = login;
 
+  const [calledPush, setCalledPush] = useState(false);
+
   useEffect(() => {
-    if (status === 200) router.push("/");
-  }, [router, status]);
+    function routerPushOnce(path) {
+      if (calledPush) return;
+      setCalledPush(true);
+      router.push(path);
+    }
+    if (status === 200) routerPushOnce("/");
+  }, [router, status, calledPush, setCalledPush]);
 
   function handleSubmit({ email, password }) {
     call({ email, password });

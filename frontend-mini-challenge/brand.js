@@ -30,11 +30,11 @@ import {
 export const statusLooks = {
   [STATUS_DONE]: {
     Icon: IoCheckmarkOutline,
-    color: "blue",
+    color: "green",
   },
   [STATUS_READY]: {
     Icon: IoPlayOutline,
-    color: "green",
+    color: "blue",
   },
   [STATUS_BLOCKED]: {
     Icon: IoLockClosedOutline,
