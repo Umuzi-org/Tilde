@@ -38,8 +38,11 @@ import {
 
 function ContentHtml({ contentHtml }) {
   return (
-    <Paper p="md" shadow="sm" withBorder>
-      <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+    <Paper p="md" shadow="sm" withBorder style={{ overflowX: "scroll" }}>
+      <div
+        dangerouslySetInnerHTML={{ __html: contentHtml }}
+        // style={{ width: "100%" }}
+      />
     </Paper>
   );
 }
@@ -96,10 +99,9 @@ function ProjectSmallDeviceLayout({
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value={tabValues.content} pt="xs">
+        <Tabs.Panel value={tabValues.content}>
           <ContentHtml contentHtml={contentHtml} />
         </Tabs.Panel>
-
         <Tabs.Panel value={tabValues.project} pt="xs">
           <Stack spacing={"md"} mt="md">
             <Grid>
@@ -131,6 +133,10 @@ function ProjectSmallDeviceLayout({
           </Stack>
         </Tabs.Panel>
       </Tabs>
+      {/* 
+
+
+      </Tabs> */}
     </>
   );
 }
@@ -192,8 +198,6 @@ export default function Presentation({
 
   return (
     <>
-      {/* <Group>{crumbs}</Group> */}
-
       <Stack spacing={"md"}>
         <Link href={`/user-challenge/${registrationId}`}>
           <Text fz="sm" c="dimmed">

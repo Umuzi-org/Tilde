@@ -75,9 +75,9 @@ export default function ProjectReviews({ reviews, status }) {
           </Group>
           <Group position="center">
             <Text c="dimmed">
-              Please REFRESH THE PAGE to see your feedback. Reviews take a few
-              minutes. Once you have received a positive review you&apos;ll be
-              able to move onto the next step
+              Reviews take a few minutes to complete. Take a moment to reflect
+              on what you have learned so far. Once you have received a positive
+              review you&apos;ll be able to move onto the next step.
             </Text>
           </Group>
         </>
