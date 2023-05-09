@@ -14,6 +14,9 @@ export default class CheckNoImports extends Action {
         status: STATUS_FAIL,
         message:
           "You are using import statements in your code. For this project you shouldn't be importing anything",
+        errors: [
+          "You are using import statements in your code. For this project you shouldn't be importing anything",
+        ],
       };
     }
 

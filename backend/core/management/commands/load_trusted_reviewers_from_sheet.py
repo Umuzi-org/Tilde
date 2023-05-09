@@ -10,10 +10,12 @@ def process_row(row):
 
     print(f"Processing {row}")
 
+    flavours = [s for s in [s.strip() for s in row["flavour"].split(",")] if s]
+
     ReviewTrust.add_specific_trust_instances(
         who=row["who"],
         content_item_title=row["content_item_title"],
-        flavours=[s for s in [s.strip() for s in row["flavour"].split(",")] if s],
+        flavours=flavours,
         update_previous_reviews=bool(int(row["update_previous_reviews"])),
     )
 

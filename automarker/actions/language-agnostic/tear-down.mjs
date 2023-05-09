@@ -8,7 +8,11 @@ export default class Cleanup extends Action {
   name = "cleanup";
 
   action = async function ({ destinationPath }) {
+    console.log(`deleting... ${destinationPath}`);
+    console.log({ destinationPath });
+
     if (fs.existsSync(destinationPath)) {
+      console.log("exists!");
       fs.rmSync(destinationPath, { recursive: true, force: true });
     }
 

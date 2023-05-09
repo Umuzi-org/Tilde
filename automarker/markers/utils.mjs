@@ -25,41 +25,65 @@ export class Step {
     this.Action = Action;
     this.actionArgs = actionArgs || {};
   }
-}
 
-export class Marker {
-  async mark({ perfectProjectPath, repoUrl, test }) {
-    console.log({
-      CONFIGURATION_REPO_PATH,
-      perfectProjectPath,
-    });
+  getActionName() {
+    return this.name || this.Action.name;
+  }
+
+  async execute({ perfectProjectPath, repoUrl, test }) {
     const fullPerfectProjectPath = join(
       CONFIGURATION_REPO_PATH,
       perfectProjectPath
     );
-
     const destinationPath = test
       ? join(CLONE_PATH, basename(perfectProjectPath))
       : clonePathFromRepoUrl({ repoUrl });
 
-    const finalSteps = [
-      ...this.steps,
-      new Step({
-        Action: TearDown,
-      }),
-    ];
+    const action = new this.Action();
+    // const actionName = this.name || action.name;
+    console.log(`\n--- ACTION: ${this.getActionName()} --- \n`);
 
-    for (let step of finalSteps) {
-      const action = new step.Action();
-      const actionName = step.name || action.name;
-      console.log(`\n--- ACTION: ${actionName} --- `);
-      const result = await action.execute({
-        test,
-        perfectProjectPath: resolve(fullPerfectProjectPath),
-        destinationPath: resolve(destinationPath),
-        repoUrl,
-        ...step.actionArgs,
-      });
+    const result = await action.execute({
+      test,
+      perfectProjectPath: resolve(fullPerfectProjectPath),
+      destinationPath: resolve(destinationPath),
+      repoUrl,
+      ...this.actionArgs,
+    });
+
+    return result;
+  }
+}
+
+export class Marker {
+  finalSteps = [
+    new Step({
+      Action: TearDown,
+    }),
+  ];
+
+  async mark({ perfectProjectPath, repoUrl, test }) {
+    const result = await this.getMarkResult({
+      perfectProjectPath,
+      repoUrl,
+      test,
+    });
+    for (let step of this.finalSteps) {
+      await step.execute({ perfectProjectPath, repoUrl, test });
+    }
+    return result;
+  }
+
+  async getMarkResult({ perfectProjectPath, repoUrl, test }) {
+    console.log({
+      CONFIGURATION_REPO_PATH,
+      perfectProjectPath,
+    });
+
+    for (let step of this.steps) {
+      const result = await step.execute({ perfectProjectPath, repoUrl, test });
+
+      const actionName = step.getActionName();
 
       if (result === undefined) {
         return {

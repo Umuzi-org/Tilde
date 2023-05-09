@@ -349,3 +349,4 @@ def auto_assign_reviewers():
     auto_assign_reviewers_based_on_trusted_team_permission()
     auto_assign_competent_reviewers()
     auto_assign_reviewers_based_on_reviewer_team_permission()
+

@@ -34,9 +34,12 @@ export default class RunJunitJupiterTests extends Action {
 
 function lookForTestProblems(standardOut, standardErr) {
   if (standardOut.match("BUILD SUCCESSFUL")) return [];
-  if (!standardErr.match("BUILD FAILED")) {
-    throw new Error("Sanity check failed.");
-  }
+
+  console.log("=========================================");
+  console.log("=========================================");
+  console.log(standardErr);
+  console.log("=========================================");
+  console.log("=========================================");
 
   if (standardErr.match("error: cannot find symbol")) {
     return [
@@ -70,5 +73,29 @@ function lookForTestProblems(standardOut, standardErr) {
 
   if (testErrors.length) return testErrors;
 
-  throw new Error(`Unhandled failure:\n\n ${standardErr}`);
+  const remainingErrors = [
+    ...standardErr.matchAll(/.*\/.*java:\d*: error: (.*)\n/g),
+  ]
+    .map((match) => match[1])
+    .map((err) => {
+      if (err.match("incompatible types"))
+        return `${err}. It looks like one of your functions doesn't accept the right types of arguments, or it might be returning the wrong thing`;
+      if (err.match("cannot be applied to given types"))
+        return `${err}. It looks like one of your functions doesn't accept the right types of arguments, or it might be returning the wrong thing`;
+      if (err.match("no suitable method found"))
+        return `${err}. It looks like you need to overload your function. Make sure it can be called exactly as described in the project specification.`;
+      if (err.match("type not allowed here"))
+        return `${err}. It looks like you are using the wrong datatype somewhere. Double check all your function arguments and returned values`;
+
+      throw new Error(`Unhandled error:\n\n${err}`);
+    });
+
+  if (remainingErrors.length) return remainingErrors;
+
+  if (standardErr.match("FAILURE: Build failed with an exception."))
+    return [
+      "Something went wrong when we tried to test your code. Please make sure you are using all the right data-types for your function arguments and returns. You need to write code that exactly matches the specification!",
+    ];
+
+  throw new Error(`Unhandled failure:\n\n'''\n${standardErr}\n'''`);
 }
