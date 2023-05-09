@@ -39,10 +39,7 @@ import {
 function ContentHtml({ contentHtml }) {
   return (
     <Paper p="md" shadow="sm" withBorder style={{ overflowX: "scroll" }}>
-      <div
-        dangerouslySetInnerHTML={{ __html: contentHtml }}
-        // style={{ width: "100%" }}
-      />
+      <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
     </Paper>
   );
 }
