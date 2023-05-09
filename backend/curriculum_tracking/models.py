@@ -75,7 +75,6 @@ class ReviewableMixin:
             card.save()
 
     def latest_review(self, trusted=None, timestamp_greater_than=None):
-
         query = self.reviews_queryset()
         if trusted != None and self.__class__ == RecruitProject:
             query = query.filter(trusted=trusted)
@@ -459,7 +458,6 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
             trusts = cls.objects.filter(content_item=content_item, user=user)
             found = False
             for trust in trusts:
-
                 if trust.flavours_match(flavours):
                     found = True
                     trust_instances.append(trust)
@@ -760,7 +758,6 @@ class RecruitProject(
 
         project_name = f"{first_name}-{last_name}-{content_item.id}-{slug}-{'-'.join(flavour_names)}"
         if len(project_name) > 100:
-
             diff = len(project_name) - 100
             slug = slug[:-diff]
             project_name = f"{first_name}-{last_name}-{slug}-{content_item.id}-{'-'.join(flavour_names)}"
@@ -786,7 +783,7 @@ class RecruitProject(
         self.save()
         self.update_associated_card_status()
 
-        breakpoint()
+        # breakpoint()
         automark_single_project.send_with_options(
             kwargs={"project_id": self.id},
         )
@@ -805,7 +802,6 @@ class RecruitProject(
 
 
 class RecruitProjectReview(models.Model, Mixins):
-
     INCORRECT = "i"
     CORRECT = "c"
     CONTRADICTED = "d"
@@ -887,7 +883,6 @@ class RecruitProjectReview(models.Model, Mixins):
         # update the flag to say if the review was an incomplete review cycle
 
         if last_review_request_time:
-
             previous_negative_reviews = reviews.filter(
                 timestamp__lte=last_review_request_time
             ).filter(Q(status=NOT_YET_COMPETENT) | Q(status=RED_FLAG))
@@ -1229,7 +1224,6 @@ class AgileCard(
         if progress.complete_time:
             return cls.COMPLETE
         elif progress.review_request_time:
-
             get_trusted_review = lambda: progress.latest_review(
                 timestamp_greater_than=progress.review_request_time
             )
@@ -1287,7 +1281,6 @@ class AgileCard(
             self.recruit_project.save()
 
         elif content_type == ContentItem.TOPIC:
-
             self._create_topic_progress_if_not_exists()
             self.topic_progress.due_time = time
             self.topic_progress.save()
@@ -1297,7 +1290,6 @@ class AgileCard(
             )
 
     def _create_project_progress_if_not_exists(self):
-
         if self.recruit_project:
             return
         project = RecruitProject.objects.create(content_item=self.content_item)
@@ -1564,7 +1556,6 @@ class AgileCard(
         return [review.reviewer_user for review in reviews]
 
     def get_users_that_reviewed_open_prs(self):
-
         reviews = (
             git_models.PullRequestReview.objects.filter(
                 pull_request__repository__recruit_projects__agile_card=self
