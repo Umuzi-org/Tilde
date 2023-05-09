@@ -5,13 +5,13 @@ import {
   Loader,
   Group,
   Button,
-  Breadcrumbs,
   Divider,
   Grid,
   Tooltip,
   Paper,
   Center,
   Tabs,
+  MediaQuery,
 } from "@mantine/core";
 import {
   BackArrowIcon,
@@ -178,67 +178,85 @@ export default function Presentation({
         color: "",
       };
 
-  const crumbs = [
-    {
-      title: registration.name,
-      href: `/user-challenge/${registrationId}`,
-    },
-    { title: stepDetails.title, href: currentPath },
-  ].map((item, index) => (
-    <Link href={item.href} key={index}>
-      {item.title}
-    </Link>
-  ));
+  // const crumbs = [
+  //   {
+  //     title: registration.name,
+  //     href: `/user-challenge/${registrationId}`,
+  //   },
+  //   { title: stepDetails.title, href: currentPath },
+  // ].map((item, index) => (
+  //   <Link href={item.href} key={index}>
+  //     {item.title}
+  //   </Link>
+  // ));
 
   return (
-    <Stack spacing={"md"}>
-      <Breadcrumbs>{crumbs}</Breadcrumbs>
+    <>
+      {/* <Group>{crumbs}</Group> */}
 
-      <Group>
-        <Icon size="4rem" color={color} />
-        <Title>
-          Step {parseInt(stepIndex) + 1}: {stepDetails.title}
-        </Title>
-      </Group>
-      <Text mt="md" c="dimmed">
-        {stepDetails.blurb}
-      </Text>
-
-      {stepDetails.status === STATUS_BLOCKED ? (
-        <Center>
-          <Text>
-            You can&apos;t do this step until you&apos;ve completed the last one
+      <Stack spacing={"md"}>
+        <Link href={`/user-challenge/${registrationId}`}>
+          <Text fz="xs" c="dimmed">
+            Back to challenge
           </Text>
-        </Center>
-      ) : (
-        <>
-          {isTopic && <TopicLayout contentHtml={contentHtml} />}
-          {isProject && (
-            <ProjectSmallDeviceLayout
-              contentHtml={contentHtml}
-              stepDetails={stepDetails}
-              handleSubmitLinkForm={handleSubmitLinkForm}
-              submitProjectLink={submitProjectLink}
-            />
-          )}
-        </>
-      )}
+        </Link>
+        <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+          <Group spacing="xs">
+            <Icon size="4rem" color={color} />
+            <Title>Step {parseInt(stepIndex) + 1}.</Title>
+            <Title>{stepDetails.title}</Title>
+          </Group>
+        </MediaQuery>
 
-      <Divider mt="md" />
+        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <Group spacing="xs">
+            <Icon size="2.5rem" color={color} />
+            <Title size="1.5rem">Step {parseInt(stepIndex) + 1}.</Title>
+            <Title size="1.5rem">{stepDetails.title}</Title>
+          </Group>
+        </MediaQuery>
 
-      <Group position="apart">
-        <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
-          Back
-        </Button>
+        <Text mt="md" c="dimmed">
+          {stepDetails.blurb}
+        </Text>
 
-        {nextIsBlockedByProject ? (
-          <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
-            {nextButton}
-          </Tooltip>
+        {stepDetails.status === STATUS_BLOCKED ? (
+          <Center>
+            <Text>
+              You can&apos;t do this step until you&apos;ve completed the last
+              one
+            </Text>
+          </Center>
         ) : (
-          nextButton
+          <>
+            {isTopic && <TopicLayout contentHtml={contentHtml} />}
+            {isProject && (
+              <ProjectSmallDeviceLayout
+                contentHtml={contentHtml}
+                stepDetails={stepDetails}
+                handleSubmitLinkForm={handleSubmitLinkForm}
+                submitProjectLink={submitProjectLink}
+              />
+            )}
+          </>
         )}
-      </Group>
-    </Stack>
+
+        <Divider mt="md" />
+
+        <Group position="apart">
+          <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
+            Back
+          </Button>
+
+          {nextIsBlockedByProject ? (
+            <Tooltip label="You wont be able to go to the next step until you have submitted a passing project">
+              {nextButton}
+            </Tooltip>
+          ) : (
+            nextButton
+          )}
+        </Group>
+      </Stack>
+    </>
   );
 }
