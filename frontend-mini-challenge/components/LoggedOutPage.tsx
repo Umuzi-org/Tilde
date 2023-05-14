@@ -5,7 +5,7 @@ import { useWhoAmI } from "../apiHooks";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-export default function Page({ children }) {
+export default function Page({ children }: { children: React.ReactNode }) {
   const {
     responseData: userData,
     isLoading: isLoadingWhoAmI,
@@ -23,8 +23,17 @@ export default function Page({ children }) {
   });
 
   return (
-    <AppShell padding="md" header={<Header height={60} p="xs"></Header>}>
+    <AppShell
+      padding="md"
+      header={
+        <Header height={60} p="xs">
+          <Container></Container>
+        </Header>
+      }
+    >
       <Container>{children}</Container>
     </AppShell>
   );
 }
+
+// Header height={60} p="xs"

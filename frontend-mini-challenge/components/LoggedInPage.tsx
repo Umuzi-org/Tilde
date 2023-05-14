@@ -21,6 +21,11 @@ export default function Page({
   serverSidePropsCorrectlyCalled,
   isLoggedIn,
   loggedInUserData,
+}: {
+  children: React.ReactNode;
+  serverSidePropsCorrectlyCalled: boolean;
+  isLoggedIn: boolean;
+  loggedInUserData: any;
 }) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
@@ -55,7 +60,15 @@ export default function Page({
   return <Presentation {...props}>{children}</Presentation>;
 }
 
-export function Presentation({ handleLogout, loggedInUserData, children }) {
+export function Presentation({
+  handleLogout,
+  loggedInUserData,
+  children,
+}: {
+  handleLogout: () => void;
+  loggedInUserData: any;
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   return (
     <AppShell
@@ -131,8 +144,14 @@ Then when you make use of this page component:
     </Page>
 
 */
-export async function getServerSidePropsForLoggedInPage({ query, req }) {
-  const whoAmIResponse = await serverSideWhoAmI({ query, req });
+export async function getServerSidePropsForLoggedInPage({
+  query,
+  req,
+}: {
+  query: any;
+  req: any;
+}) {
+  const whoAmIResponse = await serverSideWhoAmI({ query, req } as any);
 
   return {
     serverSidePropsCorrectlyCalled: true,
