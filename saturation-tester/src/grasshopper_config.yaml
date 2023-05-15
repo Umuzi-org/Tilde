@@ -1,0 +1,5 @@
+grasshopper:
+  influx_host: localhost
+  influx_port: 8086
+  influx_user: admin
+  influx_pwd: admin

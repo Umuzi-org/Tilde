@@ -1,0 +1,14 @@
+example_scenario_1:
+  test_file_name: 'test_mini_frontend.py'
+  grasshopper_args:
+    users: 1
+    spawn_rate: 1
+    runtime: 200
+  grasshopper_scenario_args:
+    thresholds:
+      get home page:
+        type: get
+        limit: 2000
+  tags:
+    - 'smoke'
+    - 'example1'
