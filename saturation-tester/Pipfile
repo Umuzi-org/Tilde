@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 locust = "*"
+locust-grasshopper = "*"
 
 [dev-packages]
 
