@@ -57,9 +57,9 @@ export class Step {
 
 export class Marker {
   finalSteps = [
-    new Step({
-      Action: TearDown,
-    }),
+    // new Step({
+    //   Action: TearDown,
+    // }),
   ];
 
   async mark({ perfectProjectPath, repoUrl, test }) {

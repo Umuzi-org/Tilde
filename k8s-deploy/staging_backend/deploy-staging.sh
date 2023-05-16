@@ -11,4 +11,4 @@ kubectl apply -f tilde-staging-Deployment.yaml
 kubectl delete -f tilde-dramatiq-worker-staging-Deployment.yaml
 kubectl apply -f tilde-dramatiq-worker-staging-Deployment.yaml
 
-kubectl get pods
+kubectl get pods -w

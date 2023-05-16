@@ -1,3 +1,5 @@
+# ref https://www.ianlewis.org/en/kubernetes-health-checks-django
+
 import logging
 
 from django.http import HttpResponse, HttpResponseServerError
@@ -11,6 +13,10 @@ class HealthCheckMiddleware(object):
         # One-time configuration and initialization.
 
     def __call__(self, request):
+        verb = request.method
+        url = request.get_full_path()
+        logger.info(f"healthcheck [{verb}] {url}")
+
         if request.method == "GET":
             if request.path == "/readiness":
                 return self.readiness(request)
@@ -18,6 +24,7 @@ class HealthCheckMiddleware(object):
                 return self.healthz(request)
             elif request.path == "/":
                 return self.healthz(request)
+
         return self.get_response(request)
 
     def healthz(self, request):

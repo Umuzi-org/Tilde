@@ -407,7 +407,7 @@ export function useRefreshReviewStepDetails({
         }
       : null,
     fetchAndClean,
-    { refreshInterval: 1000 }
+    { refreshInterval: 5000 }
   );
 
   if (data && data.status === 401) {
