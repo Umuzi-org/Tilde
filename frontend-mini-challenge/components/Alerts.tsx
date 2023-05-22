@@ -3,13 +3,13 @@ import { ErrorIcon, InfoIcon } from "../brand";
 
 const ICON_SIZE = "2rem";
 
-export function ErrorAlert({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title?: string;
-}) {
+
+interface Props {
+  title: string;
+  children: string;
+}
+
+export function ErrorAlert({ children, title }: Props) {
   return (
     <Alert
       icon={<ErrorIcon size={ICON_SIZE} />}
@@ -23,18 +23,10 @@ export function ErrorAlert({
   );
 }
 
-export function InfoAlert({
-  children,
-  title,
-  Icon,
-}: {
-  children: React.ReactNode;
-  title: string;
-  Icon: React.FunctionComponent<{ size: string }>;
-}) {
+export function InfoAlert({ children, title }: Props) {
   return (
     <Alert
-      icon={<Icon size={ICON_SIZE} />}
+      icon={<InfoIcon size={ICON_SIZE} />}
       mt="md"
       title={title}
       color="blue"
@@ -44,3 +36,4 @@ export function InfoAlert({
     </Alert>
   );
 }
+

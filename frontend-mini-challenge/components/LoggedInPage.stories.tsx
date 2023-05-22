@@ -22,6 +22,6 @@ const Template: ComponentStory<typeof Presentation> = (args) => {
 
 export const Loaded = Template.bind({});
 Loaded.args = {
-  loggedInUserData: { firstName: "Applejuice" },
+  loggedInUserData: { firstName: "Applejuice", email: "email" },
   handleLogout: () => {},
 };

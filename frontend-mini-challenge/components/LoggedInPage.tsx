@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
+import { GetServerSidePropsContext } from 'next';
 
 export default function Page({
   children,
@@ -22,10 +23,10 @@ export default function Page({
   isLoggedIn,
   loggedInUserData,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element|JSX.Element[];
   serverSidePropsCorrectlyCalled: boolean;
   isLoggedIn: boolean;
-  loggedInUserData: any;
+  loggedInUserData: { firstName: string; email: string }
 }) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
@@ -66,8 +67,8 @@ export function Presentation({
   children,
 }: {
   handleLogout: () => void;
-  loggedInUserData: any;
-  children: React.ReactNode;
+  loggedInUserData: { firstName: string ;  email: string }
+  children: String | JSX.Element | JSX.Element[];
 }) {
   const router = useRouter();
   return (
@@ -77,7 +78,7 @@ export function Presentation({
         <Header height={60} p="xs">
           <Group sx={{ height: "100%" }} px={20} position="right">
             <Text>
-              You are logged in as{" "}
+              You are logged in as {" "}
               {loggedInUserData.firstName || loggedInUserData.email}
             </Text>
             <Menu shadow="md" width={200}>
@@ -144,14 +145,12 @@ Then when you make use of this page component:
     </Page>
 
 */
+
 export async function getServerSidePropsForLoggedInPage({
   query,
   req,
-}: {
-  query: any;
-  req: any;
-}) {
-  const whoAmIResponse = await serverSideWhoAmI({ query, req } as any);
+}: GetServerSidePropsContext) {
+  const whoAmIResponse = await serverSideWhoAmI({ query, req } as GetServerSidePropsContext);
 
   return {
     serverSidePropsCorrectlyCalled: true,

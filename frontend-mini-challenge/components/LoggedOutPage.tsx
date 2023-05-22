@@ -27,7 +27,6 @@ export default function Page({ children }: { children: React.ReactNode }) {
       padding="md"
       header={
         <Header height={60} p="xs">
-          <Container></Container>
         </Header>
       }
     >
