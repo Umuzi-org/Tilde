@@ -51,7 +51,7 @@ export default class Clone extends Action {
       return {
         status: STATUS_ERROR,
         message:
-          "CLone didn't work, the directory isn't where we expect it to be ",
+          "Clone didn't work, the directory isn't where we expect it to be",
       };
 
     return {

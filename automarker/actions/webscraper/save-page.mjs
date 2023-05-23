@@ -30,8 +30,9 @@ export default class SavePage extends Action {
     };
   };
 
-  async backoff_fetch(url) {
+  backoff_fetch = async function (url) {
     let tries = 0;
+
     while (true) {
       try {
         return await fetch(url);
@@ -43,10 +44,10 @@ export default class SavePage extends Action {
         await new Promise((r) => setTimeout(r, 1000 * tries));
       }
     }
-  }
+  };
 
   action = async function ({ repoUrl, destinationPath }) {
-    const response = await backoff_fetch(repoUrl);
+    const response = await this.backoff_fetch(repoUrl);
 
     if (response.status !== 200) {
       return {

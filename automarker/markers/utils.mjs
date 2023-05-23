@@ -16,7 +16,9 @@ export function dirNameFromRepoUrl({ repoUrl }) {
 }
 
 export function clonePathFromRepoUrl({ repoUrl }) {
-  return join(CLONE_PATH, dirNameFromRepoUrl({ repoUrl }));
+  const now = new Date().getTime();
+  const repoDir = dirNameFromRepoUrl({ repoUrl });
+  return join(CLONE_PATH, `${repoDir}-${now}`);
 }
 
 export class Step {
@@ -30,17 +32,13 @@ export class Step {
     return this.name || this.Action.name;
   }
 
-  async execute({ perfectProjectPath, repoUrl, test }) {
+  async execute({ perfectProjectPath, repoUrl, test, destinationPath }) {
     const fullPerfectProjectPath = join(
       CONFIGURATION_REPO_PATH,
       perfectProjectPath
     );
-    const destinationPath = test
-      ? join(CLONE_PATH, basename(perfectProjectPath))
-      : clonePathFromRepoUrl({ repoUrl });
 
     const action = new this.Action();
-    // const actionName = this.name || action.name;
     console.log(`\n--- ACTION: ${this.getActionName()} --- \n`);
 
     const result = await action.execute({
@@ -57,31 +55,46 @@ export class Step {
 
 export class Marker {
   finalSteps = [
-    // new Step({
-    //   Action: TearDown,
-    // }),
+    new Step({
+      Action: TearDown,
+    }),
   ];
 
   async mark({ perfectProjectPath, repoUrl, test }) {
+    const destinationPath = test
+      ? join(CLONE_PATH, basename(perfectProjectPath))
+      : clonePathFromRepoUrl({ repoUrl });
+
     const result = await this.getMarkResult({
       perfectProjectPath,
       repoUrl,
       test,
+      destinationPath,
     });
     for (let step of this.finalSteps) {
-      await step.execute({ perfectProjectPath, repoUrl, test });
+      await step.execute({
+        perfectProjectPath,
+        repoUrl,
+        test,
+        destinationPath,
+      });
     }
     return result;
   }
 
-  async getMarkResult({ perfectProjectPath, repoUrl, test }) {
+  async getMarkResult({ perfectProjectPath, repoUrl, test, destinationPath }) {
     console.log({
       CONFIGURATION_REPO_PATH,
       perfectProjectPath,
     });
 
     for (let step of this.steps) {
-      const result = await step.execute({ perfectProjectPath, repoUrl, test });
+      const result = await step.execute({
+        perfectProjectPath,
+        repoUrl,
+        test,
+        destinationPath,
+      });
 
       const actionName = step.getActionName();
 

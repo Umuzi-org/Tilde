@@ -1,11 +1,8 @@
-
 # expects a few things to be defined:
-# CLONE_PATH = the root directory that everything gets cloned to
+
+# CLONE_PATH = the root directory that everything gets cloned to. This gets created if it doesn't exist 
 # REPO_URL = the thing to clone
-# DIR_NAME = the name of the thing we are cloning to
-
-# FULL_CLONE_PATH="$CLONE_PATH/$DIR_NAME"
-
+# FULL_CLONE_PATH = the full path to the destination of the clone
 
 if [ ! -d "$CLONE_PATH" ]; then
   mkdir $CLONE_PATH
