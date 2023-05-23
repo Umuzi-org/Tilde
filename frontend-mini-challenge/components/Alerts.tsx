@@ -3,7 +3,6 @@ import { ErrorIcon, InfoIcon } from "../brand";
 
 const ICON_SIZE = "2rem";
 
-
 interface Props {
   title: string;
   children: string;
@@ -36,4 +35,3 @@ export function InfoAlert({ children, title }: Props) {
     </Alert>
   );
 }
-
