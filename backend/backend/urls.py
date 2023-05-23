@@ -206,6 +206,7 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/", include(router.urls)),
     path("api/", include("core.urls")),
+    path("api/zmc/", include("zero_marginal_cost_challenges.urls")),
     path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
     # path("api/schema", schema_view),
     path("git_real/", include("git_real.urls")),

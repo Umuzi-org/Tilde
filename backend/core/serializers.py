@@ -85,7 +85,6 @@ class UserSerializer(serializers.ModelSerializer):
     team_memberships = serializers.SerializerMethodField("get_team_memberships")
 
     def get_team_memberships(self, instance):
-
         return {
             team.id: {"id": team.id, "name": team.name} for team in instance.teams()
         }
