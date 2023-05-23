@@ -168,7 +168,7 @@ export function useChangePassword() {
 
 export async function serverSideWhoAmI({ req }) {
   const token = req.cookies[TOKEN_COOKIE];
-  const url = `${API_BASE_URL}/api/who_am_i/`;
+  const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
   const data = await fetchAndClean({
     token,
     url,
@@ -179,7 +179,7 @@ export async function serverSideWhoAmI({ req }) {
 }
 
 export function useWhoAmI() {
-  const url = `${API_BASE_URL}/api/who_am_i/`;
+  const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
 
   const token = getAuthToken();
 
