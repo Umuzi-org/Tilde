@@ -1,5 +1,0 @@
-import os
-
-HOST_FRONTEND_MINI = os.environ["HOST_FRONTEND_MINI"]
-HOST_BACKEND_API = os.environ["HOST_BACKEND_API"]
-HOST_AUTOMARKER = os.environ["HOST_AUTOMARKER"]

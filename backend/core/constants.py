@@ -1,1 +1,0 @@
-BUSINESS_EMAIL_DOMAIN = "umuzi.org"

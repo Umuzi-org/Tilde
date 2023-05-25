@@ -1,5 +1,0 @@
-{
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.renderWhitespace": "boundary",
-  "cSpell.words": ["Kata", "Katas", "pytest"]
-}

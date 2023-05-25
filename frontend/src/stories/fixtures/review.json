@@ -1,9 +1,0 @@
-{
-  "id": 31400,
-  "status": "NYC",
-  "timestamp": "2022-02-07T10:50:27.063465Z",
-  "comments": "Looks like you have not addressed the feedback on Task2.js, it also looks like the feedback may be getting addressed in PR 18 which currently has changes requested? Were you unaware that this PR was unmerged? https://github.com/Umuzi-org/Cassandra-Nyathi-219-level-1-programming-katas-javascript/pull/18",
-  "recruitProject": 10822,
-  "reviewerUser": 3,
-  "reviewerUserEmail": "ryan.oconnell@umuzi.org"
-}

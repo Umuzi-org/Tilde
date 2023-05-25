@@ -1,2 +1,0 @@
-cd $DESTINATION_PATH
-cp -r  $PERFECT_PROJECT_PATH/tests .

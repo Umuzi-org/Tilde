@@ -1,9 +1,0 @@
-node_modules
-npm-debug.log
-Dockerfile
-.dockerignore
-README.md
-docker_*.sh
-docker-compose.yaml
-gitignore/
-coverage/
