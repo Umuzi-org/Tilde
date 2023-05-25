@@ -6,6 +6,7 @@ const ICON_SIZE = "2rem";
 interface Props {
   title: string;
   children: string;
+  Icon?: React.ComponentType<{ size: string }>;
 }
 
 export function ErrorAlert({ children, title }: Props) {
@@ -22,10 +23,12 @@ export function ErrorAlert({ children, title }: Props) {
   );
 }
 
-export function InfoAlert({ children, title }: Props) {
+export function InfoAlert({ children, title, Icon }: Props) {
+  Icon = Icon || InfoIcon;
+
   return (
     <Alert
-      icon={<InfoIcon size={ICON_SIZE} />}
+      icon={<Icon size={ICON_SIZE} />}
       mt="md"
       title={title}
       color="blue"

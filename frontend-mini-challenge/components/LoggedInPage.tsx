@@ -17,6 +17,14 @@ import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
 import { GetServerSidePropsContext } from 'next';
 
+
+
+
+const LoggedInUserDataType = {
+  firstName: "string",
+  email: "string",
+};
+
 export default function Page({
   children,
   serverSidePropsCorrectlyCalled,
@@ -26,7 +34,7 @@ export default function Page({
   children: React.ReactNode;
   serverSidePropsCorrectlyCalled: boolean;
   isLoggedIn: boolean;
-  loggedInUserData: { firstName: string; email: string }
+  loggedInUserData: typeof LoggedInUserDataType;
 }) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
@@ -67,7 +75,7 @@ export function Presentation({
   children,
 }: {
   handleLogout: () => void;
-  loggedInUserData: { firstName: string; email: string }
+  loggedInUserData: typeof LoggedInUserDataType;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -147,9 +155,7 @@ Then when you make use of this page component:
 */
 
 
-export const getServerSidePropsForLoggedInPage = async (context: GetServerSidePropsContext) => {
-  const { req } = context;
-
+export const getServerSidePropsForLoggedInPage = async ({ query, req }: GetServerSidePropsContext) => {
   const whoAmIResponse = await serverSideWhoAmI({ req });
 
   return {
