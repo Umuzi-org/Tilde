@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 
 export default function Page({ children }: { children: React.ReactNode }) {
   const {
-    responseData: userData,
-    isLoading: isLoadingWhoAmI,
+    //responseData: userData,
+    //isLoading: isLoadingWhoAmI,
     status: whoAmIStatus,
   } = useWhoAmI();
 
@@ -34,5 +34,3 @@ export default function Page({ children }: { children: React.ReactNode }) {
     </AppShell>
   );
 }
-
-// Header height={60} p="xs"
