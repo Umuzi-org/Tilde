@@ -52,7 +52,6 @@ export default function Home() {
         });
       }
       if (getUserActiveChallenges.responseData.length === 1) {
-        console.log({ getUserActiveChallenges });
         const registrationId = getUserActiveChallenges.responseData[0].id;
         routerPushOnce(`/user-challenge/${registrationId}`);
       }

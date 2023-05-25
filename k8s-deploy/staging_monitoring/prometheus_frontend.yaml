@@ -38,7 +38,7 @@ spec:
         image: "gke.gcr.io/prometheus-engine/frontend:v0.5.0-gke.0"
         args:
         - "--web.listen-address=:9090"
-        - "--query.project-id=umuzi-staging"
+        - "--query.project-id=umuzi-staging"   # Change for prod. Everything else is the same
         ports:
         - name: web
           containerPort: 9090

@@ -155,30 +155,12 @@ class WhoAmISerializer(serializers.ModelSerializer):
         model = Token
         fields = [
             "email",
-            # "token",
             "user_id",
-            # "active",
             "first_name",
-            # "last_name",
-            # "preferred_name",
-            # "is_staff",
-            # "is_superuser",
-            # "permissions",
-            # "teams",
         ]
 
     email = serializers.SerializerMethodField("get_email")
     first_name = serializers.SerializerMethodField("get_first_name")
-
-    # preferred_name = serializers.SerializerMethodField("get_preferred_name")
-    # token = serializers.SerializerMethodField("get_token")
-    # active = serializers.SerializerMethodField("get_active")
-    # last_name = serializers.SerializerMethodField("get_last_name")
-    # is_staff = serializers.SerializerMethodField("get_is_staff")
-    # is_superuser = serializers.SerializerMethodField("get_is_superuser")
-    # permissions = serializers.SerializerMethodField("get_permissions")
-    # teams = serializers.SerializerMethodField("get_teams")
-    # is_student = serializers.SerializerMethodField("get_is_student")
 
     def get_email(self, instance):
         return instance.user.email

@@ -185,14 +185,14 @@ export function useWhoAmI() {
 
   const token = getAuthToken();
 
-  console.log({ function: "useWhoAmI", token });
+  // sometimes cookie and token dont match. Weird edge case for multiple users.
+  // Probably should be fixed in the future
 
   setCookie(TOKEN_COOKIE, token, {
     path: "/",
     // maxAge: 3600, // Expires after 1hr
     sameSite: true,
   });
-  console.log({ cookie });
 
   const { data, error, isLoading, mutate } = useSWR(
     token
@@ -236,7 +236,6 @@ export async function serverSideGetUserChallengeDetails({
 }) {
   const token = req.cookies[TOKEN_COOKIE];
 
-  console.log({ function: "serverSideGetUserChallengeDetails", token });
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/`;
 
   const data = await fetchAndClean({

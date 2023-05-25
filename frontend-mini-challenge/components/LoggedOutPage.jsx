@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 
 export default function Page({ children }) {
   const {
-    responseData: userData,
-    isLoading: isLoadingWhoAmI,
+    // responseData: userData,
+    // isLoading: isLoadingWhoAmI,
     status: whoAmIStatus,
   } = useWhoAmI();
 
