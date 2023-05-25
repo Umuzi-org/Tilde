@@ -12,10 +12,11 @@ from . import models
 from . import permissions
 from django.utils import timezone
 import re
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 class ChallengeRegistrationViewset(viewsets.ModelViewSet):
-
     queryset = models.ChallengeRegistration.objects.order_by("pk")
 
     # serializer_class = serializers.ChallengeRegistrationListSerializer
@@ -135,7 +136,6 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
             if content_item.link_regex and not re.match(
                 content_item.link_regex, serializer.data["link_submission"]
             ):
-
                 return Response(
                     {
                         "nonFieldErrors": [content_item.link_message],
@@ -155,3 +155,12 @@ class ChallengeRegistrationViewset(viewsets.ModelViewSet):
             return Response({"success": "OK"})  # TODO..
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def who_am_i(request):
+    # TODO: turn this into a class based view
+    # anyone can access it. No permission needed
+    serializer = serializers.WhoAmISerializer(request.auth)
+    return Response(serializer.data)

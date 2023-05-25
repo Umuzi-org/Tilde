@@ -1,13 +1,19 @@
-import shell from "shelljs";
-import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 import fs from "fs";
+import { SKIP_TEARDOWN } from "../../env.mjs";
 
-export default class Cleanup extends Action {
-  name = "cleanup";
+export default class Teardown extends Action {
+  name = "cleaning up";
 
   action = async function ({ destinationPath }) {
+    if (SKIP_TEARDOWN) {
+      console.log("skipping teardown");
+      return {
+        status: STATUS_OK,
+      };
+    }
+
     console.log(`deleting... ${destinationPath}`);
     console.log({ destinationPath });
 

@@ -6,7 +6,7 @@ metadata:
   labels:
     app: automarker
 spec:
-  replicas: 1
+  replicas: 4 # number of simultaneous requests allowed
   selector:
     matchLabels:
       app: automarker
@@ -29,7 +29,7 @@ spec:
               path: /health-check
               port: 1337
             initialDelaySeconds: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 20
 
           volumeMounts:
             - name: github-ssh-key-secret-volume

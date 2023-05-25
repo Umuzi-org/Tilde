@@ -30,8 +30,24 @@ export default class SavePage extends Action {
     };
   };
 
+  backoff_fetch = async function (url) {
+    let tries = 0;
+
+    while (true) {
+      try {
+        return await fetch(url);
+      } catch (error) {
+        tries += 1;
+        console.log("error fetching", error);
+        if (tries > 5) throw error;
+
+        await new Promise((r) => setTimeout(r, 1000 * tries));
+      }
+    }
+  };
+
   action = async function ({ repoUrl, destinationPath }) {
-    const response = await fetch(repoUrl);
+    const response = await this.backoff_fetch(repoUrl);
 
     if (response.status !== 200) {
       return {

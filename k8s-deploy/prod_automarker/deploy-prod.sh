@@ -6,4 +6,4 @@
 kubectl delete -f automarker-prod-Deployment.yaml
 kubectl apply -f automarker-prod-Deployment.yaml
 
-kubectl get pods
+kubectl get pods -w

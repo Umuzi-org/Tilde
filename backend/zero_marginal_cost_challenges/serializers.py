@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from . import models
-from curriculum_tracking.models import TopicProgress, RecruitProject, ContentItem
+from curriculum_tracking.models import ContentItem
+from rest_framework.authtoken.models import Token
 
 
 class ChallengeRegistrationListSerializer(serializers.ModelSerializer):
@@ -147,3 +148,22 @@ class SubmitLinkSerializer(serializers.Serializer):
 
     index = serializers.IntegerField()
     link_submission = serializers.URLField()
+
+
+class WhoAmISerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = [
+            "email",
+            "user_id",
+            "first_name",
+        ]
+
+    email = serializers.SerializerMethodField("get_email")
+    first_name = serializers.SerializerMethodField("get_first_name")
+
+    def get_email(self, instance):
+        return instance.user.email
+
+    def get_first_name(self, instance):
+        return instance.user.first_name

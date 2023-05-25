@@ -1,5 +1,7 @@
-from locust import HttpUser, task
+from locust import task
 from env import HOST_FRONTEND_MINI
+
+from helpers import HttpUser
 
 
 class MiniFrontendUser(HttpUser):
@@ -7,4 +9,4 @@ class MiniFrontendUser(HttpUser):
 
     @task
     def visit_home_page(self):
-        self.client.get("/")
+        self.get("/")

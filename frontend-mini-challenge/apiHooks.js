@@ -168,7 +168,7 @@ export function useChangePassword() {
 
 export async function serverSideWhoAmI({ req }) {
   const token = req.cookies[TOKEN_COOKIE];
-  const url = `${API_BASE_URL}/api/who_am_i/`;
+  const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
   const data = await fetchAndClean({
     token,
     url,
@@ -179,9 +179,20 @@ export async function serverSideWhoAmI({ req }) {
 }
 
 export function useWhoAmI() {
-  const url = `${API_BASE_URL}/api/who_am_i/`;
+  const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+
+  const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
 
   const token = getAuthToken();
+
+  // sometimes cookie and token dont match. Weird edge case for multiple users.
+  // Probably should be fixed in the future
+
+  setCookie(TOKEN_COOKIE, token, {
+    path: "/",
+    // maxAge: 3600, // Expires after 1hr
+    sameSite: true,
+  });
 
   const { data, error, isLoading, mutate } = useSWR(
     token
@@ -224,6 +235,7 @@ export async function serverSideGetUserChallengeDetails({
   req,
 }) {
   const token = req.cookies[TOKEN_COOKIE];
+
   const url = `${API_BASE_URL}/api/challenge_registrations/${registrationId}/`;
 
   const data = await fetchAndClean({
@@ -407,7 +419,7 @@ export function useRefreshReviewStepDetails({
         }
       : null,
     fetchAndClean,
-    { refreshInterval: 1000 }
+    { refreshInterval: 5000 }
   );
 
   if (data && data.status === 401) {

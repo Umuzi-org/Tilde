@@ -51,6 +51,14 @@ export async function getServerSideProps({ query, req }) {
       req,
     });
     challengeDetails = challengeDetailsResponse.responseData;
+
+    if (challengeDetailsResponse.status !== 200) {
+      throw new Error(
+        `Failed to get challenge details:\n ${JSON.stringify(
+          challengeDetailsResponse
+        )}`
+      );
+    }
   }
 
   return {

@@ -4,3 +4,5 @@ export const PORT = process.env.AUTO_MARKER_PORT || 1337;
 
 export const CONFIGURATION_REPO_PATH =
   process.env.AUTO_MARKER_CONFIGURATION_REPO_PATH;
+
+export const SKIP_TEARDOWN = process.env.AUTO_MARKER_SKIP_TEARDOWN === "true";

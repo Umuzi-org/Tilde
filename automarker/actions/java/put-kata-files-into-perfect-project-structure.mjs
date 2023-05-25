@@ -1,6 +1,5 @@
 import shell from "shelljs";
-import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 
 export default class PutKataFilesIntoPerfectProjectStructure extends Action {
