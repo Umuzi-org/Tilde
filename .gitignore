@@ -4,3 +4,4 @@ venv/
 *.log
 certbot.out
 node_modules/
+__pycache__/
