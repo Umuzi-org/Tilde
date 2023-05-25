@@ -1,0 +1,6 @@
+migrations/
+__pycache__/
+gitignore/
+collectstatic/
+*.log
+*.csv

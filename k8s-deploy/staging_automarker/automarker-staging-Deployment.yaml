@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: automarker
+  labels:
+    app: automarker
+spec:
+  replicas: 4 # number of simultaneous requests allowed
+  selector:
+    matchLabels:
+      app: automarker
+  template:
+    metadata:
+      labels:
+        app: automarker
+    spec:
+      containers:
+        - name: automarker-app
+          image: gcr.io/umuzi-staging/automarker:latest 
+          imagePullPolicy: Always
+          
+          ports:
+            - containerPort: 1337
+
+          readinessProbe:
+            # an http probe
+            httpGet:
+              path: /health-check
+              port: 1337
+            initialDelaySeconds: 5
+            timeoutSeconds: 20
+
+          volumeMounts:
+            - name: github-ssh-key-secret-volume
+              readOnly: true
+              # mountPath: "/root/.github_ssh"
+              mountPath: "/root/.ssh"
+            # - name: github-ssh-key-secret-volume-writable
+            #   mountPath: "/root/.github_ssh_final"
+
+          # command: ["mkdir ~/.ssh", "cp ~/.github_ssh/* ~/.ssh;",   "node", "app.mjs"]
+
+      # initContainers:
+      # - name: crazy-hack
+      #   image: busybox:1.28
+      #   command: [
+      #     'sh', '-c', 
+      #     "cp -r /root/.github_ssh /root/.github_ssh_final",
+      #     "chmod 400 ~/.github_ssh_final/ssh-privatekey",
+      #     "chmod 400 ~/.github_ssh_final/ssh-publickey",
+      #      ]
+
+      # initContainers:
+      #   - name: copy
+      #     image: alpine:3
+      #     command:
+      #     - chown
+      #     - -R
+      #     - 472:472
+      #     - /var/lib/grafana
+      #     volumeMounts:
+      #       - name: github-ssh-key-secret-volume
+      #         mountPath: "/root/.github_ssh"
+
+
+      volumes:
+      - name: github-ssh-key-secret-volume
+        secret:
+          secretName: github-ssh-key-secret
+          defaultMode: 0400
+      # - name: github-ssh-key-secret-volume-writable

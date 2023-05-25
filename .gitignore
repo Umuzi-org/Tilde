@@ -1,0 +1,7 @@
+gitignore/
+venv/
+*.log
+certbot.out
+node_modules/
+__pycache__/
+gitmodules/

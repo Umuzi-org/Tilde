@@ -1,0 +1,6 @@
+node_modules/
+public/
+src/
+.gitignore
+package-lock.json
+README.md

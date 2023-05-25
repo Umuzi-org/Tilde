@@ -1,0 +1,170 @@
+# For more info about Pods see:
+#   https://cloud.google.com/container-engine/docs/pods/
+# For more info about Deployments:
+#   https://kubernetes.io/docs/user-guide/deployments/
+
+# apiVersion: extensions/v1beta1
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: tilde-backend
+  labels:
+    app: tilde-backend
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: tilde-backend
+  template:
+    metadata:
+      labels:
+        app: tilde-backend
+    spec:
+      containers:
+        - name: tilde-backend-app
+          # Replace  with your project ID or use `make template`
+          image: gcr.io/umuzi-staging/tilde-backend:latest   # Changed for staging
+          # This setting makes nodes pull the docker image every time before
+          # starting the pod. This is useful when debugging, but should be turned
+          # off in production.
+          imagePullPolicy: Always
+          env:
+            # [START cloudsql_secrets]
+            - name: TILDE_SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: TILDE_SQL_USER
+            - name: TILDE_SQL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: TILDE_SQL_PASS
+
+            - name: TILDE_SQL_DB
+              value: tilde_staging
+            - name: TILDE_SQL_PORT
+              value: "5432"
+
+            # [START git real secrets]
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gitreal
+                  key: GITHUB_CLIENT_ID
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gitreal
+                  key: GITHUB_CLIENT_SECRET
+
+            - name: GIT_REAL_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gitrealwebhook
+                  key: GIT_REAL_WEBHOOK_SECRET
+
+            # [START reset password and email config]
+            - name: FRONTEND_URL
+              value: https://tilde-front-staging-dot-umuzi-prod.nw.r.appspot.com     
+
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid
+                  key: SENDGRID_API_KEY
+
+            # [START git misc config]
+
+            - name: STATIC_URL
+              value: https://storage.googleapis.com/tilde-backend-collectstatic/static/
+            - name: PROD_MODE
+              value: "0"  # staging env, we want error messages so things are easier to fix
+            - name: PROD_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: miscbackend
+                  key: PROD_SECRET_KEY
+
+            - name: SQL_CONNECTION_NAME
+              value: umuzi-staging:europe-west2:staging      
+            - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
+              value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
+
+            - name: RABBITMQ_USER
+              value: rabbit
+            - name: RABBITMQ_HOST
+              value: tilde-rabbitmq-rabbitmq-discovery
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tilde-rabbitmq-rabbitmq-secret
+                  key: rabbitmq-pass
+
+
+            - name: AUTOMARKER_SERVICE_BASE_URL
+              value: http://automarker # using ClusterIP service
+
+          volumeMounts:
+            - name: google-oauth-onetime-creds
+              mountPath: /secrets/google-oauth-onetime-creds
+              readOnly: true
+
+          ports:
+            - containerPort: 8080
+
+          readinessProbe:
+            # an http probe
+            httpGet:
+              path: /readiness
+              port: 8080
+            initialDelaySeconds: 20
+            timeoutSeconds: 10
+            periodSeconds: 20
+
+          # livenessProbe:
+          #  httpGet:
+          #    path: /healthz
+          #    port: 8080
+          #  initialDelaySeconds: 5
+          #  periodSeconds: 5
+
+        # [START proxy_container]
+        - image: gcr.io/cloudsql-docker/gce-proxy:1.16
+          name: cloudsql-proxy
+          command:
+            [
+              "/cloud_sql_proxy",
+              "--dir=/cloudsql",
+              "-instances=umuzi-staging:europe-west2:staging=tcp:5432", # Changed for staging
+              "-credential_file=/secrets/cloudsql/credentials.json",
+            ]
+          volumeMounts:
+            - name: cloudsql-oauth-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+      # [END proxy_container]
+      # [START volumes]
+      volumes:
+        - name: google-oauth-onetime-creds
+          secret:
+            secretName: google-oauth-onetime-creds
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+
+      # [END volumes]
+# [END kubernetes_deployment]
+

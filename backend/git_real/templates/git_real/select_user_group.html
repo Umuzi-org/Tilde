@@ -1,0 +1,16 @@
+{% extends "git_real/base.html" %} 
+{% block content %} 
+
+<p>Please pick ONE THING to fill in. Either a cohort, a product or staff</p>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <table>
+        {{ form.as_table }}
+    </table>
+    
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock content %}

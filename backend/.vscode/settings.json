@@ -1,0 +1,16 @@
+{
+  "python.formatting.provider": "black",
+  "cSpell.words": [
+    "adminsortable",
+    "apikey",
+    "authtoken",
+    "automarked",
+    "automarker",
+    "corsheaders",
+    "dramatiq",
+    "ncit",
+    "sendgrid",
+    "taggit",
+    "viewsets"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+    "id": 106510,
+    "contentItem": 311,
+    "contentItemUrl": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/5-responsive-web-design-principles/",
+    "status": "IR",
+    "recruitProject": 6798,
+    "assignees": [
+        295
+    ],
+    "reviewers": [
+        458,
+        490,
+        682
+    ],
+    "usersThatReviewedSinceLastReviewRequest": [777, 555, 3332],
+    "assigneeNames": [
+        "babalwa.mbolekwa@umuzi.org"
+    ],
+    "reviewerNames": [
+        "wisani.matobela@umuzi.org",
+        "refilwe.mashile@umuzi.org",
+        "andile.dimba@umuzi.org"
+    ],
+    "isHardMilestone": false,
+    "isSoftMilestone": true,
+    "title": "FreeCodeCamp - Responsive Web Design Principles",
+    "contentType": "P",
+    "contentTypeNice": "project",
+    "storyPoints": 1,
+    "tagNames": [
+        "html",
+        "css"
+    ],
+    "order": 42,
+    "codeReviewCompetentSinceLastReviewRequest": 1,
+    "codeReviewExcellentSinceLastReviewRequest": 0,
+    "codeReviewRedFlagSinceLastReviewRequest": 0,
+    "codeReviewNyCompetentSinceLastReviewRequest": 0,
+    "requiresCards": [
+        106509
+    ],
+    "requiredByCards": [
+        106511
+    ],
+    "flavourNames": [],
+    "projectSubmissionTypeNice": "link",
+    "topicNeedsReview": false,
+    "topicProgress": null,
+    "dueTime": "15 July 2021 17:00",
+    "completeTime": null,
+    "reviewRequestTime": "2021-06-24T18:27:24.842704Z",
+    "startTime": "2021-06-24T18:26:39.399744Z",
+    "canStart": false,
+    "canForceStart": false,
+    "openPrCount": 0,
+    "oldestOpenPrUpdatedTime": null
+}

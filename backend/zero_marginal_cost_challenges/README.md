@@ -1,0 +1,1 @@
+This app is the backend for the mini challenge frontend. Currently it doesn't do a lot, it just exposes a few extra apis.
