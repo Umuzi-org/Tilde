@@ -15,27 +15,26 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
-import { GetServerSidePropsContext } from 'next';
 
-
-
-
-const LoggedInUserDataType = {
-  firstName: "string",
-  email: "string",
-};
+interface Props {
+  children: React.ReactNode;
+  serverSidePropsCorrectlyCalled?: boolean;
+  isLoggedIn?: boolean;
+  loggedInUserData: {
+    firstName: string;
+    email: string;
+  };
+  handleLogout?: () => void;
+  req?: string;
+  query?: string;
+}
 
 export default function Page({
   children,
   serverSidePropsCorrectlyCalled,
   isLoggedIn,
   loggedInUserData,
-}: {
-  children: React.ReactNode;
-  serverSidePropsCorrectlyCalled: boolean;
-  isLoggedIn: boolean;
-  loggedInUserData: typeof LoggedInUserDataType;
-}) {
+}: Props) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
       "It looks like you didn't make use of the getServerSideProps function defined below"
@@ -73,11 +72,7 @@ export function Presentation({
   handleLogout,
   loggedInUserData,
   children,
-}: {
-  handleLogout: () => void;
-  loggedInUserData: typeof LoggedInUserDataType;
-  children: React.ReactNode;
-}) {
+}: Props) {
   const router = useRouter();
   return (
     <AppShell
@@ -121,7 +116,6 @@ export function Presentation({
     </AppShell>
   );
 }
-
 /* NOTE: 
 
 This wont get called automatically by next, it needs to be imported and used in the pages that make use of this component.  
@@ -153,9 +147,7 @@ Then when you make use of this page component:
     </Page>
 
 */
-
-
-export const getServerSidePropsForLoggedInPage = async ({ query, req }: GetServerSidePropsContext) => {
+export const getServerSidePropsForLoggedInPage = async ({ query, req }: Props) => {
   const whoAmIResponse = await serverSideWhoAmI({ req });
 
   return {
