@@ -15,7 +15,7 @@ class HealthCheckMiddleware(object):
     def __call__(self, request):
         verb = request.method
         url = request.get_full_path()
-        logger.info(f"healthcheck [{verb}] {url}")
+        # logger.info(f"healthcheck [{verb}] {url}")
 
         if request.method == "GET":
             if request.path == "/readiness":

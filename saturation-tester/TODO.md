@@ -18,6 +18,8 @@
 - [ ] set max ram etc 
 
 
+- [ ] https://github.com/korfuri/django-prometheus
+
 locust -f src/locustfile_backend_apis_for_mini_frontend.py --headless --html reports/backend_slow_ramp_up.html -u 1000 --run-time 30m -r 1 --stop-timeout 10s
 
 

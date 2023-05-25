@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ -z "${AUTO_MARKER_CONFIGURATION_REPO_PATH}" ]
+then
+    echo "Please set the AUTO_MARKER_CONFIGURATION_REPO_PATH environment variable"
+    exit 1
+fi
+
+
+
 cd ../../automarker
 
 GIT_COMMIT="$(git show --format="%h" --no-patch)"

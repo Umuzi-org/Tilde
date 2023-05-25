@@ -14,6 +14,7 @@ const curriculum = 90; // TODO. When we have more challenges we wont be able to 
 export default function Home() {
   const router = useRouter();
   const getWhoAmI = useWhoAmI();
+
   const getUserActiveChallenges = useGetUserActiveChallenges({
     user: getWhoAmI.status === 200 && getWhoAmI.responseData.userId,
   });
@@ -51,6 +52,7 @@ export default function Home() {
         });
       }
       if (getUserActiveChallenges.responseData.length === 1) {
+        console.log({ getUserActiveChallenges });
         const registrationId = getUserActiveChallenges.responseData[0].id;
         routerPushOnce(`/user-challenge/${registrationId}`);
       }

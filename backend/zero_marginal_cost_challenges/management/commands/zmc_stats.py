@@ -40,6 +40,7 @@ class Command(BaseCommand):
         ]
 
         step_data = {}
+
         for item in content_items:
             progress = get_progress(item).order_by("start_time")
             complete_progress = progress.filter(complete_time__isnull=False).annotate(
