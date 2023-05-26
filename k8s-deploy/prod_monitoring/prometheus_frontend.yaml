@@ -1,4 +1,5 @@
 # this is a frontend, but also acts as a proxy for graphana
+# port-forward svc/frontend 9090
 
 # https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.5.0/examples/frontend.yaml 
 
@@ -40,7 +41,7 @@ spec:
         image: "gke.gcr.io/prometheus-engine/frontend:v0.5.0-gke.0"
         args:
         - "--web.listen-address=:9090"
-        - "--query.project-id=umuzi-staging"   # Change for prod. Everything else is the same
+        - "--query.project-id=umuzi-prod"   # Change for prod. Everything else is the same
         ports:
         - name: web
           containerPort: 9090

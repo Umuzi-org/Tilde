@@ -6,3 +6,5 @@
 
 kubectl delete -f mini-frontend-staging-Deployment.yaml
 kubectl apply -f mini-frontend-staging-Deployment.yaml
+
+kubectl get pods -w

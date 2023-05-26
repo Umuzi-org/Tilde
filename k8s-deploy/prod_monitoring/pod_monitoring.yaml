@@ -1,0 +1,27 @@
+# TODO: use something like this to add extra monitoring to our goodies... 
+
+# apiVersion: monitoring.googleapis.com/v1
+# kind: PodMonitoring
+# metadata:
+#   name: pod-monitoring-1
+# spec:
+#   selector:
+#     matchLabels:
+#       app: tilde-backend # looks for pods with this selector 
+#   endpoints:
+#   - port: metrics
+#     interval: 30s
+
+
+    # example app this can monitor: https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.5.0/examples/example-app.yaml
+
+    # note container port 
+
+    # ports:
+    #     - name: metrics
+    #       containerPort: 1234
+
+
+
+#    he matching pods are scraped on a port named metrics, every 30 seconds, on the /metrics HTTP path.
+

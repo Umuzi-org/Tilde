@@ -13,4 +13,4 @@ fi
 kubectl delete -f automarker-staging-Deployment.yaml
 kubectl apply -f automarker-staging-Deployment.yaml
 
-kubectl get pods
+kubectl get pods -w
