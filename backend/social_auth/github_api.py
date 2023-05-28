@@ -3,6 +3,7 @@ from social_auth import models as social_models
 from git_real.constants import GITHUB_BASE_URL
 import requests
 from django.utils.http import urlencode
+import json
 
 
 class Api:
@@ -76,7 +77,6 @@ class Api:
         return response.json()
 
     def request(self, url_end, response404=None, json=True, headers=None):
-
         full_url = f"{GITHUB_BASE_URL}/{url_end}"
 
         print(f"curl {full_url}")
@@ -131,7 +131,6 @@ class Api:
         self, organisation_name, team_name, description="Automatically generated team"
     ):
         if not self.team_exists(organisation_name, team_name):
-
             result = self.post(
                 f"orgs/{organisation_name}/teams",
                 data={"description": description, "name": team_name},
@@ -230,7 +229,9 @@ class Api:
                 headers={"accept": "application/vnd.github.v3+json"},
                 data={},
             )
-            assert "state" in response, response
+            assert (
+                "state" in response
+            ), f"github_name:{github_name} organisation_name:{organisation_name} {json.dumps( response)}"
             assert response["state"] in ["pending", "active"], response
         return False
 
