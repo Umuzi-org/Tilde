@@ -15,26 +15,34 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
+import { IncomingMessage } from 'http';
 
-interface Props {
-  children: React.ReactNode;
-  serverSidePropsCorrectlyCalled?: boolean;
-  isLoggedIn?: boolean;
-  loggedInUserData: {
-    firstName: string;
-    email: string;
-  };
-  handleLogout?: () => void;
-  req?: string;
-  query?: string;
+
+interface LoggedInUserData {
+  firstName: string;
+  email: string;
 }
+
+interface PageProps {
+  children: React.ReactNode;
+  serverSidePropsCorrectlyCalled: boolean;
+  isLoggedIn: boolean;
+  loggedInUserData: LoggedInUserData;
+}
+
+interface PresentationProps {
+  handleLogout: () => void;
+  loggedInUserData: LoggedInUserData;
+  children: React.ReactNode;
+}
+
 
 export default function Page({
   children,
   serverSidePropsCorrectlyCalled,
   isLoggedIn,
   loggedInUserData,
-}: Props) {
+}: PageProps) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
       "It looks like you didn't make use of the getServerSideProps function defined below"
@@ -68,11 +76,7 @@ export default function Page({
   return <Presentation {...props}>{children}</Presentation>;
 }
 
-export function Presentation({
-  handleLogout,
-  loggedInUserData,
-  children,
-}: Props) {
+export function Presentation({ handleLogout, loggedInUserData, children }: PresentationProps) {
   const router = useRouter();
   return (
     <AppShell
@@ -81,7 +85,7 @@ export function Presentation({
         <Header height={60} p="xs">
           <Group sx={{ height: "100%" }} px={20} position="right">
             <Text>
-              You are logged in as {" "}
+              You are logged in as{" "}
               {loggedInUserData.firstName || loggedInUserData.email}
             </Text>
             <Menu shadow="md" width={200}>
@@ -116,6 +120,7 @@ export function Presentation({
     </AppShell>
   );
 }
+
 /* NOTE: 
 
 This wont get called automatically by next, it needs to be imported and used in the pages that make use of this component.  
@@ -147,7 +152,8 @@ Then when you make use of this page component:
     </Page>
 
 */
-export const getServerSidePropsForLoggedInPage = async ({ query, req }: Props) => {
+
+export async function getServerSidePropsForLoggedInPage({ query, req }: { query: { [key: string]: string }, req: IncomingMessage }) {
   const whoAmIResponse = await serverSideWhoAmI({ req });
 
   return {
