@@ -9,7 +9,7 @@ import {
   Text,
   Container,
 } from "@mantine/core";
-import { useLogout, serverSideWhoAmI, TOKEN_COOKIE } from "../apiHooks";
+import { useLogout, serverSideWhoAmI } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -30,7 +30,7 @@ export default function Page({
       "It looks like you didn't make use of the getServerSideProps function defined below"
     );
   }
-  // const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
+
   const { clearCookies } = useAuthCookies();
   const { call: callLogout, status } = useLogout();
   const router = useRouter();

@@ -5,7 +5,6 @@ import { useWhoAmI } from "../apiHooks";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import logger from "../logger";
-// import { useState } from "react";
 
 export default function Page({ children, serverSidePropsCorrectlyCalled }) {
   if (!serverSidePropsCorrectlyCalled) {
@@ -19,16 +18,8 @@ export default function Page({ children, serverSidePropsCorrectlyCalled }) {
     // isLoading: isLoadingWhoAmI,
     status: whoAmIStatus,
   } = useWhoAmI();
-  // const [loggedPageVisit, setLoggedPageVisit] = useState(false);
 
   const router = useRouter();
-  const url = router.asPath;
-
-  // useEffect(() => {
-  //   if (loggedPageVisit) return;
-  //   setLoggedPageVisit(true);
-  //   logger.http({ user_id: null, url }, `Page access`);
-  // }, [loggedPageVisit, url]);
 
   useEffect(() => {
     if (whoAmIStatus === 200) {
@@ -38,6 +29,10 @@ export default function Page({ children, serverSidePropsCorrectlyCalled }) {
     }
   });
 
+  return <Presentation>{children}</Presentation>;
+}
+
+export function Presentation({ children }) {
   return (
     <AppShell padding="md" header={<Header height={60} p="xs"></Header>}>
       <Container>{children}</Container>
@@ -45,7 +40,7 @@ export default function Page({ children, serverSidePropsCorrectlyCalled }) {
   );
 }
 
-export async function getServerSidePropsForLoggedOutPage({ query, req }) {
+export async function getServerSidePropsForLoggedOutPage({ req }) {
   const { url } = req;
   logger.http({ user_id: null, url }, `Page access`);
 

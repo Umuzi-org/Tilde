@@ -14,12 +14,9 @@ import { useState } from "react";
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-// export const TOKEN_COOKIE = "token";
-
 export function useLogin() {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
-  // const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
   const { setToken } = useAuthCookies();
 
   const { mutate } = useWhoAmI();
@@ -43,12 +40,6 @@ export function useLogin() {
     setLoading(false);
     setAuthToken({ value: data.responseData.key, keep: true });
 
-    // setCookie(TOKEN_COOKIE, data.responseData.key, {
-    //   path: "/",
-    //   // maxAge: 3600, // Expires after 1hr
-    //   sameSite: true,
-    // });
-
     setToken({ token: data.responseData.key });
 
     mutate();
@@ -64,7 +55,6 @@ export function useLogin() {
 export function useLogout() {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
-  // const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
   const { clearCookies } = useAuthCookies();
 
   const url = urlJoin({
@@ -81,9 +71,6 @@ export function useLogout() {
       token,
     });
     clearAuthToken();
-    // removeCookie(TOKEN_COOKIE, {
-    //   path: "/",
-    // });
     clearCookies();
     setData(data);
     setLoading(false);
@@ -184,26 +171,19 @@ export async function serverSideWhoAmI({ req }) {
     method: GET,
   });
 
+  // if (data && data.status === 200) {
+  //   setUserId({ userId: data.responseData.userId });
+  // }
+
   return data;
 }
 
 export function useWhoAmI() {
-  const { setToken } = useAuthCookies();
-  // const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+  const { setToken, setUserId } = useAuthCookies();
 
   const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
 
   const token = getAuthToken();
-
-  // sometimes cookie and token dont match. Weird edge case for multiple users.
-  // Probably should be fixed in the future
-
-  // setCookie(TOKEN_COOKIE, token, {
-  //   path: "/",
-  //   // maxAge: 3600, // Expires after 1hr
-  //   sameSite: true,
-  // });
-  setToken({ token });
 
   const { data, error, isLoading, mutate } = useSWR(
     token
@@ -216,9 +196,17 @@ export function useWhoAmI() {
     fetchAndClean
   );
 
-  if (data && data.status === 401) {
-    // unauthorized
-    clearAuthToken();
+  if (data) {
+    if (data.status === 401) {
+      // unauthorized
+      clearAuthToken();
+    }
+    if (data.status === 200) {
+      // sometimes cookie and token dont match. Weird edge case for multiple users.
+      // Probably should be fixed in the future
+      setToken({ token });
+      setUserId({ userId: data.responseData.userId });
+    }
   }
 
   return { error, isLoading, mutate, ...data };

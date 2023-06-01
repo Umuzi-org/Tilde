@@ -45,12 +45,15 @@ export default function Login({ loggedOutPageProps }) {
       setCalledPush(true);
       router.push(path);
     }
+
     if (status === 200) routerPushOnce("/");
   }, [router, status, calledPush, setCalledPush]);
 
   function handleSubmit({ email, password }) {
     call({ email, password });
   }
+
+  // throw new Error("TODO: implement this page");
 
   return (
     <Page {...loggedOutPageProps}>

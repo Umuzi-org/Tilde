@@ -52,6 +52,8 @@ export const useAuthCookies = () => {
   ]);
 
   function setToken({ token }) {
+    if (tokenCookie[TOKEN_COOKIE] === token) return;
+
     setTokenCookie(TOKEN_COOKIE, token, {
       path: "/",
       // maxAge: 3600, // Expires after 1hr
@@ -60,6 +62,7 @@ export const useAuthCookies = () => {
   }
 
   function setUserId({ userId }) {
+    if (userCookie[USER_ID_COOKIE] === userId) return;
     setUserCookie(USER_ID_COOKIE, userId, {
       path: "/",
       // maxAge: 3600, // Expires after 1hr
