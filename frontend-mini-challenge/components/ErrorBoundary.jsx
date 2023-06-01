@@ -4,6 +4,7 @@ import { Presentation } from "./LoggedOutPage";
 import logger from "../logger";
 
 import { Title, Text, Button, Stack } from "@mantine/core";
+import Link from "next/link";
 
 // import { ErrorIcon } from "../brand";
 
@@ -21,15 +22,19 @@ function ErrorBoundaryFallback() {
         </Text>
 
         <Text>
-          Wait a little while and then try to access this page again :)
+          <Link href="/">Go to Home page</Link>
         </Text>
 
-        <Button
+        {/* <Text>
+          Wait a little while and then try to refresh this page
+        </Text> */}
+
+        {/* <Button
           type="button"
           onClick={() => this.setState({ hasError: false })}
         >
           Try again?
-        </Button>
+        </Button> */}
       </Stack>
     </Presentation>
   );
