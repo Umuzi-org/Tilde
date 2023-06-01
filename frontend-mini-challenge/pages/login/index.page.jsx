@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { ErrorAlert } from "../../components/Alerts";
+// import logger from "../../logger";
 
 export default function Login({ loggedOutPageProps }) {
   const router = useRouter();
@@ -54,6 +55,7 @@ export default function Login({ loggedOutPageProps }) {
     call({ email, password });
   }
 
+  // throw new Error("test");
   return (
     <Page {...loggedOutPageProps}>
       <Box sx={{ maxWidth: 300 }} mx="auto">

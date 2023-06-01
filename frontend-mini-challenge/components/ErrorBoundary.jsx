@@ -1,7 +1,7 @@
 import React from "react";
 import { Presentation } from "./LoggedOutPage";
 
-import logger from "../logger";
+import { forceLog } from "../logger";
 
 import { Title, Text, Stack } from "@mantine/core";
 import Link from "next/link";
@@ -30,27 +30,21 @@ class ErrorBoundary extends React.Component {
     // Define a state variable to track whether is an error or not
     this.state = { hasError: false };
   }
+
   static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.log({ error, errorInfo }, "componentDidCatch console");
-    logger.info({ error, errorInfo }, "componentDidCatch info");
-    logger.error({ error, errorInfo }, "componentDidCatch error");
-    logger.error({ error, errorInfo }, "Uncaught client-side error");
+    this.setState({ ...this.state, error, errorInfo });
+    forceLog({ level: 60, message: errorInfo.componentStack });
   }
 
   render() {
     // Check if the error is thrown
     if (this.state.hasError) {
-      // You can render any custom fallback UI
       return <ErrorBoundaryFallback />;
     }
-
-    // Return children components in case of no error
-
     return this.props.children;
   }
 }

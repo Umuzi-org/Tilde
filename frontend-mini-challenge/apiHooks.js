@@ -75,7 +75,7 @@ export function useLogout() {
     setData(data);
     setLoading(false);
 
-    console.log(data);
+    // console.log(data);
   }
   return {
     call,

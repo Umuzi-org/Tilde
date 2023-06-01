@@ -2,96 +2,84 @@ import pino from "pino";
 
 import { LOG_LEVEL, GIT_COMMIT_SHA, LOKI_HOST_URL } from "./config";
 
-// import { GetServerSidePropsContext } from "next";
-
-// const transport = pino.transport({
-//   targets: [
-//     // {
-//     //   target: 'pino/file',
-//     //   options: { destination: `${__dirname}/app.log` },
-//     // },
-//     {
-//
-//     },
-// {
-//     target: "pino-pretty",
-// }
-//   ],
-// });
-
-// module.exports = pino(
-//   {
-//     level: process.env.PINO_LOG_LEVEL || "info",
-//     timestamp: pino.stdTimeFunctions.isoTime,
-//   },
-//   transport
-// );
-
-// pino.transport
-
 const LokiTransport = {
   target: "pino-loki",
   options: {
     batching: true,
     interval: 5,
     silenceErrors: false,
-
-    host: `${LOKI_HOST_URL}:3100`,
-    // basicAuth: {
-    //   username: "username",
-    //   password: "password",
-    // },
+    host: "http://localhost:3002/api",
+    labels: {
+      git_commit: GIT_COMMIT_SHA,
+      app: "frontend-mini-challenge",
+    },
+    propsToLabels: ["level", "stack_trace"],
   },
 };
 
-// const LokiTransport = {
-//   target: "pino-loki-transport",
-//   options: {
-//     lokiUrl: LOKI_HOST_URL,
-//   },
-// };
-
-const customLevels = {
-  http: 35, // Any number between info (30) and warn (40) will work the same
+// https://datatracker.ietf.org/doc/html/rfc5424#page-10
+export const LOG_LEVELS = {
+  emerg: 80,
+  alert: 70,
+  crit: 60,
+  error: 50,
+  warn: 40,
+  notice: 30,
+  http: 35, //TODO: remove
+  info: 20,
+  debug: 10,
 };
 
 const logger = pino({
-  level: LOG_LEVEL,
-  customLevels,
+  customLevels: LOG_LEVELS,
+  useOnlyCustomLevels: true,
   formatters: {
-    //   level: (label) => {
-    //     return { level: label.toUpperCase() };
-    //   },
+    // level: (label) => {
+    //   return { level: label.toUpperCase() };
+    // },
     bindings: (bindings) => {
       return {
-        pid: bindings.pid,
         host: bindings.hostname,
-        // node_version: process.version,
-        git_commit: GIT_COMMIT_SHA,
-        app: "frontend-mini-challenge",
+        timestamp: pino.stdTimeFunctions.isoTime,
       };
     },
   },
-  // timestamp: () => `,"time":"${new Date(Date.now()).toISOString()}"`,
   transport: {
-    targets: [LokiTransport],
+    targets: [
+      LokiTransport,
+      {
+        target: "pino/file",
+      },
+    ],
   },
 });
 
 export default logger;
 
-// process.on('uncaughtException', (err) => {
-//     // log the exception
-//     logger.fatal(err, 'uncaught exception detected');
-//     // shutdown the server gracefully
-//     server.close(() => {
-//       process.exit(1); // then exit
-//     });
+export async function forceLog({ level, message }) {
+  const resp = await fetch(`http://localhost:3002/api/loki/api/v1/push`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      streams: [
+        {
+          stream: { level: level, here: "is", some: "data" },
+          values: [[`${1000000 * new Date().getTime()}`, message]],
+        },
+      ],
+    }),
+  });
 
-//     // If a graceful shutdown is not achieved after 1 second,
-//     // shut down the process completely
-//     setTimeout(() => {
-//       process.abort(); // exit immediately and generate a core dump file
-//     }, 1000).unref()
-//     process.exit(1);
-//   });
+  // console.log(await resp.text());
+}
+
+// export const LOG_LEVELS = {
+//   ...customLevels,
+//   debug: 20,
+//   info: 30,
+//   warning: 40,
+//   error: 50,
+//   critical: 60,
+// };

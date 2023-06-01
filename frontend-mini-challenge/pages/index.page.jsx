@@ -36,7 +36,7 @@ export default function Home() {
     const token = getAuthToken();
 
     if (!token) {
-      logger.info("no token. redirecting");
+      logger.debug("no token. redirecting");
       routerPushOnce("/login");
       return;
     }
