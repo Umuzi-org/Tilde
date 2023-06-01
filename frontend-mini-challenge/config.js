@@ -3,7 +3,10 @@ export const API_BASE_URL =
 
 export const REST_AUTH_BASE_URL = `${API_BASE_URL}/api/dj-rest-auth`;
 
-export const LOG_LEVEL = process.env.NEXT_PUBLIC_LOG_LEVEL || "info";
+export const LOG_LEVEL = process.env.NEXT_PUBLIC_LOG_LEVEL || "debug";
 
 export const GIT_COMMIT_SHA =
   process.env.NEXT_PUBLIC_GIT_COMMIT_SHA || "unknown";
+
+export const LOKI_HOST_URL =
+  process.env.NEXT_LOKI_HOST_URL || "http://localhost";

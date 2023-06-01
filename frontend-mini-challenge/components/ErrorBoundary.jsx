@@ -3,10 +3,8 @@ import { Presentation } from "./LoggedOutPage";
 
 import logger from "../logger";
 
-import { Title, Text, Button, Stack } from "@mantine/core";
+import { Title, Text, Stack } from "@mantine/core";
 import Link from "next/link";
-
-// import { ErrorIcon } from "../brand";
 
 function ErrorBoundaryFallback() {
   return (
@@ -38,6 +36,9 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    console.log({ error, errorInfo }, "componentDidCatch console");
+    logger.info({ error, errorInfo }, "componentDidCatch info");
+    logger.error({ error, errorInfo }, "componentDidCatch error");
     logger.error({ error, errorInfo }, "Uncaught client-side error");
   }
 

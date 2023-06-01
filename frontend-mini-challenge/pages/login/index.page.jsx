@@ -1,6 +1,7 @@
 import Page, {
   getServerSidePropsForLoggedOutPage,
 } from "../../components/LoggedOutPage";
+
 import {
   Title,
   TextInput,
@@ -52,8 +53,6 @@ export default function Login({ loggedOutPageProps }) {
   function handleSubmit({ email, password }) {
     call({ email, password });
   }
-
-  // throw new Error("TODO: implement this page");
 
   return (
     <Page {...loggedOutPageProps}>
