@@ -27,6 +27,20 @@ import { LOG_LEVEL, GIT_COMMIT_SHA } from "./config";
 
 // pino.transport
 
+const LokiTransport = {
+  target: "pino-loki",
+  options: {
+    batching: true,
+    interval: 5,
+
+    host: "http://localhost:3100",
+    // basicAuth: {
+    //   username: "username",
+    //   password: "password",
+    // },
+  },
+};
+
 const customLevels = {
   http: 35, // Any number between info (30) and warn (40) will work the same
 };
@@ -44,6 +58,7 @@ const logger = pino(
           host: bindings.hostname,
           // node_version: process.version,
           git_commit: GIT_COMMIT_SHA,
+          app: "frontend-mini-challenge",
         };
       },
     },
@@ -52,7 +67,7 @@ const logger = pino(
       targets: [
         // { target: "pino-pretty" },
         { target: "pino/file" }, // logs to the standard output by default
-
+        LokiTransport,
         //LOKI target:
         // {target: 'pino-loki',}
 
