@@ -5,6 +5,7 @@
     "devs",
     "hella",
     "Mantine",
+    "pino",
     "skillset"
   ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",

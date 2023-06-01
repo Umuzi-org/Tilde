@@ -2,9 +2,9 @@ import { Title, Text, Group } from "@mantine/core";
 import Page from "../../components/LoggedOutPage";
 import Link from "next/link";
 
-export default function PasswordResetComplete() {
+export default function PasswordResetComplete({ loggedOutPageProps }) {
   return (
-    <Page>
+    <Page {...loggedOutPageProps}>
       <Title>Password reset successful</Title>
       <Text mt="md">You will now be able to login with your new password</Text>
 
@@ -15,4 +15,14 @@ export default function PasswordResetComplete() {
       </Group>
     </Page>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const loggedOutPageProps = await getServerSidePropsForLoggedOutPage({ req });
+
+  return {
+    props: {
+      loggedOutPageProps,
+    },
+  };
 }

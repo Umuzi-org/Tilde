@@ -1,4 +1,6 @@
-import Page from "../../../components/LoggedOutPage";
+import Page, {
+  getServerSidePropsForLoggedOutPage,
+} from "../../../components/LoggedOutPage";
 import {
   Title,
   Button,
@@ -13,7 +15,7 @@ import { useEffect } from "react";
 import { useConfirmPasswordReset } from "../../../apiHooks";
 import { ErrorAlert } from "../../../components/Alerts";
 
-export default function ResetPassword() {
+export default function ResetPassword({ loggedOutPageProps }) {
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -42,7 +44,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <Page>
+    <Page {...loggedOutPageProps}>
       <Box sx={{ maxWidth: 300 }} mx="auto">
         <Title>Reset Password</Title>
         {status === 400 && (
@@ -84,4 +86,14 @@ export default function ResetPassword() {
       </Box>
     </Page>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const loggedOutPageProps = await getServerSidePropsForLoggedOutPage({ req });
+
+  return {
+    props: {
+      loggedOutPageProps,
+    },
+  };
 }

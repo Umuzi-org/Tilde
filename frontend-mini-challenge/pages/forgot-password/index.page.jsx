@@ -1,4 +1,6 @@
-import Page from "../../components/LoggedOutPage";
+import Page, {
+  getServerSidePropsForLoggedOutPage,
+} from "../../components/LoggedOutPage";
 import {
   Title,
   TextInput,
@@ -13,7 +15,7 @@ import Link from "next/link";
 import { usePasswordReset } from "../../apiHooks";
 import { InfoAlert } from "../../components/Alerts";
 
-export default function ForgotPassword() {
+export default function ForgotPassword({ loggedOutPageProps }) {
   const { call, requestData, isLoading } = usePasswordReset();
 
   const form = useForm({
@@ -33,7 +35,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <Page>
+    <Page {...loggedOutPageProps}>
       <Box sx={{ maxWidth: 300 }} mx="auto">
         <Title>Forgot Password</Title>
 
@@ -69,4 +71,14 @@ export default function ForgotPassword() {
       </Box>
     </Page>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const loggedOutPageProps = await getServerSidePropsForLoggedOutPage({ req });
+
+  return {
+    props: {
+      loggedOutPageProps,
+    },
+  };
 }

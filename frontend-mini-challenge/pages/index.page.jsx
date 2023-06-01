@@ -8,6 +8,7 @@ import {
 import { getAuthToken } from "../lib/authTokenStorage";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import logger from "../logger";
 
 const curriculum = 90; // TODO. When we have more challenges we wont be able to hard-code this value
 
@@ -22,16 +23,20 @@ export default function Home() {
 
   const [calledPush, setCalledPush] = useState(false);
 
+  const url = router.asPath;
+
   useEffect(() => {
     function routerPushOnce(path) {
       if (calledPush) return;
+      if (url === path) return;
       setCalledPush(true);
       router.push(path);
     }
+
     const token = getAuthToken();
 
     if (!token) {
-      console.log("no token. redirecting");
+      logger.info("no token. redirecting");
       routerPushOnce("/login");
       return;
     }
@@ -67,6 +72,7 @@ export default function Home() {
     calledPush,
     setCalledPush,
     router,
+    url,
   ]);
 
   useEffect(() => {

@@ -6,18 +6,21 @@ import {
   getAuthToken,
   clearAuthToken,
   setAuthToken,
+  useAuthCookies,
+  TOKEN_COOKIE,
+  USER_ID_COOKIE,
 } from "./lib/authTokenStorage";
 import { useState } from "react";
-import { useCookies } from "react-cookie";
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-export const TOKEN_COOKIE = "token";
+// export const TOKEN_COOKIE = "token";
 
 export function useLogin() {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
-  const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+  // const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+  const { setToken } = useAuthCookies();
 
   const { mutate } = useWhoAmI();
 
@@ -40,11 +43,13 @@ export function useLogin() {
     setLoading(false);
     setAuthToken({ value: data.responseData.key, keep: true });
 
-    setCookie(TOKEN_COOKIE, data.responseData.key, {
-      path: "/",
-      // maxAge: 3600, // Expires after 1hr
-      sameSite: true,
-    });
+    // setCookie(TOKEN_COOKIE, data.responseData.key, {
+    //   path: "/",
+    //   // maxAge: 3600, // Expires after 1hr
+    //   sameSite: true,
+    // });
+
+    setToken({ token: data.responseData.key });
 
     mutate();
   }
@@ -59,7 +64,8 @@ export function useLogin() {
 export function useLogout() {
   const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(false);
-  const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
+  // const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
+  const { clearCookies } = useAuthCookies();
 
   const url = urlJoin({
     base: REST_AUTH_BASE_URL,
@@ -74,12 +80,15 @@ export function useLogout() {
       method: POST,
       token,
     });
+    clearAuthToken();
+    // removeCookie(TOKEN_COOKIE, {
+    //   path: "/",
+    // });
+    clearCookies();
     setData(data);
     setLoading(false);
-    clearAuthToken();
-    removeCookie(TOKEN_COOKIE, {
-      path: "/",
-    });
+
+    console.log(data);
   }
   return {
     call,
@@ -179,7 +188,8 @@ export async function serverSideWhoAmI({ req }) {
 }
 
 export function useWhoAmI() {
-  const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
+  const { setToken } = useAuthCookies();
+  // const [cookie, setCookie] = useCookies([TOKEN_COOKIE]);
 
   const url = `${API_BASE_URL}/api/zmc/who_am_i/`;
 
@@ -188,11 +198,12 @@ export function useWhoAmI() {
   // sometimes cookie and token dont match. Weird edge case for multiple users.
   // Probably should be fixed in the future
 
-  setCookie(TOKEN_COOKIE, token, {
-    path: "/",
-    // maxAge: 3600, // Expires after 1hr
-    sameSite: true,
-  });
+  // setCookie(TOKEN_COOKIE, token, {
+  //   path: "/",
+  //   // maxAge: 3600, // Expires after 1hr
+  //   sameSite: true,
+  // });
+  setToken({ token });
 
   const { data, error, isLoading, mutate } = useSWR(
     token

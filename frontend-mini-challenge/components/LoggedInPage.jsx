@@ -13,8 +13,11 @@ import { useLogout, serverSideWhoAmI, TOKEN_COOKIE } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon } from "../brand";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { clearAuthToken } from "../lib/authTokenStorage";
-import { useCookies } from "react-cookie";
+import { clearAuthToken, useAuthCookies } from "../lib/authTokenStorage";
+// import { useCookies } from "react-cookie";
+import logger from "../logger";
+
+const LOGOUT_REDIRECT_PAGE = "/login";
 
 export default function Page({
   children,
@@ -27,24 +30,26 @@ export default function Page({
       "It looks like you didn't make use of the getServerSideProps function defined below"
     );
   }
-  const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
-  const { call: callLogout } = useLogout();
+  // const [cookie, setCookie, removeCookie] = useCookies([TOKEN_COOKIE]);
+  const { clearCookies } = useAuthCookies();
+  const { call: callLogout, status } = useLogout();
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoggedIn) {
       clearAuthToken();
-      removeCookie(TOKEN_COOKIE, {
-        path: "/",
-      });
+      clearCookies();
 
-      router.push("/");
+      router.push(LOGOUT_REDIRECT_PAGE);
     }
+  });
+
+  useEffect(() => {
+    if (status) router.push(LOGOUT_REDIRECT_PAGE);
   });
 
   function handleLogout() {
     callLogout();
-    router.push("/");
   }
 
   const props = {
@@ -133,6 +138,11 @@ Then when you make use of this page component:
 */
 export async function getServerSidePropsForLoggedInPage({ query, req }) {
   const whoAmIResponse = await serverSideWhoAmI({ query, req });
+
+  const { userId } = whoAmIResponse.responseData;
+  const { url } = req;
+
+  logger.http({ user_id: userId, url }, `Page access`);
 
   return {
     serverSidePropsCorrectlyCalled: true,

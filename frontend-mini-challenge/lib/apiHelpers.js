@@ -1,3 +1,5 @@
+import logger from "../logger";
+
 export const GET = "GET";
 export const POST = "POST";
 
@@ -58,6 +60,8 @@ const camelStringToSnake = function (s) {
 };
 
 export async function fetchAndClean({ url, method, data, token }) {
+  logger.http({ url, method }, "API call started"); // TODO: add response time
+
   let headers = {
     "Content-Type": "application/json",
   };
@@ -78,12 +82,15 @@ export async function fetchAndClean({ url, method, data, token }) {
 
   const response = await fetch(url, params);
 
-  const responseData = await response.json();
+  const { status, statusText } = response;
 
+  logger.http({ url, method, status, statusText }, "API call complete"); // TODO: add response time
+
+  const responseData = await response.json();
   return Promise.resolve({
     response,
-    status: response.status,
-    statusText: response.statusText,
+    status,
+    statusText,
     responseData: fromSnakeToCamel(responseData),
     requestData: data,
   });

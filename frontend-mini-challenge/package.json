@@ -27,6 +27,7 @@
     "eslint-config-next": "^13.2.3",
     "gray-matter": "^4.0.3",
     "next": "^13.2.3",
+    "pino": "^8.14.1",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
@@ -49,6 +50,7 @@
     "@storybook/test-runner": "^0.9.4",
     "@storybook/testing-library": "^0.0.13",
     "babel-loader": "^8.3.0",
-    "eslint-plugin-storybook": "^0.6.11"
+    "eslint-plugin-storybook": "^0.6.11",
+    "pino-pretty": "^10.0.0"
   }
 }

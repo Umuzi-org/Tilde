@@ -1,4 +1,6 @@
-import Page from "../../components/LoggedOutPage";
+import Page, {
+  getServerSidePropsForLoggedOutPage,
+} from "../../components/LoggedOutPage";
 import {
   Title,
   TextInput,
@@ -18,7 +20,7 @@ import { useEffect, useState } from "react";
 
 import { ErrorAlert } from "../../components/Alerts";
 
-export default function Login() {
+export default function Login({ loggedOutPageProps }) {
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -51,7 +53,7 @@ export default function Login() {
   }
 
   return (
-    <Page>
+    <Page {...loggedOutPageProps}>
       <Box sx={{ maxWidth: 300 }} mx="auto">
         <Title>Login</Title>
 
@@ -93,4 +95,14 @@ export default function Login() {
       </Box>
     </Page>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const loggedOutPageProps = await getServerSidePropsForLoggedOutPage({ req });
+
+  return {
+    props: {
+      loggedOutPageProps,
+    },
+  };
 }
