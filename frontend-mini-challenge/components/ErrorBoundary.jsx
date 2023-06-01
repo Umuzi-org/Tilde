@@ -12,10 +12,7 @@ function ErrorBoundaryFallback() {
   return (
     <Presentation>
       <Stack spacing="md">
-        <Title order={1}>
-          {/* <ErrorIcon /> */}
-          Oops, there was an error!
-        </Title>
+        <Title order={1}>Oops, there was an error!</Title>
         <Text>
           Something went wrong! We are aware ofd the problem and are working on
           sorting it all out.
@@ -24,17 +21,6 @@ function ErrorBoundaryFallback() {
         <Text>
           <Link href="/">Go to Home page</Link>
         </Text>
-
-        {/* <Text>
-          Wait a little while and then try to refresh this page
-        </Text> */}
-
-        {/* <Button
-          type="button"
-          onClick={() => this.setState({ hasError: false })}
-        >
-          Try again?
-        </Button> */}
       </Stack>
     </Presentation>
   );
