@@ -573,7 +573,6 @@ def _get_ordered_curriculum_items_from_page(file_stream):
     seen_content_item_ids = []
 
     for line in file_stream:
-        #       - {{< contentlink path="agile/agile-scrum" >}}
 
         matches = re.findall("{{<\s*contentlink (.*)>}}", line)
         for match in matches:
