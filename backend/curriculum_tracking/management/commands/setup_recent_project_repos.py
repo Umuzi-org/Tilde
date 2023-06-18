@@ -19,8 +19,10 @@ class Command(BaseCommand):
 
         start = timezone.now() - timezone.timedelta(days=days_since)
 
-        projects = RecruitProject.objects.filter(start_time__gte=start).filter(
-            content_item__project_submission_type=ContentItem.REPOSITORY
+        projects = (
+            RecruitProject.objects.filter(start_time__gte=start)
+            .filter(content_item__project_submission_type=ContentItem.REPOSITORY)
+            .order_by("-start_time")
         )
         total = projects.count()
         for i, project in enumerate(projects):
