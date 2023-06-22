@@ -7,12 +7,20 @@ import cors from "cors";
 import { STATUS_ERROR, STATUS_OK, STATUS_MISSING_CONFIG } from "./consts.mjs";
 import { PORT } from "./env.mjs";
 import { getProjectConfig } from "./utils.mjs";
+// import timeout from "connect-timeout"
 
 import * as markers from "./markers/index.mjs";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// function haltOnTimedout(){
+//   if (!req.timedout) next();
+// }
+
+// app.use(timeout(`180s`)); // 3 minutes
+// app.use(haltOnTimedout);
 
 app.get("/health-check", (req, res) => res.json({ status: STATUS_OK }));
 
