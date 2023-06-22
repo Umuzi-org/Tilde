@@ -3,6 +3,17 @@ import Head from "next/head";
 
 import { MantineProvider } from "@mantine/core";
 
+// you can import these packages anywhere
+const LogRocket = require("logrocket");
+const setupLogRocketReact = require("logrocket-react");
+
+// only initialize when in the browser
+if (typeof window !== "undefined") {
+  LogRocket.init("b4pgma/waypoints");
+  // plugins should also only be initialized when in the browser
+  setupLogRocketReact(LogRocket);
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
