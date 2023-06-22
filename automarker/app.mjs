@@ -4,15 +4,28 @@
 
 import express from "express";
 import cors from "cors";
-import { STATUS_ERROR, STATUS_OK, STATUS_MISSING_CONFIG } from "./consts.mjs";
+import {
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_MISSING_CONFIG,
+  STATUS_FAIL,
+} from "./consts.mjs";
 import { PORT } from "./env.mjs";
 import { getProjectConfig } from "./utils.mjs";
+// import timeout from "connect-timeout"
 
 import * as markers from "./markers/index.mjs";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// function haltOnTimedout(){
+//   if (!req.timedout) next();
+// }
+
+// app.use(timeout(`180s`)); // 3 minutes
+// app.use(haltOnTimedout);
 
 app.get("/health-check", (req, res) => res.json({ status: STATUS_OK }));
 
@@ -94,13 +107,63 @@ app.post("/mark-project", async function (req, res) {
 
   const marker = new Marker();
 
-  res.json(
-    await marker.mark({
-      test: false,
-      perfectProjectPath: config.perfectProjectPath,
-      repoUrl,
-    })
-  );
+  const timeout = (ms) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error("Operation timed out after " + ms + " ms"));
+      }, ms);
+    });
+  };
+
+  const markAndRespond = async () => {
+    try {
+      const result = await Promise.race([
+        marker.mark({
+          test: false,
+          perfectProjectPath: config.perfectProjectPath,
+          repoUrl,
+        }),
+        timeout(5 * 60 * 1000),
+      ]); // 5 minutes in milliseconds
+      res.json(result);
+    } catch (error) {
+      // console.error(error);
+      res.json({
+        status: STATUS_FAIL,
+        result: {
+          message:
+            "Your code takes a really long time to run. Are you sure it's not in an infinite loop?",
+          errors: [],
+        },
+        actionName: "Marking your project",
+      });
+
+      //       {'actionName': 'running our tests',
+      //  'result': {'errors': ['SPEC FAILED: add: should return the sum of the '
+      //                        'integers when different delimeters are included with '
+      //                        'multiple comma separated integers as the argument '
+      //                        'string. E.g. `add("//4\\n142")` should return `3` and '
+      //                        '`add("//;\\n1")` should return `1`',
+      //                        'SPEC FAILED: add: should throw an error when the '
+      //                        'integers passed in contain negative integers as the '
+      //                        'argument string. E.g. `add("-1,-2,3,4")` should throw '
+      //                        'an error with the message `negatives not allowed '
+      //                        '-1,-2`'],
+      //             'message': 'Jasmine test errors',
+      //             'status': 'FAIL'},
+      //  'status': 'FAIL'}
+    }
+  };
+
+  markAndRespond();
+
+  // res.json(
+  //   await marker.mark({
+  //     test: false,
+  //     perfectProjectPath: config.perfectProjectPath,
+  //     repoUrl,
+  //   })
+  // );
 });
 
 // app.post("/mark-project", async function (req, res) {

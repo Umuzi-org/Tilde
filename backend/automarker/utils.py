@@ -25,11 +25,23 @@ def get_automark_result(repo_url, link_submission, content_item_id, flavours):
         "contentItemId": content_item_id,
         "flavours": flavours,
     }
+    # try:
     response = requests.post(
-        url,
-        headers=headers,
-        json=json,
+        url, headers=headers, json=json, timeout=5 * 60  # 5 minutes
     )
+    # except requests.exceptions.Timeout:
+    #     return {TODO: TODO}
+    #  {'actionName': 'running our tests',
+    #  'result': {'errors': ['SPEC FAILED: adoptPet: should throw an error with the '
+    #                        'correct error message when attempting to adopt the '
+    #                        'same pet twice. E.g. `const dog = new Dog(); const '
+    #                        'home = new Home();` should throw an error with the '
+    #                        'message `"Cannot adopt the same pet twice!"` when '
+    #                        '`home.adoptPet(dog);` method is called twice.'],
+    #             'message': 'Jasmine test errors',
+    #             'status': 'FAIL'},
+    #  'status': 'FAIL'}
+
     return response.json()
 
 

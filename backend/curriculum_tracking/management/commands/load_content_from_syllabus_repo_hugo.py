@@ -156,7 +156,6 @@ class Helper:
                 )
 
             except models.ContentItem.DoesNotExist:
-
                 continue_from_repo = cls.save_content_item(
                     file_path=cls.repo_base_dir
                     / "content"
@@ -250,7 +249,6 @@ class Helper:
 def _add_prerequisite(
     content_item: models.ContentItem, prerequisite: str, hard_requirement: bool
 ) -> models.ContentItemOrder:
-
     url, raw_url = Helper.get_full_urls_from_partial(prerequisite)
 
     print(content_item)
@@ -305,7 +303,6 @@ def _manage_prerequisites(meta: Dict, content_item):
 
 
 def _update_tags_for_content_item(meta, content_item):
-
     final_tag_names = [s.lower() for s in meta.get(TAGS, [])]
     if meta.get("ready", False) or meta.get(TODO):
         final_tag_names.append(TODO)
@@ -314,7 +311,6 @@ def _update_tags_for_content_item(meta, content_item):
 
 
 def _set_tags(final_tag_names, taggable_instance):
-
     final_tags = [
         t[0]
         for t in [
@@ -394,7 +390,6 @@ def set_flavours(content_item, raw_flavours, available_content_flavours):
 
 
 def recurse_get_all_content_index_file_paths(root_path=None):
-
     root_path = root_path or Helper.repo_base_dir
     assert root_path.is_dir(), root_path
     for child in root_path.iterdir():
@@ -448,7 +443,6 @@ def download_latest_tech_dept_repo():
 
 
 def add_all_prereq():
-
     for file_path in recurse_get_all_content_index_file_paths():
         # for content_item in models.ContentItem.objects.all():
         print(f"processing file at:\n\t{file_path}")
@@ -494,7 +488,6 @@ def remove_missing_content_items_from_db():
         if content_item.id not in Helper.content_items_seen_by_id and user_prompt(
             f"Delete {content_item}"
         ):
-
             # print(f"checking {file_path} exists")
             # if not os.path.exists(file_path):
             print("deleting!")
@@ -507,7 +500,6 @@ def remove_missing_content_items_from_db():
 
 
 def load_all_content_items_with_unknown_ids():
-
     for file_path in recurse_get_all_content_index_file_paths():
         assert file_path.name == "_index.md", f"Bad content name: {file_path}"
 
@@ -581,7 +573,8 @@ def _get_ordered_curriculum_items_from_page(file_stream):
     seen_content_item_ids = []
 
     for line in file_stream:
-        matches = re.findall("{{%\s*contentlink (.*)%}}", line)
+
+        matches = re.findall("{{<\s*contentlink (.*)>}}", line)
         for match in matches:
             assert (
                 "contentlink" not in match
