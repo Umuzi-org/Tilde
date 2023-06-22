@@ -34,7 +34,6 @@ class Command(BaseCommand):
         content_and_flavours = list(get_ordered_content_items(curriculum))
 
         for d in config:
-
             if d["mode"] != mode:
                 continue
 
@@ -50,6 +49,10 @@ class Command(BaseCommand):
 
             if not match:
                 continue
+
+            print("===================================")
+            print("===================================")
+            print(d)
 
             # now we have to get the projects that match the config
             projects = (
@@ -76,5 +79,5 @@ class Command(BaseCommand):
                     continue
 
                 # we have something to mark!!
-
+                print(project)
                 automark_project(project, mode)
