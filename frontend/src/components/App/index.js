@@ -10,6 +10,7 @@ import { getAuthToken } from "../../utils/authTokenStorage";
 import { apiReduxApps } from "../../apiAccess/apiApps";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+const LogRocket = require("logrocket");
 
 const theme = createMuiTheme({});
 
@@ -30,6 +31,13 @@ function AppUnconnected({ authUser, whoAmIStart }) {
       whoAmIStart({ authUser });
     }
   }, [authUser, whoAmIStart]);
+
+  React.useEffect(() => {
+    LogRocket.identify(authUser.userId, {
+      name: `${authUser.firstName} ${authUser.lastName}`,
+      email: authUser.email,
+    });
+  }, [authUser]);
 
   const location = useLocation();
 

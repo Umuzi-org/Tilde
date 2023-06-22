@@ -15,6 +15,8 @@
     "date-fns": "^2.14.0",
     "gray-matter": "^4.0.2",
     "javascript-time-ago": "^2.3.7",
+    "logrocket": "^4.0.3",
+    "logrocket-react": "^4.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.3.1",
     "react-markdown": "^4.3.1",
