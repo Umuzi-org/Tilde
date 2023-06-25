@@ -15,8 +15,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
-import { IncomingMessage } from 'http';
-
+import { ParsedUrlQuery } from "querystring";
+import { IncomingMessage } from "http";
 
 interface LoggedInUserData {
   firstName: string;
@@ -35,7 +35,6 @@ interface PresentationProps {
   loggedInUserData: LoggedInUserData;
   children: React.ReactNode;
 }
-
 
 export default function Page({
   children,
@@ -76,7 +75,11 @@ export default function Page({
   return <Presentation {...props}>{children}</Presentation>;
 }
 
-export function Presentation({ handleLogout, loggedInUserData, children }: PresentationProps) {
+export function Presentation({
+  handleLogout,
+  loggedInUserData,
+  children,
+}: PresentationProps) {
   const router = useRouter();
   return (
     <AppShell
@@ -153,7 +156,13 @@ Then when you make use of this page component:
 
 */
 
-export async function getServerSidePropsForLoggedInPage({ query, req }: { query: { [key: string]: string }, req: IncomingMessage }) {
+export async function getServerSidePropsForLoggedInPage({
+  query,
+  req,
+}: {
+  query: ParsedUrlQuery;
+  req: IncomingMessage;
+}) {
   const whoAmIResponse = await serverSideWhoAmI({ req });
 
   return {

@@ -5,7 +5,7 @@ const ICON_SIZE = "2rem";
 
 interface Props {
   title: string;
-  children: string;
+  children: string | React.ReactNode;
   Icon?: React.ComponentType<{ size: string }>;
 }
 
