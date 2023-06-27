@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
+const LogRocket = require("logrocket");
 
 export default function Page({
   children,
@@ -41,6 +42,13 @@ export default function Page({
       router.push("/");
     }
   });
+
+  useEffect(() => {
+    LogRocket.identify(loggedInUserData.userId, {
+      name: loggedInUserData.firstName,
+      email: loggedInUserData.email,
+    });
+  }, [loggedInUserData]);
 
   function handleLogout() {
     callLogout();
