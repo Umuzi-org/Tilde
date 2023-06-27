@@ -6,6 +6,7 @@ import {
   useMantineTheme,
   Tooltip,
   Group,
+  LoadingOverlay,
 } from "@mantine/core";
 
 import { statusLooks } from "../../../../brand";
@@ -18,9 +19,11 @@ import {
 } from "../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Step({ index, title, blurb, status }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const theme = useMantineTheme();
   const { Icon, color } = statusLooks[status];
@@ -52,17 +55,21 @@ export default function Step({ index, title, blurb, status }) {
   };
 
   const inner = (
-    <Paper withBorder p="md" sx={styles[status]}>
-      <Stack align="flex-start">
-        <Group>
-          <Icon size={"3rem"} color={color} />
-          <Title order={2}>
-            Step {index + 1} - {title}
-          </Title>
-        </Group>
-        <Text>{blurb}</Text>
-      </Stack>
-    </Paper>
+    <div style={{ position: "relative" }}>
+      <LoadingOverlay visible={loading} overlayBlur={1} />
+
+      <Paper withBorder p="md" sx={styles[status]}>
+        <Stack align="flex-start">
+          <Group>
+            <Icon size={"3rem"} color={color} />
+            <Title order={2}>
+              Step {index + 1} - {title}
+            </Title>
+          </Group>
+          <Text>{blurb}</Text>
+        </Stack>
+      </Paper>
+    </div>
   );
 
   if (status === STATUS_BLOCKED) {
@@ -73,5 +80,12 @@ export default function Step({ index, title, blurb, status }) {
     );
   }
 
-  return <Link href={`${router.asPath}/steps/${index}`}>{inner}</Link>;
+  return (
+    <Link
+      onClick={() => setLoading(true)}
+      href={`${router.asPath}/steps/${index}`}
+    >
+      {inner}
+    </Link>
+  );
 }

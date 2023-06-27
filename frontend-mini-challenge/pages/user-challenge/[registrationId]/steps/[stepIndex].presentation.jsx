@@ -156,6 +156,9 @@ export default function Presentation({
   handleNext,
   handlePrevious,
   handleSubmitLinkForm,
+
+  previousButtonLoading,
+  nextButtonLoading,
 }) {
   const isProject = stepDetails ? stepDetails.contentType === "P" : false;
   const isTopic = stepDetails ? stepDetails.contentType === "T" : false;
@@ -169,6 +172,7 @@ export default function Presentation({
       disabled={nextIsBlockedByProject || stepDetails.status === STATUS_BLOCKED}
       onClick={handleNext}
       rightIcon={<ForwardArrowIcon />}
+      loading={nextButtonLoading}
     >
       {stepIndex + 1 === registration.steps.length ? "Finish" : "Next"}
     </Button>
@@ -245,7 +249,11 @@ export default function Presentation({
         <Divider mt="md" />
 
         <Group position="apart">
-          <Button onClick={handlePrevious} leftIcon={<BackArrowIcon />}>
+          <Button
+            onClick={handlePrevious}
+            leftIcon={<BackArrowIcon />}
+            loading={previousButtonLoading}
+          >
             Back
           </Button>
 
