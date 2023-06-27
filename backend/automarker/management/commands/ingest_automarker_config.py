@@ -2,21 +2,25 @@ from django.core.management.base import BaseCommand
 from automarker.management.command_utils import get_config_from_file
 from curriculum_tracking.models import ContentItem
 from automarker.models import ContentItemAutoMarkerConfig
+from pathlib import Path
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument("config_repo_path", type=str)
+
     def handle(self, *args, **options):
-        ingest_automarker_config(options.get("config_file_path"))
+        breakpoint()
+        ingest_automarker_config(Path(options.get("config_repo_path")))
 
 
 def ingest_automarker_config(config_file_path):
-    config = get_config_from_file(config_file_path)
+    config = get_config_from_file(config_file_path / "config.yaml")
 
     seen_instances_in_file = []
     seen_config_ids = []
 
     for item in config:
-
         content_item = ContentItem.objects.get(pk=item["contentItemId"])
         flavour_names = item["flavours"]
         mode = item["mode"]
