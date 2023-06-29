@@ -130,8 +130,14 @@ class TestRunner:
                 f"Your code produced an error when we tried to run it. This is very bad because it means you didn't try to run your code before you handed it in.\n\nHere is the error message\n\n{command_output.stderr}",
             )
 
-    def assert_returned(self, command_output, expected):
-        if command_output[TAG_RETURNED] != expected:
+    def assert_returned(self, command_output, expected, sort_key=None):
+        returned = command_output[TAG_RETURNED]
+
+        if sort_key:
+            returned = sorted(returned, key=sort_key)
+            expected = sorted(expected, key=sort_key)
+
+        if returned != expected:
             self.register_test_error(
                 "call_description TODO",
                 f"Your code returned the wrong value. It returned {command_output[TAG_RETURNED]} but we expected {expected}",
