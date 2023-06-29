@@ -13,10 +13,10 @@ from utils import TAG_SETUP, TAG_RUNNING, TAG_RETURNED, TAG_IMPORT_LEARNER_CODE
 class Clone:
     name = "clone"
 
-    def run(self, project_uri, clone_dir_path, self_test, config):
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if clone_dir_path.exists():
-            # nothing to do
-            return
+            os.system(f"rm -rf {clone_dir_path}")
+            assert clone_dir_path.exists() is False
 
         if self_test:
             os.system(f"cp -r {project_uri} {clone_dir_path}")
@@ -46,7 +46,7 @@ class PrepareFunctionalTests:
 
     name = "preparation"
 
-    def run(self, project_uri, clone_dir_path, self_test, config):
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         test_path = Path(config.__file__).parent.parent / "agnostic_tests"
         os.system(f"cp -r {test_path} {clone_dir_path}")
 
@@ -57,11 +57,11 @@ class PrepareFunctionalTests:
 class RunFunctionalTests:
     name = "running functional tests"
 
-    def run(self, project_uri, clone_dir_path, self_test, config):
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         test_path = clone_dir_path / "agnostic_tests"
 
         runner = TestRunner(test_path)
-        runner.run_tests()
+        runner.run_tests(fail_fast)
 
         print("Errors")
         print(json.dumps(runner.results, sort_keys=True, indent=4))
@@ -73,7 +73,7 @@ class TestRunner:
         self.results = {}
         self.test_path = test_path
 
-    def run_tests(self):
+    def run_tests(self, fail_fast):
         test_files = os.listdir(self.test_path)
         test_files = [s for s in test_files if re.match(r"^test_.*\.py$", s)]
 
@@ -85,11 +85,14 @@ class TestRunner:
             module = import_module(file_name)
             function_names = [s for s in dir(module) if s.startswith("test_")]
             for name in function_names:
-                f = getattr(module, name)
-                if type(f).__name__ != "function":
+                test_function = getattr(module, name)
+                if type(test_function).__name__ != "function":
                     continue
                 self.set_test_name(name)
-                f(self)
+                test_function(self)
+                if fail_fast and self.results:
+                    return
+
         sys.path = sys.path[:-1]
 
     def set_test_file_name(self, test_file_name):
@@ -114,7 +117,7 @@ class TestRunner:
     def assert_setup_empty(self, command_output):
         assert (
             command_output[TAG_SETUP] == ""
-        )  # this is a sanity check for us, not a test of the user
+        ), f"expected setup to have no output but got:\n\n{command_output[TAG_SETUP]}\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"  # this is a sanity check for us, not a test of the user
 
     def assert_no_import_side_effects(self, command_output):
         if command_output[TAG_IMPORT_LEARNER_CODE] != "":
@@ -138,6 +141,7 @@ class TestRunner:
             expected = sorted(expected, key=sort_key)
 
         if returned != expected:
+            breakpoint()
             self.register_test_error(
                 "call_description TODO",
                 f"Your code returned the wrong value. It returned {command_output[TAG_RETURNED]} but we expected {expected}",

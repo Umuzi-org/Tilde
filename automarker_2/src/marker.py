@@ -59,7 +59,7 @@ def get_project_configuration(content_item_id, flavours):
     return get_project_flavour_config(project_directory, flavours)
 
 
-def mark_project(content_item_id, flavours, url, self_test=False):
+def mark_project(content_item_id, flavours, url, self_test=False, fail_fast=False):
     """This is the entrypoint, this function actually does the work of marking the code"""
 
     # find the matching configuration
@@ -83,14 +83,16 @@ def mark_project(content_item_id, flavours, url, self_test=False):
             clone_dir_path=DOWNLOAD_DIR / clone_dir_name,
             self_test=self_test,
             config=config,
+            fail_fast=fail_fast,
         )
 
 
 mark_project(
     content_item_id=705,
-    flavours=["javascript"],
+    flavours=["python"],
     url="705-javascript",
     self_test=True,
+    fail_fast=True,
 )
 
 
