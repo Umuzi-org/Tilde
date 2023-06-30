@@ -97,7 +97,6 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 mark_project(
     content_item_id=705,
     flavours=["python"],
-    # url="705-javascript",
     self_test=True,
     fail_fast=True,
 )
@@ -105,29 +104,6 @@ mark_project(
 # mark_project(
 #     content_item_id=705,
 #     flavours=["javascript"],
-#     # url="705-javascript",
 #     self_test=True,
 #     fail_fast=True,
 # )
-
-
-# [('git@github.com:Umuzi-org/Liam-Henry-705-contentitem-javascript.git',
-#   ['javascript']),
-#  ('git@github.com:Umuzi-org/Makadunyiswe-Dingalibala-705-contentitem-javascript.git',
-#   ['javascript']),
-#  ('git@github.com:Umuzi-org/Thokozani-Mndebele-705-contentitem-python.git',
-#   ['python']),
-#  ('git@github.com:Umuzi-org/Rendani-Ratsethana-705-contentitem-python.git',
-#   ['python']),
-#  ('git@github.com:Umuzi-org/HappyAnza-Magoma-705-contentitem-javascript.git',
-#   ['javascript']),
-#  ('git@github.com:Umuzi-org/Melusi-Mavuso-705-contentitem-python.git',
-#   ['python']),
-#  ('git@github.com:Umuzi-org/Frangeline-Nchabeleng-705-contentitem-python.git',
-#   ['python']),
-#  ('git@github.com:Umuzi-org/Lukhanyo-Matshebelele-705-contentitem-javascript.git',
-#   ['javascript']),
-#  ('git@github.com:Umuzi-org/Kanyisa-Ntombini-705-contentitem-javascript.git',
-#   ['javascript']),
-#  ('git@github.com:Umuzi-org/Njabulo-Mhlambi-705-contentitem-java.git',
-#   ['java'])]
