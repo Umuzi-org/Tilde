@@ -101,9 +101,9 @@ mark_project(
     fail_fast=True,
 )
 
-# mark_project(
-#     content_item_id=705,
-#     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
-# )
+mark_project(
+    content_item_id=705,
+    flavours=["javascript"],
+    self_test=True,
+    fail_fast=True,
+)

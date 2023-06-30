@@ -3,12 +3,20 @@ import os
 import sys
 from importlib import import_module
 from utils import TAG_SETUP, TAG_RUNNING, TAG_RETURNED, TAG_IMPORT_LEARNER_CODE
+from utils import get_command_output
 
 
 class TestRunner:
     def __init__(self, test_path):
         self.results = {}
         self.test_path = test_path
+
+    def run_command(self, command):
+        command_output = get_command_output(command)
+        self.assert_setup_empty(command_output)
+        self.assert_no_errors(command_output)
+        self.assert_no_import_side_effects(command_output)
+        return command_output
 
     def run_tests(self, fail_fast):
         test_files = os.listdir(self.test_path)
