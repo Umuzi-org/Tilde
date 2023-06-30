@@ -141,7 +141,6 @@ class TestRunner:
             expected = sorted(expected, key=sort_key)
 
         if returned != expected:
-            breakpoint()
             self.register_test_error(
                 "call_description TODO",
                 f"Your code returned the wrong value. It returned {command_output[TAG_RETURNED]} but we expected {expected}",
