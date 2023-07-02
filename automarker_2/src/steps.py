@@ -62,3 +62,10 @@ class RunFunctionalTests:
         print("Errors")
         print(json.dumps(runner.results, sort_keys=True, indent=4))
         print("TODO")
+
+
+class GradleBuild:
+    name = "gradle build"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        os.system(f"cd {clone_dir_path} && ./gradlew build")

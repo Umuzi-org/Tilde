@@ -81,10 +81,10 @@ class TestRunner:
         ), f"expected setup to have no output but got:\n\n{command_output[TAG_SETUP]}\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"  # this is a sanity check for us, not a test of the user
 
     def assert_no_import_side_effects(self, command_output):
-        if command_output[TAG_IMPORT_LEARNER_CODE] != "":
+        if command_output[TAG_IMPORT_LEARNER_CODE]:
             self.register_test_error(
                 "call_description TODO",
-                "When we imported your code then there were unexpected side effects. For code to be as useful and reusable as possible it should be safe to import. So importing should not call functions or print anything.\n\nHere is what your code printed out when we imported it:\n\n{command_output[TAG_IMPORT_LEARNER_CODE]}",
+                f"When we imported your code then there were unexpected side effects. For code to be as useful and reusable as possible it should be safe to import. So importing should not call functions or print anything.\n\nHere is what your code printed out when we imported it:\n\n{command_output[TAG_IMPORT_LEARNER_CODE]}",
             )
 
     def assert_no_errors(self, command_output):
@@ -104,7 +104,7 @@ class TestRunner:
         if returned != expected:
             self.register_test_error(
                 "call_description TODO",
-                f"Your code returned the wrong value. It returned {command_output[TAG_RETURNED]} but we expected {expected}",
+                f"Your code returned the wrong value. It returned `{command_output[TAG_RETURNED]}` but we expected `{expected}`",
             )
 
     def assert_printed(self, command_output, expected):
