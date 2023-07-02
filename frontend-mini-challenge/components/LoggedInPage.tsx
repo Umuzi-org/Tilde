@@ -17,6 +17,10 @@ import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage } from "http";
+import {
+  NextApiRequestCookies,
+  NextApiRequestQuery,
+} from "next/dist/server/api-utils";
 
 interface LoggedInUserData {
   firstName: string;
@@ -161,7 +165,9 @@ export async function getServerSidePropsForLoggedInPage({
   req,
 }: {
   query: ParsedUrlQuery;
-  req: IncomingMessage;
+  req: IncomingMessage & {
+    cookies: NextApiRequestCookies;
+  };
 }) {
   const whoAmIResponse = await serverSideWhoAmI({ req });
 
