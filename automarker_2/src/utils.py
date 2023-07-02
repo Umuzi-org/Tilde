@@ -35,9 +35,11 @@ class CommandOutput:
         for k, v in tagged_output.items():
             self.__setattr__(k, v)
         if TAG_RETURNED in tagged_output:
-            returned = tagged_output[TAG_RETURNED]
+            returned = tagged_output[TAG_RETURNED].strip()
 
             if returned == "undefined":
+                self.returned = None
+            if not returned:
                 self.returned = None
             else:
                 self.returned = json.loads(returned)

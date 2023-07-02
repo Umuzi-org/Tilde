@@ -75,8 +75,9 @@ class TestRunner:
         ], f"expected command description to be present\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"
 
     def assert_setup_empty(self, command_output):
-        assert (
-            command_output[TAG_SETUP] == ""
+        assert command_output[TAG_SETUP] in (
+            "",
+            None,
         ), f"expected setup to have no output but got:\n\n{command_output[TAG_SETUP]}\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"  # this is a sanity check for us, not a test of the user
 
     def assert_no_import_side_effects(self, command_output):
