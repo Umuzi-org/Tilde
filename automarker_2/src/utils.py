@@ -39,7 +39,7 @@ class CommandOutput:
 
             if returned == "undefined":
                 self.returned = None
-            if not returned:
+            elif not returned:
                 self.returned = None
             else:
                 self.returned = json.loads(returned)

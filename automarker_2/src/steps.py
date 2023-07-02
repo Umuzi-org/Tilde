@@ -33,7 +33,7 @@ class PrepareFunctionalTests:
     """Copy the adapter and tests into the right place so we can run them. The final directory structure will look like:
 
     clone_dir_path/
-        agnostic_tests/
+        functional_tests/
             adapter/
                 adapter.py  # this will allow you to call the learner code like a python function
             test_*.py # these are the tests
@@ -43,18 +43,18 @@ class PrepareFunctionalTests:
     name = "preparation"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        test_path = Path(config.__file__).parent.parent / "agnostic_tests"
+        test_path = Path(config.__file__).parent.parent / "functional_tests"
         os.system(f"cp -r {test_path} {clone_dir_path}")
 
         adapter_path = Path(config.__file__).parent / "adapter"
-        os.system(f"cp -r {adapter_path} {clone_dir_path/'agnostic_tests'}")
+        os.system(f"cp -r {adapter_path} {clone_dir_path/'functional_tests'}")
 
 
 class RunFunctionalTests:
     name = "running functional tests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        test_path = clone_dir_path / "agnostic_tests"
+        test_path = clone_dir_path / "functional_tests"
 
         runner = TestRunner(test_path)
         runner.run_tests(fail_fast)

@@ -122,20 +122,20 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 #     fail_fast=True,
 # )
 
-mark_project(
-    content_item_id=756,
-    flavours=["java"],
-    self_test=True,
-    fail_fast=True,
-)
-
-
 # mark_project(
-#     content_item_id=223,
-#     flavours=["javascript"],
+#     content_item_id=756,
+#     flavours=["java"],
 #     self_test=True,
 #     fail_fast=True,
 # )
+
+
+mark_project(
+    content_item_id=223,
+    flavours=["javascript"],
+    self_test=True,
+    fail_fast=True,
+)
 
 # mark_project(
 #     content_item_id=223,
