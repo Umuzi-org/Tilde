@@ -17,14 +17,15 @@ class TestRunner:
         self.results = {}
         self.test_path = test_path
 
-    def run_command(self, command):
+    def run_command(self, command, assert_no_import_side_effects=True):
         assert command, "command should not be empty"
         assert type(command) is str, "command must be a string"
         command_output = get_command_output(command)
         self.assert_setup_empty(command_output)
         self.assert_command_description_present(command_output)
         self.assert_no_errors(command_output)
-        self.assert_no_import_side_effects(command_output)
+        if assert_no_import_side_effects:
+            self.assert_no_import_side_effects(command_output)
         return command_output
 
     def run_tests(self, fail_fast):
@@ -103,4 +104,12 @@ class TestRunner:
             self.register_test_error(
                 "call_description TODO",
                 f"Your code returned the wrong value. It returned {command_output[TAG_RETURNED]} but we expected {expected}",
+            )
+
+    def assert_printed(self, command_output, expected):
+        printed = command_output[TAG_RUNNING]
+        if printed != expected:
+            self.register_test_error(
+                "call_description TODO",
+                f"Your code printed the wrong value. It printed `{command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )
