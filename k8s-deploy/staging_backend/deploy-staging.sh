@@ -1,7 +1,6 @@
 #!/bin/sh
 
 ../staging_cluster/use-cluster.sh
-# ../staging_cluster/turn-staging-on.sh
 
 ./build-and-push-image-staging.sh
 

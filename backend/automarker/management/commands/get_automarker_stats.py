@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from core.models import User
 from curriculum_tracking.models import RecruitProjectReview
 from automarker.models import ContentItemAutoMarkerConfig
 import json
@@ -27,7 +26,7 @@ class Command(BaseCommand):
 
         report["total_configs"] = all_configs.count()
 
-        for (mode, _) in ContentItemAutoMarkerConfig.MODES:
+        for mode, _ in ContentItemAutoMarkerConfig.MODES:
             report[f"total {mode} configs"] = all_configs.filter(mode=mode).count()
 
         # review counts

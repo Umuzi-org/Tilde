@@ -22,6 +22,7 @@ import html from "remark-html";
 import matter from "gray-matter";
 import Presentation from "./[stepIndex].presentation";
 import { useEffect, useState } from "react";
+import { set } from "date-fns";
 
 export default function ChallengeStep({
   contentHtml,
@@ -51,6 +52,14 @@ export default function ChallengeStep({
   });
 
   const [finalStepDetails, setFinalStepDetails] = useState(stepDetails);
+
+  const [previousButtonLoading, setPreviousButtonLoading] = useState(false);
+  const [nextButtonLoading, setNextButtonLoading] = useState(false);
+
+  useEffect(() => {
+    setPreviousButtonLoading(false);
+    setNextButtonLoading(false);
+  }, [stepIndex]);
 
   useEffect(() => {
     setFinalStepDetails(stepDetails);
@@ -88,6 +97,7 @@ export default function ChallengeStep({
   }
 
   async function handleNext() {
+    setNextButtonLoading(true);
     if (stepDetails.status === STATUS_READY) {
       await finishStep.call({ index: stepIndex });
     }
@@ -99,6 +109,7 @@ export default function ChallengeStep({
   }
 
   function handlePrevious() {
+    setPreviousButtonLoading(true);
     if (stepIndex > 0)
       router.push(`/user-challenge/${registrationId}/steps/${stepIndex - 1}`);
     else router.push(`/user-challenge/${registrationId}/`);
@@ -119,6 +130,9 @@ export default function ChallengeStep({
     handleNext,
     handlePrevious,
     handleSubmitLinkForm,
+
+    previousButtonLoading,
+    nextButtonLoading,
   };
   return (
     <Page {...loggedInPageProps}>
@@ -128,6 +142,9 @@ export default function ChallengeStep({
 }
 
 export async function getServerSideProps({ query, req }) {
+  // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  // await delay(5000);
+
   const { stepIndex: stepIndexStr, registrationId: registrationIdStr } = query;
   const stepIndex = parseInt(stepIndexStr);
   const registrationId = parseInt(registrationIdStr);

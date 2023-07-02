@@ -21,10 +21,12 @@ import {
   NextApiRequestCookies,
   NextApiRequestQuery,
 } from "next/dist/server/api-utils";
+const LogRocket = require("logrocket");
 
 interface LoggedInUserData {
   firstName: string;
   email: string;
+  userId: number;
 }
 
 interface PageProps {
@@ -65,6 +67,13 @@ export default function Page({
       router.push("/");
     }
   });
+
+  useEffect(() => {
+    LogRocket.identify(loggedInUserData.userId, {
+      name: loggedInUserData.firstName,
+      email: loggedInUserData.email,
+    });
+  }, [loggedInUserData]);
 
   function handleLogout() {
     callLogout();
@@ -159,7 +168,6 @@ Then when you make use of this page component:
     </Page>
 
 */
-
 export async function getServerSidePropsForLoggedInPage({
   query,
   req,

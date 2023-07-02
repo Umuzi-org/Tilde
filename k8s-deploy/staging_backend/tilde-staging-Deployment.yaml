@@ -66,7 +66,7 @@ spec:
                   key: GIT_REAL_WEBHOOK_SECRET
 
             # [START reset password and email config]
-            - name: FRONTEND_URL
+            - name: FRONTEND_URL  # different for staging
               value: https://tilde-front-staging-dot-umuzi-prod.nw.r.appspot.com     
 
             - name: SENDGRID_API_KEY
@@ -88,7 +88,7 @@ spec:
                   key: PROD_SECRET_KEY
 
             - name: SQL_CONNECTION_NAME
-              value: umuzi-staging:europe-west2:staging      
+              value: umuzi-staging:europe-west2:staging      # different for staging
             - name: GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE
               value: /secrets/google-oauth-onetime-creds/google-oauth-onetime-creds.json
 

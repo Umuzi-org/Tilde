@@ -63,17 +63,13 @@ def automark_project(project, debug_mode):
         content_item_id=project.content_item_id,
         flavours=project.flavour_names,
     )
+    print("============")
+    print("RESULT:")
     pprint(result)
+
     if result["status"] == STATUS_OK:
         add_review(project=project, api_result=result)
     elif result["status"] == STATUS_FAIL:
-
-        # step_name = result['actionName']
-        # result = result["result"]
-        print("============")
-        print(result)
-        print("============")
-
         if debug_mode:
             message = f"You are about to leave a negative review:\n\n"
             if project.repository:
@@ -91,7 +87,6 @@ def automark_project(project, debug_mode):
             if confirm_continue(message):
                 add_review(project=project, api_result=result)
         else:
-
             add_review(project=project, api_result=result)
 
     else:

@@ -19,9 +19,6 @@ spec:
         - name: tilde-frontend-mini-app
           image: gcr.io/umuzi-prod/tilde-frontend-mini-challenge:latest 
           imagePullPolicy: Always
-          # env:
-          #   - name: API_BASE_URL
-          #     value: 
 
           ports:
             - containerPort: 3000
