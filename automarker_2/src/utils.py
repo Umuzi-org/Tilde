@@ -1,14 +1,20 @@
 import subprocess
 import re
-from collections import namedtuple
 import json
 
 TAG_SETUP = "setup"
 TAG_IMPORT_LEARNER_CODE = "import_learner_code"
 TAG_RUNNING = "running"
 TAG_RETURNED = "returned"
+TAG_COMMAND_DESCRIPTION = "command_description"
 
-output_tags = [TAG_SETUP, TAG_IMPORT_LEARNER_CODE, TAG_RUNNING, TAG_RETURNED]
+output_tags = [
+    TAG_SETUP,
+    TAG_IMPORT_LEARNER_CODE,
+    TAG_RUNNING,
+    TAG_RETURNED,
+    TAG_COMMAND_DESCRIPTION,
+]
 
 
 class CommandOutput:

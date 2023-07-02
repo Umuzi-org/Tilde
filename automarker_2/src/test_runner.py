@@ -2,7 +2,13 @@ import re
 import os
 import sys
 from importlib import import_module
-from utils import TAG_SETUP, TAG_RUNNING, TAG_RETURNED, TAG_IMPORT_LEARNER_CODE
+from utils import (
+    TAG_SETUP,
+    TAG_RUNNING,
+    TAG_RETURNED,
+    TAG_IMPORT_LEARNER_CODE,
+    TAG_COMMAND_DESCRIPTION,
+)
 from utils import get_command_output
 
 
@@ -12,8 +18,11 @@ class TestRunner:
         self.test_path = test_path
 
     def run_command(self, command):
+        assert command, "command should not be empty"
+        assert type(command) is str, "command must be a string"
         command_output = get_command_output(command)
         self.assert_setup_empty(command_output)
+        self.assert_command_description_present(command_output)
         self.assert_no_errors(command_output)
         self.assert_no_import_side_effects(command_output)
         return command_output
@@ -58,6 +67,11 @@ class TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             error_message
         )  # TODO and call_description
+
+    def assert_command_description_present(self, command_output):
+        assert command_output[
+            TAG_COMMAND_DESCRIPTION
+        ], f"expected command description to be present\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"
 
     def assert_setup_empty(self, command_output):
         assert (

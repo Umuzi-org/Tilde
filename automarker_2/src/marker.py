@@ -94,12 +94,12 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
         )
 
 
-mark_project(
-    content_item_id=705,
-    flavours=["python"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=705,
+#     flavours=["python"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
 mark_project(
     content_item_id=705,
