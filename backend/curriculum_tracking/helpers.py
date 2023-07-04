@@ -182,3 +182,7 @@ def agile_card_reviews_outstanding(user):
 def pull_request_reviews_outstanding(user):
     # TODO: only implement this once the github webhook is healthier
     return []
+
+
+def deactivate_users(users):
+    users.update(active=False)
