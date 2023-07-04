@@ -25,6 +25,13 @@ django.setup()
 #### NB dont import any models until AFTER django.setup is called
 
 
+# TODO:
+# uses sys.exit(1) if there is a database error
+# set default values
+# @dramatiq.actor(max_age=3600000) # milliseconds
+# set priorities for different things
+
+
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from backend.settings import (
     RABBITMQ_USER,
@@ -48,7 +55,6 @@ MINUTE = 60 * 1000
 
 @dramatiq.actor(time_limit=10 * MINUTE)
 def test_long_running_request():
-
     from core.models import User
 
     count = User.objects.filter(active=True).count()

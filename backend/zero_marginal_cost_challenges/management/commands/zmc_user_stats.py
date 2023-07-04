@@ -97,9 +97,9 @@ class Command(BaseCommand):
                 elif p.start_time:
                     users[user.email][title]["status"] = STARTED
 
-        import pprint
+        # import pprint
 
-        pprint.pprint(users)
+        # pprint.pprint(users)
 
         total_complete = 0
 
@@ -128,6 +128,4 @@ class Command(BaseCommand):
             total_complete += number_complete
 
         print(f"TOTAL COMPLETED: {total_complete}")
-
-        # breakpoint()
-        # return
+        print(f"TOTAL REGISTRATIONS: {registrations.count()}")
