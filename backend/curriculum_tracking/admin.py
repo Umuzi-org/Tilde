@@ -3,6 +3,7 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
+from .helpers import deactivate_users
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -21,7 +22,6 @@ class ContentItemOrderPreAdmin(admin.TabularInline):
 
 @admin.register(models.ContentItem)
 class ContentItemAdmin(admin.ModelAdmin):
-
     inlines = (
         ContentItemOrderPostAdmin,
         ContentItemOrderPreAdmin,
@@ -68,7 +68,6 @@ class RecruitProjectAdmin(admin.ModelAdmin):
 
 @admin.register(models.AgileCard)
 class AgileCardAdmin(admin.ModelAdmin):
-
     list_display = [
         "order",
         "status",
@@ -141,7 +140,7 @@ class UserAdmin(BaseUserAdmin):
         # GroupInline,
         # RecruitProjectInline,
     )
-    list_display = ("email", "is_superuser")
+    list_display = ("email", "is_superuser", "active")
     list_filter = (
         "is_superuser",
         "is_staff",
@@ -164,6 +163,13 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         # "user_permissions",
     )
+
+    actions = ["bulk_deactivate_users"]
+
+    def bulk_deactivate_users(modeladmin, request, users):
+        deactivate_users(users)
+
+    bulk_deactivate_users.short_description = "Deactivate selected users"
 
 
 admin.site.register(User, UserAdmin)
