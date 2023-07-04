@@ -69,3 +69,65 @@ class GradleBuild:
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         os.system(f"cd {clone_dir_path} && ./gradlew build")
+
+
+class JavaCheckNoImports:
+    name = "check no imports"
+
+
+class JavaBuild:
+    """Does it build? Just use javac"""
+
+    name = "java build"
+
+
+class PythonCheckNoImports:
+    name = "check no imports"
+
+
+class JavaScriptCheckNoImports:
+    name = "check no imports"
+
+
+class JavaRunJunitJupiterTests:
+    name = "run junit jupiter tests"
+
+
+class JavaScriptCheckNodeModulesMissing:
+    name = "check node modules missing"
+
+
+class JavaScriptCheckPackageJsonExists:
+    name = "check package.json exists"
+
+
+class JavaScriptCheckJasmineDevDependency:
+    name = "check jasmine dev dependency"
+
+
+class JavaScriptDoNpmInstall:
+    name = "do npm install"
+
+
+class PythonCheckGitignore:
+    name = "check __pycache__ and .pytest_cache__ are not in repo"
+
+
+class PythonCheckRequirementsTxtExists:
+    name = "check requirements.txt exists"
+
+
+class PythonCheckPytestInRequirements:
+    name = "check pytest in requirements.txt"
+
+
+class PythonCreateVirtualEnv:
+    name = "create virtual env"
+
+
+class PythonDoRequirementsInstall:
+    name = "do requirements install"
+
+
+class PythonRunPytests:
+    name = "run pytests"
