@@ -40,7 +40,12 @@ class TestRunner:
             self.set_test_file_name(file_name)
             file_name = file_name[:-3]  # remove the .py extension
 
-            module = import_module(file_name)
+            try:
+                module = import_module(file_name)
+            except ImportError as e:
+                raise SystemError(
+                    f"Error importing {file_name}: {e}\nThe problem is likely that the functional tests dont include the module reload boilerplate"
+                )
 
             function_names = [s for s in dir(module) if s.startswith("test_")]
             for name in function_names:
