@@ -1,7 +1,7 @@
 import re
 import os
 import sys
-from importlib import import_module
+from importlib import import_module, reload
 from utils import (
     TAG_SETUP,
     TAG_RUNNING,
@@ -9,7 +9,7 @@ from utils import (
     TAG_IMPORT_LEARNER_CODE,
     TAG_COMMAND_DESCRIPTION,
 )
-from utils import get_command_output
+from utils import AdapterCommandOutput
 
 
 class TestRunner:
@@ -20,7 +20,7 @@ class TestRunner:
     def run_command(self, command, assert_no_import_side_effects=True):
         assert command, "command should not be empty"
         assert type(command) is str, "command must be a string"
-        command_output = get_command_output(command)
+        command_output = AdapterCommandOutput.run_command(command)
         self.assert_setup_empty(command_output)
         self.assert_command_description_present(command_output)
         self.assert_no_errors(command_output)
@@ -33,11 +33,15 @@ class TestRunner:
         test_files = [s for s in test_files if re.match(r"^test_.*\.py$", s)]
 
         sys.path.append(str(self.test_path.resolve()))
+        for s in sys.path:
+            print(s)
 
         for file_name in test_files:
             self.set_test_file_name(file_name)
-            file_name = file_name[:-3]  # remove .py
+            file_name = file_name[:-3]  # remove the .py extension
+
             module = import_module(file_name)
+
             function_names = [s for s in dir(module) if s.startswith("test_")]
             for name in function_names:
                 test_function = getattr(module, name)
@@ -48,7 +52,7 @@ class TestRunner:
                 if fail_fast and self.results:
                     return
 
-        sys.path = sys.path[:-1]
+        sys.path.pop(sys.path.index(str(self.test_path.resolve())))
 
     def set_test_file_name(self, test_file_name):
         print(f"running test file: {test_file_name}...")

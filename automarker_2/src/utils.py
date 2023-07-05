@@ -17,7 +17,20 @@ output_tags = [
 ]
 
 
-class CommandOutput:
+def subprocess_run(command):
+    output = subprocess.run(
+        command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    stdout = output.stdout.decode("utf-8")
+    stderr = output.stderr.decode("utf-8")
+
+    return stdout, stderr
+
+
+class AdapterCommandOutput:
     """A class to hold the output of a command. It has attributes for each of the tags in output_tags. It also stores stdout and stderr as attributes.
 
     The value passed in as returned is converted to a python object using json.loads() and stored as an attribute called returned.
@@ -27,7 +40,7 @@ class CommandOutput:
         self.stdout = stdout
         self.stderr = stderr
 
-        tagged_output = self.process_std_out_tags(stdout)
+        tagged_output = self._process_std_out_tags(stdout)
 
         for tag in output_tags:
             self.__setattr__(tag, None)
@@ -50,7 +63,7 @@ class CommandOutput:
     def __repr__(self):
         return f"CommandOutput({self.__dict__})"
 
-    def process_std_out_tags(self, stdout):
+    def _process_std_out_tags(self, stdout):
         result = {}
         for tag in output_tags:
             found = re.search(rf"<{tag}>(.+?)</{tag}>", stdout, re.DOTALL)
@@ -58,25 +71,18 @@ class CommandOutput:
                 result[tag] = found.groups()[0].strip()
         return result
 
+    @classmethod
+    def run_command(Cls, command):
+        stdout, stderr = subprocess_run(command)
 
-def get_command_output(command):
-    output = subprocess.run(
-        command,
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    stdout = output.stdout.decode("utf-8")
-    stderr = output.stderr.decode("utf-8")
+        if stdout == "":
+            if stderr != "":
+                raise Exception(
+                    f"stderr is not empty when stdout is empty. Does the script exist? Or is it totally broken? \ncommand = `{command}`\nstderr: {stderr}"
+                )
+            else:
+                raise Exception(
+                    f"stdout and stderr are both empty. Is the script implemented? \ncommand = `{command}`\nstdout: {stdout}\nstderr: {stderr}"
+                )
 
-    if stdout == "":
-        if stderr != "":
-            raise Exception(
-                f"stderr is not empty when stdout is empty. Does the script exist? Or is it totally broken? \ncommand = `{command}`\nstderr: {stderr}"
-            )
-        else:
-            raise Exception(
-                f"stdout and stderr are both empty. Is the script implemented? \ncommand = `{command}`\nstdout: {stdout}\nstderr: {stderr}"
-            )
-
-    return CommandOutput(stdout=stdout, stderr=stderr)
+        return Cls(stdout=stdout, stderr=stderr)

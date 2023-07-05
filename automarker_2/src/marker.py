@@ -62,12 +62,14 @@ def get_project_configuration(content_item_id, flavours):
 def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
     """This is the entrypoint, this function actually does the work of marking the code"""
 
+    # initial_sys_path = sys.path[:]
     # find the matching configuration
     # config is a python module
     config = get_project_configuration(content_item_id, flavours)
+    # print(config.__file__)
 
     if not config:
-        raise Exception("Config not found")  # TODO: Better exception types
+        raise SystemError("Config not found")
 
     assert (
         config.status in constants.ALLOWED_STATUSES
@@ -84,16 +86,23 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 
     perfect_project_path = Path(config.__file__).parent / "perfect_project"
 
+    clone_dir_path = DOWNLOAD_DIR / clone_dir_name
+    project_uri = perfect_project_path if self_test else url
+
     for step in config.steps:
+        print(f"--- Running step: {step} ---")
         step.run(
-            project_uri=perfect_project_path if self_test else url,
-            clone_dir_path=DOWNLOAD_DIR / clone_dir_name,
+            project_uri=project_uri,
+            clone_dir_path=clone_dir_path,
             self_test=self_test,
             config=config,
             fail_fast=fail_fast,
         )
 
+    # sys.path = initial_sys_path
 
+
+print("111111111111111111111111111111")
 mark_project(
     content_item_id=705,
     flavours=["python"],
@@ -101,52 +110,53 @@ mark_project(
     fail_fast=True,
 )
 
-# mark_project(
-#     content_item_id=705,
-#     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-
-# mark_project(
-#     content_item_id=756,
-#     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-
-# mark_project(
-#     content_item_id=756,
-#     flavours=["python"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-
-# mark_project(
-#     content_item_id=756,
-#     flavours=["java"],
-#     self_test=True,
-#     fail_fast=True,
-# )
+print("222222222222222222222222222222")
+mark_project(
+    content_item_id=705,
+    flavours=["javascript"],
+    self_test=True,
+    fail_fast=True,
+)
 
 
-# mark_project(
-#     content_item_id=223,
-#     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
-# )
+mark_project(
+    content_item_id=756,
+    flavours=["javascript"],
+    self_test=True,
+    fail_fast=True,
+)
+mark_project(
+    content_item_id=756,
+    flavours=["python"],
+    self_test=True,
+    fail_fast=True,
+)
 
-# mark_project(
-#     content_item_id=223,
-#     flavours=["python"],
-#     self_test=True,
-#     fail_fast=True,
-# )
+mark_project(
+    content_item_id=756,
+    flavours=["java"],
+    self_test=True,
+    fail_fast=True,
+)
 
-# mark_project(
-#     content_item_id=223,
-#     flavours=["java"],
-#     self_test=True,
-#     fail_fast=True,
-# )
+
+mark_project(
+    content_item_id=223,
+    flavours=["javascript"],
+    self_test=True,
+    fail_fast=True,
+)
+
+mark_project(
+    content_item_id=223,
+    flavours=["python"],
+    self_test=True,
+    fail_fast=True,
+)
+
+mark_project(
+    content_item_id=223,
+    flavours=["java"],
+    self_test=True,
+    fail_fast=True,
+)
