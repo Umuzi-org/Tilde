@@ -1,7 +1,7 @@
 import re
 import os
 import sys
-from importlib import import_module, reload
+from importlib import import_module
 from utils import (
     TAG_SETUP,
     TAG_RUNNING,
@@ -14,10 +14,32 @@ from utils import AdapterCommandOutput
 
 class TestRunner:
     def __init__(self, test_path):
-        self.results = {}
         self.test_path = test_path
+        self.results = {}
+        # self.results stores the results of the test run. The format it:
+        # {
+        #   test_file_name_1: {
+        #       test_name_1: [array of failed assertions],
+        #       test_name_2: [], # empty array means the test passed
+        #   },
+        #  test_file_name_2: { ... },
+        #  ...
+        # }
+
+    def has_errors(self):
+        for test_file_name, test_results in self.results.items():
+            for test_name, failed_assertions in test_results.items():
+                if failed_assertions:
+                    return True
+        return False
 
     def run_command(self, command, assert_no_import_side_effects=True):
+        """This function is called within individual tests. For example:
+
+        command = get_adapter_shell_command()
+        command_output = tester.run_command(command, assert_no_import_side_effects=False)
+        """
+
         assert command, "command should not be empty"
         assert type(command) is str, "command must be a string"
         command_output = AdapterCommandOutput.run_command(command)
@@ -54,7 +76,7 @@ class TestRunner:
                     continue
                 self.set_test_name(name)
                 test_function(self)
-                if fail_fast and self.results:
+                if fail_fast and self.has_errors():
                     return
 
         sys.path.pop(sys.path.index(str(self.test_path.resolve())))
@@ -62,21 +84,17 @@ class TestRunner:
     def set_test_file_name(self, test_file_name):
         print(f"running test file: {test_file_name}...")
         self.test_file_name = test_file_name
+        self.results[self.test_file_name] = {}
 
     def set_test_name(self, test_name):
         print(f"\tRunning test: {test_name}...")
         self.test_name = test_name
+        self.results[self.test_file_name][test_name] = []
 
-    def register_test_error(self, call_description, error_message):
-        # print(f"\t\tError")
-        self.results[self.test_file_name] = self.results.get(self.test_file_name, {})
-        self.results[self.test_file_name][self.test_name] = self.results[
-            self.test_file_name
-        ].get(self.test_name, [])
-
+    def register_test_error(self, command_description, error_message):
         self.results[self.test_file_name][self.test_name].append(
-            error_message
-        )  # TODO and call_description
+            {"error_message": error_message, "command_description": command_description}
+        )
 
     def assert_command_description_present(self, command_output):
         assert command_output[
@@ -92,14 +110,14 @@ class TestRunner:
     def assert_no_import_side_effects(self, command_output):
         if command_output[TAG_IMPORT_LEARNER_CODE]:
             self.register_test_error(
-                "call_description TODO",
+                command_output.command_description,
                 f"When we imported your code then there were unexpected side effects. For code to be as useful and reusable as possible it should be safe to import. So importing should not call functions or print anything.\n\nHere is what your code printed out when we imported it:\n\n{command_output[TAG_IMPORT_LEARNER_CODE]}",
             )
 
     def assert_no_errors(self, command_output):
         if command_output.stderr:
             self.register_test_error(
-                "call_description TODO",  # red flag
+                command_output.command_description,  # red flag
                 f"Your code produced an error when we tried to run it. This is very bad because it means you didn't try to run your code before you handed it in.\n\nHere is the error message\n\n{command_output.stderr}",
             )
 
@@ -112,7 +130,7 @@ class TestRunner:
 
         if returned != expected:
             self.register_test_error(
-                "call_description TODO",
+                command_output.command_description,
                 f"Your code returned the wrong value. It returned `{command_output[TAG_RETURNED]}` but we expected `{expected}`",
             )
 
@@ -120,6 +138,6 @@ class TestRunner:
         printed = command_output[TAG_RUNNING]
         if printed != expected:
             self.register_test_error(
-                "call_description TODO",
+                command_output.command_description,
                 f"Your code printed the wrong value. It printed `{command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )

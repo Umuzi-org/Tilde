@@ -99,10 +99,13 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
             fail_fast=fail_fast,
         )
 
-    # sys.path = initial_sys_path
+
+# def mark_learner_project(content_item_id, flavours, url):
+#     final_mark = mark_project(content_item_id, flavours, url)
+#     format_as_review(final_mark)
 
 
-print("111111111111111111111111111111")
+# print("111111111111111111111111111111")
 mark_project(
     content_item_id=705,
     flavours=["python"],
@@ -110,53 +113,59 @@ mark_project(
     fail_fast=True,
 )
 
-print("222222222222222222222222222222")
-mark_project(
-    content_item_id=705,
-    flavours=["javascript"],
-    self_test=True,
-    fail_fast=True,
-)
+# print("222222222222222222222222222222")
+# mark_project(
+#     content_item_id=705,
+#     flavours=["javascript"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
 
-mark_project(
-    content_item_id=756,
-    flavours=["javascript"],
-    self_test=True,
-    fail_fast=True,
-)
-mark_project(
-    content_item_id=756,
-    flavours=["python"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=756,
+#     flavours=["javascript"],
+#     self_test=True,
+#     fail_fast=True,
+# )
+# mark_project(
+#     content_item_id=756,
+#     flavours=["python"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
-mark_project(
-    content_item_id=756,
-    flavours=["java"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=756,
+#     flavours=["java"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
 
-mark_project(
-    content_item_id=223,
-    flavours=["javascript"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=223,
+#     flavours=["javascript"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
-mark_project(
-    content_item_id=223,
-    flavours=["python"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=223,
+#     flavours=["python"],
+#     self_test=True,
+#     fail_fast=True,
+# )
 
-mark_project(
-    content_item_id=223,
-    flavours=["java"],
-    self_test=True,
-    fail_fast=True,
-)
+# mark_project(
+#     content_item_id=223,
+#     flavours=["java"],
+#     self_test=True,
+#     fail_fast=True,
+# )
+
+
+# if __name__ == "__main__":
+#     from fire import Fire
+
+#     Fire(mark_learner_project)

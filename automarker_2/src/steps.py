@@ -81,9 +81,8 @@ class RunFunctionalTests(Step):
         print("Errors")
         print(json.dumps(runner.results, sort_keys=True, indent=4))
 
-        if runner.results:
-            breakpoint()
-            woo
+        breakpoint()
+        woo
 
 
 class GradleBuild(Step):
