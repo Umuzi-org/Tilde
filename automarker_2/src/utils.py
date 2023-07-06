@@ -57,6 +57,14 @@ class AdapterCommandOutput:
             else:
                 self.returned = json.loads(returned)
 
+    def unfinished_tags(self):
+        """Return a list of tags that were opened but not closed in the stdout."""
+        result = []
+        for tag in output_tags:
+            if (f"<{tag}>" in self.stdout) and (f"</{tag}>" not in self.stdout):
+                result.append(tag)
+        return result
+
     def __getitem__(self, key):
         return self.__getattribute__(key)
 

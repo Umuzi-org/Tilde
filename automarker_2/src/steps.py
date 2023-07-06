@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from exceptions import SystemError
-from test_runner import TestRunner
+from test_runner import PythonTestRunner, JavaTestRunner, JavaScriptTestRunner
 from utils import subprocess_run
 import datetime
 
@@ -120,13 +120,15 @@ class PrepareFunctionalTests(Step):
         self.set_outcome(status=self.STATUS_PASS)
 
 
-class RunFunctionalTests(Step):
+class _RunFunctionalTests(Step):
     name = "running functional tests"
+
+    TestRunnerClass = None  # override this in child classes
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         test_path = clone_dir_path / "functional_tests"
 
-        runner = TestRunner(test_path)
+        runner = self.TestRunnerClass(test_path)
         runner.run_tests(fail_fast)
 
         if runner.has_errors():
@@ -151,6 +153,18 @@ class RunFunctionalTests(Step):
                     error_message = test_result["error_message"]
                     result += f"\n\t\tThere was an error when we {command_description}: {error_message}"
         return result
+
+
+class PythonRunFunctionalTests(_RunFunctionalTests):
+    TestRunnerClass = PythonTestRunner
+
+
+class JavaRunFunctionalTests(_RunFunctionalTests):
+    TestRunnerClass = JavaTestRunner
+
+
+class JavaScriptRunFunctionalTests(_RunFunctionalTests):
+    TestRunnerClass = JavaScriptTestRunner
 
 
 class GradleBuild(Step):
