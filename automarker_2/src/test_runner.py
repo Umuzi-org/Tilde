@@ -13,6 +13,12 @@ from utils import AdapterCommandOutput
 
 
 class TestRunner:
+    class StopTestFunctionException(Exception):
+        """This is raised if there is some kind of unrecoverable error while running an individual test function. Eg if there is an error in running the learner's code then there is no point checking if the function returned the right thing."""
+
+    class StopTestSuiteException(Exception):
+        """This is raised if there is no reason to continue running the test suite. Eg if there is an error in the setup then there is no point running the tests."""
+
     def __init__(self, test_path):
         self.test_path = test_path
         self.results = {}
@@ -26,6 +32,16 @@ class TestRunner:
         #  ...
         # }
 
+    def fail_results(self):
+        """return details about the failing tests only"""
+        failing_tests = {}
+        for test_file_name, test_results in self.results.items():
+            for test_name, failed_assertions in test_results.items():
+                if failed_assertions:
+                    failing_tests.setdefault(test_file_name, {})
+                    failing_tests[test_file_name][test_name] = failed_assertions
+        return failing_tests
+
     def has_errors(self):
         for test_file_name, test_results in self.results.items():
             for test_name, failed_assertions in test_results.items():
@@ -33,7 +49,9 @@ class TestRunner:
                     return True
         return False
 
-    def run_command(self, command, assert_no_import_side_effects=True):
+    def run_command(
+        self, command, assert_no_import_side_effects=True, assert_no_errors=True
+    ):
         """This function is called within individual tests. For example:
 
         command = get_adapter_shell_command()
@@ -45,7 +63,8 @@ class TestRunner:
         command_output = AdapterCommandOutput.run_command(command)
         self.assert_setup_empty(command_output)
         self.assert_command_description_present(command_output)
-        self.assert_no_errors(command_output)
+        if assert_no_errors:
+            self.assert_no_errors(command_output)
         if assert_no_import_side_effects:
             self.assert_no_import_side_effects(command_output)
         return command_output
@@ -75,7 +94,10 @@ class TestRunner:
                 if type(test_function).__name__ != "function":
                     continue
                 self.set_test_name(name)
-                test_function(self)
+                try:
+                    test_function(self)
+                except self.StopTestFunctionException:
+                    pass  # we simply move onto the next test
                 if fail_fast and self.has_errors():
                     return
 
@@ -99,13 +121,13 @@ class TestRunner:
     def assert_command_description_present(self, command_output):
         assert command_output[
             TAG_COMMAND_DESCRIPTION
-        ], f"expected command description to be present\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"
+        ], f"expected command description to be present. There is something wrong with the automarker project configuration\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"
 
     def assert_setup_empty(self, command_output):
         assert command_output[TAG_SETUP] in (
             "",
             None,
-        ), f"expected setup to have no output but got:\n\n{command_output[TAG_SETUP]}\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}"  # this is a sanity check for us, not a test of the user
+        ), f"expected setup to have no output but got:\n\n{command_output[TAG_SETUP]}\n\nstderr={command_output.stderr}\n\nstdout={command_output.stdout}. There is something wrong with the automarker project configuration"  # this is a sanity check for us, not a test of the user
 
     def assert_no_import_side_effects(self, command_output):
         if command_output[TAG_IMPORT_LEARNER_CODE]:
@@ -120,6 +142,8 @@ class TestRunner:
                 command_output.command_description,  # red flag
                 f"Your code produced an error when we tried to run it. This is very bad because it means you didn't try to run your code before you handed it in.\n\nHere is the error message\n\n{command_output.stderr}",
             )
+            raise TestRunner.StopTestFunctionException()
+        return True
 
     def assert_returned(self, command_output, expected, sort_key=None):
         returned = command_output[TAG_RETURNED]

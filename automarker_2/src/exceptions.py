@@ -15,9 +15,9 @@ class SystemError(_BaseException):
 #         super().__init__(full_message)
 
 
-class NotYetCompetentError(_BaseException):
-    """The project is not yet competent"""
+# class NotYetCompetentError(_BaseException):
+#     """The project is not yet competent"""
 
 
-class RedFlagError(_BaseException):
-    """The project is not yet competent"""
+# class RedFlagError(_BaseException):
+#     """The project is not yet competent"""

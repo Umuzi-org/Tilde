@@ -4,6 +4,7 @@ from pathlib import Path
 from importlib import import_module
 import sys
 import constants
+import json
 
 CONFIG_DIR = Path("../../../automarker_2_config")  # TODO: Make this configurable
 DOWNLOAD_DIR = Path("../gitignore").resolve()
@@ -69,7 +70,9 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
     # print(config.__file__)
 
     if not config:
-        raise SystemError("Config not found")
+        raise SystemError(
+            f"Config not found for this project: content_item_id={content_item_id} flavours={flavours}"
+        )
 
     assert (
         config.status in constants.ALLOWED_STATUSES
@@ -91,27 +94,51 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 
     for step in config.steps:
         print(f"--- Running step: {step} ---")
-        step.run(
+
+        step.execute_run(
             project_uri=project_uri,
             clone_dir_path=clone_dir_path,
             self_test=self_test,
             config=config,
             fail_fast=fail_fast,
         )
+        if step.status != step.STATUS_PASS:
+            break
+
+    return config.steps
 
 
-# def mark_learner_project(content_item_id, flavours, url):
-#     final_mark = mark_project(content_item_id, flavours, url)
-#     format_as_review(final_mark)
+def mark_learner_project(content_item_id, flavours, url):
+    final_mark = mark_project(content_item_id, flavours, url)
+    format_as_review(final_mark)
 
 
-# print("111111111111111111111111111111")
-mark_project(
+def run_configuration_test(content_item_id, flavours):
+    steps = mark_project(
+        content_item_id=content_item_id,
+        flavours=flavours,
+        self_test=True,
+        fail_fast=True,
+    )
+
+    print()
+    for step in steps:
+        print(f"STEP: {step.name} ")
+        print(f"\tDuration: {step.duration()}")
+        print(f"\tStatus: {step.status}")
+        if step.message:
+            print(f"\tMessage: {step.message}")
+        if step.details:
+            print(f"\tDetails:")
+            print(step.details_string())
+        print()
+
+
+run_configuration_test(
     content_item_id=705,
     flavours=["python"],
-    self_test=True,
-    fail_fast=True,
 )
+
 
 # print("222222222222222222222222222222")
 # mark_project(
@@ -169,3 +196,11 @@ mark_project(
 #     from fire import Fire
 
 #     Fire(mark_learner_project)
+
+
+# mark_project(
+#     content_item_id=186,
+#     flavours=["javascript"],
+#     self_test=True,
+#     fail_fast=True,
+# )

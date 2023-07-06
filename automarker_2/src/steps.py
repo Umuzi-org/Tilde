@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
 
-from exceptions import SystemError, NotYetCompetentError, RedFlagError
-import json
+from exceptions import SystemError
 from test_runner import TestRunner
 from utils import subprocess_run
+import datetime
 
 
 def get_all_file_paths(directory):
@@ -16,8 +16,55 @@ def get_all_file_paths(directory):
 class Step:
     name = "name not defined"
 
+    STATUS_PASS = "pass"
+    STATUS_NOT_YET_COMPETENT = "not yet competent"
+    STATUS_RED_FLAG = "red flag"
+    STATUS_WAITING = "waiting"
+    STATUS_RUNNING = "running"
+
+    FINAL_STATUSES = [STATUS_PASS, STATUS_NOT_YET_COMPETENT, STATUS_RED_FLAG]
+
+    def __init__(self):
+        self.status = self.STATUS_WAITING
+        self.message = None
+        self.details = None
+        self.start_time = None
+        self.end_time = None
+
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.name}>"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        raise NotImplementedError
+
+    def duration(self):
+        return self.end_time - self.start_time
+
+    def details_string(self):
+        """Override this in child classes if details is complicated"""
+        return self.details
+
+    def execute_run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        self.start_time = datetime.datetime.now()
+        self.status = self.STATUS_RUNNING
+
+        self.run(project_uri, clone_dir_path, self_test, config, fail_fast)
+
+        assert (
+            self.status in self.FINAL_STATUSES
+        ), f"{self}: Remember to call set_outcome in your run method"
+
+    def set_outcome(self, status, message=None, details=None):
+        assert (
+            self.status == self.STATUS_RUNNING
+        ), f"You can only set the outcome once. It was already set to: \n\tstatus = {self.status} \n\tmessage={self.message}"
+
+        self.status = status
+        self.message = message
+        self.details = details
+        self.end_time = datetime.datetime.now()
+
+        # raise
 
 
 class Clone(Step):
@@ -41,6 +88,7 @@ class Clone(Step):
                 self_test=self_test,
                 config=config.__file__,
             )
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class PrepareFunctionalTests(Step):
@@ -66,7 +114,10 @@ class PrepareFunctionalTests(Step):
         os.system(f"cp -r {adapter_path} {final_test_path}")
 
         assert final_test_path.exists()
-        assert (final_test_path / "adapter").exists()
+        adapter_path = final_test_path / "adapter"
+        assert adapter_path.exists(), f"{adapter_path} does not exist"
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class RunFunctionalTests(Step):
@@ -78,11 +129,28 @@ class RunFunctionalTests(Step):
         runner = TestRunner(test_path)
         runner.run_tests(fail_fast)
 
-        print("Errors")
-        print(json.dumps(runner.results, sort_keys=True, indent=4))
+        if runner.has_errors():
+            message = f"Your code has errors. Please fix them and try again"
+            self.set_outcome(
+                status=self.STATUS_RED_FLAG,
+                message=message,
+                details=runner.fail_results(),
+            )
+            return
 
-        breakpoint()
-        woo
+        self.set_outcome(status=self.STATUS_PASS)
+
+    def details_string(self):
+        result = ""
+        for test_suit, test_functions in self.details.items():
+            result += f"\nTest suite: {test_suit[:-2]}:"
+            for test_function, test_result in test_functions.items():
+                result += f"\n\t{test_function}"
+                for test_result in test_result:
+                    command_description = test_result["command_description"]
+                    error_message = test_result["error_message"]
+                    result += f"\n\t\tThere was an error when we {command_description}: {error_message}"
+        return result
 
 
 class GradleBuild(Step):
@@ -102,13 +170,14 @@ class JavaBuild(Step):
         command = f"javac {clone_dir_path}/*.java"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
-            raise RedFlagError(
-                f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again. Here is the error message we got when trying to compile your code:\n\n```\n{stderr}\n```",
-                project_uri=project_uri,
-                clone_dir_path=clone_dir_path,
-                self_test=self_test,
-                config=config.__file__,
+            message = (
+                f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again",
             )
+            return StepOutcome(
+                status=STATUS_RED_FLAG, message=message, details={"stderr": stderr}
+            )
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class _CheckNoImports(Step):
@@ -129,13 +198,11 @@ class _CheckNoImports(Step):
             text = Path(path).read_text()
             for check, error_message in self.checks:
                 if check(text):
-                    raise NotYetCompetentError(
-                        error_message,
-                        project_uri=project_uri,
-                        clone_dir_path=clone_dir_path,
-                        self_test=self_test,
-                        config=config.__file__,
+                    return StepOutcome(
+                        status=STATUS_NOT_YET_COMPETENT, message=error_message
                     )
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class JavaCheckNoImports(_CheckNoImports):
@@ -189,13 +256,11 @@ class JavaScriptCheckNodeModulesMissing(Step):
             s for s in get_all_file_paths(clone_dir_path) if "node_modules" in s
         ]
         if node_module_paths:
-            raise NotYetCompetentError(
-                "It looks like you have submitted your node_modules directory. Please learn about gitignore best practices.",
-                project_uri=project_uri,
-                clone_dir_path=clone_dir_path,
-                self_test=self_test,
-                config=config.__file__,
-            )
+            message = "It looks like you have submitted your node_modules directory. Please learn about gitignore best practices."
+
+            return StepOutcome(STATUS_NOT_YET_COMPETENT, message=message)
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class JavaScriptCheckPackageJsonExists(Step):
@@ -220,13 +285,10 @@ class PythonCheckGitignore(Step):
             if ("__pycache__" in s) or (".pytest_cache" in s)
         ]
         if cache_paths:
-            raise NotYetCompetentError(
-                "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ or .pytest_cache directory",
-                project_uri=project_uri,
-                clone_dir_path=clone_dir_path,
-                self_test=self_test,
-                config=config.__file__,
-            )
+            message = "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ or .pytest_cache directory"
+            return StepOutcome(status=STATUS_NOT_YET_COMPETENT, message=message)
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class JavaCheckGitignore(Step):
@@ -237,13 +299,10 @@ class JavaCheckGitignore(Step):
             s for s in get_all_file_paths(clone_dir_path) if s.endswith(".class")
         ]
         if class_paths:
-            raise NotYetCompetentError(
-                "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of some .class files in your repo",
-                project_uri=project_uri,
-                clone_dir_path=clone_dir_path,
-                self_test=self_test,
-                config=config.__file__,
-            )
+            message = "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of some .class files in your repo"
+            return StepOutcome(status=STATUS_NOT_YET_COMPETENT, message=message)
+
+        self.set_outcome(status=self.STATUS_PASS)
 
 
 class PythonCheckRequirementsTxtExists(Step):
