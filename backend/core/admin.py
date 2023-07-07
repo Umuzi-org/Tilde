@@ -2,12 +2,7 @@ from django.contrib import admin
 from . import models
 from guardian.admin import GuardedModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
-
 from django import forms
-
-# class UserSetInline(admin.TabularInline):
-#     model = models.User.groups.through
-#     raw_id_fields = ("user",)
 
 
 class UserSetForm(forms.ModelForm):
