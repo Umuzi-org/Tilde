@@ -1,8 +1,8 @@
 import pytest
-from marker import flavours_match
+from marker import _flavours_match
 
 
-def test_flavours_match():
-    assert flavours_match([["python"]], ["python"])
-    assert not flavours_match([["python", "pytest"]], ["python"])
-    assert flavours_match([["python", "pytest"], ["python"]], ["python"])
+def test__flavours_match():
+    assert _flavours_match([["python"]], ["python"])
+    assert not _flavours_match([["python", "pytest"]], ["python"])
+    assert _flavours_match([["python", "pytest"], ["python"]], ["python"])

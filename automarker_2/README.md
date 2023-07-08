@@ -95,23 +95,53 @@ Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo
     - tell someone about it so it can be fixed; or
     - make a pr that fixes the problem
 
-## Contributions are welcome and encouraged!
 
-If you see a problem in some automarker configuration then please:
+### Print configuration
 
-1. Fix it
-2. Test it out with the test_project_configuration script
-3. Test it out on a few learner projects if you can dig some up
-4. Make a PR 
+If you want to quickly see if something is configured then you can either dig through the configuration repo, or you can run this command:
 
-If you see some way to improve the actual automarker then pleas go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
+```
+python print_configuration.py
+```
 
-- bug fixes
-- unit tests
-- documentation
-- making the output look better
-- anything else that will make this easier to use
-- anything else that will make this easier to contribute to
+You'll see a list of all the configuration that exists. 
+
+Each line of the output will have the following format:
+
+```
+{name}[{content_item_id}] {matching flavours} {status}
+eg:
+consume_github_api[186] [['javascript']] DEBUG
+```
+- name: This is just for convenience, it just needs to be human-readable
+- content_item_id: this needs to EXACTLY MATCH the content item id in the database
+- matching flavors: probably obvious...
+- status: this can have a few different values, described below 
+
+**A cool trick:** Use `grep` to quickly get the subset of the information you are interested in. Here are a few examples:
+
+```
+# list only the python config
+python print_configuration.py | grep python 
+
+# list only the config that is deactivated 
+python print_configuration.py | grep DEACTIVATED 
+
+# list only the config that has the word github in it's name
+python print_configuration.py | grep github 
+
+# you can also use multiple greps
+# eg: list only the javascript configuration that is in DEBUG mode
+python print_configuration.py | grep javascript | grep DEBUG 
+
+```
+
+### Configuration statuses
+
+- NOT_IMPLEMENTED: We still need to build this one out
+- DEBUG: The configuration is alive and kicking, but we aren't yet 100% confident in its output. Staff are encouraged to make use of this configuration in order to build confidence over time 
+- PRODUCTION: The configuration has been battle tested. We are confident that the output is correct
+- DEACTIVATED: This configuration was in DEBUG or PRODUCTION mode and something went wrong so we had to turn it off
 
 ### Configuration check 
 
@@ -134,6 +164,24 @@ python mark_learner_project.py 999 javascript,karma git@github.com:Umuzi-org/bla
 ```
 
 In other words, the flavours should be comma-separated and they should have no spaces between them.
+
+## Contributions are welcome and encouraged!
+
+If you see a problem in some automarker configuration then please:
+
+1. Fix it
+2. Test it out with the test_project_configuration script
+3. Test it out on a few learner projects if you can dig some up
+4. Make a PR 
+
+If you see some way to improve the actual automarker then pleas go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
+
+- bug fixes
+- unit tests
+- documentation
+- making the output look better
+- anything else that will make this easier to use
+- anything else that will make this easier to contribute to
 
 ## Shortcomings to overcome 
 

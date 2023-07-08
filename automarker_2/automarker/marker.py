@@ -13,7 +13,7 @@ DOWNLOAD_DIR = Path("../gitignore").resolve()
 sys.path.append(str(CONFIG_DIR))
 
 
-def flavours_match(config_flavours, flavours):
+def _flavours_match(config_flavours, flavours):
     flavours = sorted(flavours)
     for flavour_set in config_flavours:
         flavour_set = sorted(flavour_set)
@@ -22,7 +22,7 @@ def flavours_match(config_flavours, flavours):
     return False
 
 
-def scan_config_dir_for_project_directories():
+def _scan_config_dir_for_project_directories():
     names = os.listdir(CONFIG_DIR)
     for project_dir_name in names:
         full_path = CONFIG_DIR / project_dir_name
@@ -36,47 +36,45 @@ def scan_config_dir_for_project_directories():
         yield project_dir_name, config_content_item_id, title
 
 
-def get_project_config_dir_path(content_item_id):
-    for (
-        project_dir_name,
-        config_content_item_id,
-        title,
-    ) in scan_config_dir_for_project_directories():
-        if config_content_item_id == content_item_id:
-            return project_dir_name
-
-
-# def get_all_marker_configs():
+# def get_project_config_dir_path(content_item_id):
 #     for (
 #         project_dir_name,
 #         config_content_item_id,
 #         title,
-#     ) in scan_config_dir_for_project_directories():
-#         full_project_path = CONFIG_DIR / project_dir_name
+#     ) in _scan_config_dir_for_project_directories():
+#         if config_content_item_id == content_item_id:
+#             return project_dir_name
 
 
-def get_project_flavour_config(project_directory, flavours):
-    full_project_path = CONFIG_DIR / project_directory
-    for sub_directory_name in os.listdir(full_project_path):
-        sub_directory = full_project_path / sub_directory_name
-        if not sub_directory.is_dir():
-            continue
-        flavour_config_file = sub_directory / "config.py"
-        if not flavour_config_file.is_file():
-            continue
-        configuration = import_module(
-            f"{project_directory}.{sub_directory_name}.config"
-        )
-        config_flavours = configuration.flavours
-        if flavours_match(config_flavours, flavours):
-            return configuration
+def get_all_marker_configs():
+    for (
+        project_dir_name,
+        config_content_item_id,
+        title,
+    ) in _scan_config_dir_for_project_directories():
+        full_project_path = CONFIG_DIR / project_dir_name
+        for sub_directory_name in os.listdir(full_project_path):
+            sub_directory = full_project_path / sub_directory_name
+            if not sub_directory.is_dir():
+                continue
+            config_file_path = sub_directory / "config.py"
+            if not config_file_path.is_file():
+                continue
+            configuration = import_module(
+                f"{project_dir_name}.{sub_directory_name}.config"
+            )
+            configuration.title = title
+            configuration.content_item_id = config_content_item_id
+            yield configuration
 
 
 def get_project_configuration(content_item_id, flavours):
-    project_directory = get_project_config_dir_path(content_item_id)
-    if not project_directory:
-        return
-    return get_project_flavour_config(project_directory, flavours)
+    for configuration in get_all_marker_configs():
+        if configuration.content_item_id != content_item_id:
+            continue
+        config_flavours = configuration.flavours
+        if _flavours_match(config_flavours, flavours):
+            return configuration
 
 
 def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
