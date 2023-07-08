@@ -41,6 +41,8 @@ class Step:
         raise NotImplementedError
 
     def duration(self):
+        if self.start_time is None:
+            return 0
         return self.end_time - self.start_time
 
     def details_string(self):
@@ -111,6 +113,10 @@ class PrepareFunctionalTests(Step):
     name = "preparing functional tests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        self._run(project_uri, clone_dir_path, self_test, config, fail_fast)
+        self.set_outcome(status=STEP_STATUS_PASS)
+
+    def _run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         test_path = Path(config.__file__).parent.parent / "functional_tests"
         final_test_path = clone_dir_path / "functional_tests"
 
@@ -123,7 +129,39 @@ class PrepareFunctionalTests(Step):
         adapter_path = final_test_path / "adapter"
         assert adapter_path.exists(), f"{adapter_path} does not exist"
 
-        self.set_outcome(status=STEP_STATUS_PASS)
+
+class JavaPrepareFunctionalTests(PrepareFunctionalTests):
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        self._run(project_uri, clone_dir_path, self_test, config, fail_fast)
+        # try to build the tests. If the learner named anything badly then
+        # this will fail and we can give them a useful error message
+        adapter_dir = clone_dir_path / "functional_tests" / "adapter"
+        build_command = f"javac --class-path {clone_dir_path} {adapter_dir/'*.java'}"
+        stdout, stderr = subprocess_run(build_command)
+        if stderr:
+            if "cannot find symbol" in stderr:
+                error = (
+                    "cannot find symbol"
+                    + stderr.split("cannot find symbol")[1].split("location")[0]
+                )
+                error = "\n".join([s for s in error.split("\n") if s.strip()])
+                message = f"There was an error when we tried to use your code. Please make sure you've named everything correctly. Here is the error message: \n{error}"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+        else:
+            self.set_outcome(status=STEP_STATUS_PASS)
+
+
+# /home/sheena/workspace/Tilde/automarker_2/gitignore/223-java-perfect/functional_tests/adapter/RunPersonHello.java:22: error: cannot find symbol
+#         Person person = new Person(name=name, age=age, gender=gender, interests=interests);
+#         ^
+#   symbol:   class Person
+#   location: class RunPersonHello
+# /home/sheena/workspace/Tilde/automarker_2/gitignore/223-java-perfect/functional_tests/adapter/RunPersonHello.java:22: error: cannot find symbol
+#         Person person = new Person(name=name, age=age, gender=gender, interests=interests);
+#                             ^
+#   symbol:   class Person
+#   location: class RunPersonHello
+# 2 errors
 
 
 class _RunFunctionalTests(Step):
@@ -190,11 +228,11 @@ class JavaBuild(Step):
         command = f"javac {clone_dir_path}/*.java"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
-            message = f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again"
+            error = stderr.replace(str(clone_dir_path.resolve()), "").strip()
 
-            return StepOutcome(
-                status=TEST_STATUS_RED_FLAG, message=message, details={"stderr": stderr}
-            )
+            message = f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again. Here is the error message:\n\n{error}"
+
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
 
         self.set_outcome(status=STEP_STATUS_PASS)
 
@@ -217,9 +255,8 @@ class _CheckNoImports(Step):
             text = Path(path).read_text()
             for check, error_message in self.checks:
                 if check(text):
-                    # TODO: set status and message
-                    return StepOutcome(
-                        status=STATUS_NOT_YET_COMPETENT, message=error_message
+                    self.set_outcome(
+                        status=STEP_STATUS_NOT_YET_COMPETENT, message=error_message
                     )
 
         self.set_outcome(status=STEP_STATUS_PASS)
@@ -278,7 +315,7 @@ class JavaScriptCheckNodeModulesMissing(Step):
         if node_module_paths:
             message = "It looks like you have submitted your node_modules directory. Please learn about gitignore best practices."
 
-            return StepOutcome(STATUS_NOT_YET_COMPETENT, message=message)
+            self.set_outcome(STEP_STATUS_NOT_YET_COMPETENT, message=message)
 
         self.set_outcome(status=STEP_STATUS_PASS)
 
@@ -306,7 +343,7 @@ class PythonCheckGitignore(Step):
         ]
         if cache_paths:
             message = "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ or .pytest_cache directory"
-            return StepOutcome(status=STATUS_NOT_YET_COMPETENT, message=message)
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
 
         self.set_outcome(status=STEP_STATUS_PASS)
 

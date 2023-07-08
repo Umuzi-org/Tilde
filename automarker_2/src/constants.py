@@ -21,6 +21,7 @@ STEP_STATUS_RUNNING = "running"
 
 STEP_FINAL_STATUSES = [
     # NOTE: the ordering here matters. Eg if all steps pass and there is one red flag then the red flag takes precedence. The overall run is a red flag.
+    STEP_STATUS_WAITING,  # a step can end in this status if a previous step failed]
     STEP_STATUS_PASS,
     STEP_STATUS_NOT_YET_COMPETENT,
     STEP_STATUS_RED_FLAG,

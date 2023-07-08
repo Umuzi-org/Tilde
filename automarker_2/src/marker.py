@@ -140,70 +140,49 @@ def run_configuration_test(content_item_id, flavours):
     print(f"FINAL STATUS: {final_status}")
 
 
-run_configuration_test(
-    content_item_id=705,
-    flavours=["python"],
-)
-
+# run_configuration_test(
+#     content_item_id=705,
+#     flavours=["python"],
+# )
 
 # run_configuration_test(
 #     content_item_id=705,
 #     flavours=["javascript"],
 # )
 
-
-# mark_project(
-#     content_item_id=756,
-#     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-# mark_project(
-#     content_item_id=756,
-#     flavours=["python"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-
-# mark_project(
-#     content_item_id=756,
-#     flavours=["java"],
-#     self_test=True,
-#     fail_fast=True,
-# )
-
-
-# mark_project(
+# run_configuration_test(
 #     content_item_id=223,
 #     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
 # )
 
-# mark_project(
+# run_configuration_test(
 #     content_item_id=223,
 #     flavours=["python"],
-#     self_test=True,
-#     fail_fast=True,
 # )
 
-# mark_project(
-#     content_item_id=223,
+run_configuration_test(
+    content_item_id=223,
+    flavours=["java"],
+)
+
+
+# run_configuration_test(
+#     content_item_id=756,
+#     flavours=["javascript"],
+# )
+
+# run_configuration_test(
+#     content_item_id=756,
+#     flavours=["python"],
+# )
+
+# run_configuration_test(
+#     content_item_id=756,
 #     flavours=["java"],
-#     self_test=True,
-#     fail_fast=True,
 # )
 
 
-# if __name__ == "__main__":
-#     from fire import Fire
-
-#     Fire(mark_learner_project)
-
-
-# mark_project(
+# run_configuration_test(
 #     content_item_id=186,
 #     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
 # )

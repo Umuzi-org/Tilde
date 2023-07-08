@@ -209,7 +209,7 @@ class _TestRunner:
 
         if returned != expected:
             self.register_test_error(
-                f"{message} Note that the ordering of the elements needs to be exactly the same.",
+                message,
             )
 
     def assert_printed(self, expected):
@@ -223,24 +223,22 @@ class _TestRunner:
 class PythonTestRunner(_TestRunner):
     def assert_no_import_errors(self):
         if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
-            assert self.last_command_output.stderr, "there should be an error"
-            if "ModuleNotFoundError" in self.last_command_output.stderr:
-                error = re.search(
-                    r"\n(ModuleNotFoundError.*')\n", self.last_command_output.stderr
-                ).groups()[0]
+            stderr = self.last_command_output.stderr
+            assert stderr, "there should be an error"
+            if "ModuleNotFoundError" in stderr:
+                error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
                 raise self.StopTestFunctionException(
                     f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
-            elif "ImportError" in self.last_command_output.stderr:
-                error = re.search(
-                    r"\n(ImportError.*) \(.*\n", self.last_command_output.stderr
-                ).groups()[0]
+
+            if "ImportError" in stderr:
+                error = re.search(r"\n(ImportError.*) \(.*\n", stderr).groups()[0]
                 raise self.StopTestFunctionException(
                     f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
-            elif "Traceback" in self.last_command_output.stderr:
+            if "Traceback" in stderr:
                 # get the index of the last time the word File was mentioned in stderr
 
                 raise self.StopTestFunctionException(
@@ -248,16 +246,13 @@ class PythonTestRunner(_TestRunner):
                     status=STEP_STATUS_RED_FLAG,
                 )
 
-            else:
-                breakpoint()
-                here
-                # this shouldn't happen
+            raise NotImplementedError()
 
     def sanitize_stderr(self):
         """The traceback will include a bunch of ifo about our test environment. Remove this so we can show the learner the important stuff without confusing them"""
         stderr = self.last_command_output.stderr
         index = stderr.rindex("File")
-        stderr = self.last_command_output.stderr[index:]
+        stderr = stderr[index:]
         clone_path = str(self.clone_dir_path.resolve())
         stderr = stderr.replace(clone_path, "")
         return stderr
@@ -265,13 +260,58 @@ class PythonTestRunner(_TestRunner):
 
 class JavaTestRunner(_TestRunner):
     def assert_no_import_errors(self):
-        breakpoint()
-        woo
+        # there can't be import errors in Java projects. The errors will come up during build.
+        pass
+
+    def sanitize_stderr(self):
+        stderr = self.last_command_output.stderr
+
+        first_at = stderr.index("\n\tat ")
+
+        while stderr.rindex("\n\tat ") != first_at:
+            stderr = stderr[: stderr.rindex("\n\tat ")]
+        return stderr
 
 
 class JavaScriptTestRunner(_TestRunner):
     def assert_no_import_errors(self):
-        if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
-            assert self.last_command_output.stderr, "there should be an error"
-            breakpoint()
-            woo
+        stderr = self.last_command_output.stderr
+        unfinished_tags = self.last_command_output.unfinished_tags()
+
+        if TAG_IMPORT_LEARNER_CODE in unfinished_tags:
+            assert stderr, "there should be an error"
+
+            if "Error: Cannot find module" in stderr:
+                error = re.search(
+                    r"(Error: Cannot find module '.*')\n", stderr
+                ).groups()[0]
+                error = error.replace("../", "")
+
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message:\n`{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
+            if "Error" in stderr:
+                error = re.search(r"\n(.*Error.*)\n", stderr).groups()[0]
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Your code is completely unrunnable! Please make sure you can actually run your code before handing it in. Here is the error message:\n`{self.sanitize_stderr()}`",
+                    status=STEP_STATUS_RED_FLAG,
+                )
+
+            raise NotImplementedError()
+
+        if TAG_RUNNING in unfinished_tags:
+            found = re.search(r"(TypeError: .* is not a function)\n", stderr)
+            if found:
+                error = found.groups()[0]
+                raise self.StopTestFunctionException(
+                    f"There was an error running your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
+
+    def sanitize_stderr(self):
+        stderr = self.last_command_output.stderr
+        stderr = stderr.split("at Object")[0].strip()
+        stderr = stderr.replace(str(self.clone_dir_path.resolve()), "")
+        stderr = "\n".join([s for s in stderr.split("\n") if s])
+        return stderr
