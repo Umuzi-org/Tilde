@@ -5,8 +5,11 @@ name = "pypi"
 
 [packages]
 pytest = "*"
-sh = "*"
 fire = "*"
+pydantic = "==1.9.0"
+instructorembedding = "*"
+torch = "*"
+sentence-transformers = "*"
 
 [dev-packages]
 

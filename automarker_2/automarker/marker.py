@@ -3,12 +3,14 @@ import re
 from pathlib import Path
 from importlib import import_module
 import sys
-import constants
+from . import constants
 
-CONFIG_DIR = Path("../../../automarker_2_config")  # TODO: Make this configurable
+CONFIG_DIR = Path(
+    os.environ["AUTOMARKER_2_CONFIG_DIR"]
+).resolve()  # TODO: Make this configurable
 DOWNLOAD_DIR = Path("../gitignore").resolve()
 
-sys.path.append(str(CONFIG_DIR.resolve()))
+sys.path.append(str(CONFIG_DIR))
 
 
 def flavours_match(config_flavours, flavours):
@@ -20,7 +22,7 @@ def flavours_match(config_flavours, flavours):
     return False
 
 
-def get_project_config_dir_path(content_item_id):
+def scan_config_dir_for_project_directories():
     names = os.listdir(CONFIG_DIR)
     for project_dir_name in names:
         full_path = CONFIG_DIR / project_dir_name
@@ -31,14 +33,32 @@ def get_project_config_dir_path(content_item_id):
             continue
         title, config_content_item_id = found.groups()
         config_content_item_id = int(config_content_item_id)
+        yield project_dir_name, config_content_item_id, title
+
+
+def get_project_config_dir_path(content_item_id):
+    for (
+        project_dir_name,
+        config_content_item_id,
+        title,
+    ) in scan_config_dir_for_project_directories():
         if config_content_item_id == content_item_id:
             return project_dir_name
 
 
+# def get_all_marker_configs():
+#     for (
+#         project_dir_name,
+#         config_content_item_id,
+#         title,
+#     ) in scan_config_dir_for_project_directories():
+#         full_project_path = CONFIG_DIR / project_dir_name
+
+
 def get_project_flavour_config(project_directory, flavours):
-    full_path = CONFIG_DIR / project_directory
-    for sub_directory_name in os.listdir(full_path):
-        sub_directory = full_path / sub_directory_name
+    full_project_path = CONFIG_DIR / project_directory
+    for sub_directory_name in os.listdir(full_project_path):
+        sub_directory = full_project_path / sub_directory_name
         if not sub_directory.is_dir():
             continue
         flavour_config_file = sub_directory / "config.py"
@@ -108,9 +128,13 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 def mark_learner_project(content_item_id, flavours, url):
     steps = mark_project(content_item_id, flavours, url)
     print_steps_result(steps)
+    print("----------------------------------------")
+    print("REVIEW")
+    print("----------------------------------------")
+    print_final_review(steps)
 
 
-def run_configuration_test(content_item_id, flavours):
+def test_project_configuration(content_item_id, flavours):
     steps = mark_project(
         content_item_id=content_item_id,
         flavours=flavours,
@@ -118,6 +142,11 @@ def run_configuration_test(content_item_id, flavours):
         fail_fast=True,
     )
     print_steps_result(steps)
+
+
+def print_final_review(steps):
+    breakpoint()
+    pass
 
 
 def print_steps_result(steps):
@@ -143,55 +172,55 @@ def print_steps_result(steps):
     print(f"FINAL STATUS: {final_status}")
 
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=705,
 #     flavours=["python"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=705,
 #     flavours=["javascript"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=223,
 #     flavours=["javascript"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=223,
 #     flavours=["python"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=223,
 #     flavours=["java"],
 # )
 
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=756,
 #     flavours=["java"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=756,
 #     flavours=["javascript"],
 # )
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=756,
 #     flavours=["python"],
 # )
 
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=186,
 #     flavours=["javascript"],
 # )
 
 
-# run_configuration_test(
+# test_project_configuration(
 #     content_item_id=186,
 #     flavours=["python"],
 # )

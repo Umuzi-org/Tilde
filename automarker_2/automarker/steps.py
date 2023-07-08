@@ -1,11 +1,10 @@
 import os
-from pathlib import Path
-
-from exceptions import SystemError
-from test_runner import PythonTestRunner, JavaTestRunner, JavaScriptTestRunner
-from utils import subprocess_run
 import datetime
-from constants import (
+from pathlib import Path
+from .exceptions import SystemError
+from .test_runner import PythonTestRunner, JavaTestRunner, JavaScriptTestRunner
+from .utils import subprocess_run
+from .constants import (
     STEP_STATUS_WAITING,
     STEP_STATUS_RUNNING,
     STEP_FINAL_STATUSES,

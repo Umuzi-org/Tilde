@@ -2,16 +2,17 @@ import re
 import os
 import sys
 from importlib import import_module
-from utils import (
+import subprocess
+
+from .utils import (
     TAG_SETUP,
     TAG_RUNNING,
     TAG_RETURNED,
     TAG_IMPORT_LEARNER_CODE,
     TAG_COMMAND_DESCRIPTION,
+    AdapterCommandOutput,
 )
-from utils import AdapterCommandOutput
-import subprocess
-from constants import (
+from .constants import (
     STEP_STATUS_PASS,
     STEP_STATUS_RED_FLAG,
     STEP_STATUS_NOT_YET_COMPETENT,
@@ -337,7 +338,7 @@ class JavaScriptTestRunner(_TestRunner):
 
         error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
         if similar_message:
-            from ai_helpers import similarity_distance
+            from automarker.ai_helpers import similarity_distance  # just in time import
 
             distance = similarity_distance(similar_message, error_message)
             if distance > max_distance:
