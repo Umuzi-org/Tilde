@@ -128,7 +128,7 @@ class _RunFunctionalTests(Step):
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         test_path = clone_dir_path / "functional_tests"
 
-        runner = self.TestRunnerClass(test_path)
+        runner = self.TestRunnerClass(test_path, clone_dir_path=clone_dir_path)
         runner.run_tests(fail_fast)
 
         if runner.has_errors():

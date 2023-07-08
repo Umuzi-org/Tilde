@@ -4,7 +4,6 @@ from pathlib import Path
 from importlib import import_module
 import sys
 import constants
-import json
 
 CONFIG_DIR = Path("../../../automarker_2_config")  # TODO: Make this configurable
 DOWNLOAD_DIR = Path("../gitignore").resolve()
@@ -63,11 +62,9 @@ def get_project_configuration(content_item_id, flavours):
 def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
     """This is the entrypoint, this function actually does the work of marking the code"""
 
-    # initial_sys_path = sys.path[:]
     # find the matching configuration
     # config is a python module
     config = get_project_configuration(content_item_id, flavours)
-    # print(config.__file__)
 
     if not config:
         raise SystemError(

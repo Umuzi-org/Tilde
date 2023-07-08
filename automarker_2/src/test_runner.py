@@ -14,8 +14,9 @@ from utils import AdapterCommandOutput
 
 class _TestRunner:
     class _BaseTestException(Exception):
-        def __init__(self, message):
+        def __init__(self, message, red_flag=False):
             self.message = message
+            self.red_flag = red_flag  # TODO: use this
             super().__init__(message)
 
     class StopTestFunctionException(_BaseTestException):
@@ -24,9 +25,11 @@ class _TestRunner:
     class StopTestSuiteException(_BaseTestException):
         """This is raised if there is no reason to continue running the test suite. Eg if there is an error in the setup then there is no point running the tests."""
 
-    def __init__(self, test_path):
+    def __init__(self, test_path, clone_dir_path):
+        self.clone_dir_path = clone_dir_path
         self.test_path = test_path
         self.results = {}
+        self.last_command_output = None
         # self.results stores the results of the test run. The format it:
         # {
         #   test_file_name_1: {
@@ -36,6 +39,13 @@ class _TestRunner:
         #  test_file_name_2: { ... },
         #  ...
         # }
+
+    def sanitize_stderr(self):
+        """the stderr from the subprocess is likely to contain information about the automarker test environment. This method removes that information from the stderr.
+
+        Override this in child classes if necessary.
+        """
+        return self.last_command_output.stderr
 
     def fail_results(self):
         """return details about the failing tests only"""
@@ -79,8 +89,6 @@ class _TestRunner:
         test_files = [s for s in test_files if re.match(r"^test_.*\.py$", s)]
 
         sys.path.append(str(self.test_path.resolve()))
-        for s in sys.path:
-            print(s)
 
         for file_name in test_files:
             self.set_test_file_name(file_name)
@@ -94,6 +102,7 @@ class _TestRunner:
                 )
 
             function_names = [s for s in dir(module) if s.startswith("test_")]
+            # breakpoint()
             for name in function_names:
                 test_function = getattr(module, name)
                 if type(test_function).__name__ != "function":
@@ -106,7 +115,6 @@ class _TestRunner:
                         command_description=self.last_command_output.command_description,
                         error_message=e.message,
                     )
-                    breakpoint()
                     pass  # we simply move onto the next test
                 if fail_fast and self.has_errors():
                     return
@@ -148,26 +156,32 @@ class _TestRunner:
 
     def assert_no_errors(self):
         if self.last_command_output.stderr:
-            # self.register_test_error(
-            #     command_output.command_description,  # red flag
-            #     f"Your code produced an error when we tried to run it. This is very bad because it means you didn't try to run your code before you handed it in.\n\nHere is the error message\n\n{command_output.stderr}",
-            # )
             raise self.StopTestFunctionException(
-                f"Your code produced an error when we tried to run it. This is very bad because it means you didn't try to run your code before you handed it in.\n\nHere is the error message\n\n{self.last_command_output.stderr}"
+                f"Your code produced an error when we tried to run it. This is very bad because it means your code doesn't run under normal conditions.\n\nHere is the error message\n\n{self.sanitize_stderr()}"
             )
         return True
 
     def assert_returned(self, expected, sort_key=None):
         returned = self.last_command_output[TAG_RETURNED]
 
+        message = f"Your code returned the wrong value. It returned `{self.last_command_output[TAG_RETURNED]}` but we expected `{expected}`."
+
         if sort_key:
-            returned = sorted(returned, key=sort_key)
+            try:
+                returned = sorted(returned, key=sort_key)
+            except TypeError:
+                # if we cant sort it then it means the learner returned the wrong datatype
+                self.register_test_error(
+                    self.last_command_output.command_description,
+                    f"{message} It seems that you returned the wrong datatype. Note that the ordering of the elements doesn't matter in this case.",
+                )
+                return
             expected = sorted(expected, key=sort_key)
 
         if returned != expected:
             self.register_test_error(
                 self.last_command_output.command_description,
-                f"Your code returned the wrong value. It returned `{self.last_command_output[TAG_RETURNED]}` but we expected `{expected}`",
+                f"{message} Note that the ordering of the elements needs to be exactly the same.",
             )
 
     def assert_printed(self, expected):
@@ -181,7 +195,6 @@ class _TestRunner:
 
 class PythonTestRunner(_TestRunner):
     def assert_no_import_errors(self):
-        breakpoint()
         if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
             assert self.last_command_output.stderr, "there should be an error"
             if "ModuleNotFoundError" in self.last_command_output.stderr:
@@ -191,10 +204,34 @@ class PythonTestRunner(_TestRunner):
                 raise self.StopTestFunctionException(
                     f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`"
                 )
+            elif "ImportError" in self.last_command_output.stderr:
+                error = re.search(
+                    r"\n(ImportError.*) \(.*\n", self.last_command_output.stderr
+                ).groups()[0]
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`"
+                )
+            elif "Traceback" in self.last_command_output.stderr:
+                # get the index of the last time the word File was mentioned in stderr
+
+                raise self.StopTestFunctionException(
+                    f"There was a fatal error while importing your code. This is very bad because your code is completely unusable. Make sure you can run your own code before you hand it in. `{self.sanitize_stderr()}`",
+                    red_flag=True,
+                )
+
             else:
                 breakpoint()
-                # a different kind of import error
-                foo
+                here
+                # this shouldn't happen
+
+    def sanitize_stderr(self):
+        """The traceback will include a bunch of ifo about our test environment. Remove this so we can show the learner the important stuff without confusing them"""
+        stderr = self.last_command_output.stderr
+        index = stderr.rindex("File")
+        stderr = self.last_command_output.stderr[index:]
+        clone_path = str(self.clone_dir_path.resolve())
+        stderr = stderr.replace(clone_path, "")
+        return stderr
 
 
 class JavaTestRunner(_TestRunner):
