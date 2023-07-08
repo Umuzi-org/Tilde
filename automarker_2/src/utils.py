@@ -17,13 +17,15 @@ output_tags = [
 ]
 
 
-def subprocess_run(command):
+def subprocess_run(command, timeout=60):
     output = subprocess.run(
         command,
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        timeout=timeout,
     )
+
     stdout = output.stdout.decode("utf-8")
     stderr = output.stderr.decode("utf-8")
 

@@ -10,6 +10,7 @@ from utils import (
     TAG_COMMAND_DESCRIPTION,
 )
 from utils import AdapterCommandOutput
+import subprocess
 
 
 class _TestRunner:
@@ -28,8 +29,15 @@ class _TestRunner:
     def __init__(self, test_path, clone_dir_path):
         self.clone_dir_path = clone_dir_path
         self.test_path = test_path
-        self.results = {}
+
+        # the following attributes are used internally
+
+        self.test_file_name = (
+            None  # the name of the file containing the tests we are currently running
+        )
+        self.test_name = None  # the name of the test we are currently running
         self.last_command_output = None
+        self.results = {}
         # self.results stores the results of the test run. The format it:
         # {
         #   test_file_name_1: {
@@ -75,7 +83,13 @@ class _TestRunner:
 
         assert command, "command should not be empty"
         assert type(command) is str, "command must be a string"
-        self.last_command_output = AdapterCommandOutput.run_command(command)
+        try:
+            self.last_command_output = AdapterCommandOutput.run_command(command)
+        except subprocess.TimeoutExpired:
+            raise self.StopTestSuiteException(
+                "Your code took too long to run. Are you sure you don't have any infinite loops? Make sure that you can run your own code"
+            )
+
         self.assert_setup_empty()
         self.assert_command_description_present()
         self.assert_no_import_errors()
@@ -102,7 +116,6 @@ class _TestRunner:
                 )
 
             function_names = [s for s in dir(module) if s.startswith("test_")]
-            # breakpoint()
             for name in function_names:
                 test_function = getattr(module, name)
                 if type(test_function).__name__ != "function":
