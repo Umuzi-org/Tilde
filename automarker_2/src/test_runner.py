@@ -219,6 +219,10 @@ class _TestRunner:
                 f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )
 
+    def assert_similar_error_raised(self):
+        """implement in subclass"""
+        raise NotImplementedError()
+
 
 class PythonTestRunner(_TestRunner):
     def assert_no_import_errors(self):
@@ -257,6 +261,10 @@ class PythonTestRunner(_TestRunner):
         stderr = stderr.replace(clone_path, "")
         return stderr
 
+    def assert_similar_error_raised(self):
+        breakpoint()
+        todo
+
 
 class JavaTestRunner(_TestRunner):
     def assert_no_import_errors(self):
@@ -271,6 +279,10 @@ class JavaTestRunner(_TestRunner):
         while stderr.rindex("\n\tat ") != first_at:
             stderr = stderr[: stderr.rindex("\n\tat ")]
         return stderr
+
+    def assert_similar_error_raised(self):
+        breakpoint()
+        todo
 
 
 class JavaScriptTestRunner(_TestRunner):
@@ -315,3 +327,32 @@ class JavaScriptTestRunner(_TestRunner):
         stderr = stderr.replace(str(self.clone_dir_path.resolve()), "")
         stderr = "\n".join([s for s in stderr.split("\n") if s])
         return stderr
+
+    def assert_similar_error_raised(self, similar_message, max_distance):
+        stderr = self.last_command_output.stderr
+        if not stderr:
+            raise self.StopTestFunctionException(
+                "There was meant to be an error but there wasn't one. Make sure you remember to throw an error when you need to. If you are throwing the error then the problem might be that you are catching it as well. Don't catch errors unless you know what you are doing."
+            )
+
+        error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
+        if similar_message:
+            from ai_helpers import similarity_distance
+
+            distance = similarity_distance(similar_message, error_message)
+            if distance > max_distance:
+                raise self.StopTestFunctionException(
+                    f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
+
+
+# re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
+'UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "bugger".] {'
+
+# -> re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
+# (Pdb) re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
+"Error: Not implemented"
+
+
+"Error: Request failed with status code 404"

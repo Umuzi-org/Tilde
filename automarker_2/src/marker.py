@@ -106,8 +106,8 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 
 
 def mark_learner_project(content_item_id, flavours, url):
-    final_mark = mark_project(content_item_id, flavours, url)
-    format_as_review(final_mark)
+    steps = mark_project(content_item_id, flavours, url)
+    print_steps_result(steps)
 
 
 def run_configuration_test(content_item_id, flavours):
@@ -117,7 +117,10 @@ def run_configuration_test(content_item_id, flavours):
         self_test=True,
         fail_fast=True,
     )
+    print_steps_result(steps)
 
+
+def print_steps_result(steps):
     final_status = constants.STEP_STATUS_PASS
 
     print()
@@ -160,11 +163,16 @@ def run_configuration_test(content_item_id, flavours):
 #     flavours=["python"],
 # )
 
-run_configuration_test(
-    content_item_id=223,
-    flavours=["java"],
-)
+# run_configuration_test(
+#     content_item_id=223,
+#     flavours=["java"],
+# )
 
+
+# run_configuration_test(
+#     content_item_id=756,
+#     flavours=["java"],
+# )
 
 # run_configuration_test(
 #     content_item_id=756,
@@ -176,13 +184,14 @@ run_configuration_test(
 #     flavours=["python"],
 # )
 
+
 # run_configuration_test(
-#     content_item_id=756,
-#     flavours=["java"],
+#     content_item_id=186,
+#     flavours=["javascript"],
 # )
 
 
 # run_configuration_test(
 #     content_item_id=186,
-#     flavours=["javascript"],
+#     flavours=["python"],
 # )
