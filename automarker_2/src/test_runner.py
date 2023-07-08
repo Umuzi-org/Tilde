@@ -11,13 +11,18 @@ from utils import (
 )
 from utils import AdapterCommandOutput
 import subprocess
+from constants import (
+    STEP_STATUS_PASS,
+    STEP_STATUS_RED_FLAG,
+    STEP_STATUS_NOT_YET_COMPETENT,
+)
 
 
 class _TestRunner:
     class _BaseTestException(Exception):
-        def __init__(self, message, red_flag=False):
+        def __init__(self, message, status):
             self.message = message
-            self.red_flag = red_flag  # TODO: use this
+            self.status = status
             super().__init__(message)
 
     class StopTestFunctionException(_BaseTestException):
@@ -54,6 +59,17 @@ class _TestRunner:
         Override this in child classes if necessary.
         """
         return self.last_command_output.stderr
+
+    def status(self):
+        if self.has_errors():
+            # look through failures, if any are red flags then return red flag else return Not yet competent
+            for test_file_name, test_results in self.results.items():
+                for test_name, failed_assertions in test_results.items():
+                    for assertion in failed_assertions:
+                        if assertion["status"] == STEP_STATUS_RED_FLAG:
+                            return STEP_STATUS_RED_FLAG
+                return STEP_STATUS_NOT_YET_COMPETENT
+        return STEP_STATUS_PASS
 
     def fail_results(self):
         """return details about the failing tests only"""
@@ -124,11 +140,8 @@ class _TestRunner:
                 try:
                     test_function(self)
                 except self.StopTestFunctionException as e:
-                    self.register_test_error(
-                        command_description=self.last_command_output.command_description,
-                        error_message=e.message,
-                    )
-                    pass  # we simply move onto the next test
+                    self.register_test_error(error_message=e.message, status=e.status)
+                    # once we have logged the error er move onto the next test
                 if fail_fast and self.has_errors():
                     return
 
@@ -144,9 +157,13 @@ class _TestRunner:
         self.test_name = test_name
         self.results[self.test_file_name][test_name] = []
 
-    def register_test_error(self, command_description, error_message):
+    def register_test_error(self, error_message, status=STEP_STATUS_NOT_YET_COMPETENT):
         self.results[self.test_file_name][self.test_name].append(
-            {"error_message": error_message, "command_description": command_description}
+            {
+                "error_message": error_message,
+                "command_description": self.last_command_output.command_description,
+                "status": status,
+            }
         )
 
     def assert_command_description_present(self):
@@ -163,14 +180,14 @@ class _TestRunner:
     def assert_no_import_side_effects(self):
         if self.last_command_output[TAG_IMPORT_LEARNER_CODE]:
             self.register_test_error(
-                self.last_command_output.command_description,
                 f"When we imported your code then there were unexpected side effects. For code to be as useful and reusable as possible it should be safe to import. So importing should not call functions or print anything.\n\nHere is what your code printed out when we imported it:\n\n{self.last_command_output[TAG_IMPORT_LEARNER_CODE]}",
             )
 
     def assert_no_errors(self):
         if self.last_command_output.stderr:
             raise self.StopTestFunctionException(
-                f"Your code produced an error when we tried to run it. This is very bad because it means your code doesn't run under normal conditions.\n\nHere is the error message\n\n{self.sanitize_stderr()}"
+                f"Your code produced an error when we tried to run it. This is very bad because it means your code doesn't run under normal conditions.\n\nHere is the error message\n\n{self.sanitize_stderr()}",
+                status=STEP_STATUS_NOT_YET_COMPETENT,
             )
         return True
 
@@ -185,7 +202,6 @@ class _TestRunner:
             except TypeError:
                 # if we cant sort it then it means the learner returned the wrong datatype
                 self.register_test_error(
-                    self.last_command_output.command_description,
                     f"{message} It seems that you returned the wrong datatype. Note that the ordering of the elements doesn't matter in this case.",
                 )
                 return
@@ -193,7 +209,6 @@ class _TestRunner:
 
         if returned != expected:
             self.register_test_error(
-                self.last_command_output.command_description,
                 f"{message} Note that the ordering of the elements needs to be exactly the same.",
             )
 
@@ -201,7 +216,6 @@ class _TestRunner:
         printed = self.last_command_output[TAG_RUNNING]
         if printed != expected:
             self.register_test_error(
-                self.last_command_output.command_description,
                 f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )
 
@@ -215,21 +229,23 @@ class PythonTestRunner(_TestRunner):
                     r"\n(ModuleNotFoundError.*')\n", self.last_command_output.stderr
                 ).groups()[0]
                 raise self.StopTestFunctionException(
-                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`"
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
             elif "ImportError" in self.last_command_output.stderr:
                 error = re.search(
                     r"\n(ImportError.*) \(.*\n", self.last_command_output.stderr
                 ).groups()[0]
                 raise self.StopTestFunctionException(
-                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`"
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
             elif "Traceback" in self.last_command_output.stderr:
                 # get the index of the last time the word File was mentioned in stderr
 
                 raise self.StopTestFunctionException(
                     f"There was a fatal error while importing your code. This is very bad because your code is completely unusable. Make sure you can run your own code before you hand it in. `{self.sanitize_stderr()}`",
-                    red_flag=True,
+                    status=STEP_STATUS_RED_FLAG,
                 )
 
             else:
@@ -255,5 +271,7 @@ class JavaTestRunner(_TestRunner):
 
 class JavaScriptTestRunner(_TestRunner):
     def assert_no_import_errors(self):
-        breakpoint()
-        woo
+        if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
+            assert self.last_command_output.stderr, "there should be an error"
+            breakpoint()
+            woo

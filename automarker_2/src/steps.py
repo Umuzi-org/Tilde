@@ -5,6 +5,14 @@ from exceptions import SystemError
 from test_runner import PythonTestRunner, JavaTestRunner, JavaScriptTestRunner
 from utils import subprocess_run
 import datetime
+from constants import (
+    STEP_STATUS_WAITING,
+    STEP_STATUS_RUNNING,
+    STEP_FINAL_STATUSES,
+    STEP_STATUS_PASS,
+    STEP_STATUS_NOT_YET_COMPETENT,
+    STEP_STATUS_RED_FLAG,
+)
 
 
 def get_all_file_paths(directory):
@@ -16,16 +24,11 @@ def get_all_file_paths(directory):
 class Step:
     name = "name not defined"
 
-    STATUS_PASS = "pass"
-    STATUS_NOT_YET_COMPETENT = "not yet competent"
-    STATUS_RED_FLAG = "red flag"
-    STATUS_WAITING = "waiting"
-    STATUS_RUNNING = "running"
-
-    FINAL_STATUSES = [STATUS_PASS, STATUS_NOT_YET_COMPETENT, STATUS_RED_FLAG]
+    class _StopStepException(Exception):
+        """raised when the step outcome is set. This prevents the step from continuing to run"""
 
     def __init__(self):
-        self.status = self.STATUS_WAITING
+        self.status = STEP_STATUS_WAITING
         self.message = None
         self.details = None
         self.start_time = None
@@ -46,17 +49,20 @@ class Step:
 
     def execute_run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         self.start_time = datetime.datetime.now()
-        self.status = self.STATUS_RUNNING
+        self.status = STEP_STATUS_RUNNING
 
-        self.run(project_uri, clone_dir_path, self_test, config, fail_fast)
+        try:
+            self.run(project_uri, clone_dir_path, self_test, config, fail_fast)
+        except self._StopStepException:
+            pass  # nothing to do. The step terminated normally
 
         assert (
-            self.status in self.FINAL_STATUSES
+            self.status in STEP_FINAL_STATUSES
         ), f"{self}: Remember to call set_outcome in your run method"
 
     def set_outcome(self, status, message=None, details=None):
         assert (
-            self.status == self.STATUS_RUNNING
+            self.status == STEP_STATUS_RUNNING
         ), f"You can only set the outcome once. It was already set to: \n\tstatus = {self.status} \n\tmessage={self.message}"
 
         self.status = status
@@ -64,7 +70,7 @@ class Step:
         self.details = details
         self.end_time = datetime.datetime.now()
 
-        # raise
+        raise self._StopStepException()
 
 
 class Clone(Step):
@@ -88,7 +94,7 @@ class Clone(Step):
                 self_test=self_test,
                 config=config.__file__,
             )
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class PrepareFunctionalTests(Step):
@@ -117,7 +123,7 @@ class PrepareFunctionalTests(Step):
         adapter_path = final_test_path / "adapter"
         assert adapter_path.exists(), f"{adapter_path} does not exist"
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class _RunFunctionalTests(Step):
@@ -134,24 +140,24 @@ class _RunFunctionalTests(Step):
         if runner.has_errors():
             message = f"Your code has errors. Please fix them and try again"
             self.set_outcome(
-                status=self.STATUS_RED_FLAG,
+                status=runner.status(),
                 message=message,
                 details=runner.fail_results(),
             )
             return
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
     def details_string(self):
         result = ""
         for test_suit, test_functions in self.details.items():
-            result += f"\nTest suite: {test_suit[:-2]}:"
+            result += f"\nTest suite: {test_suit[:-3]}:"
             for test_function, test_result in test_functions.items():
                 result += f"\n\t{test_function}"
                 for test_result in test_result:
                     command_description = test_result["command_description"]
                     error_message = test_result["error_message"]
-                    result += f"\n\t\tThere was an error when we {command_description}: {error_message}"
+                    result += f"\n\t\tThere was an error when we tried to {command_description}:\n{error_message}"
         return result
 
 
@@ -184,14 +190,13 @@ class JavaBuild(Step):
         command = f"javac {clone_dir_path}/*.java"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
-            message = (
-                f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again",
-            )
+            message = f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again"
+
             return StepOutcome(
-                status=STATUS_RED_FLAG, message=message, details={"stderr": stderr}
+                status=TEST_STATUS_RED_FLAG, message=message, details={"stderr": stderr}
             )
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class _CheckNoImports(Step):
@@ -212,11 +217,12 @@ class _CheckNoImports(Step):
             text = Path(path).read_text()
             for check, error_message in self.checks:
                 if check(text):
+                    # TODO: set status and message
                     return StepOutcome(
                         status=STATUS_NOT_YET_COMPETENT, message=error_message
                     )
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class JavaCheckNoImports(_CheckNoImports):
@@ -274,7 +280,7 @@ class JavaScriptCheckNodeModulesMissing(Step):
 
             return StepOutcome(STATUS_NOT_YET_COMPETENT, message=message)
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class JavaScriptCheckPackageJsonExists(Step):
@@ -302,7 +308,7 @@ class PythonCheckGitignore(Step):
             message = "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of a __pycache__ or .pytest_cache directory"
             return StepOutcome(status=STATUS_NOT_YET_COMPETENT, message=message)
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class JavaCheckGitignore(Step):
@@ -314,9 +320,9 @@ class JavaCheckGitignore(Step):
         ]
         if class_paths:
             message = "It looks like you have submitted some automatically generated files. Please learn about gitignore best practices. Chances are that you are seeing this because of some .class files in your repo"
-            return StepOutcome(status=STATUS_NOT_YET_COMPETENT, message=message)
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
 
-        self.set_outcome(status=self.STATUS_PASS)
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class PythonCheckRequirementsTxtExists(Step):

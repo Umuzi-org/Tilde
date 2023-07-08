@@ -72,10 +72,10 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
         )
 
     assert (
-        config.status in constants.ALLOWED_STATUSES
+        config.status in constants.CONFIG_ALLOWED_STATUSES
     ), f"Invalid status: {config.status}"
 
-    if config.status == constants.STATUS_NOT_IMPLEMENTED:
+    if config.status == constants.CONFIG_STATUS_NOT_IMPLEMENTED:
         raise NotImplementedError("This project has not been implemented yet")
 
     clone_dir_name = (
@@ -99,7 +99,7 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
             config=config,
             fail_fast=fail_fast,
         )
-        if step.status != step.STATUS_PASS:
+        if step.status != constants.STEP_STATUS_PASS:
             break
 
     return config.steps
@@ -118,8 +118,15 @@ def run_configuration_test(content_item_id, flavours):
         fail_fast=True,
     )
 
+    final_status = constants.STEP_STATUS_PASS
+
     print()
     for step in steps:
+        if constants.STEP_FINAL_STATUSES.index(
+            step.status
+        ) > constants.STEP_FINAL_STATUSES.index(final_status):
+            final_status = step.status
+
         print(f"STEP: {step.name} ")
         print(f"\tDuration: {step.duration()}")
         print(f"\tStatus: {step.status}")
@@ -130,6 +137,8 @@ def run_configuration_test(content_item_id, flavours):
             print(step.details_string())
         print()
 
+    print(f"FINAL STATUS: {final_status}")
+
 
 run_configuration_test(
     content_item_id=705,
@@ -137,12 +146,9 @@ run_configuration_test(
 )
 
 
-# print("222222222222222222222222222222")
-# mark_project(
+# run_configuration_test(
 #     content_item_id=705,
 #     flavours=["javascript"],
-#     self_test=True,
-#     fail_fast=True,
 # )
 
 
