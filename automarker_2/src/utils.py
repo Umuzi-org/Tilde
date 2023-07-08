@@ -18,6 +18,7 @@ output_tags = [
 
 
 def subprocess_run(command, timeout=60):
+    # TODO: some things should take longer than others. Set a lower default for timeout and then increase it for certain commands
     output = subprocess.run(
         command,
         shell=True,
