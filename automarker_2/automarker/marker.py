@@ -8,7 +8,7 @@ from . import constants
 CONFIG_DIR = Path(
     os.environ["AUTOMARKER_2_CONFIG_DIR"]
 ).resolve()  # TODO: Make this configurable
-DOWNLOAD_DIR = Path("../gitignore").resolve()
+DOWNLOAD_DIR = Path("./gitignore").resolve()
 
 sys.path.append(str(CONFIG_DIR))
 
@@ -79,6 +79,9 @@ def get_project_configuration(content_item_id, flavours):
 
 def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
     """This is the entrypoint, this function actually does the work of marking the code"""
+
+    if not DOWNLOAD_DIR.exists():
+        os.system(f"mkdir -p {DOWNLOAD_DIR}")
 
     # find the matching configuration
     # config is a python module

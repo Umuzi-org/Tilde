@@ -150,19 +150,6 @@ class JavaPrepareFunctionalTests(PrepareFunctionalTests):
             self.set_outcome(status=STEP_STATUS_PASS)
 
 
-# /home/sheena/workspace/Tilde/automarker_2/gitignore/223-java-perfect/functional_tests/adapter/RunPersonHello.java:22: error: cannot find symbol
-#         Person person = new Person(name=name, age=age, gender=gender, interests=interests);
-#         ^
-#   symbol:   class Person
-#   location: class RunPersonHello
-# /home/sheena/workspace/Tilde/automarker_2/gitignore/223-java-perfect/functional_tests/adapter/RunPersonHello.java:22: error: cannot find symbol
-#         Person person = new Person(name=name, age=age, gender=gender, interests=interests);
-#                             ^
-#   symbol:   class Person
-#   location: class RunPersonHello
-# 2 errors
-
-
 class _RunFunctionalTests(Step):
     name = "running functional tests"
 

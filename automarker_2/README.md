@@ -133,6 +133,19 @@ python print_configuration.py | grep github
 # you can also use multiple greps
 # eg: list only the javascript configuration that is in DEBUG mode
 python print_configuration.py | grep javascript | grep DEBUG 
+```
+
+You can combine that with `wc` to count the number of projects in different statuses. Eg:
+
+```
+# How many configurations are there in total ?
+python print_configuration.py |  wc -l 
+
+# How many python configurations are there?
+python print_configuration.py | grep python | wc -l 
+
+# How many python configurations are in debug mode?
+python print_configuration.py | grep python | grep DEBUG | wc -l 
 
 ```
 
