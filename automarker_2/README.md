@@ -1,4 +1,4 @@
-# Automarker 2 
+# Automarker 2
 
 This project is an improvement on the last version of the automarker. It is designed to overcome certain shortcomings in previous versions.
 
@@ -27,25 +27,36 @@ At this point, your configuration repo will be at `/somewhere/sensible/automarke
 
 3. Make sure your github ssh key is set up 
 
-You will need to clone private repos and you wont be able to enter a username and password when you do so. 
+The automarker needs to clone private repos in an automated way so an ssh key is needed. 
 
-## How to run 
 
-1. Set up your shell 
+## How to run the unit tests
+
+Note that there currently isn't very high coverage on the unit tests. Contributions are welcome.
+
+```
+pipenv shell
+python -m pytest .
+```
+
+
+## How to run the automarker
+
+1. Activate up your shell and make sure all the required environmental variables exported
 
 ```
 pipenv shell 
 export AUTOMARKER_2_CONFIG_DIR=/somewhere/sensible/automarker-2-config
 ```
 
-**A cool trick:** If you don't want ot have to remember to `export` your environmental variables all the time then do this:
+**A cool trick:** If you don't want to have to remember to `export` your environmental variables all the time then do this:
 
 ```
 pipenv shell
 which python
 ```
 
-This will print out the path to the python executable associated with the current virtual environment. Eg: `/home/yourname/.VirtualEnvs/automarker_2-nDA8r9UM/bin/python`.
+This will print out the path to the Python executable associated with the current virtual environment. Eg: `/home/yourname/.VirtualEnvs/automarker_2-nDA8r9UM/bin/python`.
 
 Now open up the `activate` script in that same directory:
 
@@ -64,19 +75,12 @@ eg:
 python check_project_configuration.py 186 javascript
 ```
 
-## How to run the unit tests
+The commands are detailed below:
 
-Note that there currently isn't very high coverage on the unit tests. Contributions are welcome.
+### Automarker commands
 
-```
-pipenv shell
-python -m pytest .
-```
-
-
-## Commands you might need
-
-### Marking code in a repo 
+There are scripts available for everything you might want to do:
+#### Mark a learner's code
 
 Running the following command does the following:
 
@@ -106,7 +110,7 @@ Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo
     - make a pr that fixes the problem
 
 
-### Print configuration
+#### Print configuration summary
 
 If you want to quickly see if something is configured then you can either dig through the configuration repo, or you can run this command:
 
@@ -159,16 +163,16 @@ python print_configuration.py | grep python | grep DEBUG | wc -l
 
 ```
 
-### Configuration statuses
+##### Understanding configuration statuses
 
 - NOT_IMPLEMENTED: We still need to build this one out
 - DEBUG: The configuration is alive and kicking, but we aren't yet 100% confident in its output. Staff are encouraged to make use of this configuration in order to build confidence over time 
 - PRODUCTION: The configuration has been battle tested. We are confident that the output is correct
 - DEACTIVATED: This configuration was in DEBUG or PRODUCTION mode and something went wrong so we had to turn it off
 
-### Configuration check 
+#### Configuration self-testing 
 
-This runs the tests against the configured "perfect project". This is useful if you are configuring projects yourself. 
+This runs the tests against the configured "perfect project". This is useful if you are configuring projects yourself or if you are changing how any part of the automarker works.
 
 ```
 python check_project_configuration.py CONTENT_ITEM_ID FLAVORS
@@ -177,9 +181,9 @@ python check_project_configuration.py CONTENT_ITEM_ID FLAVORS
 
 python check_project_configuration.py 186 javascript
 ```
-### Multiple flavors 
+### Running a command with multiple flavors 
 
-If you ever need to list out multiple flavors then do it like so:
+If you ever need to input multiple flavors for a command then do it like so:
 
 ```
 python check_project_configuration.py 999 javascript,karma
@@ -197,7 +201,7 @@ If you see a problem in some automarker configuration then please:
 3. Test it out on a few learner projects if you can dig some up
 4. Make a PR 
 
-If you see some way to improve the actual automarker then pleas go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
+If you see some way to improve the actual automarker then please go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
 
 - bug fixes
 - unit tests
@@ -206,42 +210,48 @@ If you see some way to improve the actual automarker then pleas go ahead and do 
 - anything else that will make this easier to use
 - anything else that will make this easier to contribute to
 
-## Shortcomings to overcome 
+## Previous automarker shortcomings to overcome 
 
-The previous automarker version has the following problems:
+The previous automarker version has a number of problems. We are working to overcome the following: 
 
-1. unDRY project configuration 
+1. unDRY project configuration [DONE]
 
 If we write configuration for a single project in multiple languages, then the various test cases need to be rewritten in multiple languages. There is no way for data to be shared.
 
-2. central configuration file:
+2. central configuration file [DONE]
 
 The code and the config are separate. The configuration file is unwieldy and so people keep putting things in random places instead of grouping configs sensibly. Config should be colocated with the code
 
-3. Only one level of failure 
+3. Only one level of failure [DONE]
 
 We should allow multiple levels. Eg: if the learner's code doesn't run at all (meaning, they didn't run it at all) then we would want to give them a bad review. On the other hand, if there is just a little bug we should not be as harsh. 
 
-4. Rigid configuration 
+4. Rigid configuration [DONE]
 
 It would be useful to be able to tweak the steps in different marker pipelines. Right now the only way to do that is to create whole new markers.
 
-5. Testing frameworks do weird things between different languages
+5. Testing frameworks do weird things between different languages [DONE]
 
 Logs and errors get swallowed in different ways. It's hard to be consistent about gathering info and sharing it with the user.
 
-6. Error text is not user-friendly
+6. Error text is not user-friendly [DONE]
 
 Due to the weird things that happen between languages, it is hard to give learners good quality feedback. 
 
-7. No visibility of test runs
+7. No visibility of test runs [DONE in command-line commands]
 
 If this was a CI/CD thing then we would be able to see what happened over time. What was run, when it was run, what step happened when... Currently the automarker is pretty opaque.
 
-8. Multi-part projects need DRY tests
+8. Multi-part projects need DRY tests [TODO]
 
 Currently, if there is a multi-part project we need to explicitly copy tests from one perfect project to the next. We should be able to extend things somehow.
 
-9. Now way to track performance of an automarker config over time. We can see reviews that were left, but we can't see when a user needed to step in and stop the process. 
+9. No way to track performance of an automarker config over time. [TODO]
 
-10. Self-test is a pain in the bum. It would be nice to be able to run a self-test for everything with a single command
+We can see reviews that were left, but we can't see when a user needed to step in and stop the process. 
+
+10. Self-test is a pain in the bum [TODO] 
+
+It would be nice to be able to run a self-test for everything with a single command
+
+11. Staff members were not in a good place to contribute or make use of the config since we needed to connect straight to the Tilde db [DONE]
