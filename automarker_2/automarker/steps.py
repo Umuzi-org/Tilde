@@ -179,13 +179,13 @@ class _RunFunctionalTests(Step):
     def details_string(self):
         result = ""
         for test_suit, test_functions in self.details.items():
-            result += f"\nTest suite: {test_suit[:-3]}:"
+            result += f"\n\n# Test suite: {test_suit[:-3]}"
             for test_function, test_result in test_functions.items():
-                result += f"\n\t{test_function}"
+                result += f"\n## Test: {test_function}"
                 for test_result in test_result:
                     command_description = test_result["command_description"]
                     error_message = test_result["error_message"]
-                    result += f"\n\t\tThere was an error when we tried to {command_description}:\n{error_message}"
+                    result += f"\n### FAILURE: There was an error when we tried to {command_description}:\n{error_message}"
         return result
 
 

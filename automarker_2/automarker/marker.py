@@ -97,20 +97,31 @@ def _mark_project(
 
 
 def _print_final_review(steps):
-    breakpoint()
-    pass
+    final_status = _get_steps_final_status(steps)
+    if final_status == constants.STEP_STATUS_PASS:
+        comments = "All our tests passed, well done!"
+
+    else:
+        failing_steps = [
+            step
+            for step in steps
+            if step.status
+            in [constants.STEP_STATUS_NOT_YET_COMPETENT, constants.STEP_STATUS_RED_FLAG]
+        ]
+        comments = (
+            "Your project failed some of our tests. Here are the details"
+            + "\n\n".join(step.details_string() for step in failing_steps)
+        )
+    print("----------------------------------------")
+    print("# REVIEW:\n")
+    print(f"FINAL REVIEW STATUS: {final_status}\n")
+    print(comments)
+    print("----------------------------------------")
 
 
 def _print_steps_result(steps):
-    final_status = constants.STEP_STATUS_PASS
-
     print()
     for step in steps:
-        if constants.STEP_FINAL_STATUSES.index(
-            step.status
-        ) > constants.STEP_FINAL_STATUSES.index(final_status):
-            final_status = step.status
-
         print(f"STEP: {step.name} ")
         print(f"\tDuration: {step.duration()}")
         print(f"\tStatus: {step.status}")
@@ -121,15 +132,25 @@ def _print_steps_result(steps):
             print(step.details_string())
         print()
 
-    print(f"FINAL STATUS: {final_status}")
+    print(f"FINAL STATUS: {_get_steps_final_status(steps)}")
+
+
+def _get_steps_final_status(steps):
+    final_status = constants.STEP_STATUS_PASS
+
+    for step in steps:
+        if constants.STEP_FINAL_STATUSES.index(
+            step.status
+        ) > constants.STEP_FINAL_STATUSES.index(final_status):
+            final_status = step.status
+
+    return final_status
 
 
 def mark_learner_project(content_item_id, flavours, url):
     steps = _mark_project(content_item_id, flavours, url)
     _print_steps_result(steps)
-    print("----------------------------------------")
-    print("REVIEW")
-    print("----------------------------------------")
+
     _print_final_review(steps)
 
 
