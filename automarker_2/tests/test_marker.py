@@ -1,5 +1,6 @@
 import pytest
-from marker import _flavours_match
+
+from automarker.marker import _flavours_match
 
 
 def test__flavours_match():

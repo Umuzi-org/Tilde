@@ -36,39 +36,7 @@ def _scan_config_dir_for_project_directories():
         yield project_dir_name, config_content_item_id, title
 
 
-# def get_project_config_dir_path(content_item_id):
-#     for (
-#         project_dir_name,
-#         config_content_item_id,
-#         title,
-#     ) in _scan_config_dir_for_project_directories():
-#         if config_content_item_id == content_item_id:
-#             return project_dir_name
-
-
-def get_all_marker_configs():
-    for (
-        project_dir_name,
-        config_content_item_id,
-        title,
-    ) in _scan_config_dir_for_project_directories():
-        full_project_path = CONFIG_DIR / project_dir_name
-        for sub_directory_name in os.listdir(full_project_path):
-            sub_directory = full_project_path / sub_directory_name
-            if not sub_directory.is_dir():
-                continue
-            config_file_path = sub_directory / "config.py"
-            if not config_file_path.is_file():
-                continue
-            configuration = import_module(
-                f"{project_dir_name}.{sub_directory_name}.config"
-            )
-            configuration.title = title
-            configuration.content_item_id = config_content_item_id
-            yield configuration
-
-
-def get_project_configuration(content_item_id, flavours):
+def _get_project_configuration(content_item_id, flavours):
     for configuration in get_all_marker_configs():
         if configuration.content_item_id != content_item_id:
             continue
@@ -77,7 +45,9 @@ def get_project_configuration(content_item_id, flavours):
             return configuration
 
 
-def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
+def _mark_project(
+    content_item_id, flavours, url=None, self_test=False, fail_fast=False
+):
     """This is the entrypoint, this function actually does the work of marking the code"""
 
     if not DOWNLOAD_DIR.exists():
@@ -85,7 +55,7 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
 
     # find the matching configuration
     # config is a python module
-    config = get_project_configuration(content_item_id, flavours)
+    config = _get_project_configuration(content_item_id, flavours)
 
     if not config:
         raise SystemError(
@@ -126,31 +96,12 @@ def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast
     return config.steps
 
 
-def mark_learner_project(content_item_id, flavours, url):
-    steps = mark_project(content_item_id, flavours, url)
-    print_steps_result(steps)
-    print("----------------------------------------")
-    print("REVIEW")
-    print("----------------------------------------")
-    print_final_review(steps)
-
-
-def test_project_configuration(content_item_id, flavours):
-    steps = mark_project(
-        content_item_id=content_item_id,
-        flavours=flavours,
-        self_test=True,
-        fail_fast=True,
-    )
-    print_steps_result(steps)
-
-
-def print_final_review(steps):
+def _print_final_review(steps):
     breakpoint()
     pass
 
 
-def print_steps_result(steps):
+def _print_steps_result(steps):
     final_status = constants.STEP_STATUS_PASS
 
     print()
@@ -173,55 +124,42 @@ def print_steps_result(steps):
     print(f"FINAL STATUS: {final_status}")
 
 
-# test_project_configuration(
-#     content_item_id=705,
-#     flavours=["python"],
-# )
-
-# test_project_configuration(
-#     content_item_id=705,
-#     flavours=["javascript"],
-# )
-
-# test_project_configuration(
-#     content_item_id=223,
-#     flavours=["javascript"],
-# )
-
-# test_project_configuration(
-#     content_item_id=223,
-#     flavours=["python"],
-# )
-
-# test_project_configuration(
-#     content_item_id=223,
-#     flavours=["java"],
-# )
+def mark_learner_project(content_item_id, flavours, url):
+    steps = _mark_project(content_item_id, flavours, url)
+    _print_steps_result(steps)
+    print("----------------------------------------")
+    print("REVIEW")
+    print("----------------------------------------")
+    _print_final_review(steps)
 
 
-# test_project_configuration(
-#     content_item_id=756,
-#     flavours=["java"],
-# )
-
-# test_project_configuration(
-#     content_item_id=756,
-#     flavours=["javascript"],
-# )
-
-# test_project_configuration(
-#     content_item_id=756,
-#     flavours=["python"],
-# )
+def check_project_configuration(content_item_id, flavours):
+    steps = _mark_project(
+        content_item_id=content_item_id,
+        flavours=flavours,
+        self_test=True,
+        fail_fast=True,
+    )
+    _print_steps_result(steps)
 
 
-# test_project_configuration(
-#     content_item_id=186,
-#     flavours=["javascript"],
-# )
-
-
-# test_project_configuration(
-#     content_item_id=186,
-#     flavours=["python"],
-# )
+def get_all_marker_configs():
+    for (
+        project_dir_name,
+        config_content_item_id,
+        title,
+    ) in _scan_config_dir_for_project_directories():
+        full_project_path = CONFIG_DIR / project_dir_name
+        for sub_directory_name in os.listdir(full_project_path):
+            sub_directory = full_project_path / sub_directory_name
+            if not sub_directory.is_dir():
+                continue
+            config_file_path = sub_directory / "config.py"
+            if not config_file_path.is_file():
+                continue
+            configuration = import_module(
+                f"{project_dir_name}.{sub_directory_name}.config"
+            )
+            configuration.title = title
+            configuration.content_item_id = config_content_item_id
+            yield configuration

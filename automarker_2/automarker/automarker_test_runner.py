@@ -20,6 +20,9 @@ from .constants import (
 
 
 class _TestRunner:
+    EXCEPTION_OR_ERROR = "EXCEPTION_OR_ERROR NOT SET!!"
+    RAISE_OR_THROW = "RAISE_OR_THROW NOT SET!!"
+
     class _BaseTestException(Exception):
         def __init__(self, message, status):
             self.message = message
@@ -54,12 +57,18 @@ class _TestRunner:
         #  ...
         # }
 
+    def get_error_type_and_message(self):
+        """
+        look at the stderr of the last command run and return a tuple containing the error type and error message. This should be the error that was raised or thrown. This is typically used when checking that the learner raised an appropriate error
+        """
+        raise NotImplementedError()
+
     def sanitize_stderr(self):
         """the stderr from the subprocess is likely to contain information about the automarker test environment. This method removes that information from the stderr.
 
         Override this in child classes if necessary.
         """
-        return self.last_command_output.stderr
+        raise NotImplementedError()
 
     def status(self):
         if self.has_errors():
@@ -220,12 +229,31 @@ class _TestRunner:
                 f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )
 
-    def assert_similar_error_raised(self, similar_message, max_distance):
-        """implement in subclass"""
-        raise NotImplementedError()
+    def assert_similar_error_message_raised(self, similar_message, max_distance):
+        stderr = self.last_command_output.stderr
+        if not stderr:
+            raise self.StopTestFunctionException(
+                f"There was meant to be an {self.EXCEPTION_OR_ERROR} but there wasn't one. Make sure you remember to {self.RAISE_OR_THROW} an {self.EXCEPTION_OR_ERROR} when you need to. If you are {self.RAISE_OR_THROW} the {self.EXCEPTION_OR_ERROR} then the problem might be that you are catching it as well. Don't catch {self.EXCEPTION_OR_ERROR}s unless you are doing something very specific and intentional with them. Errors should never pass silently. Unless explicitly silenced."
+            )
+        error_type, error_message = self.get_error_type_and_message()
+
+        if similar_message:
+            from automarker.ai_helpers import (
+                similarity_distance,
+            )  # just in time import because this thing is slow
+
+            distance = similarity_distance(similar_message, error_message)
+            if distance > max_distance:
+                raise self.StopTestFunctionException(
+                    f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
 
 
 class PythonTestRunner(_TestRunner):
+    EXCEPTION_OR_ERROR = "Exception"
+    RAISE_OR_THROW = "raise"
+
     def assert_no_import_errors(self):
         if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
             stderr = self.last_command_output.stderr
@@ -262,27 +290,56 @@ class PythonTestRunner(_TestRunner):
         stderr = stderr.replace(clone_path, "")
         return stderr
 
-    def assert_similar_error_raised(self, similar_message, max_distance):
-        # TODO: this is very similar to the js version of this function. Can we refactor it?
-        stderr = self.last_command_output.stderr
-        if not stderr:
-            raise self.StopTestFunctionException(
-                "There was meant to be an Exception but there wasn't one. Make sure you remember to raise an Exception when you need to. If you are raising the Exception then the problem might be that you are catching it as well. Don't `except` Exceptions unless you know what you are doing."
-            )
+    def get_error_type_and_message(self):
+        """
+        Python tracebacks have a format like this:
 
-        error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
-        if similar_message:
-            from automarker.ai_helpers import similarity_distance  # just in time import
+        Traceback (most recent call last):
+        File "/home/sheena/workspace/Tilde/automarker_2/gitignore/186-python-perfect/functional_tests/adapter/get_pull_requests.py", line 25, in <module>
+            result = get_pull_requests(
+        File "/home/sheena/workspace/Tilde/automarker_2/gitignore/186-python-perfect/src/consume_github_api.py", line 52, in get_pull_requests
+            validate_owner_and_repo(owner, repo)
+        File "/home/sheena/workspace/Tilde/automarker_2/gitignore/186-python-perfect/src/consume_github_api.py", line 45, in validate_owner_and_repo
+            raise ValueError(f"User not found: '{owner}'.")
+        ValueError: User not found: 'GregBerryGreenMamba'.
+        some other context
+            even more
 
-            distance = similarity_distance(similar_message, error_message)
-            if distance > max_distance:
-                raise self.StopTestFunctionException(
-                    f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
-                    status=STEP_STATUS_NOT_YET_COMPETENT,
-                )
+        We want to extract the error type and the error message. So everything from the line that says "ValueError: ..." is relevant
+        """
+        stderr = self.last_command_output.stderr.strip()
+        start_line = re.search(r"\n([A-Za-z].*: .*)", stderr).groups()[0]
+        final_error = stderr[stderr.index(start_line) :]
+        split_at = final_error.index(": ")
+        error_type = final_error[:split_at]
+        error_message = final_error[split_at + 2 :]
+
+        return error_type, error_message
+
+    # def assert_similar_error_raised(self, similar_message, max_distance):
+    #     # TODO: this is very similar to the js version of this function. Can we refactor it?
+    #     stderr = self.last_command_output.stderr
+    #     if not stderr:
+    #         raise self.StopTestFunctionException(
+    #             "There was meant to be an Exception but there wasn't one. Make sure you remember to raise an Exception when you need to. If you are raising the Exception then the problem might be that you are catching it as well. Don't `except` Exceptions unless you know what you are doing."
+    #         )
+
+    #     error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
+    #     if similar_message:
+    #         from automarker.ai_helpers import similarity_distance  # just in time import
+
+    #         distance = similarity_distance(similar_message, error_message)
+    #         if distance > max_distance:
+    #             raise self.StopTestFunctionException(
+    #                 f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
+    #                 status=STEP_STATUS_NOT_YET_COMPETENT,
+    #             )
 
 
 class JavaTestRunner(_TestRunner):
+    EXCEPTION_OR_ERROR = "Exception"
+    RAISE_OR_THROW = "throw"
+
     def assert_no_import_errors(self):
         # there can't be import errors in Java projects. The errors will come up during build.
         pass
@@ -296,12 +353,18 @@ class JavaTestRunner(_TestRunner):
             stderr = stderr[: stderr.rindex("\n\tat ")]
         return stderr
 
-    def assert_similar_error_raised(self, similar_message, max_distance):
+    def get_error_type_and_message(self):
+        stderr = self.last_command_output.stderr
+        # this still needs to be implemented for Java
+        # take a look at the implementations for other languages
         breakpoint()
-        todo
+        return error_type, error_message
 
 
 class JavaScriptTestRunner(_TestRunner):
+    EXCEPTION_OR_ERROR = "Error"
+    RAISE_OR_THROW = "throw"
+
     def assert_no_import_errors(self):
         stderr = self.last_command_output.stderr
         unfinished_tags = self.last_command_output.unfinished_tags()
@@ -344,31 +407,14 @@ class JavaScriptTestRunner(_TestRunner):
         stderr = "\n".join([s for s in stderr.split("\n") if s])
         return stderr
 
-    def assert_similar_error_raised(self, similar_message, max_distance):
-        stderr = self.last_command_output.stderr
-        if not stderr:
-            raise self.StopTestFunctionException(
-                "There was meant to be an error but there wasn't one. Make sure you remember to throw an error when you need to. If you are throwing the error then the problem might be that you are catching it as well. Don't `catch` errors unless you know what you are doing."
-            )
+    def get_error_type_and_message(self):
+        stderr = self.last_command_output.stderr.strip()
+        start_line = re.search(r"\n([A-Za-z].*: .*)", stderr).groups()[0]
+        end_line = re.search(r"(\n    at .* \(.*\))", stderr).groups()[0]
 
-        error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
-        if similar_message:
-            from automarker.ai_helpers import similarity_distance  # just in time import
+        final_error = stderr[stderr.index(start_line) : stderr.index(end_line)]
+        split_at = final_error.index(": ")
+        error_type = final_error[:split_at]
+        error_message = final_error[split_at + 2 :]
 
-            distance = similarity_distance(similar_message, error_message)
-            if distance > max_distance:
-                raise self.StopTestFunctionException(
-                    f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
-                    status=STEP_STATUS_NOT_YET_COMPETENT,
-                )
-
-
-# re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
-'UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "bugger".] {'
-
-# -> re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
-# (Pdb) re.search("([a-zA-Z].*: .*)", stderr).groups()[0]
-"Error: Not implemented"
-
-
-"Error: Request failed with status code 404"
+        return error_type, error_message

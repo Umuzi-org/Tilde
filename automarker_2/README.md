@@ -1,4 +1,4 @@
-# Automarker 3 
+# Automarker 2 
 
 This project is an improvement on the last version of the automarker. It is designed to overcome certain shortcomings in previous versions.
 
@@ -6,7 +6,7 @@ This project is an improvement on the last version of the automarker. It is desi
 
 1. Install your dependencies
 
-First install python3.10 and pipenv then:
+First, install python3.10 and pipenv then:
 
 ```
 pipenv install
@@ -61,8 +61,18 @@ Every time you execute `pipenv shell` then you are really just `source`ing your 
 eg:
 
 ```
-python test_project_configuration.py 186 javascript
+python check_project_configuration.py 186 javascript
 ```
+
+## How to run the unit tests
+
+Note that there currently isn't very high coverage on the unit tests. Contributions are welcome.
+
+```
+pipenv shell
+python -m pytest .
+```
+
 
 ## Commands you might need
 
@@ -161,18 +171,18 @@ python print_configuration.py | grep python | grep DEBUG | wc -l
 This runs the tests against the configured "perfect project". This is useful if you are configuring projects yourself. 
 
 ```
-python test_project_configuration.py CONTENT_ITEM_ID FLAVORS
+python check_project_configuration.py CONTENT_ITEM_ID FLAVORS
 
 # eg:
 
-python test_project_configuration.py 186 javascript
+python check_project_configuration.py 186 javascript
 ```
 ### Multiple flavors 
 
 If you ever need to list out multiple flavors then do it like so:
 
 ```
-python test_project_configuration.py 999 javascript,karma
+python check_project_configuration.py 999 javascript,karma
 python mark_learner_project.py 999 javascript,karma git@github.com:Umuzi-org/blah-blah-999-consume-github-api-python.git
 ```
 
@@ -183,7 +193,7 @@ In other words, the flavours should be comma-separated and they should have no s
 If you see a problem in some automarker configuration then please:
 
 1. Fix it
-2. Test it out with the test_project_configuration script
+2. Test it out with the check_project_configuration script
 3. Test it out on a few learner projects if you can dig some up
 4. Make a PR 
 

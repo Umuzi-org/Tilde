@@ -2,7 +2,11 @@ import os
 import datetime
 from pathlib import Path
 from .exceptions import SystemError
-from .test_runner import PythonTestRunner, JavaTestRunner, JavaScriptTestRunner
+from .automarker_test_runner import (
+    PythonTestRunner,
+    JavaTestRunner,
+    JavaScriptTestRunner,
+)
 from .utils import subprocess_run
 from .constants import (
     STEP_STATUS_WAITING,
