@@ -163,6 +163,7 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         # "user_permissions",
     )
+    list_per_page = 25
 
     actions = ["bulk_deactivate_users"]
 
