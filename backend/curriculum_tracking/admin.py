@@ -142,7 +142,6 @@ class UserAdmin(BaseUserAdmin):
     )
     list_display = ("email", "is_superuser", "active")
     list_filter = (
-        "groups",
         "is_superuser",
         "is_staff",
         "active",
