@@ -96,13 +96,13 @@ eg:
 python mark_learner_project 186 python git@github.com:Umuzi-org/blah-blah-186-consume-github-api-python.git
 ```
 
-Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo_nama}.git`.  If you use a different format then the clone command might not work.
+Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo_name}.git`.  If you use a different format then the clone command might not work.
 
 **IMPORTANT NOTE** The project configuration might not be perfect yet. 
 
 - it is best to look at the learner's code before marking it as competent, even if the automarker says it's competent
 - the automarker will try to come up with comments that will make sense to the learner. Please read the review that the automarker comes up with. If you think it is good enough then you can copy-paste it into the Tilde frontend but ALWAYS make sure it makes sense before doing that
-- if the automarker is saying something in a confusing way then please either:
+- if the automarker is saying something confusingly then please either:
     - tell someone so it can be fixed; or
     - make a PR that fixes the problem
 - if the automarker is not testing the learner code thoroughly enough on a specific project then please either:
