@@ -61,53 +61,53 @@ class Helper:
     def set_repo_base_dir(cls, repo_base_dir):
         cls.repo_base_dir = Path(repo_base_dir)
 
-    @classmethod
-    def process_available_learning_outcomes(cls):
-        print("Processing available learning outcomes")
-        full_path = Helper.repo_base_dir / "learning_outcomes.yaml"
+    # @classmethod
+    # def process_available_learning_outcomes(cls):
+    #     print("Processing available learning outcomes")
+    #     full_path = Helper.repo_base_dir / "learning_outcomes.yaml"
 
-        if not full_path.exists():
-            return
+    #     if not full_path.exists():
+    #         return
 
-        with open(full_path, "r") as f:
-            raw_learning_outcomes = yaml.load(f, Loader=Loader)
+    #     with open(full_path, "r") as f:
+    #         raw_learning_outcomes = yaml.load(f, Loader=Loader)
 
-        outcome_names = list(raw_learning_outcomes.keys())
-        assert len(outcome_names) == len(set(outcome_names)), "names must be unique"
+    #     outcome_names = list(raw_learning_outcomes.keys())
+    #     assert len(outcome_names) == len(set(outcome_names)), "names must be unique"
 
-        all_outcomes = []
-        print("... with ids")
+    #     all_outcomes = []
+    #     print("... with ids")
 
-        # first deal with the outcomes with ids
-        for name, info in raw_learning_outcomes.items():
-            if DB_ID in info and info[DB_ID]:
-                defaults = {"name": name, "description": info["description"]}
-                o, _ = models.LearningOutcome.get_or_create_or_update(
-                    id=info[DB_ID], overrides=defaults, defaults=defaults
-                )
-                all_outcomes.append(o)
+    #     # first deal with the outcomes with ids
+    #     for name, info in raw_learning_outcomes.items():
+    #         if DB_ID in info and info[DB_ID]:
+    #             defaults = {"name": name, "description": info["description"]}
+    #             o, _ = models.LearningOutcome.get_or_create_or_update(
+    #                 id=info[DB_ID], overrides=defaults, defaults=defaults
+    #             )
+    #             all_outcomes.append(o)
 
-        print("... without ids")
+    #     print("... without ids")
 
-        # then the outcomes without ids
-        for name, info in raw_learning_outcomes.items():
-            if not info.get(DB_ID):
-                defaults = {"name": name, "description": info["description"]}
-                o = models.LearningOutcome.objects.create(
-                    id=models.LearningOutcome.get_next_available_id(),
-                    name=name,
-                    description=info["description"],
-                )
-                all_outcomes.append(o)
+    #     # then the outcomes without ids
+    #     for name, info in raw_learning_outcomes.items():
+    #         if not info.get(DB_ID):
+    #             defaults = {"name": name, "description": info["description"]}
+    #             o = models.LearningOutcome.objects.create(
+    #                 id=models.LearningOutcome.get_next_available_id(),
+    #                 name=name,
+    #                 description=info["description"],
+    #             )
+    #             all_outcomes.append(o)
 
-        final_structure = {
-            o.name: {"description": o.description, DB_ID: o.id} for o in all_outcomes
-        }
-        print("...saving")
+    #     final_structure = {
+    #         o.name: {"description": o.description, DB_ID: o.id} for o in all_outcomes
+    #     }
+    #     print("...saving")
 
-        with open(full_path, "w") as f:
-            yaml.dump(final_structure, f, Dumper=Dumper)
-        print("...DONE!")
+    #     with open(full_path, "w") as f:
+    #         yaml.dump(final_structure, f, Dumper=Dumper)
+    #     print("...DONE!")
 
     @classmethod
     def load_available_content_flavours(cls):
@@ -221,7 +221,7 @@ class Helper:
             cls.available_content_flavours,
         )
 
-        set_learning_outcomes(content_item, meta.get("learning_outcomes", []))
+        # set_learning_outcomes(content_item, meta.get("learning_outcomes", []))
 
         assert (
             content_item.title
@@ -304,7 +304,8 @@ def _manage_prerequisites(meta: Dict, content_item):
 
 def _update_tags_for_content_item(meta, content_item):
     final_tag_names = [s.lower() for s in meta.get(TAGS, [])]
-    if meta.get("ready", False) or meta.get(TODO):
+    if not meta.get("ready", False) or meta.get(TODO):
+        # breakpoint()
         final_tag_names.append(TODO)
 
     _set_tags(final_tag_names=final_tag_names, taggable_instance=content_item)
@@ -330,13 +331,13 @@ def _set_tags(final_tag_names, taggable_instance):
     ), f"Tags don't match: Expected {sorted(taggable_instance.tag_names)} == {sorted(final_tag_names)}"
 
 
-def set_learning_outcomes(content_item, outcome_names):
-    outcomes = []
-    outcome_names = outcome_names or []
-    for name in outcome_names:
-        print(f"setting outcomes: {name}")
-        outcomes.append(models.LearningOutcome.objects.get(name=name))
-    content_item.learning_outcomes.set(outcomes)
+# def set_learning_outcomes(content_item, outcome_names):
+#     outcomes = []
+#     outcome_names = outcome_names or []
+#     for name in outcome_names:
+#         print(f"setting outcomes: {name}")
+#         outcomes.append(models.LearningOutcome.objects.get(name=name))
+#     content_item.learning_outcomes.set(outcomes)
 
 
 def set_flavours(content_item, raw_flavours, available_content_flavours):
@@ -573,7 +574,6 @@ def _get_ordered_curriculum_items_from_page(file_stream):
     seen_content_item_ids = []
 
     for line in file_stream:
-
         matches = re.findall("{{<\s*contentlink (.*)>}}", line)
         for match in matches:
             assert (
@@ -710,7 +710,7 @@ class Command(BaseCommand):
         curriculums_base_dir = Helper.repo_base_dir / "content/syllabuses"
         if process_content:
             print("Processing Content....")
-            Helper.process_available_learning_outcomes()
+            # Helper.process_available_learning_outcomes()
             # first we make sure that if something has an id, it gets saved first
             # this is because we generate the next available id based on what is already in the db. This stops id conflicts
             load_all_content_items_with_known_ids()
