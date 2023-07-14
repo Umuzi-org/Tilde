@@ -182,3 +182,14 @@ def agile_card_reviews_outstanding(user):
 def pull_request_reviews_outstanding(user):
     # TODO: only implement this once the github webhook is healthier
     return []
+
+
+def add_users_to_team(team_name, email_addresses):
+    # get team from team name
+    # if team doesnt exist
+    # - return early
+    # get users from emails
+    # if no users exist
+    # - return early
+    # add users to team(via list or looping TBD)
+    pass
