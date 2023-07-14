@@ -3,7 +3,6 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
-from .helpers import activate_users
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -166,8 +165,8 @@ class UserAdmin(BaseUserAdmin):
 
     actions = ["bulk_activate_users"]
 
-    def bulk_activate_users(modeladmin, request, users):
-        activate_users(users)
+    def bulk_activate_users(self, request, users):
+        users.update(active=True)
 
     bulk_activate_users.short_description = "Activate selected users"
 
