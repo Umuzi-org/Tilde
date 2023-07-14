@@ -3,7 +3,6 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
-from .helpers import deactivate_users
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -163,12 +162,11 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         # "user_permissions",
     )
-    list_per_page = 25
 
     actions = ["bulk_deactivate_users"]
 
-    def bulk_deactivate_users(modeladmin, request, users):
-        deactivate_users(users)
+    def bulk_deactivate_users(self, request, users):
+        users.update(active=False)
 
     bulk_deactivate_users.short_description = "Deactivate selected users"
 
