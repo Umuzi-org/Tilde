@@ -163,7 +163,12 @@ class UserAdmin(BaseUserAdmin):
         # "user_permissions",
     )
 
-    actions = ["bulk_deactivate_users"]
+    actions = ["bulk_activate_users","bulk_deactivate_users"]
+
+    def bulk_activate_users(self, request, users):
+        users.update(active=True)
+
+    bulk_activate_users.short_description = "Activate selected users"
 
     def bulk_deactivate_users(self, request, users):
         users.update(active=False)
