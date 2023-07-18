@@ -184,6 +184,20 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
+def get_team_by_name(team_name):
+    try:
+        return core_models.Team.objects.get(name=team_name)
+    except core_models.Team.DoesNotExist:
+        return None
+
+
+def get_user_by_email(email):
+    try:
+        return core_models.User.objects.get(email=email)
+    except core_models.User.DoesNotExist:
+        return None
+
+
 def add_users_to_team(team_name, email_addresses):
     # get team from team name
     # if team doesnt exist
@@ -192,4 +206,31 @@ def add_users_to_team(team_name, email_addresses):
     # if no users exist
     # - return early
     # add users to team(via list or looping TBD)
-    pass
+
+    users = []
+    team = get_team_by_name(team_name)
+    if team:
+        print("yay")
+        print(f"team: {team}")
+        users = core_models.User.objects.filter(email__in=email_addresses)
+        if users:
+            print(users[0].teams)
+            print(team.users.set)
+
+        # print(team.members())
+        # for email_address in email_addresses:
+        #     user = get_user_by_email(email_address)
+        #     if user:
+        #         users.append(user)
+        #     else:
+        #         print("users not found")
+        # if users:
+        #     print(users)
+    else:
+        print("no teams found")
+
+
+# add_users_to_team("a", ["learner_a_1@email.comm", "learner_b_1@email.comm","learner_boot_1@email.comm"])
+# add_users_to_team("a", ["learner_a_1@email.com", "learner_b_1@email.com","learner_boot_1@email.com"])
+# add_users_to_team("A", ["learner_a_1@email.com", "learner_b_1@email.com","learner_boot_1@email.com"])
+# add_users_to_team("A", ["learner_a_1@email.comm", "learner_b_1@email.comm","learner_boot_1@email.comm"])
