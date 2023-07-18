@@ -191,48 +191,9 @@ def get_team_by_name(team_name):
         return None
 
 
-def get_user_by_email(email):
-    try:
-        return core_models.User.objects.get(email=email)
-    except core_models.User.DoesNotExist:
-        return None
-
-
 def add_users_to_team(team_name, email_addresses):
-    # get team from team name
-    # if team doesnt exist
-    # - return early
-    # get users from emails
-    # if no users exist
-    # - return early
-    # add users to team(via list or looping TBD)
-
     team = get_team_by_name(team_name)
-    # print(team.members)
     if team:
         users = core_models.User.objects.filter(email__in=email_addresses)
-        print(team.user_set.all())
-        # print(users[0].teams())
         if users:
-            #     for user in users:
-            #         user.groups.add(team)
-            # print(team.users)
             team.user_set.add(*users)
-        print(team.user_set.all())
-        # print(team.members())
-        # for email_address in email_addresses:
-        #     user = get_user_by_email(email_address)
-        #     if user:
-        #         users.append(user)
-        #     else:
-        #         print("users not found")
-        # if users:
-        #     print(users)
-    else:
-        print("no teams found")
-
-
-# add_users_to_team("a", ["learner_a_1@email.comm", "learner_b_1@email.comm","learner_boot_1@email.comm"])
-# add_users_to_team("a", ["learner_a_1@email.com", "learner_b_1@email.com","learner_boot_1@email.com"])
-# add_users_to_team("A", ["learner_a_1@email.com", "learner_b_1@email.com","learner_boot_1@email.com"])
-# add_users_to_team("A", ["learner_a_1@email.comm", "learner_b_1@email.comm","learner_boot_1@email.comm"])
