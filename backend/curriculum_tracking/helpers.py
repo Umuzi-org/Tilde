@@ -207,16 +207,18 @@ def add_users_to_team(team_name, email_addresses):
     # - return early
     # add users to team(via list or looping TBD)
 
-    users = []
     team = get_team_by_name(team_name)
+    # print(team.members)
     if team:
-        print("yay")
-        print(f"team: {team}")
         users = core_models.User.objects.filter(email__in=email_addresses)
+        print(team.user_set.all())
+        # print(users[0].teams())
         if users:
-            print(users[0].teams)
-            print(team.users.set)
-
+            #     for user in users:
+            #         user.groups.add(team)
+            # print(team.users)
+            team.user_set.add(*users)
+        print(team.user_set.all())
         # print(team.members())
         # for email_address in email_addresses:
         #     user = get_user_by_email(email_address)
