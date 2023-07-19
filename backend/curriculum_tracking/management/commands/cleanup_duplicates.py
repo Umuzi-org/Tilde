@@ -38,14 +38,24 @@ def deduplicate(instances):
             to_delete = [o for o in instances if o != keep]
             breakpoint()
             for o in to_delete:
+                print(f"deleting {o}")
                 o.delete()
             return
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument("who", type=str, nargs="?", default=None)
+
     def handle(self, *args, **options):
-        users = User.objects.filter(active=True)
-        total = users.count()
+        if options["who"]:
+            users = [
+                o for o in User.get_users_from_identifier(options["who"]) if o.active
+            ]
+            total = len(users)
+        else:
+            users = User.objects.filter(active=True)
+            total = users.count()
         for i, user in enumerate(users):
             print(f"checking user {i+1}/{total}: {user}")
             cleanup_duplicates(base_query=TopicProgress.objects.filter(user=user))
