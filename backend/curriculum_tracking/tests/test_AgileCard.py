@@ -90,7 +90,6 @@ class start_project_Tests(TestCase):
     @mock.patch("git_real.helpers.get_repo")
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_start_project_creates_project_if_not_exists(self, get_repo, *_):
-
         card = factories.AgileCardFactory(
             status=AgileCard.READY,
             recruit_project=None,
@@ -124,6 +123,31 @@ class start_project_Tests(TestCase):
         self.assertTrue(project.setup_repository.called)
         self.assertEqual(card.status, AgileCard.IN_PROGRESS)
         self.assertIsNotNone(project.start_time)
+
+    @mock.patch("git_real.helpers.get_repo")
+    @mock.patch.object(RecruitProject, "setup_repository")
+    def test_start_project_does_not_create_project_if_exists(self, get_repo, *_):
+        card = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=None,
+            content_item=factories.ProjectContentItemFactory(),
+            assignees=[SocialProfileFactory().user],
+        )
+        self.assertIsNone(card.recruit_project)
+
+        card.start_project()
+        card.refresh_from_db()
+
+        self.assertIsNotNone(card.recruit_project)
+        project = card.recruit_project
+        card.recruit_project = None
+        card.save()
+
+        # call start project again, it should return the same project
+        card.start_project()
+        card.refresh_from_db()
+
+        self.assertEqual(card.recruit_project.id, project.id)
 
     @mock.patch.object(RecruitProject, "setup_repository")
     def test_start_project_works_even_if_project_instance_exists(self, *_):
@@ -274,7 +298,6 @@ class start_project_Tests(TestCase):
         pre_content_item=None,
         content_item=None,
     ):
-
         pre_content = pre_content_item or factories.ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=ContentItem.REPOSITORY,
@@ -553,6 +576,24 @@ class TopicMovementTestCase(TestCase):
         self.assertIsNone(card.topic_progress.complete_time)
         self.assertIsNotNone(card.topic_progress.start_time)
 
+    def test_start_does_not_create_duplicate_progress(self):
+        card = self.card
+        card.start_topic()
+        card.refresh_from_db()
+
+        self.assertIsNotNone(card.topic_progress)
+        topic_progress = card.topic_progress
+
+        card.topic_progress = None
+        card.status = AgileCard.READY
+        card.save()
+
+        card.start_topic()
+        card.refresh_from_db()
+
+        self.assertEqual(card.topic_progress, topic_progress)
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+
     def test_stop(self):
         self.card.start_topic()
         self.card.stop_topic()
@@ -596,7 +637,6 @@ class TopicMovementTestCase(TestCase):
         self.assertIsNotNone(self.card.topic_progress.start_time)
 
     def test_add_COMPETENT_review(self):
-
         self.card.content_item.topic_needs_review = True
         self.card.content_item.save()
         self.card.start_topic()
@@ -738,7 +778,6 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
     def test_correct_ids_returned_since_latest_review_request_and_not_reviewer_ids_from_before_review_request(
         self,
     ):
-
         # Four reviews are made with the four review times above (No reviews done on project_2)
         review_1 = factories.RecruitProjectReviewFactory(
             status=NOT_YET_COMPETENT,
@@ -786,7 +825,6 @@ class ReviewerIdsSinceLatestReviewRequest(TestCase):
         )
 
     def test_request_review_and_perform_review_since_time_of_review_request(self):
-
         # Creating a new project
         project_one = factories.RecruitProjectFactory(
             content_item=factories.ProjectContentItemFactory(flavours=["js"])
@@ -844,7 +882,6 @@ class repo_url_Tests(TestCase):
 
 class get_users_that_reviewed_open_prs_Tests(TestCase):
     def test_all(self):
-
         repo = git_real_factories.RepositoryFactory()
         open_pr = git_real_factories.PullRequestFactory(
             repository=repo, state=PullRequest.OPEN

@@ -1291,6 +1291,16 @@ class AgileCard(
     def _create_project_progress_if_not_exists(self):
         if self.recruit_project:
             return
+
+        # we might still be regenerating the card so there might be a matching progress item already
+
+        project = self.find_progress_item()
+        if project:
+            self.recruit_project = project
+            self.status = self.derive_status_from_project(project)
+            self.save()
+            return
+
         project = RecruitProject.objects.create(content_item=self.content_item)
 
         project.recruit_users.set(self.assignees.all())
@@ -1373,9 +1383,50 @@ class AgileCard(
     def can_force_start(self):
         return self.can_start(force=True)
 
+    def find_progress_item(self):
+        """return the progress item that matches this card if it exists"""
+        content_type = self.content_item.content_type
+        user = self.assignees.first()
+
+        if content_type == ContentItem.PROJECT:
+            unfiltered_progress = RecruitProject.objects.filter(
+                content_item=self.content_item, recruit_users__in=[user]
+            )
+
+        elif content_type == ContentItem.TOPIC:
+            unfiltered_progress = TopicProgress.objects.filter(
+                content_item=self.content_item, user=user
+            )
+        else:
+            raise NotImplemented(
+                f"Can't find progress item for content of type {content_type}"
+            )
+        flavours = sorted([o.name for o in self.flavours.all()])
+
+        filtered_progress = [
+            o
+            for o in unfiltered_progress
+            if sorted([o.name for o in o.flavours.all()]) == flavours
+        ]
+        if len(filtered_progress) == 1:
+            return filtered_progress[0]
+        assert (
+            len(filtered_progress) == 0
+        ), f"Found {len(filtered_progress)} progress items for {self}"
+
     def _create_topic_progress_if_not_exists(self):
         if self.topic_progress:
             return
+
+        # we might still be regenerating the card so there might be a matching progress item already
+
+        topic = self.find_progress_item()
+        if topic:
+            self.topic_progress = topic
+            self.status = self.derive_status_from_topic(progress=topic, card=self)
+            self.save()
+            return
+
         self.topic_progress = TopicProgress.objects.create(
             user=self.assignees.first(), content_item=self.content_item
         )
