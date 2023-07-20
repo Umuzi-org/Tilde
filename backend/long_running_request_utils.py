@@ -11,7 +11,11 @@ def actor(**dramatiq_actor_kwargs):
             except django.db.utils.InterfaceError:
                 print("Exiting due to database error")
                 # this will cause the entire worker process to die. The pod will restart and hopefully the problem will be resolved
+                with open("/tmp/kill", "w") as f:
+                    f.write("1")
                 sys.exit(1)
+
+        final_actor_function.__name__ = actor_function.__name__
 
         return dramatiq.actor(**dramatiq_actor_kwargs)(final_actor_function)
 
