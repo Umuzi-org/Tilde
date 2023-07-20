@@ -7,7 +7,12 @@ def actor(**dramatiq_actor_kwargs):
     def inner(actor_function):
         def final_actor_function(*args, **kwargs):
             try:
-                return actor_function(*args, **kwargs)
+                print(
+                    f"\n\nRunning {actor_function.__name__} with args {args} and kwargs {kwargs}"
+                )
+                result = actor_function(*args, **kwargs)
+                print("...Finished running {actor_function.__name__}")
+                return result
             except django.db.utils.InterfaceError:
                 print("Exiting due to database error")
                 # this will cause the entire worker process to die. The pod will restart and hopefully the problem will be resolved
