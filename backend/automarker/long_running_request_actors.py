@@ -1,7 +1,10 @@
-import dramatiq
+from long_running_request_utils import actor
 
 
-@dramatiq.actor()
+TEN_MINUTES = 10 * 60 * 1000  # milliseconds
+
+
+@actor(max_retries=5, min_backoff=TEN_MINUTES, max_backoff=TEN_MINUTES)
 def automark_single_project(project_id):
     from curriculum_tracking.models import RecruitProject, AgileCard
     from .models import ContentItemAutoMarkerConfig

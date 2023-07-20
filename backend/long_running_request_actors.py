@@ -28,7 +28,7 @@ django.setup()
 # TODO:
 # uses sys.exit(1) if there is a database error
 # set default values
-# @dramatiq.actor(max_age=3600000) # milliseconds
+# @actor(max_age=3600000) # milliseconds
 # set priorities for different things
 
 
@@ -52,8 +52,10 @@ dramatiq.set_broker(rabbitmq_broker)
 
 MINUTE = 60 * 1000
 
+from long_running_request_utils import actor
 
-@dramatiq.actor(time_limit=10 * MINUTE)
+
+@actor(time_limit=10 * MINUTE)
 def test_long_running_request():
     from core.models import User
 
@@ -61,7 +63,12 @@ def test_long_running_request():
     print(f"Active users: {count}")
 
 
-@dramatiq.actor()
+@actor()
+def test_kill_pod():
+    raise django.db.utils.InterfaceError()
+
+
+@actor()
 def recruit_project_setup_repository(project_id):
     from curriculum_tracking.models import RecruitProject
 
@@ -69,7 +76,7 @@ def recruit_project_setup_repository(project_id):
     project.setup_repository()
 
 
-@dramatiq.actor()
+@actor()
 def recruit_project_invite_github_collaborators_to_repo(project_id):
     from curriculum_tracking.models import RecruitProject
 
@@ -77,8 +84,9 @@ def recruit_project_invite_github_collaborators_to_repo(project_id):
     project.invite_github_collaborators_to_repo()
 
 
-@dramatiq.actor()
+@actor()
 def auto_assign_reviewers():
+    # TODO should be a cron job, or Airflow DAG
     from curriculum_tracking.management.auto_assign_reviewers import (
         auto_assign_reviewers as work,
     )
@@ -86,7 +94,7 @@ def auto_assign_reviewers():
     work()
 
 
-@dramatiq.actor(max_retries=3)
+@actor(max_retries=3)
 def delete_and_recreate_user_cards(user_id):
     from curriculum_tracking.card_generation_helpers import (
         generate_and_update_all_cards_for_user,
@@ -99,7 +107,7 @@ def delete_and_recreate_user_cards(user_id):
     generate_and_update_all_cards_for_user(user, None)
 
 
-@dramatiq.actor()
+@actor()
 def invite_user_to_github_org(user_id):
     from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION
     from social_auth.github_api import Api
