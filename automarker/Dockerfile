@@ -3,7 +3,7 @@ FROM nixos/nix
 RUN nix-channel --update
 
 
-RUN nix-env -iA nixpkgs.nodejs-19_x
+RUN nix-env -iA nixpkgs.nodejs_20
 RUN nix-env -iA nixpkgs.python39
 RUN nix-env -iA nixpkgs.python39Packages.pip
 RUN nix-env -iA nixpkgs.jdk11
