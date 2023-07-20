@@ -3,7 +3,9 @@ rabbitmqctl list_queues
 
 rabbitmqctl purge_queue default.DQ
 
+kubectl port-forward svc/tilde-rabbitmq-rabbitmq-svc  15672 25672 56720:5672 5671 43690:4369
 
+Now the rabbitmq gui is accessible at: `http://127.0.0.1:15672/#/`
 
 
 ```
