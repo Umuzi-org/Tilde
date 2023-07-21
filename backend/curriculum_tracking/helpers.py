@@ -197,3 +197,9 @@ def add_users_to_team(team_name, email_addresses):
         users = core_models.User.objects.filter(email__in=email_addresses)
         if users:
             team.user_set.add(*users)
+
+
+def remove_leading_and_trailing_whitespace(string):
+    if string and type(str) == str:
+        return string.strip()
+    return ""
