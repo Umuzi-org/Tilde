@@ -207,6 +207,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/", include("core.urls")),
     path("api/zmc/", include("zero_marginal_cost_challenges.urls")),
+    path("", include("curriculum_tracking.urls")),
     path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
     # path("api/schema", schema_view),
     path("git_real/", include("git_real.urls")),
