@@ -15,14 +15,39 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { clearAuthToken } from "../lib/authTokenStorage";
 import { useCookies } from "react-cookie";
+import { ParsedUrlQuery } from "querystring";
+import { IncomingMessage } from "http";
+import {
+  NextApiRequestCookies,
+  NextApiRequestQuery,
+} from "next/dist/server/api-utils";
 const LogRocket = require("logrocket");
+
+interface LoggedInUserData {
+  firstName: string;
+  email: string;
+  userId: number;
+}
+
+interface PageProps {
+  children: React.ReactNode;
+  serverSidePropsCorrectlyCalled: boolean;
+  isLoggedIn: boolean;
+  loggedInUserData: LoggedInUserData;
+}
+
+interface PresentationProps {
+  handleLogout: () => void;
+  loggedInUserData: LoggedInUserData;
+  children: React.ReactNode;
+}
 
 export default function Page({
   children,
   serverSidePropsCorrectlyCalled,
   isLoggedIn,
   loggedInUserData,
-}) {
+}: PageProps) {
   if (!serverSidePropsCorrectlyCalled) {
     throw new Error(
       "It looks like you didn't make use of the getServerSideProps function defined below"
@@ -63,7 +88,11 @@ export default function Page({
   return <Presentation {...props}>{children}</Presentation>;
 }
 
-export function Presentation({ handleLogout, loggedInUserData, children }) {
+export function Presentation({
+  handleLogout,
+  loggedInUserData,
+  children,
+}: PresentationProps) {
   const router = useRouter();
   return (
     <AppShell
@@ -139,8 +168,16 @@ Then when you make use of this page component:
     </Page>
 
 */
-export async function getServerSidePropsForLoggedInPage({ query, req }) {
-  const whoAmIResponse = await serverSideWhoAmI({ query, req });
+export async function getServerSidePropsForLoggedInPage({
+  query,
+  req,
+}: {
+  query: ParsedUrlQuery;
+  req: IncomingMessage & {
+    cookies: NextApiRequestCookies;
+  };
+}) {
+  const whoAmIResponse = await serverSideWhoAmI({ req });
 
   return {
     serverSidePropsCorrectlyCalled: true,
