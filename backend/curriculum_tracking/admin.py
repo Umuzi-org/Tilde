@@ -3,6 +3,10 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
+from .forms import BulkAddLearnersToTeamForm
+from .helpers import add_users_to_team, remove_leading_and_trailing_whitespace
+from django.contrib import messages
+from django.shortcuts import render, redirect
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -174,6 +178,49 @@ class UserAdmin(BaseUserAdmin):
         users.update(active=False)
 
     bulk_deactivate_users.short_description = "Deactivate selected users"
+
+
+from django.contrib import admin
+from django.urls import path
+from django.shortcuts import render
+from .forms import BulkAddLearnersToTeamForm
+
+
+class BulkAddLearnersToTeamAdmin(admin.AdminSite):
+    site_header = "Tilde administration"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "bulk_add_learners_to_team/",
+                self.admin_view(self.bulk_add_learners_to_team_view),
+                name="bulk_add_learners_to_team",
+            ),
+        ]
+        return urls + custom_urls
+
+    def bulk_add_learners_to_team_view(self, request):
+        if request.method == "POST":
+            print("data:", request.POST)
+            team_name = request.POST["team_name"]
+            email_addresses = request.POST["email_addresses"]
+            form = BulkAddLearnersToTeamForm(request.POST)
+            if form.is_valid():
+                team_name = remove_leading_and_trailing_whitespace(team_name)
+                add_users_to_team(team_name, [email_addresses])
+                messages.success(
+                    request, "You have successfully added learners to a team"
+                )
+                return redirect("bulk_add_learners_to_team")
+        else:
+            form = BulkAddLearnersToTeamForm()
+
+        context = {"form": form}
+        return render(request, "admin/bulk_add_learners_to_team.html", context)
+
+
+custom_admin_site = BulkAddLearnersToTeamAdmin(name="admin")
 
 
 admin.site.register(User, UserAdmin)
