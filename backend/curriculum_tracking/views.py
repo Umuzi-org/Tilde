@@ -16,7 +16,6 @@ from django.contrib import messages
 
 def bulk_add_learners_to_team(request):
     if request.method == "POST":
-        print("data:", request.POST)
         team_name = request.POST["team_name"]
         email_addresses = request.POST["email_addresses"]
         form = BulkAddLearnersToTeamForm(request.POST)
