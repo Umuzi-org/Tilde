@@ -200,7 +200,7 @@ def add_users_to_team(team_name, email_addresses):
 
 
 def remove_leading_and_trailing_whitespace(string):
-    if string and type(str) == str:
+    if string and type(string) == str:
         return string.strip()
     return ""
 

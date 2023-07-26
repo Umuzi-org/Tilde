@@ -60,7 +60,7 @@ class SelectRecruitsAndProjectForm(forms.Form):
 
 
 class BulkAddLearnersToTeamForm(forms.Form):
-    email_adresses = forms.CharField(
+    email_addresses = forms.CharField(
         label="Email addresses",
     )
     team_name = forms.CharField(
