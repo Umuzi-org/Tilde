@@ -317,7 +317,7 @@ LOGGING = {  # TODO: copy this back into template project
         "standard": {
             "format": "[Tilde-backend] [%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
             # "format": "[Tilde-backend] [%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            "datefmt": "%d/%b/%Y %H:%M:%S",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         }
     },
     "handlers": {
