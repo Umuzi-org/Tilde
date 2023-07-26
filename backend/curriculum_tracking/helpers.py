@@ -203,3 +203,12 @@ def remove_leading_and_trailing_whitespace(string):
     if string and type(str) == str:
         return string.strip()
     return ""
+
+
+def get_email_addresses_from_str(emails_str):
+    """Extract and clean email addresses from a comma-separated string"""
+    email_addresses = emails_str.split(",")
+    cleaned_email_addresses = [
+        remove_leading_and_trailing_whitespace(email) for email in email_addresses
+    ]
+    return cleaned_email_addresses

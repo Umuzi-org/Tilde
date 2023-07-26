@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import BulkAddLearnersToTeamForm
-from .helpers import add_users_to_team, remove_leading_and_trailing_whitespace
+from .helpers import (
+    add_users_to_team,
+    remove_leading_and_trailing_whitespace,
+    get_email_addresses_from_str,
+)
 from django.contrib import messages
 
 # need some nudges in the right direction
@@ -17,11 +21,14 @@ from django.contrib import messages
 def bulk_add_learners_to_team(request):
     if request.method == "POST":
         team_name = request.POST["team_name"]
-        email_addresses = request.POST["email_addresses"]
+        email_addresses_str = request.POST["email_addresses"]
+
         form = BulkAddLearnersToTeamForm(request.POST)
+
         if form.is_valid():
             team_name = remove_leading_and_trailing_whitespace(team_name)
-            add_users_to_team(team_name, [email_addresses])
+            email_addresses = get_email_addresses_from_str(email_addresses_str)
+            add_users_to_team(team_name, email_addresses)
             messages.success(request, "You have successfully added learners to a team")
             return redirect("bulk_add_learners_to_team")
     else:
