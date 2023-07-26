@@ -18,6 +18,7 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "id",
             "content_item",
             "due_time",
+            "start_time",
             "complete_time",
             "repository",
             "project_reviews",
