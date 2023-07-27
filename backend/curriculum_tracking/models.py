@@ -1610,3 +1610,11 @@ class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
     )
     flavours = TaggableManager(blank=True)
     weight = models.IntegerField()
+
+
+class BulkUsersAndTeamOperation(models.Model):
+    team_model = models.ForeignKey(Team, on_delete=models.CASCADE)
+    email_addresses = models.CharField(max_length=300, blank=False)
+
+    def __str__(self):
+        return f"{self.email_addresses} - {self.team_model.name}"

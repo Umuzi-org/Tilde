@@ -4,7 +4,11 @@ from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
 from .forms import BulkAddLearnersToTeamForm
-from .helpers import add_users_to_team, remove_leading_and_trailing_whitespace
+from .helpers import (
+    add_users_to_team,
+    remove_leading_and_trailing_whitespace,
+    get_email_addresses_from_str,
+)
 from django.shortcuts import render, redirect
 from django.urls import path
 
@@ -217,9 +221,25 @@ class BulkAddLearnersToTeamAdmin(admin.AdminSite):
 custom_admin_site = BulkAddLearnersToTeamAdmin(name="admin")
 
 
+class BulkUsersAndTeamOperationAdmin(admin.ModelAdmin):
+    fields = ["team_model", "email_addresses"]
+    list_display = ["email_addresses", "team_model"]
+
+    actions = ["bulk_add_users_to_team"]
+
+    def bulk_add_users_to_team(self, request, queryset):
+        for operation in queryset.all():
+            team_name = operation.team_model.name
+            email_addresses = get_email_addresses_from_str(operation.email_addresses)
+            add_users_to_team(team_name, email_addresses)
+
+    bulk_add_users_to_team.short_description = "Bulk add users to team"
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(models.WorkshopAttendance)
 admin.site.register(models.TopicProgress)
+admin.site.register(models.BulkUsersAndTeamOperation, BulkUsersAndTeamOperationAdmin)
 
 from django.contrib.auth.models import Group
 
