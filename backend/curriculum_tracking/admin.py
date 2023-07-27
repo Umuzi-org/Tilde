@@ -1,17 +1,11 @@
-from django.contrib import admin, messages
-from . import models
+from django.contrib import admin,
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
-from .forms import BulkAddLearnersToTeamForm
 from .helpers import (
     add_users_to_team,
-    remove_leading_and_trailing_whitespace,
     get_email_addresses_from_str,
 )
-from django.shortcuts import render, redirect
-from django.urls import path
-
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
     model = automarker_models.ContentItemAutoMarkerConfig
