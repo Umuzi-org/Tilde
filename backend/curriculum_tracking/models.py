@@ -1614,7 +1614,11 @@ class ContentItemAgileWeight(models.Model, FlavourMixin, ContentItemProxyMixin):
 
 class BulkUsersAndTeamOperation(models.Model):
     team_model = models.ForeignKey(Team, on_delete=models.CASCADE)
-    email_addresses = models.CharField(max_length=300, blank=False)
+    email_addresses = models.CharField(
+        max_length=300,
+        blank=False,
+        help_text="Email addresses should be comma-separated",
+    )
 
     def __str__(self):
         return f"{self.email_addresses} - {self.team_model.name}"

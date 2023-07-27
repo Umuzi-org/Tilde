@@ -7,6 +7,7 @@ from .helpers import (
     add_users_to_team,
     get_email_addresses_from_str,
 )
+from .forms import BulkUsersAndTeamOperationForm
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -181,6 +182,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class BulkUsersAndTeamOperationAdmin(admin.ModelAdmin):
+    form = BulkUsersAndTeamOperationForm
     fields = ["team_model", "email_addresses"]
     list_display = ["email_addresses", "team_model"]
 
