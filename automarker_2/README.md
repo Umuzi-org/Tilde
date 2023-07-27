@@ -29,7 +29,6 @@ At this point, your configuration repo will be at `/somewhere/sensible/automarke
 
 The automarker needs to clone private repos in an automated way so an ssh key is needed. 
 
-
 ## How to run the unit tests
 
 Note that there currently isn't very high coverage on the unit tests. Contributions are welcome.

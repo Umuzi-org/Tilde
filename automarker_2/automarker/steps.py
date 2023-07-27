@@ -11,11 +11,13 @@ from .utils import subprocess_run
 from .constants import (
     STEP_STATUS_WAITING,
     STEP_STATUS_RUNNING,
+    STEP_STATUS_ERROR,
     STEP_FINAL_STATUSES,
     STEP_STATUS_PASS,
     STEP_STATUS_NOT_YET_COMPETENT,
     STEP_STATUS_RED_FLAG,
 )
+import json
 
 
 def get_all_file_paths(directory):
@@ -41,7 +43,7 @@ class Step:
         return f"<{self.__class__.__name__} {self.name}>"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        raise NotImplementedError
+        raise NotImplementedError(f"{self} has not implemented run()")
 
     def duration(self):
         if self.start_time is None:
@@ -313,6 +315,27 @@ class JavaScriptCheckNodeModulesMissing(Step):
 class JavaScriptCheckPackageJsonExists(Step):
     name = "check package.json exists"
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        package_json_path = clone_dir_path / "package.json"
+        if package_json_path.exists():
+            with open(package_json_path) as f:
+                try:
+                    json.load(f)
+                    self.set_outcome(STEP_STATUS_PASS)
+
+                except json.decoder.JSONDecodeError:
+                    message = "It looks like your package.json file is not valid JSON. Do some research about how a package.json file should look and behave. "
+                    self.set_outcome(STEP_STATUS_RED_FLAG, message=message)
+
+        else:
+            message = (
+                "This project requires a package.json file but you did not submit one"
+            )
+
+            self.set_outcome(STEP_STATUS_NOT_YET_COMPETENT, message=message)
+
+        self.set_outcome(status=STEP_STATUS_PASS)
+
 
 class JavaScriptCheckJasmineDevDependency(Step):
     name = "check jasmine dev dependency"
@@ -320,6 +343,14 @@ class JavaScriptCheckJasmineDevDependency(Step):
 
 class JavaScriptDoNpmInstall(Step):
     name = "do npm install"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && npm install")
+        if len(stderr):
+            message = "There was an error while running `npm install`. Please make sure that you submit valid code! if you can't `npm install` your dependencies then neither can we."
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
+        else:
+            self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class PythonCheckGitignore(Step):
@@ -352,10 +383,6 @@ class JavaCheckGitignore(Step):
         self.set_outcome(status=STEP_STATUS_PASS)
 
 
-class PythonCheckRequirementsTxtExists(Step):
-    name = "check requirements.txt exists"
-
-
 class PythonCheckPytestInRequirements(Step):
     name = "check pytest in requirements.txt"
 
@@ -363,9 +390,47 @@ class PythonCheckPytestInRequirements(Step):
 class PythonCreateVirtualEnv(Step):
     name = "create virtual env"
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        command = f"python3 -m venv {clone_dir_path/'automarker_venv'}"
+        stdout, stderr = subprocess_run(command)
+        if len(stderr):
+            self.set_outcome(STEP_STATUS_ERROR, message=stderr)
+        else:
+            self.set_outcome(status=STEP_STATUS_PASS)
 
-class PythonDoRequirementsInstall(Step):
-    name = "do requirements install"
+
+class PythonDoRequirementsTxtInstall(Step):
+    name = "pip install requirements.txt"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+        stdout, stderr = subprocess_run(command)
+        if len(stderr):
+            if stderr.startswith("ERROR: Could not open requirements file"):
+                self.set_outcome(
+                    STEP_STATUS_NOT_YET_COMPETENT,
+                    message="It looks like you have not created a requirements.txt file. Please create one.",
+                )
+            elif stderr.startswith("ERROR: Invalid requirement:"):
+                # TODO: mention the broken requirement in the error message
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message="It looks like you have a typo in your requirements.txt file. Please fix it. Make sure `pip install requirements.txt` works. Don't hand in code that you cannot run yourself!",
+                )
+            if stderr.startswith(
+                "ERROR: Could not find a version that satisfies the requirement"
+            ):
+                # TODO: mention the broken requirement in the error message
+                # eg: "ERROR: Could not find a version that satisfies the requirement lkjhalohiasdijpo ". in this case mention lkjhalohiasdijpo
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message="Your requirements.txt file is trying to install something that does not exist. Make sure `pip install requirements.txt` works. Don't hand in code that you cannot run yourself!",
+                )
+            else:
+                breakpoint()
+                what
+        else:
+            self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class PythonRunPytests(Step):
