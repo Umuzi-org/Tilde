@@ -1,4 +1,5 @@
-from django.contrib import admin,
+from django.contrib import admin
+from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
@@ -6,6 +7,7 @@ from .helpers import (
     add_users_to_team,
     get_email_addresses_from_str,
 )
+
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
     model = automarker_models.ContentItemAutoMarkerConfig
