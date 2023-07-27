@@ -79,7 +79,10 @@ class AdapterCommandOutput:
         for tag in output_tags:
             found = re.search(rf"<{tag}>(.+?)</{tag}>", stdout, re.DOTALL)
             if found:
-                result[tag] = found.groups()[0].strip()
+                content = found.groups()[0].strip()
+                # remove the whitespace from the end of each line in content. Leave whitespace at the beginning as is
+                clean = "\n".join([s.rstrip() for s in content.split("\n")])
+                result[tag] = clean
         return result
 
     @classmethod

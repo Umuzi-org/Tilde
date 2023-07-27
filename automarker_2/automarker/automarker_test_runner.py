@@ -233,7 +233,7 @@ class _TestRunner:
 
     def assert_printed(self, expected):
         printed = self.last_command_output[TAG_RUNNING]
-        if printed != expected:
+        if printed != str(expected):
             self.register_test_error(
                 f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
             )
