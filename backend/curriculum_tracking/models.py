@@ -356,6 +356,9 @@ class ContentAvailableFlavour(models.Model):
     tag = models.ForeignKey(taggit.models.Tag, on_delete=models.PROTECT)
     content_item = models.ForeignKey("ContentItem", on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = [["tag", "content_item"]]
+
 
 class CurriculumContentRequirement(
     models.Model, Mixins, FlavourMixin, ContentItemProxyMixin
