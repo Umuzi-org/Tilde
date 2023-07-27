@@ -94,6 +94,14 @@ spec:
               value: http://automarker # using ClusterIP service
     
 
+          livenessProbe:
+            exec:
+              # if /tmp/kill exists then exit with failure
+              command: ["/bin/sh","-c","if [ -f /tmp/kill ]; then exit 1; else exit 0; fi"]
+            initialDelaySeconds: 20
+            periodSeconds: 5 
+
+
           volumeMounts:
             - name: google-oauth-onetime-creds
               mountPath: /secrets/google-oauth-onetime-creds

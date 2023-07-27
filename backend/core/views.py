@@ -46,6 +46,15 @@ def test_long_running_request(request):
 
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
+def test_kill_dramatic_worker(request):
+    from long_running_request_actors import test_kill_pod as actor
+
+    response = actor.send()
+    return Response({"status": "OK", "data": response.asdict()})
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
 def test_logs(request):
     import logging
 

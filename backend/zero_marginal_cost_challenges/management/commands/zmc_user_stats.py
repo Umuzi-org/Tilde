@@ -7,10 +7,8 @@ from curriculum_tracking.models import (
     ContentItem,
     TopicProgress,
 )
-from django.db.models import Avg, F, Max
-from sql_util.utils import SubqueryAggregate
-import json
 from django.db.models import Q
+from core.models import User
 
 from curriculum_tracking.constants import (
     NOT_YET_COMPETENT,
@@ -24,11 +22,21 @@ STARTED = "started"
 COMPLETE = "complete"
 
 
-def get_progress(item):
+def get_progress(item, user_objects=None):
     if item.content_type == ContentItem.PROJECT:
-        return RecruitProject.objects.filter(content_item=item)
+        projects = RecruitProject.objects.filter(content_item=item).prefetch_related(
+            "recruit_users"
+        )
+        if user_objects:
+            projects = projects.filter(recruit_users__in=user_objects)
+        return projects
     if item.content_type == ContentItem.TOPIC:
-        return TopicProgress.objects.filter(content_item=item)
+        topics = TopicProgress.objects.filter(content_item=item).prefetch_related(
+            "user"
+        )
+        if user_objects:
+            topics = topics.filter(user__in=user_objects)
+        return topics
 
 
 def get_user(progress):
@@ -52,6 +60,9 @@ def get_review_count(progress):
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument("who", nargs="?")
+
     def handle(self, *args, **options):
         # for now we only have one challenge so we just add some sanity checking. This check will fail once we have more than one challenge
         curriculum = Curriculum.objects.get(pk=90)
@@ -60,7 +71,13 @@ class Command(BaseCommand):
             == ChallengeRegistration.objects.filter(curriculum_id=curriculum.id).count()
         ), "looks like we have multiple challenges. yay. Implement better stats now"
 
-        registrations = ChallengeRegistration.objects.all()
+        who = options["who"]
+        if who:
+            user_objects = User.get_users_from_identifier(who)
+            registrations = ChallengeRegistration.objects.filter(user__in=user_objects)
+        else:
+            registrations = ChallengeRegistration.objects.all()
+
         users = {o.user.email: {} for o in registrations}
 
         content_items = [
@@ -82,7 +99,7 @@ class Command(BaseCommand):
             for email in users:
                 users[email][title] = {"status": WAITING}
 
-            progress = get_progress(item)
+            progress = get_progress(item, user_objects)
 
             for p in progress:
                 user = get_user(p)
@@ -96,10 +113,6 @@ class Command(BaseCommand):
                     users[user.email][title]["status"] = COMPLETE
                 elif p.start_time:
                     users[user.email][title]["status"] = STARTED
-
-        # import pprint
-
-        # pprint.pprint(users)
 
         total_complete = 0
 

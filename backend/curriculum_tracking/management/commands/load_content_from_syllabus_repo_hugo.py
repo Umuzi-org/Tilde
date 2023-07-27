@@ -372,11 +372,29 @@ def set_flavours(content_item, raw_flavours, available_content_flavours):
     ]
 
     for tag in tags:
-        # if tag.lower() == "none":
-        #     continue
-        models.ContentAvailableFlavour.objects.get_or_create(
+        existing = models.ContentAvailableFlavour.objects.filter(
             tag=tag, content_item=content_item
         )
+        count = existing.count()
+
+        if count == 0:
+            models.ContentAvailableFlavour.objects.create(
+                tag=tag, content_item=content_item
+            )
+        elif count == 1:
+            pass
+        else:
+            breakpoint()
+            what  # should never happen
+
+        # try:
+        #     models.ContentAvailableFlavour.objects.get_or_create(
+        #     tag=tag, content_item=content_item
+        # )
+        # except models.ContentAvailableFlavour.MultipleObjectsReturned:
+        #     breakpoint()
+        #     what
+
     # remove the unnecessary ones
     for tag in content_item.flavours.all():
         if tag not in tags:

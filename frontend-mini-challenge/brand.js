@@ -27,6 +27,9 @@ import {
 } from "react-icons/io5";
 // https://react-icons.github.io/react-icons/icons?name=io5
 
+import { BsDiscord } from "react-icons/bs";
+import { FaDiscord } from "react-icons/fa";
+
 export const statusLooks = {
   [STATUS_DONE]: {
     Icon: IoCheckmarkOutline,
@@ -75,3 +78,5 @@ export const ForwardArrowIcon = IoArrowForwardOutline;
 
 export const ProjectIcon = IoHammerOutline;
 export const ContentIcon = IoBookOutline;
+
+export const DiscordIcon = FaDiscord;

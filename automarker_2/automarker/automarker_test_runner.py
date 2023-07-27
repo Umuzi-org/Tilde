@@ -201,6 +201,9 @@ class _TestRunner:
             )
         return True
 
+    def get_returned(self):
+        return self.last_command_output[TAG_RETURNED]
+
     def assert_returned(self, expected, sort_key=None):
         returned = self.last_command_output[TAG_RETURNED]
 
@@ -218,6 +221,12 @@ class _TestRunner:
             expected = sorted(expected, key=sort_key)
 
         if returned != expected:
+            self.register_test_error(
+                message,
+            )
+
+    def assert_equal(self, actual, expected, message):
+        if actual != expected:
             self.register_test_error(
                 message,
             )
@@ -255,11 +264,17 @@ class PythonTestRunner(_TestRunner):
     RAISE_OR_THROW = "raise"
 
     def assert_no_import_errors(self):
+        # example stderr = 'Traceback (most recent call last):\n  File "/home/sheena/workspace/Tilde/automarker_2/gitignore/224-python-perfect/functional_tests/adapter/dog_sound.py", line 27, in <module>\n    from animals.animals import Dog\nModuleNotFoundError: No module named \'animals.animals\'; \'animals\' is not a package\n'
+
         if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
             stderr = self.last_command_output.stderr
             assert stderr, "there should be an error"
             if "ModuleNotFoundError" in stderr:
-                error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
+                # error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
+                l = [s for s in stderr.split("\n") if "ModuleNotFoundError" in s]
+                assert len(l) == 1
+                error = l[0]
+
                 raise self.StopTestFunctionException(
                     f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
                     status=STEP_STATUS_NOT_YET_COMPETENT,

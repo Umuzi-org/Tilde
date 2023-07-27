@@ -24,6 +24,7 @@ from curriculum_tracking.management.commands.import_curriculum import (
 
 from backend.settings import CURRICULUM_TRACKING_REVIEW_BOT_EMAIL, GIT_REAL_BOT_USERNAME
 import os
+from pathlib import Path
 
 
 GIT_REAL_BOT_ACCESS_TOKEN = os.getenv("GIT_REAL_BOT_ACCESS_TOKEN")
@@ -166,7 +167,6 @@ def add_bot_trust_to_projects_in_curriculum(curriculum):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-
         bot, _ = User.objects.get_or_create(email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL)
 
         github_bot = create_user(
@@ -222,4 +222,4 @@ class Command(BaseCommand):
 
         create_team_of_learners(team_name="boot", curriculum=bootcamp_curriculum)
 
-        ingest_automarker_config("dev_helpers/data/demo-automarker-config.yaml")
+        ingest_automarker_config(Path("dev_helpers/data/demo-automarker-config.yaml"))

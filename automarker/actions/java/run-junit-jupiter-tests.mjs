@@ -1,6 +1,5 @@
+import { Action, asyncCallWithTimeout, execAsync } from "../index.mjs";
 import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
-import { Action } from "../index.mjs";
-import shell from "shelljs";
 
 export default class RunJunitJupiterTests extends Action {
   name = "junit jupiter tests";
@@ -10,13 +9,16 @@ export default class RunJunitJupiterTests extends Action {
 
     const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
 
-    const scriptOutput = await shell.exec(command);
+    const scriptOutputPromise = execAsync(command);
+
+    const scriptOutput = await asyncCallWithTimeout(scriptOutputPromise);
+
+    if (scriptOutput.status === STATUS_FAIL) return scriptOutput;
+
     const problems = lookForTestProblems(
       scriptOutput.stdout,
       scriptOutput.stderr
     );
-
-    console.log({ problems });
 
     if (problems.length) {
       return {

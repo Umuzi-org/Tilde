@@ -1,5 +1,4 @@
-import { Action } from "../index.mjs";
-import shell from "shelljs";
+import { Action, asyncCallWithTimeout, execAsync } from "../index.mjs";
 import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
 
 export default class RunPytests extends Action {
@@ -8,7 +7,12 @@ export default class RunPytests extends Action {
     const scriptPath = "actions/python/run-pytests.sh";
     const command = `DESTINATION_PATH=${destinationPath} SUBMISSION_URL=${repoUrl} bash -c ${scriptPath}`;
 
-    const scriptOutput = await shell.exec(command);
+    const scriptOutputPromise = execAsync(command);
+
+    const scriptOutput = await asyncCallWithTimeout(scriptOutputPromise);
+
+    if (scriptOutput.status === STATUS_FAIL) return scriptOutput;
+
     const problems = lookForTestProblems(
       scriptOutput.stdout,
       scriptOutput.stderr

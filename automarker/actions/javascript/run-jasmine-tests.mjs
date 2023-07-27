@@ -1,6 +1,5 @@
+import { Action, asyncCallWithTimeout, execAsync } from "../index.mjs";
 import { STATUS_OK, STATUS_FAIL } from "../../consts.mjs";
-import { Action } from "../index.mjs";
-import shell from "shelljs";
 
 export default class RunJasmineTests extends Action {
   name = "jasmine tests";
@@ -9,7 +8,12 @@ export default class RunJasmineTests extends Action {
     const scriptPath = "actions/javascript/run-jasmine-tests.sh";
     const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
 
-    const scriptOutput = await shell.exec(command);
+    const scriptOutputPromise = execAsync(command);
+
+    const scriptOutput = await asyncCallWithTimeout(scriptOutputPromise);
+
+    if (scriptOutput.status === STATUS_FAIL) return scriptOutput;
+
     const problems = lookForTestProblems(
       scriptOutput.stdout,
       scriptOutput.stderr
