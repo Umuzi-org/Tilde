@@ -57,12 +57,3 @@ class SelectRecruitsAndProjectForm(forms.Form):
             project.content_type == curriculum_models.ContentItem.PROJECT
         ), f"invalid content type '{project.content_type}'' for project '{project}'' [id={project.id}]. Expected '{curriculum_models.ContentItem.PROJECT}'"
         return project
-
-
-class BulkAddLearnersToTeamForm(forms.Form):
-    email_addresses = forms.CharField(
-        label="Email addresses",
-    )
-    team_name = forms.CharField(
-        label="Team name",
-    )
