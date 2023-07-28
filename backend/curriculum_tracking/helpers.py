@@ -184,15 +184,15 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
-def get_team_by_name(team_name):
-    try:
-        return core_models.Team.objects.get(name=team_name)
-    except core_models.Team.DoesNotExist:
-        return None
+# def get_team_by_name(team_name):
+#     try:
+#         return core_models.Team.objects.get(name=team_name)
+#     except core_models.Team.DoesNotExist:
+#         return None
 
 
-def add_users_to_team(team_name, email_addresses):
-    team = get_team_by_name(team_name)
+def add_users_to_team(team, email_addresses):
+    # team = get_team_by_name(team_name)
     if team:
         users = core_models.User.objects.filter(email__in=email_addresses)
         if users:

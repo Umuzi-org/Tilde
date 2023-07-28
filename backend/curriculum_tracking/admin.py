@@ -190,9 +190,9 @@ class BulkUsersAndTeamOperationAdmin(admin.ModelAdmin):
 
     def bulk_add_users_to_team(self, request, queryset):
         for operation in queryset.all():
-            team_name = operation.team_model.name
+            team = operation.team_model
             email_addresses = get_email_addresses_from_str(operation.email_addresses)
-            add_users_to_team(team_name, email_addresses)
+            add_users_to_team(team, email_addresses)
 
     bulk_add_users_to_team.short_description = "Bulk add users to team"
 
