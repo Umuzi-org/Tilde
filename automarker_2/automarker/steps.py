@@ -159,12 +159,22 @@ class PrepareFunctionalTests(Step):
 
 
 class JavaPrepareFunctionalTests(PrepareFunctionalTests):
+    def __init__(self, gradle_project):
+        super().__init__()
+        self.name = "preparing functional tests (java)"
+        self.gradle_project = gradle_project
+
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         self._run(project_uri, clone_dir_path, self_test, config, fail_fast)
         # try to build the tests. If the learner named anything badly then
         # this will fail and we can give them a useful error message
         adapter_dir = clone_dir_path / "functional_tests" / "adapter"
-        build_command = f"javac --class-path {clone_dir_path} {adapter_dir/'*.java'}"
+        if self.gradle_project:
+            build_command = f"javac --class-path {clone_dir_path/'app/build/classes/java/main'} {adapter_dir/'*.java'}"
+        else:
+            build_command = (
+                f"javac --class-path {clone_dir_path} {adapter_dir/'*.java'}"
+            )
         stdout, stderr = subprocess_run(build_command)
         if stderr:
             if "cannot find symbol" in stderr:
@@ -175,6 +185,54 @@ class JavaPrepareFunctionalTests(PrepareFunctionalTests):
                 error = "\n".join([s for s in error.split("\n") if s.strip()])
                 message = f"There was an error when we tried to use your code. Please make sure you've named everything correctly. Here is the error message: \n{error}"
                 self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            missing_package = re.search("error: package (.*) does not exist", stderr)
+
+            if missing_package:
+                missing_package = missing_package.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to import your code from the `{missing_package}` package and got the error `package {missing_package} does not exist`. Please make sure you use the correct package declaration in your code!"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_accessor = re.search("error: (.* has .* access in .*)\n", stderr)
+            if bad_accessor:
+                bad_accessor = bad_accessor.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to access a method or variable but we can't. We need the method or variable to be public. Here is the error message: \n`{bad_accessor}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_constructor_accessor = re.search(
+                "error: (.* is not public in .* cannot be accessed from outside package)",
+                stderr,
+            )
+
+            if bad_constructor_accessor:
+                bad_constructor_accessor = bad_constructor_accessor.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to access a constructor but we can't. We need the constructor to be public. Here is the error message: \n`{bad_constructor_accessor}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_types = re.search(
+                "error: incompatible types: (.*) cannot be converted to (.*)\n(.*)",
+                stderr,
+            )
+            if bad_types:
+                actual_type = bad_types.group(1)
+                expected_type = bad_types.group(2)
+                code = bad_types.group(3).strip()
+                message = f"There was an error due to a type mismatch. We were expecting a value of type `{expected_type}` but got a value of type `{actual_type}`. Here is the code that caused the error: `{code}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            breakpoint()
+
+            message = (
+                "There was an error when we tried to build our tests against your code. Please make sure you've named everything correctly and that everything has the correct argument datatypes and return datatypes. Here is the error message: \n\n"
+                + stderr
+            )
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+
         else:
             self.set_outcome(status=STEP_STATUS_PASS)
 
@@ -230,8 +288,28 @@ class GradleBuild(Step):
     name = "gradle build"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        os.system(f"cd {clone_dir_path} && ./gradlew build")
-        TODO  # look for errors
+        stdout, stderr = subprocess_run(
+            f"cd {clone_dir_path} && ./gradlew build -x app:test --info"
+        )
+        if "gradlew: not found" in stderr:
+            message = f"We tried to build your project using `./gradlew build` but it didn't work. Your `gradlew` file is missing. Are you sure you followed the instructions correctly? Please make sure this project is created using gradle"
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        if "BUILD FAILED" in stderr:
+            message = f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again. Here is the error message:\n\n{stderr}"
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
+            return
+        if "BUILD SUCCESSFUL" in stdout:
+            self.set_outcome(status=STEP_STATUS_PASS)
+            return
+
+        print("==== stdout ====")
+        print(stdout)
+        print("==== stderr ====")
+        print(stderr)
+        breakpoint()
+
+        TODO  # shouldn't be here
 
 
 class JavaBuild(Step):

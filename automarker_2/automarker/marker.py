@@ -67,7 +67,9 @@ def _mark_project(
     ), f"Invalid status: {config.status}"
 
     if config.status == constants.CONFIG_STATUS_NOT_IMPLEMENTED:
-        raise NotImplementedError("This project has not been implemented yet")
+        raise NotImplementedError(
+            "This project has not been implemented yet. If this seems like an error then look at the relevant project config.py file and check the status."
+        )
 
     clone_dir_name = (
         f"{content_item_id}-{'-'.join(sorted(flavours))}-perfect"

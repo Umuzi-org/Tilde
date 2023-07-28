@@ -28,7 +28,7 @@ def java_kata_sequence():
         steps.Clone(),
         steps.JavaCheckNoImports(),
         steps.JavaBuild(),
-        steps.JavaPrepareFunctionalTests(),
+        steps.JavaPrepareFunctionalTests(gradle_project=False),
         steps.JavaRunFunctionalTests(),
     ]
 
@@ -112,7 +112,7 @@ def java_sequence():
         steps.Clone(),
         steps.JavaCheckGitignore(),
         steps.JavaBuild(),
-        steps.JavaPrepareFunctionalTests(),
+        steps.JavaPrepareFunctionalTests(gradle_project=False),
         steps.JavaRunFunctionalTests(),
     ]
 
@@ -122,6 +122,6 @@ def java_gradle_sequence():
         steps.Clone(),
         steps.JavaCheckGitignore(),
         steps.GradleBuild(),
-        steps.JavaPrepareFunctionalTests(),
+        steps.JavaPrepareFunctionalTests(gradle_project=True),
         steps.JavaRunFunctionalTests(),
     ]

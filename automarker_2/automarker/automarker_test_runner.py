@@ -369,10 +369,13 @@ class JavaTestRunner(_TestRunner):
         return stderr
 
     def get_error_type_and_message(self):
-        stderr = self.last_command_output.stderr
-        # this still needs to be implemented for Java
-        # take a look at the implementations for other languages
-        breakpoint()
+        error_info = self.last_command_output.stderr.strip().split("\n\tat ")[0]
+        # Exception in thread "main" java.lang.IllegalArgumentException: Pet cannot be adopted again
+        # at Home.adoptPet(Home.java:14)
+        # at HomeAdoptAndSounds.main(HomeAdoptAndSounds.java:37)
+        error_type = error_info.split(":")[0].split()[-1]
+        error_message = ":".join(error_info.split(":")[1:]).strip()
+
         return error_type, error_message
 
 
