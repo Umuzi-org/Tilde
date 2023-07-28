@@ -19,10 +19,10 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "content_item",
             "due_time",
             "complete_time",
-            "start_time",  # Begin ZMC supplementary fields
-            "review_request_time",
-            "code_review_competent_since_last_review_request",
-            "code_review_ny_competent_since_last_review_request", # End ZMC supplementary fields
+            "start_time",  # Used in ZMC learner progress report
+            "review_request_time", # Used in ZMC learner progress report
+            "code_review_competent_since_last_review_request", # Used in ZMC learner progress report
+            "code_review_ny_competent_since_last_review_request", # Used in ZMC learner progress report
             "repository",
             "project_reviews",
             "title",
@@ -51,7 +51,7 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "content_item",
-            "content_title",  # ZMC supplimentary field.
+            "content_title",  # Used in ZMC learner progress report
             "due_time",
             "start_time",
             "complete_time",
