@@ -10,7 +10,6 @@ class Command(BaseCommand):
         parser.add_argument("config_repo_path", type=str)
 
     def handle(self, *args, **options):
-        breakpoint()
         ingest_automarker_config(Path(options.get("config_repo_path")))
 
 
