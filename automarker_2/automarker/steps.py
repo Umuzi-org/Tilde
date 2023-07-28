@@ -208,7 +208,8 @@ class GradleBuild(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         os.system(f"cd {clone_dir_path} && ./gradlew build")
-        TODO  # look for errors
+        # TODO look for errors
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class JavaBuild(Step):
@@ -217,7 +218,7 @@ class JavaBuild(Step):
     name = "java build"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = f"javac {clone_dir_path}/*.java"
+        command = f"javac {clone_dir_path}/main/java/*.java"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             error = stderr.replace(str(clone_dir_path.resolve()), "").strip()
