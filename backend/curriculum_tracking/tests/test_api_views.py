@@ -451,7 +451,12 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
 class RecruitProjectViewsetTests(APITestCase, APITestCaseMixin):
     LIST_URL_NAME = "recruitproject-list"
     SUPPRESS_TEST_POST_TO_CREATE = True
-    FIELDS_THAT_CAN_BE_FALSEY = ["link_submission", "complete_time"]
+    FIELDS_THAT_CAN_BE_FALSEY = [
+        "link_submission",
+        "complete_time",
+        "code_review_competent_since_last_review_request",
+        "code_review_ny_competent_since_last_review_request",
+    ]
 
     def verbose_instance_factory(self):
         project = factories.RecruitProjectInReviewFactory(

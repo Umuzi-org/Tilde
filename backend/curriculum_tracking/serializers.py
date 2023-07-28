@@ -18,8 +18,11 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "id",
             "content_item",
             "due_time",
-            "start_time",
             "complete_time",
+            "start_time",  # Used in ZMC learner progress report
+            "review_request_time", # Used in ZMC learner progress report
+            "code_review_competent_since_last_review_request", # Used in ZMC learner progress report
+            "code_review_ny_competent_since_last_review_request", # Used in ZMC learner progress report
             "repository",
             "project_reviews",
             "title",
@@ -48,6 +51,7 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "content_item",
+            "content_title",  # Used in ZMC learner progress report
             "due_time",
             "start_time",
             "complete_time",
@@ -58,6 +62,11 @@ class TopicProgressSerializer(serializers.ModelSerializer):
         ]
 
     flavours = serializers.CharField(help_text="comma separated list of flavours")
+
+    content_title = serializers.SerializerMethodField("get_content_title")
+
+    def get_content_title(self, instance):
+        return instance.content_item.title
 
 
 class PullRequestReviewQualitySerializer(serializers.ModelSerializer):
