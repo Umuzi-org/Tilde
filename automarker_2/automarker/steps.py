@@ -218,7 +218,7 @@ class JavaBuild(Step):
     name = "java build"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = f"javac {clone_dir_path}/main/java/*.java"
+        command = f"javac {clone_dir_path}/*.java"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             error = stderr.replace(str(clone_dir_path.resolve()), "").strip()
