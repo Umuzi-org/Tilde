@@ -563,6 +563,21 @@ class JavaCheckGitignore(Step):
 class PythonCheckPytestInRequirements(Step):
     name = "check pytest in requirements.txt"
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        requirements_path = clone_dir_path / "requirements.txt"
+        if not requirements_path.exists():
+            message = "It looks like you have not submitted a requirements.txt file. Please submit one."
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        with open(requirements_path, "r") as f:
+            requirements = f.read()
+
+        if "pytest" not in requirements:
+            message = "This project expects you to use pytest. Please make sure that you have pytest in your requirements.txt file."
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        self.set_outcome(status=STEP_STATUS_PASS)
+
 
 class PythonCreateVirtualEnv(Step):
     name = "create virtual env"
@@ -611,4 +626,36 @@ class PythonDoRequirementsTxtInstall(Step):
 
 
 class PythonRunPytests(Step):
-    name = "run pytests"
+    name = "run learner pytests"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        command = (
+            f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
+        )
+        stdout, stderr = subprocess_run(command)
+
+        if re.search("=== no tests ran in .* ===", stdout):
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message="It looks like you have not written any tests. Please write some tests. Tests save lives (I'm not kidding).",
+            )
+            return
+
+        failures = re.search("=== (\d+) failed, \d+ passed in .* ===", stdout)
+        if failures:
+            failures = int(failures.group(1))
+            message = f"Your tests are failing. Please fix them. You have {failures} failing tests. The full test output is: \n\n{stdout}"
+            self.set_outcome(STEP_STATUS_RED_FLAG, message=message)
+
+        errors = re.search("=== (\d+) errors? in .* ===", stdout)
+        if errors:
+            message = f"Your tests have errors. Please fix them. The full test output is: \n\n{stdout}"
+            self.set_outcome(STEP_STATUS_RED_FLAG, message=message)
+
+        passed = re.search("=== (\d+) passed in .* ===", stdout)
+        if passed:
+            self.set_outcome(STEP_STATUS_PASS)
+
+        print(stdout)
+        breakpoint()
+        foo
