@@ -289,6 +289,40 @@ class JavaRunFunctionalTests(_RunFunctionalTests):
 class JavaScriptRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = JavaScriptTestRunner
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+        breakpoint()
+        foo
+
+
+class GradleRunJunitTests(Step):
+    name = "run learner junit tests"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+
+        if "> Task :app:test NO-SOURCE" in stdout:
+            message = f"There are no tests in your project. Please make sure you test your work!"
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
+            return
+
+        if "BUILD FAILED in " in stderr:
+            self.set_outcome(
+                status=STEP_STATUS_RED_FLAG,
+                message=f"We tried to run your tests and they failed. Please make sure you've written your tests correctly. If you can't run them yourself then you can't expect us to be able to run them. Here is the error message: \n\n{stderr}",
+            )
+
+        if "\nBUILD SUCCESSFUL in " in stdout:
+            self.set_outcome(status=STEP_STATUS_PASS)
+            return
+
+        # if "> Task :app:compileTestJava FAILED" in stdout:
+
+        print("==========================")
+        print(stderr)
+        breakpoint()
+        foo  # shouldn't get here
+
 
 class GradleBuild(Step):
     name = "gradle build"

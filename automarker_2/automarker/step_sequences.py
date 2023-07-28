@@ -117,11 +117,22 @@ def java_sequence():
     ]
 
 
-def java_gradle_sequence():
-    return [
+def java_gradle_sequence(run_junit_tests=False):
+    l = [
         steps.Clone(),
         steps.JavaCheckGitignore(),
         steps.GradleBuild(),
-        steps.JavaPrepareFunctionalTests(gradle_project=True),
-        steps.JavaRunFunctionalTests(),
     ]
+    if run_junit_tests:
+        l.extend(
+            [
+                steps.GradleRunJunitTests(),
+            ]
+        )
+    l.extend(
+        [
+            steps.JavaPrepareFunctionalTests(gradle_project=True),
+            steps.JavaRunFunctionalTests(),
+        ]
+    )
+    return l
