@@ -7,6 +7,7 @@ from .automarker_test_runner import (
     JavaTestRunner,
     JavaScriptTestRunner,
 )
+import re
 from .utils import subprocess_run
 from .constants import (
     STEP_STATUS_WAITING,
@@ -362,12 +363,88 @@ class JavaScriptCheckPackageJsonExists(Step):
 class JavaScriptCheckJasmineDevDependency(Step):
     name = "check jasmine dev dependency"
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        package_json_path = clone_dir_path / "package.json"
+        with open(package_json_path) as f:
+            package_json = json.load(f)
+
+        dev_dependencies = package_json.get("devDependencies", {})
+        dependencies = package_json.get("dependencies", {})
+
+        if "jasmine" in dependencies:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="It looks like you installed jasmine as a regular dependency. Please npm install it as a dev dependency instead",
+            )
+            return
+
+        if "jasmine" not in dev_dependencies:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="It looks like you have not installed jasmine at all. Please npm install it as a dev dependency",
+            )
+            return
+
+        test_script = package_json.get("scripts", {}).get("test")
+        if "jasmine" not in test_script:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="We should be able to run your tests using `npm run test`. Please make sure that you have set up a test script in your package.json",
+            )
+            return
+
+        self.set_outcome(STEP_STATUS_PASS)
+
+
+class JavaScriptRunLearnerJasmineTests(Step):
+    name = "run learner's tests with jasmine"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && npm run test")
+
+        if "npm ERR! Missing script:" in stderr:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="We should be able to run your tests using `npm run test`. Please make sure that you have set up a test script in your package.json",
+            )
+            return
+        if "No specs found" in stdout:
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message="It looks like you have not written any tests. Please test your work. Tests save lives (I'm not kidding).",
+            )
+            return
+
+        if stderr:
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message=f"There was an error while running your tests. Please make sure that you submit valid code! If you can't run your tests then neither can we.\n\nHere is the error:\n\n{stderr}",  # todo: sanitise the error. It will contain th clone directory
+            )
+            return
+
+        counts = re.search(f"(\d+) specs?, (\d+) failures?", stdout)
+        if counts:
+            specs, fails = counts.groups()
+            if int(fails) > 0:
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message=f"Your tests failed. Please fix them. Here is the output from running your tests:\n\n{stdout}",  # todo: sanitise the error. It will contain th clone directory
+                )
+                return
+            else:
+                self.set_outcome(STEP_STATUS_PASS)
+                return
+        breakpoint()
+        shouldnt_be_here
+
 
 class JavaScriptDoNpmInstall(Step):
     name = "do npm install"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && npm install")
+        stdout, stderr = subprocess_run(
+            f"cd {clone_dir_path} && npm install --include=dev"
+        )
         if len(stderr):
             message = "There was an error while running `npm install`. Please make sure that you submit valid code! if you can't `npm install` your dependencies then neither can we."
             self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
