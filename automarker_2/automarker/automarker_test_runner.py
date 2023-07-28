@@ -235,7 +235,7 @@ class _TestRunner:
         printed = self.last_command_output[TAG_RUNNING]
         if printed != str(expected):
             self.register_test_error(
-                f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
+                f"Your code printed the wrong value. It printed\n```\n{self.last_command_output[TAG_RUNNING]}\n```\nbut we expected\n```\n{expected}\n```",
             )
 
     def assert_similar_error_message_raised(self, similar_message, max_distance):

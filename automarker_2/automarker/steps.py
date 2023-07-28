@@ -122,13 +122,35 @@ class PrepareFunctionalTests(Step):
         self.set_outcome(status=STEP_STATUS_PASS)
 
     def _run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        test_path = Path(config.__file__).parent.parent / "functional_tests"
+        test_paths = []
+        adapter_paths = []
+
         final_test_path = clone_dir_path / "functional_tests"
+        os.mkdir(final_test_path)
 
-        os.system(f"cp -r {test_path} {clone_dir_path}")
+        if config.include_functional_tests_from:
+            for s in config.include_functional_tests_from:
+                tests_path = (
+                    Path(config.__file__).parent.parent.parent / s
+                ).parent / "functional_tests"
+                test_paths.append(tests_path)
 
-        adapter_path = Path(config.__file__).parent / "adapter"
-        os.system(f"cp -r {adapter_path} {final_test_path}")
+                adapter_path = (
+                    Path(config.__file__).parent.parent.parent / s / "adapter"
+                )
+                adapter_paths.append(adapter_path)
+
+        test_paths.append(Path(config.__file__).parent.parent / "functional_tests")
+
+        for test_path in test_paths:
+            os.system(f"cp -r {test_path} {clone_dir_path}")
+
+        # print(os.listdir(final_test_path))
+        # breakpoint()
+
+        adapter_paths.append(Path(config.__file__).parent / "adapter")
+        for adapter_path in adapter_paths:
+            os.system(f"cp -r {adapter_path} {final_test_path}")
 
         assert final_test_path.exists()
         adapter_path = final_test_path / "adapter"

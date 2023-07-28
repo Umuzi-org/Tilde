@@ -183,4 +183,8 @@ def get_all_marker_configs():
             )
             configuration.title = title
             configuration.content_item_id = config_content_item_id
+            try:
+                configuration.include_functional_tests_from
+            except AttributeError:
+                configuration.include_functional_tests_from = []
             yield configuration
