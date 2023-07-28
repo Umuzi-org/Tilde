@@ -246,7 +246,13 @@ class _RunFunctionalTests(Step):
         test_path = clone_dir_path / "functional_tests"
 
         runner = self.TestRunnerClass(test_path, clone_dir_path=clone_dir_path)
-        runner.run_tests(fail_fast)
+        count = runner.run_tests(fail_fast)
+
+        if count == 0:
+            message = "No tests were found. Please make sure you have at least one test in your functional_tests folder"
+            self.set_outcome(status=STEP_STATUS_ERROR, message=message)
+            return
+        assert count
 
         if runner.has_errors():
             message = f"Your code has errors. Please fix them and try again"
