@@ -125,12 +125,15 @@ class _TestRunner:
             self.assert_no_import_side_effects()
 
     def run_tests(self, fail_fast):
+        """
+        returns the number of test files that were visited
+        """
         test_files = os.listdir(self.test_path)
         test_files = [s for s in test_files if re.match(r"^test_.*\.py$", s)]
 
         sys.path.append(str(self.test_path.resolve()))
 
-        for file_name in test_files:
+        for i, file_name in enumerate(test_files):
             self.set_test_file_name(file_name)
             file_name = file_name[:-3]  # remove the .py extension
 
@@ -153,7 +156,8 @@ class _TestRunner:
                     self.register_test_error(error_message=e.message, status=e.status)
                     # once we have logged the error er move onto the next test
                 if fail_fast and self.has_errors():
-                    return
+                    return i + 1
+        return len(test_files)
 
         sys.path.pop(sys.path.index(str(self.test_path.resolve())))
 
@@ -233,9 +237,9 @@ class _TestRunner:
 
     def assert_printed(self, expected):
         printed = self.last_command_output[TAG_RUNNING]
-        if printed != expected:
+        if printed != str(expected):
             self.register_test_error(
-                f"Your code printed the wrong value. It printed `{self.last_command_output[TAG_RUNNING]}` but we expected `{expected}`",
+                f"Your code printed the wrong value. It printed\n```\n{self.last_command_output[TAG_RUNNING]}\n```\nbut we expected\n```\n{expected}\n```",
             )
 
     def assert_similar_error_message_raised(self, similar_message, max_distance):
@@ -331,25 +335,6 @@ class PythonTestRunner(_TestRunner):
 
         return error_type, error_message
 
-    # def assert_similar_error_raised(self, similar_message, max_distance):
-    #     # TODO: this is very similar to the js version of this function. Can we refactor it?
-    #     stderr = self.last_command_output.stderr
-    #     if not stderr:
-    #         raise self.StopTestFunctionException(
-    #             "There was meant to be an Exception but there wasn't one. Make sure you remember to raise an Exception when you need to. If you are raising the Exception then the problem might be that you are catching it as well. Don't `except` Exceptions unless you know what you are doing."
-    #         )
-
-    #     error_type, error_message = re.search("([a-zA-Z].*): (.*)", stderr).groups()
-    #     if similar_message:
-    #         from automarker.ai_helpers import similarity_distance  # just in time import
-
-    #         distance = similarity_distance(similar_message, error_message)
-    #         if distance > max_distance:
-    #             raise self.StopTestFunctionException(
-    #                 f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
-    #                 status=STEP_STATUS_NOT_YET_COMPETENT,
-    #             )
-
 
 class JavaTestRunner(_TestRunner):
     EXCEPTION_OR_ERROR = "Exception"
@@ -369,10 +354,13 @@ class JavaTestRunner(_TestRunner):
         return stderr
 
     def get_error_type_and_message(self):
-        stderr = self.last_command_output.stderr
-        # this still needs to be implemented for Java
-        # take a look at the implementations for other languages
-        breakpoint()
+        error_info = self.last_command_output.stderr.strip().split("\n\tat ")[0]
+        # Exception in thread "main" java.lang.IllegalArgumentException: Pet cannot be adopted again
+        # at Home.adoptPet(Home.java:14)
+        # at HomeAdoptAndSounds.main(HomeAdoptAndSounds.java:37)
+        error_type = error_info.split(":")[0].split()[-1]
+        error_message = ":".join(error_info.split(":")[1:]).strip()
+
         return error_type, error_message
 
 

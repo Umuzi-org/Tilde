@@ -74,12 +74,30 @@ class AdapterCommandOutput:
     def __repr__(self):
         return f"CommandOutput({self.__dict__})"
 
+    @staticmethod
+    def _clean_tag_content(content):
+        """
+        - remove blank lines from the beginning and end (not the middle)
+        - remove blank space from the ends of lines
+        """
+        clean_lines = []
+        for line in content.rstrip().split("\n"):
+            stripped = line.rstrip()
+            if not clean_lines:
+                # whitespace lines are removed
+                if stripped == "":
+                    continue
+            clean_lines.append(stripped)
+        result = "\n".join(clean_lines)
+        return result
+
     def _process_std_out_tags(self, stdout):
         result = {}
         for tag in output_tags:
             found = re.search(rf"<{tag}>(.+?)</{tag}>", stdout, re.DOTALL)
             if found:
-                result[tag] = found.groups()[0].strip()
+                content = found.groups()[0].rstrip()
+                result[tag] = self._clean_tag_content(content)
         return result
 
     @classmethod

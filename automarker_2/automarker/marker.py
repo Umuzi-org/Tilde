@@ -67,7 +67,9 @@ def _mark_project(
     ), f"Invalid status: {config.status}"
 
     if config.status == constants.CONFIG_STATUS_NOT_IMPLEMENTED:
-        raise NotImplementedError("This project has not been implemented yet")
+        raise NotImplementedError(
+            "This project has not been implemented yet. If this seems like an error then look at the relevant project config.py file and check the status."
+        )
 
     clone_dir_name = (
         f"{content_item_id}-{'-'.join(sorted(flavours))}-perfect"
@@ -183,4 +185,8 @@ def get_all_marker_configs():
             )
             configuration.title = title
             configuration.content_item_id = config_content_item_id
+            try:
+                configuration.include_functional_tests_from
+            except AttributeError:
+                configuration.include_functional_tests_from = []
             yield configuration

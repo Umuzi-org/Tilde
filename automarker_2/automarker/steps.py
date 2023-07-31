@@ -7,6 +7,7 @@ from .automarker_test_runner import (
     JavaTestRunner,
     JavaScriptTestRunner,
 )
+import re
 from .utils import subprocess_run
 from .constants import (
     STEP_STATUS_WAITING,
@@ -122,13 +123,35 @@ class PrepareFunctionalTests(Step):
         self.set_outcome(status=STEP_STATUS_PASS)
 
     def _run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        test_path = Path(config.__file__).parent.parent / "functional_tests"
+        test_paths = []
+        adapter_paths = []
+
         final_test_path = clone_dir_path / "functional_tests"
+        os.mkdir(final_test_path)
 
-        os.system(f"cp -r {test_path} {clone_dir_path}")
+        if config.include_functional_tests_from:
+            for s in config.include_functional_tests_from:
+                tests_path = (
+                    Path(config.__file__).parent.parent.parent / s
+                ).parent / "functional_tests"
+                test_paths.append(tests_path)
 
-        adapter_path = Path(config.__file__).parent / "adapter"
-        os.system(f"cp -r {adapter_path} {final_test_path}")
+                adapter_path = (
+                    Path(config.__file__).parent.parent.parent / s / "adapter"
+                )
+                adapter_paths.append(adapter_path)
+
+        test_paths.append(Path(config.__file__).parent.parent / "functional_tests")
+
+        for test_path in test_paths:
+            os.system(f"cp -r {test_path} {clone_dir_path}")
+
+        # print(os.listdir(final_test_path))
+        # breakpoint()
+
+        adapter_paths.append(Path(config.__file__).parent / "adapter")
+        for adapter_path in adapter_paths:
+            os.system(f"cp -r {adapter_path} {final_test_path}")
 
         assert final_test_path.exists()
         adapter_path = final_test_path / "adapter"
@@ -136,12 +159,22 @@ class PrepareFunctionalTests(Step):
 
 
 class JavaPrepareFunctionalTests(PrepareFunctionalTests):
+    def __init__(self, gradle_project):
+        super().__init__()
+        self.name = "preparing functional tests (java)"
+        self.gradle_project = gradle_project
+
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         self._run(project_uri, clone_dir_path, self_test, config, fail_fast)
         # try to build the tests. If the learner named anything badly then
         # this will fail and we can give them a useful error message
         adapter_dir = clone_dir_path / "functional_tests" / "adapter"
-        build_command = f"javac --class-path {clone_dir_path} {adapter_dir/'*.java'}"
+        if self.gradle_project:
+            build_command = f"javac --class-path {clone_dir_path/'app/build/classes/java/main'} {adapter_dir/'*.java'}"
+        else:
+            build_command = (
+                f"javac --class-path {clone_dir_path} {adapter_dir/'*.java'}"
+            )
         stdout, stderr = subprocess_run(build_command)
         if stderr:
             if "cannot find symbol" in stderr:
@@ -152,6 +185,54 @@ class JavaPrepareFunctionalTests(PrepareFunctionalTests):
                 error = "\n".join([s for s in error.split("\n") if s.strip()])
                 message = f"There was an error when we tried to use your code. Please make sure you've named everything correctly. Here is the error message: \n{error}"
                 self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            missing_package = re.search("error: package (.*) does not exist", stderr)
+
+            if missing_package:
+                missing_package = missing_package.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to import your code from the `{missing_package}` package and got the error `package {missing_package} does not exist`. Please make sure you use the correct package declaration in your code!"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_accessor = re.search("error: (.* has .* access in .*)\n", stderr)
+            if bad_accessor:
+                bad_accessor = bad_accessor.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to access a method or variable but we can't. We need the method or variable to be public. Here is the error message: \n`{bad_accessor}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_constructor_accessor = re.search(
+                "error: (.* is not public in .* cannot be accessed from outside package)",
+                stderr,
+            )
+
+            if bad_constructor_accessor:
+                bad_constructor_accessor = bad_constructor_accessor.group(1)
+                message = f"There was an error when we tried to use your code. We were trying to access a constructor but we can't. We need the constructor to be public. Here is the error message: \n`{bad_constructor_accessor}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            bad_types = re.search(
+                "error: incompatible types: (.*) cannot be converted to (.*)\n(.*)",
+                stderr,
+            )
+            if bad_types:
+                actual_type = bad_types.group(1)
+                expected_type = bad_types.group(2)
+                code = bad_types.group(3).strip()
+                message = f"There was an error due to a type mismatch. We were expecting a value of type `{expected_type}` but got a value of type `{actual_type}`. Here is the code that caused the error: `{code}`"
+                self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+                return
+
+            breakpoint()
+
+            message = (
+                "There was an error when we tried to build our tests against your code. Please make sure you've named everything correctly and that everything has the correct argument datatypes and return datatypes. Here is the error message: \n\n"
+                + stderr
+            )
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+
         else:
             self.set_outcome(status=STEP_STATUS_PASS)
 
@@ -165,7 +246,13 @@ class _RunFunctionalTests(Step):
         test_path = clone_dir_path / "functional_tests"
 
         runner = self.TestRunnerClass(test_path, clone_dir_path=clone_dir_path)
-        runner.run_tests(fail_fast)
+        count = runner.run_tests(fail_fast)
+
+        if count == 0:
+            message = "No tests were found. Please make sure you have at least one test in your functional_tests folder"
+            self.set_outcome(status=STEP_STATUS_ERROR, message=message)
+            return
+        assert count
 
         if runner.has_errors():
             message = f"Your code has errors. Please fix them and try again"
@@ -202,13 +289,67 @@ class JavaRunFunctionalTests(_RunFunctionalTests):
 class JavaScriptRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = JavaScriptTestRunner
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+        breakpoint()
+        foo
+
+
+class GradleRunJunitTests(Step):
+    name = "run learner junit tests"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+
+        if "> Task :app:test NO-SOURCE" in stdout:
+            message = f"There are no tests in your project. Please make sure you test your work!"
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
+            return
+
+        if "BUILD FAILED in " in stderr:
+            self.set_outcome(
+                status=STEP_STATUS_RED_FLAG,
+                message=f"We tried to run your tests and they failed. Please make sure you've written your tests correctly. If you can't run them yourself then you can't expect us to be able to run them. Here is the error message: \n\n{stderr}",
+            )
+
+        if "\nBUILD SUCCESSFUL in " in stdout:
+            self.set_outcome(status=STEP_STATUS_PASS)
+            return
+
+        # if "> Task :app:compileTestJava FAILED" in stdout:
+
+        print("==========================")
+        print(stderr)
+        breakpoint()
+        foo  # shouldn't get here
+
 
 class GradleBuild(Step):
     name = "gradle build"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        os.system(f"cd {clone_dir_path} && ./gradlew build")
-        TODO  # look for errors
+        stdout, stderr = subprocess_run(
+            f"cd {clone_dir_path} && ./gradlew build -x app:test --info"
+        )
+        if "gradlew: not found" in stderr:
+            message = f"We tried to build your project using `./gradlew build` but it didn't work. Your `gradlew` file is missing. Are you sure you followed the instructions correctly? Please make sure this project is created using gradle"
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        if "BUILD FAILED" in stderr:
+            message = f"Your code does not compile at all! This is VERY BAD because it means you handed in code that you couldn't run yourself. Please fix the errors and try again. Here is the error message:\n\n{stderr}"
+            self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
+            return
+        if "BUILD SUCCESSFUL" in stdout:
+            self.set_outcome(status=STEP_STATUS_PASS)
+            return
+
+        print("==== stdout ====")
+        print(stdout)
+        print("==== stderr ====")
+        print(stderr)
+        breakpoint()
+
+        TODO  # shouldn't be here
 
 
 class JavaBuild(Step):
@@ -340,12 +481,88 @@ class JavaScriptCheckPackageJsonExists(Step):
 class JavaScriptCheckJasmineDevDependency(Step):
     name = "check jasmine dev dependency"
 
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        package_json_path = clone_dir_path / "package.json"
+        with open(package_json_path) as f:
+            package_json = json.load(f)
+
+        dev_dependencies = package_json.get("devDependencies", {})
+        dependencies = package_json.get("dependencies", {})
+
+        if "jasmine" in dependencies:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="It looks like you installed jasmine as a regular dependency. Please npm install it as a dev dependency instead",
+            )
+            return
+
+        if "jasmine" not in dev_dependencies:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="It looks like you have not installed jasmine at all. Please npm install it as a dev dependency",
+            )
+            return
+
+        test_script = package_json.get("scripts", {}).get("test")
+        if "jasmine" not in test_script:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="We should be able to run your tests using `npm run test`. Please make sure that you have set up a test script in your package.json",
+            )
+            return
+
+        self.set_outcome(STEP_STATUS_PASS)
+
+
+class JavaScriptRunLearnerJasmineTests(Step):
+    name = "run learner's tests with jasmine"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && npm run test")
+
+        if "npm ERR! Missing script:" in stderr:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message="We should be able to run your tests using `npm run test`. Please make sure that you have set up a test script in your package.json",
+            )
+            return
+        if "No specs found" in stdout:
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message="It looks like you have not written any tests. Please test your work. Tests save lives (I'm not kidding).",
+            )
+            return
+
+        if stderr:
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message=f"There was an error while running your tests. Please make sure that you submit valid code! If you can't run your tests then neither can we.\n\nHere is the error:\n\n{stderr}",  # todo: sanitise the error. It will contain th clone directory
+            )
+            return
+
+        counts = re.search(f"(\d+) specs?, (\d+) failures?", stdout)
+        if counts:
+            specs, fails = counts.groups()
+            if int(fails) > 0:
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message=f"Your tests failed. Please fix them. Here is the output from running your tests:\n\n{stdout}",  # todo: sanitise the error. It will contain th clone directory
+                )
+                return
+            else:
+                self.set_outcome(STEP_STATUS_PASS)
+                return
+        breakpoint()
+        shouldnt_be_here
+
 
 class JavaScriptDoNpmInstall(Step):
     name = "do npm install"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && npm install")
+        stdout, stderr = subprocess_run(
+            f"cd {clone_dir_path} && npm install --include=dev"
+        )
         if len(stderr):
             message = "There was an error while running `npm install`. Please make sure that you submit valid code! if you can't `npm install` your dependencies then neither can we."
             self.set_outcome(status=STEP_STATUS_RED_FLAG, message=message)
@@ -385,6 +602,21 @@ class JavaCheckGitignore(Step):
 
 class PythonCheckPytestInRequirements(Step):
     name = "check pytest in requirements.txt"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        requirements_path = clone_dir_path / "requirements.txt"
+        if not requirements_path.exists():
+            message = "It looks like you have not submitted a requirements.txt file. Please submit one."
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        with open(requirements_path, "r") as f:
+            requirements = f.read()
+
+        if "pytest" not in requirements:
+            message = "This project expects you to use pytest. Please make sure that you have pytest in your requirements.txt file."
+            self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
+            return
+        self.set_outcome(status=STEP_STATUS_PASS)
 
 
 class PythonCreateVirtualEnv(Step):
@@ -434,4 +666,36 @@ class PythonDoRequirementsTxtInstall(Step):
 
 
 class PythonRunPytests(Step):
-    name = "run pytests"
+    name = "run learner pytests"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        command = (
+            f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
+        )
+        stdout, stderr = subprocess_run(command)
+
+        if re.search("=== no tests ran in .* ===", stdout):
+            self.set_outcome(
+                STEP_STATUS_RED_FLAG,
+                message="It looks like you have not written any tests. Please write some tests. Tests save lives (I'm not kidding).",
+            )
+            return
+
+        failures = re.search("=== (\d+) failed, \d+ passed in .* ===", stdout)
+        if failures:
+            failures = int(failures.group(1))
+            message = f"Your tests are failing. Please fix them. You have {failures} failing tests. The full test output is: \n\n{stdout}"
+            self.set_outcome(STEP_STATUS_RED_FLAG, message=message)
+
+        errors = re.search("=== (\d+) errors? in .* ===", stdout)
+        if errors:
+            message = f"Your tests have errors. Please fix them. The full test output is: \n\n{stdout}"
+            self.set_outcome(STEP_STATUS_RED_FLAG, message=message)
+
+        passed = re.search("=== (\d+) passed in .* ===", stdout)
+        if passed:
+            self.set_outcome(STEP_STATUS_PASS)
+
+        print(stdout)
+        breakpoint()
+        foo

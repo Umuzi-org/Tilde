@@ -26,13 +26,15 @@ def process_row(row):
     pilot_course = row[COL_PILOT_COURSE].strip()
     extra_identifiers = row[COL_EXTRA_IDENTIFIERS].strip()
 
-    user, _ = User.objects.get_or_create(
+    user, created = User.objects.get_or_create(
         email=email,
         defaults={
             "first_name": first_name,
             "last_name": last_name,
         },
     )
+    if created:
+        user.set_password(email)
     user.save()
 
     team_name = f"ZMC {pilot_date} {pilot_course} {extra_identifiers}".strip()

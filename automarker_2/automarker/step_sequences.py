@@ -28,7 +28,7 @@ def java_kata_sequence():
         steps.Clone(),
         steps.JavaCheckNoImports(),
         steps.JavaBuild(),
-        steps.JavaPrepareFunctionalTests(),
+        steps.JavaPrepareFunctionalTests(gradle_project=False),
         steps.JavaRunFunctionalTests(),
     ]
 
@@ -84,10 +84,22 @@ node_functional_tests = [
 ]
 
 
-def javascript_sequence(do_npm_install=False):
+def javascript_sequence(do_npm_install=False, do_jasmine_tests=False):
     l = []
     l.extend(node_base)
-    if do_npm_install:
+    if do_jasmine_tests:
+        assert do_npm_install, "can't run the learner's tests unless we npm install"
+
+        l.extend(
+            [
+                steps.JavaScriptCheckPackageJsonExists(),
+                steps.JavaScriptCheckJasmineDevDependency(),
+                steps.JavaScriptDoNpmInstall(),
+                steps.JavaScriptRunLearnerJasmineTests(),
+            ]
+        )
+
+    elif do_npm_install:
         l.extend(
             [steps.JavaScriptCheckPackageJsonExists(), steps.JavaScriptDoNpmInstall()]
         )
@@ -100,16 +112,27 @@ def java_sequence():
         steps.Clone(),
         steps.JavaCheckGitignore(),
         steps.JavaBuild(),
-        steps.JavaPrepareFunctionalTests(),
+        steps.JavaPrepareFunctionalTests(gradle_project=False),
         steps.JavaRunFunctionalTests(),
     ]
 
 
-def java_gradle_sequence():
-    return [
+def java_gradle_sequence(run_junit_tests=False):
+    l = [
         steps.Clone(),
         steps.JavaCheckGitignore(),
         steps.GradleBuild(),
-        steps.JavaPrepareFunctionalTests(),
-        steps.JavaRunFunctionalTests(),
     ]
+    if run_junit_tests:
+        l.extend(
+            [
+                steps.GradleRunJunitTests(),
+            ]
+        )
+    l.extend(
+        [
+            steps.JavaPrepareFunctionalTests(gradle_project=True),
+            steps.JavaRunFunctionalTests(),
+        ]
+    )
+    return l
