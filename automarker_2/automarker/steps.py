@@ -289,10 +289,10 @@ class JavaRunFunctionalTests(_RunFunctionalTests):
 class JavaScriptRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = JavaScriptTestRunner
 
-    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
-        breakpoint()
-        foo
+    # def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+    #     stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+    #     breakpoint()
+    #     foo
 
 
 class GradleRunJunitTests(Step):
