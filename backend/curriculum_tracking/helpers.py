@@ -190,6 +190,11 @@ def add_users_to_team(team, email_addresses):
         if users:
             team.user_set.add(*users)
 
+        users_added_to_team = [user.email for user in users]
+        return users_added_to_team
+
+    return []
+
 
 def remove_leading_and_trailing_whitespace(string):
     if string and type(string) == str:

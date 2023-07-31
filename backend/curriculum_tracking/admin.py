@@ -3,6 +3,7 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
+from django.contrib import messages
 from .helpers import (
     add_users_to_team,
     get_email_addresses_from_str,
@@ -192,7 +193,19 @@ class BulkUsersAndTeamOperationAdmin(admin.ModelAdmin):
         for operation in queryset.all():
             team = operation.team_model
             email_addresses = get_email_addresses_from_str(operation.email_addresses)
-            add_users_to_team(team, email_addresses)
+            users_added_to_team = add_users_to_team(team, email_addresses)
+            if users_added_to_team:
+                self.message_user(
+                    request,
+                    f"The following users were successfully added to the \"{team.name}\" team: \n{', '.join(users_added_to_team)}",
+                    messages.SUCCESS,
+                )
+            else:
+                self.message_user(
+                    request,
+                    f'No users were added to the "{team.name}" team',
+                    messages.WARNING,
+                )
 
     bulk_add_users_to_team.short_description = "Bulk add users to team"
 
