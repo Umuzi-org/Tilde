@@ -10,7 +10,7 @@ urlpatterns = [
     path("test_kill_dramatic_worker/", views.test_kill_dramatic_worker),
     path(
         "team/<int:team_id>/bulk_add_users/",
-        views.bulk_add_users_to_team,
-        name="bulk_add_users_to_team",
+        views.bulk_add_users,
+        name="bulk_add_users",
     ),
 ]

@@ -13,7 +13,6 @@ class TeamForm(forms.Form):
     # everyone = forms.BooleanField(required=False)
 
     def clean(self):
-
         data = super(TeamForm, self).clean()
 
         number_of_fields = sum([bool(x) for x in data.values()])
@@ -22,3 +21,9 @@ class TeamForm(forms.Form):
             raise ValidationError("Choose one, and only one, filter to apply")
 
         return data
+
+
+class BulkAddUsersForm(forms.Form):
+    email_addresses = forms.CharField(
+        label="Email addresses",
+    )

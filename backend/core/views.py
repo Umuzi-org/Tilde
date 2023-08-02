@@ -10,7 +10,8 @@ from core import permissions as core_permissions
 from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, get_object_or_404
+from .forms import BulkAddUsersForm
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
@@ -296,8 +297,17 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return Response(result)
 
 
-def bulk_add_users_to_team(request, team_id):
-    team = Team.objects.get(pk=team_id)
-    print("hellllo")
+def bulk_add_users(request, team_id):
+    team = get_object_or_404(Team, pk=team_id)
 
-    return redirect("bulk_add_users_to_team", team_id)
+    if request.method == "POST":
+        form = BulkAddUsersForm(request.POST)
+        if form.is_valid():
+            print("hey!")
+            return redirect("core_team_change", team_id)
+    else:
+        form = BulkAddUsersForm()
+
+    return render(
+        request, "admin/core/bulk_add_users_form.html", {"form": form, "team": team}
+    )

@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+    <h2>Bulk add users to "{{team.name}}"</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Users</button>
+    </form>
+{% endblock %}

@@ -4,9 +4,7 @@
 {% block object-tools-items %}
     {{ block.super }}
     <li>
-        <a href="/admin/core/team/{{ original.pk }}/bulk_add_users/" class="button">
-            Bulk add users
-        </a>
+        <a href="{% url 'bulk_add_users' original.pk %}" class="button">Bulk Add Users</a>
     </li>
 {% endblock %}
 
