@@ -61,6 +61,8 @@ class TeamAdmin(GuardedModelAdmin):
     actions = [deactivate_team_members]
     ordering = ["name"]
 
+    change_form_template = "admin/core/team_change_form.html"
+
 
 admin.site.register(models.UserProfile)
 

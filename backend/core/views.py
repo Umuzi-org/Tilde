@@ -10,6 +10,7 @@ from core import permissions as core_permissions
 from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
+from django.shortcuts import redirect
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
@@ -293,3 +294,10 @@ class UserViewSet(viewsets.ModelViewSet):
 #             result[team.id]["permissions"].append(permission)
 
 #     return Response(result)
+
+
+def bulk_add_users_to_team(request, team_id):
+    team = Team.objects.get(pk=team_id)
+    print("hellllo")
+
+    return redirect("bulk_add_users_to_team", team_id)

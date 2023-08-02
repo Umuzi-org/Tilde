@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    <li>
+        <a href="/admin/core/team/{{ original.pk }}/bulk_add_users/" class="button">
+            Bulk add users
+        </a>
+    </li>
+{% endblock %}
+
+
+
