@@ -303,7 +303,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # TODO: make header on form page match other pages
 # TODO: make breadcrumb menu show up on form page
-# TODO: clean email addresses with different delimeters
 # TODO: fix url for form
 
 
