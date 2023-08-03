@@ -26,4 +26,5 @@ class TeamForm(forms.Form):
 class BulkAddUsersForm(forms.Form):
     email_addresses = forms.CharField(
         label="Email addresses",
+        widget=forms.Textarea(attrs={"rows": 15, "style": "display: flex;"}),
     )
