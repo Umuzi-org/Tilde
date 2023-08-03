@@ -11,7 +11,12 @@ from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib import messages
 from .forms import BulkAddUsersForm
+from curriculum_tracking.helpers import (
+    add_users_to_team,
+    get_email_addresses_from_str,
+)
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
@@ -296,6 +301,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
 #     return Response(result)
 
+# TODO: make header on form page match other pages
+# TODO: make breadcrumb menu show up on form page
+# TODO: clean email addresses with different delimeters
+# TODO: fix url for form
+
 
 def bulk_add_users(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
@@ -303,8 +313,21 @@ def bulk_add_users(request, team_id):
     if request.method == "POST":
         form = BulkAddUsersForm(request.POST)
         if form.is_valid():
-            print("hey!")
-            return redirect("core_team_change", team_id)
+            email_addresses = request.POST["email_addresses"]
+            cleaned_email_addresses = get_email_addresses_from_str(email_addresses)
+            users_added_to_team = add_users_to_team(team, cleaned_email_addresses)
+            if users_added_to_team:
+                messages.success(
+                    request,
+                    f"The following users were successfully added to the \"{team.name}\" team: \n{', '.join(users_added_to_team)}",
+                )
+            else:
+                messages.warning(
+                    request,
+                    f'No users were added to the "{team.name}" team',
+                )
+
+            return redirect(f"/admin/core/team/{team_id}/change")
     else:
         form = BulkAddUsersForm()
 
