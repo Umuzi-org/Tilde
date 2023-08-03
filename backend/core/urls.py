@@ -9,7 +9,7 @@ urlpatterns = [
     path("test_long_running_request/", views.test_long_running_request),
     path("test_kill_dramatic_worker/", views.test_kill_dramatic_worker),
     path(
-        "team/<int:team_id>/bulk_add_users/",
+        "admin/core/team/<int:team_id>/bulk_add_users/",
         views.bulk_add_users,
         name="bulk_add_users",
     ),
