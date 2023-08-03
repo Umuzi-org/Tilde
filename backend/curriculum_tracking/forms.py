@@ -1,5 +1,4 @@
 from django import forms
-from core import models as core_models
 from curriculum_tracking import models as curriculum_models
 from social_auth import models as social_models
 from core.models import User
@@ -57,12 +56,3 @@ class SelectRecruitsAndProjectForm(forms.Form):
             project.content_type == curriculum_models.ContentItem.PROJECT
         ), f"invalid content type '{project.content_type}'' for project '{project}'' [id={project.id}]. Expected '{curriculum_models.ContentItem.PROJECT}'"
         return project
-
-
-class BulkUsersAndTeamOperationForm(forms.ModelForm):
-    class Meta:
-        model = curriculum_models.BulkUsersAndTeamOperation
-        fields = "__all__"
-        widgets = {
-            "email_addresses": forms.Textarea(attrs={"rows": 5}),
-        }

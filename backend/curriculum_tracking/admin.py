@@ -3,12 +3,6 @@ from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
-from django.contrib import messages
-from .helpers import (
-    add_users_to_team,
-    get_email_addresses_from_str,
-)
-from .forms import BulkUsersAndTeamOperationForm
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -182,38 +176,9 @@ class UserAdmin(BaseUserAdmin):
     bulk_deactivate_users.short_description = "Deactivate selected users"
 
 
-class BulkUsersAndTeamOperationAdmin(admin.ModelAdmin):
-    form = BulkUsersAndTeamOperationForm
-    fields = ["team_model", "email_addresses"]
-    list_display = ["email_addresses", "team_model"]
-
-    actions = ["bulk_add_users_to_team"]
-
-    def bulk_add_users_to_team(self, request, queryset):
-        for operation in queryset.all():
-            team = operation.team_model
-            email_addresses = get_email_addresses_from_str(operation.email_addresses)
-            users_added_to_team = add_users_to_team(team, email_addresses)
-            if users_added_to_team:
-                self.message_user(
-                    request,
-                    f"The following users were successfully added to the \"{team.name}\" team: \n{', '.join(users_added_to_team)}",
-                    messages.SUCCESS,
-                )
-            else:
-                self.message_user(
-                    request,
-                    f'No users were added to the "{team.name}" team',
-                    messages.WARNING,
-                )
-
-    bulk_add_users_to_team.short_description = "Bulk add users to team"
-
-
 admin.site.register(User, UserAdmin)
 admin.site.register(models.WorkshopAttendance)
 admin.site.register(models.TopicProgress)
-admin.site.register(models.BulkUsersAndTeamOperation, BulkUsersAndTeamOperationAdmin)
 
 from django.contrib.auth.models import Group
 
