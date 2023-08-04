@@ -301,8 +301,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 #     return Response(result)
 
-# TODO: make header on form page match other pages
-# TODO: make breadcrumb menu show up on form page
 # TODO: fix url for form
 
 
