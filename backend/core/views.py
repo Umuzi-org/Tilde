@@ -301,8 +301,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 #     return Response(result)
 
-# TODO: fix url for form
-
 
 def bulk_add_users(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
