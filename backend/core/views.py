@@ -314,7 +314,7 @@ def bulk_add_users(request, team_id):
             if users_added_to_team:
                 messages.success(
                     request,
-                    f"The following users were successfully added to the \"{team.name}\" team: \n{', '.join(users_added_to_team)}",
+                    f"The following users were successfully added to the \"{team.name}\" team: {', '.join(users_added_to_team)}",
                 )
             else:
                 messages.warning(
