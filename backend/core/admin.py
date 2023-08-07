@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django import forms
 from django.template.response import TemplateResponse
+from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
+from django.contrib import messages
 
 from guardian.admin import GuardedModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
-
-from curriculum_tracking.card_generation_helpers import bulk_regenerate_cards_for_team
 
 from . import models
 
@@ -39,8 +39,6 @@ class UserSetInline(admin.TabularInline):
 
 @admin.register(models.Team)
 class TeamAdmin(GuardedModelAdmin):
-    
-
     list_display = ["name", "active"]
     list_filter = ["active"]
     search_fields = ["name"]
@@ -70,8 +68,12 @@ class TeamAdmin(GuardedModelAdmin):
 
     def bulk_regenerate_cards_for_members(self, request, queryset: object):
         if request.POST.get('post', None):
+            from long_running_request_actors import bulk_regenerate_cards_for_team as actor
+          
             for team in queryset:
-                bulk_regenerate_cards_for_team(team)
+                resp = actor.send_with_options(kwargs={"team_id": team.pk})
+            messages.add_message(request, messages.INFO, f"Regenerating cards in the background")
+
         else:
             opts = self.model._meta
 
@@ -80,6 +82,7 @@ class TeamAdmin(GuardedModelAdmin):
                 "opts": opts,
                 "app_label": opts.app_label,
                 "queryset": queryset,
+                "action_checkbox_name": ACTION_CHECKBOX_NAME
             })
         
 

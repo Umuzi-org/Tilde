@@ -32,7 +32,6 @@
      {% endblocktranslate %}
 </p>
 
-{{ action_checkbox_name }}
 <h2>{% translate "Teams" %}</h2>
 <ul>
      {% for team in queryset %}
@@ -46,7 +45,7 @@
           {% for obj in queryset %}
                <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}">
           {% endfor %}
-          <input type="hidden" name="action" value="regenerate_cards_for_selected_teams">
+          <input type="hidden" name="action" value="bulk_regenerate_cards_for_members">
           <input type="hidden" name="post" value="yes">
           <input type="submit" value="{% translate 'Yes, I’m sure' %}">
           <a href="#" class="button cancel-link">{% translate "No, take me back" %}</a>
