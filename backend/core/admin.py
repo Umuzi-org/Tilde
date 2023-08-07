@@ -1,8 +1,13 @@
 from django.contrib import admin
-from . import models
+from django import forms
+from django.template.response import TemplateResponse
+
 from guardian.admin import GuardedModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
-from django import forms
+
+from curriculum_tracking.card_generation_helpers import bulk_regenerate_cards_for_team
+
+from . import models
 
 
 class UserSetForm(forms.ModelForm):
@@ -34,11 +39,7 @@ class UserSetInline(admin.TabularInline):
 
 @admin.register(models.Team)
 class TeamAdmin(GuardedModelAdmin):
-    def deactivate_team_members(self, request, queryset: object):
-        for team in queryset:
-            for team_member in team.active_users:
-                team_member.active = False
-                team_member.save()
+    
 
     list_display = ["name", "active"]
     list_filter = ["active"]
@@ -58,9 +59,29 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = [deactivate_team_members]
+    actions = ['deactivate_team_members', 'bulk_regenerate_cards_for_members']
     ordering = ["name"]
+    
+    def deactivate_team_members(self, request, queryset: object):
+        for team in queryset:
+            for team_member in team.active_users:
+                team_member.active = False
+                team_member.save()
 
+    def bulk_regenerate_cards_for_members(self, request, queryset: object):
+        if request.POST.get('post', None):
+            for team in queryset:
+                bulk_regenerate_cards_for_team(team)
+        else:
+            opts = self.model._meta
+
+            request.current_app = self.admin_site.name
+            return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
+                "opts": opts,
+                "app_label": opts.app_label,
+                "queryset": queryset,
+            })
+        
 
 admin.site.register(models.UserProfile)
 

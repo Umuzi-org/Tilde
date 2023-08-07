@@ -266,7 +266,14 @@ def update_cards_accorrding_to_progress(user):
 
 
 def generate_all_content_cards_for_team(team):
-    todo
+    # todo
+    pass
+
+
+def bulk_regenerate_cards_for_team(team):
+    for user in team.users.filter(active=True):
+        models.AgileCard.objects.filter(assignees__in=[user]).delete()
+        generate_and_update_all_cards_for_user(user, None)
 
 
 def generate_and_update_all_cards_for_user(user, curricullum):
