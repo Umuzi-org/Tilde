@@ -76,8 +76,8 @@ class TeamAdmin(GuardedModelAdmin):
 
         else:
             opts = self.model._meta
-
             request.current_app = self.admin_site.name
+            
             return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
                 "opts": opts,
                 "app_label": opts.app_label,
