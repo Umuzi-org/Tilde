@@ -71,13 +71,13 @@ class TeamAdmin(GuardedModelAdmin):
             from long_running_request_actors import bulk_regenerate_cards_for_team as actor
           
             for team in queryset:
-                resp = actor.send_with_options(kwargs={"team_id": team.pk})
+                actor.send_with_options(kwargs={"team_id": team.pk})
             messages.add_message(request, messages.INFO, f"Regenerating cards in the background")
 
         else:
             opts = self.model._meta
             request.current_app = self.admin_site.name
-            
+
             return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
                 "opts": opts,
                 "app_label": opts.app_label,
