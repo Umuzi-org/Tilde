@@ -304,7 +304,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 @staff_member_required
-def bulk_add_users(request, team_id):
+def bulk_add_users_to_team(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
 
     if request.method == "POST":
