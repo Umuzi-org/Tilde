@@ -1,8 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django import forms
 from django.template.response import TemplateResponse
 from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
-from django.contrib import messages
+from django.utils.translation import gettext as _
 
 from guardian.admin import GuardedModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
@@ -79,6 +79,8 @@ class TeamAdmin(GuardedModelAdmin):
             request.current_app = self.admin_site.name
 
             return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
+                **self.admin_site.each_context(request),
+                "title": _("Are you sure?"),
                 "opts": opts,
                 "app_label": opts.app_label,
                 "queryset": queryset,
