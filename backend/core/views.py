@@ -12,6 +12,7 @@ from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersForm
 from curriculum_tracking.helpers import (
     add_users_to_team,
@@ -302,6 +303,7 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return Response(result)
 
 
+@staff_member_required
 def bulk_add_users(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
 
