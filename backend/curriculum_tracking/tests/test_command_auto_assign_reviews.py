@@ -53,7 +53,13 @@ def setup_config():
     )
 
     # step 2: review permission
-    # EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS
+    Value.objects.create(
+        namespace=ns,
+        name="EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS",
+        value="Demo team",
+        datatype=Value.STRING,
+        repeated=True,
+    )
     # REQUIRED_REVIEWER_PERMISSIONED_REVIEWERS_PER_CARD
 
     # # step 3: trusted reviewer permission

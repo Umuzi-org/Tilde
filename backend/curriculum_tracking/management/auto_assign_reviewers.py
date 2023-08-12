@@ -285,11 +285,13 @@ def get_cards_needing_reviewer_allocation(team):
 def auto_assign_reviewers_based_on_reviewer_team_permission():
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
-    exclude_users_nested = [
-        Team.objects.get(name=name).users.all()
-        for name in config.EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS
-    ]
-    exclude_users = [user for subset in exclude_users_nested for user in subset]
+    exclude_users = []
+
+    for name in config.EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS:
+        try:
+            exclude_users.append(*Team.objects.get(name=name).users.all())
+        except Team.DoesNotExist:
+            print(f"No team with name {name}")
 
     for team in Team.objects.filter(active=True):
         print(f"\nTeam: {team.id} {team.name}")
