@@ -6,6 +6,7 @@ from curriculum_tracking.management.auto_assign_reviewers import (
     get_cards_needing_competent_reviewers,
     get_possible_competent_reviewers,
     get_reviewer_users_by_permission,
+    auto_assign_reviewers_based_on_reviewer_team_permission,
     CONFIGURATION_NAMESPACE,
 )
 from core.tests.factories import TeamFactory, UserFactory
@@ -307,12 +308,17 @@ class get_possible_competent_reviewers_Tests(TestCase):
         )
 
 
-class auto_assign_reviewers_Tests(TestCase):
+class auto_assign_reviewers_based_on_reviewer_team_permission_Tests(TestCase):
     def setUp(self):
         setup_config()
 
-    def test_auto_assign_reviewers_based_on_reviewer_team_permission(self):
-        print("HEEELLLLO")
-        result1 = 1 + 1
-        result2 = 2
-        self.assertNotEqual(result1, result2, f"{result1} is equal to {result2}")
+    def test_auto_assign_reviewers_based_on_reviewer_team_permission_raises_no_errors(
+        self,
+    ):
+        raises_errors = False
+        try:
+            auto_assign_reviewers_based_on_reviewer_team_permission()
+        except:
+            raises_errors = True
+        finally:
+            self.assertFalse(raises_errors)
