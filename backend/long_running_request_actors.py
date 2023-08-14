@@ -107,6 +107,15 @@ def delete_and_recreate_user_cards(user_id):
     generate_and_update_all_cards_for_user(user, None)
 
 
+@actor(max_retries=3)
+def bulk_regenerate_cards_for_team(team_id):
+    from core.models import Team
+    
+    team = Team.objects.get(pk=team_id)
+    for user in team.active_users:
+        delete_and_recreate_user_cards.send(user.pk)
+
+
 @actor()
 def invite_user_to_github_org(user_id):
     from git_real.constants import GIT_REAL_BOT_USERNAME, ORGANISATION

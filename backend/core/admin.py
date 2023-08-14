@@ -1,8 +1,13 @@
-from django.contrib import admin
-from . import models
+from django.contrib import admin, messages
+from django import forms
+from django.template.response import TemplateResponse
+from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
+from django.utils.translation import gettext as _
+
 from guardian.admin import GuardedModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
-from django import forms
+
+from . import models
 
 
 class UserSetForm(forms.ModelForm):
@@ -34,12 +39,6 @@ class UserSetInline(admin.TabularInline):
 
 @admin.register(models.Team)
 class TeamAdmin(GuardedModelAdmin):
-    def deactivate_team_members(self, request, queryset: object):
-        for team in queryset:
-            for team_member in team.active_users:
-                team_member.active = False
-                team_member.save()
-
     list_display = ["name", "active"]
     list_filter = ["active"]
     search_fields = ["name"]
@@ -58,9 +57,36 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = [deactivate_team_members]
+    actions = ['deactivate_team_members', 'bulk_regenerate_cards_for_members']
     ordering = ["name"]
+    
+    def deactivate_team_members(self, request, queryset: object):
+        for team in queryset:
+            for team_member in team.active_users:
+                team_member.active = False
+                team_member.save()
 
+    def bulk_regenerate_cards_for_members(self, request, queryset: object):
+        if request.POST.get('post', None):
+            from long_running_request_actors import bulk_regenerate_cards_for_team as actor
+          
+            for team in queryset:
+                actor.send_with_options(kwargs={"team_id": team.pk})
+            messages.add_message(request, messages.INFO, f"Regenerating cards in the background")
+
+        else:
+            opts = self.model._meta
+            request.current_app = self.admin_site.name
+
+            return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
+                **self.admin_site.each_context(request),
+                "title": _("Are you sure?"),
+                "opts": opts,
+                "app_label": opts.app_label,
+                "queryset": queryset,
+                "action_checkbox_name": ACTION_CHECKBOX_NAME
+            })
+        
 
 admin.site.register(models.UserProfile)
 
