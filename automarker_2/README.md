@@ -10,6 +10,11 @@ First, install python3.10 and pipenv then:
 
 ```
 pipenv install
+
+# then, because spacey wants to be special:
+pipenv shell
+pip install -U spacy 
+python -m spacy download en_core_web_sm
 ```
 
 2. Make sure you have the configuration repo cloned somewhere sensible

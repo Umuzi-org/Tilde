@@ -136,3 +136,10 @@ def java_gradle_sequence(run_junit_tests=False):
         ]
     )
     return l
+
+
+def markdown_vector_sequence(number_of_questions):
+    return [
+        steps.Clone(),
+        steps.CheckAllQuestionFilesExist(number_of_questions),
+    ] + python_functional_tests

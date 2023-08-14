@@ -715,3 +715,22 @@ class ExpectTextNotFound(Step):
             self.set_outcome(STEP_STATUS_PASS)
         else:
             self.set_outcome(STEP_STATUS_NOT_YET_COMPETENT, message=self.message)
+
+
+class CheckAllQuestionFilesExist(Step):
+    name = "check all question files exist"
+
+    def __init__(self, number_of_questions, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.number_of_questions = number_of_questions
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        file_names = sorted(os.listdir(clone_dir_path))
+        expected = [f"question_{i}.md" for i in range(1, self.number_of_questions + 1)]
+        if file_names != expected:
+            self.set_outcome(
+                STEP_STATUS_NOT_YET_COMPETENT,
+                message=f"You were meant to submit files with the following names: {expected}. But instead you submitted files with the following names: {file_names}. Please make sure you hand in the right files so that we can mark them.",
+            )
+            return
+        self.set_outcome(STEP_STATUS_PASS)

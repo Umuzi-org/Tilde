@@ -57,6 +57,10 @@ class _TestRunner:
         #  ...
         # }
 
+        # used for marking written word projects
+        self.markdown_question = ""
+        self.markdown_answer = ""
+
     def get_error_type_and_message(self):
         """
         look at the stderr of the last command run and return a tuple containing the error type and error message. This should be the error that was raised or thrown. This is typically used when checking that the learner raised an appropriate error
@@ -175,7 +179,9 @@ class _TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             {
                 "error_message": error_message,
-                "command_description": self.last_command_output.command_description,
+                "command_description": self.last_command_output.command_description
+                if self.last_command_output
+                else None,
                 "status": status,
             }
         )
@@ -261,6 +267,95 @@ class _TestRunner:
                     f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
+
+    def assert_answer_like(self, answers, min_matches=5):
+        import spacy
+        from automarker.ai_helpers import embed_sentence, distance_functions
+
+        max_distance = 0.05
+
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(self.markdown_answer)
+        sentences = [s.text for s in doc.sents]
+        learner_vectors = [embed_sentence(s) for s in sentences]
+
+        matched = []
+
+        matrix = []
+        for correct_answer in answers:
+            correct_answer_vector = embed_sentence(correct_answer)
+            for i, learner_vector in enumerate(learner_vectors):
+                if i in matched:
+                    continue
+                distance = distance_functions["cosine"](
+                    correct_answer_vector, learner_vector
+                )
+                # print(f"`{sentences[i]}`\n{correct_answer}\n{distance}\n")
+                matrix.append([sentences[i], correct_answer, distance])
+                if distance < max_distance:
+                    matched.append(i)
+
+        breakpoint()
+
+        if len(matched) < min_matches:
+            self.register_test_error(
+                f"Your answer is missing some details. Try to make a few more good points in your text.",
+                status=STEP_STATUS_NOT_YET_COMPETENT,
+            )
+
+    def assert_question_is(self, expected_question):
+        if self.markdown_question.lower() == expected_question.lower():
+            return
+        from automarker.ai_helpers import (
+            similarity_distance,
+        )  # just in time import because this thing is slow
+
+        distance = similarity_distance(expected_question, self.markdown_question)
+        if distance > 0.1:
+            self.register_test_error(
+                f"The question in your markdown file doesn't match the one in the instructions. The expected question is `{expected_question}`. Yours is `{self.markdown_question}`.",
+                status=STEP_STATUS_NOT_YET_COMPETENT,
+            )
+
+    def get_question_and_answer_from_markdown_file(self, question_number):
+        """This is used to mark markdown files. The files are named like: question_{number}.md and are formatted as follows:
+
+        ```
+        # Question
+
+        the question
+
+        # Answer
+
+        the answer
+        ```
+        """
+        file_path = self.test_path.parent / f"question_{question_number}.md"
+        assert file_path.exists()
+        contents = file_path.read_text().strip()
+        lines = contents.split("\n")
+        assert lines[0].lower().startswith("# question")
+        lines = lines[1:]
+
+        for i, line in enumerate(lines):
+            if line.lower().startswith("# answer"):
+                self.markdown_question = "\n".join(lines[:i]).strip()
+                self.markdown_answer = "\n".join(lines[i + 1 :]).strip()
+                break
+
+        if self.markdown_question == "":
+            self.register_test_error(
+                self,
+                f"Your question_{question_number}.md file is meant to have a question and an answer in it. The expected format is as follows:\n\n```\n# Question\n\nthe question\n\n# Answer\n\nthe answer\n``` Please fix your file and resubmit your work.",
+                status=STEP_STATUS_RED_FLAG,
+            )
+
+        if self.markdown_answer == "":
+            self.register_test_error(
+                self,
+                f"Question {question_number} has no answer! Are you sure you submitted your work according to the instructions?",
+                status=STEP_STATUS_RED_FLAG,
+            )
 
 
 class PythonTestRunner(_TestRunner):
