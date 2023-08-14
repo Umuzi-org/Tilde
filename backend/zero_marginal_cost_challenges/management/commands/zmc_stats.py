@@ -9,7 +9,6 @@ from curriculum_tracking.models import (
 )
 from django.db.models import Avg, F, Max
 from sql_util.utils import SubqueryAggregate
-import json
 
 
 def get_progress(item):
