@@ -1,0 +1,1 @@
+The code in this directory is not production ready. It's just about experimenting to find the best ways to use ai tools to mark learner projects. 
