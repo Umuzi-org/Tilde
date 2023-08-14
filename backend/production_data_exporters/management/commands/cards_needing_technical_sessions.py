@@ -43,7 +43,6 @@ def get_assessment_cards():
 
 
 def get_cards_ordered_by_review():
-
     return (
         AgileCard.objects.filter(~Q(status=AgileCard.COMPLETE))
         .filter(assignees__active__in=[True])
@@ -138,9 +137,31 @@ def make_row(card, reason):
     }
 
 
+def get_all_csv_rows():
+    assessment_cards = get_assessment_cards()
+    headings = list(make_row(assessment_cards.first(), "").keys())
+    yield headings
+
+    cards_ordered_by_pr_changes_requested = get_cards_ordered_by_pr_change_requests()
+
+    # total = cards_ordered_by_pr_changes_requested.count()
+    for i, card in enumerate(cards_ordered_by_pr_changes_requested):
+        # print(f"pr card {i+1}/{total}")
+        yield list(make_row(card, "pr change requested").values())
+
+    # total = assessment_cards.count()
+    for i, card in enumerate(assessment_cards):
+        # print(f"assessment card {i+1}/{total}")
+        yield list(make_row(card, "Assessment sessions").values())
+
+    # total = get_cards_ordered_by_review().count()
+    for i, card in enumerate(get_cards_ordered_by_review()):
+        # print(f"bouncy card {i+1}/{total}")
+        yield list(make_row(card, "bouncy card").values())
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
-
         today = timezone.now().date()
 
         with open(
@@ -150,25 +171,5 @@ class Command(BaseCommand):
             "w",
         ) as f:
             writer = csv.writer(f)
-            assessment_cards = get_assessment_cards()
-            headings = list(make_row(assessment_cards.first(), "").keys())
-            writer.writerow(headings)
-
-            cards_ordered_by_pr_changes_requested = (
-                get_cards_ordered_by_pr_change_requests()
-            )
-
-            total = cards_ordered_by_pr_changes_requested.count()
-            for i, card in enumerate(cards_ordered_by_pr_changes_requested):
-                print(f"pr card {i+1}/{total}")
-                writer.writerow(list(make_row(card, "pr change requested").values()))
-
-            total = assessment_cards.count()
-            for i, card in enumerate(assessment_cards):
-                print(f"assessment card {i+1}/{total}")
-                writer.writerow(list(make_row(card, "Assessment sessions").values()))
-
-            total = get_cards_ordered_by_review().count()
-            for i, card in enumerate(get_cards_ordered_by_review()):
-                print(f"bouncy card {i+1}/{total}")
-                writer.writerow(list(make_row(card, "bouncy card").values()))
+            for row in get_all_csv_rows():
+                writer.writerow(row)
