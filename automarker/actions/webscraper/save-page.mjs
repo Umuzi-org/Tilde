@@ -1,6 +1,6 @@
 import shell from "shelljs";
 import { CLONE_PATH } from "../../env.mjs";
-import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { STATUS_OK, STATUS_ERROR, STATUS_FAIL } from "../../consts.mjs";
 import { Action } from "../index.mjs";
 import fs from "fs";
 import { join } from "path";
@@ -49,6 +49,15 @@ export default class SavePage extends Action {
   action = async function ({ repoUrl, destinationPath }) {
     const response = await this.backoff_fetch(repoUrl);
 
+    if (response.status == 404) {
+      return {
+        status: STATUS_FAIL,
+        message: `Could not fetch page \`${repoUrl}\`. Response status ${response.status}. Please make sure your url is correct and that your page is public.`,
+        errors: [
+          `Could not fetch page \`${repoUrl}\`. Response status ${response.status}. Please make sure your url is correct and that your page is public. A 404 error means that the page does not exist.`,
+        ],
+      };
+    }
     if (response.status !== 200) {
       return {
         status: STATUS_ERROR,
