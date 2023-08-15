@@ -314,13 +314,13 @@ def bulk_add_users_to_team(request, team_id):
                     request,
                     f"The following users were successfully added to the \"{team.name}\" team: {', '.join(users_added_to_team)}",
                 )
+                return redirect(f"/admin/core/team/{team_id}/change")
             else:
-                messages.warning(
+                messages.error(
                     request,
-                    f'No users were added to the "{team.name}" team',
+                    f'No users were added to the "{team.name}" team. Make sure the users and or entered email addresses exist and try again.',
                 )
 
-            return redirect(f"/admin/core/team/{team_id}/change")
     else:
         form = BulkAddUsersForm()
 
