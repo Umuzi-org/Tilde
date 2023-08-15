@@ -225,8 +225,6 @@ class JavaPrepareFunctionalTests(PrepareFunctionalTests):
                 self.set_outcome(status=STEP_STATUS_NOT_YET_COMPETENT, message=message)
                 return
 
-            breakpoint()
-
             message = (
                 "There was an error when we tried to build our tests against your code. Please make sure you've named everything correctly and that everything has the correct argument datatypes and return datatypes. Here is the error message: \n\n"
                 + stderr
@@ -289,10 +287,10 @@ class JavaRunFunctionalTests(_RunFunctionalTests):
 class JavaScriptRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = JavaScriptTestRunner
 
-    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
-        breakpoint()
-        foo
+    # def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+    #     stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
+    #     breakpoint()
+    #     foo
 
 
 class GradleRunJunitTests(Step):
@@ -699,3 +697,21 @@ class PythonRunPytests(Step):
         print(stdout)
         breakpoint()
         foo
+
+
+class ExpectTextNotFound(Step):
+    name = "expect text not found"
+
+    def __init__(self, grep_regex, message, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.grep_regex = grep_regex
+        self.message = message
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        command = f'grep -r "{self.grep_regex}" {clone_dir_path}/*'
+        stdout, stderr = subprocess_run(command)
+        assert stderr == ""
+        if stdout == "":
+            self.set_outcome(STEP_STATUS_PASS)
+        else:
+            self.set_outcome(STEP_STATUS_NOT_YET_COMPETENT, message=self.message)

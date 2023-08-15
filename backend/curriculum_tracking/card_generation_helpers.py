@@ -266,7 +266,7 @@ def update_cards_accorrding_to_progress(user):
 
 
 def generate_all_content_cards_for_team(team):
-    todo
+    raise NotImplementedError
 
 
 def generate_and_update_all_cards_for_user(user, curricullum):
