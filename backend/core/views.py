@@ -320,7 +320,6 @@ def bulk_add_users_to_team(request, team_id):
                     request,
                     f'No users were added to the "{team.name}" team. Make sure the users and or entered email addresses exist and try again.',
                 )
-
     else:
         form = BulkAddUsersForm()
 
