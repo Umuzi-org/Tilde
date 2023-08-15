@@ -27,4 +27,5 @@ class BulkAddUsersForm(forms.Form):
     email_addresses = forms.CharField(
         label="Email addresses",
         widget=forms.Textarea(attrs={"rows": 15, "style": "display: flex; width:100%"}),
+        help_text="Emails can be separated by commas, spaces and newlines.",
     )
