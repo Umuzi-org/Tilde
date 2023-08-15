@@ -24,3 +24,15 @@ def get_first_and_last_names_from_business_email(email):
     ).groups()
 
     return first_name.capitalize(), last_name.capitalize()
+
+
+def add_users_to_team(team, email_addresses):
+    if team:
+        users = User.objects.filter(email__in=email_addresses)
+        if users:
+            team.user_set.add(*users)
+
+        users_added_to_team = [user.email for user in users]
+        return users_added_to_team
+
+    return []

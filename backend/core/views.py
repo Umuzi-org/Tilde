@@ -14,9 +14,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersForm
-from curriculum_tracking.helpers import (
-    add_users_to_team,
-)
+from .helpers import add_users_to_team
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards

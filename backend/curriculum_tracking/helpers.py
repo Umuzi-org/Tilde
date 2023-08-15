@@ -182,15 +182,3 @@ def agile_card_reviews_outstanding(user):
 def pull_request_reviews_outstanding(user):
     # TODO: only implement this once the github webhook is healthier
     return []
-
-
-def add_users_to_team(team, email_addresses):
-    if team:
-        users = core_models.User.objects.filter(email__in=email_addresses)
-        if users:
-            team.user_set.add(*users)
-
-        users_added_to_team = [user.email for user in users]
-        return users_added_to_team
-
-    return []

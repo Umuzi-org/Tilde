@@ -35,8 +35,8 @@ class BulkAddUsersForm(forms.Form):
 
     def clean_email_addresses(self):
         email_addresses_str = self.cleaned_data["email_addresses"]
-        data = self.get_email_addresses_from_str(email_addresses_str)
-        return data
+        email_addresses = self.get_email_addresses_from_str(email_addresses_str)
+        return email_addresses
 
     def get_email_addresses_from_str(self, email_addresses_str):
         """extract a list of email addresses from a string separated by spaces, commas and newlines"""
