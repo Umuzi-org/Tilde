@@ -321,10 +321,4 @@ class auto_assign_reviewers_based_on_reviewer_team_permission_Tests(TestCase):
     def test_auto_assign_reviewers_based_on_reviewer_team_permission_raises_no_errors(
         self,
     ):
-        raises_errors = False
-        try:
-            auto_assign_reviewers_based_on_reviewer_team_permission()
-        except:
-            raises_errors = True
-        finally:
-            self.assertFalse(raises_errors)
+        auto_assign_reviewers_based_on_reviewer_team_permission()
