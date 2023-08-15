@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ValidationError
 from core import models
+import re
 
 
 def get_choices(Model):
@@ -28,4 +29,17 @@ class BulkAddUsersForm(forms.Form):
         label="Email addresses",
         widget=forms.Textarea(attrs={"rows": 15, "style": "display: flex; width:100%"}),
         help_text="Emails can be separated by commas, spaces and newlines.",
+        required=True,
+        empty_value=False,
     )
+
+    def clean_email_addresses(self):
+        email_addresses_str = self.cleaned_data["email_addresses"]
+        data = self.get_email_addresses_from_str(email_addresses_str)
+        return data
+
+    def get_email_addresses_from_str(self, email_addresses_str):
+        """extract a list of email addresses from a string separated by spaces, commas and newlines"""
+        email_addresses = re.split("[ ,\n]", email_addresses_str)
+        email_addresses = [email.strip() for email in email_addresses]
+        return [email for email in email_addresses if email]

@@ -16,7 +16,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersForm
 from curriculum_tracking.helpers import (
     add_users_to_team,
-    get_email_addresses_from_str,
 )
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
@@ -310,9 +309,8 @@ def bulk_add_users_to_team(request, team_id):
     if request.method == "POST":
         form = BulkAddUsersForm(request.POST)
         if form.is_valid():
-            email_addresses = request.POST["email_addresses"]
-            cleaned_email_addresses = get_email_addresses_from_str(email_addresses)
-            users_added_to_team = add_users_to_team(team, cleaned_email_addresses)
+            email_addresses = form.cleaned_data["email_addresses"]
+            users_added_to_team = add_users_to_team(team, email_addresses)
             if users_added_to_team:
                 messages.success(
                     request,

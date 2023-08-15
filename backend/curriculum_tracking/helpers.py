@@ -5,7 +5,6 @@ from backend.settings import REVIEW_SPAM_THRESHOLD
 from django.db.models import Count, Subquery
 from sql_util.utils import SubqueryAggregate
 from django.db.models import Q
-import re
 
 
 def get_projects(cohort=None, user=None):
@@ -195,20 +194,3 @@ def add_users_to_team(team, email_addresses):
         return users_added_to_team
 
     return []
-
-
-def remove_leading_and_trailing_whitespace(string):
-    if string and type(string) == str:
-        return string.strip()
-    return ""
-
-
-def get_email_addresses_from_str(email_addresses_str):
-    """extract a list of email addresses from a string separated by spaces, commas and newlines"""
-    emails_addresses = re.split("[ ,\n]", email_addresses_str)
-    cleaned_email_addresses = [
-        remove_leading_and_trailing_whitespace(email)
-        for email in emails_addresses
-        if email
-    ]
-    return cleaned_email_addresses
