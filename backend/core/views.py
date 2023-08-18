@@ -10,7 +10,7 @@ from core import permissions as core_permissions
 from core.models import Team, User
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersToTeamForm
@@ -299,34 +299,6 @@ class UserViewSet(viewsets.ModelViewSet):
 #             result[team.id]["permissions"].append(permission)
 
 #     return Response(result)
-
-
-# @staff_member_required
-# def bulk_add_users_to_team(request, team_id):
-#     team = get_object_or_404(Team, pk=team_id)
-
-#     if request.method == "POST":
-#         form = BulkAddUsersToTeamForm(request.POST)
-#         if form.is_valid():
-#             email_addresses = form.cleaned_data["email_addresses"]
-#             users_added_to_team = add_users_to_team(team, email_addresses)
-#             if users_added_to_team:
-#                 messages.success(
-#                     request,
-#                     f"The following users were successfully added to the \"{team.name}\" team: {', '.join(users_added_to_team)}",
-#                 )
-#                 return redirect(f"/admin/core/team/{team_id}/change")
-#             else:
-#                 messages.error(
-#                     request,
-#                     f'No users were added to the "{team.name}" team. Make sure the users and or entered email addresses exist and try again.',
-#                 )
-#     else:
-#         form = BulkAddUsersToTeamForm()
-
-#     return render(
-#         request, "admin/core/bulk_add_users_form.html", {"form": form, "team": team}
-#     )
 
 
 class BulkAddUsersToTeamView(FormView):
