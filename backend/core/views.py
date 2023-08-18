@@ -327,7 +327,6 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
                 self.request,
                 f"The following users were successfully added to the \"{team}\" team: {', '.join(users_added_to_team)}",
             )
-            print(f"team: {team.id}")
             return redirect(
                 reverse("admin:core_team_change", kwargs={"object_id": team.id})
             )
