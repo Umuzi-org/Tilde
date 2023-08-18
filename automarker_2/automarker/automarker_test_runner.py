@@ -497,13 +497,16 @@ class MarkdownTestRunner(PythonTestRunner):
         max_distance = 0.075
         get_distance = distance_functions["cosine"]
         maximum_hints = (
-            3  # if the learner got things wrong then give them at most this many hints
+            4  # if the learner got things wrong then give them at most this many hints
         )
 
         nlp = spacy.load("en_core_web_sm")
         doc = nlp(self.markdown_answer)
+
+        # get all the individual sentences from the learner's answer.
         sentences = [s.text for s in doc.sents]
 
+        # sometimes meaning is spread over multiple sentences so we also want to consider adjacent sentences
         adjacent_sentences = [
             " ".join(sentences[i : i + 2]) for i in range(len(sentences) - 1)
         ]
@@ -516,21 +519,25 @@ class MarkdownTestRunner(PythonTestRunner):
             columns=["learner_sentence", "concept", "hint", "distance"],
         )
         for concept, hint in answers_and_hints:
-            concept_vector = embed_sentence(concept)
+            concept_vector = embed_sentence(
+                concept
+            )  # we could pre-embed these sentences and store it in a vector db to save some time
             for sentence, sentence_vector in zip(sentences, sentence_vectors):
                 distance = get_distance(sentence_vector, concept_vector)
-                df.loc[len(df)] = [  # type: ignore
-                    sentence.replace(";", ""),
-                    concept.replace(";", ","),  # semicolons break the csv
+                df.loc[len(df)] = [
+                    sentence.replace(
+                        ";", ""
+                    ),  # remove semicolons because they mess up any csv dumps
+                    concept.replace(";", ","),
                     hint,
                     distance,
                 ]
 
         df = df.sort_values(by=["distance"], ascending=True)
-        df.to_csv("gitignore/df_with_duplicates.csv")
+        # df.to_csv("gitignore/df_with_duplicates.csv")
 
         df = df.drop_duplicates(subset=["concept"], keep="first")
-        df.to_csv("gitignore/df_no_duplicates.csv")
+        # df.to_csv("gitignore/df_no_duplicates.csv")
 
         # each concept is represented once
         assert len(df) == len(answers_and_hints)
@@ -543,12 +550,12 @@ class MarkdownTestRunner(PythonTestRunner):
             return
 
         # the learner didn't match on enough concepts. Give them some hints
-
+        # we aim for twice as many hints as the learner needs, but we don't want to just give them all the hints all at once so we cap it at maximum_hints
         hint_count = min(2 * (min_matches - matched_count), maximum_hints)
 
         df_unmatched = df[df["distance"] > max_distance]
 
-        # get the last hint_count rows
+        # get the last hint_count rows. We grab from the bottom because learners are more likely to have missed the last few concepts than the first few
         df_hints = df_unmatched.tail(hint_count)
 
         hints = df_hints["hint"].tolist()
