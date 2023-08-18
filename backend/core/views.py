@@ -16,6 +16,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersToTeamForm
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
@@ -301,10 +302,13 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return Response(result)
 
 
-class BulkAddUsersToTeamView(FormView):
+class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
     form_class = BulkAddUsersToTeamForm
     template_name = "admin/core/bulk_add_users_form.html"
     success_url = reverse_lazy("bulk_add_users_to_team")
+
+    def get_login_url(self):
+        return reverse("admin:login")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
