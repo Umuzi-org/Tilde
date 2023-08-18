@@ -24,7 +24,7 @@ class TeamForm(forms.Form):
         return data
 
 
-class BulkAddUsersForm(forms.Form):
+class BulkAddUsersToTeamForm(forms.Form):
     email_addresses = forms.CharField(
         label="Email addresses",
         widget=forms.Textarea(attrs={"rows": 15, "style": "display: flex; width:100%"}),

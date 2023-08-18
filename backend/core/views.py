@@ -7,14 +7,16 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from core import permissions as core_permissions
-from core.models import Team
+from core.models import Team, User
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from .forms import BulkAddUsersForm
+from .forms import BulkAddUsersToTeamForm
 from .helpers import add_users_to_team
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy, reverse
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 from curriculum_tracking.management.helpers import get_team_cards
@@ -300,29 +302,72 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return Response(result)
 
 
-@staff_member_required
-def bulk_add_users_to_team(request, team_id):
-    team = get_object_or_404(Team, pk=team_id)
+# @staff_member_required
+# def bulk_add_users_to_team(request, team_id):
+#     team = get_object_or_404(Team, pk=team_id)
 
-    if request.method == "POST":
-        form = BulkAddUsersForm(request.POST)
-        if form.is_valid():
-            email_addresses = form.cleaned_data["email_addresses"]
-            users_added_to_team = add_users_to_team(team, email_addresses)
-            if users_added_to_team:
-                messages.success(
-                    request,
-                    f"The following users were successfully added to the \"{team.name}\" team: {', '.join(users_added_to_team)}",
-                )
-                return redirect(f"/admin/core/team/{team_id}/change")
-            else:
-                messages.error(
-                    request,
-                    f'No users were added to the "{team.name}" team. Make sure the users and or entered email addresses exist and try again.',
-                )
-    else:
-        form = BulkAddUsersForm()
+#     if request.method == "POST":
+#         form = BulkAddUsersToTeamForm(request.POST)
+#         if form.is_valid():
+#             email_addresses = form.cleaned_data["email_addresses"]
+#             users_added_to_team = add_users_to_team(team, email_addresses)
+#             if users_added_to_team:
+#                 messages.success(
+#                     request,
+#                     f"The following users were successfully added to the \"{team.name}\" team: {', '.join(users_added_to_team)}",
+#                 )
+#                 return redirect(f"/admin/core/team/{team_id}/change")
+#             else:
+#                 messages.error(
+#                     request,
+#                     f'No users were added to the "{team.name}" team. Make sure the users and or entered email addresses exist and try again.',
+#                 )
+#     else:
+#         form = BulkAddUsersToTeamForm()
 
-    return render(
-        request, "admin/core/bulk_add_users_form.html", {"form": form, "team": team}
-    )
+#     return render(
+#         request, "admin/core/bulk_add_users_form.html", {"form": form, "team": team}
+#     )
+
+
+class BulkAddUsersToTeamView(FormView):
+    form_class = BulkAddUsersToTeamForm
+    template_name = "admin/core/bulk_add_users_form.html"
+    success_url = reverse_lazy("bulk_add_users_to_team")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        team_id = self.kwargs["team_id"]
+        team = Team.objects.get(id=team_id)
+        context["team"] = team
+        return context
+
+    def form_valid(self, form):
+        email_addresses = form.cleaned_data["email_addresses"]
+        team_id = self.kwargs["team_id"]
+        team = Team.objects.get(id=team_id)
+        users_added_to_team = self.add_users_to_team(team, email_addresses)
+        if users_added_to_team:
+            messages.success(
+                self.request,
+                f"The following users were successfully added to the \"{team}\" team: {', '.join(users_added_to_team)}",
+            )
+            redirect(reverse("admin:core_team_change", kwargs={"team_id": team.id}))
+        else:
+            messages.error(
+                self.request,
+                f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
+            )
+            redirect(reverse("bulk_add_users_to_team", kwargs={"team_id": team.id}))
+        return super().form_valid(form)
+
+    def add_users_to_team(self, team, email_addresses):
+        if team:
+            users = User.objects.filter(email__in=email_addresses)
+            if users:
+                team.user_set.add(*users)
+
+            users_added_to_team = [user.email for user in users]
+            return users_added_to_team
+
+        return []
