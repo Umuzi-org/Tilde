@@ -58,8 +58,6 @@ class _TestRunner:
         # }
 
         # used for marking written word projects
-        self.markdown_question = ""
-        self.markdown_answer = ""
 
     def get_error_type_and_message(self):
         """
@@ -163,8 +161,6 @@ class _TestRunner:
                     return i + 1
         return len(test_files)
 
-        sys.path.pop(sys.path.index(str(self.test_path.resolve())))
-
     def set_test_file_name(self, test_file_name):
         print(f"running test file: {test_file_name}...")
         self.test_file_name = test_file_name
@@ -267,95 +263,6 @@ class _TestRunner:
                     f"Your error message is not descriptive enough, or it is describing the wrong thing. A suitable error message is `{similar_message}`. Yours is `{error_message}`.",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
-
-    def assert_answer_like(self, answers, min_matches=5):
-        import spacy
-        from automarker.ai_helpers import embed_sentence, distance_functions
-
-        max_distance = 0.05
-
-        nlp = spacy.load("en_core_web_sm")
-        doc = nlp(self.markdown_answer)
-        sentences = [s.text for s in doc.sents]
-        learner_vectors = [embed_sentence(s) for s in sentences]
-
-        matched = []
-
-        matrix = []
-        for correct_answer in answers:
-            correct_answer_vector = embed_sentence(correct_answer)
-            for i, learner_vector in enumerate(learner_vectors):
-                if i in matched:
-                    continue
-                distance = distance_functions["cosine"](
-                    correct_answer_vector, learner_vector
-                )
-                # print(f"`{sentences[i]}`\n{correct_answer}\n{distance}\n")
-                matrix.append([sentences[i], correct_answer, distance])
-                if distance < max_distance:
-                    matched.append(i)
-
-        breakpoint()
-
-        if len(matched) < min_matches:
-            self.register_test_error(
-                f"Your answer is missing some details. Try to make a few more good points in your text.",
-                status=STEP_STATUS_NOT_YET_COMPETENT,
-            )
-
-    def assert_question_is(self, expected_question):
-        if self.markdown_question.lower() == expected_question.lower():
-            return
-        from automarker.ai_helpers import (
-            similarity_distance,
-        )  # just in time import because this thing is slow
-
-        distance = similarity_distance(expected_question, self.markdown_question)
-        if distance > 0.1:
-            self.register_test_error(
-                f"The question in your markdown file doesn't match the one in the instructions. The expected question is `{expected_question}`. Yours is `{self.markdown_question}`.",
-                status=STEP_STATUS_NOT_YET_COMPETENT,
-            )
-
-    def get_question_and_answer_from_markdown_file(self, question_number):
-        """This is used to mark markdown files. The files are named like: question_{number}.md and are formatted as follows:
-
-        ```
-        # Question
-
-        the question
-
-        # Answer
-
-        the answer
-        ```
-        """
-        file_path = self.test_path.parent / f"question_{question_number}.md"
-        assert file_path.exists()
-        contents = file_path.read_text().strip()
-        lines = contents.split("\n")
-        assert lines[0].lower().startswith("# question")
-        lines = lines[1:]
-
-        for i, line in enumerate(lines):
-            if line.lower().startswith("# answer"):
-                self.markdown_question = "\n".join(lines[:i]).strip()
-                self.markdown_answer = "\n".join(lines[i + 1 :]).strip()
-                break
-
-        if self.markdown_question == "":
-            self.register_test_error(
-                self,
-                f"Your question_{question_number}.md file is meant to have a question and an answer in it. The expected format is as follows:\n\n```\n# Question\n\nthe question\n\n# Answer\n\nthe answer\n``` Please fix your file and resubmit your work.",
-                status=STEP_STATUS_RED_FLAG,
-            )
-
-        if self.markdown_answer == "":
-            self.register_test_error(
-                self,
-                f"Question {question_number} has no answer! Are you sure you submitted your work according to the instructions?",
-                status=STEP_STATUS_RED_FLAG,
-            )
 
 
 class PythonTestRunner(_TestRunner):
@@ -516,3 +423,138 @@ class JavaScriptTestRunner(_TestRunner):
         error_message = final_error[split_at + 2 :]
 
         return error_type, error_message
+
+
+class MarkdownTestRunner(PythonTestRunner):
+    def __init__(self, test_path, clone_dir_path):
+        super().__init__(test_path, clone_dir_path)
+        self.markdown_question = ""
+        self.markdown_answer = ""
+        self.question_number = None
+
+    def assert_question_is(self, expected_question):
+        if self.markdown_question.lower() == expected_question.lower():
+            return
+        from automarker.ai_helpers import (
+            similarity_distance,
+        )  # just in time import because this thing is slow
+
+        distance = similarity_distance(expected_question, self.markdown_question)
+        if distance > 0.1:
+            self.register_test_error(
+                f"The question in your markdown file doesn't match the one in the instructions. The expected question is `{expected_question}`. Yours is `{self.markdown_question}`.",
+                status=STEP_STATUS_NOT_YET_COMPETENT,
+            )
+
+    def get_question_and_answer_from_markdown_file(self, question_number):
+        """This is used to mark markdown files. The files are named like: question_{number}.md and are formatted as follows:
+
+        ```
+        # Question
+
+        the question
+
+        # Answer
+
+        the answer
+        ```
+        """
+        self.question_number = question_number
+        file_path = self.test_path.parent / f"question_{question_number}.md"
+        assert file_path.exists()
+        contents = file_path.read_text().strip()
+        lines = contents.split("\n")
+        assert lines[0].lower().startswith("# question")
+        lines = lines[1:]
+
+        for i, line in enumerate(lines):
+            if line.lower().startswith("# answer"):
+                self.markdown_question = "\n".join(lines[:i]).strip()
+                self.markdown_answer = "\n".join(lines[i + 1 :]).strip()
+                break
+
+        if self.markdown_question == "":
+            self.register_test_error(
+                f"Your question_{question_number}.md file is meant to have a question and an answer in it. The expected format is as follows:\n\n```\n# Question\n\nthe question\n\n# Answer\n\nthe answer\n``` Please fix your file and resubmit your work.",
+                status=STEP_STATUS_RED_FLAG,
+            )
+
+        # if self.markdown_answer == "":
+
+    def assert_answer_like(self, answers_and_hints, min_matches):
+        if self.markdown_answer == "":
+            self.register_test_error(
+                f"Question {self.question_number} has no answer! Are you sure you submitted your work according to the instructions?",
+                status=STEP_STATUS_RED_FLAG,
+            )
+            return
+
+        # lazy import on purpose
+        import spacy
+        import pandas as pd
+        from automarker.ai_helpers import embed_sentence, distance_functions
+
+        max_distance = 0.07
+        get_distance = distance_functions["cosine"]
+        maximum_hints = (
+            3  # if the learner got things wrong then give them at most this many hints
+        )
+
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(self.markdown_answer)
+        sentences = [s.text for s in doc.sents]
+
+        adjacent_sentences = [
+            " ".join(sentences[i : i + 2]) for i in range(len(sentences) - 1)
+        ]
+
+        sentences.extend(adjacent_sentences)
+
+        sentence_vectors = [embed_sentence(s) for s in sentences]
+
+        df = pd.DataFrame(
+            columns=["learner_sentence", "concept", "hint", "distance"],
+        )
+        for concept, hint in answers_and_hints:
+            concept_vector = embed_sentence(concept)
+            for sentence, sentence_vector in zip(sentences, sentence_vectors):
+                distance = get_distance(sentence_vector, concept_vector)
+                df.loc[len(df)] = [  # type: ignore
+                    sentence.replace(";", ""),
+                    concept.replace(";", ","),  # semicolons break the csv
+                    hint,
+                    distance,
+                ]
+
+        df = df.sort_values(by=["distance"], ascending=True)
+        df.to_csv("gitignore/df_with_duplicates.csv")
+
+        df = df.drop_duplicates(subset=["concept"], keep="first")
+        df.to_csv("gitignore/df_no_duplicates.csv")
+
+        # each concept is represented once
+        assert len(df) == len(answers_and_hints)
+
+        df_matched = df[df["distance"] <= max_distance]
+        matched_count = len(df_matched)
+
+        print(f"*** matched {matched_count} concepts")
+        if matched_count >= min_matches:
+            return
+
+        # the learner didn't match on enough concepts. Give them some hints
+
+        hint_count = min(2 * (min_matches - matched_count), maximum_hints)
+
+        df_unmatched = df[df["distance"] > max_distance]
+
+        # get the last hint_count rows
+        df_hints = df_unmatched.tail(hint_count)
+
+        hints = df_hints["hint"].tolist()
+
+        self.register_test_error(
+            f"It looks like you haven't answered the question correctly or you haven't answered it in enough detail. Here are some hints to help you. Try to talk about the following:\n\n- "
+            + "\n- ".join(hints),
+            status=STEP_STATUS_NOT_YET_COMPETENT,
+        )

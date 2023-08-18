@@ -6,6 +6,7 @@ from .automarker_test_runner import (
     PythonTestRunner,
     JavaTestRunner,
     JavaScriptTestRunner,
+    MarkdownTestRunner,
 )
 import re
 from .utils import subprocess_run
@@ -272,7 +273,10 @@ class _RunFunctionalTests(Step):
                 for test_result in test_result:
                     command_description = test_result["command_description"]
                     error_message = test_result["error_message"]
-                    result += f"\n### FAILURE: There was an error when we tried to {command_description}:\n{error_message}"
+                    if command_description:
+                        result += f"\n### FAILURE: There was an error when we tried to {command_description}:\n{error_message}"
+                    else:
+                        result += f"\n### FAILURE: \n{error_message}"
         return result
 
 
@@ -287,10 +291,9 @@ class JavaRunFunctionalTests(_RunFunctionalTests):
 class JavaScriptRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = JavaScriptTestRunner
 
-    # def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-    #     stdout, stderr = subprocess_run(f"cd {clone_dir_path} && ./gradlew test --info")
-    #     breakpoint()
-    #     foo
+
+class MarkdownRunFunctionalTests(_RunFunctionalTests):
+    TestRunnerClass = MarkdownTestRunner
 
 
 class GradleRunJunitTests(Step):

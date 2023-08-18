@@ -142,4 +142,6 @@ def markdown_vector_sequence(number_of_questions):
     return [
         steps.Clone(),
         steps.CheckAllQuestionFilesExist(number_of_questions),
-    ] + python_functional_tests
+        steps.PrepareFunctionalTests(),
+        steps.MarkdownRunFunctionalTests(),
+    ]
