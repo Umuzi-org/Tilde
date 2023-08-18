@@ -494,7 +494,7 @@ class MarkdownTestRunner(PythonTestRunner):
         import pandas as pd
         from automarker.ai_helpers import embed_sentence, distance_functions
 
-        max_distance = 0.07
+        max_distance = 0.075
         get_distance = distance_functions["cosine"]
         maximum_hints = (
             3  # if the learner got things wrong then give them at most this many hints
