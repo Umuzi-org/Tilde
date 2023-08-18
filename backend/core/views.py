@@ -14,7 +14,6 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersToTeamForm
-from .helpers import add_users_to_team
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 
@@ -352,13 +351,18 @@ class BulkAddUsersToTeamView(FormView):
                 self.request,
                 f"The following users were successfully added to the \"{team}\" team: {', '.join(users_added_to_team)}",
             )
-            return super().form_valid(form)
+            print(f"team: {team.id}")
+            return redirect(
+                reverse("admin:core_team_change", kwargs={"object_id": team.id})
+            )
         else:
             messages.error(
                 self.request,
                 f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
             )
-            return super().form_invalid(form)
+            return redirect(
+                reverse("bulk_add_users_to_team", kwargs={"team_id": team.id})
+            )
 
     def add_users_to_team(self, team, email_addresses):
         if team:
