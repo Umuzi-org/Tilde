@@ -241,7 +241,7 @@ Due to the weird things that happen between languages, it is hard to give learne
 
 If this was a CI/CD thing then we would be able to see what happened over time. What was run, when it was run, what step happened when... Currently the automarker is pretty opaque.
 
-8. Multi-part projects need DRY tests [TODO]
+8. Multi-part projects need DRY tests [DONE]
 
 Currently, if there is a multi-part project we need to explicitly copy tests from one perfect project to the next. We should be able to extend things somehow.
 
