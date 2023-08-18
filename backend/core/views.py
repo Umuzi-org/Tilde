@@ -352,14 +352,13 @@ class BulkAddUsersToTeamView(FormView):
                 self.request,
                 f"The following users were successfully added to the \"{team}\" team: {', '.join(users_added_to_team)}",
             )
-            redirect(reverse("admin:core_team_change", kwargs={"team_id": team.id}))
+            return super().form_valid(form)
         else:
             messages.error(
                 self.request,
                 f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
             )
-            redirect(reverse("bulk_add_users_to_team", kwargs={"team_id": team.id}))
-        return super().form_valid(form)
+            return super().form_invalid(form)
 
     def add_users_to_team(self, team, email_addresses):
         if team:
