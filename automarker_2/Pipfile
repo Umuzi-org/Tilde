@@ -11,6 +11,7 @@ instructorembedding = "*"
 torch = "*"
 sentence-transformers = "*"
 spacey = "*"
+notebook = "*"
 
 [dev-packages]
 

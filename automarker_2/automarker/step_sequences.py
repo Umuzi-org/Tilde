@@ -145,3 +145,12 @@ def markdown_vector_sequence(number_of_questions):
         steps.PrepareFunctionalTests(),
         steps.MarkdownRunFunctionalTests(),
     ]
+
+
+def python_jupyter_notebook_sequence():
+    return python_base + [
+        steps.PythonExecuteJupyterNotebooks(),
+        steps.PythonConvertJupyterNotebooksToModules(),
+        steps.PrepareFunctionalTests(),
+        # steps.PythonRunFunctionalTests(),
+    ]

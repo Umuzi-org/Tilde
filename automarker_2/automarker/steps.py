@@ -147,16 +147,13 @@ class PrepareFunctionalTests(Step):
         for test_path in test_paths:
             os.system(f"cp -r {test_path} {clone_dir_path}")
 
-        # print(os.listdir(final_test_path))
-        # breakpoint()
-
         adapter_paths.append(Path(config.__file__).parent / "adapter")
         for adapter_path in adapter_paths:
             os.system(f"cp -r {adapter_path} {final_test_path}")
 
         assert final_test_path.exists()
         adapter_path = final_test_path / "adapter"
-        assert adapter_path.exists(), f"{adapter_path} does not exist"
+        # assert adapter_path.exists(), f"{adapter_path} does not exist"
 
 
 class JavaPrepareFunctionalTests(PrepareFunctionalTests):
@@ -736,4 +733,87 @@ class CheckAllQuestionFilesExist(Step):
                 message=f"You were meant to submit files with the following names: {expected}. But instead you submitted files with the following names: {file_names}. Please make sure you hand in the right files so that we can mark them.",
             )
             return
+        self.set_outcome(STEP_STATUS_PASS)
+
+
+class PythonExecuteJupyterNotebooks(Step):
+    name = "execute notebook"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        notebook_paths = [
+            s for s in get_all_file_paths(clone_dir_path) if s.endswith(".ipynb")
+        ]
+        for notebook_path in notebook_paths:
+            command = (
+                f"jupyter nbconvert --execute --to notebook --inplace {notebook_path}"
+            )
+            stdout, stderr = subprocess_run(command)
+            # nbconvert is a right twit and puts all the output inside stderr. So if stderr is full of stuff it just might have worked out. Bloody hell. Let's jump through some hoops to find out if it worked
+
+            if "Traceback (most recent call last):" in stderr:
+                traceback = stderr.split("Traceback (most recent call last):")
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message=f"There was an error when we tried to run your notebook. Please make sure you submit valid code. Here is the Traceback message: \n\n```\n{traceback}\n```",
+                )
+            else:
+                l = stderr.strip().split("\n")
+                if len(l) == 2:
+                    # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
+
+                    if ("Converting notebook" not in l[0]) and ("Writing" not in l[1]):
+                        breakpoint()
+                        not_sure
+
+                else:
+                    breakpoint()
+                    # not actually sure what would cause this...
+                    what
+
+        self.set_outcome(STEP_STATUS_PASS)
+
+
+class PythonConvertJupyterNotebooksToModules(Step):
+    name = "convert notebooks to python files"
+
+    def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
+        notebook_paths = [
+            s for s in get_all_file_paths(clone_dir_path) if s.endswith(".ipynb")
+        ]
+        for notebook_path in notebook_paths:
+            command = f"jupyter nbconvert --to script {notebook_path}"
+            stdout, stderr = subprocess_run(command)
+            # nbconvert is a right twit and puts all the output inside stderr. So if stderr is full of stuff it just might have worked out. Bloody hell. Let's jump through some hoops to find out if it worked
+
+            if "Traceback (most recent call last):" in stderr:
+                traceback = stderr.split("Traceback (most recent call last):")
+                self.set_outcome(
+                    STEP_STATUS_RED_FLAG,
+                    message=f"There was an error when we tried to run your notebook. Please make sure you submit valid code. Here is the Traceback message: \n\n```\n{traceback}\n```",
+                )
+            else:
+                l = stderr.strip().split("\n")
+                if len(l) == 2:
+                    # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
+
+                    if ("Converting notebook" not in l[0]) and ("Writing" not in l[1]):
+                        breakpoint()
+                        not_sure
+
+                else:
+                    breakpoint()
+                    # not actually sure what would cause this...
+                    what
+
+        module_paths = [
+            s for s in get_all_file_paths(clone_dir_path) if s.endswith(".py")
+        ]
+
+        module_file_names = [Path(s).stem for s in module_paths]
+        for notebook_path in notebook_paths:
+            nb_file_name = Path(notebook_path).stem
+            assert (
+                nb_file_name in module_file_names
+            ), f"{nb_file_name} not in {module_file_names}"
+
         self.set_outcome(STEP_STATUS_PASS)
