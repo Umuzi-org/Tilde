@@ -109,7 +109,7 @@ export function Presentation({ handleLogout, loggedInUserData, children }) {
       }
     >
       <Container style={{ minHeight: "100%" }}>{children}</Container>
-      <Affix position={{ bottom: rem(20), right: rem(20) }}>
+      <Affix position={{ bottom: rem(15), right: rem(20) }}>
         <Button
           component="a"
           target="_blank"
