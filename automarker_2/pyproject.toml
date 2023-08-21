@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "automarker-service"
+version = "0.1.0"
+description = ""
+authors = ["Sheena O'Connell <sheena.oconnell@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.4"
+djangorestframework = "^3.14.0"
+instructorembedding = "^1.0.1"
+notebook = "^7.0.2"
+pydantic = "1.9.0"
+sentence-transformers = "^2.2.2"
+spacy = "^3.6.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

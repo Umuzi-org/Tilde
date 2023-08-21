@@ -2,18 +2,21 @@
 
 This project is an improvement on the last version of the automarker. It is designed to overcome certain shortcomings in previous versions.
 
+It is a web app but can also be used as a command-line utility. This READE focuses on the command-line usecase since that is how it will most often be used.
+
 ## Installation 
 
 1. Install your dependencies
 
-First, install python3.10 and pipenv then:
+First, install python3.10 and poetry then:
 
 ```
-pipenv install
+poetry install
 
 # then, because spacey wants to be special:
-pipenv shell
-pip install -U spacy 
+poetry shell
+
+<!-- pip install -U spacy   -->
 python -m spacy download en_core_web_sm
 ```
 
@@ -39,24 +42,23 @@ The automarker needs to clone private repos in an automated way so an ssh key is
 Note that there currently isn't very high coverage on the unit tests. Contributions are welcome.
 
 ```
-pipenv shell
-python -m pytest .
+poetry shell
+python manage.py test
 ```
-
 
 ## How to run the automarker
 
 1. Activate up your shell and make sure all the required environmental variables exported
 
 ```
-pipenv shell 
+poetry shell 
 export AUTOMARKER_2_CONFIG_DIR=/somewhere/sensible/automarker-2-config
 ```
 
 **A cool trick:** If you don't want to have to remember to `export` your environmental variables all the time then do this:
 
 ```
-pipenv shell
+poetry shell
 which python
 ```
 
@@ -68,7 +70,7 @@ Now open up the `activate` script in that same directory:
 
 Paste your `export` statements right at the top.
 
-Every time you execute `pipenv shell` then you are really just `source`ing your `activate` script.
+Every time you execute `poetry shell` then you are really just `source`ing your `activate` script.
 
 
 2. Run the appropriate command
@@ -76,7 +78,7 @@ Every time you execute `pipenv shell` then you are really just `source`ing your 
 eg:
 
 ```
-python check_project_configuration.py 186 javascript
+python manage.py check_project_configuration.py 186 javascript
 ```
 
 The commands are detailed below:
@@ -93,11 +95,11 @@ Running the following command does the following:
 3. Prints out results 
 
 ```
-python mark_learner_project.py CONTENT_ITEM_ID FLAVORS URL
+python manage.py mark_learner_project.py URL CONTENT_ITEM_ID FLAVORS 
 
 eg:
 
-python mark_learner_project 186 python git@github.com:Umuzi-org/blah-blah-186-consume-github-api-python.git
+python mark_learner_project 186 git@github.com:Umuzi-org/blah-blah-186-consume-github-api-python.git python
 ```
 
 Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo_name}.git`.  If you use a different format then the clone command might not work.
@@ -119,7 +121,7 @@ Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo
 If you want to quickly see if something is configured then you can either dig through the configuration repo, or you can run this command:
 
 ```
-python print_configuration.py
+python manage.py print_configuration.py
 ```
 
 You'll see a list of all the configuration that exists. 
@@ -131,6 +133,7 @@ Each line of the output will have the following format:
 eg:
 consume_github_api[186] [['javascript']] DEBUG
 ```
+
 - name: This is just for convenience, it just needs to be human-readable
 - content_item_id: this needs to EXACTLY MATCH the content item id in the database
 - matching flavors: probably obvious...
@@ -140,30 +143,30 @@ consume_github_api[186] [['javascript']] DEBUG
 
 ```
 # list only the python config
-python print_configuration.py | grep python 
+python manage.py print_configuration.py | grep python 
 
 # list only the config that is deactivated 
-python print_configuration.py | grep DEACTIVATED 
+python manage.py print_configuration.py | grep DEACTIVATED 
 
 # list only the config that has the word github in it's name
-python print_configuration.py | grep github 
+python manage.py print_configuration.py | grep github 
 
 # you can also use multiple greps
 # eg: list only the javascript configuration that is in DEBUG mode
-python print_configuration.py | grep javascript | grep DEBUG 
+python manage.py print_configuration.py | grep javascript | grep DEBUG 
 ```
 
 You can combine that with `wc` to count the number of projects in different statuses. Eg:
 
 ```
 # How many configurations are there in total ?
-python print_configuration.py |  wc -l 
+python manage.py print_configuration.py |  wc -l 
 
 # How many python configurations are there?
-python print_configuration.py | grep python | wc -l 
+python manage.py print_configuration.py | grep python | wc -l 
 
 # How many python configurations are in debug mode?
-python print_configuration.py | grep python | grep DEBUG | wc -l 
+python manage.py print_configuration.py | grep python | grep DEBUG | wc -l 
 
 ```
 
@@ -179,22 +182,22 @@ python print_configuration.py | grep python | grep DEBUG | wc -l
 This runs the tests against the configured "perfect project". This is useful if you are configuring projects yourself or if you are changing how any part of the automarker works.
 
 ```
-python check_project_configuration.py CONTENT_ITEM_ID FLAVORS
+python manage.py check_project_configuration.py CONTENT_ITEM_ID FLAVORS
 
 # eg:
 
-python check_project_configuration.py 186 javascript
+python manage.py check_project_configuration.py 186 javascript
 ```
 ### Running a command with multiple flavors 
 
 If you ever need to input multiple flavors for a command then do it like so:
 
 ```
-python check_project_configuration.py 999 javascript,karma
-python mark_learner_project.py 999 javascript,karma git@github.com:Umuzi-org/blah-blah-999-consume-github-api-python.git
+python manage.py check_project_configuration.py 999 javascript karma
+python mark_learner_project.py git@github.com:Umuzi-org/blah-blah-999-consume-github-api-python.git 999 javascript karma 
 ```
 
-In other words, the flavours should be comma-separated and they should have no spaces between them.
+In other words, the flavours should be separated by spaces.
 
 ## Contributions are welcome and encouraged!
 
@@ -205,7 +208,7 @@ If you see a problem in some automarker configuration then please:
 3. Test it out on a few learner projects if you can dig some up
 4. Make a PR 
 
-If you see some way to improve the actual automarker then please go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
+If you see some way to improve the actual automarker machine then please go ahead and do that! Here are a few things that will be welcome, I'm sure you can think of more:
 
 - bug fixes
 - unit tests
@@ -242,7 +245,7 @@ Logs and errors get swallowed in different ways. It's hard to be consistent abou
 
 Due to the weird things that happen between languages, it is hard to give learners good quality feedback. 
 
-7. No visibility of test runs [DONE in command-line commands]
+7. No visibility of test runs [DONE in command-line commands, still needs work in live environment]
 
 If this was a CI/CD thing then we would be able to see what happened over time. What was run, when it was run, what step happened when... Currently the automarker is pretty opaque.
 
@@ -252,7 +255,7 @@ Currently, if there is a multi-part project we need to explicitly copy tests fro
 
 9. No way to track performance of an automarker config over time. [TODO]
 
-We can see reviews that were left, but we can't see when a user needed to step in and stop the process. 
+We can see reviews that were left, but we can't see when a user needed to step in and stop the process. This might be a hard thing to get right.
 
 10. Self-test is a pain in the bum [TODO] 
 
