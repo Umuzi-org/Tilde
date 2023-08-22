@@ -183,7 +183,6 @@ def get_possible_competent_reviewers(card):
 
 
 def auto_assign_competent_reviewers():
-
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
     cards = list(get_cards_needing_competent_reviewers())
@@ -286,10 +285,14 @@ def get_cards_needing_reviewer_allocation(team):
 def auto_assign_reviewers_based_on_reviewer_team_permission():
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
-    exclude_users_nested = [
-        Team.objects.get(name=name).users.all()
-        for name in config.EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS
-    ]
+    exclude_users_nested = []
+
+    for name in config.EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS:
+        try:
+            exclude_users_nested.append(Team.objects.get(name=name).users.all())
+        except Team.DoesNotExist:
+            print(f"No team with name {name}")
+
     exclude_users = [user for subset in exclude_users_nested for user in subset]
 
     for team in Team.objects.filter(active=True):
@@ -308,7 +311,6 @@ def auto_assign_reviewers_based_on_reviewer_team_permission():
         print(f"users with permission: {reviewer_users}")
         cards = get_cards_needing_reviewer_allocation(team)
         for card in cards:
-
             add_reviewers_to_card_until_enough(
                 card=card,
                 total_matching_reviewers_needed=config.REQUIRED_REVIEWER_PERMISSIONED_REVIEWERS_PER_CARD,
@@ -317,7 +319,6 @@ def auto_assign_reviewers_based_on_reviewer_team_permission():
 
 
 def auto_assign_reviewers_based_on_trusted_team_permission():
-
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
     for team in Team.objects.filter(active=True):
@@ -337,7 +338,6 @@ def auto_assign_reviewers_based_on_trusted_team_permission():
         cards = get_cards_needing_trusted_reviewer_allocation(team)
 
         for card in cards:
-
             add_reviewers_to_card_until_enough(
                 card=card,
                 total_matching_reviewers_needed=config.REQUIRED_TRUSTED_PERMISSIONED_REVIEWERS_PER_CARD,
@@ -349,4 +349,3 @@ def auto_assign_reviewers():
     auto_assign_reviewers_based_on_trusted_team_permission()
     auto_assign_competent_reviewers()
     auto_assign_reviewers_based_on_reviewer_team_permission()
-

@@ -4,12 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "*"
-fire = "*"
-pydantic = "==1.9.0"
-instructorembedding = "*"
-torch = "*"
-sentence-transformers = "*"
 
 [dev-packages]
 

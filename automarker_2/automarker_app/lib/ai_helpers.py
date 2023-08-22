@@ -21,9 +21,18 @@ distance_functions = {
     "ip": lambda x, y: 1 - np.dot(x, y),  # type: ignore
 }
 
+# TODO: what is the best distance function to use here? Cosine comes up a lot. Investigate.
+distance_function = distance_functions["l2"]
+
+
+def embed_sentence(sentence: str) -> np.ndarray:
+    """Get the vector representing the meaning of a sentence"""
+    return np.array(embedding_function(sentence))
+
 
 def similarity_distance(sentence1: str, sentence2: str) -> float:
     """Get the distance between two vectors representing the meaning of two sentences"""
-    embedding1 = np.array(embedding_function(sentence1))
-    embedding2 = np.array(embedding_function(sentence2))
-    return distance_functions["l2"](embedding1, embedding2)
+    embedding1 = embed_sentence(sentence1)
+    embedding2 = embed_sentence(sentence2)
+
+    return distance_function(embedding1, embedding2)

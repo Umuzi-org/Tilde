@@ -57,6 +57,8 @@ class _TestRunner:
         #  ...
         # }
 
+        # used for marking written word projects
+
     def get_error_type_and_message(self):
         """
         look at the stderr of the last command run and return a tuple containing the error type and error message. This should be the error that was raised or thrown. This is typically used when checking that the learner raised an appropriate error
@@ -159,8 +161,6 @@ class _TestRunner:
                     return i + 1
         return len(test_files)
 
-        sys.path.pop(sys.path.index(str(self.test_path.resolve())))
-
     def set_test_file_name(self, test_file_name):
         print(f"running test file: {test_file_name}...")
         self.test_file_name = test_file_name
@@ -175,7 +175,9 @@ class _TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             {
                 "error_message": error_message,
-                "command_description": self.last_command_output.command_description,
+                "command_description": self.last_command_output.command_description
+                if self.last_command_output
+                else None,
                 "status": status,
             }
         )
@@ -421,3 +423,145 @@ class JavaScriptTestRunner(_TestRunner):
         error_message = final_error[split_at + 2 :]
 
         return error_type, error_message
+
+
+class MarkdownTestRunner(PythonTestRunner):
+    def __init__(self, test_path, clone_dir_path):
+        super().__init__(test_path, clone_dir_path)
+        self.markdown_question = ""
+        self.markdown_answer = ""
+        self.question_number = None
+
+    def assert_question_is(self, expected_question):
+        if self.markdown_question.lower() == expected_question.lower():
+            return
+        from automarker.ai_helpers import (
+            similarity_distance,
+        )  # just in time import because this thing is slow
+
+        distance = similarity_distance(expected_question, self.markdown_question)
+        if distance > 0.1:
+            self.register_test_error(
+                f"The question in your markdown file doesn't match the one in the instructions. The expected question is `{expected_question}`. Yours is `{self.markdown_question}`.",
+                status=STEP_STATUS_NOT_YET_COMPETENT,
+            )
+
+    def get_question_and_answer_from_markdown_file(self, question_number):
+        """This is used to mark markdown files. The files are named like: question_{number}.md and are formatted as follows:
+
+        ```
+        # Question
+
+        the question
+
+        # Answer
+
+        the answer
+        ```
+        """
+        self.question_number = question_number
+        file_path = self.test_path.parent / f"question_{question_number}.md"
+        assert file_path.exists()
+        contents = file_path.read_text().strip()
+        lines = contents.split("\n")
+        assert lines[0].lower().startswith("# question")
+        lines = lines[1:]
+
+        for i, line in enumerate(lines):
+            if line.lower().startswith("# answer"):
+                self.markdown_question = "\n".join(lines[:i]).strip()
+                self.markdown_answer = "\n".join(lines[i + 1 :]).strip()
+                break
+
+        if self.markdown_question == "":
+            self.register_test_error(
+                f"Your question_{question_number}.md file is meant to have a question and an answer in it. The expected format is as follows:\n\n```\n# Question\n\nthe question\n\n# Answer\n\nthe answer\n``` Please fix your file and resubmit your work.",
+                status=STEP_STATUS_RED_FLAG,
+            )
+
+        # if self.markdown_answer == "":
+
+    def assert_answer_like(self, answers_and_hints, min_matches):
+        if self.markdown_answer == "":
+            self.register_test_error(
+                f"Question {self.question_number} has no answer! Are you sure you submitted your work according to the instructions?",
+                status=STEP_STATUS_RED_FLAG,
+            )
+            return
+
+        # lazy import on purpose
+        import spacy
+        import pandas as pd
+        from automarker.ai_helpers import embed_sentence, distance_functions
+
+        max_distance = 0.075
+        get_distance = distance_functions["cosine"]
+        maximum_hints = (
+            4  # if the learner got things wrong then give them at most this many hints
+        )
+
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(self.markdown_answer)
+
+        # get all the individual sentences from the learner's answer.
+        sentences = [s.text for s in doc.sents]
+
+        # sometimes meaning is spread over multiple sentences so we also want to consider adjacent sentences
+        adjacent_sentences = [
+            " ".join(sentences[i : i + 2]) for i in range(len(sentences) - 1)
+        ]
+
+        sentences.extend(adjacent_sentences)
+
+        sentence_vectors = [embed_sentence(s) for s in sentences]
+
+        df = pd.DataFrame(
+            columns=["learner_sentence", "concept", "hint", "distance"],
+        )
+        for concept, hint in answers_and_hints:
+            concept_vector = embed_sentence(
+                concept
+            )  # we could pre-embed these sentences and store it in a vector db to save some time
+            for sentence, sentence_vector in zip(sentences, sentence_vectors):
+                distance = get_distance(sentence_vector, concept_vector)
+                df.loc[len(df)] = [
+                    sentence.replace(
+                        ";", ""
+                    ),  # remove semicolons because they mess up any csv dumps
+                    concept.replace(";", ","),
+                    hint,
+                    distance,
+                ]
+
+        df = df.sort_values(by=["distance"], ascending=True)
+        # df.to_csv("gitignore/df_with_duplicates.csv")
+
+        df = df.drop_duplicates(subset=["concept"], keep="first")
+        # df.to_csv("gitignore/df_no_duplicates.csv")
+
+        # each concept is represented once
+        assert len(df) == len(answers_and_hints)
+
+        df_matched = df[df["distance"] <= max_distance]
+        matched_count = len(df_matched)
+
+        print(f"*** matched {matched_count} concepts")
+        if matched_count >= min_matches:
+            return
+
+        # the learner didn't match on enough concepts. Give them some hints
+        # we aim for twice as many hints as the learner needs, but we don't want to just give them all the hints all at once so we cap it at maximum_hints
+        hint_count = min(2 * (min_matches - matched_count), maximum_hints)
+
+        df_unmatched = df[df["distance"] > max_distance]
+
+        # get the last hint_count rows. We grab from the bottom because learners are more likely to have missed the last few concepts than the first few
+        df_hints = df_unmatched.tail(hint_count)
+
+        hints = df_hints["hint"].tolist()
+
+        self.register_test_error(
+            f"It looks like you haven't answered the question correctly or you haven't answered it in enough detail. Here are some hints to help you. Try to talk about the following:\n\n- "
+            + "\n- ".join(hints),
+            status=STEP_STATUS_NOT_YET_COMPETENT,
+        )

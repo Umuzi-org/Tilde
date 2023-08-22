@@ -6,6 +6,7 @@ from curriculum_tracking.management.auto_assign_reviewers import (
     get_cards_needing_competent_reviewers,
     get_possible_competent_reviewers,
     get_reviewer_users_by_permission,
+    auto_assign_reviewers_based_on_reviewer_team_permission,
     CONFIGURATION_NAMESPACE,
 )
 from core.tests.factories import TeamFactory, UserFactory
@@ -52,7 +53,13 @@ def setup_config():
     )
 
     # step 2: review permission
-    # EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS
+    Value.objects.create(
+        namespace=ns,
+        name="EXCLUDE_REVIEWER_PERMISSIONED_USERS_IN_TEAMS",
+        value="Demo team",
+        datatype=Value.STRING,
+        repeated=True,
+    )
     # REQUIRED_REVIEWER_PERMISSIONED_REVIEWERS_PER_CARD
 
     # # step 3: trusted reviewer permission
@@ -105,7 +112,6 @@ class get_reviewer_users_by_permission_Tests(TestCase):
 @mock.patch("git_real.helpers.github_user_exists", return_value=True)
 class get_cards_needing_competent_reviewers_Tests(TestCase):
     def setUp(self):
-
         setup_config()
         config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
@@ -148,7 +154,6 @@ class get_cards_needing_competent_reviewers_Tests(TestCase):
         self.assertEqual(list(result), [])
 
     def test_exclude_teams(self, _):
-
         config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
         team = TeamFactory(name=config.EXCLUDE_TEAMS_FROM_COMPETENT_REVIEW_STEP[0])
@@ -189,7 +194,6 @@ class get_possible_competent_reviewers_Tests(TestCase):
         self.assertEqual(result, [])
 
     def test_that_only_competent_people_get_returned(self, _):
-
         competent_project = RecruitProjectFactory(
             complete_time=timezone.now(), flavours=[JAVASCRIPT]
         )
@@ -281,7 +285,6 @@ class get_possible_competent_reviewers_Tests(TestCase):
         # add some more duties to first person and make sure order is still correct
         project_user = expected_result[0]
         for i in range(5):
-
             nyc_card = AgileCardFactory(
                 status=AgileCard.IN_PROGRESS,
                 recruit_project=RecruitProjectFactory(
@@ -309,3 +312,13 @@ class get_possible_competent_reviewers_Tests(TestCase):
             result,
             expected_result[1:-1],
         )
+
+
+class auto_assign_reviewers_based_on_reviewer_team_permission_Tests(TestCase):
+    def setUp(self):
+        setup_config()
+
+    def test_auto_assign_reviewers_based_on_reviewer_team_permission_raises_no_errors(
+        self,
+    ):
+        auto_assign_reviewers_based_on_reviewer_team_permission()

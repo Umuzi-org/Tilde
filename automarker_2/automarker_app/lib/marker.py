@@ -45,9 +45,7 @@ def _get_project_configuration(content_item_id, flavours):
             return configuration
 
 
-def _mark_project(
-    content_item_id, flavours, url=None, self_test=False, fail_fast=False
-):
+def mark_project(content_item_id, flavours, url=None, self_test=False, fail_fast=False):
     """This is the entrypoint, this function actually does the work of marking the code"""
 
     if not DOWNLOAD_DIR.exists():
@@ -98,46 +96,8 @@ def _mark_project(
     return config.steps
 
 
-def _print_final_review(steps):
-    final_status = _get_steps_final_status(steps)
-    if final_status == constants.STEP_STATUS_PASS:
-        comments = "All our tests passed, well done!"
-
-    else:
-        failing_steps = [
-            step
-            for step in steps
-            if step.status
-            in [constants.STEP_STATUS_NOT_YET_COMPETENT, constants.STEP_STATUS_RED_FLAG]
-        ]
-        comments = (
-            "Your project failed some of our tests. Here are the details"
-            + "\n\n".join(step.details_string() for step in failing_steps)
-        )
-    print("----------------------------------------")
-    print("# REVIEW:\n")
-    print(f"FINAL REVIEW STATUS: {final_status}\n")
-    print(comments)
-    print("----------------------------------------")
-
-
-def _print_steps_result(steps):
-    print()
-    for step in steps:
-        print(f"STEP: {step.name} ")
-        print(f"\tDuration: {step.duration()}")
-        print(f"\tStatus: {step.status}")
-        if step.message:
-            print(f"\tMessage: {step.message}")
-        if step.details:
-            print(f"\tDetails:")
-            print(step.details_string())
-        print()
-
-    print(f"FINAL STATUS: {_get_steps_final_status(steps)}")
-
-
-def _get_steps_final_status(steps):
+def get_steps_final_status(steps):
+    """given an array of steps, return the final status. eg: If there is one RED FLAG then return RED FLAG, if everything is PASS then return PASS"""
     final_status = constants.STEP_STATUS_PASS
 
     for step in steps:
@@ -149,21 +109,25 @@ def _get_steps_final_status(steps):
     return final_status
 
 
-def mark_learner_project(content_item_id, flavours, url):
-    steps = _mark_project(content_item_id, flavours, url)
-    _print_steps_result(steps)
+def get_final_review(steps):
+    """return the status and comments that can be left for the learner"""
+    final_status = get_steps_final_status(steps)
+    if final_status == constants.STEP_STATUS_PASS:
+        comments = "All our tests passed, well done!"
 
-    _print_final_review(steps)
+    else:
+        failing_steps = [
+            step
+            for step in steps
+            if step.status
+            in [constants.STEP_STATUS_NOT_YET_COMPETENT, constants.STEP_STATUS_RED_FLAG]
+        ]
+        comments = (
+            "Your project failed some of our tests. Here are the details:"
+            + "\n\n".join(step.details_string() for step in failing_steps)
+        )
 
-
-def check_project_configuration(content_item_id, flavours):
-    steps = _mark_project(
-        content_item_id=content_item_id,
-        flavours=flavours,
-        self_test=True,
-        fail_fast=True,
-    )
-    _print_steps_result(steps)
+    return final_status, comments
 
 
 def get_all_marker_configs():

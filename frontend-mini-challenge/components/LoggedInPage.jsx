@@ -11,6 +11,7 @@ import {
   Affix,
   rem,
   Button,
+  Tooltip,
 } from "@mantine/core";
 import { useLogout, serverSideWhoAmI, TOKEN_COOKIE } from "../apiHooks";
 import { ProfileIcon, SettingsIcon, LogoutIcon, DiscordIcon } from "../brand";
@@ -109,32 +110,35 @@ export function Presentation({ handleLogout, loggedInUserData, children }) {
       }
     >
       <Container style={{ minHeight: "100%" }}>{children}</Container>
-      <Affix position={{ bottom: rem(20), right: rem(20) }}>
-        <Button
-          component="a"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={DISCORD_SERVER_URL}
-          leftIcon={<DiscordIcon size={rem(20)} />}
-          styles={(theme) => ({
-            root: {
-              backgroundColor: "rgb(88, 101, 242)",
-              border: 0,
-              height: rem(42),
-              paddingLeft: rem(20),
-              paddingRight: rem(20),
-              // "&:not([data-disabled])": theme.fn.hover({
-              //   backgroundColor: theme.fn.darken("#00acee", 0.05),
-              // }),
-            },
 
-            leftIcon: {
-              marginRight: theme.spacing.md,
-            },
-          })}
-        >
-          Join Discord Community
-        </Button>
+      <Affix position={{ bottom: rem(15), right: rem(20) }}>
+        <Tooltip label="Discord is a great place to chat with other people doing this challenge">
+          <Button
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={DISCORD_SERVER_URL}
+            leftIcon={<DiscordIcon size={rem(20)} />}
+            styles={(theme) => ({
+              root: {
+                backgroundColor: "rgb(88, 101, 242)",
+                border: 0,
+                height: rem(42),
+                paddingLeft: rem(20),
+                paddingRight: rem(20),
+                // "&:not([data-disabled])": theme.fn.hover({
+                //   backgroundColor: theme.fn.darken("#00acee", 0.05),
+                // }),
+              },
+
+              leftIcon: {
+                marginRight: theme.spacing.md,
+              },
+            })}
+          >
+            Join Discord Community
+          </Button>
+        </Tooltip>
       </Affix>
     </AppShell>
   );

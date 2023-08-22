@@ -425,6 +425,7 @@ def load_all_content_items_with_known_ids():
     seen_ids = {}
     content_paths = recurse_get_all_content_index_file_paths()
     for file_path in content_paths:
+        print(f"loading frontmatter from {file_path}")
         content_item_post = frontmatter.load(file_path)
         if DB_ID not in content_item_post:
             continue

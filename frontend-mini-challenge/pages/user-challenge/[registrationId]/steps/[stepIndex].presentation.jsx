@@ -248,7 +248,7 @@ export default function Presentation({
 
         <Divider mt="md" />
 
-        <Group position="apart">
+        <Group position="left">
           <Button
             onClick={handlePrevious}
             leftIcon={<BackArrowIcon />}
