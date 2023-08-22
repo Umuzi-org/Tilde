@@ -7,21 +7,17 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from core import permissions as core_permissions
-from core.models import Team, User
+from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BulkAddUsersToTeamForm
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
-from curriculum_tracking.management.helpers import get_team_cards
-from django.contrib.postgres.aggregates import StringAgg
-from django.utils import timezone
 
 
 @api_view(["POST"])
