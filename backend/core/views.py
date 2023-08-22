@@ -306,22 +306,23 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
     def get_login_url(self):
         return reverse("admin:login")
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.team = Team.objects.get(id=self.kwargs["team_id"])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        team_id = self.kwargs["team_id"]
-        team = Team.objects.get(id=team_id)
-        context["team"] = team
+        context["team"] = self.team
         return context
 
     def form_valid(self, form):
         users = form.cleaned_data["users"]
-        team_id = self.kwargs["team_id"]
-        team = Team.objects.get(id=team_id)
+        team = self.team
         team.user_set.add(*users)
 
         messages.success(
             self.request,
-            f"The following users were successfully added to the \"{team}\" team: {', '.join([user.email for user in users])}",
+            f'Users were successfully added to the "{team}" team',
         )
         return redirect(
             reverse("admin:core_team_change", kwargs={"object_id": team.id})

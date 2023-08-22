@@ -54,7 +54,7 @@ class BulkAddUsersToTeamForm(forms.Form):
         ]
         if not_found_users_emails:
             raise ValidationError(
-                f"Users with the following email addresses don't exist: {', '.join(not_found_users_emails)}",
+                f"Users with the following email addresses don't exist: {not_found_users_emails}",
             )
 
         cleaned_data["users"] = users
