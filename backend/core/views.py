@@ -318,6 +318,7 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         users = form.cleaned_data["users"]
         team = self.team
+
         team.user_set.add(*users)
 
         messages.success(
