@@ -32,15 +32,34 @@ class BulkAddUsersToTeamForm(forms.Form):
         required=True,
         empty_value=False,
     )
+    users = forms.ModelMultipleChoiceField(
+        queryset=models.User.objects.none(),
+        widget=forms.MultipleHiddenInput(),
+        required=False,
+    )
 
-    def clean_email_addresses(self):
-        email_addresses_str = self.cleaned_data["email_addresses"]
-        if not email_addresses_str:
-            raise ValidationError(
-                f"No email addresses entered.",
-            )
-        email_addresses_list = self.get_email_addresses_from_str(email_addresses_str)
-        return email_addresses_list
+    def clean(self):
+        cleaned_data = super().clean()
+        email_addresses_str = cleaned_data["email_addresses"]
+        email_addresses = self.get_email_addresses_from_str(email_addresses_str)
+        users = models.User.objects.filter(email__in=email_addresses)
+        found_users_emails = [user.email for user in users]
+        not_found_users_emails = [
+            email for email in email_addresses if email not in found_users_emails
+        ]
+        # print(f"emails: {email_addresses}")
+        # print(f"found users emails: {found_users_emails}")
+        # print(f"found users: {users}")
+        # print(f"not found users emails: {not_found_users_emails}")
+        # if not email_addresses_str:
+        #     raise ValidationError(
+        #         f"No email addresses entered.",
+        #     )
+        # return email_addresses_list
+        cleaned_data["users"] = users
+
+        print(cleaned_data)
+        return cleaned_data
 
     def get_email_addresses_from_str(self, email_addresses_str):
         """extract a list of email addresses from a string separated by spaces, commas and newlines"""

@@ -318,31 +318,25 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
         return context
 
     def form_valid(self, form):
-        email_addresses = form.cleaned_data["email_addresses"]
+        users = form.cleaned_data["users"]
         team_id = self.kwargs["team_id"]
         team = Team.objects.get(id=team_id)
-        users_added_to_team = self.add_users_to_team(team, email_addresses)
-        if users_added_to_team:
-            messages.success(
-                self.request,
-                f"The following users were successfully added to the \"{team}\" team: {', '.join(users_added_to_team)}",
-            )
-            return redirect(
-                reverse("admin:core_team_change", kwargs={"object_id": team.id})
-            )
-        else:
-            messages.error(
-                self.request,
-                f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
-            )
-            return redirect(
-                reverse("bulk_add_users_to_team", kwargs={"team_id": team.id})
-            )
+        team.user_set.add(*users)
 
-    def add_users_to_team(self, team, email_addresses):
-        users = User.objects.filter(email__in=email_addresses)
-        if users:
-            team.user_set.add(*users)
+        messages.success(
+            self.request,
+            f"The following users were successfully added to the \"{team}\" team: {', '.join([user.email for user in users])}",
+        )
+        return redirect(
+            reverse("admin:core_team_change", kwargs={"object_id": team.id})
+        )
 
-        users_added_to_team = [user.email for user in users]
-        return users_added_to_team
+        # super().form_valid(form)
+        # else:
+        #     messages.error(
+        #         self.request,
+        #         f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
+        #     )
+        #     return redirect(
+        #         reverse("bulk_add_users_to_team", kwargs={"team_id": team.id})
+        #     )
