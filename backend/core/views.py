@@ -330,13 +330,3 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
         return redirect(
             reverse("admin:core_team_change", kwargs={"object_id": team.id})
         )
-
-        # super().form_valid(form)
-        # else:
-        #     messages.error(
-        #         self.request,
-        #         f'No users were added to the "{team.name}" team. Make sure the users and/or entered email addresses exist and try again.',
-        #     )
-        #     return redirect(
-        #         reverse("bulk_add_users_to_team", kwargs={"team_id": team.id})
-        #     )
