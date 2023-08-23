@@ -10,7 +10,7 @@ from core import permissions as core_permissions
 from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from .forms import BulkAddUsersToTeamForm
 from django.views.generic.edit import FormView
@@ -308,7 +308,8 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.team = Team.objects.get(id=self.kwargs["team_id"])
+        team_id = self.kwargs["team_id"]
+        self.team = get_object_or_404(Team, id=team_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
