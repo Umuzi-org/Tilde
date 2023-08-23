@@ -52,6 +52,7 @@ class CurriculumContentInline(
 class CurriculumAdmin(admin.ModelAdmin):
     inlines = (CurriculumContentInline,)
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class RecruitProjectReviewInLine(admin.TabularInline):
@@ -163,7 +164,7 @@ class UserAdmin(BaseUserAdmin):
         # "user_permissions",
     )
 
-    actions = ["bulk_activate_users","bulk_deactivate_users"]
+    actions = ["bulk_activate_users", "bulk_deactivate_users"]
 
     def bulk_activate_users(self, request, users):
         users.update(active=True)
