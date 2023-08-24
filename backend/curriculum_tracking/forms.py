@@ -1,5 +1,4 @@
 from django import forms
-from core import models as core_models
 from curriculum_tracking import models as curriculum_models
 from social_auth import models as social_models
 from core.models import User
@@ -26,7 +25,6 @@ def user_to_str_and_github(user):
 
 
 def get_user_choices(cohort):
-
     return [(o.id, user_to_str_and_github(o)) for o in cohort.get_member_users()]
 
 

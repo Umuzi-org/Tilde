@@ -57,9 +57,10 @@ class TeamAdmin(GuardedModelAdmin):
         ),
     )
     inlines = [UserSetInline]
-    actions = ['deactivate_team_members', 'bulk_regenerate_cards_for_members']
+    actions = ["deactivate_team_members", "bulk_regenerate_cards_for_members"]
     ordering = ["name"]
-    
+    change_form_template = "admin/core/team_change_form.html"
+
     def deactivate_team_members(self, request, queryset: object):
         for team in queryset:
             for team_member in team.active_users:
@@ -67,26 +68,34 @@ class TeamAdmin(GuardedModelAdmin):
                 team_member.save()
 
     def bulk_regenerate_cards_for_members(self, request, queryset: object):
-        if request.POST.get('post', None):
-            from long_running_request_actors import bulk_regenerate_cards_for_team as actor
-          
+        if request.POST.get("post", None):
+            from long_running_request_actors import (
+                bulk_regenerate_cards_for_team as actor,
+            )
+
             for team in queryset:
                 actor.send_with_options(kwargs={"team_id": team.pk})
-            messages.add_message(request, messages.INFO, f"Regenerating cards in the background")
+            messages.add_message(
+                request, messages.INFO, f"Regenerating cards in the background"
+            )
 
         else:
             opts = self.model._meta
             request.current_app = self.admin_site.name
 
-            return TemplateResponse(request, "admin/bulk_regenerate_cards_for_members_confirm.html", {
-                **self.admin_site.each_context(request),
-                "title": _("Are you sure?"),
-                "opts": opts,
-                "app_label": opts.app_label,
-                "queryset": queryset,
-                "action_checkbox_name": ACTION_CHECKBOX_NAME
-            })
-        
+            return TemplateResponse(
+                request,
+                "admin/bulk_regenerate_cards_for_members_confirm.html",
+                {
+                    **self.admin_site.each_context(request),
+                    "title": _("Are you sure?"),
+                    "opts": opts,
+                    "app_label": opts.app_label,
+                    "queryset": queryset,
+                    "action_checkbox_name": ACTION_CHECKBOX_NAME,
+                },
+            )
+
 
 admin.site.register(models.UserProfile)
 

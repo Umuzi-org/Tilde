@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block title %}Bulk Add Users - {{ team.name }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{% block site_title %}Tilde Administration{% endblock %}</a></h1>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a> &rsaquo;
+        <a href="{% url 'admin:app_list' app_label='core' %}">Core</a> &rsaquo;
+        <a href="{% url 'admin:core_team_changelist' %}">Teams</a> &rsaquo;
+        <a href="{% url 'admin:core_team_change' team.id %}">{{ team.name }}</a> &rsaquo;
+        Bulk Add Users
+    </div>
+{% endblock %}
+
+<div class="content">
+    {% block content %}
+    <h1>Bulk add users to "{{team.name}}"</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="submit-row">
+            <input type="submit" value="Add Users" class="default"/>
+        </div>
+    </form>
+    {% endblock %}
+</div>

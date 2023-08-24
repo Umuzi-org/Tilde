@@ -10,11 +10,14 @@ from core import permissions as core_permissions
 from core.models import Team
 from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from .forms import BulkAddUsersToTeamForm
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
-from curriculum_tracking.management.helpers import get_team_cards
-from django.contrib.postgres.aggregates import StringAgg
-from django.utils import timezone
 
 
 @api_view(["POST"])
@@ -293,3 +296,36 @@ class UserViewSet(viewsets.ModelViewSet):
 #             result[team.id]["permissions"].append(permission)
 
 #     return Response(result)
+
+
+class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
+    form_class = BulkAddUsersToTeamForm
+    template_name = "admin/core/bulk_add_users_form.html"
+    success_url = reverse_lazy("bulk_add_users_to_team")
+
+    def get_login_url(self):
+        return reverse("admin:login")
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        team_id = self.kwargs["team_id"]
+        self.team = get_object_or_404(Team, id=team_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.team
+        return context
+
+    def form_valid(self, form):
+        users = form.cleaned_data["users"]
+        team = self.team
+
+        team.user_set.add(*users)
+
+        messages.success(
+            self.request,
+            f'Users were successfully added to the "{team}" team',
+        )
+        return redirect(
+            reverse("admin:core_team_change", kwargs={"object_id": team.id})
+        )
