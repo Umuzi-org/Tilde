@@ -331,7 +331,9 @@ def auto_assign_reviewers_based_on_trusted_team_permission():
 
     exclude_users = [user for subset in exclude_users_nested for user in subset]
 
-    for team in Team.objects.filter(active=True):
+    for team in Team.objects.filter(active=True).exclude(
+        name__in=config.EXCLUDE_TEAMS_FROM_TRUSTED_REVIEW_STEP
+    ):
         print(f"\nTeam: {team.id} {team.name}")
         reviewer_users = get_reviewer_users_by_permission(
             team=team, permission=Team.PERMISSION_TRUSTED_REVIEWER
