@@ -52,6 +52,7 @@ class CurriculumContentInline(
 class CurriculumAdmin(admin.ModelAdmin):
     inlines = (CurriculumContentInline,)
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class RecruitProjectReviewInLine(admin.TabularInline):
