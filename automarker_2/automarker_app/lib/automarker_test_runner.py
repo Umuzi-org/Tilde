@@ -253,7 +253,7 @@ class _TestRunner:
         error_type, error_message = self.get_error_type_and_message()
 
         if similar_message:
-            from automarker.ai_helpers import (
+            from automarker_app.lib.ai_helpers import (
                 similarity_distance,
             )  # just in time import because this thing is slow
 
@@ -435,7 +435,7 @@ class MarkdownTestRunner(PythonTestRunner):
     def assert_question_is(self, expected_question):
         if self.markdown_question.lower() == expected_question.lower():
             return
-        from automarker.ai_helpers import (
+        from automarker_app.lib.ai_helpers import (
             similarity_distance,
         )  # just in time import because this thing is slow
 
@@ -492,7 +492,7 @@ class MarkdownTestRunner(PythonTestRunner):
         # lazy import on purpose
         import spacy
         import pandas as pd
-        from automarker.ai_helpers import embed_sentence, distance_functions
+        from automarker_app.lib.ai_helpers import embed_sentence, distance_functions
 
         max_distance = 0.075
         get_distance = distance_functions["cosine"]
