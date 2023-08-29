@@ -626,6 +626,12 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
+            command = (
+                f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
+            )
+            stdout, stderr = subprocess_run(command)
+            if stderr:
+                breakpoint()
             self.set_outcome(status=STEP_STATUS_PASS)
 
 
