@@ -49,7 +49,7 @@ class Value(
     DATATYPE_CHOICES = [(INTEGER, "integer"), (STRING, "string"), (BOOLEAN, "boolean")]
 
     namespace = models.ForeignKey(NameSpace, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
     value = models.TextField()
     datatype = models.CharField(max_length=1, choices=DATATYPE_CHOICES)
     repeated = models.BooleanField()

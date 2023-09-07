@@ -321,24 +321,11 @@ def auto_assign_reviewers_based_on_reviewer_team_permission():
 def auto_assign_reviewers_based_on_trusted_team_permission():
     config = NameSpace.get_config(CONFIGURATION_NAMESPACE)
 
-    exclude_users_nested = []
-
-    for name in config.EXCLUDE_TRUSTED_REVIEWER_PERMISSIONED_USERS_IN_TEAMS:
-        try:
-            exclude_users_nested.append(Team.objects.get(name=name).users.all())
-        except Team.DoesNotExist:
-            print(f"No team with name {name}")
-
-    exclude_users = [user for subset in exclude_users_nested for user in subset]
-
-    for team in Team.objects.filter(active=True).exclude(
-        name__in=config.EXCLUDE_TEAMS_FROM_TRUSTED_REVIEW_STEP
-    ):
+    for team in Team.objects.filter(active=True):
         print(f"\nTeam: {team.id} {team.name}")
         reviewer_users = get_reviewer_users_by_permission(
             team=team, permission=Team.PERMISSION_TRUSTED_REVIEWER
         )
-        reviewer_users = [o for o in reviewer_users if o not in exclude_users]
 
         if not reviewer_users:
             print(
