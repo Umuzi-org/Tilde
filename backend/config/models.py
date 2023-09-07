@@ -42,7 +42,6 @@ class Value(
     models.Model,
     Mixins,
 ):
-
     INTEGER = "i"
     STRING = "s"
     BOOLEAN = "b"
