@@ -7,4 +7,4 @@ services:
       - "1337:1337"
     volumes:
       - ~/.ssh:/root/.ssh
-      - $AUTOMARKER_2_CONFIG_DIR:/app/automarker_2_config
+      - $AUTOMARKER_2_CONFIG_DIR:/automarker_2_config

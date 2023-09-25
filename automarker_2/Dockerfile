@@ -17,7 +17,6 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 RUN pip install -U pip setuptools wheel
 RUN pip install poetry
 
-ENV AUTOMARKER_2_CONFIG_DIR /app/automarker_2_config
 
 WORKDIR /app
 
@@ -35,7 +34,8 @@ COPY . .
 ENV AUTO_MARKER_CLONE_PATH /gitignore
 RUN mkdir $AUTO_MARKER_CLONE_PATH
 
-# run migrations
+ENV AUTOMARKER_2_CONFIG_DIR /automarker_2_config
+
 RUN poetry run python manage.py migrate
 
 EXPOSE 1337
