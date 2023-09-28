@@ -39,7 +39,6 @@ class Command(BaseCommand):
                     CONFIG_STATUS_PRODUCTION,
                 ]
                 and config.content_item_id not in skip_ids
-                and config.flavours[0][0] == "python"
             ):
                 with concurrent.futures.ProcessPoolExecutor() as executor:
                     _future = executor.submit(
