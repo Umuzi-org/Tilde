@@ -37,6 +37,12 @@ class Command(BaseCommand):
                 ]
                 and config.content_item_id not in skip_ids
             ):
+                formatted_config = (
+                    f"{config.title}[{config.content_item_id}] {config.flavours}"
+                )
+
+                print("\nCHECKING:", formatted_config)
+
                 with concurrent.futures.ProcessPoolExecutor() as executor:
                     _future = executor.submit(
                         mark_project,
@@ -51,27 +57,17 @@ class Command(BaseCommand):
                 if any([step.status != STEP_STATUS_PASS for step in steps]):
                     bad_configs.append(
                         (
-                            [
-                                config.title,
-                                config.flavours,
-                                config.content_item_id,
-                            ],
+                            formatted_config,
                             [
                                 step
                                 for step in steps
                                 if step.status
                                 not in [STEP_STATUS_PASS, STEP_STATUS_WAITING]
                             ],
-                        )
+                        ),
                     )
                 else:
-                    good_configs.append(
-                        [
-                            config.title,
-                            config.flavours,
-                            config.content_item_id,
-                        ]
-                    )
+                    good_configs.append(formatted_config)
 
         for config in good_configs:
             print("\n", DASH_SEPARATOR, "\n")
