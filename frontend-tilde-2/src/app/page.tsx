@@ -6,6 +6,8 @@ export default function Home() {
     <main>
 
       <Link href="/login">login</Link>
+      <Link href="/forgot-password">forgot password</Link>
+      <Link href="/user/board">user board</Link>
 
     </main>
   )
