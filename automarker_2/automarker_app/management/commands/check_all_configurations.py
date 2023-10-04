@@ -1,4 +1,5 @@
 import concurrent.futures
+import subprocess
 from django.core.management.base import BaseCommand, CommandParser
 from automarker_app.lib.marker import (
     get_all_marker_configs,
@@ -43,6 +44,8 @@ class Command(BaseCommand):
 
                 print("\nCHECKING:", formatted_config)
 
+                _future = None
+                steps = []
                 with concurrent.futures.ProcessPoolExecutor() as executor:
                     _future = executor.submit(
                         mark_project,
@@ -52,10 +55,9 @@ class Command(BaseCommand):
                         fail_fast=True,
                     )
 
-                steps = []
                 try:
                     steps = _future.result(timeout=120)
-                except TimeoutError:
+                except subprocess.TimeoutExpired:
                     bad_configs.append(f"{formatted_config} took too long (>120s)")
 
                 if any([step.status != STEP_STATUS_PASS for step in steps]):
