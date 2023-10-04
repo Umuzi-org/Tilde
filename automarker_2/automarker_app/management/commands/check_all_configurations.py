@@ -25,8 +25,8 @@ class Command(BaseCommand):
         bad_configs = []
         skip_ids = []
 
-        if options is not None:
-            skip_ids = options.get("skip", [])
+        if options["skip"] is not None:
+            skip_ids = options["skip"]
 
         for config in get_all_marker_configs():
             if (
@@ -52,7 +52,11 @@ class Command(BaseCommand):
                         fail_fast=True,
                     )
 
-                steps = _future.result()
+                steps = []
+                try:
+                    steps = _future.result(timeout=120)
+                except TimeoutError:
+                    bad_configs.append(f"{formatted_config} took too long (>120s)")
 
                 if any([step.status != STEP_STATUS_PASS for step in steps]):
                     bad_configs.append(
@@ -76,4 +80,5 @@ class Command(BaseCommand):
         for config, failed_steps in bad_configs:
             print("\n", DASH_SEPARATOR, "\n")
             print("BAD:", config)
-            print_steps_result(failed_steps)
+            if failed_steps:
+                print_steps_result(failed_steps)
