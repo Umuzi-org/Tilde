@@ -4,11 +4,13 @@ RUN nix-channel --update
 
 
 RUN nix-env -iA nixpkgs.nodejs_20
-RUN nix-env -iA nixpkgs.python311
-RUN nix-env -iA nixpkgs.python311Packages.pip
+RUN nix-env -iA nixpkgs.python310
+RUN nix-env -iA nixpkgs.python310Packages.pip
 RUN nix-env -iA nixpkgs.jdk11
 RUN nix-env -iA nixpkgs.gnused
 RUN nix-env -iA nixpkgs.gcc
+RUN nix-env -iA nixpkgs.zlib
+RUN nix-env -iA nixpkgs.gcc-unwrapped
 RUN nix-env -iA nixpkgs.stdenv.cc.cc.lib
 
 
@@ -22,14 +24,14 @@ RUN pip install poetry
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock shell.nix ./
 
 RUN poetry config installer.max-workers 10
 
-RUN poetry install --verbose
+RUN nix-shell --run "poetry install --verbose"
 
-RUN poetry run python -m pip install -U spacy
-RUN poetry run python -m spacy download en_core_web_sm
+RUN nix-shell --run "poetry run python -m pip install -U spacy"
+RUN nix-shell --run "poetry run python -m spacy download en_core_web_sm"
 
 COPY . .
 
@@ -40,4 +42,4 @@ ENV AUTOMARKER_2_CONFIG_DIR /automarker_2_config
 
 EXPOSE 1337
 
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:1337"]
+CMD ["nix-shell", "--run", "poetry" " run" " python" " manage.py" " runserver" " 0.0.0.0:1337"]

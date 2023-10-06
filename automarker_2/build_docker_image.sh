@@ -1,1 +1,1 @@
-docker build -t automarker_2 .
+docker build -t umuzi-org/automarker_2 .

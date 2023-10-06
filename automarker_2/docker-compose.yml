@@ -2,6 +2,8 @@ version: "3.3"
 services:
   automarker_2:
     build: .
+    image: umuzi-org/automarker_2
+    container_name: automarker_2
     restart: always
     ports:
       - "1337:1337"
