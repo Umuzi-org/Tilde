@@ -4,7 +4,22 @@ This project is an improvement on the last version of the automarker. It is desi
 
 It is a web app but can also be used as a command-line utility. This READE focuses on the command-line usecase since that is how it will most often be used.
 
-## Installation 
+## Installation
+### Docker Installation (Recommended)
+```
+./build_docker_image.sh
+```
+Then make sure that the environment variable `AUTOMARKER_2_CONFIG_DIR` is available. Read [this section](#automarker-config-setup) to see how to do this. To test that it's correctly setup you can use `echo $AUTOMARKER_2_CONFIG_DIR`. If you don't get the path to your automarker configuration directory, then it's not set. Once that is sorted, you may run `docker compose` to run the container:
+```
+docker compose up  #Add -d to run in background
+```
+Run commands under `nix-shell` as follows
+```
+docker exec -it automarker_2 nix-shell --run "poetry run python manage.py check_project_configuration 186 python"
+```
+
+
+### Normal Installation
 
 1. Install your dependencies
 
@@ -21,6 +36,8 @@ python -m spacy download en_core_web_sm
 ```
 
 2. Make sure you have the configuration repo cloned somewhere sensible
+
+### Automarker Config Setup
 
 **IMPORTANT**: The configuration repo is private. If you commit it to a public repo (such as the Tilde repo) then you are letting learners cheat on every project. Please make sure you clone the repo to somewhere outside of the Tilde repo directory.
 

@@ -42,4 +42,4 @@ ENV AUTOMARKER_2_CONFIG_DIR /automarker_2_config
 
 EXPOSE 1337
 
-CMD ["nix-shell", "--run", "poetry" " run" " python" " manage.py" " runserver" " 0.0.0.0:1337"]
+CMD nix-shell --run "poetry run python manage.py runserver 0.0.0.0:1337"
