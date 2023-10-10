@@ -21,7 +21,7 @@ from sql_util.utils import SubqueryAggregate
 # TODO: add more demo data for validating if everything works
 # TODO: add cards that are IP/RF without pushes for more than 7 days
 # TODO: add cards that are IP/RF without pushes without opening a PR
-# TODO: add a start time column
+# TODO: add a start time column - done
 # TODO: add a time since last commit column
 # TODO: add a time since last PR opened column
 
@@ -48,7 +48,6 @@ def get_assessment_cards():
         .filter(assignees__active__in=[True])
         .order_by("recruit_project__code_review_competent_since_last_review_request")
     )
-    print("@", incomplete_assessment_cards)
 
     return incomplete_assessment_cards
 
@@ -135,6 +134,9 @@ def make_row(card, reason):
         "card title": card.content_item.title,
         "flavours": card.flavour_names,
         "card status": card.status,
+        "start time": card.start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        if card.start_time
+        else "",
         "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
         "total negative review count": negative_review_count,
         "total positive review count": positive_review_count,
@@ -183,4 +185,5 @@ class Command(BaseCommand):
         ) as f:
             writer = csv.writer(f)
             for row in get_all_csv_rows():
+                print("@", row)
                 writer.writerow(row)
