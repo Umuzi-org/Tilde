@@ -134,7 +134,7 @@ def make_row(card, reason):
         "card title": card.content_item.title,
         "flavours": card.flavour_names,
         "card status": card.status,
-        "start time": card.start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        "project start time": card.start_time.strftime("%d/%m/%Y %H:%M:%S")
         if card.start_time
         else "",
         "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
