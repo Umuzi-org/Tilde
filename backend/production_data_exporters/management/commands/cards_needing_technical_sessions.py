@@ -8,25 +8,29 @@ from curriculum_tracking.constants import (
 from curriculum_tracking.models import AgileCard, RecruitProjectReview
 from django.utils import timezone
 
-from django.db.models import Q
+from django.db.models import Q, F, Count, Max
 
-from django.db.models import Count
 from pathlib import Path
 import csv
 from sql_util.utils import SubqueryAggregate
+
+from datetime import timedelta
 
 
 # TODO: get current script working locally - done
 # TODO: add demo data for validating if everything works - done
 # TODO: add more demo data for validating if everything works
-# TODO: add cards that are IP/RF without pushes for more than 7 days
-# TODO: add cards that are IP/RF without pushes without opening a PR
+# TODO: add cards that are IP/RF without pushes for more than 7 days - done
+# TODO: add cards that are IP/RF without pushes without opening a PR - done
 # TODO: add a start time column - done
 # TODO: add a time since last commit column
 # TODO: add a time since last PR opened column
+# TODO: add a time stuck column
 
 # from git_real.models import PullRequestReview
 BOUNCEY_CARD_MIN_BOUNCES = 2
+NO_CODE_PUSHES_MIN_DAYS = 7
+CODE_PUSHES_WITH_NO_PR_MIN_DAYS = 7
 
 
 def get_assessment_cards():
@@ -85,6 +89,42 @@ def get_cards_ordered_by_pr_change_requests():
         .filter(pr_change_requests__gte=3)
         .order_by("pr_change_requests")
     )
+
+
+def get_cards_with_stale_pushes():
+    seven_days_ago = timezone.now() - timedelta(days=NO_CODE_PUSHES_MIN_DAYS)
+
+    cards = (
+        AgileCard.objects.filter(
+            Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
+        )
+        .annotate(
+            last_push_time=F("recruit_project__repository__pushes__pushed_at_time")
+        )
+        .exclude(Q(last_push_time__lte=seven_days_ago) | Q(last_push_time__isnull=True))
+    )
+
+    return cards
+
+
+def get_cards_with_stale_pushes_no_pr():
+    seven_days_ago = timezone.now() - timedelta(days=CODE_PUSHES_WITH_NO_PR_MIN_DAYS)
+
+    cards = (
+        AgileCard.objects.filter(
+            Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
+            recruit_project__repository__pushes__isnull=False,
+        )
+        .annotate(
+            last_push_time=Max("recruit_project__repository__pushes__pushed_at_time")
+        )
+        .exclude(
+            last_push_time__lte=seven_days_ago,
+            recruit_project__repository__pull_requests__created_at__gte=seven_days_ago,
+        )
+    )
+
+    return cards
 
 
 def make_row(card, reason):
@@ -171,6 +211,12 @@ def get_all_csv_rows():
     for i, card in enumerate(get_cards_ordered_by_review()):
         # print(f"bouncy card {i+1}/{total}")
         yield list(make_row(card, "bouncy card").values())
+
+    for i, card in enumerate(get_cards_with_stale_pushes()):
+        yield list(make_row(card, "no code pushes").values())
+
+    for i, card in enumerate(get_cards_with_stale_pushes_no_pr()):
+        yield list(make_row(card, "learner stuck").values())
 
 
 class Command(BaseCommand):
