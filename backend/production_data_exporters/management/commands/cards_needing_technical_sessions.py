@@ -15,6 +15,16 @@ from pathlib import Path
 import csv
 from sql_util.utils import SubqueryAggregate
 
+
+# TODO: get current script working locally - done
+# TODO: add demo data for validating if everything works - done
+# TODO: add more demo data for validating if everything works
+# TODO: add cards that are IP/RF without pushes for more than 7 days
+# TODO: add cards that are IP/RF without pushes without opening a PR
+# TODO: add a start time column
+# TODO: add a time since last commit column
+# TODO: add a time since last PR opened column
+
 # from git_real.models import PullRequestReview
 BOUNCEY_CARD_MIN_BOUNCES = 2
 
@@ -38,6 +48,7 @@ def get_assessment_cards():
         .filter(assignees__active__in=[True])
         .order_by("recruit_project__code_review_competent_since_last_review_request")
     )
+    print("@", incomplete_assessment_cards)
 
     return incomplete_assessment_cards
 
