@@ -19,6 +19,7 @@ RUN chmod +x /root/nix-rebuild-profile.sh
 RUN /root/nix-rebuild-profile.sh
 RUN nix-env -iA nixpkgs.cudaPackages.cudnn
 RUN nix-env -iA nixpkgs.cudaPackages.cudatoolkit
+RUN nix-env -iA nixpkgs.cudaPackages.libcublas
 
 
 ENV VENV_PATH /venv
