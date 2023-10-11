@@ -17,16 +17,6 @@ from sql_util.utils import SubqueryAggregate
 from datetime import timedelta
 
 
-# TODO: get current script working locally - done
-# TODO: add demo data for validating if everything works - done
-# TODO: add more demo data for validating if everything works
-# TODO: add cards that are IP/RF without pushes for more than 7 days - done
-# TODO: add cards that are IP/RF without pushes without opening a PR - done
-# TODO: add a start time column - done
-# TODO: add a time since last commit column - done
-# TODO: add a time since last PR opened column - done
-# TODO: add a time stuck column - done
-
 # from git_real.models import PullRequestReview
 BOUNCEY_CARD_MIN_BOUNCES = 2
 NO_CODE_PUSHES_MIN_DAYS = 7
@@ -193,7 +183,7 @@ def make_row(card, reason):
         "card title": card.content_item.title,
         "flavours": card.flavour_names,
         "card status": card.status,
-        "project start time": card.start_time.strftime("%d/%m/%Y %H:%M:%S")
+        "project start time": card.start_time.strftime("%d/%m/%Y")
         if card.start_time
         else "",
         "time since last commit": days_since_last_commit
@@ -257,5 +247,4 @@ class Command(BaseCommand):
         ) as f:
             writer = csv.writer(f)
             for row in get_all_csv_rows():
-                print("@", row)
                 writer.writerow(row)
