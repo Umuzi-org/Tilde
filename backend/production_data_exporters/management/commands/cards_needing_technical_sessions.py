@@ -23,9 +23,9 @@ from datetime import timedelta
 # TODO: add cards that are IP/RF without pushes for more than 7 days - done
 # TODO: add cards that are IP/RF without pushes without opening a PR - done
 # TODO: add a start time column - done
-# TODO: add a time since last commit column
-# TODO: add a time since last PR opened column
-# TODO: add a time stuck column
+# TODO: add a time since last commit column - done
+# TODO: add a time since last PR opened column - done
+# TODO: add a time stuck column - done
 
 # from git_real.models import PullRequestReview
 BOUNCEY_CARD_MIN_BOUNCES = 2
@@ -167,6 +167,25 @@ def make_row(card, reason):
         if email not in positive_reviewer_emails:
             positive_reviewer_emails.append(email)
 
+    days_since_last_pr_opened = 0
+    days_since_last_commit = 0
+    days_since_last_push = 0
+
+    project = card.recruit_project
+    if project:
+        if project.repository.commit_set:
+            last_commit = project.repository.commit_set.latest("datetime")
+            time_since_last_commit = timezone.now() - last_commit.datetime
+            days_since_last_commit = time_since_last_commit.days
+        if project.repository.pullrequest_set:
+            latest_pr = project.repository.pullrequest_set.latest("created_at")
+            time_since_last_pr_opened = timezone.now() - latest_pr.created_at
+            days_since_last_pr_opened = time_since_last_pr_opened.days
+        if project.repository.push_set:
+            last_push = project.repository.push_set.latest("pushed_at_time")
+            time_since_last_push = timezone.now() - last_push.pushed_at_time
+            days_since_last_push = time_since_last_push.days
+
     return {
         "reason": reason,
         "email": assignee.email,
@@ -177,6 +196,13 @@ def make_row(card, reason):
         "project start time": card.start_time.strftime("%d/%m/%Y %H:%M:%S")
         if card.start_time
         else "",
+        "time since last commit": days_since_last_commit
+        if days_since_last_commit
+        else "",
+        "time since last opened pr": days_since_last_pr_opened
+        if days_since_last_pr_opened
+        else "",
+        "time stuck": days_since_last_push if days_since_last_push else "",
         "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
         "total negative review count": negative_review_count,
         "total positive review count": positive_review_count,
