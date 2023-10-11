@@ -81,23 +81,23 @@ def get_cards_ordered_by_pr_change_requests():
     )
 
 
-def get_cards_with_stale_pushes():
-    seven_days_ago = timezone.now() - timedelta(days=NO_CODE_PUSHES_MIN_DAYS)
+# def get_cards_with_stale_pushes():
+#     seven_days_ago = timezone.now() - timedelta(days=NO_CODE_PUSHES_MIN_DAYS)
 
-    cards = (
-        AgileCard.objects.filter(
-            Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
-        )
-        .annotate(
-            last_push_time=F("recruit_project__repository__pushes__pushed_at_time")
-        )
-        .exclude(Q(last_push_time__lte=seven_days_ago) | Q(last_push_time__isnull=True))
-    )
+#     cards = (
+#         AgileCard.objects.filter(
+#             Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
+#         )
+#         .annotate(
+#             last_push_time=F("recruit_project__repository__pushes__pushed_at_time")
+#         )
+#         .filter(Q(last_push_time__gte=seven_days_ago))
+#     )
+#     print(cards)
+#     return cards
 
-    return cards
 
-
-def get_cards_with_stale_pushes_no_pr():
+def get_cards_with_pushes_no_opened_prs():
     seven_days_ago = timezone.now() - timedelta(days=CODE_PUSHES_WITH_NO_PR_MIN_DAYS)
 
     cards = (
@@ -105,12 +105,14 @@ def get_cards_with_stale_pushes_no_pr():
             Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
             recruit_project__repository__pushes__isnull=False,
         )
+        .filter(assignees__active__in=[True])
+        .filter(~Q(content_item__title__startswith="Assessment:"))
         .annotate(
-            last_push_time=Max("recruit_project__repository__pushes__pushed_at_time")
+            latest_push_time=Max("recruit_project__repository__pushes__pushed_at_time")
         )
-        .exclude(
-            last_push_time__lte=seven_days_ago,
-            recruit_project__repository__pull_requests__created_at__gte=seven_days_ago,
+        .filter(
+            recruit_project__repository__pull_requests__state="closed",
+            latest_push_time__lte=seven_days_ago,
         )
     )
 
@@ -161,19 +163,30 @@ def make_row(card, reason):
     days_since_last_commit = 0
     days_since_last_push = 0
 
-    project = card.recruit_project
-    if project:
-        last_commit = project.repository.commit_set.latest("datetime")
+    if (
+        card.status in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]
+        and card.recruit_project
+    ):
+        last_commit = card.recruit_project.repository.commit_set.latest("datetime")
         time_since_last_commit = timezone.now() - last_commit.datetime
         days_since_last_commit = time_since_last_commit.days
 
-        latest_pr = project.repository.pull_requests.latest("created_at")
+        latest_pr = card.recruit_project.repository.pull_requests.latest("created_at")
         time_since_last_pr_opened = timezone.now() - latest_pr.created_at
         days_since_last_pr_opened = time_since_last_pr_opened.days
 
-        last_push = project.repository.pushes.latest("pushed_at_time")
+        last_push = card.recruit_project.repository.pushes.latest("pushed_at_time")
         time_since_last_push = timezone.now() - last_push.pushed_at_time
         days_since_last_push = time_since_last_push.days
+
+        # print("#1", last_commit.datetime, days_since_last_commit)
+        # print("#2", latest_pr.created_at, days_since_last_pr_opened)
+        print(
+            "#3",
+            last_push.pushed_at_time,
+            days_since_last_push,
+            card.recruit_project.repository.pushes.latest("pushed_at_time"),
+        )
 
     return {
         "reason": reason,
@@ -185,13 +198,9 @@ def make_row(card, reason):
         "project start time": card.start_time.strftime("%d/%m/%Y")
         if card.start_time
         else "",
-        "time since last commit": days_since_last_commit
-        if days_since_last_commit
-        else "",
-        "time since last opened pr": days_since_last_pr_opened
-        if days_since_last_pr_opened
-        else "",
-        "time stuck": days_since_last_push if days_since_last_push else "",
+        "time since last commit": days_since_last_commit,
+        "time since last opened pr": days_since_last_pr_opened,
+        "time stuck": days_since_last_push,
         "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
         "total negative review count": negative_review_count,
         "total positive review count": positive_review_count,
@@ -227,10 +236,10 @@ def get_all_csv_rows():
         # print(f"bouncy card {i+1}/{total}")
         yield list(make_row(card, "bouncy card").values())
 
-    for i, card in enumerate(get_cards_with_stale_pushes()):
-        yield list(make_row(card, "no code pushes").values())
+    # for i, card in enumerate(get_cards_with_stale_pushes()):
+    #     yield list(make_row(card, "no code pushes").values())
 
-    for i, card in enumerate(get_cards_with_stale_pushes_no_pr()):
+    for i, card in enumerate(get_cards_with_pushes_no_opened_prs()):
         yield list(make_row(card, "learner stuck").values())
 
 
@@ -246,4 +255,5 @@ class Command(BaseCommand):
         ) as f:
             writer = csv.writer(f)
             for row in get_all_csv_rows():
+                print("@", row)
                 writer.writerow(row)
