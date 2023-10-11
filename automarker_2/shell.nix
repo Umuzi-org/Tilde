@@ -10,13 +10,13 @@ pkgs.mkShell {
     pkgs.gcc-unwrapped.lib
     pkgs.stdenv.cc.cc.lib
     # pkgs.cudatoolkit
-    pkgs.cudnn
+    pkgs.cudaPackages.cudnn
   ];
 
   # shellHook = ''
   #   export LD_LIBRARY_PATH="${pkgs.cudatoolkit}/lib:${pkgs.cudnn}/lib:${pkgs.gcc}/lib:${pkgs.zlib}/lib:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
   # '';
   shellHook = ''
-    export LD_LIBRARY_PATH="${pkgs.cudnn}/lib:${pkgs.gcc}/lib:${pkgs.zlib}/lib:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="${pkgs.cudaPackages.cudnn}/lib:${pkgs.gcc}/lib:${pkgs.zlib}/lib:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
   '';
 }
