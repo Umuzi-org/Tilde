@@ -13,6 +13,11 @@ RUN nix-env -iA nixpkgs.gcc
 RUN nix-env -iA nixpkgs.zlib
 RUN nix-env -iA nixpkgs.gcc-unwrapped
 RUN nix-env -iA nixpkgs.stdenv.cc.cc.lib
+
+COPY nix-rebuild-profile.sh /root/
+RUN chmod +x /root/nix-rebuild-profile.sh
+RUN /root/nix-rebuild-profile.sh
+
 RUN nix-env -iA nixpkgs.cudaPackages.cudnn
 
 
