@@ -4,7 +4,6 @@ RUN nix-channel --update
 
 COPY config.nix /root/.config/nixpkgs/
 
-RUN nix-env -u --always
 RUN nix-env -iA nixpkgs.nodejs_20
 RUN nix-env -iA nixpkgs.python310
 RUN nix-env -iA nixpkgs.python310Packages.pip
