@@ -5,16 +5,16 @@ RUN nix-channel --update
 COPY config.nix /root/.config/nixpkgs/
 
 RUN nix-env -u --always --verbose
-RUN nix-env -ivA nixpkgs.nodejs_20
-RUN nix-env -ivA nixpkgs.python310
-RUN nix-env -ivA nixpkgs.python310Packages.pip
-RUN nix-env -ivA nixpkgs.jdk11
-RUN nix-env -ivA nixpkgs.gnused
-RUN nix-env -ivA nixpkgs.gcc
-RUN nix-env -ivA nixpkgs.zlib
-RUN nix-env -ivA nixpkgs.gcc-unwrapped
-RUN nix-env -ivA nixpkgs.stdenv.cc.cc.lib
-RUN nix-env -ivA nixpkgs.cudaPackages.cudnn
+RUN nix-env -iA nixpkgs.nodejs_20
+RUN nix-env -iA nixpkgs.python310
+RUN nix-env -iA nixpkgs.python310Packages.pip
+RUN nix-env -iA nixpkgs.jdk11
+RUN nix-env -iA nixpkgs.gnused
+RUN nix-env -iA nixpkgs.gcc
+RUN nix-env -iA nixpkgs.zlib
+RUN nix-env -iA nixpkgs.gcc-unwrapped
+RUN nix-env -iA nixpkgs.stdenv.cc.cc.lib
+RUN nix-env -iA nixpkgs.cudaPackages.cudnn
 
 
 ENV VENV_PATH /venv
