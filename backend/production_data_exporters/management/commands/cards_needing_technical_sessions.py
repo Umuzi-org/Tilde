@@ -161,10 +161,11 @@ def make_row(card, reason):
     if (
         card.status in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]
         and card.recruit_project
+        and card.recruit_project.repository
     ):
-        commits = card.recruit_project.repository.commit_set
-        prs = card.recruit_project.repository.pull_requests
-        pushes = card.recruit_project.repository.pushes
+        commits = card.recruit_project.repository.commit_set.all()
+        prs = card.recruit_project.repository.pull_requests.all()
+        pushes = card.recruit_project.repository.pushes.all()
 
         if commits.exists():
             last_commit = commits.latest("datetime")
