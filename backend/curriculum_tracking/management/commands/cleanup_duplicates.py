@@ -36,7 +36,7 @@ def deduplicate(instances):
         if len(timestamped) > 1:
             keep = timestamped[0]
             to_delete = [o for o in instances if o != keep]
-            breakpoint()
+            # breakpoint()
             for o in to_delete:
                 print(f"deleting {o}")
                 o.delete()
