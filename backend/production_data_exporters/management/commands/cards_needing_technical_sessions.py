@@ -8,15 +8,19 @@ from curriculum_tracking.constants import (
 from curriculum_tracking.models import AgileCard, RecruitProjectReview
 from django.utils import timezone
 
-from django.db.models import Q
+from django.db.models import Q, Count, Max
 
-from django.db.models import Count
 from pathlib import Path
 import csv
 from sql_util.utils import SubqueryAggregate
 
+from datetime import timedelta
+
+
 # from git_real.models import PullRequestReview
 BOUNCEY_CARD_MIN_BOUNCES = 2
+NO_CODE_PUSHES_MIN_DAYS = 7
+CODE_PUSHES_WITH_NO_PR_MIN_DAYS = 7
 
 
 def get_assessment_cards():
@@ -77,6 +81,39 @@ def get_cards_ordered_by_pr_change_requests():
     )
 
 
+def get_cards_with_no_pushes():
+    seven_days_ago = timezone.now() - timedelta(days=CODE_PUSHES_WITH_NO_PR_MIN_DAYS)
+
+    cards = AgileCard.objects.filter(
+        Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
+        recruit_project__repository__pushes__isnull=True,
+        recruit_project__repository__created_at__lte=seven_days_ago,
+        assignees__active__in=[True],
+    )
+    return cards
+
+
+def get_cards_with_pushes_no_opened_prs():
+    seven_days_ago = timezone.now() - timedelta(days=CODE_PUSHES_WITH_NO_PR_MIN_DAYS)
+
+    cards = (
+        AgileCard.objects.filter(
+            Q(status=AgileCard.IN_PROGRESS) | Q(status=AgileCard.REVIEW_FEEDBACK),
+            recruit_project__repository__pushes__isnull=False,
+            assignees__active__in=[True],
+            recruit_project__repository__pull_requests__state="closed",
+        )
+        .annotate(
+            latest_push_time=Max("recruit_project__repository__pushes__pushed_at_time")
+        )
+        .filter(
+            latest_push_time__lte=seven_days_ago,
+        )
+    )
+
+    return cards
+
+
 def make_row(card, reason):
     negative_review_count = (
         RecruitProjectReview.objects.filter(recruit_project__agile_card=card)
@@ -117,6 +154,33 @@ def make_row(card, reason):
         if email not in positive_reviewer_emails:
             positive_reviewer_emails.append(email)
 
+    days_since_last_pr_opened = 0
+    days_since_last_commit = 0
+    days_since_last_push = 0
+
+    if (
+        card.status in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]
+        and card.recruit_project
+    ):
+        commits = card.recruit_project.repository.commit_set
+        prs = card.recruit_project.repository.pull_requests
+        pushes = card.recruit_project.repository.pushes
+
+        if commits.exists():
+            last_commit = commits.latest("datetime")
+            time_since_last_commit = timezone.now() - last_commit.datetime
+            days_since_last_commit = time_since_last_commit.days
+
+        if prs.exists():
+            latest_pr = prs.latest("created_at")
+            time_since_last_pr_opened = timezone.now() - latest_pr.created_at
+            days_since_last_pr_opened = time_since_last_pr_opened.days
+
+        if pushes.exists():
+            last_push = pushes.latest("pushed_at_time")
+            time_since_last_push = timezone.now() - last_push.pushed_at_time
+            days_since_last_push = time_since_last_push.days
+
     return {
         "reason": reason,
         "email": assignee.email,
@@ -124,6 +188,12 @@ def make_row(card, reason):
         "card title": card.content_item.title,
         "flavours": card.flavour_names,
         "card status": card.status,
+        "project start time": card.start_time.strftime("%d/%m/%Y")
+        if card.start_time
+        else "",
+        "time since last commit": days_since_last_commit,
+        "time since last opened pr": days_since_last_pr_opened,
+        "time stuck": days_since_last_push,
         "staff_who_think_its_competent": "\n".join(staff_who_think_its_competent),
         "total negative review count": negative_review_count,
         "total positive review count": positive_review_count,
@@ -158,6 +228,12 @@ def get_all_csv_rows():
     for i, card in enumerate(get_cards_ordered_by_review()):
         # print(f"bouncy card {i+1}/{total}")
         yield list(make_row(card, "bouncy card").values())
+
+    for i, card in enumerate(get_cards_with_no_pushes()):
+        yield list(make_row(card, "no code pushes").values())
+
+    for i, card in enumerate(get_cards_with_pushes_no_opened_prs()):
+        yield list(make_row(card, "learner stuck").values())
 
 
 class Command(BaseCommand):
