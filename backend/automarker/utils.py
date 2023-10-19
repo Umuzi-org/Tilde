@@ -53,7 +53,7 @@ def get_fail_review_comments(api_result):
 def add_review(project, api_result):
     if api_result["status"] == STATUS_OK:
         status = COMPETENT
-        comments = "Keep up the good work :)"
+        comments = "Looks good to me. Keep up the good work :)"
     elif api_result["status"] == STATUS_FAIL:
         status = NOT_YET_COMPETENT
 
@@ -64,7 +64,7 @@ def add_review(project, api_result):
     base_comments = (
         "Hello! I'm a robot 🤖\n\nI'm here to give you quick feedback about your code."
     )
-    RecruitProjectReview.objects.create(
+    return RecruitProjectReview.objects.create(
         status=status,
         timestamp=timezone.now(),
         comments=f"{base_comments}\n\n{comments}",
