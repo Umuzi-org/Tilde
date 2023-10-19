@@ -22,6 +22,7 @@ from automarker.utils import (
 
 
 def confirm_continue(message):
+    return True  # TODO: remove this line
     answer = ""
     while answer not in ["Y", "N"]:
         print(f"message = \n```\n{message}\n```")
