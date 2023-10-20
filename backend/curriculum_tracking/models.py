@@ -742,7 +742,7 @@ class RecruitProject(
 
     def __str__(self):
         users = ", ".join([str(o) for o in self.recruit_users.all()])
-        s = f"{self.content_item} - {users}"
+        s = f"{self.id} {self.content_item} - {users}"
         flavours = [o.name for o in self.flavours.all()]
         if flavours:
             return f"{s} [{flavours}]"

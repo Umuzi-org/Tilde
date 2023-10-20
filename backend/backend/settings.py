@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     "production_data_exporters.apps.ProductionDataExportersConfig",
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
     "automarker.apps.AutomarkerConfig",
+    "frontend",
 ]
 
 SITE_ID = 1  # from allauth docs
