@@ -1,6 +1,7 @@
 import { Action } from "../index.mjs";
 import shell from "shelljs";
 import { STATUS_OK, STATUS_ERROR } from "../../consts.mjs";
+import { stdoutHasErrors } from "./python-utils.mjs";
 
 export default class DoInstallPytest extends Action {
   name = "installing pytest";
@@ -9,7 +10,7 @@ export default class DoInstallPytest extends Action {
     const command = `DESTINATION_PATH=${destinationPath} bash -c ${scriptPath}`;
     const scriptErrorOutput = await shell.exec(command).stderr.trim();
 
-    if (scriptErrorOutput.length) {
+    if (stdoutHasErrors({ scriptErrorOutput })) {
       return { status: STATUS_ERROR, message: scriptErrorOutput };
     }
     return {

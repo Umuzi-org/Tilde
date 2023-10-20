@@ -7,7 +7,7 @@ DATE_STR=$(date '+%Y-%m-%d-t-%H-%M')
 
 cp -r $AUTO_MARKER_CONFIGURATION_REPO_PATH project_config
 
-docker build --no-cache \
+docker build  \
 -t gcr.io/umuzi-prod/automarker:$GIT_COMMIT-$DATE_STR \
 -t gcr.io/umuzi-prod/automarker:latest .
 
