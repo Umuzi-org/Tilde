@@ -4,9 +4,13 @@
     </div>
 {% endfor %}
 
+{% if next_page %}
 <button
-    hx-get="{% url 'frontend:partial_user_board_column' user.id column.id %}"
+    id="more_cards_{{ column_id }}"
+    hx-get="{% url 'partial_user_board_column' user_id column_id %}?page={{ next_page }}"
     hx-trigger="click"
-    hx-target="#column_{{column.id}}"
-    hx-swap="beforeend"
->More</button>
+    hx-swap="outerHTML"
+    hx-target="#more_cards_{{ column_id }}"
+
+    >More</button>
+{% endif %}
