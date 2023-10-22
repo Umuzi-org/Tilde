@@ -1,0 +1,12 @@
+{% for card in cards %}
+    <div>
+        {{ card.title }}
+    </div>
+{% endfor %}
+
+<button
+    hx-get="{% url 'frontend:partial_user_board_column' user.id column.id %}"
+    hx-trigger="click"
+    hx-target="#column_{{column.id}}"
+    hx-swap="beforeend"
+>More</button>

@@ -1,0 +1,23 @@
+{% extends "frontend/base.html" %}
+
+{% block content %}
+    <main>
+        <table>
+            <tr>
+                {% for column in columns %}
+                <th>{{ column.title }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+
+                {% for column in columns %}
+                
+                <td id="column_{{column.id}}">
+                    
+                    
+                </td>
+                {% endfor %}
+            </tr>
+        </table>        
+    </main>
+{% endblock %}
