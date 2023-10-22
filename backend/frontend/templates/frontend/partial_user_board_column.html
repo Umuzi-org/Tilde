@@ -1,5 +1,5 @@
 {% for card in cards %}
-    <div>
+    <div style="border: 1px solid black">
         {{ card.title }}
     </div>
 {% endfor %}
@@ -11,6 +11,5 @@
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_cards_{{ column_id }}"
-
     >More</button>
 {% endif %}

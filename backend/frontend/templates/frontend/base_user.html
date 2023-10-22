@@ -1,0 +1,13 @@
+{% extends "frontend/base.html" %}
+
+{% block content %}
+
+<div style="border: 1px solid black">
+   HEADER: {{ user.email }}
+</div>
+
+<main>
+    {% block main %}{% endblock %}
+</main>
+
+{% endblock %}
