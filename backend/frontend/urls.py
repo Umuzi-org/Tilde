@@ -9,4 +9,9 @@ urlpatterns = [
         views.partial_user_board_column,
         name="partial_user_board_column",
     ),
+    path(
+        "cards/<int:card_id>/start",
+        views.action_start_card,
+        name="action_start_card",
+    ),
 ]

@@ -1,7 +1,5 @@
 {% for card in cards %}
-    <div style="border: 1px solid black">
-        {{ card.title }}
-    </div>
+    {% include "frontend/component_card.html" %}
 {% endfor %}
 
 {% if next_page %}

@@ -73,10 +73,14 @@ def partial_user_board_column(request, user_id, column_id):
     return render(request, "frontend/partial_user_board_column.html", context)
 
 
-def users(request):
-    # page_size = 20
-    # page_number = 0
+def action_start_card(request, card_id):
+    card = get_object_or_404(AgileCard, id=card_id)
+    card.status = AgileCard.IN_PROGRESS
+    card.save()
+    return render(request, "frontend/action_start_card.html", {"card": card})
 
+
+def users(request):
     teams = Team.objects.order_by("name")
 
     users = User.objects.order_by("email")
