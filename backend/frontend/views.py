@@ -55,21 +55,24 @@ def user_board(request, user_id):
 
 
 def partial_user_board_column(request, user_id, column_id):
-    page = int(request.GET.get("page", 1))
+    current_card_count = int(request.GET.get("card_count", 0))
     limit = 2
 
     user = get_object_or_404(User, id=user_id)
     all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
 
-    cards = all_cards[(page - 1) * limit : page * limit]
+    cards = all_cards[current_card_count : current_card_count + limit]
+    has_next_page = len(all_cards) > current_card_count + limit
+    # cards = all_cards[(page - 1) * limit : page * limit]
 
-    has_next_page = len(all_cards) > page * limit
+    # has_next_page = len(all_cards) > page * limit
 
     context = {
         "cards": cards,
         "user_id": user_id,
         "column_id": column_id,
-        "next_page": page + 1 if has_next_page else None,
+        "has_next_page": has_next_page,
+        # "next_page": page + 1 if has_next_page else None,
     }
     return render(request, "frontend/user/partial_user_board_column.html", context)
 
