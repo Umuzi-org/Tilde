@@ -10,7 +10,7 @@
         <h2 class="text-sm font-bold tracking-tight text-gray-900 text-center pb-3">{{column.title}}</h2>
 
         <div 
-            class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow"
+            class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white"
             id="column_{{column.id}}"
             hx-get="{% url 'partial_user_board_column' user.id column.id %}?page=1"
             hx-trigger="load"
