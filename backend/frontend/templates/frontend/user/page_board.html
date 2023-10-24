@@ -11,9 +11,9 @@
 
         <div 
             class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white"
+
             id="column_{{column.id}}"
-            data-status="{{column.status}}"
-            data-type="card"
+            
             hx-get="{% url 'partial_user_board_column' user.id column.id %}?page=1"
             hx-trigger="load"
             hx-target="#column_{{column.id}}"

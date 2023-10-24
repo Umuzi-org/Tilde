@@ -10,8 +10,7 @@ User = get_user_model()
 board_columns = [
     {
         "title": "Backlog",
-        "id": "backlog",
-        # "status": AgileCard.READY,
+        "id": f"{AgileCard.READY}{AgileCard.BLOCKED}",
         "query": lambda user: AgileCard.objects.filter(
             Q(status=AgileCard.READY) | Q(status=AgileCard.BLOCKED)
         )
@@ -20,32 +19,28 @@ board_columns = [
     },
     {
         "title": "In Progress",
-        "id": "in_progress",
-        "status": AgileCard.IN_PROGRESS,
+        "id": AgileCard.IN_PROGRESS,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
         .order_by("order")
         .filter(assignees=user),
     },
     {
         "title": "Review Feedback",
-        "id": "review_feedback",
-        "status": AgileCard.REVIEW_FEEDBACK,
+        "id": AgileCard.REVIEW_FEEDBACK,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.REVIEW_FEEDBACK)
         .order_by("order")
         .filter(assignees=user),
     },
     {
         "title": "Review",
-        "id": "review",
-        "status": AgileCard.IN_REVIEW,
+        "id": AgileCard.IN_REVIEW,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
         .order_by("order")
         .filter(assignees=user),
     },
     {
         "title": "Complete",
-        "id": "complete",
-        "status": AgileCard.COMPLETE,
+        "id": AgileCard.COMPLETE,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.COMPLETE)
         .order_by("-order")
         .filter(assignees=user),
@@ -61,7 +56,7 @@ def user_board(request, user_id):
 
 def partial_user_board_column(request, user_id, column_id):
     page = int(request.GET.get("page", 1))
-    limit = 5
+    limit = 2
 
     user = get_object_or_404(User, id=user_id)
     all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
@@ -82,9 +77,9 @@ def partial_user_board_column(request, user_id, column_id):
 @csrf_exempt
 def action_start_card(request, card_id):
     card = get_object_or_404(AgileCard, id=card_id)
-    card.status = AgileCard.IN_PROGRESS
-    card.save()
-    return render(request, "frontend/user/component_card.html", {"card": card})
+    # card.status = AgileCard.IN_PROGRESS
+    # card.save()
+    return render(request, "frontend/user/action_card_moved.html", {"card": card})
 
 
 def users(request):

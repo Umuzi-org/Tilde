@@ -1,10 +1,13 @@
 {% extends "frontend/base.html" %}
 
+{% load static %}
+{% block head %}
+<script src="{% static "frontend/user_board.js" %}"></script>
+{% endblock %}
+
+
 {% block content %}
-
 {% include "frontend/user/component_user_nav_header.html" %}
-
-
 
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
