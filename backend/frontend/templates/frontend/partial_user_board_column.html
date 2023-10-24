@@ -3,11 +3,13 @@
 {% endfor %}
 
 {% if next_page %}
-<button
+<button 
+    type="button" 
+    class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full"
     id="more_cards_{{ column_id }}"
     hx-get="{% url 'partial_user_board_column' user_id column_id %}?page={{ next_page }}"
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_cards_{{ column_id }}"
-    >More</button>
+    >- Load More -</button>
 {% endif %}

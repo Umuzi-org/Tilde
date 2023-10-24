@@ -1,28 +1,26 @@
 {% extends "frontend/base_user.html" %}
 
-{% block main %}
-    <main>
-        <table>
-            <tr>
-                {% for column in columns %}
-                <th>{{ column.title }}</th>
-                {% endfor %}
-            </tr>
-            <tr>
+{# TODO: Load the first page immediately, even if it's a small page. This should reduce lighthouse timing for first contentful paint #}
 
-                {% for column in columns %}
-                
-                <td id="column_{{column.id}}"
-                    hx-get="{% url 'partial_user_board_column' user.id column.id %}?page=1"
-                    hx-trigger="load"
-                    hx-target="#column_{{column.id}}"
-                    hx-swap="beforeend"
-                >
-                    
-                </td>
-                {% endfor %}
-            </tr>
-        </table>   
-        
-    </main>
+{% block main %}
+
+<div class="grid grid-cols-5 gap-4 overflow-x-scroll">
+    {% for column in columns %}
+    <div class="">
+        <h2 class="text-sm font-bold tracking-tight text-gray-900 text-center pb-3">{{column.title}}</h2>
+
+        <div 
+            class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow"
+            id="column_{{column.id}}"
+            hx-get="{% url 'partial_user_board_column' user.id column.id %}?page=1"
+            hx-trigger="load"
+            hx-target="#column_{{column.id}}"
+            hx-swap="beforeend"
+        >
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}
