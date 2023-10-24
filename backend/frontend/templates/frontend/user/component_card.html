@@ -4,12 +4,13 @@
     data-status="{{card.status}}">
     <h3 
         class="font-semibold tracking-tight text-gray-900 text-left">
-        {{ card.title }}
+        {{card.status}} {{ card.title }}
     </h3>
 
     <button type="button" class="rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         hx-post="{% url 'action_start_card' card.id %}"
-        hx-swap="multi:#column_in_progress:outerHTML,#card_{{ card.id }}:delete"
+        hx-target="#card_{{ card.id }}"
+        hx-swap="outerHTML"
         >Start
     </button>
 </div>

@@ -11,6 +11,7 @@ board_columns = [
     {
         "title": "Backlog",
         "id": "backlog",
+        # "status": AgileCard.READY,
         "query": lambda user: AgileCard.objects.filter(
             Q(status=AgileCard.READY) | Q(status=AgileCard.BLOCKED)
         )
@@ -20,6 +21,7 @@ board_columns = [
     {
         "title": "In Progress",
         "id": "in_progress",
+        "status": AgileCard.IN_PROGRESS,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
         .order_by("order")
         .filter(assignees=user),
@@ -27,6 +29,7 @@ board_columns = [
     {
         "title": "Review Feedback",
         "id": "review_feedback",
+        "status": AgileCard.REVIEW_FEEDBACK,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.REVIEW_FEEDBACK)
         .order_by("order")
         .filter(assignees=user),
@@ -34,6 +37,7 @@ board_columns = [
     {
         "title": "Review",
         "id": "review",
+        "status": AgileCard.IN_REVIEW,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
         .order_by("order")
         .filter(assignees=user),
@@ -41,6 +45,7 @@ board_columns = [
     {
         "title": "Complete",
         "id": "complete",
+        "status": AgileCard.COMPLETE,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.COMPLETE)
         .order_by("-order")
         .filter(assignees=user),
@@ -51,7 +56,7 @@ board_columns = [
 def user_board(request, user_id):
     user = get_object_or_404(User, id=user_id)
     context = {"user": user, "columns": board_columns}
-    return render(request, "frontend/user_board.html", context)
+    return render(request, "frontend/user/page_board.html", context)
 
 
 def partial_user_board_column(request, user_id, column_id):
@@ -71,20 +76,19 @@ def partial_user_board_column(request, user_id, column_id):
         "column_id": column_id,
         "next_page": page + 1 if has_next_page else None,
     }
-    return render(request, "frontend/partial_user_board_column.html", context)
+    return render(request, "frontend/user/partial_user_board_column.html", context)
 
 
 @csrf_exempt
 def action_start_card(request, card_id):
     card = get_object_or_404(AgileCard, id=card_id)
-    # card.status = AgileCard.IN_PROGRESS
-    # card.save()
-    return render(request, "frontend/component_card.html", {"card": card})
+    card.status = AgileCard.IN_PROGRESS
+    card.save()
+    return render(request, "frontend/user/component_card.html", {"card": card})
 
 
 def users(request):
     teams = Team.objects.order_by("name")
-
     users = User.objects.order_by("email")
     context = {"teams": teams, "users": users}
     return render(request, "frontend/users.html", context)

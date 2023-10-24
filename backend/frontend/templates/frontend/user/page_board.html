@@ -1,4 +1,4 @@
-{% extends "frontend/base_user.html" %}
+{% extends "frontend/user/base.html" %}
 
 {# TODO: Load the first page immediately, even if it's a small page. This should reduce lighthouse timing for first contentful paint #}
 
@@ -12,6 +12,8 @@
         <div 
             class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white"
             id="column_{{column.id}}"
+            data-status="{{column.status}}"
+            data-type="card"
             hx-get="{% url 'partial_user_board_column' user.id column.id %}?page=1"
             hx-trigger="load"
             hx-target="#column_{{column.id}}"
