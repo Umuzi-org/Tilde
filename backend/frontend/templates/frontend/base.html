@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-US">
+<html lang="en-US" class="h-full bg-gray-100">
   <head>
     <meta charset="utf-8" />
     <title>My test page</title>
@@ -8,10 +8,15 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/multi-swap.js"></script>
 
 
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css" rel="stylesheet" type="text/css" />
+    {#  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css" rel="stylesheet" type="text/css" /> #}
 <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    {% block content %}{% endblock %}
+  <body hx-ext="multi-swap" hx-boost="true" class="h-full">
+    <div class="min-h-full">
+      {% include "frontend/component_main_header.html" %}
+    
+      
+      {% block content %}{% endblock %}
+    </div>
   </body>
 </html>

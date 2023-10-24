@@ -1,11 +1,9 @@
-<div style="border: 1px solid black">
-    {{ card.title }}
+<div id="card_{{ card.id }}" data-status="{{card.status}}">
     {{ card.status}}
+    {{ card.title }}
     <button 
-        class="btn btn-primary"
         hx-post="{% url 'action_start_card' card.id %}"
-        hx-target="#card_{{ card.id }}"
-        hx-swap="outerHTML"
+        hx-swap="multi:#column_in_progress:outerHTML,#card_{{ card.id }}:delete"
         >Start
     </button>
 </div>

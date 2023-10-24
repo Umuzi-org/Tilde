@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from core.models import Team
 from curriculum_tracking.models import AgileCard
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 User = get_user_model()
 
@@ -73,11 +74,12 @@ def partial_user_board_column(request, user_id, column_id):
     return render(request, "frontend/partial_user_board_column.html", context)
 
 
+@csrf_exempt
 def action_start_card(request, card_id):
     card = get_object_or_404(AgileCard, id=card_id)
-    card.status = AgileCard.IN_PROGRESS
-    card.save()
-    return render(request, "frontend/action_start_card.html", {"card": card})
+    # card.status = AgileCard.IN_PROGRESS
+    # card.save()
+    return render(request, "frontend/component_card.html", {"card": card})
 
 
 def users(request):

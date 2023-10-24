@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<div style="border: 1px solid black">
-   HEADER: {{ user.email }}
-</div>
+{% include "frontend/component_user_nav_header.html" %}
+
+
 
 <main>
     {% block main %}{% endblock %}
