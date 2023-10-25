@@ -2,9 +2,12 @@
     class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
+    
+    {{card.content_type}}
+
     <h3 
         class="font-semibold tracking-tight text-gray-900 text-left">
-        {{card.status}} {{ card.title }}
+        {{ card.title }}
     </h3>
 
     <button type="button" class="rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -13,4 +16,6 @@
         hx-swap="outerHTML"
         >Start
     </button>
+
+
 </div>
