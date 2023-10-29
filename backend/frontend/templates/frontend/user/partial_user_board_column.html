@@ -5,12 +5,12 @@
 {% if has_next_page %}
 <button 
     type="button" 
-    class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full"
+    class="{{ styles.button_secondary_small }} w-full"
     id="more_cards_{{ column_id }}"
     hx-get="{% url 'partial_user_board_column' user_id column_id %}"
     hx-vals='js:{card_count: countCardsInColumn("{{column_id}}")}'
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_cards_{{ column_id }}"
-    >- Load More -</button>
+    >load more</button>
 {% endif %}
