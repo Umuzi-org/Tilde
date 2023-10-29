@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ValidationError
+from guardian.shortcuts import get_objects_for_user
 from core import models
 import re
 
@@ -66,3 +67,22 @@ class BulkAddUsersToTeamForm(forms.Form):
         email_addresses = re.split("[ ,\n]", email_addresses_str)
         email_addresses = [email.strip() for email in email_addresses]
         return [email for email in email_addresses if email]
+
+
+class AddGithubCollaboratorForm(forms.Form):
+    include_complete_projects = forms.BooleanField(
+        label="Would you like to include complete projects?",
+        required=False,
+        initial=False,
+    )
+
+    @staticmethod
+    def get_permitted_teams_for_user(user) -> list:
+        teams = []
+        for team in get_objects_for_user(
+            user,
+            models.Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD,
+            klass=models.Team.objects.filter(active=True),
+        ):
+            teams.append(team.name)
+        return sorted(set(teams))

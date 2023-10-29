@@ -1,12 +1,8 @@
-from django.contrib import admin, messages
-from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
-from django.template.response import TemplateResponse
-from django.utils.translation import gettext as _
+from django.contrib import admin
 from . import models
 from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
-from guardian.shortcuts import get_objects_for_user
 
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
@@ -136,6 +132,8 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserAdminCreationForm
     change_password_form = AdminPasswordChangeForm
 
+    change_form_template = "admin/core/custom_user_change.html"
+
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
@@ -168,7 +166,7 @@ class UserAdmin(BaseUserAdmin):
         # "user_permissions",
     )
 
-    actions = ["bulk_activate_users", "bulk_deactivate_users", "invite_to_github_repos"]
+    actions = ["bulk_activate_users", "bulk_deactivate_users"]
 
     def bulk_activate_users(self, request, users):
         users.update(active=True)
@@ -179,49 +177,6 @@ class UserAdmin(BaseUserAdmin):
         users.update(active=False)
 
     bulk_deactivate_users.short_description = "Deactivate selected users"
-
-    def invite_to_github_repos(self, request, users):
-        permitted_teams_for_users = self._get_permitted_teams_for_users(users)
-        if request.POST.get("post", None):
-            from long_running_request_actors import (
-                invite_collaborators_for_team_projects as actor,
-            )
-
-            for team_name in permitted_teams_for_users:
-                actor.send_with_options(kwargs={"team_name": team_name})
-            messages.add_message(
-                request,
-                messages.INFO,
-                f"Adding user(s) as collaborators in the background",
-            )
-        else:
-            opts = self.model._meta
-            request.current_app = self.admin_site.name
-
-            return TemplateResponse(
-                request,
-                "admin/invite_to_github_repos_confirm.html",
-                {
-                    **self.admin_site.each_context(request),
-                    "title": _("Are you sure?"),
-                    "opts": opts,
-                    "app_label": opts.app_label,
-                    "permitted_teams_for_users": permitted_teams_for_users,
-                    "queryset": users,
-                    "action_checkbox_name": ACTION_CHECKBOX_NAME,
-                },
-            )
-
-    def _get_permitted_teams_for_users(self, users) -> list:
-        teams = []
-        for user in users:
-            for team in get_objects_for_user(
-                user,
-                core_models.Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD,
-                klass=core_models.Team.objects.filter(active=True),
-            ):
-                teams.append(team.name)
-        return sorted(set(teams))
 
 
 admin.site.register(User, UserAdmin)
