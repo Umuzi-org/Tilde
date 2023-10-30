@@ -176,7 +176,7 @@ class _TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             {
                 "error_message": error_message,
-                "command_description": self.command_description
+                "command_description": getattr(self, "command_description", None)
                 or self.last_command_output.command_description
                 if self.last_command_output
                 else None,
