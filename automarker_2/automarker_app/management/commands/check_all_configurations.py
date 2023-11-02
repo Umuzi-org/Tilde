@@ -14,7 +14,8 @@ from automarker_app.lib.constants import (
 from ..utils import print_steps_result
 
 
-DASH_SEPARATOR = "-" * 100
+CUSTOM_SEPARATOR = lambda char: char * 100
+DASH_SEPARATOR = CUSTOM_SEPARATOR("-")
 
 
 class Command(BaseCommand):
@@ -74,13 +75,20 @@ class Command(BaseCommand):
                     )
                 else:
                     good_configs.append(formatted_config)
+        if len(bad_configs):
+            print()
+            print(CUSTOM_SEPARATOR("*"))
+            print(
+                f"{'-' * 3} Some configurations appear to be incorrect. Please review the output below for details:".upper()
+            )
+            print(CUSTOM_SEPARATOR("*"))
 
-        for config in good_configs:
-            print("\n", DASH_SEPARATOR, "\n")
-            print("GOOD:", config)
-
-        for config, failed_steps in bad_configs:
-            print("\n", DASH_SEPARATOR, "\n")
-            print("BAD:", config)
-            if failed_steps:
-                print_steps_result(failed_steps)
+            for config, failed_steps in bad_configs:
+                print(DASH_SEPARATOR, "\n")
+                print("BAD:", config)
+                if failed_steps:
+                    print_steps_result(failed_steps)
+        else:
+            print(CUSTOM_SEPARATOR("*"))
+            print("All configurations passed!".upper())
+            print(CUSTOM_SEPARATOR("*"), "\n")
