@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 from curriculum_tracking.models import Curriculum, AgileCard
-from core.models import Team, User
-import csv
+from core.models import Team
 from pathlib import Path
 import pandas as pd
 
@@ -16,82 +15,98 @@ class Command(BaseCommand):
         name = options["curriculum"]
         team_name = options["team_name"]
 
-        curriculum = Curriculum.objects.get(name=name)
+        curriculum = Curriculum.objects.get(
+            name=name
+        )  # a stream is made up of mulitple curriculums, so getting one curriculum called in won't work to
+        # traverse full course content, should update this to stream and then loop through each curriculum in the stream
+        # however for now we will just filter agile cards for each team member to get the necessary content with the required
+        # skills tags
+
         team = Team.objects.get(name=team_name)
 
         team_members = team.members
+
+        # ***************************************************************************
+        # AREN'T USING THIS SECTION FOR NOW
 
         titles_and_sections_dict = {}
 
         for x in get_ordered_content_items(curriculum):
 
             for s in x.content_item.tags.all():
-                if "section/" in str(s):
+                if "skill/" in str(s):
                     titles_and_sections_dict[x.content_item.title] = str(s)
-                    break
+                    break  # for now we assume that each content item falls only into one skill
 
-        headings = ["learner"]
-
-        # currently this doesn't deal with section tag being used more than once, because order matters
-        # i.e there will be a heading for each time a section tag is used
         titles = titles_and_sections_dict.keys()
         sections = titles_and_sections_dict.values()
 
-        for section in sections:
-            headings.append(section)
+        headings = list(sections)
 
-        # loop through all content items for a curriculum
-        # find all that start with "skill/" and add to an array
-        # order and remove duplicates   -----> this part is not done
-        # create each skill as a heading
+        # ****************************************************************************
 
-        # loop through each user in team
-        # loop through each content item and fetch status and skill tags
-        # update skill tags in table
+        skills_data_list = []
 
-        with open(Path(f"gitignore/{curriculum}_progress_report.csv"), "w") as f:
-            writer = csv.writer(f)
-            writer.writerow(headings)
+        for team_member in team_members:
+            print(f"email: {team_member['user_email']}")
 
-            for team_member in team_members:
-                print(f"email: {team_member['user_email']}")
+            agile_cards = AgileCard.objects.filter(
+                assignees__email=team_member["user_email"]
+            )
 
-                # agile_cards = AgileCard.objects.filter(
-                #     assignees__email=team_member["user_email"]
-                # )
+            for agile_card in agile_cards:
 
-                # print("all cards for this user")
-                # for agile_card in agile_cards:
-                #     print(agile_card.content_item.title)
+                if (
+                    agile_card.content_item.content_type == "P"
+                ):  # if we are only tracking projects and not topics
 
-                agile_cards = AgileCard.objects.filter(
-                    assignees__email=team_member["user_email"],
-                    content_item__title__in=titles,
-                )
-
-                status_list = []
-                status_list.append(team_member["user_email"])
-
-                for title in titles:
-
-                    for agile_card in agile_cards.filter(
-                        content_item__title__exact=title
-                    ):
+                    tags_list = [
+                        str(s)
+                        for s in agile_card.content_item.tags.all()
+                        if "skill/" in str(s)
+                    ]
+                    if tags_list:
+                        skill_tag = tags_list[0]  # only assuming one skill tag for now
+                        content_title = agile_card.content_item.title
                         status = agile_card.status
-                        status_list.append(status)
-                        print(agile_card.content_item.title)
-                        print(agile_card.status)
+                        skill_dict = {
+                            "email": team_member["user_email"],
+                            "title": content_title,
+                            "status": status,
+                            "skill": skill_tag,
+                        }
+                        skills_data_list.append(skill_dict)
 
-                writer.writerow(status_list)
+        if skills_data_list:
 
+            skills_df = pd.DataFrame(skills_data_list)
 
-# *****
-# section = []
+            print(skills_df.head())
 
-# for x in get_ordered_content_items(java_ncit):
-#     section.append([str(s) for s in x.content_item.tags.all() if "section/" in str(s)])
+            skills_df.to_csv("gitignore/testing_skills.csv")
 
+            progress_df_columns = ["email", "status"]
+            progress_df_columns.extend(list(skills_df.skill.unique()))
 
-# [item for item in section if len(item) != 0]
+            progress_df = pd.DataFrame(columns=progress_df_columns)
 
-# [subitem for item in section for subitem in item]
+            for email in list(skills_df.email.unique()):
+                print(email)
+                temp_progress = (
+                    skills_df.set_index("email", drop=True)
+                    .loc[email]
+                    .groupby(["status", "skill"])
+                    .count()
+                    .unstack()
+                    .droplevel(0, axis=1)
+                )
+                temp_progress["email"] = email
+                temp_progress.reset_index(inplace=True)
+                temp_progress.set_index("email", drop=True, inplace=True)
+                progress_df = pd.concat([progress_df, temp_progress]).fillna(0)
+
+            progress_df.drop("email", axis=1, inplace=True)
+            progress_df.to_csv("gitignore/curriculum_progress_report.csv")
+            progress_df.to_excel(
+                "gitignore/curriculum_progress_report.xlsx"
+            )  # this is bombing out, figuring out why
