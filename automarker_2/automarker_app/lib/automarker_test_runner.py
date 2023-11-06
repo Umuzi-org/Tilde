@@ -119,7 +119,8 @@ class _TestRunner:
             )
 
         self.assert_setup_empty()
-        self.assert_command_description_present()
+        if not hasattr(self, TAG_COMMAND_DESCRIPTION):
+            self.assert_command_description_present()
         self.assert_no_import_errors()
         if assert_no_errors:
             self.assert_no_errors()
@@ -175,7 +176,8 @@ class _TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             {
                 "error_message": error_message,
-                "command_description": self.last_command_output.command_description
+                "command_description": getattr(self, "command_description", None)
+                or self.last_command_output.command_description
                 if self.last_command_output
                 else None,
                 "status": status,
@@ -186,6 +188,9 @@ class _TestRunner:
         assert self.last_command_output[
             TAG_COMMAND_DESCRIPTION
         ], f"expected command description to be present. There is something wrong with the automarker project configuration\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+
+    def register_command_description(self, command_description):
+        self.command_description = command_description
 
     def assert_setup_empty(self):
         assert self.last_command_output[TAG_SETUP] in (
