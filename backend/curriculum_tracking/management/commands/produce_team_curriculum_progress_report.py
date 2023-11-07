@@ -39,16 +39,15 @@ class Command(BaseCommand):
                     break  # for now we assume that each content item falls only into one skill
 
         titles = titles_and_sections_dict.keys()
-        sections = titles_and_sections_dict.values()
+        skills = titles_and_sections_dict.values()
 
-        headings = list(sections)
+        headings = list(skills)
 
         # ****************************************************************************
 
         skills_data_list = []
 
         for team_member in team_members:
-            print(f"email: {team_member['user_email']}")
 
             agile_cards = AgileCard.objects.filter(
                 assignees__email=team_member["user_email"]
@@ -58,7 +57,7 @@ class Command(BaseCommand):
 
                 if (
                     agile_card.content_item.content_type == "P"
-                ):  # if we are only tracking projects and not topics
+                ):  # we are only tracking projects and not topics
 
                     tags_list = [
                         str(s)
@@ -66,7 +65,9 @@ class Command(BaseCommand):
                         if "skill/" in str(s)
                     ]
                     if tags_list:
-                        skill_tag = tags_list[0]  # only assuming one skill tag for now
+                        skill_tag = tags_list[
+                            0
+                        ]  # only assuming one skill tag for now per content item
                         content_title = agile_card.content_item.title
                         status = agile_card.status
                         skill_dict = {
@@ -109,4 +110,4 @@ class Command(BaseCommand):
             progress_df.to_csv("gitignore/curriculum_progress_report.csv")
             progress_df.to_excel(
                 "gitignore/curriculum_progress_report.xlsx"
-            )  # this is bombing out, figuring out why
+            )  # to get this line to work - i had to run this first: `pip install openpyxl`
