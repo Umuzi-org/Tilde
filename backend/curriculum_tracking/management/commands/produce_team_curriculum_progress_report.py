@@ -1,26 +1,28 @@
 from django.core.management.base import BaseCommand
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
 from curriculum_tracking.models import Curriculum, AgileCard
-from core.models import Team
+from core.models import Team, Stream, StreamCurriculum
 from pathlib import Path
 import pandas as pd
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument("curriculum", type=str)
+        parser.add_argument("stream", type=str)
         parser.add_argument("team_name", type=str)
 
     def handle(self, *args, **options):
-        name = options["curriculum"]
+        name = options["stream"]
         team_name = options["team_name"]
 
-        curriculum = Curriculum.objects.get(
-            name=name
-        )  # a stream is made up of mulitple curriculums, so getting one curriculum called in won't work to
-        # traverse full course content, should update this to stream and then loop through each curriculum in the stream
-        # however for now we will just filter agile cards for each team member to get the necessary content with the required
-        # skills tags
+        stream_curriculums = StreamCurriculum.objects.filter(stream__name=name)
+
+        curriculum_list = []
+
+        for stream_curriculum in stream_curriculums:
+            curriculum_list.append(stream_curriculum.curriculum)
+
+        print(curriculum_list)
 
         team = Team.objects.get(name=team_name)
 
@@ -31,17 +33,23 @@ class Command(BaseCommand):
 
         titles_and_sections_dict = {}
 
-        for x in get_ordered_content_items(curriculum):
+        for curriculum in curriculum_list:
 
-            for s in x.content_item.tags.all():
-                if "skill/" in str(s):
-                    titles_and_sections_dict[x.content_item.title] = str(s)
-                    break  # for now we assume that each content item falls only into one skill
+            # curriculum = Curriculum.objects.get(name=curriculum_name)
+
+            for x in get_ordered_content_items(curriculum):
+
+                if x.content_item.content_type == "P":
+
+                    for s in x.content_item.tags.all():
+                        if "skill/" in str(s):
+                            titles_and_sections_dict[x.content_item.title] = str(s)
+                            break  # for now we assume that each content item falls only into one skill
 
         titles = titles_and_sections_dict.keys()
         skills = titles_and_sections_dict.values()
 
-        headings = list(skills)
+        skill_headings = list(set(skills))
 
         # ****************************************************************************
 
@@ -70,11 +78,20 @@ class Command(BaseCommand):
                         ]  # only assuming one skill tag for now per content item
                         content_title = agile_card.content_item.title
                         status = agile_card.status
+                        if agile_card.recruit_project:
+                            card_start = agile_card.recruit_project.start_time
+                            card_end = agile_card.recruit_project.complete_time
+                        else:
+                            card_start = None
+                            card_end = None
+
                         skill_dict = {
                             "email": team_member["user_email"],
                             "title": content_title,
                             "status": status,
                             "skill": skill_tag,
+                            "card_start_time": card_start,
+                            "card_end_date": card_end,
                         }
                         skills_data_list.append(skill_dict)
 
@@ -87,7 +104,7 @@ class Command(BaseCommand):
             skills_df.to_csv("gitignore/testing_skills.csv")
 
             progress_df_columns = ["email", "status"]
-            progress_df_columns.extend(list(skills_df.skill.unique()))
+            progress_df_columns.extend(skills_df.skill.unique())
 
             progress_df = pd.DataFrame(columns=progress_df_columns)
 
