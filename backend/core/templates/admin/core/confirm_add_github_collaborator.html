@@ -1,44 +1,59 @@
-{% extends "admin/base_site.html" %}
-{% load i18n admin_urls %}
-
-{% block title %}Add User as GitHub Collaborator - {{ team.name }}{% endblock %}
-
-{% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">{% block site_title %}Tilde Administration{% endblock %}</a></h1>
-{% endblock %}
-
-
-{% block breadcrumbs %}
-    <div class="breadcrumbs">
-        <a href="{% url 'admin:index' %}">Home</a> &rsaquo;
-        <a href="{% url 'admin:app_list' app_label='core' %}">Core</a> &rsaquo;
-        <a href="{% url 'admin:core_team_changelist' %}">Users</a> &rsaquo;
-        <a href="{% url 'admin:core_user_change' user.id %}">{{ user }}</a> &rsaquo;
-        Add as GitHub Collaborator
-    </div>
+{% extends "admin/base_site.html" %} {% load i18n admin_urls %} {% block title %}Add User as GitHub Collaborator - {{
+team.name }}{% endblock %} {% block bodyclass %} {{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }}
+delete-confirmation delete-selected-confirmation {% endblock %} {% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{% block site_title %}Tilde Administration{% endblock %}</a></h1>
+{% endblock %} {% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Home</a>
+  &rsaquo;
+  <a href="{% url 'admin:app_list' app_label='core' %}">Core</a>
+  &rsaquo;
+  <a href="{% url 'admin:core_team_changelist' %}">Users</a>
+  &rsaquo;
+  <a href="{% url 'admin:core_user_change' user.id %}">{{ user }}</a>
+  &rsaquo; Add as GitHub Collaborator
+</div>
 {% endblock %}
 
 <div class="content">
-    {% block content %}
-        <h1>Adding <a href="{% url 'admin:core_user_change' user.id %}">{{ user.get_short_name }}</a> as collaborator on permissioned projects</h1>
-        {% if teams %}
-            <p>{{ user.get_short_name}} will be added as a collaborator to the following teams's projects:</p>
-            <ul>
-                {% for team in teams %}
-                    <li>{{ team }}</li>
-                {% endfor %}
-            </ul>
-            <form method="post">
-                {% csrf_token %}
-                {{form.as_p}}
-                <div class="submit-row">
-                    <input type="submit" value="Add as Collaborator" class="default"/>
-                </div>
-            </form>
-        {% else %}
-            <p>
-                There are no permissioned teams to add <a href="{% url 'admin:core_user_change' user.id %}">{{ user.get_short_name }}</a>  as a collaborator to.
-            </p>
-        {% endif %}
-    {% endblock %}
+  {% block content %}
+  <h1>
+    Adding
+    <a href="{% url 'admin:core_user_change' user.id %}">{{ user.get_short_name }}</a>
+    as collaborator on permissioned projects
+  </h1>
+  {% if teams %}
+  <p>{{ user.get_short_name}} will be added as a collaborator to the following teams' projects:</p>
+  <ul style="margin-bottom: 1rem">
+    {% for team in teams %}
+    <li>{{ team }}</li>
+    {% endfor %}
+  </ul>
+  <form method="post">
+    {% csrf_token %}
+    <!-- prettier-ignore -->
+    <label for="{{form.include_complete_projects.id_for_label}}">
+      <input
+        type="checkbox"
+        name="{{form.include_complete_projects.html_name}}"
+        id="{{form.include_complete_projects.id_for_label}}"
+        value="1"
+        {% if form.include_complete_projects.value %}checked="checked"{%  endif  %} />
+        {{form.include_complete_projects.label }}
+    </label>
+
+    <div class="submit-row" style="margin: 1rem 0">
+      <input type="submit" value="Add as Collaborator" class="" />
+      <a style="padding: 10px 15px" href="{% url 'admin:core_user_change' user.id %}" class="button cancel-link">
+        No, take me back
+      </a>
+    </div>
+  </form>
+  {% else %}
+  <p>
+    There are no permissioned teams to add
+    <a href="{% url 'admin:core_user_change' user.id %}">{{ user.get_short_name }}</a>
+    as a collaborator to.
+  </p>
+  {% endif %} {% endblock %}
 </div>

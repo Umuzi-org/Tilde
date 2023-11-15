@@ -71,7 +71,7 @@ class BulkAddUsersToTeamForm(forms.Form):
 
 class AddGithubCollaboratorForm(forms.Form):
     include_complete_projects = forms.BooleanField(
-        label="Would you like to include complete projects?",
+        label="Include complete projects",
         required=False,
         initial=False,
     )
