@@ -626,9 +626,14 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            command = (
-                f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
-            )
+            if os.name == "nt":
+                command = (
+                    f"{clone_dir_path/'automarker_venv'/'Scripts'/'python'} -m pip install --upgrade pip"
+                )
+            else:
+                command = (
+                    f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
+                )
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -639,7 +644,10 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+        if os.name == "nt":
+            command = f"{clone_dir_path/'automarker_venv'/'Scripts'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+        else:
+            command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -673,11 +681,15 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = (
-            f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
-        )
+        if os.name == "nt":
+            command = (
+                f"cd {clone_dir_path} && {clone_dir_path}/automarker_venv/Scripts/python -m pytest --tb=line"
+            )
+        else:
+            command = (
+                f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
+            )
         stdout, stderr = subprocess_run(command)
-
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
                 STEP_STATUS_RED_FLAG,
