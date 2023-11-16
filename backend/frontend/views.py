@@ -69,7 +69,7 @@ def user_board(request, user_id):
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
-    limit = 2
+    limit = 10
 
     user = get_object_or_404(User, id=user_id)
     all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
@@ -115,7 +115,7 @@ def users_and_teams_nav(request):
 
 @user_passes_test(is_super)
 def partial_teams_list(request):
-    limit = 10
+    limit = 20
     current_team_count = int(request.GET.get("count", 0))
 
     all_teams = Team.objects.order_by(
