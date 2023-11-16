@@ -68,7 +68,7 @@ def user_board(request, user_id):
 @user_passes_test(is_super)
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
-    current_card_count = int(request.GET.get("card_count", 0))
+    current_card_count = int(request.GET.get("count", 0))
     limit = 2
 
     user = get_object_or_404(User, id=user_id)
@@ -104,13 +104,34 @@ def action_start_card(request, card_id):
 @user_passes_test(is_super)
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
-    teams = Team.objects.order_by("name")
-    users = User.objects.order_by("email")
+    # teams = Team.objects.order_by("name")
+    # users = User.objects.order_by("email")
     context = {
-        "teams": teams,
-        "users": users,
+        # "teams": teams,
+        # "users": users,
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
+
+
+@user_passes_test(is_super)
+def partial_teams_list(request):
+    limit = 20
+    current_team_count = int(request.GET.get("count", 0))
+
+    all_teams = Team.objects.order_by(
+        "name"
+    )  # TODO: only show teams that the current user is allowed to see
+    teams = all_teams[current_team_count : current_team_count + limit]
+    has_next_page = len(all_teams) > current_team_count + limit
+
+    context = {
+        "teams": teams,
+        "has_next_page": has_next_page,
+    }
+
+    return render(
+        request, "frontend/users_and_teams_nav/partial_teams_list.html", context
+    )
 
 
 @user_passes_test(is_super)

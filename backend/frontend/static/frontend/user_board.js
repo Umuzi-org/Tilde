@@ -21,9 +21,3 @@ function moveCardToCorrectColumn(cardId, column) {
     destinationColumn.insertBefore(card, destinationColumn.firstChild);
   }
 }
-
-/* Used when fetching the next page of cards, we check how many cards there are and then fetch the next batch */
-function countCardsInColumn(columnId) {
-  const column = document.getElementById(`column_${columnId}`);
-  return column.childElementCount - 1; // the button is an element too
-}

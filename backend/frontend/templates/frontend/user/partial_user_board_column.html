@@ -8,7 +8,7 @@
     class="{{ styles.button_secondary_small }} w-full"
     id="more_cards_{{ column_id }}"
     hx-get="{% url 'partial_user_board_column' user_id column_id %}"
-    hx-vals='js:{card_count: countCardsInColumn("{{column_id}}")}'
+    hx-vals='js:{count: countLoadedPageItems("column_{{column_id}}")}'
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_cards_{{ column_id }}"

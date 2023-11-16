@@ -5,18 +5,18 @@
         <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
 
             <h1 class="{{ styles.heading1 }}">Teams</h1>
-            <ul>
-                {% for team in teams %}
-                <li>{{ team.name }}</li>
-                {% endfor %}
-            </ul>
             
-            <!-- <h1>Users</h1>
-            <ul>
-                {% for user in users %}
-                <li>{{ user.id }}  {{ user.email }}</li>
-                {% endfor %}
-            </ul> -->
+            <div 
+                id="teams-list"
+                hx-get="{% url 'partial_teams_list' %}"
+                hx-trigger="load"
+                hx-target="#teams-list"
+                hx-swap="beforeend"
+                >
+
+            </div>
+            
+            
         </div>
     </main>
 {% endblock %}

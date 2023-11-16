@@ -1,0 +1,19 @@
+{% for team in teams %}
+    <div>
+        {{ team.name }}
+    </div>
+{% endfor %}
+
+
+{% if has_next_page %}
+<button 
+    type="button" 
+    class="{{ styles.button_secondary_small }} w-full"
+    id="more_teams"
+    hx-get="{% url 'partial_teams_list' %}"
+    hx-vals='js:{count: countLoadedPageItems("teams-list")}'
+    hx-trigger="click"
+    hx-swap="outerHTML"
+    hx-target="#more_teams"
+    >load more</button>
+{% endif %}

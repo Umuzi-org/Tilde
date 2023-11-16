@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en-US" class="h-full bg-gray-100">
   <head>
@@ -8,6 +10,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="{% static "frontend/utils.js" %}"></script>
 
     {% block head %}{% endblock %}
   </head>
