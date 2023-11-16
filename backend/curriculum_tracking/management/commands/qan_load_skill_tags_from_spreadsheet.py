@@ -3,6 +3,7 @@ from google_helpers.utils import fetch_sheet
 from curriculum_tracking.models import ContentItem
 from taggit.models import Tag
 from pathlib import Path
+import frontmatter
 
 
 def process_row(path_to_syllabus_repo):

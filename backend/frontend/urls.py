@@ -14,4 +14,10 @@ urlpatterns = [
         views.action_start_card,
         name="action_start_card",
     ),
+    path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
+    path(
+        "teams/any/dashboard/users/<int:user_id>/progress",
+        views.partial_team_user_progress_chart,
+        name="partial_team_user_progress_chart",
+    ),
 ]

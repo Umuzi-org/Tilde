@@ -1,0 +1,48 @@
+{% extends "frontend/team/base.html" %}
+
+
+{% block main %}
+
+{% for user in team.active_users %}
+
+<div class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow  flex items-center">
+    <div class="text-center">
+
+        <img class="mx-auto h-24 w-24 rounded-full" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Windows_10_Default_Profile_Picture.svg" alt="">
+        
+        <h2 class="">{{ user.first_name }}</h2>
+        {{ user.email }}
+    </div>
+
+    <div class="text-center">
+        <h3>Skill progress</h3>
+        
+        <div class="h-96 w-96" style="position: relative;">
+            
+            <canvas 
+            class="h-24 w-24" 
+            id="progress-chart-{{user.id}}"
+            hx-get="{% url 'partial_team_user_progress_chart' user.id %}"
+            hx-trigger="load delay:{{counter}}s"
+            hx-swap="beforeend"
+            hx-target="#scripts"
+            hx-indicator="#progress-chart-{{user.id}}-loading"
+            >
+            
+        </canvas>
+        
+        <span 
+        id="progress-chart-{{user.id}}-loading"
+        class="htmx-indicator">
+        Loading...
+    </span>
+</div>
+</div>
+    
+</div>
+
+{% endfor %}
+
+<div id="scripts"></div>
+
+{% endblock %}

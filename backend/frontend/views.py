@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from core.models import Team
-from curriculum_tracking.models import AgileCard
+from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+import json
+from taggit.models import Tag
 
 User = get_user_model()
 
@@ -47,11 +49,6 @@ board_columns = [
     },
 ]
 
-styles = {
-    "button_primary_small": "rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
-    "button_secondary_small": "rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 ring-1 ring-inset ring-gray-300",
-}
-
 
 from django.contrib.auth.decorators import user_passes_test
 
@@ -85,7 +82,6 @@ def partial_user_board_column(request, user_id, column_id):
         "user_id": user_id,
         "column_id": column_id,
         "has_next_page": has_next_page,
-        "styles": styles,
     }
     return render(request, "frontend/user/partial_user_board_column.html", context)
 
@@ -101,7 +97,6 @@ def action_start_card(request, card_id):
         "frontend/user/action_card_moved.html",
         {
             "card": card,
-            "styles": styles,
         },
     )
 
@@ -114,6 +109,75 @@ def users_and_teams(request):
     context = {
         "teams": teams,
         "users": users,
-        "styles": styles,
     }
     return render(request, "frontend/users.html", context)
+
+
+@user_passes_test(is_super)
+def team_dashboard(request, team_id):
+    """The team dashboard page. this displays the kanban board for a team"""
+    team = get_object_or_404(Team, id=team_id)
+    context = {
+        "team": team,
+    }
+    return render(request, "frontend/team/page_dashboard.html", context)
+
+
+@user_passes_test(is_super)
+def partial_team_user_progress_chart(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    skill_tags = Tag.objects.filter(name__startswith="skill/")
+    skill_names = []
+    skill_values = []
+
+    for skill in skill_tags:
+        cards = AgileCard.objects.filter(
+            content_item__tags=skill,
+            assignees=user,
+            content_item__content_type=ContentItem.PROJECT,
+        ).prefetch_related("recruit_project")
+
+        skill_total = cards.count()
+        complete_count = cards.filter(status=AgileCard.COMPLETE).count()
+
+        if skill_total == 0:
+            continue
+
+        skill_names.append(skill.name.replace("skill/", ""))
+
+        final = complete_count / skill_total * 100
+        skill_values.append(final)
+
+    # import random
+    # import time
+
+    # count = 34
+    # skill_names = [f"skill_{i}" for i in range(count)]
+    # skill_values = [random.random() * 100 for i in range(count)]
+
+    context = {
+        "canvas_id": f"progress-chart-{ user.id }",
+        "chart_args": json.dumps(
+            {
+                "type": "polarArea",
+                "options": {
+                    "scale": {"r": {"min": 0, "max": 100}},
+                    "plugins": {
+                        "legend": {"position": "right"},
+                    },
+                },
+                "data": {
+                    "labels": skill_names,
+                    "datasets": [
+                        {
+                            "data": skill_values,
+                        },
+                    ],
+                },
+            },
+            indent=2,
+        ),
+    }
+
+    return render(request, "frontend/team/partial_user_progress_chart.html", context)
