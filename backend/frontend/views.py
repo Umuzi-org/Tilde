@@ -115,7 +115,7 @@ def users_and_teams_nav(request):
 
 @user_passes_test(is_super)
 def partial_teams_list(request):
-    limit = 2
+    limit = 10
     current_team_count = int(request.GET.get("count", 0))
 
     all_teams = Team.objects.order_by(
