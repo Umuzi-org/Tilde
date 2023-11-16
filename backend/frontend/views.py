@@ -118,7 +118,7 @@ def partial_teams_list(request):
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
 
-    all_teams = Team.objects.order_by(
+    all_teams = Team.objects.filter(active=True).order_by(
         "name"
     )  # TODO: only show teams that the current user is allowed to see
     teams = all_teams[current_team_count : current_team_count + limit]
