@@ -2,7 +2,7 @@
 
 This project is an improvement on the last version of the automarker. It is designed to overcome certain shortcomings in previous versions.
 
-It is a web app but can also be used as a command-line utility. This READE focuses on the command-line usecase since that is how it will most often be used.
+It is a web app but can also be used as a command-line utility. This README focuses on the command-line usecase since that is how it will most often be used.
 
 ## Installation 
 
@@ -13,7 +13,7 @@ First, install python3.10 and poetry then:
 ```
 poetry install
 
-# then, because spacey wants to be special:
+# then, because spacy wants to be special:
 poetry shell
 
 <!-- pip install -U spacy   -->
@@ -78,7 +78,7 @@ Every time you execute `poetry shell` then you are really just `source`ing your 
 eg:
 
 ```
-python manage.py check_project_configuration.py 186 javascript
+python manage.py check_project_configuration 186 javascript
 ```
 
 The commands are detailed below:
@@ -95,11 +95,11 @@ Running the following command does the following:
 3. Prints out results 
 
 ```
-python manage.py mark_learner_project.py URL CONTENT_ITEM_ID FLAVORS 
+python manage.py mark_learner_project URL CONTENT_ITEM_ID FLAVORS 
 
 eg:
 
-python mark_learner_project 186 git@github.com:Umuzi-org/blah-blah-186-consume-github-api-python.git python
+python manage.py mark_learner_project git@github.com:Umuzi-org/blah-blah-186-consume-github-api-python.git 186 python
 ```
 
 Pay close attention to the format of the repo url: `git@github.com:{owner}/{repo_name}.git`.  If you use a different format then the clone command might not work.
@@ -182,19 +182,19 @@ python manage.py print_configuration.py | grep python | grep DEBUG | wc -l
 This runs the tests against the configured "perfect project". This is useful if you are configuring projects yourself or if you are changing how any part of the automarker works.
 
 ```
-python manage.py check_project_configuration.py CONTENT_ITEM_ID FLAVORS
+python manage.py check_project_configuration CONTENT_ITEM_ID FLAVORS
 
 # eg:
 
-python manage.py check_project_configuration.py 186 javascript
+python manage.py check_project_configuration 186 javascript
 ```
 ### Running a command with multiple flavors 
 
 If you ever need to input multiple flavors for a command then do it like so:
 
 ```
-python manage.py check_project_configuration.py 999 javascript karma
-python mark_learner_project.py git@github.com:Umuzi-org/blah-blah-999-consume-github-api-python.git 999 javascript karma 
+python manage.py check_project_configuration 999 javascript karma
+python mark_learner_project git@github.com:Umuzi-org/blah-blah-999-consume-github-api-python.git 999 javascript karma 
 ```
 
 In other words, the flavours should be separated by spaces.
