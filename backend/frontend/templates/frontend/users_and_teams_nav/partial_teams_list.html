@@ -1,6 +1,30 @@
 {% for team in teams %}
-    <div>
-        {{ team.name }}
+    <div class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow">
+        <h3 class="{{ styles.heading3 }}">{{team.name}}</h3>
+
+        <a 
+            class="{{ styles.link }}"
+            href="{% url 'team_dashboard' team.id %}"
+            >
+            Dashboard
+        </a>
+
+        <div x-data="{ open: false }">
+            <button 
+                @click="open = ! open" 
+                class="{{ styles.button_secondary_small }}" 
+
+                hx-get="{% url 'partial_team_users_list' team.id %}"
+                hx-trigger="click once"
+                hx-target="#team-{{ team.id }}-users"
+                hx-swap="innerHTML"
+                >
+                Show/hide users
+            </button>
+         
+            <div x-show="open" id="team-{{ team.id }}-users">Contents...</div>
+        </div>
+        
     </div>
 {% endfor %}
 

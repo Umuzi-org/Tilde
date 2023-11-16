@@ -1,0 +1,11 @@
+<div class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white">
+{% for user in users %}
+<div>
+    <span class="font-bold">
+        {{ user.first_name}} {{ user.last_name}}
+    </span>
+    {{ user.email }}
+    <a href="{% url 'user_board' user.id %}" class="{{ styles.link }}">Board</a>
+</div>
+{% endfor %}
+</div>

@@ -9,6 +9,11 @@ urlpatterns = [
         views.partial_teams_list,
         name="partial_teams_list",
     ),
+    path(
+        "users_and_teams_nav/team/<int:team_id>/partial_team_users_list/",
+        views.partial_team_users_list,
+        name="partial_team_users_list",
+    ),
     # User board
     path("users/<int:user_id>/board", views.user_board, name="user_board"),
     path(

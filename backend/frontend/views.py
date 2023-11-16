@@ -115,7 +115,7 @@ def users_and_teams_nav(request):
 
 @user_passes_test(is_super)
 def partial_teams_list(request):
-    limit = 20
+    limit = 2
     current_team_count = int(request.GET.get("count", 0))
 
     all_teams = Team.objects.order_by(
@@ -131,6 +131,18 @@ def partial_teams_list(request):
 
     return render(
         request, "frontend/users_and_teams_nav/partial_teams_list.html", context
+    )
+
+
+@user_passes_test(is_super)
+def partial_team_users_list(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    users = team.active_users.order_by("email")
+    context = {
+        "users": users,
+    }
+    return render(
+        request, "frontend/users_and_teams_nav/partial_team_users_list.html", context
     )
 
 
