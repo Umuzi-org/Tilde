@@ -180,4 +180,4 @@ def partial_team_user_progress_chart(request, user_id):
         ),
     }
 
-    return render(request, "frontend/team/partial_user_progress_chart.html", context)
+    return render(request, "frontend/components/chartjs.html", context)
