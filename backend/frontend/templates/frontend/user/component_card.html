@@ -1,0 +1,25 @@
+<div
+    class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow"
+    id="card_{{ card.id }}" 
+    data-status="{{card.status}}">
+    
+    {{ card.content_type }}
+
+    <h3 
+        class="{{ styles.heading3 }}">
+        {{ card.title }}
+    </h3>
+
+
+    {% if card.request_user_can_start %}
+
+    <button type="button" class="{{ styles.button_primary_small }}"
+        hx-post="{% url 'action_start_card' card.id %}"
+        hx-target="#card_{{ card.id }}"
+        hx-swap="outerHTML"
+        >Start
+    </button>
+
+    {% endif %}
+
+</div>

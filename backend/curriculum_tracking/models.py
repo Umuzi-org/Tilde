@@ -742,7 +742,7 @@ class RecruitProject(
 
     def __str__(self):
         users = ", ".join([str(o) for o in self.recruit_users.all()])
-        s = f"{self.content_item} - {users}"
+        s = f"{self.id} {self.content_item} - {users}"
         flavours = [o.name for o in self.flavours.all()]
         if flavours:
             return f"{s} [{flavours}]"
@@ -1618,6 +1618,18 @@ class AgileCard(
         )
 
         return [review.user for review in reviews]
+
+    def request_user_can_start(self):
+        """can the user start this card?
+        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
+        """
+        from threadlocal_middleware import get_current_user
+
+        user = get_current_user()
+        # TODO: return True if:
+        # the card is Ready
+        # the user is allowed to start the card (ie. they are an assignee, or have permission)
+        return True
 
 
 class BurndownSnapshot(models.Model):

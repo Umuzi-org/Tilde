@@ -3,6 +3,7 @@ import shell from "shelljs";
 import { STATUS_OK, STATUS_ERROR, STATUS_FAIL } from "../../consts.mjs";
 import { join } from "path";
 import fs from "fs";
+import { stdoutHasErrors } from "./python-utils.mjs";
 
 export default class DoRequirementsInstall extends Action {
   name = "installing requirements.txt";
@@ -50,7 +51,7 @@ export default class DoRequirementsInstall extends Action {
       };
     }
 
-    if (scriptErrorOutput.length) {
+    if (stdoutHasErrors({ scriptErrorOutput })) {
       return { status: STATUS_ERROR, message: scriptErrorOutput };
     }
     return {

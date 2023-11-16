@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+
+{% block content %}
+    <main>
+        <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+
+            <h1 class="{{ styles.heading1 }}">Teams</h1>
+            
+            <div 
+            class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white "
+            id="teams-list"
+                hx-get="{% url 'partial_teams_list' %}"
+                hx-trigger="load"
+                hx-target="#teams-list"
+                hx-swap="beforeend"
+                >
+            </div>
+            
+            
+        </div>
+    </main>
+{% endblock %}

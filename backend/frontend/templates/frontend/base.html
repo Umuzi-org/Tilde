@@ -1,0 +1,28 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en-US" class="h-full bg-gray-100">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tilde ~</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script> 
+    {# TODO https://htmx.org/docs/#installing #}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script src="{% static "frontend/utils.js" %}"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+
+
+    {% block head %}{% endblock %}
+  </head>
+  <body class="h-full">
+    <div class="min-h-full">
+      {% include "frontend/components/main_header.html" %}
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>

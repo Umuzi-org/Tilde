@@ -17,7 +17,6 @@ from pathlib import Path
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 BUSY_UNIT_TESTING = "test" in sys.argv
 RUNNING_IN_GAE = bool(os.getenv("GAE_APPLICATION", False))
 # BASE_URL = os.getenv("BASE_URL")
@@ -128,6 +127,7 @@ INSTALLED_APPS = [
     "production_data_exporters.apps.ProductionDataExportersConfig",
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
     "automarker.apps.AutomarkerConfig",
+    "frontend",
 ]
 
 SITE_ID = 1  # from allauth docs
@@ -143,12 +143,26 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "threadlocal_middleware.ThreadLocalMiddleware",
     "logging_middleware.RequestUserLogMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
 
 TEMPLATES = [
+    # {
+    #     "BACKEND": "django.template.backends.jinja2.Jinja2",
+    #     "DIRS": [Path(BASE_DIR) / "templates"],
+    #     "APP_DIRS": True,
+    #     "OPTIONS": {
+    #         "context_processors": [
+    #             "django.template.context_processors.debug",
+    #             "django.template.context_processors.request",
+    #             "django.contrib.auth.context_processors.auth",
+    #             "django.contrib.messages.context_processors.messages",
+    #         ],
+    #     },
+    # },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
@@ -161,9 +175,10 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # `allauth` needs this from django
                 "django.template.context_processors.request",
+                "frontend.context_processors.theme_context",
             ]
         },
-    }
+    },
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"

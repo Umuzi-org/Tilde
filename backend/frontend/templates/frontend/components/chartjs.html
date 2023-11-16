@@ -1,0 +1,6 @@
+<script>
+    (()=>{
+        const ctx = document.getElementById("{{canvas_id}}");
+        new Chart(ctx, {{ chart_args | safe }});
+    })()
+</script>
