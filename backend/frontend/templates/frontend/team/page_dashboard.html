@@ -10,12 +10,12 @@
 
         <img class="mx-auto h-24 w-24 rounded-full" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Windows_10_Default_Profile_Picture.svg" alt="">
         
-        <h2 class="">{{ user.first_name }}</h2>
+        <h2 class="{{ styles.heading2 }}">{{ user.first_name }}</h2>
         {{ user.email }}
     </div>
 
     <div class="text-center">
-        <h3>Skill progress</h3>
+        <h3 class="{{ styles.heading3 }}">Skill progress</h3>
         
         <div class="h-96 w-96" style="position: relative;">
             

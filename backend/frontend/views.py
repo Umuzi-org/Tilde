@@ -102,7 +102,7 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test(is_super)
-def users_and_teams(request):
+def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     teams = Team.objects.order_by("name")
     users = User.objects.order_by("email")
@@ -110,7 +110,7 @@ def users_and_teams(request):
         "teams": teams,
         "users": users,
     }
-    return render(request, "frontend/users.html", context)
+    return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
 @user_passes_test(is_super)
@@ -146,15 +146,8 @@ def partial_team_user_progress_chart(request, user_id):
 
         skill_names.append(skill.name.replace("skill/", ""))
 
-        final = complete_count / skill_total * 100
+        final = int(complete_count / skill_total * 100)
         skill_values.append(final)
-
-    # import random
-    # import time
-
-    # count = 34
-    # skill_names = [f"skill_{i}" for i in range(count)]
-    # skill_values = [random.random() * 100 for i in range(count)]
 
     context = {
         "canvas_id": f"progress-chart-{ user.id }",
