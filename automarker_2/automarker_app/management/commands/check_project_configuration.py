@@ -1,3 +1,6 @@
+"""
+
+"""
 from django.core.management.base import BaseCommand, CommandParser
 from automarker_app.lib.marker import mark_project
 from ..utils import print_steps_result

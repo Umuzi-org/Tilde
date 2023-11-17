@@ -152,5 +152,5 @@ def python_jupyter_notebook_sequence():
         steps.PythonExecuteJupyterNotebooks(),
         steps.PythonConvertJupyterNotebooksToModules(),
         steps.PrepareFunctionalTests(),
-        # steps.PythonRunFunctionalTests(),
+        steps.PythonRunFunctionalTests(),
     ]
