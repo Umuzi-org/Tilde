@@ -68,6 +68,14 @@ class AdapterCommandOutput:
                 result.append(tag)
         return result
 
+    def repeating_tags(self):
+        """Return a list of tags that were opened more than once in the stdout."""
+        result = []
+        for tag in output_tags:
+            if self.stdout.count(f"<{tag}>") > 1:
+                result.append(tag)
+        return result
+
     def __getitem__(self, key):
         return self.__getattribute__(key)
 
@@ -115,3 +123,15 @@ class AdapterCommandOutput:
                 )
 
         return Cls(stdout=stdout, stderr=stderr)
+
+
+def test_runner_expects_code_imports(cls):
+    class NewRunnerCls(cls):
+        def assert_import_learner_code_present(self):
+            assert bool(
+                re.search(
+                    rf"<{TAG_IMPORT_LEARNER_CODE}>", self.last_command_output.stdout
+                )
+            ), f"expected <{TAG_IMPORT_LEARNER_CODE}> to be present. There is something wrong with the automarker project configuration.\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+
+    return NewRunnerCls
