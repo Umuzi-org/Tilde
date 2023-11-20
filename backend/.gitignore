@@ -4,3 +4,4 @@ gitignore/
 collectstatic/
 *.log
 *.csv
+.vscode/

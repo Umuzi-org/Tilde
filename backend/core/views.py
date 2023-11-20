@@ -12,10 +12,13 @@ from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from .forms import BulkAddUsersToTeamForm
+from .forms import BulkAddUsersToTeamForm, AddGithubCollaboratorForm
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # TODO: REFACTOR. If the management helper is used ourtside the management dir then it should be moved
 
@@ -329,3 +332,53 @@ class BulkAddUsersToTeamView(LoginRequiredMixin, FormView):
         return redirect(
             reverse("admin:core_team_change", kwargs={"object_id": team.id})
         )
+
+
+class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
+    template_name = "admin/core/confirm_add_github_collaborator.html"
+    form_class = AddGithubCollaboratorForm
+
+    def get_login_url(self) -> str:
+        return reverse("admin:login")
+
+    def form_valid(self, form):
+        include_complete_projects = form.cleaned_data.get("include_complete_projects")
+        self._add_as_collaborator(self.user, include_complete_projects)
+        messages.success(
+            self.request,
+            f"Adding user as a collaborator in the background. {'(Including complete projects)' if include_complete_projects else ''}",
+        )
+        return super().form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user = get_object_or_404(User, id=self.kwargs["user_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        context["teams"] = AddGithubCollaboratorForm.get_permitted_teams_for_user(
+            self.user
+        )
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
+
+    @staticmethod
+    def _add_as_collaborator(user, include_complete_projects=False):
+        from long_running_request_actors import (
+            invite_collaborators_for_team_projects as actor,
+        )
+
+        permitted_teams_for_user = (
+            AddGithubCollaboratorForm.get_permitted_teams_for_user(user)
+        )
+
+        for team_name in permitted_teams_for_user:
+            actor.send_with_options(
+                kwargs={
+                    "team_name": team_name,
+                    "include_complete": include_complete_projects,
+                }
+            )

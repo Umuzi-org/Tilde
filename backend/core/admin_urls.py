@@ -7,4 +7,9 @@ urlpatterns = [
         views.BulkAddUsersToTeamView.as_view(),
         name="bulk_add_users_to_team",
     ),
+    path(
+        "add_github_collaborator/<int:user_id>",
+        views.AddUserAsGithubCollaborator.as_view(),
+        name="confirm_add_github_collaborator",
+    ),
 ]

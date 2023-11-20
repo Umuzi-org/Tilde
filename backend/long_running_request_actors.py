@@ -84,6 +84,22 @@ def recruit_project_invite_github_collaborators_to_repo(project_id):
     project.invite_github_collaborators_to_repo()
 
 
+@actor(max_retries=3)
+def invite_collaborators_for_team_projects(team_name, include_complete=False):
+    from curriculum_tracking.models import RecruitProject
+
+    projects_filter = {
+        "recruit_users__groups__name": team_name,
+    }
+    if not include_complete:
+        projects_filter["complete_time__isnull"] = True
+
+    projects = RecruitProject.objects.filter(**projects_filter)
+
+    for project in projects:
+        recruit_project_invite_github_collaborators_to_repo.send(project.pk)
+
+
 @actor()
 def auto_assign_reviewers():
     # TODO should be a cron job, or Airflow DAG
@@ -110,7 +126,7 @@ def delete_and_recreate_user_cards(user_id):
 @actor(max_retries=3)
 def bulk_regenerate_cards_for_team(team_id):
     from core.models import Team
-    
+
     team = Team.objects.get(pk=team_id)
     for user in team.active_users:
         delete_and_recreate_user_cards.send(user.pk)

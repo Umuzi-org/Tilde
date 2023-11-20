@@ -132,6 +132,8 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserAdminCreationForm
     change_password_form = AdminPasswordChangeForm
 
+    change_form_template = "admin/core/custom_user_change.html"
+
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
