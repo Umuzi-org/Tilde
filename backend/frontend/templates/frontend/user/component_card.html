@@ -1,14 +1,56 @@
+<!-- TODO: make sure everything shows up in the right places -->
+<!-- TODO: clean up repo_url to be an actual working link -->
+<!-- TODO: make dates show in a "nicer" format. e.g. 2hr ago -->
+<!-- TODO: finish up request_user_can_start function -->
+<!-- TODO: figure out how to get and use icons/svgs -->
+<!-- TODO: style the card to look better -->
 <div
     class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
-    
-    {{ card.content_type }}
+    <p>
+        {{ card.content_type }}
+    </p>
 
     <h3 
         class="{{ styles.heading3 }}">
         {{ card.title }}
     </h3>
+
+    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
+        {% if card.code_review_competent_since_last_review_request %}
+            <span> 
+                C: {{card.code_review_competent_since_last_review_request}} 
+            </span>
+        {% endif %}
+        {% if card.code_review_excellent_since_last_review_request %}
+            <span> 
+                E: {{card.code_review_excellent_since_last_review_request}} 
+            </span>
+        {% endif %}
+        {% if card.code_review_not_yet_competent_since_last_review_request %}
+            <span> 
+                NYC: {{card.code_review_not_yet_competent_since_last_review_request}} 
+            </span>
+        {% endif %}
+        {% if card.code_review_red_flag_since_last_review_request %}
+            <span> 
+                RF: {{card.code_review_red_flag_since_last_review_request}} 
+            </span>
+        {% endif %}
+    {% endif %}
+
+    {% if card.status == "IR" and card.review_request_time%}
+        <p>
+            Review request time : {{card.review_request_time}} 
+        </p>
+    {% endif %}
+
+    {% if card.due_time %}
+        <p>
+            Due time: {{card.due_time}} 
+        </p>
+    {% endif %}
     
     {% if card.flavour_names %}
     <div>Flavours: 
@@ -50,6 +92,12 @@
         {% endfor %}
     </div>
 
+    {% endif %}
+
+    {% if card.repo_url %}
+        <p>
+            Repo: <a href="https://github.com/Umuzi-org/{{card.recruit_project.repository.full_name}}">https://github.com/{{card.recruit_project.repository.owner}}/{{card.recruit_project.repository.full_name}}</a>  
+        </p>
     {% endif %}
 
     {% if card.request_user_can_start %}
