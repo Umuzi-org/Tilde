@@ -1630,6 +1630,16 @@ class AgileCard(
         # the card is Ready
         # the user is allowed to start the card (ie. they are an assignee, or have permission)
         return True
+    
+    def request_user_is_assignee(self):
+        """should assignee email be shown on card?
+        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
+        """
+        from threadlocal_middleware import get_current_user
+
+        user = get_current_user()
+        
+        return user.email==self.assignee_names[0]
 
 
 class BurndownSnapshot(models.Model):

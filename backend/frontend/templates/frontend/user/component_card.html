@@ -9,7 +9,48 @@
         class="{{ styles.heading3 }}">
         {{ card.title }}
     </h3>
+    
+    {% if card.flavour_names %}
+    <div>Flavours: 
 
+        {% for flavour_name in card.flavour_names %}
+        
+        <span>{{flavour_name}}</span> 
+    
+        {% endfor %}
+    </div>
+
+    {% endif %}
+
+    {% if card.tag_names %}
+    <div>Tags: 
+
+        {% for tag_name in card.tag_names %}
+        
+        <span>{{tag_name}}</span> 
+    
+        {% endfor %}
+    </div>
+
+    {% endif %}
+    
+    {% if card.request_user_is_assignee == False %}
+    
+    <div>Assignee: <span>{{card.assignee_names.0}}</span> </div>
+    
+    {% endif %}
+
+    {% if card.reviewer_names %}
+    <div>Reviewers: 
+
+        {% for reviewer_name in card.reviewer_names %}
+        
+        <span>{{reviewer_name}}</span> 
+    
+        {% endfor %}
+    </div>
+
+    {% endif %}
 
     {% if card.request_user_can_start %}
 
