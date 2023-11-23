@@ -1,0 +1,22 @@
+{% extends "frontend/auth/base.html" %}
+<!DOCTYPE html>
+
+{% block content %}
+<div class="mx-auto w-1/3 p-6 bg-white rounded">
+  <h1 class="text-lg">Login</h1>
+  {% if error %}
+  <p>{{ error }}</p>
+  {% endif %}
+
+  <form action="{% url 'user_login' %}" method="post">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input class="border" type="text" name="username" id="username" />
+    <br />
+    <label for="password">Password</label>
+    <input class="border" type="password" name="password" id="password" />
+    <br />
+    <button class="bg-black text-white p-2 rounded" type="submit">Login</button>
+  </form>
+</div>
+{% endblock %}

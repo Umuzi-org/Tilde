@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     # Users and teams navigation page
     path("users_and_teams_nav/", views.users_and_teams_nav, name="users_and_teams_nav"),
+    path("login/", views.user_login, name="user_login"),
+    path("logout/", views.user_logout, name="user_logout"),
     path(
         "users_and_teams_nav/partial_teams_list/",
         views.partial_teams_list,

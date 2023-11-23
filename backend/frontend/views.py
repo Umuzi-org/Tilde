@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import get_user_model
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth.decorators import user_passes_test, login_required
 from core.models import Team
 from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
 from django.db.models import Q
@@ -50,11 +52,33 @@ board_columns = [
 ]
 
 
-from django.contrib.auth.decorators import user_passes_test
-
-
 def is_super(user):
     return user.is_superuser
+
+
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect(reverse_lazy("user_board", kwargs={"user_id": request.user.id}))
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            return render(
+                request, "frontend/auth/page_login.html", {"error": "User not found"}
+            )
+        login(request, user)
+
+        return redirect(reverse_lazy("user_board", kwargs={"user_id": user.id}))
+    else:
+        return render(request, "frontend/auth/page_login.html")
+
+
+@login_required()
+def user_logout(request):
+    logout(request)
+    return redirect(reverse_lazy("user_login"))
 
 
 @user_passes_test(is_super)
