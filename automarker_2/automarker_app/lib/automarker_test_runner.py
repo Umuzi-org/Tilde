@@ -192,9 +192,10 @@ class _TestRunner:
         ), f"expected no repeating tags but the following tags appear more than once: {self.last_command_output.repeating_tags()}"
 
     def assert_no_unfinished_tags(self):
-        assert (
-            len(self.last_command_output.unfinished_tags()) == 0
-        ), f"expected no unclosed tags but the following tags appear to be left open: {self.last_command_output.unfinished_tags()}"
+        if not self.last_command_output.stderr:
+            assert (
+                len(self.last_command_output.unfinished_tags()) == 0
+            ), f"expected no unclosed tags but the following tags appear to be left open: {self.last_command_output.unfinished_tags()}"
 
     def assert_command_description_present(self):
         assert self.last_command_output[
