@@ -1,13 +1,26 @@
+import json
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q
+from django.contrib.auth.forms import SetPasswordForm
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from django.views.decorators.csrf import csrf_exempt
+from django.core.signing import SignatureExpired, BadSignature
+
+from taggit.models import Tag
+
 from core.models import Team
 from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
-from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-import json
-from taggit.models import Tag
+
+from .forms import ForgotPasswordForm
+
 
 User = get_user_model()
 
@@ -79,6 +92,70 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse_lazy("user_login"))
+
+
+def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
+    current_site = get_current_site(request)
+    subject = "Reset your Password"
+
+    body = render_to_string(
+        template_name="frontend/auth/email_password_reset.html",
+        context={
+            "domain": current_site.domain,
+            "url": form.get_password_reset_url(),
+        },
+    )
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=strip_tags(body),
+        from_email=None,
+        to=[form.cleaned_data["email"]],
+    )
+    email.attach_alternative(body, "text/html")
+    email.send(fail_silently=False)
+
+
+def user_forgot_password(request):
+    form = ForgotPasswordForm(data=request.POST)
+    if request.method == "POST":
+        if form.is_valid():
+            if form.user_exists():
+                _send_password_reset_email(request, form)
+            return redirect(reverse_lazy("user_password_reset_done"))
+
+    return render(request, "frontend/auth/page_forgot_password.html", {"form": form})
+
+
+def user_password_reset_done(request):
+    return render(request, "frontend/auth/page_password_reset_done.html")
+
+
+def user_reset_password(request, token):
+    signer = ForgotPasswordForm.signer
+    try:
+        email = signer.unsign(token, max_age=60 * 60)
+    except (SignatureExpired, BadSignature):
+        return render(
+            request,
+            "frontend/auth/page_password_reset.html",
+            {"error": "Invalid token"},
+        )
+
+    user = User.objects.get(email=email)
+    form = SetPasswordForm(user=user, data=request.POST)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.add_message(
+                request=request,
+                level=messages.INFO,
+                message="Password reset successfully. You can now login.",
+            )
+            return redirect(reverse_lazy("user_login"))
+
+    return render(request, "frontend/auth/page_password_reset.html", {"form": form})
 
 
 @user_passes_test(is_super)

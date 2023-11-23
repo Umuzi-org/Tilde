@@ -6,6 +6,17 @@ urlpatterns = [
     path("users_and_teams_nav/", views.users_and_teams_nav, name="users_and_teams_nav"),
     path("login/", views.user_login, name="user_login"),
     path("logout/", views.user_logout, name="user_logout"),
+    path("forgot_password/", views.user_forgot_password, name="user_forgot_password"),
+    path(
+        "forgot_password/done",
+        views.user_password_reset_done,
+        name="user_password_reset_done",
+    ),
+    path(
+        "reset-password/<str:token>/",
+        views.user_reset_password,
+        name="user_reset_password",
+    ),
     path(
         "users_and_teams_nav/partial_teams_list/",
         views.partial_teams_list,
