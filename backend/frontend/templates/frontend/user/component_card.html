@@ -1,9 +1,11 @@
 <!-- TODO: make sure everything shows up in the right places -->
-<!-- TODO: clean up repo_url to be an actual working link. ref: https://github.com/Umuzi-org/Tilde/blob/develop/frontend/src/components/widgets/utils.js#L14-->
 <!-- TODO: make dates show in a "nicer" format. e.g. 2hr ago -->
 <!-- TODO: finish up request_user_can_start function -->
 <!-- TODO: figure out how to get and use icons/svgs -->
 <!-- TODO: style the card to look better -->
+
+{% load component_card_extras %}
+
 <div
     class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow"
     id="card_{{ card.id }}" 
@@ -96,7 +98,7 @@
 
     {% if card.repo_url %}
         <p>
-            Repo: <a href="https://github.com/Umuzi-org/{{card.recruit_project.repository.full_name}}">https://github.com/{{card.recruit_project.repository.owner}}/{{card.recruit_project.repository.full_name}}</a>  
+            Repo: <a href="{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}">{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}</a>  
         </p>
     {% endif %}
 
