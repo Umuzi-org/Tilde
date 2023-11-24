@@ -68,6 +68,14 @@ class AdapterCommandOutput:
                 result.append(tag)
         return result
 
+    def repeating_tags(self):
+        """Return a list of tags that were opened more than once in the stdout."""
+        result = []
+        for tag in output_tags:
+            if self.stdout.count(f"<{tag}>") > 1:
+                result.append(tag)
+        return result
+
     def __getitem__(self, key):
         return self.__getattribute__(key)
 

@@ -119,8 +119,12 @@ class _TestRunner:
             )
 
         self.assert_setup_empty()
-        self.assert_command_description_present()
+        self.assert_no_repeated_tags()
+        self.assert_no_unfinished_tags()
+        self.assert_required_tags_present()
+
         self.assert_no_import_errors()
+
         if assert_no_errors:
             self.assert_no_errors()
         if assert_no_import_side_effects:
@@ -182,10 +186,47 @@ class _TestRunner:
             }
         )
 
+    def assert_no_repeated_tags(self):
+        assert (
+            len(self.last_command_output.repeating_tags()) == 0
+        ), f"expected no repeating tags but the following tags appear more than once: {self.last_command_output.repeating_tags()}"
+
+    def assert_no_unfinished_tags(self):
+        if not self.last_command_output.stderr:
+            assert (
+                len(self.last_command_output.unfinished_tags()) == 0
+            ), f"expected tags to be closed but the following tags appear to be left open: {self.last_command_output.unfinished_tags()}"
+
     def assert_command_description_present(self):
         assert self.last_command_output[
             TAG_COMMAND_DESCRIPTION
-        ], f"expected command description to be present. There is something wrong with the automarker project configuration\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+        ], f"expected <{TAG_COMMAND_DESCRIPTION}> to be present. There is something wrong with the automarker project configuration\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+
+    def assert_running_tag_present(self):
+        if not self.last_command_output.stderr:
+            # When we expect exceptions to be raised during <running />
+            # stdout will not have the matching closing tag.
+            assert bool(
+                re.search(
+                    rf"<{TAG_RUNNING}>.*?</{TAG_RUNNING}>",
+                    self.last_command_output.stdout,
+                    re.DOTALL,
+                )
+            ), f"expected <{TAG_RUNNING}> to be present. There is something wrong with the automarker project configuration.\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+
+    def assert_import_learner_code_present(self):
+        assert bool(
+            re.search(
+                rf"<{TAG_IMPORT_LEARNER_CODE}>.*?</{TAG_IMPORT_LEARNER_CODE}>",
+                self.last_command_output.stdout,
+                re.DOTALL,
+            )
+        ), f"expected <{TAG_IMPORT_LEARNER_CODE}> to be present. There is something wrong with the automarker project configuration.\n\nstderr={self.last_command_output.stderr}\n\nstdout={self.last_command_output.stdout}"
+
+    def assert_required_tags_present(self):
+        self.assert_command_description_present()
+        self.assert_import_learner_code_present()
+        self.assert_running_tag_present()
 
     def assert_setup_empty(self):
         assert self.last_command_output[TAG_SETUP] in (
@@ -344,6 +385,10 @@ class JavaTestRunner(_TestRunner):
 
     def assert_no_import_errors(self):
         # there can't be import errors in Java projects. The errors will come up during build.
+        pass
+
+    def assert_import_learner_code_present(self):
+        # No import learner code tag in Java projects
         pass
 
     def sanitize_stderr(self):
