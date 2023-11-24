@@ -195,7 +195,7 @@ class _TestRunner:
         if not self.last_command_output.stderr:
             assert (
                 len(self.last_command_output.unfinished_tags()) == 0
-            ), f"expected no unclosed tags but the following tags appear to be left open: {self.last_command_output.unfinished_tags()}"
+            ), f"expected tags to be closed but the following tags appear to be left open: {self.last_command_output.unfinished_tags()}"
 
     def assert_command_description_present(self):
         assert self.last_command_output[
