@@ -1626,10 +1626,11 @@ class AgileCard(
         from threadlocal_middleware import get_current_user
 
         user = get_current_user()
-        # TODO: return True if:
-        # the card is Ready
-        # the user is allowed to start the card (ie. they are an assignee, or have permission)
-        return True
+
+        return (self.can_start()) and (
+            user.has_perm(Team.PERMISSION_MANAGE_CARDS, self.get_teams())
+            or self.request_user_is_assignee()
+        )
 
     def request_user_is_assignee(self):
         """

@@ -1,5 +1,4 @@
 <!-- TODO: make sure everything shows up in the right places -->
-<!-- TODO: finish up request_user_can_start function -->
 <!-- TODO: figure out how to get and use icons/svgs -->
 <!-- TODO: style the card to look better -->
 
@@ -100,7 +99,6 @@
     
         {% endfor %}
     </div>
-
     {% endif %}
 
     {% if card.repo_url %}
@@ -110,14 +108,12 @@
     {% endif %}
 
     {% if card.request_user_can_start %}
-
-    <button type="button" class="{{ styles.button_primary_small }}"
-        hx-post="{% url 'action_start_card' card.id %}"
-        hx-target="#card_{{ card.id }}"
-        hx-swap="outerHTML"
-        >Start
-    </button>
-
+        <button type="button" class="{{ styles.button_primary_small }}"
+            hx-post="{% url 'action_start_card' card.id %}"
+            hx-target="#card_{{ card.id }}"
+            hx-swap="outerHTML"
+            >Start
+        </button>
     {% endif %}
 
 </div>
