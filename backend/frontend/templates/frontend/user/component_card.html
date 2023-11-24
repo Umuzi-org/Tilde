@@ -4,6 +4,7 @@
 <!-- TODO: figure out how to get and use icons/svgs -->
 <!-- TODO: style the card to look better -->
 
+{% load humanize %}
 {% load component_card_extras %}
 
 <div
@@ -44,13 +45,13 @@
 
     {% if card.status == "IR" and card.review_request_time%}
         <p>
-            Review request time : {{card.review_request_time}} 
+            Review requested {{card.review_request_time|naturaltime}} 
         </p>
     {% endif %}
 
     {% if card.due_time %}
         <p>
-            Due time: {{card.due_time}} 
+            Due {{card.due_time|naturalday}} 
         </p>
     {% endif %}
     
