@@ -1,5 +1,4 @@
 <!-- TODO: make sure everything shows up in the right places -->
-<!-- TODO: make dates show in a "nicer" format. e.g. 2hr ago -->
 <!-- TODO: finish up request_user_can_start function -->
 <!-- TODO: figure out how to get and use icons/svgs -->
 <!-- TODO: style the card to look better -->
@@ -50,9 +49,16 @@
     {% endif %}
 
     {% if card.due_time %}
-        <p>
-            Due {{card.due_time|naturalday}} 
-        </p>
+        {% now "Y-m-d H:i:s" as current_datetime %}
+        {% if card.due_time|date:"U" > current_datetime|date:"U" %}
+            <p class="text-red-700">
+                Due {{card.due_time|naturalday}} 
+            </p>
+        {% else %}
+            <p>
+                Due {{card.due_time|naturalday}} 
+            </p>
+        {% endif %}
     {% endif %}
     
     {% if card.flavour_names %}
