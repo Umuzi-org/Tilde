@@ -1,45 +1,65 @@
 <!-- TODO: make sure everything shows up in the right places -->
-<!-- TODO: figure out how to get and use icons/svgs -->
 <!-- TODO: style the card to look better -->
 
 {% load humanize %}
 {% load component_card_extras %}
 
 <div
-    class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow"
+    class="mb-3"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
-    <p>
-        {{ card.content_type }}
-    </p>
+    <div class="border rounded-t-xl p-2">
+        <p class="text-xs">
+            {{ card.content_type_nice }}
+        </p>
+    </div>
+    <div class="border rounded-b-xl p-4 flex flex-col gap-2">
+    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
+        <div class="flex">
+            {% if card.code_review_competent_since_last_review_request %}
+                <div class="flex" title="Number of competent code reviews since last review request">
+                    <div> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5S7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5S14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg>
+                    </div>
+                    <div class="bg-black text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0">
+                        {{card.code_review_competent_since_last_review_request}} 
+                    </div>
+                </div>    
+            {% endif %}
+            {% if card.code_review_excellent_since_last_review_request %}
+                <div class="flex" title="Number of competent code reviews since last review request">
+                    <div title="Number of excellent code reviews since last review request">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 10c0 1.38-2.12 2.5-3.5 2.5s-2.75-1.12-2.75-2.5h-1.5c0 1.38-1.37 2.5-2.75 2.5S5 11.38 5 10h-.75c-.16.64-.25 1.31-.25 2a8 8 0 0 0 8 8a8 8 0 0 0 8-8c0-.69-.09-1.36-.25-2H19m-7-6C9.04 4 6.45 5.61 5.07 8h13.86C17.55 5.61 14.96 4 12 4m10 8a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-10 5.23c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg> 
+                    </div>
+                    <div class="bg-black text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0">                        {{card.code_review_excellent_since_last_review_request}} 
+                    </div>
+                </div>
+            {% endif %}
+            {% if card.code_review_ny_competent_since_last_review_request %}
+                <div class="flex" title="Number of competent code reviews since last review request">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5S7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14Z"/></svg>
+                    </div>
+                    <div class="bg-black text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0">                        {{card.code_review_ny_competent_since_last_review_request}} 
+                    </div>
+                </div>
+            {% endif %}
+            {% if card.code_review_red_flag_since_last_review_request %}
+                <div class="flex" title="Number of competent code reviews since last review request">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7.57 20c-1.34 0-2.43-1.09-2.43-2.43c0-1.07 1.18-3.07 2.43-4.76C8.82 14.5 10 16.5 10 17.57A2.43 2.43 0 0 1 7.57 20M12 2A10 10 0 0 0 2 12c0 1.75.45 3.38 1.24 4.81c.16-.81.57-1.74 1.07-2.64A7.69 7.69 0 0 1 4 12a8 8 0 0 1 8-8a8 8 0 0 1 8 8a8 8 0 0 1-8 8c-.24 0-.47 0-.71-.04c-.47.74-1.15 1.32-1.95 1.67c.85.24 1.74.37 2.66.37a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 12c-.41 0-.81.04-1.19.12c.35.63.66 1.28.88 1.88H12c1.25 0 2.32.5 2.77 1.23l1.42-1.42C15.29 14.72 13.75 14 12 14m3.5-6c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5s1.5-.7 1.5-1.5S16.3 8 15.5 8M10 9.5C10 8.7 9.3 8 8.5 8S7 8.7 7 9.5S7.7 11 8.5 11s1.5-.7 1.5-1.5"/></svg>
+                    </div>                
+                    <div class="bg-black text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0">                        {{card.code_review_red_flag_since_last_review_request}} 
+                    </div>
+                </div>    
+            {% endif %}
+        </div>
+    {% endif %}
 
     <h3 
         class="{{ styles.heading3 }}">
         {{ card.title }}
     </h3>
-
-    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
-        {% if card.code_review_competent_since_last_review_request %}
-            <span> 
-                C: {{card.code_review_competent_since_last_review_request}} 
-            </span>
-        {% endif %}
-        {% if card.code_review_excellent_since_last_review_request %}
-            <span> 
-                E: {{card.code_review_excellent_since_last_review_request}} 
-            </span>
-        {% endif %}
-        {% if card.code_review_not_yet_competent_since_last_review_request %}
-            <span> 
-                NYC: {{card.code_review_not_yet_competent_since_last_review_request}} 
-            </span>
-        {% endif %}
-        {% if card.code_review_red_flag_since_last_review_request %}
-            <span> 
-                RF: {{card.code_review_red_flag_since_last_review_request}} 
-            </span>
-        {% endif %}
-    {% endif %}
 
     {% if card.status == "IR" and card.review_request_time%}
         <p>
@@ -91,18 +111,18 @@
     {% endif %}
 
     {% if card.reviewer_names %}
-    <div>Reviewers: 
+    <div class="w-full">Reviewers: 
 
         {% for reviewer_name in card.reviewer_names %}
         
-        <span>{{reviewer_name}}</span> 
+        <p class="truncate">{{reviewer_name}}</p> 
     
         {% endfor %}
     </div>
     {% endif %}
 
     {% if card.repo_url %}
-        <p>
+        <p class="truncate">
             Repo: <a href="{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}">{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}</a>  
         </p>
     {% endif %}
@@ -115,5 +135,5 @@
             >Start
         </button>
     {% endif %}
-
+    </div>
 </div>
