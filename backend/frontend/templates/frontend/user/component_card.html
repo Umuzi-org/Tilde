@@ -8,10 +8,20 @@
     class="mb-3"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
-    <div class="border rounded-t-xl p-2">
-        <p class="text-xs">
-            {{ card.content_type_nice }}
-        </p>
+    <div class="border rounded-t-xl p-2 bg-gray-600 text-white flex text-xs">
+        <div>
+            <p class="bold">
+                {{ card.content_type_nice }} 
+            </p>
+        </div>
+        {% if card.flavour_names %}
+            <div> 
+                 | 
+                {% for flavour_name in card.flavour_names %}
+                <span>{{flavour_name}}</span> 
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
     <div class="border rounded-b-xl p-4 flex flex-col gap-2">
     {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
@@ -80,25 +90,12 @@
         {% endif %}
     {% endif %}
     
-    {% if card.flavour_names %}
-    <div>Flavours: 
-
-        {% for flavour_name in card.flavour_names %}
-        
-        <span>{{flavour_name}}</span> 
     
-        {% endfor %}
-    </div>
-
-    {% endif %}
 
     {% if card.tag_names %}
-    <div>Tags: 
-
+    <div class="flex gap-2 items-center flex-wrap">
         {% for tag_name in card.tag_names %}
-        
-        <span>{{tag_name}}</span> 
-    
+            <span class="flex px-2 py-1 rounded-full bg-gray-600 text-white text-xs">{{tag_name}}</span> 
         {% endfor %}
     </div>
 
@@ -123,7 +120,7 @@
 
     {% if card.repo_url %}
         <p class="truncate">
-            Repo: <a href="{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}">{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}</a>  
+            Repo: <a class="{{styles.link}}" href="{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}">{{card.recruit_project.repository.full_name|convert_git_url:card.recruit_project.repository.owner}}</a>  
         </p>
     {% endif %}
 
