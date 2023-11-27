@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
@@ -73,19 +73,23 @@ def user_login(request):
     if request.user.is_authenticated:
         return redirect(reverse_lazy("user_board", kwargs={"user_id": request.user.id}))
 
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is None:
-            return render(
-                request, "frontend/auth/page_login.html", {"error": "User not found"}
-            )
-        login(request, user)
+    form = AuthenticationForm()
+    context = {"form": form}
 
-        return redirect(reverse_lazy("user_board", kwargs={"user_id": user.id}))
-    else:
-        return render(request, "frontend/auth/page_login.html")
+    if request.method == "POST":
+        form = AuthenticationForm(request=request, data=request.POST)
+        context.update({"form": form})
+
+        if form.is_valid():
+            login(
+                request=request,
+                user=form.user_cache,
+            )
+            return redirect(
+                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id})
+            )
+
+    return render(request, "frontend/auth/page_login.html", context)
 
 
 @login_required()
@@ -117,14 +121,20 @@ def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
 
 
 def user_forgot_password(request):
-    form = ForgotPasswordForm(data=request.POST)
+    form = ForgotPasswordForm()
+
+    context = {"form": form}
+
     if request.method == "POST":
+        form = ForgotPasswordForm(data=request.POST)
+        context.update({"form": form})
+
         if form.is_valid():
             if form.user_exists():
                 _send_password_reset_email(request, form)
             return redirect(reverse_lazy("user_password_reset_done"))
 
-    return render(request, "frontend/auth/page_forgot_password.html", {"form": form})
+    return render(request, "frontend/auth/page_forgot_password.html", context)
 
 
 def user_password_reset_done(request):
@@ -139,13 +149,18 @@ def user_reset_password(request, token):
         return render(
             request,
             "frontend/auth/page_password_reset.html",
-            {"error": "Invalid token"},
+            {"error": "Invalid token or expired token. Please try resetting again."},
         )
 
     user = User.objects.get(email=email)
-    form = SetPasswordForm(user=user, data=request.POST)
+    form = SetPasswordForm(user=user)
+
+    context = {"form": form}
 
     if request.method == "POST":
+        form = SetPasswordForm(user=user, data=request.POST)
+        context.update({"form": form})
+
         if form.is_valid():
             form.save()
             messages.add_message(
@@ -155,7 +170,7 @@ def user_reset_password(request, token):
             )
             return redirect(reverse_lazy("user_login"))
 
-    return render(request, "frontend/auth/page_password_reset.html", {"form": form})
+    return render(request, "frontend/auth/page_password_reset.html", context)
 
 
 @user_passes_test(is_super)
