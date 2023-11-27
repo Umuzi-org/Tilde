@@ -144,7 +144,7 @@ def user_password_reset_done(request):
 def user_reset_password(request, token):
     signer = ForgotPasswordForm.signer
     try:
-        email = signer.unsign(token, max_age=60 * 60)
+        email = signer.unsign(token, max_age=60 * 10)
     except (SignatureExpired, BadSignature):
         return render(
             request,
