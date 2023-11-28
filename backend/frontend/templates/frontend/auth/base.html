@@ -1,20 +1,4 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en-US" class="h-full bg-gray-100">
-  <head>
-    <meta charset="utf-8" />
-    <title>{% block page_title %}{% endblock page_title %}</title>
-    <script
-      src="https://unpkg.com/htmx.org@1.9.6"
-      integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
-      crossorigin="anonymous"></script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    {% block head %}{% endblock %}
-  </head>
-  <body class="h-full w-full">
-    <div class="min-h-full w-full">{% block content %} {% endblock %}</div>
-  </body>
-</html>
+{% extends "frontend/_base.html" %}
+{% block main_content %}
+  {% block content %} {% endblock %}
+{% endblock %}
