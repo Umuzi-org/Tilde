@@ -1,4 +1,3 @@
-<!-- TODO: flavours styling -->
 <!-- TODO: refactor repeating styles into theme -->
 
 {% load humanize %}
@@ -8,17 +7,24 @@
     class="mb-3"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
-    <div class="border rounded-t-xl border-gray-300 py-2 px-4 bg-gray-600  text-white flex text-xs">
+    <div class="border rounded-t-xl border-gray-300 py-2 px-4  flex justify-between items-center text-xs">
         <div>
             <p class="bold">
                 {{ card.content_type_nice }} 
             </p>
         </div>
         {% if card.flavour_names %}
-            <div> 
-                 | 
+            <div class="flex gap-1 items-center flex-wrap"> 
                 {% for flavour_name in card.flavour_names %}
-                <span>{{flavour_name}}</span> 
+                    {%if flavour_name == "javascript"%}
+                        <span class="flex px-2 py-1 rounded-full border border-gray-300" title="{{flavour_name}}">
+                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h18v18H3V3m4.73 15.04c.4.85 1.19 1.55 2.54 1.55c1.5 0 2.53-.8 2.53-2.55v-5.78h-1.7V17c0 .86-.35 1.08-.9 1.08c-.58 0-.82-.4-1.09-.87l-1.38.83m5.98-.18c.5.98 1.51 1.73 3.09 1.73c1.6 0 2.8-.83 2.8-2.36c0-1.41-.81-2.04-2.25-2.66l-.42-.18c-.73-.31-1.04-.52-1.04-1.02c0-.41.31-.73.81-.73c.48 0 .8.21 1.09.73l1.31-.87c-.55-.96-1.33-1.33-2.4-1.33c-1.51 0-2.48.96-2.48 2.23c0 1.38.81 2.03 2.03 2.55l.42.18c.78.34 1.24.55 1.24 1.13c0 .48-.45.83-1.15.83c-.83 0-1.31-.43-1.67-1.03l-1.38.8Z"/></svg>
+                        </span> 
+                    {%else%}
+                        <span class="flex px-2 py-1 rounded-full border border-gray-300" title="{{flavour_name}}">
+                            {{flavour_name|first}}
+                        </span> 
+                    {%endif%}
                 {% endfor %}
             </div>
         {% endif %}
@@ -82,7 +88,7 @@
     {% if card.tag_names %}
         <div class="flex gap-2 items-center flex-wrap">
             {% for tag_name in card.tag_names %}
-                <span class="flex px-2 py-1 rounded-full bg-gray-600 text-white text-xs">{{tag_name}}</span> 
+                <span class="flex px-2 py-1 rounded-full border border-gray-300 text-xs">{{tag_name}}</span> 
             {% endfor %}
         </div>
     {% endif %}
