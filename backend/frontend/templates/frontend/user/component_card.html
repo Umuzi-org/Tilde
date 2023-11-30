@@ -29,9 +29,25 @@
             </div>
         {% endif %}
     </div>
+    
     <div class="border rounded-b-xl border-gray-300 border-t-0 p-4 flex flex-col gap-3">
+    {% if card.status == "IP" or card.status == "RF"%}
+        {% if card.open_pr_count and card.oldest_open_pr_updated_time%}
+            <div class="flex" title="Open PRs and their last update time">
+                <div class="flex gap-2 items-center border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 14 14"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m10 3.5l-3-3l-3 3m7 10a4 4 0 0 1-4-4a4 4 0 0 1-4 4m4-4v-9"/></svg>
+                    <p class="text-xs">
+                        Updated {{card.oldest_open_pr_updated_time|naturaltime}} 
+                    </p>
+                </div>
+                <div class="{{styles.good_review_counter_chip}}">{{card.open_pr_count}}</div> 
+            </div>
+        {% endif %}
+    {% endif %}
+
     {% if card.status == "IR" and card.review_request_time%}
-        <div class="border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
+        <div class="flex gap-2 border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2v6Z"/></svg>            
             <p class="text-xs">
                 Review requested {{card.review_request_time|naturaltime}} 
             </p>
