@@ -12,4 +12,7 @@ styles = {
     "heading3": f"text-l font-bold text-{TEXT_COLOUR}-600",
     # link
     "link": f"text-{PRIMARY_COLOUR}-600 hover:text-{PRIMARY_COLOUR}-500 focus:text-{PRIMARY_COLOUR}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{PRIMARY_COLOUR}-500 underline underline-offset-2",
+    # input
+    "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1",
+    "label_small": f"text-sm font-medium text-gray-700",
 }

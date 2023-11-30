@@ -70,9 +70,6 @@ def is_super(user):
 
 
 def user_login(request):
-    if request.user.is_authenticated:
-        return redirect(reverse_lazy("user_board", kwargs={"user_id": request.user.id}))
-
     form = AuthenticationForm()
     context = {"form": form}
 
