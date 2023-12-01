@@ -15,10 +15,10 @@ urlpatterns = [
         name="partial_team_users_list",
     ),
     # User board
-    path("users/<int:user_id>/board", views.user_board, name="user_board"),
+    path("users/<int:user_id>/board", views.UserBoard.as_view(), name="user_board"),
     path(
         "users/<int:user_id>/board/<str:column_id>",
-        views.partial_user_board_column,
+        views.PartialUserBoardColumn.as_view(),
         name="partial_user_board_column",
     ),
     path(
