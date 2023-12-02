@@ -1630,10 +1630,9 @@ class AgileCard(
         has_manage_perm = [
             user.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in user.teams()
         ]
-        
+
         return (self.can_start()) and (
-            any(has_manage_perm)
-            or self.request_user_is_assignee()
+            any(has_manage_perm) or self.request_user_is_assignee()
         )
 
     def request_user_is_assignee(self):

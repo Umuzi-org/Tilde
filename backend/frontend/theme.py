@@ -15,5 +15,5 @@ styles = {
     "flavour_chip": "flex px-2 py-1 max-h-8",
     "good_review_counter_chip": "font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0",
     "bad_review_counter_chip": "font-bold bg-red-600 text-white rounded-full flex justify-center items-center h-5 px-2 py-0 text-xs -translate-x-1/2 -translate-y-2/4 scale-100 top-0 right-0",
-    "small_bold_text": "text-xs font-bold text-gray-600"
+    "small_bold_text": "text-xs font-bold text-gray-600",
 }
