@@ -6,7 +6,7 @@ If you are new to Python or Django it would be good for you to learn a few thing
 - Django 
 - Virtual environments - this is seriously good practice. 
 - Django Rest Framework - this is how we make our web apis
-- Dramatiq - this is worth understanding if you want to do anything with long running requests
+- Dramatiq - this is worth understanding if you want to do anything with long-running requests
 
 ## Why virtual environments 
 
@@ -188,3 +188,4 @@ export GOOGLE_OAUTH_ONE_TIME_CLIENT_SECRET_FILE=??? # needed for login with goog
 export GITHUB_CLIENT_ID=??? Needed for login with github to work
 export GITHUB_CLIENT_SECRET=??? Needed for login with github to work
 ```
+
