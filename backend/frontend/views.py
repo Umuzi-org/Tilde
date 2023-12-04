@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import json
 from taggit.models import Tag
+from guardian.core import ObjectPermissionChecker
+
 
 User = get_user_model()
 
@@ -101,7 +103,7 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test(is_super)
+# @user_passes_test(is_super)
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -113,14 +115,23 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-@user_passes_test(is_super)
+# @user_passes_test(is_super)
 def partial_teams_list(request):
+    user = request.user
+    checker = ObjectPermissionChecker(user)
+    print("hey", checker)
+    user_teams = user.teams()
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
 
     all_teams = Team.objects.filter(active=True).order_by(
         "name"
     )  # TODO: only show teams that the current user is allowed to see
+    teams = [
+        team
+        for team in all_teams
+        if user in user_teams or checker.has_perm(Team.PERMISSION_VIEW, team)
+    ]
     teams = all_teams[current_team_count : current_team_count + limit]
     has_next_page = len(all_teams) > current_team_count + limit
 
