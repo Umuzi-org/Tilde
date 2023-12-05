@@ -12,5 +12,4 @@ styles = {
     "heading3": f"text-l font-bold text-{TEXT_COLOUR}-600",
     # link
     "link": f"text-{PRIMARY_COLOUR}-600 hover:text-{PRIMARY_COLOUR}-500 focus:text-{PRIMARY_COLOUR}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{PRIMARY_COLOUR}-500 underline underline-offset-2",
-    "flavour_chip": "flex px-2 py-1 max-h-8",
 }
