@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
-from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
@@ -19,7 +18,7 @@ from taggit.models import Tag
 from core.models import Team
 from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
 
-from .forms import ForgotPasswordForm
+from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 
 
 User = get_user_model()
@@ -70,11 +69,11 @@ def is_super(user):
 
 
 def user_login(request):
-    form = AuthenticationForm()
+    form = CustomAuthenticationForm()
     context = {"form": form}
 
     if request.method == "POST":
-        form = AuthenticationForm(request=request, data=request.POST)
+        form = CustomAuthenticationForm(request=request, data=request.POST)
         context.update({"form": form})
 
         if form.is_valid():
@@ -150,12 +149,12 @@ def user_reset_password(request, token):
         )
 
     user = User.objects.get(email=email)
-    form = SetPasswordForm(user=user)
+    form = CustomSetPasswordForm(user=user)
 
     context = {"form": form}
 
     if request.method == "POST":
-        form = SetPasswordForm(user=user, data=request.POST)
+        form = CustomSetPasswordForm(user=user, data=request.POST)
         context.update({"form": form})
 
         if form.is_valid():

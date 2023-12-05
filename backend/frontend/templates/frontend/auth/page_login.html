@@ -17,16 +17,10 @@
       {% endfor %}
     </div>
   {% endif %}
+
   <form action="{% url 'user_login' %}" method="post">
     {% csrf_token %}
-    <div class="flex mb-4 flex-col">
-      <label class="{{ styles.label_small }}" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-      <input placeholder="ex. jane@umuzi.org" value="{{ form.username.value|default:'' }}" class="{{ styles.input_small }}" id="{{ form.username.id_for_label }}" name="username" type="text" required />
-    </div>
-    <div class="flex flex-col">
-      <label class="{{ styles.label_small }}" for="{{ form.password.id_for_label }}">{{ form.username.label }}</label>
-      <input placeholder="************" class="{{ styles.input_small }}" id="{{ form.password.id_for_label }}" name="password" type="password" required />
-    </div>
+    {{ form.as_p }}
     <div class="my-3">
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>

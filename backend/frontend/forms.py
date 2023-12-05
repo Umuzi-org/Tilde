@@ -2,11 +2,34 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.urls import reverse_lazy
+from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
+
+from .theme import styles
+
 
 User = get_user_model()
 
 
-class ForgotPasswordForm(forms.Form):
+class ThemedFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    "class": styles["input_small"],
+                }
+            )
+
+
+class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
+    pass
+
+
+class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):
+    pass
+
+
+class ForgotPasswordForm(ThemedFormMixin, forms.Form):
     email = forms.EmailField()
 
     signer = TimestampSigner(salt="password.Reset")

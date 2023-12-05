@@ -1,15 +1,19 @@
-{% extends 'frontend/_base.html' %}
-{% load static %}
-{% block main_head %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="{% static "frontend/utils.js" %}"></script>
-    {% block head %}{% endblock %}
-{% endblock %}
+{% load static %} <!-- main base that all other bases can inherit from -->
+<!DOCTYPE html>
+<html lang="en-US" class="{% block html_classes %}h-full bg-gray-100{% endblock %}">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tilde ~ {% block page_title %}{% endblock %}</title>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.6"
+      integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+      crossorigin="anonymous"></script>
+      {# TODO https://htmx.org/docs/#installing #}
+    <script src="https://cdn.tailwindcss.com"></script>
 
-{% block main_content %}
-    <div class="min-h-full">
-        {% include "frontend/components/main_header.html" %}
-        {% block content %}{% endblock %}
-    </div>
-{% endblock %}
+    {% block main_head %}{% endblock %}
+  </head>
+  <body class="{% block body_classes %}h-full{% endblock %}">
+   {% block main_content %} {% endblock %}
+  </body>
+</html>
