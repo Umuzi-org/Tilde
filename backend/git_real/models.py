@@ -47,7 +47,6 @@ class Repository(models.Model, Mixins):
         }
 
     def get_github_repo_link(self):
-        print("#", self.full_name)
         return f"https://github.com/{self.owner.replace('.','-')}/{self.full_name}"
 
 
