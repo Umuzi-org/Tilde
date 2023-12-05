@@ -1,15 +1,18 @@
 import json
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.views.generic import TemplateView
 from core.models import Team
-from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 from taggit.models import Tag
+from guardian.core import ObjectPermissionChecker
+
+from threadlocal_middleware import get_current_request
+
 
 User = get_user_model()
 
@@ -58,89 +61,57 @@ def is_super(user):
     return user.is_superuser
 
 
-def user_has_view_access(user, request):
-    user_teams = user.teams()
-    can_manage_cards = [
-        request.user.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in user_teams
-    ]
-    can_view_all = [
-        request.user.has_perm(Team.PERMISSION_VIEW_ALL, team) for team in user_teams
-    ]
-    can_assign_reviewers = [
-        request.user.has_perm(Team.PERMISSION_ASSIGN_REVIEWERS, team)
-        for team in user_teams
-    ]
-    can_review_cards = [
-        request.user.has_perm(Team.PERMISSION_REVIEW_CARDS, team) for team in user_teams
-    ]
-    is_trusted_reviewer = [
-        request.user.has_perm(Team.PERMISSION_TRUSTED_REVIEWER, team)
-        for team in user_teams
-    ]
+def has_view_access(logged_user):
+    request = get_current_request()
 
-    has_view_access = (
-        any(can_manage_cards)
-        or any(can_view_all)
-        or any(can_assign_reviewers)
-        or any(can_review_cards)
-        or any(is_trusted_reviewer)
-    )
+    viewed_user_id = request.resolver_match.kwargs.get("user_id")
 
-    return has_view_access or user.id == request.user.id or request.user.is_superuser
+    if logged_user.id == viewed_user_id or is_super(logged_user):
+        return True
+
+    viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
+    viewed_user_teams = viewed_user_obj.teams()
+
+    if len(viewed_user_teams):
+        checker = ObjectPermissionChecker(logged_user)
+        checker.prefetch_perms(viewed_user_teams)
+
+        for view_permission in Team.PERMISSION_VIEW:
+            if any(
+                [checker.has_perm(view_permission, team) for team in viewed_user_teams]
+            ):
+                return True
+
+    return False
 
 
-class UserBoard(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+@user_passes_test(has_view_access)
+def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
-
-    template_name = "frontend/user/page_board.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.user = get_object_or_404(User, id=kwargs["user_id"])
-        return super().dispatch(request, *args, **kwargs)
-
-    def test_func(self):
-        return user_has_view_access(self.user, self.request)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["user"] = self.user
-        context["columns"] = board_columns
-        return context
+    user = get_object_or_404(User, id=user_id)
+    context = {"user": user, "columns": board_columns}
+    return render(request, "frontend/user/page_board.html", context)
 
 
-class PartialUserBoardColumn(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+@user_passes_test(has_view_access)
+def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
+    current_card_count = int(request.GET.get("count", 0))
+    limit = 10
 
-    template_name = "frontend/user/partial_user_board_column.html"
+    user = get_object_or_404(User, id=user_id)
+    all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
 
-    def dispatch(self, request, *args, **kwargs):
-        self.user = get_object_or_404(User, id=kwargs["user_id"])
-        self.column_id = kwargs["column_id"]
-        return super().dispatch(request, *args, **kwargs)
+    cards = all_cards[current_card_count : current_card_count + limit]
+    has_next_page = len(all_cards) > current_card_count + limit
 
-    def test_func(self):
-        return user_has_view_access(self.user, self.request)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        current_card_count = int(self.request.GET.get("count", 0))
-        limit = 10
-
-        all_cards = [d for d in board_columns if d["id"] == self.column_id][0]["query"](
-            self.user
-        )
-
-        cards = all_cards[current_card_count : current_card_count + limit]
-        has_next_page = len(all_cards) > current_card_count + limit
-
-        context = {
-            "cards": cards,
-            "user_id": self.user.id,
-            "column_id": self.column_id,
-            "has_next_page": has_next_page,
-        }
-        return context
+    context = {
+        "cards": cards,
+        "user_id": user_id,
+        "column_id": column_id,
+        "has_next_page": has_next_page,
+    }
+    return render(request, "frontend/user/partial_user_board_column.html", context)
 
 
 @user_passes_test(is_super)
