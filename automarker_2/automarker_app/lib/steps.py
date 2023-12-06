@@ -627,13 +627,11 @@ class PythonCreateVirtualEnv(Step):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
             if os.name == "nt":
-                command = (
-                    f"{clone_dir_path/'automarker_venv'/'Scripts'/'python'} -m pip install --upgrade pip"
-                )
+                python_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'python'
             else:
-                command = (
-                    f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
-                )
+                python_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
+
+            command = f"{python_executable_path} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -645,9 +643,11 @@ class PythonDoRequirementsTxtInstall(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if os.name == "nt":
-            command = f"{clone_dir_path/'automarker_venv'/'Scripts'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+            python_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'pip'
         else:
-            command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+            python_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
+
+        command = f"{python_executable_path} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -682,13 +682,11 @@ class PythonRunPytests(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if os.name == "nt":
-            command = (
-                f"cd {clone_dir_path} && {clone_dir_path}/automarker_venv/Scripts/python -m pytest --tb=line"
-            )
+            python_executable_path = f"{clone_dir_path} && {clone_dir_path}/automarker_venv/Scripts/python"
         else:
-            command = (
-                f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
-            )
+            python_executable_path = f"{clone_dir_path} && automarker_venv/bin/python"
+
+        command = f"cd {python_executable_path} -m pytest --tb=line"
         stdout, stderr = subprocess_run(command)
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
