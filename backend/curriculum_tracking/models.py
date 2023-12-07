@@ -1619,25 +1619,39 @@ class AgileCard(
 
         return [review.user for review in reviews]
 
-    def request_user_can_start(self):
-        """can the user start this card?
-        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
+    def request_user_can_start(self, user=None):
         """
-        from threadlocal_middleware import get_current_user
+        Check if current user can start this card
 
-        user = get_current_user()
+        This function is only used in template rendering and we are using threadlocals,
+        that is why we need to avoid argument parameters unless they're for testing purposes
+        """
+        if user is None:
+            from threadlocal_middleware import get_current_user
 
-        has_manage_cards_permission = any(
-            [user.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in user.teams()]
-        )
+            user = get_current_user()
 
-        return (has_manage_cards_permission or self.request_user_is_assignee()) and (
-            self.can_start()
-        )
+        if user is not None:
+            request_user_is_assignee = self.assignees.first() == user
+
+            if request_user_is_assignee and self.can_start():
+                return True
+
+            has_manage_cards_permission = any(
+                [
+                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
+                    for team in self.assignees.first().teams()
+                ]
+            )
+
+            if has_manage_cards_permission and self.can_start():
+                return True
+
+        return False
 
     def request_user_is_assignee(self):
         """
-        Checks if current user is assignee
+        Checks if current user is assignee.
         This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
         """
         from threadlocal_middleware import get_current_user
