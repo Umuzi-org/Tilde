@@ -127,13 +127,41 @@ def partial_teams_list(request):
     all_teams = Team.objects.filter(active=True).order_by(
         "name"
     )  # TODO: only show teams that the current user is allowed to see
-    teams = [
-        team
-        for team in all_teams
-        if user in user_teams or checker.has_perm(Team.PERMISSION_VIEW, team)
+
+    is_superuser = user.is_superuser
+    is_assignee = any([team for team in all_teams if team in user_teams])
+    has_manage_team_permissions = [
+        team for team in user_teams if checker.has_perm(Team.PERMISSION_VIEW, team)
     ]
-    teams = all_teams[current_team_count : current_team_count + limit]
-    has_next_page = len(all_teams) > current_team_count + limit
+
+    filtered_teams = []
+    if is_superuser:
+        filtered_teams = all_teams
+    elif is_assignee and len(has_manage_team_permissions):
+        filtered_teams = has_manage_team_permissions + user_teams
+    if len(has_manage_team_permissions):
+        filtered_teams = has_manage_team_permissions
+    if is_assignee:
+        filtered_teams = user_teams
+
+    for team in all_teams:
+        print(
+            "@0 user",
+            user,
+        )
+        print(
+            "@1 has manage perm on",
+            checker.has_perm(Team.PERMISSION_VIEW, team),
+            team,
+        )
+        if user in user_teams or checker.has_perm(Team.PERMISSION_VIEW, team):
+            # teams_allowed.append(team)
+            pass
+
+    print("#1 all teams", all_teams)
+    print("#2 teams allowed", filtered_teams)
+    teams = filtered_teams[current_team_count : current_team_count + limit]
+    has_next_page = len(filtered_teams) > current_team_count + limit
 
     context = {
         "teams": teams,
