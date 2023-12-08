@@ -9,6 +9,7 @@ from core.models import Team
 class request_user_can_start_Tests(TestCase):
     def setUp(self):
         self.assignee_user = core_factories.UserFactory()
+        self.superuser = core_factories.UserFactory(is_superuser=True)
         self.user_with_manage_permissions = core_factories.UserFactory()
         self.user_without_manage_permissions = core_factories.UserFactory()
         self.user_team = core_factories.TeamFactory()
@@ -22,6 +23,7 @@ class request_user_can_start_Tests(TestCase):
             self.user_team,
         )
 
+        self.blocked_card = factories.AgileCardFactory(status=AgileCard.BLOCKED)
         self.ready_card = factories.AgileCardFactory(status=AgileCard.READY)
         self.ip_card = factories.AgileCardFactory(status=AgileCard.IN_PROGRESS)
         self.feedback_card = factories.AgileCardFactory(
@@ -31,6 +33,7 @@ class request_user_can_start_Tests(TestCase):
         self.complete_card = factories.AgileCardFactory(status=AgileCard.COMPLETE)
 
         self.cards = [
+            self.blocked_card,
             self.ready_card,
             self.ip_card,
             self.feedback_card,
@@ -50,7 +53,7 @@ class request_user_can_start_Tests(TestCase):
 
     def test_user_with_team_manage_permissions_can_start_card(self):
         for card in self.cards:
-            if card.status == AgileCard.READY:
+            if card.status == AgileCard.READY or card.can_force_start():
                 self.assertTrue(
                     card.request_user_can_start(self.user_with_manage_permissions)
                 )
@@ -58,6 +61,13 @@ class request_user_can_start_Tests(TestCase):
                 self.assertFalse(
                     card.request_user_can_start(self.user_with_manage_permissions)
                 )
+
+    def test_superuser_can_start_card(self):
+        for card in self.cards:
+            if card.status == AgileCard.READY or card.can_force_start():
+                self.assertTrue(card.request_user_can_start(self.superuser))
+            else:
+                self.assertFalse(card.request_user_can_start(self.superuser))
 
     def test_user_without_team_manage_permissions_cannot_start_card(self):
         for card in self.cards:

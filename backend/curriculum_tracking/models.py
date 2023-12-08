@@ -1637,15 +1637,15 @@ class AgileCard(
 
             print("#1 user", user)
             print("#2 is assignee", is_assignee)
-            print("#3 is superuser", is_superuser)
-            print("#4 can start", can_start)
-            print("#5 can force start", can_force_start)
+            print("#3 can start", can_start)
 
             if is_assignee and can_start:
                 return True
 
             is_superuser = user.is_superuser
             can_force_start = self.can_force_start()
+            print("#4 is superuser", is_superuser)
+            print("#5 can force start", can_force_start)
 
             if is_superuser and (can_force_start or can_start):
                 return True
