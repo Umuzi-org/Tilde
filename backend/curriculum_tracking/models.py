@@ -1632,9 +1632,22 @@ class AgileCard(
             user = get_current_user()
 
         if user is not None:
-            request_user_is_assignee = self.assignees.first() == user
+            can_start = self.can_start()
+            is_assignee = self.assignees.first() == user
 
-            if request_user_is_assignee and self.can_start():
+            print("#1 user", user)
+            print("#2 is assignee", is_assignee)
+            print("#3 is superuser", is_superuser)
+            print("#4 can start", can_start)
+            print("#5 can force start", can_force_start)
+
+            if is_assignee and can_start:
+                return True
+
+            is_superuser = user.is_superuser
+            can_force_start = self.can_force_start()
+
+            if is_superuser and (can_force_start or can_start):
                 return True
 
             has_manage_cards_permission = any(
@@ -1643,8 +1656,9 @@ class AgileCard(
                     for team in self.assignees.first().teams()
                 ]
             )
+            print("#6 has manage cards permission", has_manage_cards_permission)
 
-            if has_manage_cards_permission and self.can_start():
+            if has_manage_cards_permission and (can_force_start or can_start):
                 return True
 
         return False

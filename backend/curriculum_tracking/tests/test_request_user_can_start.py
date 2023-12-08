@@ -39,7 +39,7 @@ class request_user_can_start_Tests(TestCase):
         ]
 
         for card in self.cards:
-            card.assignees.set([self.assignee_user])
+            card.assignees.add(self.assignee_user)
 
     def test_assignee_can_start_card(self):
         for card in self.cards:
