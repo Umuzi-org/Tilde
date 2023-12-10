@@ -643,11 +643,11 @@ class PythonDoRequirementsTxtInstall(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if os.name == "nt":
-            python_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'pip'
+            pip_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'pip'
         else:
-            python_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
+            pip_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
 
-        command = f"{python_executable_path} install -r {clone_dir_path/'requirements.txt'}"
+        command = f"{pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -682,11 +682,11 @@ class PythonRunPytests(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if os.name == "nt":
-            python_executable_path = f"{clone_dir_path} && {clone_dir_path}/automarker_venv/Scripts/python"
+            python_executable_path = f"{clone_dir_path}/automarker_venv/Scripts/python"
         else:
-            python_executable_path = f"{clone_dir_path} && automarker_venv/bin/python"
+            python_executable_path = "automarker_venv/bin/python"
 
-        command = f"cd {python_executable_path} -m pytest --tb=line"
+        command = f"cd {clone_dir_path} && {python_executable_path} -m pytest --tb=line"
         stdout, stderr = subprocess_run(command)
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
