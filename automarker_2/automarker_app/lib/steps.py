@@ -627,11 +627,11 @@ class PythonCreateVirtualEnv(Step):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
             if os.name == "nt":
-                python_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'python'
+                python_executable_path = 'Scripts' / 'python'
             else:
-                python_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
+                python_executable_path =  'bin' / 'pip'
 
-            command = f"{python_executable_path} -m pip install --upgrade pip"
+            command = f"{clone_dir_path/'automarker_venv'/python_executable_path} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -643,11 +643,11 @@ class PythonDoRequirementsTxtInstall(Step):
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
         if os.name == "nt":
-            pip_executable_path = clone_dir_path / 'automarker_venv' / 'Scripts' / 'pip'
+            pip_executable_path =  'Scripts' / 'pip'
         else:
-            pip_executable_path = clone_dir_path / 'automarker_venv' / 'bin' / 'pip'
+            pip_executable_path = 'bin' / 'pip'
 
-        command = f"{pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
+        command = f"{clone_dir_path/'automarker_venv'/pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
