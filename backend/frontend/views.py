@@ -19,6 +19,7 @@ from core.models import Team
 from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
+from .theme import styles
 
 
 User = get_user_model()
@@ -81,9 +82,13 @@ def user_login(request):
                 request=request,
                 user=form.user_cache,
             )
-            return redirect(
-                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id})
+
+            redirect_to = request.GET.get(
+                "next",
+                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id}),
             )
+
+            return redirect(redirect_to)
 
     return render(request, "frontend/auth/page_login.html", context)
 
@@ -163,6 +168,7 @@ def user_reset_password(request, token):
                 request=request,
                 level=messages.INFO,
                 message="Password reset successfully. You can now login.",
+                extra_tags=styles["alert_info"],
             )
             return redirect(reverse_lazy("user_login"))
 

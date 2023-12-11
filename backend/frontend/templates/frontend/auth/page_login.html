@@ -1,30 +1,11 @@
-{% extends "frontend/auth/base.html" %} {% block content %}
-<div class="mx-auto w-1/3 p-6 bg-white rounded">
-  <h1 class="{{ styles.heading1 }}">Login</h1>
-  <hr class="my-2" />
-  {% if messages %}
-    {% for message in messages %}
-        <p>
-            <p>{{ message }}</p>
-        </p>
-    {% endfor %}
-  {% endif %}
-
-  {% if form.non_field_errors %}
-    <div class="border border-red-500 bg-red-100 rounded p-3 mb-4 text-sm">
-      {% for error in form.non_field_errors %}
-          <p class="text-red-500">{{ error }}</p>
-      {% endfor %}
-    </div>
-  {% endif %}
-
+{% extends "frontend/auth/base.html" %}
+{% block auth_heading %}Login{% endblock %}
+{% block auth_content %}
   <form action="{% url 'user_login' %}" method="post">
-    {% csrf_token %}
     {{ form.as_p }}
     <div class="my-3">
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>
     <button class="{{ styles.button_primary_small }}" type="submit">Login</button>
   </form>
-</div>
 {% endblock %}
