@@ -61,21 +61,19 @@ def is_super(user):
     return user.is_superuser
 
 
-def has_view_access(logged_user):
+def can_view_user_board(logged_in_user):
     request = get_current_request()
-
     viewed_user_id = request.resolver_match.kwargs.get("user_id")
 
-    if logged_user.id == viewed_user_id or is_super(logged_user):
+    if logged_in_user.id == viewed_user_id or logged_in_user.is_superuser:
         return True
 
     viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
     viewed_user_teams = viewed_user_obj.teams()
 
     if len(viewed_user_teams):
-        checker = ObjectPermissionChecker(logged_user)
+        checker = ObjectPermissionChecker(logged_in_user)
         checker.prefetch_perms(viewed_user_teams)
-
         for view_permission in Team.PERMISSION_VIEW:
             if any(
                 [checker.has_perm(view_permission, team) for team in viewed_user_teams]
@@ -85,7 +83,7 @@ def has_view_access(logged_user):
     return False
 
 
-@user_passes_test(has_view_access)
+@user_passes_test(can_view_user_board)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
@@ -93,7 +91,7 @@ def user_board(request, user_id):
     return render(request, "frontend/user/page_board.html", context)
 
 
-@user_passes_test(has_view_access)
+@user_passes_test(can_view_user_board)
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
