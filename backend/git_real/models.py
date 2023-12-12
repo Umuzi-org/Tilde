@@ -46,6 +46,9 @@ class Repository(models.Model, Mixins):
             "flavour_names": project.flavour_names if project else None,
         }
 
+    def get_github_repo_link(self):
+        return f"https://github.com/{self.owner.replace('.','-')}/{self.full_name}"
+
 
 class Commit(models.Model, Mixins):
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
@@ -127,7 +130,6 @@ class PullRequest(models.Model, Mixins):
 
 
 class PullRequestReview(models.Model, Mixins):
-
     CONTRADICTED = "d"
 
     REVIEW_VALIDATED_STATUS_CHOICES = [
@@ -241,7 +243,6 @@ class Push(models.Model, Mixins):
 
     @classmethod
     def create_or_update_from_github_api_data(cls, repo, request_body):
-
         if request_body["head_commit"] is None and bool(request_body["pusher"]):
             return None
         else:
@@ -293,5 +294,4 @@ class Push(models.Model, Mixins):
             "card": card_id,
             "title": project.content_item.title if project else None,
             "flavour_names": project.flavour_names if project else None,
-    }
-
+        }

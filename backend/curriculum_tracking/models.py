@@ -1619,17 +1619,53 @@ class AgileCard(
 
         return [review.user for review in reviews]
 
-    def request_user_can_start(self):
-        """can the user start this card?
+    def request_user_can_start(self, user=None):
+        """
+        Check if current user can start this card
+
+        This function is only used in template rendering and we are using threadlocals,
+        that is why we need to avoid argument parameters unless they're for testing purposes
+        """
+        if user is None:
+            from threadlocal_middleware import get_current_user
+
+            user = get_current_user()
+
+        if user is not None:
+            can_start = self.can_start()
+            is_assignee = self.assignees.first() == user
+
+            if is_assignee and can_start:
+                return True
+
+            is_superuser = user.is_superuser
+            can_force_start = self.can_force_start()
+
+            if is_superuser and (can_force_start or can_start):
+                return True
+
+            has_manage_cards_permission = any(
+                [
+                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
+                    for team in self.assignees.first().teams()
+                ]
+            )
+
+            if has_manage_cards_permission and (can_force_start or can_start):
+                return True
+
+        return False
+
+    def request_user_is_assignee(self):
+        """
+        Checks if current user is assignee.
         This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
         """
         from threadlocal_middleware import get_current_user
 
         user = get_current_user()
-        # TODO: return True if:
-        # the card is Ready
-        # the user is allowed to start the card (ie. they are an assignee, or have permission)
-        return True
+
+        return self.assignees.first() == user
 
 
 class BurndownSnapshot(models.Model):

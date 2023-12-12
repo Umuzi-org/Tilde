@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
     "automarker.apps.AutomarkerConfig",
     "frontend",
+    "django.contrib.humanize",
 ]
 
 SITE_ID = 1  # from allauth docs
