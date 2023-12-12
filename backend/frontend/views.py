@@ -59,7 +59,7 @@ def is_super(user):
     return user.is_superuser
 
 
-@user_passes_test(is_super)
+# @user_passes_test(is_super)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
@@ -118,50 +118,68 @@ def users_and_teams_nav(request):
 # @user_passes_test(is_super)
 def partial_teams_list(request):
     user = request.user
-    checker = ObjectPermissionChecker(user)
-    print("hey", checker)
-    user_teams = user.teams()
+    
+    
+    # user_teams = user.teams()
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
 
+    # all_teams = Team.objects.filter(active=True).order_by(
+    #     "name"
+    # )  # TODO: only show teams that the current user is allowed to see
+
+    # is_superuser = user.is_superuser
+    # is_assignee = any([team for team in all_teams if team in user_teams])
+    # has_manage_team_permissions = [
+    #     team for team in user_teams if checker.has_perm(Team.PERMISSION_VIEW, team)
+    # ]
+
+    # filtered_teams = []
+    # if is_superuser:
+    #     filtered_teams = all_teams
+    # elif is_assignee and len(has_manage_team_permissions):
+    #     filtered_teams = has_manage_team_permissions + user_teams
+    # if len(has_manage_team_permissions):
+    #     filtered_teams = has_manage_team_permissions
+    # if is_assignee:
+    #     filtered_teams = user_teams
+
+    # for team in all_teams:
+    #     print(
+    #         "@0 user",
+    #         user,
+    #     )
+    #     print(
+    #         "@1 has manage perm on",
+    #         checker.has_perm(Team.PERMISSION_VIEW, team),
+    #         team,
+    #     )
+    #     if user in user_teams or checker.has_perm(Team.PERMISSION_VIEW, team):
+    #         # teams_allowed.append(team)
+    #         pass
+
+    # print("#1 all teams", all_teams)
+    # print("#2 teams allowed", filtered_teams)
+    from guardian.shortcuts import get_objects_for_user,get_user_perms,get_perms
+
     all_teams = Team.objects.filter(active=True).order_by(
-        "name"
-    )  # TODO: only show teams that the current user is allowed to see
-
-    is_superuser = user.is_superuser
-    is_assignee = any([team for team in all_teams if team in user_teams])
-    has_manage_team_permissions = [
-        team for team in user_teams if checker.has_perm(Team.PERMISSION_VIEW, team)
-    ]
-
-    filtered_teams = []
-    if is_superuser:
-        filtered_teams = all_teams
-    elif is_assignee and len(has_manage_team_permissions):
-        filtered_teams = has_manage_team_permissions + user_teams
-    if len(has_manage_team_permissions):
-        filtered_teams = has_manage_team_permissions
-    if is_assignee:
-        filtered_teams = user_teams
-
-    for team in all_teams:
-        print(
-            "@0 user",
-            user,
-        )
-        print(
-            "@1 has manage perm on",
-            checker.has_perm(Team.PERMISSION_VIEW, team),
-            team,
-        )
-        if user in user_teams or checker.has_perm(Team.PERMISSION_VIEW, team):
-            # teams_allowed.append(team)
-            pass
-
-    print("#1 all teams", all_teams)
-    print("#2 teams allowed", filtered_teams)
-    teams = filtered_teams[current_team_count : current_team_count + limit]
-    has_next_page = len(filtered_teams) > current_team_count + limit
+            "name"
+        ) 
+    if user.is_superuser:
+        print("#superuser:",user)
+        teams = all_teams
+        # print("#superuser perms:",get_user_perms(user,all_teams))
+    else:
+        # we have to filter the teams
+        print("#user:",user)
+        print("#user perms:",get_perms(user, all_teams[2]))
+        print("@1",all_teams)
+        teams = get_objects_for_user(
+                    user=user, perms=Team.PERMISSION_VIEW, klass=all_teams,any_perm=True
+                )
+        print("@2",teams)
+    teams = teams[current_team_count : current_team_count + limit]
+    has_next_page = len(teams) > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -173,7 +191,7 @@ def partial_teams_list(request):
     )
 
 
-@user_passes_test(is_super)
+# @user_passes_test(is_super)
 def partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
