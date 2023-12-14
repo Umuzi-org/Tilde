@@ -10,14 +10,14 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
         self.viewed_user_team = TeamFactory()
         self.viewed_user = UserFactory(
-            email="learner.umuzi.org", is_staff=True  # TODO: remove this
-        )
+            email="learner.umuzi.org", is_staff=True
+        )  # TODO: remove all instances of is_staff=True when auth flow is complete.
         self.viewed_user.set_password(self.viewed_user.email)
         self.viewed_user.save()
         self.viewed_user_team.user_set.add(self.viewed_user)
 
         self.user_without_access = UserFactory(
-            email="user_without_access.umuzi.org", is_staff=True  # TODO: remove this)
+            email="user_without_access.umuzi.org", is_staff=True
         )
         self.user_without_access.set_password(self.user_without_access.email)
         self.user_without_access.save()
@@ -109,6 +109,10 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
         self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_user_without_view_access_cannot_view_other_user_board(self):
+        """
+        @user_passes_test(func) mixin we use to control access
+        redirects user to login page if they don't pass the test.
+        """
         self.do_login(self.user_without_access)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
 
