@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+{% block main_content %}
+  {% block content %}
+    <div class="mx-auto w-1/3 p-6 bg-white rounded">
+      <h1 class="{{ styles.heading1 }}">
+        {% block auth_heading %}{% endblock %}
+      </h1>
+      <hr class="my-2" />
+      {% if messages %}
+        {% for message in messages %}
+          <div class="{{ message.extra_tags }}" role="alert">
+            <div class="text-sm leading-relaxed">
+              {{ message.message }}
+            </div>
+          </div>
+        {% endfor %}
+        <br/>
+      {% endif %}
+      {% block auth_content %}{% endblock %}
+    </div>
+  {% endblock %}
+{% endblock %}
