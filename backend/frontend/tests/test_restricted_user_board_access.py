@@ -10,20 +10,21 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
         self.viewed_user_team = TeamFactory()
         self.viewed_user = UserFactory(
-            email="learner.umuzi.org", is_staff=True
-        )  # TODO: remove all instances of is_staff=True when auth flow is complete.
+            email="learner.umuzi.org",
+        )
         self.viewed_user.set_password(self.viewed_user.email)
         self.viewed_user.save()
         self.viewed_user_team.user_set.add(self.viewed_user)
 
         self.user_without_access = UserFactory(
-            email="user_without_access.umuzi.org", is_staff=True
+            email="user_without_access.umuzi.org",
         )
         self.user_without_access.set_password(self.user_without_access.email)
         self.user_without_access.save()
 
         self.superuser = UserFactory(
-            is_superuser=True, email="super@email.com", is_staff=True
+            is_superuser=True,
+            email="super@email.com",
         )
         self.superuser.set_password(self.superuser.email)
         self.superuser.save()
@@ -38,7 +39,7 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
     def _setup_user_with_manage_card_permission(self):
         self.user_with_manage_card_permission = UserFactory(
-            email="user_with_manage_card_permission.umuzi.org", is_staff=True
+            email="user_with_manage_card_permission.umuzi.org"
         )
         self.user_with_manage_card_permission.set_password(
             self.user_with_manage_card_permission.email
@@ -52,7 +53,7 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
     def _setup_user_with_view_permission(self):
         self.user_with_view_permission = UserFactory(
-            email="user_with_view_permission.umuzi.org", is_staff=True
+            email="user_with_view_permission.umuzi.org"
         )
         self.user_with_view_permission.set_password(
             self.user_with_view_permission.email
@@ -66,7 +67,7 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
     def _setup_user_with_review_cards_permission(self):
         self.user_with_review_cards_permission = UserFactory(
-            email="user_with_review_cards_permission.umuzi.org", is_staff=True
+            email="user_with_review_cards_permission.umuzi.org"
         )
         self.user_with_review_cards_permission.set_password(
             self.user_with_review_cards_permission.email
@@ -79,9 +80,7 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
         )
 
     def _setup_trusted_user(self):
-        self.trusted_reviewer = UserFactory(
-            email="trusted_reviewer.umuzi.org", is_staff=True
-        )
+        self.trusted_reviewer = UserFactory(email="trusted_reviewer.umuzi.org")
         self.trusted_reviewer.set_password(self.trusted_reviewer.email)
         self.trusted_reviewer.save()
         assign_perm(
@@ -118,7 +117,7 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
         self.page.goto(url)
 
-        login_url = "/accounts/login"  # TODO: update this to the new login page
+        login_url = "/login"
         final_page_url = self.page.url
 
         self.assertIn(login_url, final_page_url)
