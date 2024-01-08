@@ -27,22 +27,26 @@ class TestPage(FrontendTestMixin):
         user.set_password(user.email)
         user.save()
 
-        teams = [TeamFactory() for _ in range(5)]
+        teams_user_has_view_permissions_for = [TeamFactory() for _ in range(3)]
+        teams_user_has_no_view_permissions_for = [TeamFactory() for _ in range(3)]
 
-        assign_perm(
-            Team.PERMISSION_MANAGE_CARDS,
-            user,
-            teams[0],
-        )
+        for team in teams_user_has_view_permissions_for:
+            assign_perm(
+                Team.PERMISSION_MANAGE_CARDS,
+                user,
+                team,
+            )
+
         self.do_login(user)
-        url = self.reverse_url("users_and_teams_nav")
+        url = self.reverse_url("partial_teams_list")
         self.page.goto(url)
 
         body = self.page.text_content("body")
 
-        # make sure that on the first team name shows up in the body
-        for i in range(len(teams)):
-            # if i == 0:
-            #     self.assertIn(teams[0].name, body)
-            # else:
-            self.assertNotIn(teams[i].name, body)
+        # can see teams when the user has view perms
+        for team in teams_user_has_view_permissions_for:
+            self.assertIn(team.name, body)
+
+        # user cannot see teams without view permissions
+        for team in teams_user_has_no_view_permissions_for:
+            self.assertNotIn(team.name, body)
