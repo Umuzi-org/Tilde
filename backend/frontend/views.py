@@ -175,119 +175,14 @@ def user_reset_password(request, token):
     return render(request, "frontend/auth/page_password_reset.html", context)
 
 
-def user_login(request):
-    form = CustomAuthenticationForm()
-    context = {"form": form}
-
-    if request.method == "POST":
-        form = CustomAuthenticationForm(request=request, data=request.POST)
-        context.update({"form": form})
-
-        if form.is_valid():
-            login(
-                request=request,
-                user=form.user_cache,
-            )
-
-            redirect_to = request.GET.get(
-                "next",
-                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id}),
-            )
-
-            return redirect(redirect_to)
-
-    return render(request, "frontend/auth/page_login.html", context)
-
-
-@login_required()
-def user_logout(request):
-    logout(request)
-    return redirect(reverse_lazy("user_login"))
-
-
-def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
-    current_site = get_current_site(request)
-    subject = "Reset your Password"
-
-    body = render_to_string(
-        template_name="frontend/auth/email_password_reset.html",
-        context={
-            "domain": current_site.domain,
-            "url": form.get_password_reset_url(),
-        },
-    )
-
-    email = EmailMultiAlternatives(
-        subject=subject,
-        body=strip_tags(body),
-        from_email=None,
-        to=[form.cleaned_data["email"]],
-    )
-    email.attach_alternative(body, "text/html")
-    email.send(fail_silently=False)
-
-
-def user_forgot_password(request):
-    form = ForgotPasswordForm()
-
-    context = {"form": form}
-
-    if request.method == "POST":
-        form = ForgotPasswordForm(data=request.POST)
-        context.update({"form": form})
-
-        if form.is_valid():
-            if form.user_exists():
-                _send_password_reset_email(request, form)
-            return redirect(reverse_lazy("user_password_reset_done"))
-
-    return render(request, "frontend/auth/page_forgot_password.html", context)
-
-
-def user_password_reset_done(request):
-    return render(request, "frontend/auth/page_password_reset_done.html")
-
-
-def user_reset_password(request, token):
-    signer = ForgotPasswordForm.signer
-    try:
-        email = signer.unsign(token, max_age=60 * 10)
-    except (SignatureExpired, BadSignature):
-        return render(
-            request,
-            "frontend/auth/page_password_reset.html",
-            {"error": "Invalid token or expired token. Please try resetting again."},
-        )
-
-    user = User.objects.get(email=email)
-    form = CustomSetPasswordForm(user=user)
-
-    context = {"form": form}
-
-    if request.method == "POST":
-        form = CustomSetPasswordForm(user=user, data=request.POST)
-        context.update({"form": form})
-
-        if form.is_valid():
-            form.save()
-            messages.add_message(
-                request=request,
-                level=messages.INFO,
-                message="Password reset successfully. You can now login.",
-                extra_tags=styles["alert_info"],
-            )
-            return redirect(reverse_lazy("user_login"))
-
-    return render(request, "frontend/auth/page_password_reset.html", context)
-
-
+user_passes_test(is_super)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
     context = {"user": user, "columns": board_columns}
     return render(request, "frontend/user/page_board.html", context)
 
-
+user_passes_test(is_super)
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
@@ -322,7 +217,7 @@ def action_start_card(request, card_id):
         },
     )
 
-
+user_passes_test(is_super)
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -333,7 +228,7 @@ def users_and_teams_nav(request):
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
-
+user_passes_test(is_super)
 def partial_teams_list(request):
     user = request.user
 
@@ -361,7 +256,7 @@ def partial_teams_list(request):
         request, "frontend/users_and_teams_nav/partial_teams_list.html", context
     )
 
-
+user_passes_test(is_super)
 def partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -372,7 +267,7 @@ def partial_team_users_list(request, team_id):
         request, "frontend/users_and_teams_nav/partial_team_users_list.html", context
     )
 
-
+user_passes_test(is_super)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -381,7 +276,7 @@ def team_dashboard(request, team_id):
     }
     return render(request, "frontend/team/page_dashboard.html", context)
 
-
+user_passes_test(is_super)
 def partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
