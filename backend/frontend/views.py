@@ -175,14 +175,13 @@ def user_reset_password(request, token):
     return render(request, "frontend/auth/page_password_reset.html", context)
 
 
-user_passes_test(is_super)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
     context = {"user": user, "columns": board_columns}
     return render(request, "frontend/user/page_board.html", context)
 
-user_passes_test(is_super)
+
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
@@ -217,7 +216,7 @@ def action_start_card(request, card_id):
         },
     )
 
-user_passes_test(is_super)
+
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -228,7 +227,7 @@ def users_and_teams_nav(request):
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
-user_passes_test(is_super)
+
 def partial_teams_list(request):
     user = request.user
 
@@ -256,7 +255,7 @@ def partial_teams_list(request):
         request, "frontend/users_and_teams_nav/partial_teams_list.html", context
     )
 
-user_passes_test(is_super)
+
 def partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -267,7 +266,7 @@ def partial_team_users_list(request, team_id):
         request, "frontend/users_and_teams_nav/partial_team_users_list.html", context
     )
 
-user_passes_test(is_super)
+
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -276,7 +275,7 @@ def team_dashboard(request, team_id):
     }
     return render(request, "frontend/team/page_dashboard.html", context)
 
-user_passes_test(is_super)
+
 def partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
