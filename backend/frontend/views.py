@@ -21,6 +21,7 @@ from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 from .theme import styles
 
+import curriculum_tracking.activity_log_entry_creators as log_creators
 
 User = get_user_model()
 
@@ -209,7 +210,21 @@ def partial_user_board_column(request, user_id, column_id):
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
-    # TODO implement this
+
+    content_item_type = card.content_item.content_type
+    print("#1", content_item_type)
+    if content_item_type == ContentItem.TOPIC:
+        card.start_topic()
+    elif content_item_type == ContentItem.PROJECT:
+        pass
+    else:
+        raise NotImplemented(
+            f"Cannot start card of type {card.content_item.content_type}"
+        )
+    print("#2", content_item_type)
+    log_creators.log_card_started(card=card, actor_user=request.user)
+    print("#3", content_item_type)
+
     return render(
         request,
         "frontend/user/action_card_moved.html",
