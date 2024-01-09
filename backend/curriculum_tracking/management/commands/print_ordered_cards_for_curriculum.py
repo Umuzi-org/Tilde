@@ -15,6 +15,7 @@ class Command(BaseCommand):
         curriculum = Curriculum.objects.get(name=name)
 
         headings = [
+            "curriculum_name",
             "id",
             "title",
             "flavours",
@@ -31,6 +32,7 @@ class Command(BaseCommand):
                 )
                 writer.writerow(
                     [
+                        name,
                         x.content_item.id,
                         x.content_item,
                         x.flavours,
