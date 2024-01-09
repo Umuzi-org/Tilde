@@ -216,7 +216,7 @@ def action_start_card(request, card_id):
     if content_item_type == ContentItem.TOPIC:
         card.start_topic()
     elif content_item_type == ContentItem.PROJECT:
-        pass
+        card.start_project()
     else:
         raise NotImplemented(
             f"Cannot start card of type {card.content_item.content_type}"
