@@ -1,0 +1,4 @@
+- Make sure card gets moved to the right column
+- API call to the right endpoint to start card
+- Make sure the action gets logged
+- Tests for starting cards
