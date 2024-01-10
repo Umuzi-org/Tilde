@@ -1,4 +1,4 @@
-{% extends "frontend/logged_in_base.html" %}
+{% extends "frontend/base_logged_in.html" %}
 
 {% load static %}
 {% block head %}
@@ -6,7 +6,7 @@
 
 
 {% block content %}
-{% include "frontend/team/component_team_nav_header.html" %}
+{% include "frontend/team/partial_team_nav_header.html" %}
 
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
