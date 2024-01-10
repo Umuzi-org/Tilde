@@ -1,5 +1,5 @@
 {% for card in cards %}
-    {% include "frontend/user/component_card.html" %}
+    {% include "frontend/user/board/partial_card.html" %}
 {% endfor %}
 
 {% if has_next_page %}
@@ -7,7 +7,7 @@
     type="button" 
     class="{{ styles.button_secondary_small }} w-full"
     id="more_cards_{{ column_id }}"
-    hx-get="{% url 'partial_user_board_column' user_id column_id %}"
+    hx-get="{% url 'view_partial_user_board_column' user_id column_id %}"
     hx-vals='js:{count: countLoadedPageItems("column_{{column_id}}")}'
     hx-trigger="click"
     hx-swap="outerHTML"
