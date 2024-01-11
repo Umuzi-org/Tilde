@@ -4,7 +4,7 @@ from core.tests.factories import UserFactory, TeamFactory
 from .frontend_test_mixin import FrontendTestMixin
 
 
-class TestUserBoardControlledAccess(FrontendTestMixin):
+class TestUserBoardAuthorization(FrontendTestMixin):
     def setUp(self):
         super().setUp()
 
@@ -109,18 +109,18 @@ class TestUserBoardControlledAccess(FrontendTestMixin):
 
     def test_user_without_view_access_cannot_view_other_user_board(self):
         """
-        @user_passes_test(func) mixin we use to control access
-        redirects user to login page if they don't pass the test.
+        Custom @user_passes_test_or_forbidden(func) mixin we use to control
+        access to user board views should return a 403 response if the user
+        does not have access to the user board.
         """
         self.do_login(self.user_without_access)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
 
         self.page.goto(url)
 
-        login_url = "/login"
-        final_page_url = self.page.url
+        body = self.page.text_content("body")
 
-        self.assertIn(login_url, final_page_url)
+        self.assertIn("You don't have permission to access this page", body)
 
     def test_user_with_manage_card_permission_can_view_user_board(self):
         self.do_login(self.user_with_manage_card_permission)

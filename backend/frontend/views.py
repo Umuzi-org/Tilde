@@ -1,6 +1,8 @@
 import json
+from functools import wraps
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.core.signing import SignatureExpired, BadSignature
 from django.contrib import messages
@@ -71,6 +73,29 @@ def is_super(user):
     return user.is_superuser
 
 
+def user_passes_test_or_forbidden(test_func):
+    """
+    Decorator for views that checks that the user passes the given test,
+    returning a 403 Forbidden response if necessary. The default user_passes_test
+    decorator redirects to the login page, which is not what we want for the
+    frontend, or at least some of the frontend views.
+    """
+
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if test_func(request.user):
+                return view_func(request, *args, **kwargs)
+
+            return HttpResponseForbidden(
+                "You don't have permission to access this page."
+            )
+
+        return _wrapped_view
+
+    return decorator
+
+
 def can_view_user_board(logged_in_user):
     request = get_current_request()
     viewed_user_id = request.resolver_match.kwargs.get("user_id")
@@ -86,7 +111,7 @@ def can_view_user_board(logged_in_user):
         checker.prefetch_perms(viewed_user_teams)
         for view_permission in Team.PERMISSION_VIEW:
             if any(
-                [checker.has_perm(view_permission, team) for team in viewed_user_teams]
+                (checker.has_perm(view_permission, team) for team in viewed_user_teams)
             ):
                 return True
 
@@ -199,7 +224,7 @@ def user_reset_password(request, token):
     return render(request, "frontend/auth/page_password_reset.html", context)
 
 
-@user_passes_test(can_view_user_board)
+@user_passes_test_or_forbidden(can_view_user_board)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
@@ -207,7 +232,7 @@ def user_board(request, user_id):
     return render(request, "frontend/user/page_board.html", context)
 
 
-@user_passes_test(can_view_user_board)
+@user_passes_test_or_forbidden(can_view_user_board)
 def partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
