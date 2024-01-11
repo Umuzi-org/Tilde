@@ -44,6 +44,7 @@ class TestForgotPassword(FrontendTestMixin):
         self.page.goto(f"{self.live_server_url}{extracted_url.path}")
 
         reset_page_body = self.page.text_content("body")
+
         self.assertIn("New password", reset_page_body)
 
     def test_does_not_send_password_reset_email_if_user_does_not_exist(self):

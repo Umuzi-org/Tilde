@@ -47,7 +47,6 @@ class FrontendTestMixin(StaticLiveServerTestCase):
         logs the user in. Assumes the email address ands password are the same.
         self.page will be on the page after login
         """
-        # TODO: Update this so it works with the new login page
         self.page.goto(f"{self.live_server_url}/login/")
         self.page.fill("[name=username]", user.email)
         self.page.fill("[name=password]", user.email)
