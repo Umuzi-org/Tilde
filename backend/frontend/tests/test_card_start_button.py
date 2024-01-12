@@ -19,49 +19,52 @@ class TestCardStartButton(FrontendTestMixin):
         # url = self.reverse_url("user_board")
         # self.page.goto(url)
 
-        self.backlog_column = self.page.get_by_role("div").and_(
-            self.page.get_by_title("Backlog")
-        )
-        self.ip_column = self.page.get_by_role("div").and_(
-            self.page.get_by_title("In Progress")
-        )
+        # self.backlog_column = self.page.get_by_role("div").and_(
+        #     self.page.get_by_title("Backlog")
+        # )
+
+        # self.ip_column = self.page.get_by_role("div").and_(
+        #     self.page.get_by_title("In Progress")
+        # )
 
     def make_topic_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
             status=AgileCard.READY,
         )
+        print("#1", self.card)
         self.card.assignees.set([self.user])
 
-    def make_project_card(self, content_type):
-        self.card = AgileCardFactory(
-            content_item=ContentItemFactory(
-                content_type=content_type,
-                project_submission_type=ContentItem.PROJECT,
-            ),
-            status=AgileCard.READY,
-        )
-        self.card.assignees.set([self.user])
+    # def make_project_card(self, content_type):
+    #     self.card = AgileCardFactory(
+    #         content_item=ContentItemFactory(
+    #             content_type=content_type,
+    #             project_submission_type=ContentItem.PROJECT,
+    #         ),
+    #         status=AgileCard.READY,
+    #     )
+    #     self.card.assignees.set([self.user])
 
     def test_start_button_moves_topic_card_to_ip_column(self):
         self.make_topic_card()
-        start_button = self.page.get_by_role("button").and_(
-            self.page.get_by_title("Start")
-        )
 
-        print(self.card)
-        print(self.backlog_column)
-        print(self.ip_column)
-        print(start_button)
+        self.page.click("text=Start")
 
-    def test_start_button_moves_project_card__to_ip_column(self):
-        self.make_project_card(content_type=ContentItem.PROJECT)
-        self.make_project_card(content_type=ContentItem.LINK)
-        start_button = self.page.get_by_role("button").and_(
-            self.page.get_by_title("Start")
-        )
+        ip_column = self.page.text_content("#column_IP")
+        backlog_column = self.page.text_content("#column_RB")
+        topic_card = self.page.text_content(f"#card_{self.card.id}")
 
-        print(self.card)
-        print(self.backlog_column)
-        print(self.ip_column)
-        print(start_button)
+        self.assertIn(topic_card, ip_column)
+        self.assertNotIn(topic_card, backlog_column)
+
+    # def test_start_button_moves_project_card__to_ip_column(self):
+    #     self.make_project_card(content_type=ContentItem.PROJECT)
+    #     self.make_project_card(content_type=ContentItem.LINK)
+    #     start_button = self.page.get_by_role("button").and_(
+    #         self.page.get_by_title("Start")
+    #     )
+
+    # print(self.card)
+    # print(self.backlog_column)
+    # print(self.ip_column)
+    # print(start_button)
