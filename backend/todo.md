@@ -1,2 +1,1 @@
-- figure out how blocked topics get updated when prerequisites are met
-- Tests if needed
+- Add tests

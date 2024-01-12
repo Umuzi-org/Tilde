@@ -214,7 +214,7 @@ def action_start_card(request, card_id):
     card = get_object_or_404(AgileCard, id=card_id)
 
     content_item_type = card.content_item.content_type
-    print("#1", content_item_type)
+
     if content_item_type == ContentItem.TOPIC:
         card.start_topic()
     elif content_item_type == ContentItem.PROJECT:
@@ -223,9 +223,8 @@ def action_start_card(request, card_id):
         raise NotImplemented(
             f"Cannot start card of type {card.content_item.content_type}"
         )
-    print("#2", content_item_type)
+
     log_creators.log_card_started(card=card, actor_user=request.user)
-    print("#3", content_item_type)
 
     return render(
         request,
