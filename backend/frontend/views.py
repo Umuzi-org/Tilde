@@ -180,7 +180,7 @@ def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
     context = {"user": user, "columns": board_columns}
-    return render(request, "frontend/user/page_board.html", context)
+    return render(request, "frontend/user/board/page.html", context)
 
 
 # TODO: Restrict access better when the PR #676 has been merged
@@ -201,7 +201,9 @@ def partial_user_board_column(request, user_id, column_id):
         "column_id": column_id,
         "has_next_page": has_next_page,
     }
-    return render(request, "frontend/user/partial_user_board_column.html", context)
+    return render(
+        request, "frontend/user/board/view_partial_user_board_column.html", context
+    )
 
 
 @user_passes_test(is_super)
@@ -212,7 +214,7 @@ def action_start_card(request, card_id):
     # TODO implement this
     return render(
         request,
-        "frontend/user/action_card_moved.html",
+        "frontend/user/board/view_partial_action_card_moved.html",
         {
             "card": card,
         },
@@ -256,7 +258,7 @@ def partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/partial_teams_list.html", context
+        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
     )
 
 
@@ -268,7 +270,9 @@ def partial_team_users_list(request, team_id):
         "users": users,
     }
     return render(
-        request, "frontend/users_and_teams_nav/partial_team_users_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_team_users_list.html",
+        context,
     )
 
 
@@ -279,7 +283,7 @@ def team_dashboard(request, team_id):
     context = {
         "team": team,
     }
-    return render(request, "frontend/team/page_dashboard.html", context)
+    return render(request, "frontend/team/dashboard/page.html", context)
 
 
 # TODO: Restrict access better when the PR #676 has been merged
@@ -332,4 +336,4 @@ def partial_team_user_progress_chart(request, user_id):
         ),
     }
 
-    return render(request, "frontend/components/chartjs.html", context)
+    return render(request, "frontend/js_exec_render_chartjs.html", context)

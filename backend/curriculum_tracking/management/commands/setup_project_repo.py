@@ -18,8 +18,12 @@ class Command(BaseCommand):
         flavours = [s for s in options["flavours"].split(",") if s]
         projects = RecruitProject.objects.filter(recruit_users__email__in=[assignee])
         projects = projects.filter(content_item__title=content_item)
-        for project in projects:
 
+        found = False
+        for project in projects:
             if project.flavours_match(flavours):
                 print("found a match")
+                found = True
                 project.setup_repository()
+
+        assert found, "no matching project found!"
