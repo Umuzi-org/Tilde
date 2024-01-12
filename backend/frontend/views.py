@@ -43,21 +43,24 @@ board_columns = [
         "id": AgileCard.IN_PROGRESS,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Review Feedback",
         "id": AgileCard.REVIEW_FEEDBACK,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.REVIEW_FEEDBACK)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Review",
         "id": AgileCard.IN_REVIEW,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Complete",
