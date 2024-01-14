@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from guardian.shortcuts import get_objects_for_user
+from guardian.shortcuts import get_objects_for_user, get_groups_with_perms
 from core import models
 import re
 
@@ -79,10 +79,18 @@ class AddGithubCollaboratorForm(forms.Form):
     @staticmethod
     def get_permitted_teams_for_user(user) -> list:
         teams = []
+        collaborator_permissions = models.Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD
         for team in get_objects_for_user(
             user,
-            models.Team.PERMISSION_REPO_COLLABORATER_AUTO_ADD,
+            collaborator_permissions,
             klass=models.Team.objects.filter(active=True),
+            any_perm=True,
         ):
             teams.append(team.name)
+
+        for team in models.Team.get_teams_from_user_ids([user.id]):
+            for group, perms in get_groups_with_perms(team, attach_perms=True).items():
+                if set(perms).intersection(set(collaborator_permissions)):
+                    teams.append(group.name)
+
         return sorted(set(teams))
