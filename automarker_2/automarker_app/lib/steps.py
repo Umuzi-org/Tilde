@@ -764,17 +764,18 @@ class PythonExecuteJupyterNotebooks(Step):
                 )
             else:
                 l = stderr.strip().split("\n")
-                if len(l) == 2:
-                    # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
 
-                    if ("Converting notebook" not in l[0]) and ("Writing" not in l[1]):
-                        breakpoint()
-                        not_sure
+                start_line_prefix = "[NbConvertApp] Converting notebook"
+                end_line_prefix = "[NbConvertApp] Writing"
 
-                else:
+                start_line_present = any(
+                    line.startswith(start_line_prefix) for line in l
+                )
+                end_line_present = any(line.startswith(end_line_prefix) for line in l)
+
+                if not start_line_present or not end_line_present:
                     breakpoint()
-                    # not actually sure what would cause this...
-                    what
+                    not_sure
 
         self.set_outcome(STEP_STATUS_PASS)
 
