@@ -51,10 +51,10 @@ class Command(BaseCommand):
                     for s in x.content_item.tags.all():
                         if "skill/" in str(s):
                             content_items_list.append(x.content_item)
-                            skills_name_and_amount[str(s)] = skills_name_and_amount.get(
-                                str(s), 0
+                            skills_name_and_amount[(str(s)[6:])] = skills_name_and_amount.get(
+                                (str(s)[6:]), 0
                             )
-                            skills_name_and_amount[str(s)] += 1
+                            skills_name_and_amount[(str(s)[6:])] += 1
                             break  # for now we assume that each content item falls only into one skill
 
         print("content items:")
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                     card_end = None
 
                 tags_list = [
-                    str(s)
+                    (str(s)[6:])
                     for s in agile_card.content_item.tags.all()
                     if "skill/" in str(s)
                 ]
@@ -175,6 +175,10 @@ class Command(BaseCommand):
 
             progress_over_time_df = pd.DataFrame(columns=progress_over_time_columns)
 
+            progress_over_time_v2_columns = ["date"]
+            progress_over_time_v2_columns.extend(skills_list)
+            progress_over_time_df_v2 = pd.DataFrame(columns=progress_over_time_v2_columns)
+
             for email in team_emails:
 
                 temp_learner_skills_df = skills_df.loc[email]
@@ -235,6 +239,7 @@ class Command(BaseCommand):
                         ] = percent_completed_cards_at_tracking_date
 
 
+
                 temp_learner_progress_over_time_df_transposed = (
                     temp_learner_progress_over_time_df.T
                 )
@@ -249,11 +254,23 @@ class Command(BaseCommand):
                 progress_over_time_df = pd.concat(
                     [progress_over_time_df, temp_learner_progress_over_time_df_transposed]
                 )
+
+                #for v2 output
+                temp_learner_progress_over_time_df["learner"] = email
+                temp_learner_progress_over_time_df.index.name = "date"
+                temp_learner_progress_over_time_df.reset_index(inplace=True)
+                temp_learner_progress_over_time_df.set_index(
+                    "learner", inplace=True)
+                temp_learner_progress_over_time_df.index.name = None
+                progress_over_time_df_v2 = pd.concat([progress_over_time_df_v2, temp_learner_progress_over_time_df])
                 
 
 
             print(progress_over_time_df.head(30))
             progress_over_time_df.to_csv(f"gitignore/{team_name_for_file}_skills_progress_over_time.csv")
+
+            print(progress_over_time_df_v2.head(30))
+            progress_over_time_df_v2.to_csv(f"gitignore/{team_name_for_file}_skills_progress_over_time_v2.csv")
 
             skills_df.to_csv(f"gitignore/{team_name_for_file}_testing_skills.csv")
 
