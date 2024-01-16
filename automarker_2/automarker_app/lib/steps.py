@@ -765,6 +765,8 @@ class PythonExecuteJupyterNotebooks(Step):
             else:
                 l = stderr.strip().split("\n")
 
+                # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
+
                 start_line_prefix = "[NbConvertApp] Converting notebook"
                 end_line_prefix = "[NbConvertApp] Writing"
 
@@ -773,6 +775,7 @@ class PythonExecuteJupyterNotebooks(Step):
                 )
                 end_line_present = any(line.startswith(end_line_prefix) for line in l)
 
+                # We check for these lines only because there may be some warnings in stderr.
                 if not start_line_present or not end_line_present:
                     breakpoint()
                     not_sure
