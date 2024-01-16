@@ -1,26 +1,30 @@
 import json
+from functools import wraps
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
-from django.contrib.auth import get_user_model, login, logout
+from django.core.signing import SignatureExpired, BadSignature
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
-from django.views.decorators.csrf import csrf_exempt
-from django.core.signing import SignatureExpired, BadSignature
-
-from taggit.models import Tag
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, RecruitProject, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem
+
+from taggit.models import Tag
+from guardian.core import ObjectPermissionChecker
+
+from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 from .theme import styles
-
 
 User = get_user_model()
 
@@ -39,21 +43,24 @@ board_columns = [
         "id": AgileCard.IN_PROGRESS,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_PROGRESS)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Review Feedback",
         "id": AgileCard.REVIEW_FEEDBACK,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.REVIEW_FEEDBACK)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Review",
         "id": AgileCard.IN_REVIEW,
         "query": lambda user: AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
         .order_by("order")
-        .filter(assignees=user),
+        .filter(Q(assignees=user) | Q(reviewers__in=(user,)))
+        .distinct(),
     },
     {
         "title": "Complete",
@@ -67,6 +74,52 @@ board_columns = [
 
 def is_super(user):
     return user.is_superuser
+
+
+def user_passes_test_or_forbidden(test_func):
+    """
+    Decorator for views that checks that the user passes the given test,
+    returning a 403 Forbidden response if necessary. The default user_passes_test
+    decorator redirects to the login page, which is not what we want for the
+    frontend, or at least some of the frontend views.
+    """
+
+    def decorator(view_func):
+        @login_required()
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if test_func(request.user):
+                return view_func(request, *args, **kwargs)
+
+            return HttpResponseForbidden(
+                "You don't have permission to access this page."
+            )
+
+        return _wrapped_view
+
+    return decorator
+
+
+def can_view_user_board(logged_in_user):
+    request = get_current_request()
+    viewed_user_id = request.resolver_match.kwargs.get("user_id")
+
+    if logged_in_user.id == viewed_user_id or logged_in_user.is_superuser:
+        return True
+
+    viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
+    viewed_user_teams = viewed_user_obj.teams()
+
+    if len(viewed_user_teams):
+        checker = ObjectPermissionChecker(logged_in_user)
+        checker.prefetch_perms(viewed_user_teams)
+        for view_permission in Team.PERMISSION_VIEW:
+            if any(
+                (checker.has_perm(view_permission, team) for team in viewed_user_teams)
+            ):
+                return True
+
+    return False
 
 
 def user_login(request):
@@ -175,7 +228,7 @@ def user_reset_password(request, token):
     return render(request, "frontend/auth/page_password_reset.html", context)
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@user_passes_test_or_forbidden(can_view_user_board)
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
@@ -183,8 +236,8 @@ def user_board(request, user_id):
     return render(request, "frontend/user/board/page.html", context)
 
 
-# TODO: Restrict access better when the PR #676 has been merged
-def partial_user_board_column(request, user_id, column_id):
+@user_passes_test_or_forbidden(can_view_user_board)
+def view_partial_user_board_column(request, user_id, column_id):
     """The contents of one of the columns of the user's board"""
     current_card_count = int(request.GET.get("count", 0))
     limit = 10
