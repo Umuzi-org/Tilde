@@ -2,7 +2,6 @@ import json
 from functools import wraps
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.core.signing import SignatureExpired, BadSignature
 from django.contrib import messages
@@ -76,6 +75,10 @@ def is_super(user):
     return user.is_superuser
 
 
+def custom_permission_denied(request):
+    return render(request, "frontend/auth/page_permission_denied.html")
+
+
 def user_passes_test_or_forbidden(test_func):
     """
     Decorator for views that checks that the user passes the given test,
@@ -91,9 +94,7 @@ def user_passes_test_or_forbidden(test_func):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
 
-            return HttpResponseForbidden(
-                "You don't have permission to access this page."
-            )
+            return custom_permission_denied(request)
 
         return _wrapped_view
 
@@ -115,7 +116,8 @@ def can_view_user_board(logged_in_user):
         checker.prefetch_perms(viewed_user_teams)
         for view_permission in Team.PERMISSION_VIEW:
             if any(
-                (checker.has_perm(view_permission, team) for team in viewed_user_teams)
+                (checker.has_perm(view_permission, team)
+                 for team in viewed_user_teams)
             ):
                 return True
 
@@ -138,7 +140,8 @@ def user_login(request):
 
             redirect_to = request.GET.get(
                 "next",
-                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id}),
+                reverse_lazy("user_board", kwargs={
+                             "user_id": form.user_cache.id}),
             )
 
             return redirect(redirect_to)
@@ -243,9 +246,10 @@ def view_partial_user_board_column(request, user_id, column_id):
     limit = 10
 
     user = get_object_or_404(User, id=user_id)
-    all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
+    all_cards = [d for d in board_columns if d["id"]
+                 == column_id][0]["query"](user)
 
-    cards = all_cards[current_card_count : current_card_count + limit]
+    cards = all_cards[current_card_count: current_card_count + limit]
     has_next_page = len(all_cards) > current_card_count + limit
 
     context = {
@@ -294,7 +298,7 @@ def view_partial_teams_list(request):
     all_teams = Team.objects.filter(active=True).order_by(
         "name"
     )  # TODO: only show teams that the current user is allowed to see
-    teams = all_teams[current_team_count : current_team_count + limit]
+    teams = all_teams[current_team_count: current_team_count + limit]
     has_next_page = len(all_teams) > current_team_count + limit
 
     context = {
