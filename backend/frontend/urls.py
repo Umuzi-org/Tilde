@@ -18,14 +18,14 @@ urlpatterns = [
         name="user_reset_password",
     ),
     path(
-        "users_and_teams_nav/partial_teams_list/",
-        views.partial_teams_list,
-        name="partial_teams_list",
+        "users_and_teams_nav/view_partial_teams_list/",
+        views.view_partial_teams_list,
+        name="view_partial_teams_list",
     ),
     path(
-        "users_and_teams_nav/team/<int:team_id>/partial_team_users_list/",
-        views.partial_team_users_list,
-        name="partial_team_users_list",
+        "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
+        views.view_partial_team_users_list,
+        name="view_partial_team_users_list",
     ),
     # User board
     path("users/<int:user_id>/board", views.user_board, name="user_board"),
@@ -43,7 +43,7 @@ urlpatterns = [
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(
         "teams/any/dashboard/users/<int:user_id>/progress",
-        views.partial_team_user_progress_chart,
-        name="partial_team_user_progress_chart",
+        views.view_partial_team_user_progress_chart,
+        name="view_partial_team_user_progress_chart",
     ),
 ]

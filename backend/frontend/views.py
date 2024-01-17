@@ -308,7 +308,7 @@ def users_and_teams_nav(request):
 
 
 @login_required()
-def partial_teams_list(request):
+def view_partial_teams_list(request):
     user = request.user
 
     from guardian.shortcuts import get_objects_for_user
@@ -332,12 +332,14 @@ def partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_teams_list.html",
+        context,
     )
 
 
 @user_passes_test_or_forbidden(can_view_team)
-def partial_team_users_list(request, team_id):
+def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
     context = {
@@ -361,7 +363,7 @@ def team_dashboard(request, team_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def partial_team_user_progress_chart(request, user_id):
+def view_partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
     skill_tags = Tag.objects.filter(name__startswith="skill/")

@@ -38,7 +38,7 @@ class TestPage(FrontendTestMixin):
             )
 
         self.do_login(user)
-        url = self.reverse_url("partial_teams_list")
+        url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
 
         body = self.page.text_content("body")

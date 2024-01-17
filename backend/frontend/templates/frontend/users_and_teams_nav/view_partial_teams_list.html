@@ -14,7 +14,7 @@
                 @click="open = ! open" 
                 class="{{ styles.button_secondary_small }}" 
 
-                hx-get="{% url 'partial_team_users_list' team.id %}"
+                hx-get="{% url 'view_partial_team_users_list' team.id %}"
                 hx-trigger="click once"
                 hx-target="#team-{{ team.id }}-users"
                 hx-swap="innerHTML"
@@ -34,7 +34,7 @@
     type="button" 
     class="{{ styles.button_secondary_small }} w-full"
     id="more_teams"
-    hx-get="{% url 'partial_teams_list' %}"
+    hx-get="{% url 'view_partial_teams_list' %}"
     hx-vals='js:{count: countLoadedPageItems("teams-list")}'
     hx-trigger="click"
     hx-swap="outerHTML"
