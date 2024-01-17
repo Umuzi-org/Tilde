@@ -22,7 +22,7 @@
             <canvas 
             class="h-24 w-24" 
             id="progress-chart-{{user.id}}"
-            hx-get="{% url 'view_partial_team_user_progress_chart' user.id %}"
+            hx-get="{% url 'partial_team_user_progress_chart' user.id %}"
             hx-trigger="load delay:{{counter}}s"
             hx-swap="beforeend"
             hx-target="#scripts"

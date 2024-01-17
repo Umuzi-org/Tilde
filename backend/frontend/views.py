@@ -122,6 +122,27 @@ def can_view_user_board(logged_in_user):
     return False
 
 
+def can_view_team(logged_in_user):
+    request = get_current_request()
+    print(request.resolver_match.kwargs)
+    viewed_team_id = request.resolver_match.kwargs.get("team_id")
+
+    if logged_in_user.id == viewed_team_id or logged_in_user.is_superuser:
+        return True
+
+    viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
+    checker = ObjectPermissionChecker(logged_in_user)
+
+    for view_permission in Team.PERMISSION_VIEW:
+        if checker.has_perm(
+            view_permission,
+            viewed_team_obj,
+        ):
+            return True
+
+    return False
+
+
 def user_login(request):
     form = CustomAuthenticationForm()
     context = {"form": form}
@@ -274,7 +295,7 @@ def action_start_card(request, card_id):
     )
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -286,7 +307,7 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@login_required()
 def partial_teams_list(request):
     user = request.user
 
@@ -315,7 +336,7 @@ def partial_teams_list(request):
     )
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@user_passes_test_or_forbidden(can_view_team)
 def partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -329,7 +350,7 @@ def partial_team_users_list(request, team_id):
     )
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@user_passes_test_or_forbidden(can_view_team)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -339,7 +360,7 @@ def team_dashboard(request, team_id):
     return render(request, "frontend/team/dashboard/page.html", context)
 
 
-# TODO: Restrict access better when the PR #676 has been merged
+@user_passes_test_or_forbidden(can_view_user_board)
 def partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
