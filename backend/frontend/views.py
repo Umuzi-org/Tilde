@@ -124,7 +124,6 @@ def can_view_user_board(logged_in_user):
 
 def can_view_team(logged_in_user):
     request = get_current_request()
-    print(request.resolver_match.kwargs)
     viewed_team_id = request.resolver_match.kwargs.get("team_id")
 
     if logged_in_user.id == viewed_team_id or logged_in_user.is_superuser:
