@@ -126,7 +126,7 @@ def can_view_team(logged_in_user):
     request = get_current_request()
     viewed_team_id = request.resolver_match.kwargs.get("team_id")
 
-    if logged_in_user.id == viewed_team_id or logged_in_user.is_superuser:
+    if logged_in_user.is_superuser:
         return True
 
     viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
