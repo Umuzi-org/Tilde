@@ -776,7 +776,7 @@ class PythonExecuteJupyterNotebooks(Step):
                 end_line_present = any(line.startswith(end_line_prefix) for line in l)
 
                 # We check for these lines only because there may be some warnings in stderr.
-                if not start_line_present or not end_line_present:
+                if not (start_line_present and end_line_present):
                     breakpoint()
                     not_sure
 
