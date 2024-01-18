@@ -2,6 +2,7 @@ import json
 from functools import wraps
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.core.signing import SignatureExpired, BadSignature
 from django.contrib import messages
@@ -76,7 +77,7 @@ def is_super(user):
 
 
 def custom_permission_denied(request):
-    return render(request, "frontend/auth/page_permission_denied.html")
+    return HttpResponseForbidden(render(request, "frontend/auth/page_permission_denied.html"))
 
 
 def user_passes_test_or_forbidden(test_func):
