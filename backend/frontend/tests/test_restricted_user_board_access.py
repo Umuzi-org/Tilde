@@ -123,7 +123,7 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
         body = self.page.text_content("body")
         
-        self.assertIn("You don't have permission to view this page.", body)
+        self.assertIn("Permission Denied", body)
         
 
     def test_login_redirection_if_unauthenticated(self):
