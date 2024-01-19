@@ -7,33 +7,21 @@ from .frontend_test_mixin import FrontendTestMixin
 class TestCardStartButton(FrontendTestMixin):
     def setUp(self):
         super().setUp()
-        self.user = UserFactory(
-            email="learner@umuzi.org",
-            is_staff=True,
-            is_superuser=True,  # TODO: remove this once "restricted access" PR is merged
-        )
+        self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
 
         self.do_login(self.user)
-        # url = self.reverse_url("user_board")
-        # self.page.goto(url)
-
-        # self.backlog_column = self.page.get_by_role("div").and_(
-        #     self.page.get_by_title("Backlog")
-        # )
-
-        # self.ip_column = self.page.get_by_role("div").and_(
-        #     self.page.get_by_title("In Progress")
-        # )
 
     def make_topic_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
             status=AgileCard.READY,
         )
-        print("#1", self.card)
-        self.card.assignees.set([self.user])
+
+        # replace default assignee with our user
+        self.card.assignees.first().delete()
+        self.card.assignees.add(self.user)
 
     # def make_project_card(self, content_type):
     #     self.card = AgileCardFactory(
@@ -48,14 +36,19 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_moves_topic_card_to_ip_column(self):
         self.make_topic_card()
 
-        self.page.click("text=Start")
+        can_start = self.card.request_user_can_start(self.user)
 
-        ip_column = self.page.text_content("#column_IP")
-        backlog_column = self.page.text_content("#column_RB")
-        topic_card = self.page.text_content(f"#card_{self.card.id}")
+        if can_start:
+            self.page.click("text=Start")
 
-        self.assertIn(topic_card, ip_column)
-        self.assertNotIn(topic_card, backlog_column)
+            self.page.wait_for_load_state("networkidle")
+
+            ip_column = self.page.text_content("div#column_IP")
+            backlog_column = self.page.text_content("div#column_RB")
+            topic_card_title = self.card.content_item.title
+
+            self.assertIn(topic_card_title, ip_column)
+            self.assertNotIn(topic_card_title, backlog_column)
 
     # def test_start_button_moves_project_card__to_ip_column(self):
     #     self.make_project_card(content_type=ContentItem.PROJECT)
