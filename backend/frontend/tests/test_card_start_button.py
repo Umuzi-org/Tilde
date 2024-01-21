@@ -25,11 +25,11 @@ class TestCardStartButton(FrontendTestMixin):
 
         self.card.assignees.set([self.user])
 
-    def make_project_card(self):
+    def make_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(
                 content_type=ContentItem.PROJECT,
-                project_submission_type=ContentItem.LINK,
+                project_submission_type=project_submission_type,
             ),
             status=AgileCard.READY,
         )
@@ -54,10 +54,9 @@ class TestCardStartButton(FrontendTestMixin):
             self.assertNotIn(topic_card_title, backlog_column)
 
     def test_start_button_moves_project_card_to_ip_column(self):
-        self.make_project_card()
+        self.make_project_card(ContentItem.LINK)
 
         can_start = self.card.request_user_can_start(self.user)
-        print("#can_start", can_start)
 
         if can_start:
             self.page.click("text=Start")

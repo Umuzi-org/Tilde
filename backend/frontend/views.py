@@ -260,7 +260,6 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
-# @user_passes_test(is_super)
 @csrf_exempt
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
@@ -281,7 +280,7 @@ def action_start_card(request, card_id):
 
     return render(
         request,
-        "frontend/user/board/view_partial_action_card_moved.html",
+        "frontend/user/board/js_exec_action_start_card.html",
         {
             "card": card,
         },
