@@ -122,6 +122,19 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
         self.assertIn("You don't have permission to access this page", body)
 
+    def test_login_redirection_if_unauthenticated(self):
+        """
+        Custom @user_passes_test_or_forbidden(func) should redirect to login if
+        the user is not authenticated.
+        """
+        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+
+        self.page.goto(url)
+
+        body = self.page.text_content("body")
+
+        self.assertIn("Log in", body)
+
     def test_user_with_manage_card_permission_can_view_user_board(self):
         self.do_login(self.user_with_manage_card_permission)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
