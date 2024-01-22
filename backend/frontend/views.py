@@ -76,10 +76,6 @@ def is_super(user):
     return user.is_superuser
 
 
-def custom_permission_denied(request):
-    return HttpResponseForbidden(render(request, "frontend/auth/page_permission_denied.html"))
-
-
 def user_passes_test_or_forbidden(test_func):
     """
     Decorator for views that checks that the user passes the given test,
@@ -95,7 +91,7 @@ def user_passes_test_or_forbidden(test_func):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
 
-            return custom_permission_denied(request)
+            return HttpResponseForbidden(render(request, "frontend/auth/page_permission_denied.html"))
 
         return _wrapped_view
 
