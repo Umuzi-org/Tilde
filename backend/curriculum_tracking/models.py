@@ -1667,6 +1667,34 @@ class AgileCard(
 
         return self.assignees.first() == user
 
+    def request_user_can_request_review(self, user=None):
+        """
+        Check if current user can request review for this card
+        """
+        if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
+            return False
+
+        if user is None:
+            from threadlocal_middleware import get_current_user
+
+            user = get_current_user()
+
+        if user is not None:
+            is_assignee = user in self.assignees.all()
+            is_superuser = user.is_superuser
+
+            has_manage_cards_permission = any(
+                (
+                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
+                    for team in self.get_teams()
+                )
+            )
+
+            if is_assignee or is_superuser or has_manage_cards_permission:
+                return True
+
+        return False
+
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
