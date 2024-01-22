@@ -121,6 +121,26 @@ def can_view_user_board(logged_in_user):
     return False
 
 
+def can_view_team(logged_in_user):
+    request = get_current_request()
+    viewed_team_id = request.resolver_match.kwargs.get("team_id")
+
+    if logged_in_user.is_superuser:
+        return True
+
+    viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
+    checker = ObjectPermissionChecker(logged_in_user)
+
+    for view_permission in Team.PERMISSION_VIEW:
+        if checker.has_perm(
+            view_permission,
+            viewed_team_obj,
+        ):
+            return True
+
+    return False
+
+
 def user_login(request):
     form = CustomAuthenticationForm()
     context = {"form": form}
@@ -275,7 +295,7 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test(is_super)
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -287,16 +307,24 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-@user_passes_test(is_super)
+@login_required()
 def view_partial_teams_list(request):
+    user = request.user
+
+    from guardian.shortcuts import get_objects_for_user
+
+    all_teams = Team.objects.filter(active=True).order_by("name")
+    if user.is_superuser:
+        teams = all_teams
+    else:
+        teams = get_objects_for_user(
+            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
+        )
+
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-
-    all_teams = Team.objects.filter(active=True).order_by(
-        "name"
-    )  # TODO: only show teams that the current user is allowed to see
-    teams = all_teams[current_team_count: current_team_count + limit]
-    has_next_page = len(all_teams) > current_team_count + limit
+    teams = teams[current_team_count: current_team_count + limit]
+    has_next_page = len(teams) > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -304,11 +332,13 @@ def view_partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_teams_list.html",
+        context,
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -322,7 +352,7 @@ def view_partial_team_users_list(request, team_id):
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -332,7 +362,7 @@ def team_dashboard(request, team_id):
     return render(request, "frontend/team/dashboard/page.html", context)
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_user_board)
 def view_partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
