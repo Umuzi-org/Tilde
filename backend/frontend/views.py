@@ -281,7 +281,7 @@ def action_start_card(request, card_id):
 
     return render(
         request,
-        "frontend/user/board/js_exec_action_start_card.html",
+        "frontend/user/board/js_exec_action_card_moved.html",
         {
             "card": card,
         },
