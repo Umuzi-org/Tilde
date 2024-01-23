@@ -55,7 +55,20 @@
               <!-- Profile dropdown -->
               <div
                 class="relative ml-3"
-                x-data="{ open: false, toggle() { this.open = !this.open; } }"
+                x-data="{
+                  open: false,
+                  toggle() {
+                      if (this.open) {
+                          return this.close()
+                        }
+                        this.open = true
+                      },
+                      close() { this.open = false }
+                    }"
+                x-on:keydown.escape.prevent.stop="close($refs.button)"
+                x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                x-id="['user-menu-button']"
+                class="relative"
               >
                 <div x-on:click="toggle()">
                   <button
@@ -85,7 +98,7 @@
                   <!-- Active: "bg-gray-100", Not Active: "" -->
                   <a
                     href="#"
-                    class="block px-4 py-2 text-sm text-gray-700"
+                    class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
                     role="menuitem"
                     tabindex="-1"
                     id="user-menu-item-0"
@@ -93,7 +106,7 @@
                   >
                   <a
                     href="#"
-                    class="block px-4 py-2 text-sm text-gray-700"
+                    class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
                     role="menuitem"
                     tabindex="-1"
                     id="user-menu-item-1"
@@ -101,7 +114,7 @@
                   >
                   <a
                     href="{% url 'user_logout' %}"
-                    class="block px-4 py-2 text-sm text-gray-700"
+                    class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
                     role="menuitem"
                     tabindex="-1"
                     id="user-menu-item-2"
