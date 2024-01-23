@@ -27,6 +27,10 @@ from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswo
 from .theme import styles
 
 import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking.helpers import (
+    agile_card_reviews_outstanding,
+    pull_request_reviews_outstanding,
+)
 
 User = get_user_model()
 
@@ -122,6 +126,31 @@ def can_view_user_board(logged_in_user):
                 return True
 
     return False
+
+
+def user_can_start_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card = get_object_or_404(AgileCard, pk=card_id)
+    card_assignees = card.assignees.all()
+
+    if (
+        (logged_in_user in card_assignees)
+        and card.can_start()
+        and len(agile_card_reviews_outstanding(logged_in_user))
+        and len(pull_request_reviews_outstanding(logged_in_user))
+    ):
+        return True
+
+    card_teams = card.get_teams()
+    checker = ObjectPermissionChecker(logged_in_user)
+    checker.prefetch_perms(card_teams)
+
+    if any(
+        (checker.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in card_teams)
+    ) and (card.can_force_start()):
+        return True
 
 
 def user_login(request):
@@ -261,6 +290,7 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
+@user_passes_test_or_forbidden(user_can_start_card)
 @csrf_exempt
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
@@ -269,6 +299,7 @@ def action_start_card(request, card_id):
     content_item_type = card.content_item.content_type
 
     if content_item_type == ContentItem.TOPIC:
+        print("#1", card.status)
         card.start_topic()
     elif content_item_type == ContentItem.PROJECT:
         card.start_project()
