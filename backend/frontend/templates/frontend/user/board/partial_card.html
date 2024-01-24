@@ -1,5 +1,7 @@
 {% load humanize %}
 
+<!--
+
 <div
     class="mb-3 rounded-xl {% if user.email in card.reviewer_names %}bg-orange-100{%else%}bg-blue-100{% endif %} {% if card.status == 'B' %}bg-zinc-200{% endif %}"
     id="card_{{ card.id }}" 
@@ -167,4 +169,120 @@
         </button>
     {% endif %}
     </div>
+</div> -->
+
+<div
+  class="mb-3 bg-blue-500 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2"
+  id="card_{{ card.id }}"
+  data-status="{{card.status}}"
+>
+  <div
+    class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6"
+  >
+    <!-- Date and options -->
+
+    <div class="grid grid-cols-11 gap-y-2 w-full h-10">
+      <div class="col-span-10">
+        <p
+          class="text-black text-opacity-50 text-[11px] font-medium font-['Poppins']"
+        >
+          July 20 at 10:22
+        </p>
+      </div>
+      <div class="col-span-1">
+        <a href="#" class=""
+          ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+        ></a>
+      </div>
+    </div>
+
+    <!-- Card status and PR info -->
+
+    <div class="grid grid-cols-6 gap-y-2 w-full h-10">
+      <div class="col-span-1">
+        <i class="fa fa-frown-o" aria-hidden="true"></i>
+      </div>
+      <div class="col-span-5">
+        <i class="fa fa-code-fork" aria-hidden="true"></i> 22 hours ago
+      </div>
+    </div>
+
+    <!-- Project info | name -->
+
+    <div class="grid grid-cols-0 grid-rows-1 text-left">
+      <p class="w-[195.72px] h-4 text-black text-xs font-medium font-'Poppins'">
+        Project
+      </p>
+      <h5
+        class="w-[195.79px] h-5 text-black text-base font-bold font-'Poppins' leading-tight"
+      >
+        Animals
+      </h5>
+    </div>
+
+    <!-- Tags section -->
+
+    <div class="grid grid-cols-1 gap-y-2 w-full h-10">
+      <div class="col-span-1">
+        <i class="fa fa-tag" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <!-- Flavours section -->
+
+    <div class="grid grid-cols-1 gap-y-2 w-full h-10">
+      <div class="col-span-1">
+        <i class="fa-regular fa-brands fa-js fa-lg"></i>
+      </div>
+    </div>
+
+    <hr class="my-4 border-t border-gray-300 col-span-3" />
+
+    <!-- Assignee, reviewers and content button -->
+
+    <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-10 w-full h-15">
+      <div class="Assignee col-span-1 row-span-1 w-[55px] h-[11px] text-indigo-950 text-xs font-normal font-['Poppins'] leading-[14.40px]">Assignee</div>
+      <div class="Reviewers col-span-1 row-span-1 w-[55px] h-[11px] text-indigo-950 text-xs font-normal font-['Poppins'] leading-[14.40px]">Reviewers</div>
+      <div class="Assignee-avatar col-span-1 row-span-1">
+        <img
+          class="w-[30px] h-[30px] rounded-full"
+          src="https://placekitten.com/400/200"
+          alt="Assignee profile picture"
+        />
+      </div>
+      <div class="Reviewer-avatars col-span-1 row-span-1">
+        <img
+          class="w-[30px] h-[30px] rounded-full"
+          src="https://placekitten.com/400/200"
+          alt="Reviewer profile pictures"
+        />
+      </div>
+      <div class="Content-button col-span-1 row-span-1">
+        <div
+          class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
+        >
+          <div
+            class="w-[50px] text-center text-white text-xs font-semibold font-['Poppins'] leading-normal"
+          >
+            <span></span>
+              Content<i class="fa fa-angle-right p-l-[4]" aria-hidden="true"></i
+            ></span>
+          </div>
+        </div>
+      </div>
+      <div class="Start-button col-span-1 row-span-1">
+        {% if card.request_user_can_start %}
+        <button
+          type="button"
+          class="{{ styles.button_primary_small }}"
+          hx-post="{% url 'action_start_card' card.id %}"
+          hx-target="#card_{{ card.id }}"
+          hx-swap="outerHTML"
+        >
+          Start
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
