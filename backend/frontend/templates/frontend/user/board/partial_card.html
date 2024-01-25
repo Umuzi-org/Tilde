@@ -1,176 +1,5 @@
 {% load humanize %}
 
-<!--
-
-<div
-    class="mb-3 rounded-xl {% if user.email in card.reviewer_names %}bg-orange-100{%else%}bg-blue-100{% endif %} {% if card.status == 'B' %}bg-zinc-200{% endif %}"
-    id="card_{{ card.id }}" 
-    data-status="{{card.status}}">
-    <div class="border rounded-t-xl border-gray-300 py-2 px-4  flex justify-between items-center text-xs">
-        <div>
-            <p class="bold">
-                {{ card.content_type_nice }}
-            </p>
-        </div>
-        {% if card.flavour_names %}
-            <div class="flex gap-1 items-center flex-wrap"> 
-                {% for flavour_name in card.flavour_names %}
-                    {%if flavour_name != "none"%}
-                        {%if flavour_name != "java" or flavour_name != "javascript" or flavour_name != "python"%}
-                            <span class="px-2 rounded-full border border-gray-300" title="{{flavour_name}}">
-                                {{flavour_name|first}}
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "javascript"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-js fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "python"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-python fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "java"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-java fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                    {%endif%}
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-    
-    <div class="border rounded-b-xl border-gray-300 border-t-0 p-4 flex flex-col gap-3">
-    {% if card.status == "IP" or card.status == "RF"%}
-        {% if card.open_pr_count and card.oldest_open_pr_updated_time%}
-            <div class="flex" title="Open PRs and their last update time">
-                <div class="flex gap-2 items-center border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
-                    <i class="fa-solid fa-code-pull-request"></i>
-                    <p class="text-xs">
-                        Updated {{card.oldest_open_pr_updated_time|naturaltime}} 
-                    </p>
-                </div>
-                <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0">{{card.open_pr_count}}</div> 
-            </div>
-        {% endif %}
-    {% endif %}
-
-    {% if card.status == "IR" and card.review_request_time%}
-        <div class="flex gap-2 items-center border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
-            <i class="fa-solid fa-circle-info"></i>
-            <p class="text-xs">
-                Review requested {{card.review_request_time|naturaltime}} 
-            </p>
-        </div>
-    {% endif %}
-
-    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
-        <div class="flex">
-            {% if card.code_review_competent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-smile fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">
-                        {{card.code_review_competent_since_last_review_request}} 
-                    </div>
-                </div>    
-            {% endif %}
-            {% if card.code_review_excellent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_excellent_since_last_review_request}} 
-                    </div>
-                </div>
-            {% endif %}
-            {% if card.code_review_ny_competent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-frown fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-red-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_ny_competent_since_last_review_request}} 
-                    </div>
-                </div>
-            {% endif %}
-            {% if card.code_review_red_flag_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-sad-tear fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-red-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_red_flag_since_last_review_request}} 
-                    </div>
-                </div>    
-            {% endif %}
-        </div>
-    {% endif %}
-
-    <h3 
-        class="{{ styles.heading3 }}">
-        {{ card.title }}
-    </h3>
-
-    {% if card.tag_names %}
-        <div class="flex gap-2 items-center flex-wrap">
-            {% for tag_name in card.tag_names %}
-                <span class="flex px-2 py-1 rounded-full border border-gray-300 text-xs">{{tag_name}}</span> 
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    {% if card.due_time %}
-        <div class="flex gap-2 items-start" title="Due time">
-            <i class="fa-regular fa-clock fa-lg mt-3"></i>
-            {% now "U" as current_timestamp %}
-            {% if current_timestamp > card.due_time|date:"U" %}
-                <p class="text-red-600 text-sm">
-                    {{card.due_time|naturalday}}, {{card.due_time|time}} 
-                </p>
-                {% else %}
-                <p class="text-sm">
-                    {{card.due_time|naturalday}}, {{card.due_time|time}} 
-                </p>
-            {% endif %}
-        </div>
-    {% endif %}
-    
-    {% if card.request_user_is_assignee == False %}
-        <div class="w-full" >
-            <p class="text-xs font-bold text-gray-600">Assignee</p>
-            <p class="truncate" title="{{card.assignee_names.0}}">{{card.assignee_names.0}}</p> 
-        </div>
-    {% endif %}
-
-    {% if card.reviewer_names %}
-        <div class="w-full">
-            <p class="text-xs font-bold text-gray-600">Reviewers</p>
-            {% for reviewer_name in card.reviewer_names %}
-                <p class="truncate" title="{{reviewer_name}}">{{reviewer_name}}</p> 
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    {% if card.repo_url %}
-        <div class="flex gap-2 items-center">
-            <i class="fa-regular fa-brands fa-github fa-lg"></i>
-            <a class="{{styles.link}}" target="_blank" href="{{card.recruit_project.repository.get_github_repo_link}}">Repository</a>  
-        </div>
-    {% endif %}
-
-    {% if card.request_user_can_start %}
-        <button type="button" class="{{ styles.button_primary_small }}"
-            hx-post="{% url 'action_start_card' card.id %}"
-            hx-target="#card_{{ card.id }}"
-            hx-swap="outerHTML"
-            >Start
-        </button>
-    {% endif %}
-    </div>
-</div> -->
-
 <div
   class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
   id="card_{{ card.id }}"
@@ -198,6 +27,7 @@
     </div>
 
     <!-- Card status and PR info -->
+
     {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
         <div class="grid grid-cols-6 gap-y-2 w-full h-[auto]">
             <div class="col-span-1">
@@ -281,17 +111,14 @@
     {% endif %}
 
     <!-- Horizontal line -->
-    <!-- <div class="grid grid-cols-1 divide-y"> -->
-        <hr class="my-3 border-t border-gray-300 w-full divide-y-0" />
-   
-    <!-- </div> -->
-    
+ 
+    <hr class="my-3 border-t border-gray-300 w-full divide-y-0" />
 
     <!-- Assignee, reviewers and content button -->
 
     <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-3 w-full h-[auto]">
-      <div class="Assignee col-span-1 row-span-1 w-[55px] h-[auto] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
-      <div class="Reviewers col-span-1 row-span-1 w-[55px] h-[auto] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
+      <div class="Assignee col-span-1 row-span-1 h-[-2rem] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
+      <div class="Reviewers col-span-1 row-span-1 h-[-2rem] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
       
       <div class="Assignee-avatar col-span-1 row-span-1">
         <img
