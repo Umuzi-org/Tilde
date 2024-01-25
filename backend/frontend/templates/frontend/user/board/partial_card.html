@@ -199,28 +199,37 @@
 
     <!-- Card status and PR info -->
     {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
-    <div class="grid grid-cols-6 gap-y-2 w-full h-10">
-      <div class="col-span-1">
-        {% if card.code_review_competent_since_last_review_request %}
-        <i class="fa fa-smaile-o" aria-hidden="true"></i>
-        {% endif %}
-      </div>
-      {% if card.status == "RF" or card.status == "IR" or card.status == "C" or card.status == "IP" %}
-      <div class="col-span-5">
-        <i class="fa fa-code-fork" aria-hidden="true"></i> 22 hours ago
-      </div>
-      {% endif %}
-    </div>
+        <div class="grid grid-cols-6 gap-y-2 w-full h-[auto]">
+            <div class="col-span-1">
+                {% if card.code_review_competent_since_last_review_request %}
+                    <i class="fa fa-smaile-o" aria-hidden="true"></i>
+                {% endif %}
+                {% if card.code_review_ny_competent_since_last_review_request %}
+                    <i class="fa fa-frown-o" aria-hidden="true"></i>
+                {% endif %}
+                {% if card.code_review_red_flag_since_last_review_request %}
+                    <i class="fa-regular fa-face-sad-tear fa-lg"></i>
+                {% endif %}
+                {% if card.code_review_excellent_since_last_review_request %}
+                    <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
+                {% endif %}
+            </div>
+            {% if card.open_pr_count and card.oldest_open_pr_updated_time%}
+            <div class="col-span-5 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tigh">
+                <i class="fa fa-code-fork" aria-hidden="true"></i>Review requested {{card.review_request_time|naturaltime}} 
+            </div>
+            {% endif %}
+        </div>
     {% endif %}
 
     <!-- Project info | name -->
 
     <div class="grid grid-cols-0 grid-rows-1 text-left">
-      <p class="w-[195.72px] h-4 text-black text-xs font-medium font-'Poppins'">
+      <p class="w-[195.72px] h-[auto] text-black text-xs font-medium font-'Poppins'">
         {{ card.content_type_nice }}
       </p>
       <h5
-        class="w-[195.79px] h-5 text-black text-base font-bold font-'Poppins' leading-tight"
+        class="w-[195.79px] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight"
       >
         {{ card.title }}
       </h5>
@@ -228,34 +237,70 @@
 
     <!-- Tags section -->
 
-    <div class="grid grid-cols-1 gap-y-2 w-full h-10">
-      <div class="col-span-1">
-        <i class="fa fa-tag" aria-hidden="true"></i>
-      </div>
+    {% if card.tag_names %}
+    <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-10">
+        {% for tag_name in card.tag_names %}
+            {%if tag_name != "none"%}
+            <span class="pr-1 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tight">{{tag_name}}<span><i class="fa fa-tag" aria-hidden="true"></i></span>
+            {% endif %}
+        {% endfor %}
     </div>
+    {% endif %}
 
     <!-- Flavours section -->
 
-    <div class="grid grid-cols-1 gap-y-2 w-full h-10">
-      <div class="col-span-1">
-        <i class="fa-regular fa-brands fa-js fa-lg"></i>
-      </div>
-    </div>
+    {% if card.flavour_names %}
+    <div class="grid grid-cols-1 gap-y-0 w-full h-[auto]">
+        {% for flavour_name in card.flavour_names %}
+            {%if flavour_name != "none"%}
+                {%if card.flavour_name != "java" or flavour_name != "javascript" or flavour_name != "python"%}
+                    <span class="px-2" title="{{flavour_name}}">
+                        {{card.flavour_name|first}}
+                    </span> 
+                {%endif%}
+                {%if flavour_name == "javascript"%}
+                    <span title="{{flavour_name}}">
+                        <i class="fa-regular fa-brands fa-js fa-lg"></i>
+                    </span> 
+                {%endif%}
+                {%if flavour_name == "python"%}
+                    <span title="{{flavour_name}}">
+                        <i class="fa-regular fa-brands fa-python fa-lg"></i>
+                    </span> 
+                {%endif%}
+                {%if flavour_name == "java"%}
+                    <span title="{{flavour_name}}">
+                        <i class="fa-regular fa-brands fa-java fa-lg"></i>
+                    </span> 
+                {%endif%}
 
-    <hr class="my-4 border-t border-gray-300 col-span-3" />
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %} <div></div>
+    {% endif %}
+
+    <!-- Horizontal line -->
+    <!-- <div class="grid grid-cols-1 divide-y"> -->
+        <hr class="my-3 border-t border-gray-300 w-full divide-y-0" />
+   
+    <!-- </div> -->
+    
 
     <!-- Assignee, reviewers and content button -->
 
-    <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-10 w-full h-15">
-      <div class="Assignee col-span-1 row-span-1 w-[55px] h-[11px] text-indigo-950 text-xs font-normal font-['Poppins'] leading-[14.40px]">Assignee</div>
-      <div class="Reviewers col-span-1 row-span-1 w-[55px] h-[11px] text-indigo-950 text-xs font-normal font-['Poppins'] leading-[14.40px]">Reviewers</div>
+    <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-3 w-full h-[auto]">
+      <div class="Assignee col-span-1 row-span-1 w-[55px] h-[auto] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
+      <div class="Reviewers col-span-1 row-span-1 w-[55px] h-[auto] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
+      
       <div class="Assignee-avatar col-span-1 row-span-1">
         <img
           class="w-[30px] h-[30px] rounded-full"
           src="https://placekitten.com/400/200"
-          alt="Assignee profile picture"
+          alt="{{'card.assignee_names[0]'}} profile picture"
         />
       </div>
+
       <div class="Reviewer-avatars col-span-1 row-span-1">
         <img
           class="w-[30px] h-[30px] rounded-full"
@@ -270,9 +315,7 @@
           <div
             class="w-[50px] text-white text-xs font-semibold font-['Poppins'] leading-normal"
           >
-            <span></span>
-              Content<i class="fa fa-angle-right" aria-hidden="true"></i
-            ></span>
+              Content
           </div>
         </div>
       </div>
