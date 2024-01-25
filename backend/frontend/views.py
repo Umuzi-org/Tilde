@@ -97,9 +97,7 @@ def user_passes_test_or_forbidden(test_func):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
 
-            return HttpResponseForbidden(
-                "You don't have permission to access this page."
-            )
+            return HttpResponseForbidden(render(request, "frontend/auth/page_permission_denied.html"))
 
         return _wrapped_view
 
@@ -121,7 +119,8 @@ def can_view_user_board(logged_in_user):
         checker.prefetch_perms(viewed_user_teams)
         for view_permission in Team.PERMISSION_VIEW:
             if any(
-                (checker.has_perm(view_permission, team) for team in viewed_user_teams)
+                (checker.has_perm(view_permission, team)
+                 for team in viewed_user_teams)
             ):
                 return True
 
@@ -150,6 +149,25 @@ def user_can_start_card(logged_in_user):
         (checker.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in card_teams)
     ) and (card.can_force_start()):
         return True
+    
+    return False
+
+def can_view_team(logged_in_user):
+    request = get_current_request()
+    viewed_team_id = request.resolver_match.kwargs.get("team_id")
+
+    if logged_in_user.is_superuser:
+        return True
+
+    viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
+    checker = ObjectPermissionChecker(logged_in_user)
+
+    for view_permission in Team.PERMISSION_VIEW:
+        if checker.has_perm(
+            view_permission,
+            viewed_team_obj,
+        ):
+            return True
 
     return False
 
@@ -170,7 +188,8 @@ def user_login(request):
 
             redirect_to = request.GET.get(
                 "next",
-                reverse_lazy("user_board", kwargs={"user_id": form.user_cache.id}),
+                reverse_lazy("user_board", kwargs={
+                             "user_id": form.user_cache.id}),
             )
 
             return redirect(redirect_to)
@@ -275,9 +294,10 @@ def view_partial_user_board_column(request, user_id, column_id):
     limit = 10
 
     user = get_object_or_404(User, id=user_id)
-    all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
+    all_cards = [d for d in board_columns if d["id"]
+                 == column_id][0]["query"](user)
 
-    cards = all_cards[current_card_count : current_card_count + limit]
+    cards = all_cards[current_card_count: current_card_count + limit]
     has_next_page = len(all_cards) > current_card_count + limit
 
     context = {
@@ -319,7 +339,7 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test(is_super)
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -331,16 +351,24 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-@user_passes_test(is_super)
+@login_required()
 def view_partial_teams_list(request):
+    user = request.user
+
+    from guardian.shortcuts import get_objects_for_user
+
+    all_teams = Team.objects.filter(active=True).order_by("name")
+    if user.is_superuser:
+        teams = all_teams
+    else:
+        teams = get_objects_for_user(
+            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
+        )
+
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-
-    all_teams = Team.objects.filter(active=True).order_by(
-        "name"
-    )  # TODO: only show teams that the current user is allowed to see
-    teams = all_teams[current_team_count : current_team_count + limit]
-    has_next_page = len(all_teams) > current_team_count + limit
+    teams = teams[current_team_count: current_team_count + limit]
+    has_next_page = len(teams) > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -348,11 +376,13 @@ def view_partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_teams_list.html",
+        context,
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -366,7 +396,7 @@ def view_partial_team_users_list(request, team_id):
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -376,7 +406,7 @@ def team_dashboard(request, team_id):
     return render(request, "frontend/team/dashboard/page.html", context)
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_user_board)
 def view_partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
