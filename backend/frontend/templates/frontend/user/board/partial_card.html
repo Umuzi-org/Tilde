@@ -117,24 +117,27 @@
     <!-- Assignee, reviewers and content button -->
 
     <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-3 w-full h-[auto]">
-      <div class="Assignee col-span-1 row-span-1 h-[-2rem] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
-      <div class="Reviewers col-span-1 row-span-1 h-[-2rem] text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
+      <div class="Assignee text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
+      <div class="Reviewers text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
       
       <div class="Assignee-avatar col-span-1 row-span-1">
         <img
           class="w-[30px] h-[30px] rounded-full"
-          src="https://placekitten.com/400/200"
+          src="https://images.unsplash.com/photo-1594751543129-6701ad444259?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGFyayUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
           alt="{{'card.assignee_names[0]'}} profile picture"
         />
       </div>
 
-      <div class="Reviewer-avatars col-span-1 row-span-1">
-        <img
-          class="w-[30px] h-[30px] rounded-full"
-          src="https://placekitten.com/400/200"
-          alt="Reviewer profile pictures"
-        />
+      <div class="Reviewer-avatars col-span-1 row-span-1 flex">
+        {% if card.reviewer_names %}
+          {% for reviewer in card.reviewer_names %}
+            <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+              <img class="w-[30px] h-[30px] rounded-full" src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" alt="{{ reviewer }} profile pictures" />
+            </div>
+          {% endfor %}
+        {% endif %}
       </div>
+      
       <div class="Content-button col-span-1 row-span-1">
         <div
           class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
