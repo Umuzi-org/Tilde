@@ -172,7 +172,7 @@
 </div> -->
 
 <div
-  class="mb-3 bg-blue-500 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2"
+  class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
   id="card_{{ card.id }}"
   data-status="{{card.status}}"
 >
@@ -183,10 +183,11 @@
 
     <div class="grid grid-cols-11 gap-y-2 w-full h-10">
       <div class="col-span-10">
+        
         <p
           class="text-black text-opacity-50 text-[11px] font-medium font-['Poppins']"
         >
-          July 20 at 10:22
+        {% if card.start_time != null %} {{ card.start_time }} {% endif %} {% if card.due_time != null %} {{ card.due_time }} {% endif %} {% if card.review_request_time != null %} {{ card.review_request_time }} {% endif %} {% if card.complete_time != null %} {{ card.complete_time }} {% else %} {{ "July 20 at 10:22 AM" }} {% endif %}
         </p>
       </div>
       <div class="col-span-1">
@@ -197,26 +198,31 @@
     </div>
 
     <!-- Card status and PR info -->
-
+    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
     <div class="grid grid-cols-6 gap-y-2 w-full h-10">
       <div class="col-span-1">
-        <i class="fa fa-frown-o" aria-hidden="true"></i>
+        {% if card.code_review_competent_since_last_review_request %}
+        <i class="fa fa-smaile-o" aria-hidden="true"></i>
+        {% endif %}
       </div>
+      {% if card.status == "RF" or card.status == "IR" or card.status == "C" or card.status == "IP" %}
       <div class="col-span-5">
         <i class="fa fa-code-fork" aria-hidden="true"></i> 22 hours ago
       </div>
+      {% endif %}
     </div>
+    {% endif %}
 
     <!-- Project info | name -->
 
     <div class="grid grid-cols-0 grid-rows-1 text-left">
       <p class="w-[195.72px] h-4 text-black text-xs font-medium font-'Poppins'">
-        Project
+        {{ card.content_type_nice }}
       </p>
       <h5
         class="w-[195.79px] h-5 text-black text-base font-bold font-'Poppins' leading-tight"
       >
-        Animals
+        {{ card.title }}
       </h5>
     </div>
 
@@ -262,10 +268,10 @@
           class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
         >
           <div
-            class="w-[50px] text-center text-white text-xs font-semibold font-['Poppins'] leading-normal"
+            class="w-[50px] text-white text-xs font-semibold font-['Poppins'] leading-normal"
           >
             <span></span>
-              Content<i class="fa fa-angle-right p-l-[4]" aria-hidden="true"></i
+              Content<i class="fa fa-angle-right" aria-hidden="true"></i
             ></span>
           </div>
         </div>
