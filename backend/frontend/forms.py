@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
 
 from .theme import styles
 
@@ -13,16 +14,17 @@ User = get_user_model()
 class ThemedFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         for field in self.fields:
             self.fields[field].widget.attrs.update(
                 {
-                    "class": styles["input_small"],
+                    "class": f"block {styles['input_small']}",
                 }
             )
 
 
-class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
-    pass
+class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm,forms.Form):
+    username = forms.EmailField()
 
 
 class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):

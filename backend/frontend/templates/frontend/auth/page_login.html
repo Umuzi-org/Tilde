@@ -1,12 +1,40 @@
 {% extends "frontend/auth/base.html" %}
 {% block auth_heading %}Login{% endblock %}
 {% block auth_content %}
-  <form action="" method="post">
+  <form action="" method="post" class="my-4">
     {% csrf_token %}
-    {{ form.as_p }}
-    <div class="my-3">
+    {% if form.non_field_errors %}
+      <ul class="my-4 {{styles.alert_error}}">
+        {{ form.non_field_errors.as_ul }}
+      </ul>
+    {% endif %}
+    
+    <label for="{{ form.username.id_for_label }}" class="{{ styles.label_small }}">{{ form.username.label_tag }}</label>
+    {{ form.username }}
+    {% if form.username.errors %}
+      <ul class="{{styles.alert_error}}">
+          {% for error in form.username.errors %}
+              <li>{{ error }}</li>
+          {% endfor %}
+      </ul>
+    {% endif %}
+    <br>
+
+    <label for="{{ form.password.id_for_label }}" class="{{ styles.label_small }}">{{ form.password.label_tag }}</label>
+    {{ form.password }}
+    {% if form.password.errors %}
+      <ul>
+          {% for error in form.password.errors %}
+              <li class="{{styles.alert_error}}">{{ error }}</li>
+          {% endfor %}
+      </ul>
+    {% endif %}
+    <br>
+
+    <div class="flex items-center gap-4 justify-items-start my-3 .w-4/5" >
+      <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>
-    <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
+    
   </form>
 {% endblock %}
