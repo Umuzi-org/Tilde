@@ -10,7 +10,7 @@
   >
     <!-- Date and options -->
 
-    <div class="grid grid-cols-11 gap-y-2 w-full h-10">
+    <!-- <div class="grid grid-cols-11 gap-y-2 w-full h-10">
       <div class="col-span-10">
         
         <p
@@ -24,6 +24,40 @@
           ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
         ></a>
       </div>
+    </div> -->
+    <div class="grid grid-cols-11 gap-y-2 w-full h-10">
+    
+      <div class="flex gap-2 items-start col-span-10" title="Due time">
+        {% if card.due_time %}
+        <!-- <i class="fa-regular fa-clock fa-xsm mt-3"></i> -->
+        {% now "U" as current_timestamp %}
+        {% if current_timestamp > card.due_time|date:"U" %}
+            <p class="text-red-600 text-sm text-black text-opacity-50 text-[5px] font-medium font-['Poppins']">
+                {{card.due_time|naturalday}}, {{card.due_time|time}} 
+            </p>
+            {% else %}
+            <p class="text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+                {{card.due_time|naturalday}}, {{card.due_time|time}} 
+            </p>
+        {% endif %}
+        {% endif %}
+        {% if card.complete_time %}
+            <p class="text-green-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+               {{card.complete_time|naturalday}}, {{card.complete_time|time}} 
+            </p>
+        {% endif %}
+        {% if card.start_time %}
+            <p class="text-purple-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+               {{card.start_time|naturalday}}, {{card.start_time|time}} 
+            </p>
+        {% endif %}
+      </div>
+      <div class="col-span-1">
+        <a href="#" class=""
+          ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+        ></a>
+      </div>
+
     </div>
 
     <!-- Card status and PR info -->
@@ -71,7 +105,8 @@
     <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-10">
         {% for tag_name in card.tag_names %}
             {%if tag_name != "none"%}
-            <span class="pr-1 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tight">{{tag_name}}<span><i class="fa fa-tag" aria-hidden="true"></i></span>
+            <!-- The tag icons make this section look busy, added normal hashtags instead -->
+            <span class="pr-1 pb-1 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tight">#{{tag_name}}<span></span>
             {% endif %}
         {% endfor %}
     </div>
@@ -83,11 +118,6 @@
     <div class="grid grid-cols-1 gap-y-0 w-full h-[auto]">
         {% for flavour_name in card.flavour_names %}
             {%if flavour_name != "none"%}
-                {%if card.flavour_name != "java" or flavour_name != "javascript" or flavour_name != "python"%}
-                    <span class="px-2" title="{{flavour_name}}">
-                        {{card.flavour_name|first}}
-                    </span> 
-                {%endif%}
                 {%if flavour_name == "javascript"%}
                     <span title="{{flavour_name}}">
                         <i class="fa-regular fa-brands fa-js fa-lg"></i>
@@ -103,8 +133,9 @@
                         <i class="fa-regular fa-brands fa-java fa-lg"></i>
                     </span> 
                 {%endif%}
-
+                
             {% endif %}
+            
         {% endfor %}
     </div>
     {% else %} <div></div>
@@ -142,11 +173,12 @@
         <div
           class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
         >
-          <div
-            class="w-[50px] text-white text-xs font-semibold font-['Poppins'] leading-normal"
+          <a
+            href="{{card.content_item_url}}"
+            class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none"
           >
               Content
-          </div>
+          </a>
         </div>
       </div>
       <div class="Start-button col-span-1 row-span-1">
