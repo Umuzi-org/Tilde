@@ -13,6 +13,11 @@ urlpatterns = [
         name="user_password_reset_done",
     ),
     path(
+        "forgot_password/failed",
+        views.user_password_reset_failed,
+        name="user_password_reset_failed",
+    ),
+    path(
         "reset-password/<str:token>/",
         views.user_reset_password,
         name="user_reset_password",
