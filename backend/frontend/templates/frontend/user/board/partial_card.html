@@ -50,16 +50,28 @@
     <div class="grid grid-cols-2 gap-y-2 w-full h-[auto]">
          <div class="col-span-1">
              {% if card.code_review_competent_since_last_review_request %}
-                 <i class="fa fa-smaile-o" aria-hidden="true"></i>
+                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+                  <i class="fa fa-smaile-o" aria-hidden="true"></i>
+                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_competent_since_last_review_request }}</div>
+                </div>
              {% endif %}
              {% if card.code_review_ny_competent_since_last_review_request %}
-                 <i class="fa fa-frown-o" aria-hidden="true"></i>
+                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+                  <i class="fa fa-frown-o" aria-hidden="true"></i>
+                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_ny_competent_since_last_review_request }}</div>
+                </div>
              {% endif %}
              {% if card.code_review_red_flag_since_last_review_request %}
-                 <i class="fa-regular fa-face-sad-tear fa-lg"></i>
+                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+                  <i class="fa-regular fa-face-sad-tear fa-lg"></i>
+                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_red_flag_since_last_review_request }}</div>
+                </div>   
              {% endif %}
              {% if card.code_review_excellent_since_last_review_request %}
-                 <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
+                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+                  <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
+                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_excellent_since_last_review_request }}</div>
+                </div>
              {% endif %}
          </div>
 
@@ -68,8 +80,8 @@
           <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
              <i class="fa-solid fa-code-pull-request"></i>
              <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2">{{ card.open_pr_count }}</div>
-         </div>
+             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2">{{ card.open_pr_count }}</div>
+          </div>
          </a>
        {% endif %}
     </div>
