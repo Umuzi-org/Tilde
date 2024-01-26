@@ -278,11 +278,6 @@ def action_start_card(request, card_id):
 
 
 def user_can_request_review(logged_in_user):
-    if len(helpers.agile_card_reviews_outstanding(logged_in_user)):
-        return False
-    if len(helpers.pull_request_reviews_outstanding(logged_in_user)):
-        return False
-
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
 
@@ -307,6 +302,28 @@ def action_request_review(request, card_id):
     """The card is in progress or review feedback and the user has chosen to request review"""
     card = get_object_or_404(AgileCard, id=card_id)
 
+    if len(helpers.agile_card_reviews_outstanding(request.user)):
+        return render(
+            request,
+            "frontend/user/board/js_exec_action_show_card_alert.html",
+            {
+                "card": card,
+                "message": "Please make sure you have reviewed assigned cards.",
+                "alert_type": "error",
+            },
+        )
+
+    if len(helpers.pull_request_reviews_outstanding(request.user)):
+        return render(
+            request,
+            "frontend/user/board/js_exec_action_show_card_alert.html",
+            {
+                "card": card,
+                "message": "Please make sure you have reviewed assigned pull requests.",
+                "alert_type": "error",
+            },
+        )
+
     if card.recruit_project:
         card.recruit_project.request_review(force_timestamp=timezone.now())
     elif card.topic_progress:
@@ -317,6 +334,7 @@ def action_request_review(request, card_id):
     log_creators.log_card_review_requested(card=card, actor_user=request.user)
 
     card.refresh_from_db()
+
     assert (
         card.status == AgileCard.IN_REVIEW
     ), f"Expected to be in review, but got {card.status}"

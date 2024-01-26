@@ -1681,7 +1681,9 @@ class AgileCard(
 
         if user is not None:
             is_assignee = user in self.assignees.all()
-            is_superuser = user.is_superuser
+
+            if is_assignee:
+                return True
 
             has_manage_cards_permission = any(
                 (
@@ -1690,8 +1692,7 @@ class AgileCard(
                 )
             )
 
-            if is_assignee or is_superuser or has_manage_cards_permission:
-                return True
+            return has_manage_cards_permission
 
         return False
 
