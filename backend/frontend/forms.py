@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
-from django.utils.translation import gettext_lazy as _
 
 from .theme import styles
 
