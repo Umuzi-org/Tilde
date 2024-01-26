@@ -27,12 +27,12 @@
         {% endif %}
         {% endif %}
         {% if card.complete_time %}
-            <p class="text-green-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
                {{card.complete_time|naturalday}}, {{card.complete_time|time}} 
             </p>
         {% endif %}
         {% if card.start_time %}
-            <p class="text-purple-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
                {{card.start_time|naturalday}}, {{card.start_time|time}} 
             </p>
         {% endif %}
@@ -47,29 +47,32 @@
 
     <!-- Card status and PR info -->
 
-    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
-        <div class="grid grid-cols-6 gap-y-2 w-full h-[auto]">
-            <div class="col-span-1">
-                {% if card.code_review_competent_since_last_review_request %}
-                    <i class="fa fa-smaile-o" aria-hidden="true"></i>
-                {% endif %}
-                {% if card.code_review_ny_competent_since_last_review_request %}
-                    <i class="fa fa-frown-o" aria-hidden="true"></i>
-                {% endif %}
-                {% if card.code_review_red_flag_since_last_review_request %}
-                    <i class="fa-regular fa-face-sad-tear fa-lg"></i>
-                {% endif %}
-                {% if card.code_review_excellent_since_last_review_request %}
-                    <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
-                {% endif %}
-            </div>
-            {% if card.open_pr_count and card.oldest_open_pr_updated_time%}
-            <div class="col-span-5 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tigh">
-                <i class="fa fa-code-fork" aria-hidden="true"></i>Review requested {{card.review_request_time|naturaltime}} 
-            </div>
-            {% endif %}
-        </div>
-    {% endif %}
+    <div class="grid grid-cols-2 gap-y-2 w-full h-[auto]">
+         <div class="col-span-1">
+             {% if card.code_review_competent_since_last_review_request %}
+                 <i class="fa fa-smaile-o" aria-hidden="true"></i>
+             {% endif %}
+             {% if card.code_review_ny_competent_since_last_review_request %}
+                 <i class="fa fa-frown-o" aria-hidden="true"></i>
+             {% endif %}
+             {% if card.code_review_red_flag_since_last_review_request %}
+                 <i class="fa-regular fa-face-sad-tear fa-lg"></i>
+             {% endif %}
+             {% if card.code_review_excellent_since_last_review_request %}
+                 <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
+             {% endif %}
+         </div>
+
+        {% if card.open_pr_count %}
+         <a href={{ card.repo_url }}>
+          <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
+             <i class="fa-solid fa-code-pull-request"></i>
+             <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2">{{ card.open_pr_count }}</div>
+         </div>
+         </a>
+       {% endif %}
+    </div>
 
     <!-- Project info | name -->
 
