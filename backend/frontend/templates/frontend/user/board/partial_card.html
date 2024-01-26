@@ -6,7 +6,7 @@
   data-status="{{card.status}}"
 >
   <div
-    class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6"
+    class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative"
   >
     <!-- Date and options -->
 
@@ -102,7 +102,7 @@
     <!-- Tags section -->
 
     {% if card.tag_names %}
-    <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-10">
+    <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
             {%if tag_name != "none"%}
             <!-- The tag icons make this section look busy, added normal hashtags instead -->
@@ -115,7 +115,7 @@
     <!-- Flavours section -->
 
     {% if card.flavour_names %}
-    <div class="grid grid-cols-1 gap-y-0 w-full h-[auto]">
+    <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
         {% for flavour_name in card.flavour_names %}
             {%if flavour_name != "none"%}
                 {%if flavour_name == "javascript"%}
@@ -138,38 +138,40 @@
             
         {% endfor %}
     </div>
-    {% else %} <div></div>
+    
     {% endif %}
 
     <!-- Horizontal line -->
  
-    <hr class="my-3 border-t border-gray-300 w-full divide-y-0" />
+    <hr class="border-gray-300 inset-x-0 absolute" />
 
     <!-- Assignee, reviewers and content button -->
 
-    <div class="grid grid-cols-2 grid-rows-3 gap-x-10 gap-y-3 w-full h-[auto]">
-      <div class="Assignee text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Assignee</div>
-      <div class="Reviewers text-indigo-950 text-xs font-normal font-['Poppins'] leading-none">Reviewers</div>
-      
+    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
+
       <div class="Assignee-avatar col-span-1 row-span-1">
+        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
         <img
           class="w-[30px] h-[30px] rounded-full"
           src="https://images.unsplash.com/photo-1594751543129-6701ad444259?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGFyayUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
           alt="{{'card.assignee_names[0]'}} profile picture"
         />
       </div>
-
-      <div class="Reviewer-avatars col-span-1 row-span-1 flex">
-        {% if card.reviewer_names %}
-          {% for reviewer in card.reviewer_names %}
-            <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
-              <img class="w-[30px] h-[30px] rounded-full" src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" alt="{{ reviewer }} profile pictures" />
-            </div>
-          {% endfor %}
-        {% endif %}
+      
+      <div class="Reviewer-avatars col-span-1 row-span-1">
+        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
+        <div class="flex">
+          {% if card.reviewer_names %}
+            {% for reviewer in card.reviewer_names %}
+              <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                <img class="w-[30px] h-[30px] rounded-full" src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" alt="{{ reviewer }} profile pictures" />
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
       
-      <div class="Content-button col-span-1 row-span-1">
+      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div
           class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
         >
@@ -194,6 +196,7 @@
         </button>
         {% endif %}
       </div>
+      
     </div>
   </div>
 </div>
