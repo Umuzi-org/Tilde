@@ -6,7 +6,7 @@ from core.tests import factories as core_factories
 from core.models import Team
 
 
-class request_user_can_start_Tests(TestCase):
+class request_user_can_request_review_Tests(TestCase):
     def setUp(self):
         self.assignee_user = core_factories.UserFactory()
         self.superuser = core_factories.UserFactory(is_superuser=True)
