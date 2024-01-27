@@ -13,11 +13,12 @@ styles = {
     # link
     "link": f"text-{PRIMARY_COLOUR}-600 hover:text-{PRIMARY_COLOUR}-500 focus:text-{PRIMARY_COLOUR}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{PRIMARY_COLOUR}-500 underline underline-offset-2",
     # input
-    "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1 my-2",
+    "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1 my-2 w-full",
     "label_small": f"text-sm font-medium text-gray-700",
     "alert_debug": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
     "alert_info": f"bg-{PRIMARY_COLOUR}-100 border border-{PRIMARY_COLOUR}-400 text-{PRIMARY_COLOUR}-700 px-4 py-3 rounded relative",
     "alert_warning": f"bg-gray-100 border border-gray-400 text-gray-700 px-4 py-3 rounded relative",
     "alert_success": f"bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative",
     "alert_error": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
+    "field_error": f"font-bold text-red-700",
 }

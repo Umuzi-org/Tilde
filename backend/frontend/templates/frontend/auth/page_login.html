@@ -3,18 +3,20 @@
 {% block auth_content %}
   <form action="" method="post" class="my-4">
     {% csrf_token %}
-    {% if form.non_field_errors %}
-      <ul class="my-4 {{styles.alert_error}}">
-        {{ form.non_field_errors.as_ul }}
-      </ul>
-    {% endif %}
+
+    <div class="my-4" >
+      <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
+    </div>
     
     <label for="{{ form.username.id_for_label }}" class="{{ styles.label_small }}">{{ form.username.label_tag }}</label>
     {{ form.username }}
     {% if form.username.errors %}
-      <ul class="{{styles.alert_error}}">
+      <ul class="{{styles.field_error}}">
           {% for error in form.username.errors %}
-              <li>{{ error }}</li>
+            <li class="">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              {{ error }}
+            </li>
           {% endfor %}
       </ul>
     {% endif %}
@@ -23,18 +25,17 @@
     <label for="{{ form.password.id_for_label }}" class="{{ styles.label_small }}">{{ form.password.label_tag }}</label>
     {{ form.password }}
     {% if form.password.errors %}
-      <ul>
+      <ul class="{{styles.field_error}}">
           {% for error in form.password.errors %}
-              <li class="{{styles.alert_error}}">{{ error }}</li>
+            <li class="">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              {{ error }}
+            </li>
           {% endfor %}
       </ul>
     {% endif %}
     <br>
-
-    <div class="flex items-center gap-4 justify-items-start my-3 .w-4/5" >
-      <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
-      <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
-    </div>
     
+    <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
   </form>
 {% endblock %}

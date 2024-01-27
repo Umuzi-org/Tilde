@@ -176,7 +176,6 @@ def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
 
 def user_forgot_password(request):
     form = ForgotPasswordForm()
-
     context = {"form": form}
 
     if request.method == "POST":
@@ -187,17 +186,12 @@ def user_forgot_password(request):
             if form.user_exists():
                 _send_password_reset_email(request, form)
                 return redirect(reverse_lazy("user_password_reset_done"))
-            else:
-                return redirect(reverse_lazy("user_password_reset_failed"))
-
+            
     return render(request, "frontend/auth/page_forgot_password.html", context)
 
 
 def user_password_reset_done(request):
     return render(request, "frontend/auth/page_password_reset_done.html")
-
-def user_password_reset_failed(request):
-    return render(request, "frontend/auth/page_password_reset_failed.html")
 
 def user_reset_password(request, token):
     signer = ForgotPasswordForm.signer
