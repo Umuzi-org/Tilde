@@ -20,12 +20,17 @@ from .constants import (
     STEP_STATUS_RED_FLAG,
 )
 import json
+import platform
 
 
 def get_all_file_paths(directory):
     for path, _, filenames in os.walk(directory):
         for filename in filenames:
             yield os.path.join(path, filename)
+
+
+def check_if_current_os_windows():
+    return platform.system() == "Windows"
 
 
 class Step:
@@ -626,7 +631,7 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            if os.name == "nt":
+            if check_if_current_os_windows():
                 python_executable_path = 'Scripts/python'
             else:
                 python_executable_path =  'bin/pip'
@@ -642,7 +647,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        if os.name == "nt":
+        if check_if_current_os_windows():
             pip_executable_path =  'Scripts/pip'
         else:
             pip_executable_path = 'bin/pip'
@@ -681,7 +686,7 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        if os.name == "nt":
+        if check_if_current_os_windows():
             python_executable_path = f"{clone_dir_path}/automarker_venv/Scripts/python"
         else:
             python_executable_path = "automarker_venv/bin/python"
