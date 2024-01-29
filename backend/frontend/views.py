@@ -294,6 +294,20 @@ def action_start_card(request, card_id):
         },
     )
 
+@user_passes_test(is_super)
+@csrf_exempt
+def link_card_details_page(request, card_id):
+    """The card is in the backlog and the user has chosen to start it"""
+    card = get_object_or_404(AgileCard, id=card_id)
+    # TODO implement this
+    return render(
+        request,
+        "frontend/user/board/card_details/page.html",
+        {
+            "card": card,
+        },
+    )
+
 
 @login_required()
 def users_and_teams_nav(request):
