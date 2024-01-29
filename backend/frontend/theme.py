@@ -20,5 +20,5 @@ styles = {
     "alert_warning": f"bg-gray-100 border border-gray-400 text-gray-700 px-4 py-3 rounded relative",
     "alert_success": f"bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative",
     "alert_error": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
-    "field_error": f"font-bold text-red-700",
+    "field_error": f"text-red-700",
 }
