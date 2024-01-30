@@ -13,34 +13,22 @@
     <div class="my-4" >
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>
-    
-    <label for="{{ form.username.id_for_label }}" class="{{ styles.label_small }}">{{ form.username.label_tag }}</label>
-    {{ form.username }}
-    {% if form.username.errors %}
-      <ul class="{{styles.field_error}}">
-          {% for error in form.username.errors %}
-            <li class="">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-              {{ error }}
-            </li>
-          {% endfor %}
-      </ul>
-    {% endif %}
-    <br>
 
-    <label for="{{ form.password.id_for_label }}" class="{{ styles.label_small }}">{{ form.password.label_tag }}</label>
-    {{ form.password }}
-    {% if form.password.errors %}
-      <ul class="{{styles.field_error}}">
-          {% for error in form.password.errors %}
-            <li class="">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-              {{ error }}
-            </li>
-          {% endfor %}
-      </ul>
-    {% endif %}
-    <br>
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}" class="{{ styles.label_small }}">{{ field.label_tag }}</label>
+      {{ field }}
+      {% if field.errors %}
+          <ul class="{{ styles.field_error }}">
+              {% for error in field.errors %}
+                  <li>
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      {{ error }}
+                  </li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+      <br>
+    {% endfor %}
     
     <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
   </form>
