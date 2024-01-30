@@ -185,7 +185,7 @@ def user_forgot_password(request):
         if form.is_valid():
             if form.user_exists():
                 _send_password_reset_email(request, form)
-                return redirect(reverse_lazy("user_password_reset_done"))
+            return redirect(reverse_lazy("user_password_reset_done"))
             
     return render(request, "frontend/auth/page_forgot_password.html", context)
 
