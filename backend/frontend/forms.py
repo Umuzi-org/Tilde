@@ -14,7 +14,6 @@ class ThemedFormMixin:
         super().__init__(*args, **kwargs)
         
         for field in self.fields:
-            print(field)
             self.fields[field].widget.attrs.update(
                 {
                     "class": f"block {styles['input_small']}",
