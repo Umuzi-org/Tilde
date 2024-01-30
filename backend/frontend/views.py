@@ -324,7 +324,7 @@ def action_start_card(request, card_id):
     elif content_item_type == ContentItem.PROJECT:
         card.start_project()
     else:
-        raise NotImplemented(
+        raise NotImplementedError(
             f"Cannot start card of type {card.content_item.content_type}"
         )
 
