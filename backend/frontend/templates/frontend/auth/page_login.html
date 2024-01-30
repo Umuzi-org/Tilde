@@ -5,7 +5,7 @@
     {% csrf_token %}
 
     {% if form.non_field_errors %}
-      <ul class="my-4 {{styles.field_error}}">
+      <ul class="my-4 {{styles.alert_error}}">
         {{ form.non_field_errors.as_ul }}
       </ul>
     {% endif %}
