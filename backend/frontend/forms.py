@@ -16,7 +16,7 @@ class ThemedFormMixin:
         for field in self.fields:
             self.fields[field].widget.attrs.update(
                 {
-                    "class": f"{styles['input_small']}",
+                    "class": "{styles['input_small']}",
                 }
             )
 
