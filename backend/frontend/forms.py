@@ -16,14 +16,13 @@ class ThemedFormMixin:
         for field in self.fields:
             self.fields[field].widget.attrs.update(
                 {
-                    "class": f"block {styles['input_small']}",
+                    "class": f"{styles['input_small']}",
                 }
             )
 
 
-class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm,forms.Form):
-    username = forms.EmailField()
-
+class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm):
+    pass
 
 class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):
     pass
