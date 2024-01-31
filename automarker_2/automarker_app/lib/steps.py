@@ -32,6 +32,8 @@ def get_all_file_paths(directory):
 def is_current_os_windows():
     return platform.system() == "Windows"
 
+def get_python_executable_path():
+    return 'Scripts' if is_current_os_windows() else 'bin'
 
 class Step:
     name = "name not defined"
@@ -631,7 +633,7 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            python_executable_path_virtual_env = 'Scripts/python' if is_current_os_windows() else 'bin/pip'
+            python_executable_path_virtual_env = f'{get_python_executable_path()}/python' if is_current_os_windows() else f'{get_python_executable_path()}/pip'
             command = f"{clone_dir_path/'automarker_venv'/python_executable_path_virtual_env} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
@@ -643,7 +645,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        pip_executable_path = 'Scripts/pip' if is_current_os_windows() else 'bin/pip'
+        pip_executable_path = f'{get_python_executable_path()}/pip'
 
         command = f"{clone_dir_path/'automarker_venv'/pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
@@ -679,7 +681,8 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        python_executable_path_tests = f"{clone_dir_path}/automarker_venv/Scripts/python" if is_current_os_windows() else "automarker_venv/bin/python"
+        python_executable_path = f"automarker_venv/{get_python_executable_path()}/python"
+        python_executable_path_tests = f"{clone_dir_path}/{python_executable_path}" if is_current_os_windows() else python_executable_path
 
         command = f"cd {clone_dir_path} && {python_executable_path_tests} -m pytest --tb=line"
         stdout, stderr = subprocess_run(command)
