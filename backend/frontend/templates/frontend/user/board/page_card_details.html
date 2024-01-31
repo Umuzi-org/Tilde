@@ -1,0 +1,117 @@
+{% extends "frontend/user/base.html" %}
+
+{% block main %}
+
+    {% if card.project_submission_type_nice == "link"%}
+
+        <div class="grid gap-4 ">
+            <div  class="bold p-2 border-4 rounded-md grid gap-2">
+                <p class="bold p-2 border-4 rounded-md ">
+                    Project Title : {{ card.title }}
+                </p>
+            
+                <div class="bold p-2 border-4 rounded-md ">
+                    Tag names: 
+                    {% with card.tag_names|length as array_length %}
+                        {% for item in card.tag_names %}
+                            {{ item }}
+                            {% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            
+                <div class="bold p-2 border-4 rounded-md ">
+                    <p class="bold">
+                        Card Status : {{card.status}}
+                    </p>
+                </div>
+            </div>
+        
+            <div class="bold p-2 border-4 rounded-md grid gap-2">
+                <div class="bold p-2 border-4 rounded-md ">
+                    Assignees:
+                    <ul class="mx-8">
+                        <li class="bold">
+                        {{ card.assignee_names|first }}
+                        </li>
+                    </ul>
+                </div>
+                <!-- {% if user.email in card.reviewer_names %}
+                    <div class="bold p-2 border-4 rounded-md ">
+                        Assignees:
+                        <ul class="mx-8">
+                            {% for reviewer in card.reviewer_names%}
+                                <li class="bold">
+                                {{ card.assignee_names|first }}
+                                </li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+                {% endif %} -->
+        
+                <div class="bold p-2 border-4 rounded-md ">
+                    Reviewers: 
+                    <ul class="mx-8">
+                        {% for reviewer in card.reviewer_names%}
+                        <li class="bold">{{reviewer}}</li>
+                        {%endfor%}
+                    </ul>
+                </div>
+            </div>
+
+
+            
+            <div class="grid bold p-2 border-4 rounded-md gap-2">
+                <p class="bold p-2 border-4 rounded-md" >
+                    Card Start Date : {{card.start_time}}
+                </p>
+
+                <p class="bold p-2 border-4 rounded-md">
+                    Card Due Date : {{card.due_time}}
+                </p>
+            </div>
+
+            <div class="bold p-2 border-4 rounded-md ">
+                <p class="bold">
+                    Content URL : 
+                    <a href="{{card.content_item_url}}">View Content</a>
+                </p>
+            </div>
+
+            <div class="bold p-2 border-4 rounded-md ">
+                <h6>Link to your work</h6>
+                {% if card.project_link_submission == None%}
+                    <div>
+                        <label for="fname">Submission Link:</label>
+                        <input type="url" id="submission_link" name="submission_link">
+                        <button class="{{styles.button_primary_small}}">Save link</button>
+                        {% if card.status == "P" or card.status == "RF"%}
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                {% else %}
+                <div class="bold p-2 border-4 rounded-md ">
+                    <a href="{{card.project_link_submission}}">{{card.project_link_submission}}</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="grid gap-2 bold p-2 border-4 rounded-md">
+                Reviews:
+                {% if reviews|length == 0 %}
+                  No reviews yet
+                {% else %}
+                  {% for review in reviews %}
+                    <div class="bold p-2 border-4 rounded-md mx-8">
+                        <p>Date: {{review.timestamp}}</p>
+                        <p>Reviewer: {{review.reviewer}}</p>
+                        <p>Comments: {{review.comments}}</p>
+                        <p>Status: {{review.status}}</p>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+            </div>
+
+        </div>
+    {%endif%}
+
+{% endblock %}

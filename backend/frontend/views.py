@@ -1,7 +1,7 @@
 import json
 from functools import wraps
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.core.signing import SignatureExpired, BadSignature
@@ -16,7 +16,7 @@ from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem, RecruitProjectReview, User
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
@@ -299,12 +299,16 @@ def action_start_card(request, card_id):
 def link_card_details_page(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
-    # TODO implement this
+
+    recruit_project_reviews = get_list_or_404(RecruitProjectReview)
+    reviews = [{"timestamp":review.timestamp,"reviewer": get_object_or_404(User,id=review.reviewer_user_id).get_username(),"comments":review.comments,"status":review.status} for review in recruit_project_reviews if review.recruit_project_id == card.recruit_project_id]
+
     return render(
         request,
-        "frontend/user/board/card_details/page.html",
+        "frontend/user/board/page_card_details.html",
         {
             "card": card,
+            "reviews": reviews,
         },
     )
 

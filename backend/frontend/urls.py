@@ -40,7 +40,7 @@ urlpatterns = [
         name="action_start_card",
     ),
     path(
-        "cards/<int:card_id>/link",
+        "cards/<int:card_id>/details",
         views.link_card_details_page,
         name="link_card_details_page",
     ),
