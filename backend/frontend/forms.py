@@ -21,7 +21,7 @@ class ThemedFormMixin:
             )
 
 
-class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm,forms.Form):
+class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm):
     pass
 
 
