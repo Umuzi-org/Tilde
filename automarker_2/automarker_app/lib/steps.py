@@ -29,7 +29,7 @@ def get_all_file_paths(directory):
             yield os.path.join(path, filename)
 
 
-def check_if_current_os_windows():
+def is_current_os_windows():
     return platform.system() == "Windows"
 
 
@@ -631,12 +631,8 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            if check_if_current_os_windows():
-                python_executable_path = 'Scripts/python'
-            else:
-                python_executable_path =  'bin/pip'
-
-            command = f"{clone_dir_path/'automarker_venv'/python_executable_path} -m pip install --upgrade pip"
+            python_executable_path_virtual_env = 'Scripts/python' if is_current_os_windows() else 'bin/pip'
+            command = f"{clone_dir_path/'automarker_venv'/python_executable_path_virtual_env} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -647,10 +643,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        if check_if_current_os_windows():
-            pip_executable_path =  'Scripts/pip'
-        else:
-            pip_executable_path = 'bin/pip'
+        pip_executable_path = 'Scripts/pip' if is_current_os_windows() else 'bin/pip'
 
         command = f"{clone_dir_path/'automarker_venv'/pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
@@ -686,12 +679,9 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        if check_if_current_os_windows():
-            python_executable_path = f"{clone_dir_path}/automarker_venv/Scripts/python"
-        else:
-            python_executable_path = "automarker_venv/bin/python"
+        python_executable_path_tests = f"{clone_dir_path}/automarker_venv/Scripts/python" if is_current_os_windows() else "automarker_venv/bin/python"
 
-        command = f"cd {clone_dir_path} && {python_executable_path} -m pytest --tb=line"
+        command = f"cd {clone_dir_path} && {python_executable_path_tests} -m pytest --tb=line"
         stdout, stderr = subprocess_run(command)
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
