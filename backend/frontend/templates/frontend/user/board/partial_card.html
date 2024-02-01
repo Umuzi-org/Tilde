@@ -1,5 +1,7 @@
 {% load humanize %}
 
+<!-- TODO: Extract constants and store them theme.py -->
+
 <div
   class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
   id="card_{{ card.id }}"
@@ -92,7 +94,7 @@
         {{ card.content_type_nice }}
       </p>
       <h5
-        class="w-[195.79px] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight"
+        class="w-[auto] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight pr-10"
       >
         {{ card.title }}
       </h5>
@@ -173,15 +175,16 @@
       <!-- Buttons section -->
       
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div
-          class="w-[78px] h-6 pl-[7px] pr-[21px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
-        >
-          <a
-            href="{{card.content_item_url}}"
-            class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none"
+        <div class="Start-button col-span-1 row-span-1">
+          <button
+            type="button"
+            class="{{ styles.button_content_small }}"
+            hx-post="{% url 'action_start_card' card.id %}"
+            hx-target="#card_{{ card.id }}"
+            hx-swap="outerHTML"
           >
-              Content
-          </a>
+            Content
+          </button>
         </div>
       </div>
       <div class="Start-button col-span-1 row-span-1">
