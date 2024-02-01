@@ -12,29 +12,29 @@
   >
     <!-- Dates and options section -->
 
-    <div class="grid grid-cols-11 gap-y-2 w-full h-10">
+    <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
     
-      <div class="flex gap-2 items-start col-span-10" title="Due time">
+      <div class="flex gap-2 items-start col-span-10 pb-2" title="Due time">
         {% if card.due_time %}
           {% now "U" as current_timestamp %}
             {% if current_timestamp > card.due_time|date:"U" %}
-              <p class="text-red-600 text-sm text-black text-opacity-50 text-[5px] font-medium font-['Poppins']">
-                {{card.due_time|naturalday}}, {{card.due_time|time}} 
+              <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+                Due date: {{card.due_time|naturalday}}, {{card.due_time|time}} 
               </p>
             {% else %}
-              <p class="text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-                {{card.due_time|naturalday}}, {{card.due_time|time}} 
+              <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+                Due date: {{card.due_time|naturalday}}, {{card.due_time|time}} 
               </p>
             {% endif %}
           {% endif %}
           {% if card.complete_time %}
             <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-              {{card.complete_time|naturalday}}, {{card.complete_time|time}} 
+              Completed: {{card.complete_time|naturalday}}, {{card.complete_time|time}} 
             </p>
           {% endif %}
           {% if card.start_time %}
             <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-              {{card.start_time|naturalday}}, {{card.start_time|time}} 
+              Started : {{card.start_time|naturalday}}, {{card.start_time|time}} 
             </p>
         {% endif %}
       </div>
@@ -64,13 +64,13 @@
              {% endif %}
              {% if card.code_review_red_flag_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-sad-tear fa-lg"></i>
+                  <i class="fa-regular fa-face-sad-tear" aria-hidden="true"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_red_flag_since_last_review_request }}</div>
                 </div>   
              {% endif %}
              {% if card.code_review_excellent_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
+                  <i class="fa-regular fa-face-laugh-wink" aria-hidden="true"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_excellent_since_last_review_request }}</div>
                 </div>
              {% endif %}
@@ -150,22 +150,27 @@
 
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
 
-      <div class="Assignee-avatar col-span-1 row-span-1">
+      <div class="Assignee-avatar col-span-1 row-span-1 group relative">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
         <img
           class="w-[30px] h-[30px] rounded-full"
           src="https://images.unsplash.com/photo-1594751543129-6701ad444259?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGFyayUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
           alt="{{'card.assignee_names[0]'}} profile picture"
+          title="{{ card.assignee_names }}"
         />
       </div>
 
-      <div class="Reviewer-avatars col-span-1 row-span-1">
+      <div class="Reviewer-avatars col-span-1 row-span-1 group relative">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
         <div class="flex">
           {% if card.reviewer_names %}
             {% for reviewer in card.reviewer_names %}
               <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
-                <img class="w-[30px] h-[30px] rounded-full" src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" alt="{{ reviewer }} profile pictures" />
+                <img class="w-[30px] h-[30px] rounded-full" 
+                src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" 
+                alt="{{ reviewer }} profile picture" 
+                title="{{ reviewer }}"
+                />
               </div>
             {% endfor %}
           {% endif %}
@@ -175,7 +180,7 @@
       <!-- Buttons section -->
       
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div class="Start-button col-span-1 row-span-1">
+        <div class="Start-button col-span-1 row-span-1 w-full">
           <button
             type="button"
             class="{{ styles.button_content_small }}"
