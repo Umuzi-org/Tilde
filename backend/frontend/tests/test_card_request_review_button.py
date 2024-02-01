@@ -13,6 +13,16 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.do_login(self.user)
 
+    def make_outstanding_ir_project_card(self, project_submission_type):
+        self.card: AgileCard = AgileCardFactory(
+            content_item=ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=project_submission_type,
+            ),
+            status=AgileCard.IN_REVIEW,
+        )
+        self.card.reviewers.set([self.user])
+
     def make_ip_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -42,19 +52,12 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         )
         self.card.assignees.set([self.user])
 
-    def test_request_review_button_moves_ip_topic_card_to_ir_column(self):
+    def test_request_review_button_does_not_show_for_topic_cards(self):
         self.make_ip_topic_card()
 
-        self.page.click("text=Request Review")
-
-        self.page.wait_for_load_state("networkidle")
-
         ip_column = self.page.text_content("div#column_IP")
-        review_column = self.page.text_content("div#column_IR")
-        card_title = self.card.content_item.title
 
-        self.assertIn(card_title, review_column)
-        self.assertNotIn(card_title, ip_column)
+        self.assertNotIn("Request Review", ip_column)
 
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
@@ -83,3 +86,15 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.assertIn(card_title, review_column)
         self.assertNotIn(card_title, rf_column)
+
+    def test_cannot_request_review_with_outstanding_card_reviews(self):
+        self.make_outstanding_ir_project_card(ContentItem.LINK)
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.page.click("text=Request Review")
+
+        self.page.wait_for_load_state("networkidle")
+
+        self.assertIn(
+            "You have outstanding card reviews", self.page.text_content("div#column_IP")
+        )

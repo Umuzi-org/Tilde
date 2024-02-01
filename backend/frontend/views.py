@@ -1,3 +1,4 @@
+import json
 from functools import wraps
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -328,7 +329,7 @@ def action_request_review(request, card_id):
             "frontend/user/board/js_exec_action_show_card_alert.html",
             {
                 "card": card,
-                "message": "Please make sure you have reviewed assigned cards.",
+                "message": "You have outstanding card reviews.",
                 "alert_type": "error",
             },
         )
@@ -339,17 +340,15 @@ def action_request_review(request, card_id):
             "frontend/user/board/js_exec_action_show_card_alert.html",
             {
                 "card": card,
-                "message": "Please make sure you have reviewed assigned pull requests.",
+                "message": "You have outstanding pull request reviews.",
                 "alert_type": "error",
             },
         )
 
     if card.recruit_project:
         card.recruit_project.request_review(force_timestamp=timezone.now())
-    elif card.topic_progress:
-        card.finish_topic()
     else:
-        raise NotImplementedError()
+        raise NotImplementedError("Only project cards can request review")
 
     log_creators.log_card_review_requested(card=card, actor_user=request.user)
 
