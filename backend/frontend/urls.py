@@ -47,9 +47,14 @@ urlpatterns = [
         name="view_partial_team_user_progress_chart",
     ),
     #
-    path(
+        path(
         "project/<int:project_id>",
         views.project_details_page,
         name="project_details_page",
+    ),
+        path(
+        "save_project_submission_link/<int:project_id>",
+        views.save_project_submission_link,
+        name="save_project_submission_link",
     ),
 ]

@@ -297,8 +297,28 @@ def action_start_card(request, card_id):
 @user_passes_test(is_super)
 @csrf_exempt
 def project_details_page(request, project_id):
-    """The card is in the backlog and the user has chosen to start it"""
     project = RecruitProject.objects.get(pk=project_id)
+
+    return render(
+        request,
+        "frontend/page_course_component_details/page_project_details.html",
+        {
+            "project": project,
+            "reviews": project.project_reviews.order_by("-timestamp"),
+        },
+    )
+
+# @user_passes_test(is_super)
+# @csrf_exempt
+def save_project_submission_link(request, project_id):
+    project = RecruitProject.objects.get(pk=project_id)
+    submission_link = request.POST.get('submission_link')
+
+    if project.link_submission_is_valid(submission_link):
+        project.link_submission = submission_link
+        project.save()
+    else:
+        print(project.link_submission_invalid_message(submission_link))
 
     return render(
         request,

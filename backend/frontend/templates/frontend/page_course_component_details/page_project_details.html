@@ -3,13 +3,13 @@
 {% block project_heading %}Project Details{% endblock %}
 {% block project_content %}
     {% if project.project_submission_type_nice == "link"%}
-        <div class="grid gap-4 ">
-            <div  class="bold p-2 border-4 rounded-md grid gap-2">
-                <p class="bold p-2 border-4 rounded-md ">
+        <div class="grid gap-4 my-4">
+            <div  class="bold p-2 border-2 rounded-md grid gap-2">
+                <p class="bold p-2 border-2 rounded-md ">
                     Title: {{ project.title }}
                 </p>
             
-                <div class="bold p-2 border-4 rounded-md ">
+                <div class="bold p-2 border-2 rounded-md ">
                     Tag names: 
                     {% with project.tag_names|length as array_length %}
                         {% for item in project.tag_names %}
@@ -19,15 +19,15 @@
                     {% endwith %}
                 </div>
             
-                <div class="bold p-2 border-4 rounded-md ">
+                <div class="bold p-2 border-2 rounded-md ">
                     <p class="bold">
                         Status : {{project.agile_card_status}}
                     </p>
                 </div>
             </div>
         
-            <div class="bold p-2 border-4 rounded-md grid gap-2">
-                <div class="bold p-2 border-4 rounded-md ">
+            <div class="bold p-2 border-2 rounded-md grid gap-2">
+                <div class="bold p-2 border-2 rounded-md ">
                     Assignees:
                     <ul class="mx-8">
                         <li class="bold">
@@ -36,7 +36,7 @@
                     </ul>
                 </div>
         
-                <div class="bold p-2 border-4 rounded-md ">
+                <div class="bold p-2 border-2 rounded-md ">
                     Reviewers: 
                     <ul class="mx-8">
                         {% for reviewer in project.reviewer_user_names%}
@@ -48,33 +48,39 @@
 
 
             
-            <div class="grid bold p-2 border-4 rounded-md gap-2">
-                <p class="bold p-2 border-4 rounded-md" >
+            <div class="grid bold p-2 border-2 rounded-md gap-2">
+                <p class="bold p-2 border-2 rounded-md" >
                     Start Date: {{project.start_time}}
                 </p>
 
-                <p class="bold p-2 border-4 rounded-md">
+                <p class="bold p-2 border-2 rounded-md">
                     Due Date: {{project.due_time}}
                 </p>
             </div>
 
-            <div class="bold p-2 border-4 rounded-md ">
+            <div class="bold p-2 border-2 rounded-md ">
                 <p class="bold">
                     Content URL: 
                     <a href="{{project.content_item_url}}">View Content</a>
                 </p>
             </div>
 
-            <div class="grid bold p-2 border-4 rounded-md gap-2">
+            <div class="grid bold p-2 border-2 rounded-md gap-2">
                 <h6>Link to your work</h6>
                 {% if project.link_submission == None%}
                     <div>
-                        <label for="fname">Submission Link:</label>
-                        <input type="url" id="submission_link" name="submission_link">
-                        <button class="{{styles.button_primary_small}}">Save link</button>
+                        
+                        <form id="save_project_submission_link" action="{% url 'save_project_submission_link' project.id %}" method="post">
+                            {% csrf_token %}
+                            <label for="fname">Submission Link:</label>
+                            <input type="url" id="submission_link" name="submission_link" required>
+                            <button type="submit" class="{{ styles.button_primary_small }}"
+                                >Save Link
+                            </button>
+                        </form>
                     </div>
                 {% else %}
-                <div class="bold p-2 border-4 rounded-md ">
+                <div class="bold p-2 border-2 rounded-md ">
                     <label for="fname">Submission Link:</label>
                     <input type="url" id="submission_link" name="submission_link" disabled value={{project.link_submission}}>
                     {% if project.agile_card_status == "P" or project.agile_card_status == "RF"%}
@@ -82,13 +88,13 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <div class="grid gap-2 bold p-2 border-4 rounded-md">
+            <div class="grid gap-2 bold p-2 border-2 rounded-md">
                 Reviews:
                 {% if reviews|length == 0 %}
                     No reviews yet
                 {% else %}
                     {% for review in reviews %}
-                    <div class="bold p-2 border-4 rounded-md mx-8">
+                    <div class="bold p-2 border-2 rounded-md mx-8">
                         <p>Date: {{review.timestamp}}</p>
                         <p>Reviewer: {{review.reviewer_user}}</p>
                         <p>Comments: {{review.comments}}</p>
@@ -98,6 +104,8 @@
                 {% endif %}
             </div>
         </div>
+    {% elif project.project_submission_type_nice == "topic" %}
+        <div></div>
     {% endif %}
 
 {% endblock %}
