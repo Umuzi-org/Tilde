@@ -80,12 +80,13 @@
                         </form>
                     </div>
                 {% else %}
-                <div class="bold p-2 border-2 rounded-md ">
-                    <label for="fname">Submission Link:</label>
-                    <input type="url" id="submission_link" name="submission_link" disabled value={{project.link_submission}}>
-                    {% if project.agile_card_status == "P" or project.agile_card_status == "RF"%}
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                    {% endif %}
+                    <div class="bold p-2 border-2 rounded-md ">
+                        <label for="fname">Submission Link:</label>
+                        <input type="url" id="submission_link" name="submission_link" disabled value={{project.link_submission}}>
+                        {% if project.agile_card_status == "P" or project.agile_card_status == "RF"%}
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
                 {% endif %}
             </div>
             <div class="grid gap-2 bold p-2 border-2 rounded-md">
