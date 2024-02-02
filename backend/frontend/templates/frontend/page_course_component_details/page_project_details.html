@@ -67,27 +67,25 @@
 
             <div class="grid bold p-2 border-2 rounded-md gap-2">
                 <h6>Link to your work</h6>
-                {% if project.link_submission == None%}
-                    <div>
-                        
-                        <form id="save_project_submission_link" action="{% url 'save_project_submission_link' project.id %}" method="post">
-                            {% csrf_token %}
-                            <label for="fname">Submission Link:</label>
-                            <input type="url" id="submission_link" name="submission_link" required>
-                            <button type="submit" class="{{ styles.button_primary_small }}"
-                                >Save Link
-                            </button>
-                        </form>
-                    </div>
-                {% else %}
-                    <div class="bold p-2 border-2 rounded-md ">
-                        <label for="fname">Submission Link:</label>
-                        <input type="url" id="submission_link" name="submission_link" disabled value={{project.link_submission}}>
-                        {% if project.agile_card_status == "P" or project.agile_card_status == "RF"%}
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        {% endif %}
-                    </div>
+                {% if project.link_submission %}
+                    <div>Current link submission: <a class="{{styles.link}}" href="{{project.link_submission}}">{{project.link_submission}}</a></div>
                 {% endif %}
+
+                <div>
+                    <form id="save_project_submission_link" action="{% url 'save_project_submission_link' project.id %}" method="post">
+                        {% csrf_token %}
+                        {% if not project.link_submission %}
+                            <label class="{{styles.label_small}}" for="fname">Submit new link:</label>
+                        {% else %}
+                            <label class="{{styles.label_small}}" for="fname">Submit different link:</label>
+                        {% endif %}
+                        
+                        <input class="{{styles.input_small}}" type="url" id="submission_link" name="submission_link" required>
+                        <button type="submit" class="{{ styles.button_primary_small }}"
+                            >Save Link
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="grid gap-2 bold p-2 border-2 rounded-md">
                 Reviews:
