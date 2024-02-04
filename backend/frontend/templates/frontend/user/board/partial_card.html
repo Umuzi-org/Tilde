@@ -159,7 +159,7 @@
     {% endif %}
 
     {% if card.request_user_can_start %}
-        <button type="button" class="{{ styles.button_primary_small }}"
+        <button type="button" class="{{ styles.button_primary_small }} {{styles.disabled_button}}"
             hx-post="{% url 'action_start_card' card.id %}"
             hx-target="#card_{{ card.id }}"
             hx-swap="outerHTML"
