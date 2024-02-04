@@ -105,8 +105,8 @@
     <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
             {%if tag_name != "none"%}
-            <!-- The tag icons make this section look busy, added normal hashtags instead -->
-            <span class="pr-1 pb-1 text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-tight tracking-tight">#{{tag_name}}<span></span>
+              <!-- I cannot find the icon that matches the design, I added normal hashtags instead -->
+              <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md"><i class="fa-solid fa-hashtag fa-sm"></i>{{tag_name}}</span><span></span>
             {% endif %}
         {% endfor %}
     </div>
