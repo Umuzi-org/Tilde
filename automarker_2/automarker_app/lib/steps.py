@@ -32,8 +32,15 @@ def get_all_file_paths(directory):
 def is_current_os_windows():
     return platform.system() == "Windows"
 
+
 def get_python_executable_path():
-    return 'Scripts' if is_current_os_windows() else 'bin'
+    if is_current_os_windows():
+        return "Scripts/python"
+    return "bin/python"
+
+
+PYTHON_EXECUTABLE_PATH = get_python_executable_path()
+
 
 class Step:
     name = "name not defined"
@@ -633,8 +640,7 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            python_executable_path_virtual_env = f'{get_python_executable_path()}/python' if is_current_os_windows() else f'{get_python_executable_path()}/pip'
-            command = f"{clone_dir_path/'automarker_venv'/python_executable_path_virtual_env} -m pip install --upgrade pip"
+            command = f"{clone_dir_path/ 'automarker_venv'/ PYTHON_EXECUTABLE_PATH} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -645,9 +651,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        pip_executable_path = f'{get_python_executable_path()}/pip'
-
-        command = f"{clone_dir_path/'automarker_venv'/pip_executable_path} install -r {clone_dir_path/'requirements.txt'}"
+        command = f"{clone_dir_path/'automarker_venv'/PYTHON_EXECUTABLE_PATH} -m pip install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -681,10 +685,15 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        python_executable_path = f"automarker_venv/{get_python_executable_path()}/python"
-        python_executable_path_tests = f"{clone_dir_path}/{python_executable_path}" if is_current_os_windows() else python_executable_path
+        python_executable_path_tests = (
+            f"{clone_dir_path}/{PYTHON_EXECUTABLE_PATH}"
+            if is_current_os_windows()
+            else PYTHON_EXECUTABLE_PATH
+        )
 
-        command = f"cd {clone_dir_path} && {python_executable_path_tests} -m pytest --tb=line"
+        command = (
+            f"cd {clone_dir_path} && {python_executable_path_tests} -m pytest --tb=line"
+        )
         stdout, stderr = subprocess_run(command)
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
