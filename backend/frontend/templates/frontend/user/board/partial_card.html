@@ -146,7 +146,7 @@
 
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
 
-      <div class="Assignee-avatar col-span-1 row-span-1 group relative inline-block">
+      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
         {% if card.assignee_names %}
           {% for assignee in card.assignee_names %}
@@ -160,31 +160,33 @@
         {% endif %}
       </div>
 
-      <div class="Reviewer-avatars col-span-1 row-span-1 group relative">
+      <div class="Reviewer-avatars col-span-1 row-span-1 group">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-          <div class="flex">
+          <div class="flex relative">
             {% if card.reviewer_names %}
                 {% for reviewer in card.reviewer_names|slice:":2" %}
                     <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
                         <img class="w-[30px] h-[30px] rounded-full" 
-                            src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=" 
+                            src="https://img.freepik.com/premium-photo/portrait-smiling-happy-multiethnic-elementary-school-boy-dressed-formal-school-uniform-wit_616370-5177.jpg" 
                             alt="{{ reviewer }} profile picture" 
                             title="{{ reviewer }}"
                         />
                     </div>
                 {% endfor %}
                 {% if card.reviewer_names|length > 2 %}
-                    <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                  <div class="group">
+                    <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white cursor-pointer">
                       <img class="w-[30px] h-[30px] rounded-full" 
-                        src="https://www.shutterstock.com/image-vector/plus-icon-simple-vector-perfect-600nw-1937184448.jpg" 
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
                         alt="more reviewers" 
-                        title="see more reviewers"
+                        title="{{ card.reviewer_names|join:', ' }}"
                       />
                     </div>
+                  </div>
                 {% endif %}
             {% endif %}
         </div>
-      </div>
+      </div>      
     
       <!-- Buttons section -->
       
@@ -216,5 +218,10 @@
       </div>
       
     </div>
+  </div>
+  <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
+    {% for reviewer in card.reviewer_names %}
+      <div class="font-['Poppins'] text-[10px] block">{{ reviewer }}</div>
+    {% endfor %}
   </div>
 </div>
