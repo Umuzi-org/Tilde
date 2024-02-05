@@ -51,36 +51,36 @@
          <div class="col-span-1">
              {% if card.code_review_competent_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa fa-smaile-o" aria-hidden="true"></i>
+                  <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_competent_since_last_review_request }}</div>
                 </div>
              {% endif %}
              {% if card.code_review_ny_competent_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa fa-frown-o" aria-hidden="true"></i>
+                  <i class="fa fa-frown-o" aria-hidden="true" title="Not yet competent reviews"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_ny_competent_since_last_review_request }}</div>
                 </div>
              {% endif %}
              {% if card.code_review_red_flag_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-sad-tear" aria-hidden="true"></i>
+                  <i class="fa-regular fa-face-sad-tear" aria-hidden="true" title="Red-flag reviews"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_red_flag_since_last_review_request }}</div>
                 </div>   
              {% endif %}
              {% if card.code_review_excellent_since_last_review_request %}
                 <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-laugh-wink" aria-hidden="true"></i>
+                  <i class="fa-regular fa-face-laugh-wink" aria-hidden="true" title="Excellent reviews"></i>
                   <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_excellent_since_last_review_request }}</div>
                 </div>
              {% endif %}
          </div>
 
         {% if card.open_pr_count %}
-         <a href={{ card.repo_url }}>
+         <a href={{ card.repo_url }} title="Pull request info">
           <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
              <i class="fa-solid fa-code-pull-request"></i>
-             <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2">{{ card.open_pr_count }}</div>
+             <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight" title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2" title="Number of pull requests">{{ card.open_pr_count }}</div>
           </div>
          </a>
        {% endif %}
@@ -105,8 +105,7 @@
     <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
             {%if tag_name != "none"%}
-              <!-- I cannot find the icon that matches the design, I added normal hashtags instead -->
-              <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md"><i class="fa-solid fa-hashtag fa-sm"></i>{{tag_name}}</span><span></span>
+              <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 pr-0.5">{{tag_name}}</span><span></span>
             {% endif %}
         {% endfor %}
     </div>
@@ -133,9 +132,7 @@
                         <i class="fa-regular fa-brands fa-java fa-lg"></i>
                     </span> 
                 {%endif%}
-                
             {% endif %}
-            
         {% endfor %}
     </div>
     
