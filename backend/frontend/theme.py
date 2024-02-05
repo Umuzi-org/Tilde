@@ -2,7 +2,7 @@ PRIMARY_COLOUR = "indigo"
 TEXT_COLOUR = "gray"
 
 styles = {
-    "button_primary_small": f"rounded bg-{PRIMARY_COLOUR}-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-{PRIMARY_COLOUR}-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{PRIMARY_COLOUR}-600",
+    "button_primary_small": f"rounded bg-{PRIMARY_COLOUR}-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-{PRIMARY_COLOUR}-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{PRIMARY_COLOUR}-600 disabled:text-opacity-70 disabled:bg-opacity-50",
     #
     #
     "button_secondary_small": f"rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 ring-1 ring-inset ring-gray-300",
@@ -20,5 +20,4 @@ styles = {
     "alert_warning": f"bg-gray-100 border border-gray-400 text-gray-700 px-4 py-3 rounded relative",
     "alert_success": f"bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative",
     "alert_error": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
-    "disabled_button": "disabled:text-opacity-70 disabled:bg-opacity-50",
 }
