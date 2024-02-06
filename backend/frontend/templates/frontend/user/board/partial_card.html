@@ -1,7 +1,5 @@
 {% load humanize %}
 
-<!-- TODO: Extract constants and store them theme.py -->
-
 <div
   class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
   id="card_{{ card.id }}"
