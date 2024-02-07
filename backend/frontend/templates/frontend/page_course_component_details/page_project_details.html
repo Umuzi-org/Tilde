@@ -74,12 +74,14 @@
                 <div>
                     <form id="save_project_submission_link" action="{% url 'save_project_submission_link' project.id %}" method="post">
                         {% csrf_token %}
-                        {% if not project.link_submission %}
-                            <label class="{{styles.label_small}}" for="fname">Submit new link:</label>
-                        {% else %}
-                            <label class="{{styles.label_small}}" for="fname">Submit different link:</label>
-                        {% endif %}
-                        
+                        <label class="{{styles.label_small}}" for="fname">
+                            {% if not project.link_submission %}
+                                Submit new link:
+                            {% else %}
+                                Submit different link:</label>
+                            {% endif %}
+                        </label>
+                    
                         <input class="{{styles.input_small}}" type="url" id="submission_link" name="submission_link" required>
                         <button type="submit" class="{{ styles.button_primary_small }}"
                             >Save Link
