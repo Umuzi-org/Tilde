@@ -302,7 +302,7 @@ def project_details_page(request, project_id):
 
     reviews = [{
         "timestamp":review.timestamp, 
-        "status":  PROJECT_STATUS.review.status, 
+        "status":  PROJECT_STATUS.get(review.status), 
         "comments": review.comments, 
         "reviewer_user":review.reviewer_user
         } for review in project.project_reviews.order_by("-timestamp")
