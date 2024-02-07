@@ -318,28 +318,6 @@ def project_details_page(request, project_id):
         context,
     )
 
-# @user_passes_test(is_super)
-# @csrf_exempt
-def save_project_submission_link(request, project_id):
-    project = RecruitProject.objects.get(pk=project_id)
-    submission_link = request.POST.get('submission_link')
-
-    if project.link_submission_is_valid(submission_link):
-        project.link_submission = submission_link
-        project.save()
-    else:
-        print(project.link_submission_invalid_message(submission_link))
-
-    return render(
-        request,
-        "frontend/page_course_component_details/page_project_details.html",
-        {
-            "project": project,
-            "reviews": project.project_reviews.order_by("-timestamp"),
-        },
-    )
-
-
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
