@@ -295,7 +295,8 @@ def action_start_card(request, card_id):
         },
     )
 
-@login_required()
+@user_passes_test_or_forbidden(can_view_team)
+@user_passes_test_or_forbidden(can_view_user_board)
 def project_details_page(request, project_id):
     project = RecruitProject.objects.get(pk=project_id)
 
