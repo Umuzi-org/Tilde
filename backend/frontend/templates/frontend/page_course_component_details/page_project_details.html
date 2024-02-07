@@ -22,7 +22,7 @@
             
                 <div class="bold p-2 border-2 rounded-md ">
                     <p class="bold">
-                        Status : {{project.agile_card_status}}
+                        Status : {{board_status}}
                     </p>
                 </div>
             </div>
@@ -68,10 +68,10 @@
 
             <div class="grid bold p-2 border-2 rounded-md gap-2">
                 <h6>Link to your work</h6>
-                {% if project.link_submission %}
-                    <div>Current link submission: <a class="{{styles.link}}" href="{{project.link_submission}}">{{project.link_submission}}</a></div>
-                    <i id="edit_submission_link_icon" class="fa-solid fa-pen-to-square" onclick="displayForm()"></i>
-                {% endif %}
+                
+                <div>Current link submission: <a class="{{styles.link}}" href="{{project.link_submission}}">{{project.link_submission}}</a></div>
+                <i id="edit_submission_link_icon" class="fa-solid fa-pen-to-square" onclick="displayForm()"></i>
+               
 
                 <form id="link_submission_form" action="" method="post" style="display:none;">
                     {% csrf_token %}

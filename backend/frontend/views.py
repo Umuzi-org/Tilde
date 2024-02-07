@@ -25,6 +25,7 @@ from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm,SubmissionLinkForm
 from .theme import styles
+from .constants import PROJECT_STATUS,BOARD_STATUS
 
 User = get_user_model()
 
@@ -294,23 +295,33 @@ def action_start_card(request, card_id):
         },
     )
 
-@user_passes_test(is_super)
-@csrf_exempt
+@login_required()
 def project_details_page(request, project_id):
     project = RecruitProject.objects.get(pk=project_id)
+
+    reviews = [{
+        "timestamp":review.timestamp, 
+        "status":  PROJECT_STATUS.get(review.status), 
+        "comments": review.comments, 
+        "reviewer_user":review.reviewer_user
+        } for review in project.project_reviews.order_by("-timestamp")
+    ]
+
     form = SubmissionLinkForm()
 
     context = {
         "form": form,
         "project": project,
-        "reviews": project.project_reviews.order_by("-timestamp"),
+        "reviews": reviews,
+        "board_status": BOARD_STATUS[project.agile_card_status],
     }
+    if request.method == "POST":
+        submission_link = request.POST.get('submission_link')
 
-    submission_link = request.POST.get('submission_link')
-
-    if project.link_submission_is_valid(submission_link):
-        project.link_submission = submission_link
-        project.save()
+        if project.link_submission_is_valid(submission_link):
+            project.link_submission = submission_link
+            project.save()
+      
 
     return render(
         request,
