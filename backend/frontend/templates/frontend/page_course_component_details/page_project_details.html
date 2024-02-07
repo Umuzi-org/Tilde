@@ -28,14 +28,16 @@
             </div>
         
             <div class="bold p-2 border-2 rounded-md grid gap-2">
-                <div class="bold p-2 border-2 rounded-md ">
-                    Assignees:
-                    <ul class="mx-8">
-                        <li class="bold">
-                        {{ project.recruit_user_names|first }}
-                        </li>
-                    </ul>
-                </div>
+                {% if user.email != project.recruit_user_names|first %}
+                    <div class="bold p-2 border-2 rounded-md ">
+                        Assignees:
+                        <ul class="mx-8">
+                            <li class="bold">
+                            {{ project.recruit_user_names|first }}
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
         
                 <div class="bold p-2 border-2 rounded-md ">
                     Reviewers: 
@@ -69,7 +71,15 @@
             <div class="grid bold p-2 border-2 rounded-md gap-2">
                 <h6>Link to your work</h6>
                 
-                <div>Current link submission: <a class="{{styles.link}}" href="{{project.link_submission}}">{{project.link_submission}}</a></div>
+                <div>Current link submission: 
+                    <a class="{{styles.link}}" href="{{project.link_submission}}">
+                        {% if project.link_submission == None %}
+                            No link submitted yet
+                        {% else %}
+                            {{project.link_submission}}
+                        {% endif%}
+                    </a>
+                </div>
                 <i id="edit_submission_link_icon" class="fa-solid fa-pen-to-square" onclick="displayForm()"></i>
                
 
