@@ -23,7 +23,7 @@ from guardian.core import ObjectPermissionChecker
 
 from threadlocal_middleware import get_current_request
 
-from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
+from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm,SubmissionLinkForm
 from .theme import styles
 
 User = get_user_model()
@@ -298,14 +298,24 @@ def action_start_card(request, card_id):
 @csrf_exempt
 def project_details_page(request, project_id):
     project = RecruitProject.objects.get(pk=project_id)
+    form = SubmissionLinkForm()
+
+    context = {
+        "form": form,
+        "project": project,
+        "reviews": project.project_reviews.order_by("-timestamp"),
+    }
+
+    submission_link = request.POST.get('submission_link')
+
+    if project.link_submission_is_valid(submission_link):
+        project.link_submission = submission_link
+        project.save()
 
     return render(
         request,
         "frontend/page_course_component_details/page_project_details.html",
-        {
-            "project": project,
-            "reviews": project.project_reviews.order_by("-timestamp"),
-        },
+        context,
     )
 
 # @user_passes_test(is_super)

@@ -1,4 +1,5 @@
 {% extends "frontend/page_course_component_details/base.html" %}
+{% load static %}
 
 {% block project_heading %}Project Details{% endblock %}
 {% block project_content %}
@@ -69,25 +70,14 @@
                 <h6>Link to your work</h6>
                 {% if project.link_submission %}
                     <div>Current link submission: <a class="{{styles.link}}" href="{{project.link_submission}}">{{project.link_submission}}</a></div>
+                    <i id="edit_submission_link_icon" class="fa-solid fa-pen-to-square" onclick="displayForm()"></i>
                 {% endif %}
 
-                <div>
-                    <form id="save_project_submission_link" action="{% url 'save_project_submission_link' project.id %}" method="post">
-                        {% csrf_token %}
-                        <label class="{{styles.label_small}}" for="fname">
-                            {% if not project.link_submission %}
-                                Submit new link:
-                            {% else %}
-                                Submit different link:</label>
-                            {% endif %}
-                        </label>
-                    
-                        <input class="{{styles.input_small}}" type="url" id="submission_link" name="submission_link" required>
-                        <button type="submit" class="{{ styles.button_primary_small }}"
-                            >Save Link
-                        </button>
-                    </form>
-                </div>
+                <form id="link_submission_form" action="" method="post" style="display:none;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
+                </form>
             </div>
             <div class="grid gap-2 bold p-2 border-2 rounded-md">
                 Reviews:
