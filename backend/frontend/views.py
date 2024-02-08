@@ -104,6 +104,37 @@ def user_passes_test_or_forbidden(test_func):
     return decorator
 
 
+def check_no_outstanding_reviews_on_card_action(view_func):
+    """
+    Decorator for views that checks that the user has
+    no outstanding card or pull request reviews.
+
+    Decorated view must have card_id in kwargs.
+    """
+    def _wrapped_view(request, *args, **kwargs):
+        assert "card_id" in kwargs
+        card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
+
+        if helpers.agile_card_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding card reviews."},
+            )
+
+        if helpers.pull_request_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding pull request reviews."},
+            )
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
+
+
 def can_view_user_board(logged_in_user):
     request = get_current_request()
     viewed_user_id = request.resolver_match.kwargs.get("user_id")
@@ -298,52 +329,20 @@ def action_start_card(request, card_id):
     )
 
 
-def user_can_request_review(logged_in_user):
+def check_user_can_request_review_on_card(logged_in_user):
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
 
-    card = get_object_or_404(AgileCard, pk=card_id)
-    card_assignees = card.assignees.all()
-
-    if logged_in_user in card_assignees:
-        return True
-
-    card_teams = card.get_teams()
-    checker = ObjectPermissionChecker(logged_in_user)
-    checker.prefetch_perms(card_teams)
-
-    return any(
-        (checker.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in card_teams)
-    )
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_request_review(user=logged_in_user)
 
 
 @csrf_exempt
-@user_passes_test_or_forbidden(user_can_request_review)
+@user_passes_test_or_forbidden(check_user_can_request_review_on_card)
+@check_no_outstanding_reviews_on_card_action
 def action_request_review(request, card_id):
     """The card is in progress or review feedback and the user has chosen to request review"""
     card = get_object_or_404(AgileCard, id=card_id)
-
-    if len(helpers.agile_card_reviews_outstanding(request.user)):
-        return render(
-            request,
-            "frontend/user/board/js_exec_action_show_card_alert.html",
-            {
-                "card": card,
-                "message": "You have outstanding card reviews.",
-                "alert_type": "error",
-            },
-        )
-
-    if len(helpers.pull_request_reviews_outstanding(request.user)):
-        return render(
-            request,
-            "frontend/user/board/js_exec_action_show_card_alert.html",
-            {
-                "card": card,
-                "message": "You have outstanding pull request reviews.",
-                "alert_type": "error",
-            },
-        )
 
     if card.recruit_project:
         card.recruit_project.request_review(force_timestamp=timezone.now())
