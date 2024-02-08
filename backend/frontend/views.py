@@ -106,7 +106,7 @@ def user_passes_test_or_forbidden(test_func):
 
 def check_no_outstanding_reviews_on_card_action(view_func):
     """
-    Decorator for views that checks that the user has
+    Decorator for action views that checks that the user has
     no outstanding card or pull request reviews.
 
     Decorated view must have card_id in kwargs.
