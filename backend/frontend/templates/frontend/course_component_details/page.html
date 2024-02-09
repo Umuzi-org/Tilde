@@ -1,18 +1,18 @@
-{% extends "frontend/page_course_component_details/base.html" %}
+{% extends "frontend/course_component_details/base.html" %}
 
 {% block course_component_heading %}Course Component Details{% endblock %}
 {% block course_component_content %}
-    {% if project.submission_type_nice == "link"%}
+    {% if course_component.submission_type_nice == "link"%}
         <div class="grid gap-4 my-4">
             <div  class="bold p-2 border-2 rounded-md grid gap-2">
                 <p class="bold p-2 border-2 rounded-md ">
-                    Title: {{ project.title }}
+                    Title: {{ course_component.title }}
                 </p>
             
                 <div class="bold p-2 border-2 rounded-md ">
                     Tag names: 
-                    {% with project.tag_names|length as array_length %}
-                        {% for item in project.tag_names %}
+                    {% with course_component.tag_names|length as array_length %}
+                        {% for item in course_component.tag_names %}
                             {{ item }}
                             {% if not forloop.last %},{% endif %}
                         {% endfor %}
@@ -32,7 +32,7 @@
                     Assignees:
                     <ul class="mx-8">
                         <li class="bold">
-                        {{ project.recruit_user_names|first }}
+                        {{ course_component.recruit_user_names|first }}
                         </li>
                     </ul>
                 </div>
@@ -40,7 +40,7 @@
                 <div class="bold p-2 border-2 rounded-md ">
                     Reviewers: 
                     <ul class="mx-8">
-                        {% for reviewer in project.reviewer_user_names%}
+                        {% for reviewer in course_component.reviewer_user_names%}
                         <li class="bold">{{reviewer}}</li>
                         {%endfor%}
                     </ul>
@@ -51,18 +51,18 @@
             
             <div class="grid bold p-2 border-2 rounded-md gap-2">
                 <p class="bold p-2 border-2 rounded-md" >
-                    Start Date: {{project.start_time}}
+                    Start Date: {{course_component.start_time}}
                 </p>
 
                 <p class="bold p-2 border-2 rounded-md">
-                    Due Date: {{project.due_time}}
+                    Due Date: {{course_component.due_time}}
                 </p>
             </div>
 
             <div class="bold p-2 border-2 rounded-md ">
                 <p class="bold">
                     Content URL: 
-                    <a class="{{styles.link}}" href="{{project.content_url}}">{{project.content_url}}</a>
+                    <a class="{{styles.link}}" href="{{course_component.content_url}}">{{course_component.content_url}}</a>
                 </p>
             </div>
 
@@ -73,8 +73,8 @@
                     {% if project.link_submission == None %}
                         No link submitted yet
                     {% else %}
-                    <a class="{{styles.link}}" href="{{project.link_submission}}">
-                        {{project.link_submission}}
+                    <a class="{{styles.link}}" href="{{course_component.link_submission}}">
+                        {{course_component.link_submission}}
                     </a>
                     {% endif%}
                 </div>

@@ -25,7 +25,6 @@ from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm,SubmissionLinkForm
 from .theme import styles
-from .constants import PROJECT_STATUSES,BOARD_STATUSES
 
 User = get_user_model()
 
@@ -297,17 +296,19 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def project_details_page(request, project_id):
+def course_component_details(request, project_id):
     project = get_object_or_404(RecruitProject,id=project_id)
+
+    board_status = [value for key, value in AgileCard.STATUS_CHOICES if key == project.agile_card_status][0]
  
     context = {
-        "project": project,
-        "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
+        "course_component": project,
+        "board_status": board_status,
     }
       
     return render(
         request,
-        "frontend/page_course_component_details/page_project_details.html",
+        "frontend/course_component_details/page.html",
         context,
     )
 
