@@ -72,17 +72,16 @@
                 <h6>Link to your work</h6>
                 
                 <div>Current link submission: 
+                    {% if project.link_submission == None %}
+                        No link submitted yet
+                    {% else %}
                     <a class="{{styles.link}}" href="{{project.link_submission}}">
-                        {% if project.link_submission == None %}
-                            No link submitted yet
-                        {% else %}
-                            {{project.link_submission}}
-                        {% endif%}
+                        {{project.link_submission}}
                     </a>
+                    {% endif%}
                 </div>
                 <i id="edit_submission_link_icon" class="fa-solid fa-pen-to-square" onclick="displayForm()"></i>
                
-
                 <form id="link_submission_form" action="" method="post" style="display:none;">
                     {% csrf_token %}
                     {{ form.as_p }}
