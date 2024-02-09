@@ -317,14 +317,19 @@ def project_details_page(request, project_id):
             "reviews": reviews,
             "board_status": BOARD_STATUSES[project.agile_card_status],
         }
-        if request.method == "POST":
-            submission_link = request.POST.get('submission_link')
 
-            if project.link_submission_is_valid(submission_link):
-                project.link_submission = submission_link
-                project.save()
+        if request.method == "POST":
+            form = SubmissionLinkForm(request.POST)
+        
+            if form.is_valid():
+                submission_link = form.cleaned_data['submission_link']
+    
+                if project.link_submission_is_valid(submission_link):
+                    project.link_submission = submission_link
+                    project.save()                          
             
             #TODO implement invalid form validation
+
                 
     else:
         context = {
