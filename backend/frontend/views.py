@@ -320,8 +320,10 @@ def project_details_page(request, project_id):
                 if project.link_submission_is_valid(submission_link):
                     project.link_submission = submission_link
                     project.save()                          
-            
-            #TODO implement invalid form validation
+
+                else:
+                    #TODO implement invalid form validation
+                    pass
                     
         context = {
             "form": form,
