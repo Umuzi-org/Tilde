@@ -1,11 +1,11 @@
-function toggleIcon(){
-    const editSubmissionLinkIcon =  document.getElementById("edit_submission_link_icon");
-    editSubmissionLinkIcon.style.display = (editSubmissionLinkIcon.style.display === "none") ? "block" : "none";
+function toggleEditLinkSubmissionIcon(){
+    const editLinkSubmissionIcon =  document.getElementById("edit_link_submission_icon");
+    editLinkSubmissionIcon.style.display = (editLinkSubmissionIcon.style.display === "none") ? "block" : "none";
 }
 
-function displayForm(){
+function displayLinkSubmissionForm(){
     const form = document.getElementById("link_submission_form");
     form.style.display = "block"
-    toggleIcon()
+    toggleEditLinkSubmissionIcon()
 }
 
