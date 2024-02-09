@@ -311,13 +311,6 @@ def project_details_page(request, project_id):
     if project.submission_type_nice == "link":
         form = SubmissionLinkForm()
 
-        context = {
-            "form": form,
-            "project": project,
-            "reviews": reviews,
-            "board_status": BOARD_STATUSES[project.agile_card_status],
-        }
-
         if request.method == "POST":
             form = SubmissionLinkForm(request.POST)
         
@@ -329,7 +322,13 @@ def project_details_page(request, project_id):
                     project.save()                          
             
             #TODO implement invalid form validation
-
+                    
+        context = {
+            "form": form,
+            "project": project,
+            "reviews": reviews,
+            "board_status": BOARD_STATUSES[project.agile_card_status],
+        }
                 
     else:
         context = {
