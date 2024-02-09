@@ -1,10 +1,10 @@
-PROJECT_STATUS = {
+PROJECT_STATUSES = {
     "NYC":"Not Yet Competent",
     "C":"Complete",
     "RF":"Red Flag"
 }
 
-BOARD_STATUS = {
+BOARD_STATUSES = {
     "B": "Blocked",
     "R": "Ready",
     "IP": "In Progress",

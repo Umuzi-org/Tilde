@@ -25,7 +25,7 @@ from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm,SubmissionLinkForm
 from .theme import styles
-from .constants import PROJECT_STATUS,BOARD_STATUS
+from .constants import PROJECT_STATUSES,BOARD_STATUSES
 
 User = get_user_model()
 
@@ -302,7 +302,7 @@ def project_details_page(request, project_id):
 
     reviews = [{
         "timestamp":review.timestamp, 
-        "status":  PROJECT_STATUS.get(review.status), 
+        "status":  PROJECT_STATUSES.get(review.status), 
         "comments": review.comments, 
         "reviewer_user":review.reviewer_user
         } for review in project.project_reviews.order_by("-timestamp")
@@ -315,7 +315,7 @@ def project_details_page(request, project_id):
             "form": form,
             "project": project,
             "reviews": reviews,
-            "board_status": BOARD_STATUS[project.agile_card_status],
+            "board_status": BOARD_STATUSES[project.agile_card_status],
         }
         if request.method == "POST":
             submission_link = request.POST.get('submission_link')
@@ -330,7 +330,7 @@ def project_details_page(request, project_id):
         context = {
             "project": project,
             "reviews": reviews,
-            "board_status": BOARD_STATUS[project.agile_card_status],
+            "board_status": BOARD_STATUSES[project.agile_card_status],
         }
       
 
