@@ -308,22 +308,30 @@ def project_details_page(request, project_id):
         } for review in project.project_reviews.order_by("-timestamp")
     ]
 
-    form = SubmissionLinkForm()
+    if project.project.submission_type_nice == "link":
+        form = SubmissionLinkForm()
 
-    context = {
-        "form": form,
-        "project": project,
-        "reviews": reviews,
-        "board_status": BOARD_STATUS[project.agile_card_status],
-    }
-    if request.method == "POST":
-        submission_link = request.POST.get('submission_link')
+        context = {
+            "form": form,
+            "project": project,
+            "reviews": reviews,
+            "board_status": BOARD_STATUS[project.agile_card_status],
+        }
+        if request.method == "POST":
+            submission_link = request.POST.get('submission_link')
 
-        if project.link_submission_is_valid(submission_link):
-            project.link_submission = submission_link
-            project.save()
-        
-        #TODO implement invalid form validation
+            if project.link_submission_is_valid(submission_link):
+                project.link_submission = submission_link
+                project.save()
+            
+            #TODO implement invalid form validation
+                
+    else:
+        context = {
+            "project": project,
+            "reviews": reviews,
+            "board_status": BOARD_STATUS[project.agile_card_status],
+        }
       
 
     return render(
