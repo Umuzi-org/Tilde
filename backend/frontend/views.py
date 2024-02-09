@@ -295,9 +295,10 @@ def action_start_card(request, card_id):
         },
     )
 
+
 @user_passes_test_or_forbidden(can_view_user_board)
 def project_details_page(request, project_id):
-    project = RecruitProject.objects.get_object_or_404(pk=project_id)
+    project = get_object_or_404(RecruitProject,id=project_id)
 
     reviews = [{
         "timestamp":review.timestamp, 
@@ -307,7 +308,7 @@ def project_details_page(request, project_id):
         } for review in project.project_reviews.order_by("-timestamp")
     ]
 
-    if project.project.submission_type_nice == "link":
+    if project.submission_type_nice == "link":
         form = SubmissionLinkForm()
 
         context = {
