@@ -27,16 +27,15 @@
             </div>
         
             <div class="bold p-2 border-2 rounded-md grid gap-2">
-                {% if user.email != project.recruit_user_names|first %}
-                    <div class="bold p-2 border-2 rounded-md ">
-                        Assignees:
-                        <ul class="mx-8">
-                            <li class="bold">
-                            {{ project.recruit_user_names|first }}
-                            </li>
-                        </ul>
-                    </div>
-                {% endif %}
+            
+                <div class="bold p-2 border-2 rounded-md ">
+                    Assignees:
+                    <ul class="mx-8">
+                        <li class="bold">
+                        {{ project.recruit_user_names|first }}
+                        </li>
+                    </ul>
+                </div>
         
                 <div class="bold p-2 border-2 rounded-md ">
                     Reviewers: 
