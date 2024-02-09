@@ -78,13 +78,7 @@
                     </a>
                     {% endif%}
                 </div>
-                <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square" onclick="displayLinkSubmissionForm()"></i>
-               
-                <form id="link_submission_form" action="" method="post" style="display:none;">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
-                </form>
+                <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
             </div>
         </div>
     {% endif %}

@@ -299,37 +299,12 @@ def action_start_card(request, card_id):
 @user_passes_test_or_forbidden(can_view_user_board)
 def project_details_page(request, project_id):
     project = get_object_or_404(RecruitProject,id=project_id)
-
-    if project.submission_type_nice == "link":
-        form = SubmissionLinkForm()
-
-        if request.method == "POST":
-            form = SubmissionLinkForm(request.POST)
-        
-            if form.is_valid():
-                submission_link = form.cleaned_data['submission_link']
-    
-                if project.link_submission_is_valid(submission_link):
-                    project.link_submission = submission_link
-                    project.save()                          
-
-                else:
-                    #TODO implement invalid form validation
-                    pass
-                    
-        context = {
-            "form": form,
-            "project": project,
-            "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
-        }
-                
-    else:
-        context = {
-            "project": project,
-            "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
-        }
+ 
+    context = {
+        "project": project,
+        "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
+    }
       
-
     return render(
         request,
         "frontend/page_course_component_details/page_project_details.html",

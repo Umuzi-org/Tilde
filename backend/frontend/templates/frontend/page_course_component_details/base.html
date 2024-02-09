@@ -1,12 +1,5 @@
 {% extends "frontend/base_logged_in.html" %}
 
-{% load static %}
-
-{% block main_head %}
-    {{ block.super }}
-    <script src="{% static 'frontend/page_course_component_details.js' %}"></script>
-{% endblock %}
-
 {% block main_content %}
   {% block content %}
     <div class="mx-auto w-1/2 p-6 bg-white rounded my-4">
