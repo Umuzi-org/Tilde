@@ -300,14 +300,6 @@ def action_start_card(request, card_id):
 def project_details_page(request, project_id):
     project = get_object_or_404(RecruitProject,id=project_id)
 
-    reviews = [{
-        "timestamp":review.timestamp, 
-        "status":  PROJECT_STATUSES.get(review.status), 
-        "comments": review.comments, 
-        "reviewer_user":review.reviewer_user
-        } for review in project.project_reviews.order_by("-timestamp")
-    ]
-
     if project.submission_type_nice == "link":
         form = SubmissionLinkForm()
 
@@ -328,15 +320,13 @@ def project_details_page(request, project_id):
         context = {
             "form": form,
             "project": project,
-            "reviews": reviews,
-            "board_status": BOARD_STATUSES[project.agile_card_status],
+            "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
         }
                 
     else:
         context = {
             "project": project,
-            "reviews": reviews,
-            "board_status": BOARD_STATUSES[project.agile_card_status],
+            "board_status": AgileCard.STATUS_CHOICES[project.agile_card_status],
         }
       
 
