@@ -2,10 +2,10 @@
 
 {% load static %}
 
-{% block head %}
-<script src="{% static "frontend/page_project_details.js" %}"></script>
+{% block main_head %}
+    {{ block.super }}
+    <script src="{% static 'frontend/page_project_details.js' %}"></script>
 {% endblock %}
-
 
 {% block main_content %}
   {% block content %}
