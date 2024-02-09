@@ -86,21 +86,6 @@
                     <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                 </form>
             </div>
-            <div class="grid gap-2 bold p-2 border-2 rounded-md">
-                Reviews:
-                {% if reviews|length == 0 %}
-                    No reviews yet
-                {% else %}
-                    {% for review in reviews %}
-                    <div class="bold p-2 border-2 rounded-md mx-8">
-                        <p>Date: {{review.timestamp}}</p>
-                        <p>Reviewer: {{review.reviewer_user}}</p>
-                        <p>Comments: {{review.comments}}</p>
-                        <p>Status: {{review.status}}</p>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
         </div>
     {% endif %}
 {% endblock %}
