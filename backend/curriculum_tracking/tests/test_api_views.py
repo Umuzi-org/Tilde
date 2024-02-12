@@ -65,13 +65,14 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         "complete_time",
         "review_request_time",
         "topic_reviews",
+        "topic_needs_review",
     ]
 
     def verbose_instance_factory(self):
 
         topic_progress = factories.TopicProgressFactory()
         content = topic_progress.content_item
-        content.topic_needs_review = True
+        content.topic_needs_review = False
         content.save()
         return topic_progress
 
@@ -728,9 +729,7 @@ class TestBulkSetDueDatesApi(APITestCase, APITestCaseMixin):
         self.user_two_red = UserFactory(
             first_name="two_red", is_superuser=False, is_staff=False
         )
-        self.super_user = UserFactory(
-            first_name="super_user", is_superuser=True
-        )
+        self.super_user = UserFactory(first_name="super_user", is_superuser=True)
 
         self.blue_team.user_set.add(self.user_one_blue)
         self.blue_team.user_set.add(self.user_two_blue)
@@ -1125,5 +1124,3 @@ class TestTeamViewSet(APITestCase, APITestCaseMixin):
         url = self.get_list_url()
         response = self.client.get(url)
         self.assertEqual(len(response.data), 0)
-
-

@@ -136,16 +136,12 @@ class ContentItemProxyMixin:
         return self.content_item.project_submission_type_nice
 
     @property
-    def topic_needs_review(self):
-        return self.content_item.topic_needs_review
-
-    @property
     def project_submission_type_nice(self):
         return self.content_item.project_submission_type_nice
 
     @property
     def topic_needs_review(self):
-        return self.content_item.topic_needs_review
+        return False
 
     @property
     def protect_main_branch(self):
@@ -302,11 +298,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         return (max_id or 0) + 1
 
     def save(self, *args, **kwargs):
-        if self.topic_needs_review:
-            if self.content_type != self.TOPIC:
-                raise ValidationError(
-                    f"Cannot set `topic_needs_review` for non TOPIC item. content_type = {self.content_type}"
-                )
         if self.content_type == self.PROJECT:
             if self.project_submission_type == None:
                 raise ValidationError(
@@ -1463,14 +1454,9 @@ class AgileCard(
         assert (
             self.content_item.content_type == ContentItem.TOPIC
         ), f"{self.content_item.content_type}"
-        if self.content_item.topic_needs_review:
-            self.topic_progress.review_request_time = timezone.now()
-            self.topic_progress.save()
-            self.status = AgileCard.IN_REVIEW
-        else:
-            self.topic_progress.complete_time = timezone.now()
-            self.topic_progress.save()
-            self.status = AgileCard.COMPLETE
+        self.topic_progress.complete_time = timezone.now()
+        self.topic_progress.save()
+        self.status = AgileCard.COMPLETE
         self.save()
 
     def stop_topic(self):

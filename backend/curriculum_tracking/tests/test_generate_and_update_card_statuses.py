@@ -294,57 +294,6 @@ class update_topic_card_progress_Tests(TestCase):
         card.refresh_from_db()
         self.assertEqual(card.status, models.AgileCard.COMPLETE)
 
-    def test_topic_needing_review_gets_correct_status_over_time(self):
-        content_item = factories.ContentItemFactory(
-            content_type=models.ContentItem.TOPIC, topic_needs_review=True
-        )
-
-        card = factories.AgileCardFactory(content_item=content_item)
-        # card.assignees.add(self.user)
-        user = card.assignees.first()
-
-        update_topic_card_progress(user)
-        card.refresh_from_db()
-
-        self.assertEqual(card.status, models.AgileCard.READY)
-
-        card.start_topic()
-        card.finish_topic()
-
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-        update_topic_card_progress(user)
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-
-        factories.TopicReviewFactory(
-            topic_progress=card.topic_progress, status=NOT_YET_COMPETENT
-        )
-
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.REVIEW_FEEDBACK)
-        update_topic_card_progress(user)
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.REVIEW_FEEDBACK)
-
-        card.finish_topic()
-
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-        update_topic_card_progress(user)
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.IN_REVIEW)
-
-        factories.TopicReviewFactory(
-            topic_progress=card.topic_progress, status=COMPETENT
-        )
-
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.COMPLETE)
-        update_topic_card_progress(user)
-        card.refresh_from_db()
-        self.assertEqual(card.status, models.AgileCard.COMPLETE)
-
 
 class update_workshop_card_progress_Tests(TestCase):
     # def setUp(self):
