@@ -6,7 +6,7 @@ import datetime
 from django.utils import timezone
 
 
-class TestLoginLogout(FrontendTestMixin):
+class TestCourseComponent(FrontendTestMixin):
     def setUp(self):
         super().setUp()
         self.user = UserFactory(
@@ -28,32 +28,32 @@ class TestLoginLogout(FrontendTestMixin):
         self.content_item.project_submission_type = "L"
         self.content_item.save()
 
-        self.project = factories.RecruitProjectFactory(
+        self.link_project = factories.RecruitProjectFactory(
             recruit_users=[self.user],
             reviewer_users=[self.reviewer_1, self.reviewer_2],
             content_item=self.content_item,
         )
-        self.project.start_time = datetime.datetime(
+        self.link_project.start_time = datetime.datetime(
             2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
         )
-        self.project.due_time = datetime.datetime(
+        self.link_project.due_time = datetime.datetime(
             2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
         )
-        self.project.save()
+        self.link_project.save()
 
-        self.agile_card = factories.AgileCardFactory(
+        self.agile_card_for_link_project = factories.AgileCardFactory(
             status=AgileCard.READY,
-            recruit_project=self.project,
+            recruit_project=self.link_project,
             content_item=self.content_item,
             assignees=[self.user],
         )
-        self.agile_card.start_topic()
+        self.agile_card_for_link_project.start_topic()
 
-        self.url_requiring_login = f"{self.live_server_url}/project/{self.project.id}"
+        self.link_project_url = f"{self.live_server_url}/project/{self.link_project.id}"
 
-    def test_link_project_displays_correct_details(self):
+    def test_link_project_page_displays_correct_details(self):
         self.do_login(self.user)
-        self.page.goto(self.url_requiring_login)
+        self.page.goto(self.link_project_url)
 
         body = self.page.text_content("body")
         self.assertIn("Course Component Details", body)
@@ -68,5 +68,3 @@ class TestLoginLogout(FrontendTestMixin):
             body,
         )
         self.assertIn("No link submitted yet", body)
-
-        self.page.screenshot(path="./screenshot.png", full_page=True)
