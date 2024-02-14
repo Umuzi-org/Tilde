@@ -11,8 +11,6 @@ class TestCourseComponent(FrontendTestMixin):
         super().setUp()
         self.user = UserFactory(
             email="learner@umuzi.org",
-            is_staff=True,
-            is_superuser=True,  # TODO: remove this once "restricted access" PR is merged
         )
         self.user.set_password(self.user.email)
         self.user.save()
