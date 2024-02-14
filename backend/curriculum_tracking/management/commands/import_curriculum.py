@@ -6,6 +6,7 @@ python manage.py import_curriculum dev_helpers/data/intro-to-tilde-course.json
 python manage.py import_curriculum dev_helpers/data/data-eng-part-1.json
 
 """
+
 from core.models import Curriculum
 from curriculum_tracking.models import (
     CurriculumContentRequirement,
@@ -57,7 +58,7 @@ def create_content_items(data):
             # tags = ','.join(content['tags']),
             template_repo=content["template_repo"],
             title=content["title"],
-            topic_needs_review=content["topic_needs_review"],
+            topic_needs_review=False,
             url=content["url"],
             raw_url=content["raw_url"],
             blurb=content["blurb"],
