@@ -1,231 +1,193 @@
 {% load humanize %}
-
-<div
-  class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
-  id="card_{{ card.id }}"
-  data-status="{{card.status}}"
->
-  <div
-    class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative"
-  >
+<div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
+     id="card_{{ card.id }}"
+     data-status="{{ card.status }}">
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
     <!-- Dates and options section -->
-
     <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
-    
       <div class="flex gap-2 items-start col-span-10 pb-2">
         {% if card.due_time %}
           {% now "U" as current_timestamp %}
-            {% if current_timestamp > card.due_time|date:"U" %}
-                <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-                    Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
-                </p>
-            {% else %}
-                <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-                    Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
-                </p>
-            {% endif %}
-          {% endif %}
-    
-          {% if card.start_time and not card.due_time %}
+          {% if current_timestamp > card.due_time|date:"U" %}
+            <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
+            </p>
+          {% else %}
             <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-                Started: {{ card.start_time|naturalday }}, {{ card.start_time|time }}
+              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
             </p>
           {% endif %}
-    
-          {% if card.complete_time and not card.start_time %}
-            <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-                Completed: {{ card.complete_time|naturalday }}, {{ card.complete_time|time }}
-            </p>
-          {% endif %}
+        {% endif %}
+        {% if card.start_time and not card.due_time %}
+          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            Started: {{ card.start_time|naturalday }}, {{ card.start_time|time }}
+          </p>
+        {% endif %}
+        {% if card.complete_time and not card.start_time %}
+          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            Completed: {{ card.complete_time|naturalday }}, {{ card.complete_time|time }}
+          </p>
+        {% endif %}
       </div>
-    
       <!-- In this section there should be the options icon. It exists in the design, but we have not came to agreements what this should do -->
-
     </div>
-
     <!-- Card status and PR info section-->
-
     <div class="grid grid-cols-2 gap-y-2 w-full h-[auto]">
-         <div class="col-span-1">
-             {% if card.code_review_competent_since_last_review_request %}
-                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
-                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_competent_since_last_review_request }}</div>
-                </div>
-             {% endif %}
-             {% if card.code_review_ny_competent_since_last_review_request %}
-                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa fa-frown-o" aria-hidden="true" title="Not yet competent reviews"></i>
-                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_ny_competent_since_last_review_request }}</div>
-                </div>
-             {% endif %}
-             {% if card.code_review_red_flag_since_last_review_request %}
-                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-sad-tear" aria-hidden="true" title="Red-flag reviews"></i>
-                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_red_flag_since_last_review_request }}</div>
-                </div>   
-             {% endif %}
-             {% if card.code_review_excellent_since_last_review_request %}
-                <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-                  <i class="fa-regular fa-face-laugh-wink" aria-hidden="true" title="Excellent reviews"></i>
-                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">{{ card.code_review_excellent_since_last_review_request }}</div>
-                </div>
-             {% endif %}
-         </div>
-
-        {% if card.open_pr_count %}
-         <a hx-redirect={{ card.repo_url }} title="Pull request info">
+      <div class="col-span-1">
+        {% if card.code_review_competent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_competent_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+        {% if card.code_review_ny_competent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa fa-frown-o"
+               aria-hidden="true"
+               title="Not yet competent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_ny_competent_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+        {% if card.code_review_red_flag_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa-regular fa-face-sad-tear"
+               aria-hidden="true"
+               title="Red-flag reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_red_flag_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+        {% if card.code_review_excellent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa-regular fa-face-laugh-wink"
+               aria-hidden="true"
+               title="Excellent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_excellent_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      {% if card.open_pr_count %}
+        <a hx-redirect={{ card.repo_url }} title="Pull request info">
           {% comment %} <a hx-post='js:repoUrlCleaner(card.repo_ur)'> {% endcomment %}
           <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
-             <i class="fa-solid fa-code-pull-request"></i>
-             <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight" title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-             <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2" title="Number of pull requests">{{ card.open_pr_count }}</div>
+            <i class="fa-solid fa-code-pull-request"></i>
+            <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
+                  title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
+                 title="Number of pull requests">{{ card.open_pr_count }}</div>
           </div>
-         </a>
-       {% endif %}
+        </a>
+      {% endif %}
     </div>
-
     <!-- Card info section -->
-
     <div class="grid grid-cols-0 grid-rows-1 text-left">
-      <p class="w-[195.72px] h-[auto] text-black text-xs font-medium font-'Poppins'">
-        {{ card.content_type_nice }}
-      </p>
-      <h5
-        class="w-[auto] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight pr-10"
-      >
-        {{ card.title }}
-      </h5>
+      <p class="w-[195.72px] h-[auto] text-black text-xs font-medium font-'Poppins'">{{ card.content_type_nice }}</p>
+      <h5 class="w-[auto] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight pr-10">{{ card.title }}</h5>
     </div>
-
     <!-- Tags section -->
-
     {% if card.tag_names %}
-    <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
+      <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
-            {%if tag_name != "none"%}
-              <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 pr-0.5">{{tag_name}}</span><span></span>
-            {% endif %}
+          {% if tag_name != "none" %}
+            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 pr-0.5">{{ tag_name }}</span><span></span>
+          {% endif %}
         {% endfor %}
-    </div>
+      </div>
     {% endif %}
-
     <!-- Flavours section -->
-
     {% if card.flavour_names %}
-    <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
+      <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
         {% for flavour_name in card.flavour_names %}
-            {%if flavour_name != "none"%}
-                {%if flavour_name == "javascript"%}
-                    <span title="{{flavour_name}}">
-                        <i class="fa-regular fa-brands fa-js fa-lg"></i>
-                    </span> 
-                {%endif%}
-                {%if flavour_name == "python"%}
-                    <span title="{{flavour_name}}">
-                        <i class="fa-regular fa-brands fa-python fa-lg"></i>
-                    </span> 
-                {%endif%}
-                {%if flavour_name == "java"%}
-                    <span title="{{flavour_name}}">
-                        <i class="fa-regular fa-brands fa-java fa-lg"></i>
-                    </span> 
-                {%endif%}
+          {% if flavour_name != "none" %}
+            {% if flavour_name == "javascript" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-js fa-lg"></i>
+              </span>
             {% endif %}
+            {% if flavour_name == "python" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-python fa-lg"></i>
+              </span>
+            {% endif %}
+            {% if flavour_name == "java" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-java fa-lg"></i>
+              </span>
+            {% endif %}
+          {% endif %}
         {% endfor %}
-    </div>
-    
+      </div>
     {% endif %}
-
     <!-- Horizontal line -->
- 
     <hr class="border-gray-300 inset-x-0 absolute" />
-
     <!-- Assignee and reviewers section -->
-
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
-
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
         {% if card.assignee_names %}
           {% for assignee in card.assignee_names %}
-            <img
-              class="w-[30px] h-[30px] rounded-full"
-              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
-              alt="{{ assignee }} profile picture"
-              title="{{ assignee }}"
-            />
+            <img class="w-[30px] h-[30px] rounded-full"
+                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                 alt="{{ assignee }} profile picture"
+                 title="{{ assignee }}" />
           {% endfor %}
         {% endif %}
       </div>
-
       <div class="Reviewer-avatars col-span-1 row-span-1 group">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-          <div class="flex relative">
-            {% if card.reviewer_names %}
-                {% for reviewer in card.reviewer_names|slice:":2" %}
-                    <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
-                        <img class="w-[30px] h-[30px] rounded-full" 
-                            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
-                            alt="{{ reviewer }} profile picture" 
-                            title="{{ reviewer }}"
-                        />
-                    </div>
-                {% endfor %}
-                {% if card.reviewer_names|length > 2 %}
-                  <div class="group">
-                    <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white cursor-pointer">
-                      <img class="w-[30px] h-[30px] rounded-full" 
-                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
-                        alt="more reviewers" 
-                        title="{{ card.reviewer_names|join:', ' }}"
-                      />
-                    </div>
-                  </div>
-                {% endif %}
+        <div class="flex relative">
+          {% if card.reviewer_names %}
+            {% for reviewer in card.reviewer_names|slice:":2" %}
+              <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                <img class="w-[30px] h-[30px] rounded-full"
+                     src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                     alt="{{ reviewer }} profile picture"
+                     title="{{ reviewer }}" />
+              </div>
+            {% endfor %}
+            {% if card.reviewer_names|length > 2 %}
+              <div class="group">
+                <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white cursor-pointer">
+                  <img class="w-[30px] h-[30px] rounded-full"
+                       src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                       alt="more reviewers"
+                       title="{{ card.reviewer_names|join:', ' }}" />
+                </div>
+              </div>
             {% endif %}
+          {% endif %}
         </div>
-      </div>      
-    
+      </div>
       <!-- Buttons section -->
-      
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="Start-button col-span-1 row-span-1 w-full">
-          <button
-          href={{card.content_item_url}}
-          class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
-        >
-          <span
-          
-          class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none"
-        >
-            Content
-        </span>
-      </button>
-      </div>
+          <button onclick="window.open('{{ card.content_item_url }}', '_blank')" class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
+            <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
+          </button>
+        </div>
       </div>
       <div class="Start-button col-span-1 row-span-1">
         {% if card.request_user_can_start %}
-        <button
-          type="button"
-          class="{{ styles.button_primary_small }}"
-          hx-post="{% url 'action_start_card' card.id %}"
-          hx-target="#card_{{ card.id }}"
-          hx-swap="outerHTML"
-        >
-          Start
-        </button>
+          <button type="button"
+                  class="{{ styles.button_primary_small }}"
+                  hx-post="{% url 'action_start_card' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Start</button>
         {% elif card.request_user_can_request_review %}
-        <button type="button" class="{{ styles.button_primary_small }}"
-            hx-post="{% url 'action_request_review' card.id %}"
-            hx-target="#card_{{ card.id }}"
-            hx-swap="outerHTML"
-            >
-                Request Review
-        </button>
+          <button type="button"
+                  class="{{ styles.button_primary_small }}"
+                  hx-post="{% url 'action_request_review' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Request Review</button>
         {% endif %}
       </div>
-
     </div>
   </div>
   <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
