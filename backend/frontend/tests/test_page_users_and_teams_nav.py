@@ -50,3 +50,17 @@ class TestPage(FrontendTestMixin):
         # user cannot see teams without view permissions
         for team in teams_user_has_no_view_permissions_for:
             self.assertNotIn(team.name, body)
+
+    def test_load_more_button_appears(self):
+        user = UserFactory(is_superuser=True, email="super@email.com", is_staff=True)
+        user.set_password(user.email)
+        user.save()
+
+        teams = [TeamFactory() for _ in range(21)]
+
+        self.do_login(user)
+        url = self.reverse_url("users_and_teams_nav")
+        self.page.goto(url)
+
+        body = self.page.text_content("body")
+        self.assertIn("load more", body)
