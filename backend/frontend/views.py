@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
@@ -25,6 +26,9 @@ from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 from .theme import styles
+
+import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking import helpers
 
 User = get_user_model()
 
@@ -98,6 +102,37 @@ def user_passes_test_or_forbidden(test_func):
         return _wrapped_view
 
     return decorator
+
+
+def check_no_outstanding_reviews_on_card_action(view_func):
+    """
+    Decorator for action views that checks that the user has
+    no outstanding card or pull request reviews.
+
+    Decorated view must have card_id in kwargs.
+    """
+    def _wrapped_view(request, *args, **kwargs):
+        assert "card_id" in kwargs
+        card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
+
+        if helpers.agile_card_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding card reviews."},
+            )
+
+        if helpers.pull_request_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding pull request reviews."},
+            )
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
 
 
 def can_view_user_board(logged_in_user):
@@ -288,6 +323,43 @@ def action_start_card(request, card_id):
     return render(
         request,
         "frontend/user/board/view_partial_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+def check_user_can_request_review_on_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_request_review(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_request_review_on_card)
+@check_no_outstanding_reviews_on_card_action
+def action_request_review(request, card_id):
+    """The card is in progress or review feedback and the user has chosen to request review"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    if card.recruit_project:
+        card.recruit_project.request_review(force_timestamp=timezone.now())
+    else:
+        raise NotImplementedError("Only project cards can request review")
+
+    log_creators.log_card_review_requested(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.IN_REVIEW
+    ), f"Expected to be in review, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
         {
             "card": card,
         },
