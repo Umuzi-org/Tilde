@@ -57,10 +57,17 @@ class TestPage(FrontendTestMixin):
         user.save()
 
         teams = [TeamFactory() for _ in range(21)]
+        for team in teams:
+            assign_perm
+            (
+                Team.PERMISSION_MANAGE_CARDS,
+                user,
+                team,
+            )
 
         self.do_login(user)
-        url = self.reverse_url("users_and_teams_nav")
+        url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
-
+        self.page.wait_for_load_state("networkidle")
         body = self.page.text_content("body")
         self.assertIn("load more", body)
