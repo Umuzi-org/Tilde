@@ -58,7 +58,6 @@ def create_content_items(data):
             # tags = ','.join(content['tags']),
             template_repo=content["template_repo"],
             title=content["title"],
-            topic_needs_review=False,
             url=content["url"],
             raw_url=content["raw_url"],
             blurb=content["blurb"],

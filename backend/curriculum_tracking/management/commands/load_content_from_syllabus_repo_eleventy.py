@@ -226,7 +226,6 @@ class Command(BaseCommand):
             "content_type": actual_content_type,
             "title": title,
             "url": url,
-            "topic_needs_review": False,
             "project_submission_type": project_submission_type,
             "continue_from_repo": self._get_continue_from_repo(meta.get("from_repo")),
             "template_repo": meta.get("template_repo"),

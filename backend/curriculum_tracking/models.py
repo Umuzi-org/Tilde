@@ -140,10 +140,6 @@ class ContentItemProxyMixin:
         return self.content_item.project_submission_type_nice
 
     @property
-    def topic_needs_review(self):
-        return False
-
-    @property
     def protect_main_branch(self):
         return self.content_item.protect_main_branch
 
@@ -267,7 +263,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         through="ContentAvailableFlavour",
         related_name="content_with_flavour",
     )
-    topic_needs_review = models.BooleanField(default=False)
 
     project_submission_type = models.CharField(
         max_length=1, choices=PROJECT_SUBMISSION_TYPES, null=True, blank=True

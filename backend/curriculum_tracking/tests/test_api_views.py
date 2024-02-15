@@ -65,14 +65,12 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         "complete_time",
         "review_request_time",
         "topic_reviews",
-        "topic_needs_review",
     ]
 
     def verbose_instance_factory(self):
 
         topic_progress = factories.TopicProgressFactory()
         content = topic_progress.content_item
-        content.topic_needs_review = False
         content.save()
         return topic_progress
 
@@ -89,7 +87,6 @@ class RequestAndCancelReviewViewsetTests(APITestCase, APITestCaseMixin):
         "requires_cards",
         "required_by_cards",
         "project_submission_type_nice",
-        "topic_needs_review",
         "topic_progress",
         "due_time",
         "complete_time",
@@ -285,7 +282,6 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         "requires_cards",
         "required_by_cards",
         "project_submission_type_nice",
-        "topic_needs_review",
         "topic_progress",
         "due_time",
         "complete_time",
@@ -558,7 +554,6 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
     NUMBER_OF_INSTANCES_CREATED_BY_VERBOSE_FACTORY = 3
     FIELDS_THAT_CAN_BE_FALSEY = [
         "flavour_names",
-        "topic_needs_review",
         "continue_from_repo",
         "project_submission_type_nice",
     ]
@@ -587,7 +582,6 @@ class WorkshopAttendanceViewsetTests(APITestCase, APITestCaseMixin):
         workshop = factories.ContentItemFactory(content_type=ContentItem.WORKSHOP)
         workshop_attendance = factories.WorkshopAttendanceFactory(content_item=workshop)
         content = workshop_attendance.content_item
-        content.topic_needs_review = False
         content.save()
         return workshop_attendance
 

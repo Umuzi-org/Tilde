@@ -69,7 +69,6 @@ def get_export_dict(curriculum):
                 "raw_url": o.raw_url,
                 "tags": o.tag_names,
                 "flavours": o.flavour_names,
-                "topic_needs_review": False,
                 "project_submission_type": o.project_submission_type,
                 "continue_from_repo": o.continue_from_repo and o.continue_from_repo.url,
                 "template_repo": o.template_repo,
