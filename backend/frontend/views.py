@@ -123,9 +123,6 @@ def can_view_user_board(logged_in_user):
 
 
 def user_login(request):
-    form = CustomAuthenticationForm()
-    context = {"form": form}
-
     if request.method == "POST":
         form = CustomAuthenticationForm(request=request, data=request.POST)
         context = {"form": form}
@@ -142,6 +139,9 @@ def user_login(request):
             )
 
             return redirect(redirect_to)
+    else:
+        form = CustomAuthenticationForm()
+        context = {"form": form}
 
     return render(request, "frontend/auth/page_login.html", context)
 
