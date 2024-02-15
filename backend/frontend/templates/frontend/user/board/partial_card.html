@@ -215,12 +215,7 @@
         >
           Start
         </button>
-        {% endif %}
-      </div>
-      
-    {% endif %}
-    
-    {% if card.request_user_can_request_review %}
+        {% elif card.request_user_can_request_review %}
         <button type="button" class="{{ styles.button_primary_small }}"
             hx-post="{% url 'action_request_review' card.id %}"
             hx-target="#card_{{ card.id }}"
@@ -228,7 +223,8 @@
             >
                 Request Review
         </button>
-    {% endif %}
+        {% endif %}
+      </div>
 
     </div>
   </div>
