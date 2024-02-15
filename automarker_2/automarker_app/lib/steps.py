@@ -20,12 +20,22 @@ from .constants import (
     STEP_STATUS_RED_FLAG,
 )
 import json
+import platform
 
 
 def get_all_file_paths(directory):
     for path, _, filenames in os.walk(directory):
         for filename in filenames:
             yield os.path.join(path, filename)
+
+
+def get_python_executable_path():
+    if platform.system() == "Windows":
+        return "Scripts/python"
+    return "bin/python"
+
+
+PYTHON_EXECUTABLE_PATH = get_python_executable_path()
 
 
 class Step:
@@ -626,9 +636,7 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            command = (
-                f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
-            )
+            command = f"{clone_dir_path/ 'automarker_venv'/ PYTHON_EXECUTABLE_PATH} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -639,7 +647,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+        command = f"{clone_dir_path/'automarker_venv'/PYTHON_EXECUTABLE_PATH} -m pip install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -673,11 +681,8 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = (
-            f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
-        )
+        command = f"cd {clone_dir_path} && {clone_dir_path/'automarker_venv'/PYTHON_EXECUTABLE_PATH} -m pytest {clone_dir_path}/tests --tb=line"
         stdout, stderr = subprocess_run(command)
-
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
                 STEP_STATUS_RED_FLAG,
