@@ -1671,6 +1671,9 @@ class AgileCard(
         """
         Check if current user can request review for this card
         """
+        if self.content_type_nice != "project":
+            return False
+        
         if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
             return False
 
