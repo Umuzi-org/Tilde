@@ -48,8 +48,8 @@ urlpatterns = [
     ),
     #
     path(
-    "project/<int:project_id>",
-    views.course_component_details,
-    name="course_component_details",
+        "project/<int:project_id>",
+        views.course_component_details,
+        name="project",
     ),
 ]

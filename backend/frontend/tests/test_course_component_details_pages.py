@@ -1,9 +1,12 @@
+import datetime
+
+from django.urls import reverse
+from django.utils import timezone
+
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
 from curriculum_tracking.tests import factories
 from curriculum_tracking.models import AgileCard
-import datetime
-from django.utils import timezone
 
 
 class TestCourseComponent(FrontendTestMixin):
@@ -46,8 +49,12 @@ class TestCourseComponent(FrontendTestMixin):
             assignees=[self.user],
         )
         self.agile_card_for_link_project.start_topic()
-
-        self.link_project_url = f"{self.live_server_url}/project/{self.link_project.id}"
+        project_url = reverse("project", kwargs={"project_id": self.link_project.id})
+        self.link_project_url = f"{self.live_server_url}{project_url}"
+        print(
+            "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        )
+        print(self.link_project_url)
 
     def test_link_project_page_displays_correct_details(self):
         self.do_login(self.user)
