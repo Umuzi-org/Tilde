@@ -1,5 +1,4 @@
 PRIMARY_COLOUR = "indigo"
-
 TEXT_COLOUR = "gray"
 
 styles = {
