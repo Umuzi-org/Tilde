@@ -4,31 +4,10 @@
   <form action="" method="post" class="my-4" novalidate>
     {% csrf_token %}
 
-    {% if form.non_field_errors %}
-      <ul class="my-4 {{styles.alert_error}}">
-        {{ form.non_field_errors.as_ul }}
-      </ul>
-    {% endif %}
-
     <div class="my-4" >
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>
-
-    {% for field in form %}
-      <label for="{{ field.id_for_label }}" class="{{ styles.label_small }}">{{ field.label_tag }}</label>
-      {{ field }}
-      {% if field.errors %}
-          <ul class="{{ styles.field_error }}">
-              {% for error in field.errors %}
-                  <li>
-                      <i class="fa-solid fa-triangle-exclamation"></i>
-                      {{ error }}
-                  </li>
-              {% endfor %}
-          </ul>
-      {% endif %}
-      <br>
-    {% endfor %}
+    {% include 'frontend/auth/form_template.html' with form=form %}
     
     <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
   </form>

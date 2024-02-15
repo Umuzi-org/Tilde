@@ -12,7 +12,7 @@ User = get_user_model()
 class ThemedFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         for field in self.fields:
             self.fields[field].widget.attrs.update(
                 {
@@ -21,7 +21,7 @@ class ThemedFormMixin:
             )
 
 
-class CustomAuthenticationForm(ThemedFormMixin,AuthenticationForm):
+class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
     pass
 
 

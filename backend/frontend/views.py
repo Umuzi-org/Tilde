@@ -128,7 +128,7 @@ def user_login(request):
 
     if request.method == "POST":
         form = CustomAuthenticationForm(request=request, data=request.POST)
-        context.update({"form": form})
+        context = {"form": form}
 
         if form.is_valid():
             login(
@@ -186,12 +186,13 @@ def user_forgot_password(request):
             if form.user_exists():
                 _send_password_reset_email(request, form)
             return redirect(reverse_lazy("user_password_reset_done"))
-            
+
     return render(request, "frontend/auth/page_forgot_password.html", context)
 
 
 def user_password_reset_done(request):
     return render(request, "frontend/auth/page_password_reset_done.html")
+
 
 def user_reset_password(request, token):
     signer = ForgotPasswordForm.signer
