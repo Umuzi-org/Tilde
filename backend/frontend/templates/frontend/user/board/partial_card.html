@@ -74,7 +74,8 @@
          </div>
 
         {% if card.open_pr_count %}
-         <a href={{ card.repo_url }} title="Pull request info">
+         <a hx-redirect={{ card.repo_url }} title="Pull request info">
+          {% comment %} <a hx-post='js:repoUrlCleaner(card.repo_ur)'> {% endcomment %}
           <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
              <i class="fa-solid fa-code-pull-request"></i>
              <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight" title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
@@ -150,7 +151,7 @@
           {% for assignee in card.assignee_names %}
             <img
               class="w-[30px] h-[30px] rounded-full"
-              src="https://images.unsplash.com/photo-1594751543129-6701ad444259?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGFyayUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
+              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
               alt="{{ assignee }} profile picture"
               title="{{ assignee }}"
             />
@@ -165,7 +166,7 @@
                 {% for reviewer in card.reviewer_names|slice:":2" %}
                     <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
                         <img class="w-[30px] h-[30px] rounded-full" 
-                            src="https://img.freepik.com/premium-photo/portrait-smiling-happy-multiethnic-elementary-school-boy-dressed-formal-school-uniform-wit_616370-5177.jpg" 
+                            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
                             alt="{{ reviewer }} profile picture" 
                             title="{{ reviewer }}"
                         />
@@ -191,15 +192,17 @@
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="Start-button col-span-1 row-span-1 w-full">
           <button
-            type="button"
-            class="{{ styles.button_content_small }}"
-            hx-post="{% url 'action_start_card' card.id %}"
-            hx-target="#card_{{ card.id }}"
-            hx-swap="outerHTML"
-          >
+          href={{card.content_item_url}}
+          class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex"
+        >
+          <span
+          
+          class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none"
+        >
             Content
-          </button>
-        </div>
+        </span>
+      </button>
+      </div>
       </div>
       <div class="Start-button col-span-1 row-span-1">
         {% if card.request_user_can_start %}
