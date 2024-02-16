@@ -1,7 +1,7 @@
 /*
 This gets called when we do anything to update the state of a card. It just moves the card into the correct column and puts it right at the top.
 
-TODO: Preserve the order of the cards in the column  
+TODO: Preserve the order of the cards in the column
 */
 function moveCardToCorrectColumn(cardId, column) {
   const card = document.getElementById(`card_${cardId}`);
@@ -20,4 +20,16 @@ function moveCardToCorrectColumn(cardId, column) {
     // add the card to the top of the destination column
     destinationColumn.insertBefore(card, destinationColumn.firstChild);
   }
+}
+
+/*
+  Hides a card alert after 5 seconds.
+*/
+
+function hideCardAlert(cardId) {
+  const cardAlert = document.querySelector(`[data-card-id="${cardId}"]`);
+
+  setTimeout(() => {
+    cardAlert.remove();
+  }, 5000);
 }
