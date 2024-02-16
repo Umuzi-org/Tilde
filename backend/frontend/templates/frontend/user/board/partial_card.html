@@ -74,16 +74,18 @@
         {% endif %}
       </div>
       {% if card.open_pr_count %}
-        <a hx-redirect={{ card.repo_url }} title="Pull request info">
-          {% comment %} <a hx-post='js:repoUrlCleaner(card.repo_ur)'> {% endcomment %}
-          <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
-            <i class="fa-solid fa-code-pull-request"></i>
-            <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
-                  title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
-                 title="Number of pull requests">{{ card.open_pr_count }}</div>
-          </div>
-        </a>
+        {% with modified_url=card.repo_url|slice:"25:"|slice:"-4" %}
+          <a href="https://github.com/{{ modified_url }}/pulls"
+             title="Pull request info">
+            <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
+              <i class="fa-solid fa-code-pull-request"></i>
+              <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
+                    title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+              <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
+                   title="Number of pull requests">{{ card.open_pr_count }}</div>
+            </div>
+          </a>
+        {% endwith %}
       {% endif %}
     </div>
     <!-- Card info section -->
@@ -168,7 +170,8 @@
       <!-- Buttons section -->
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="Start-button col-span-1 row-span-1 w-full">
-          <button onclick="window.open('{{ card.content_item_url }}', '_blank')" class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
+          <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
+                  class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
             <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
           </button>
         </div>
@@ -185,7 +188,7 @@
                   class="{{ styles.button_primary_small }}"
                   hx-post="{% url 'action_request_review' card.id %}"
                   hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Request eview</button>
+                  hx-swap="outerHTML">Request review</button>
         {% endif %}
       </div>
     </div>
