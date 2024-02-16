@@ -39,6 +39,11 @@ urlpatterns = [
         views.action_start_card,
         name="action_start_card",
     ),
+    path(
+        "cards/<int:card_id>/request_review",
+        views.action_request_review,
+        name="action_request_review",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(

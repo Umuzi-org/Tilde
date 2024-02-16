@@ -30,6 +30,8 @@ class TestLoginLogout(FrontendTestMixin):
 
         self.page.goto(self.url_requiring_login)
 
+        self.page.click('button#user-menu-button')
+
         self.page.click("text=Sign out")
 
         self.page.goto(self.url_requiring_login)
