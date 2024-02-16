@@ -1,6 +1,5 @@
 import datetime
 
-from django.urls import reverse
 from django.utils import timezone
 
 from core.tests.factories import UserFactory
@@ -14,6 +13,8 @@ class TestCourseComponent(FrontendTestMixin):
         super().setUp()
         self.user = UserFactory(
             email="learner@umuzi.org",
+            is_staff=True,
+            is_superuser=True,
         )
         self.user.set_password(self.user.email)
         self.user.save()
@@ -21,9 +22,11 @@ class TestCourseComponent(FrontendTestMixin):
         self.reviewer_1 = UserFactory(
             email="learner_r1@umuzi.org",
         )
+        self.reviewer_1.save()
         self.reviewer_2 = UserFactory(
             email="learner_r2@umuzi.org",
         )
+        self.reviewer_2.save()
 
         self.content_item = factories.ContentItemFactory()
         self.content_item.project_submission_type = "L"
@@ -49,18 +52,17 @@ class TestCourseComponent(FrontendTestMixin):
             assignees=[self.user],
         )
         self.agile_card_for_link_project.start_topic()
-        project_url = reverse("project", kwargs={"project_id": self.link_project.id})
-        self.link_project_url = f"{self.live_server_url}{project_url}"
-        print(
-            "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": f"{self.link_project.id}"}
         )
-        print(self.link_project_url)
 
     def test_link_project_page_displays_correct_details(self):
         self.do_login(self.user)
         self.page.goto(self.link_project_url)
 
         body = self.page.text_content("body")
+
         self.assertIn("Course Component Details", body)
         self.assertIn("learner@umuzi.org", body)
         self.assertIn("In Progress", body)
@@ -69,7 +71,7 @@ class TestCourseComponent(FrontendTestMixin):
         self.assertIn("learner_r1@umuzi.org", body)
         self.assertIn("learner_r2@umuzi.org", body)
         self.assertIn(
-            "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tdd/simple-calculator/part-465/_index.md",
+            self.link_project.content_item.url,
             body,
         )
         self.assertIn("No link submitted yet", body)
