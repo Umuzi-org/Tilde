@@ -23,7 +23,7 @@ urlpatterns = [
         name="view_partial_teams_list",
     ),
     path(
-        "users_and_teams_nav/team/<int:team_id>/partial_team_users_list/",
+        "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
         views.view_partial_team_users_list,
         name="view_partial_team_users_list",
     ),
@@ -38,6 +38,11 @@ urlpatterns = [
         "cards/<int:card_id>/start",
         views.action_start_card,
         name="action_start_card",
+    ),
+    path(
+        "cards/<int:card_id>/request_review",
+        views.action_request_review,
+        name="action_request_review",
     ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),

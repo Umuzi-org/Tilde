@@ -1,7 +1,7 @@
 {% load humanize %}
 
 <div
-    class="mb-3 rounded-xl {% if card.request_user_is_assignee == False %}bg-orange-100{%else%}bg-blue-100{% endif %}"
+    class="mb-3 rounded-xl {% if user.email in card.reviewer_names %}bg-orange-100{%else%}bg-blue-100{% endif %} {% if card.status == 'B' %}bg-zinc-200{% endif %}"
     id="card_{{ card.id }}" 
     data-status="{{card.status}}">
     <div class="border rounded-t-xl border-gray-300 py-2 px-4  flex justify-between items-center text-xs">
@@ -164,6 +164,16 @@
             hx-target="#card_{{ card.id }}"
             hx-swap="outerHTML"
             >Start
+        </button>
+    {% endif %}
+    
+    {% if card.request_user_can_request_review %}
+        <button type="button" class="{{ styles.button_primary_small }}"
+            hx-post="{% url 'action_request_review' card.id %}"
+            hx-target="#card_{{ card.id }}"
+            hx-swap="outerHTML"
+            >
+                Request Review
         </button>
     {% endif %}
     </div>

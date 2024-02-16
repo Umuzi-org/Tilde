@@ -91,7 +91,8 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
     def test_super_user_can_view_user_board(self):
         self.do_login(self.superuser)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")
@@ -100,7 +101,8 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
     def test_user_can_view_own_board(self):
         self.do_login(self.viewed_user)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")
@@ -114,17 +116,34 @@ class TestUserBoardAuthorization(FrontendTestMixin):
         does not have access to the user board.
         """
         self.do_login(self.user_without_access)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
+
+        self.page.goto(url)
+
+        body = self.page.text_content("body")
+        
+        self.assertIn("Permission Denied", body)
+        
+
+    def test_login_redirection_if_unauthenticated(self):
+        """
+        Custom @user_passes_test_or_forbidden(func) should redirect to login if
+        the user is not authenticated.
+        """
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
 
         self.page.goto(url)
 
         body = self.page.text_content("body")
 
-        self.assertIn("You don't have permission to access this page", body)
+        self.assertIn("Log in", body)
 
     def test_user_with_manage_card_permission_can_view_user_board(self):
         self.do_login(self.user_with_manage_card_permission)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")
@@ -133,7 +152,8 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
     def test_user_with_view_all_permission_can_view_user_board(self):
         self.do_login(self.user_with_view_permission)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")
@@ -142,7 +162,8 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
     def test_user_with_review_cards_permission_can_view_user_board(self):
         self.do_login(self.user_with_review_cards_permission)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")
@@ -151,7 +172,8 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
     def test_trusted_reviewer_can_view_user_board(self):
         self.do_login(self.trusted_reviewer)
-        url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
+        url = self.reverse_url("user_board", kwargs={
+                               "user_id": self.viewed_user.id})
         self.page.goto(url)
 
         body = self.page.text_content("body")

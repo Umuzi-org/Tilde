@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
@@ -25,6 +26,9 @@ from threadlocal_middleware import get_current_request
 
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 from .theme import styles
+
+import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking import helpers
 
 User = get_user_model()
 
@@ -85,18 +89,50 @@ def user_passes_test_or_forbidden(test_func):
     """
 
     def decorator(view_func):
+        @login_required()
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
 
             return HttpResponseForbidden(
-                "You don't have permission to access this page."
+                render(request, "frontend/auth/page_permission_denied.html")
             )
 
         return _wrapped_view
 
     return decorator
+
+
+def check_no_outstanding_reviews_on_card_action(view_func):
+    """
+    Decorator for action views that checks that the user has
+    no outstanding card or pull request reviews.
+
+    Decorated view must have card_id in kwargs.
+    """
+    def _wrapped_view(request, *args, **kwargs):
+        assert "card_id" in kwargs
+        card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
+
+        if helpers.agile_card_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding card reviews."},
+            )
+
+        if helpers.pull_request_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding pull request reviews."},
+            )
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
 
 
 def can_view_user_board(logged_in_user):
@@ -117,6 +153,26 @@ def can_view_user_board(logged_in_user):
                 (checker.has_perm(view_permission, team) for team in viewed_user_teams)
             ):
                 return True
+
+    return False
+
+
+def can_view_team(logged_in_user):
+    request = get_current_request()
+    viewed_team_id = request.resolver_match.kwargs.get("team_id")
+
+    if logged_in_user.is_superuser:
+        return True
+
+    viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
+    checker = ObjectPermissionChecker(logged_in_user)
+
+    for view_permission in Team.PERMISSION_VIEW:
+        if checker.has_perm(
+            view_permission,
+            viewed_team_obj,
+        ):
+            return True
 
     return False
 
@@ -273,7 +329,44 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test(is_super)
+def check_user_can_request_review_on_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_request_review(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_request_review_on_card)
+@check_no_outstanding_reviews_on_card_action
+def action_request_review(request, card_id):
+    """The card is in progress or review feedback and the user has chosen to request review"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    if card.recruit_project:
+        card.recruit_project.request_review(force_timestamp=timezone.now())
+    else:
+        raise NotImplementedError("Only project cards can request review")
+
+    log_creators.log_card_review_requested(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.IN_REVIEW
+    ), f"Expected to be in review, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -285,16 +378,24 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-@user_passes_test(is_super)
+@login_required()
 def view_partial_teams_list(request):
+    user = request.user
+
+    from guardian.shortcuts import get_objects_for_user
+
+    all_teams = Team.objects.filter(active=True).order_by("name")
+    if user.is_superuser:
+        teams = all_teams
+    else:
+        teams = get_objects_for_user(
+            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
+        )
+
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-
-    all_teams = Team.objects.filter(active=True).order_by(
-        "name"
-    )  # TODO: only show teams that the current user is allowed to see
-    teams = all_teams[current_team_count : current_team_count + limit]
-    has_next_page = len(all_teams) > current_team_count + limit
+    teams = teams[current_team_count : current_team_count + limit]
+    has_next_page = len(teams) > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -302,11 +403,13 @@ def view_partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_teams_list.html",
+        context,
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -320,7 +423,7 @@ def view_partial_team_users_list(request, team_id):
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -330,7 +433,7 @@ def team_dashboard(request, team_id):
     return render(request, "frontend/team/dashboard/page.html", context)
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_user_board)
 def view_partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
