@@ -74,8 +74,8 @@
         {% endif %}
       </div>
       {% if card.open_pr_count %}
-        {% with modified_url=card.repo_url|slice:"25:"|slice:"-4" %}
-          <a href="https://github.com/{{ modified_url }}/pulls"
+        {% with modified_url=card.repo_url|slice:"25:-4" %}
+          <a href="https://github.com/umuzi-org/{{ modified_url }}/pulls"
              title="Pull request info">
             <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
               <i class="fa-solid fa-code-pull-request"></i>
