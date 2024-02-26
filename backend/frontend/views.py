@@ -111,6 +111,7 @@ def check_no_outstanding_reviews_on_card_action(view_func):
 
     Decorated view must have card_id in kwargs.
     """
+
     def _wrapped_view(request, *args, **kwargs):
         assert "card_id" in kwargs
         card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
@@ -126,13 +127,15 @@ def check_no_outstanding_reviews_on_card_action(view_func):
             return render(
                 request,
                 "frontend/user/board/js_exec_action_show_card_alert.html",
-                {"card": card, "alert_message": "You have outstanding pull request reviews."},
+                {
+                    "card": card,
+                    "alert_message": "You have outstanding pull request reviews.",
+                },
             )
 
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
-
 
 
 def can_view_user_board(logged_in_user):
@@ -385,6 +388,8 @@ def view_partial_teams_list(request):
     from guardian.shortcuts import get_objects_for_user
 
     all_teams = Team.objects.filter(active=True).order_by("name")
+    total_teams_count = all_teams.count()
+
     if user.is_superuser:
         teams = all_teams
     else:
@@ -395,7 +400,7 @@ def view_partial_teams_list(request):
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
     teams = teams[current_team_count : current_team_count + limit]
-    has_next_page = len(teams) > current_team_count + limit
+    has_next_page = total_teams_count > current_team_count + limit
 
     context = {
         "teams": teams,
