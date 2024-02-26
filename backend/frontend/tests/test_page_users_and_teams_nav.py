@@ -70,4 +70,4 @@ class TestPage(FrontendTestMixin):
         self.page.goto(url)
         self.page.wait_for_load_state("networkidle")
         body = self.page.text_content("body")
-        self.assertIn("load more", body)
+        self.assertIn("Load more", body)
