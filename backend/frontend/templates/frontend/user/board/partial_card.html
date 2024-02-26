@@ -74,18 +74,22 @@
         {% endif %}
       </div>
       {% if card.open_pr_count %}
-        {% with modified_url=card.repo_url|slice:"25:-4" %}
-          <a href="https://github.com/umuzi-org/{{ modified_url }}/pulls"
-             title="Pull request info">
-            <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
-              <i class="fa-solid fa-code-pull-request"></i>
-              <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
-                    title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-              <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
-                   title="Number of pull requests">{{ card.open_pr_count }}</div>
-            </div>
-          </a>
-        {% endwith %}
+        <a href="{{ card.recruit_project.repository.get_github_repo_link }}/pulls"
+           target="_blank"
+           title="Pull request info">
+          <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
+            <i class="fa-solid fa-code-pull-request"></i>
+            <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
+                  title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
+                 title="Number of pull requests">{{ card.open_pr_count }}</div>
+          </div>
+        </a>
+      {% elif card.repo_url %}
+        <a href="{{ card.recruit_project.repository.get_github_repo_link }}"
+           target="_blank">
+          <i class="fa-brands fa-github" aria-hidden="true" title="Repo link"></i>
+        </a>
       {% endif %}
     </div>
     <!-- Card info section -->
