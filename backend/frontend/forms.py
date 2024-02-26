@@ -22,7 +22,7 @@ class ThemedFormMixin:
 
 
 class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
-    pass
+    username = forms.EmailField()
 
 
 class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):
