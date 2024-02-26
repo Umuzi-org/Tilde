@@ -88,7 +88,7 @@
       {% elif card.repo_url %}
         <a href="{{ card.recruit_project.repository.get_github_repo_link }}"
            target="_blank">
-          <i class="fa-brands fa-github" aria-hidden="true" title="Repo link"></i>
+           <button class="{{ styles.button_secondary_small }}" title="Repository link">Repo <i class="fa fa-github"></i></button>
         </a>
       {% endif %}
     </div>
