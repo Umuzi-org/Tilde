@@ -30,7 +30,6 @@ from .theme import styles
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
-
 User = get_user_model()
 
 board_columns = [
@@ -331,8 +330,20 @@ def check_user_can_start_card(logged_in_user):
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
-    # TODO implement this
-    print("### hello")
+
+    content_item_type = card.content_item.content_type
+
+    if content_item_type == ContentItem.TOPIC:
+        card.start_topic()
+    elif content_item_type == ContentItem.PROJECT:
+        card.start_project()
+    else:
+        raise NotImplemented(
+            f"Cannot start card of type {card.content_item.content_type}"
+        )
+
+    log_creators.log_card_started(card=card, actor_user=request.user)
+
     return render(
         request,
         "frontend/user/board/js_exec_action_card_moved.html",
