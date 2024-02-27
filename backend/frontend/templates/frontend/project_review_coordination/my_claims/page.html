@@ -1,0 +1,17 @@
+{% extends "frontend/project_review_coordination/base.html" %}
+
+{% block heading %}My claims{% endblock %}
+
+
+
+{% block main %}
+
+    {% for claim in active_claims %}
+
+    {% include "frontend/project_review_coordination/partial_claim.html" %}
+
+
+        
+    {% endfor %}
+
+{% endblock %}

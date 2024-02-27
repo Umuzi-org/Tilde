@@ -1,0 +1,14 @@
+<header class="bg-white shadow py-5 flex items-center">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h1 class="{{ styles.heading1 }}">Project review coordination</h1>
+    </div>
+    <div class="hidden md:block flex-initial">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+          <a href="{% url 'project_review_coordination_unclaimed' %}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Unclaimed bundles</a>
+          <a href="{% url 'project_review_coordination_my_claims' %}"  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">My claims</a>
+          <a href="{% url 'project_review_coordination_all_claims' %}"  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">All claims</a>
+        </div>
+      </div>
+      <div class="flex-grow"></div>
+</header>
