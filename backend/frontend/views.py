@@ -30,11 +30,6 @@ from .theme import styles
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
-import curriculum_tracking.activity_log_entry_creators as log_creators
-from curriculum_tracking.helpers import (
-    agile_card_reviews_outstanding,
-    pull_request_reviews_outstanding,
-)
 
 User = get_user_model()
 
@@ -101,9 +96,6 @@ def user_passes_test_or_forbidden(test_func):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
 
-            return HttpResponseForbidden(
-                render(request, "frontend/auth/page_permission_denied.html")
-            )
             return HttpResponseForbidden(
                 render(request, "frontend/auth/page_permission_denied.html")
             )
@@ -332,7 +324,6 @@ def view_partial_user_board_column(request, user_id, column_id):
 
     user = get_object_or_404(User, id=user_id)
     all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
-   
     cards = all_cards[current_card_count : current_card_count + limit]
     has_next_page = len(all_cards) > current_card_count + limit
 
