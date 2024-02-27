@@ -332,9 +332,7 @@ def view_partial_user_board_column(request, user_id, column_id):
 
     user = get_object_or_404(User, id=user_id)
     all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
-    all_cards = [d for d in board_columns if d["id"] == column_id][0]["query"](user)
-
-    cards = all_cards[current_card_count : current_card_count + limit]
+   
     cards = all_cards[current_card_count : current_card_count + limit]
     has_next_page = len(all_cards) > current_card_count + limit
 
