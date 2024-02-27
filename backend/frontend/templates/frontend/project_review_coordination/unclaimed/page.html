@@ -1,0 +1,35 @@
+{% extends "frontend/project_review_coordination/base.html" %}
+
+{% block heading %}Unclaimed bundles{% endblock %}
+
+
+{% block main %}
+
+    {% for bundle in bundles %}
+    <div id="bundle_{{ forloop.counter0 }}"
+    class="mb-3 p-2 rounded-xl border-2"
+    
+    >
+        {{ bundle.title }} {{ bundle.flavours }} {{ bundle.tags }}
+        <br/>
+        Number of cards = {{ bundle.card_count }}
+        <br/>
+        Oldest review request time: {{ bundle.oldest_review_request_time | date:"r"}}
+        <!-- Has review trust: {{ is_trusted }} -->
+        <form>
+                {% csrf_token %}
+
+                <button
+                hx-trigger="click"
+                hx-target="#bundle_{{ forloop.counter0 }}"
+                hx-swap="outerHTML"
+                hx-post="{% url 'action_project_review_coordination_claim_bundle' %}"
+                
+                hx-vals='js:{project_ids: {{ bundle.project_ids }} }'
+                class="{{ styles.button_primary_small }}"
+                >Claim</button>
+            </form>
+        </div>
+    {% endfor %}
+
+{% endblock %}
