@@ -24,7 +24,11 @@ from guardian.core import ObjectPermissionChecker
 
 from threadlocal_middleware import get_current_request
 
-from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm,SubmissionLinkForm
+from .forms import (
+    ForgotPasswordForm,
+    CustomAuthenticationForm,
+    CustomSetPasswordForm,
+)
 from .theme import styles
 
 import curriculum_tracking.activity_log_entry_creators as log_creators
@@ -111,6 +115,7 @@ def check_no_outstanding_reviews_on_card_action(view_func):
 
     Decorated view must have card_id in kwargs.
     """
+
     def _wrapped_view(request, *args, **kwargs):
         assert "card_id" in kwargs
         card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
@@ -126,13 +131,15 @@ def check_no_outstanding_reviews_on_card_action(view_func):
             return render(
                 request,
                 "frontend/user/board/js_exec_action_show_card_alert.html",
-                {"card": card, "alert_message": "You have outstanding pull request reviews."},
+                {
+                    "card": card,
+                    "alert_message": "You have outstanding pull request reviews.",
+                },
             )
 
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
-
 
 
 def can_view_user_board(logged_in_user):
@@ -329,18 +336,21 @@ def action_start_card(request, card_id):
     )
 
 
-
 @user_passes_test_or_forbidden(can_view_user_board)
 def course_component_details(request, project_id):
-    project = get_object_or_404(RecruitProject,id=project_id)
+    project = get_object_or_404(RecruitProject, id=project_id)
 
-    board_status = [value for key, value in AgileCard.STATUS_CHOICES if key == project.agile_card_status][0]
- 
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == project.agile_card_status
+    ][0]
+
     context = {
         "course_component": project,
         "board_status": board_status,
     }
-      
+
     return render(
         request,
         "frontend/course_component_details/page.html",
@@ -384,7 +394,7 @@ def action_request_review(request, card_id):
         },
     )
 
-  
+
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
