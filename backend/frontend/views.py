@@ -161,27 +161,6 @@ def can_view_user_board(logged_in_user):
     return False
 
 
-def user_can_start_card(logged_in_user):
-    request = get_current_request()
-    card_id = request.resolver_match.kwargs.get("card_id")
-
-    card = get_object_or_404(AgileCard, pk=card_id)
-    card_assignees = card.assignees.all()
-
-    if (logged_in_user in card_assignees) and card.can_start():
-        return True
-
-    card_teams = card.get_teams()
-    checker = ObjectPermissionChecker(logged_in_user)
-
-    if any(
-        (checker.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in card_teams)
-    ) and (card.can_force_start()):
-        return True
-
-    return False
-
-
 def can_view_team(logged_in_user):
     request = get_current_request()
     viewed_team_id = request.resolver_match.kwargs.get("team_id")
@@ -338,12 +317,22 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
+def check_user_can_start_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_start(logged_in_user)
+
+
 @csrf_exempt
-@user_passes_test_or_forbidden(user_can_start_card)
+@user_passes_test_or_forbidden(check_user_can_start_card)
+@check_no_outstanding_reviews_on_card_action
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
     # TODO implement this
+    print("### hello")
     return render(
         request,
         "frontend/user/board/js_exec_action_card_moved.html",
