@@ -530,10 +530,14 @@ def project_review_coordination_unclaimed(request):
         content_item_id = card.content_item.id
         bundle_id = f"{content_item_id}.{flavours}"
         if bundle_id not in bundles:
-            trusts = ReviewTrust.objects.filter(content_item=card.content_item).filter(
-                user=request.user
-            )
-            trusts = [t for t in trusts if t.flavours_match(flavours)]
+            # all_trusts = (
+            #     ReviewTrust.objects.filter(content_item=card.content_item)
+            #     .filter(user=request.user)
+            #     .prefetch_related("user")
+            # )
+            # all_trusts = [t for t in all_trusts if t.flavours_match(flavours)]
+
+            # user_trusts = [t for t in all_trusts if t.user == request.user]
 
             bundles[bundle_id] = {
                 "title": card.content_item.title,
@@ -541,7 +545,8 @@ def project_review_coordination_unclaimed(request):
                 "oldest_review_request_time": card.recruit_project.review_request_time,
                 "project_ids": [],
                 "card_count": 0,
-                "is_trusted": len(trusts) > 0,
+                # "is_trusted": len(user_trusts) > 0,
+                # "trusted_users": [t.user for t in all_trusts],
             }
 
         bundles[bundle_id]["card_count"] += 1
@@ -640,4 +645,20 @@ def action_project_review_coordination_unclaim_bundle(request, claim_id):
     return render(
         request,
         "frontend/project_review_coordination/view_partial_unclaim_bundle.html",
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_add_time(request, claim_id):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
+
+    instance.due_timestamp = instance.due_timestamp + timezone.timedelta(minutes=15)
+    instance.save()
+
+    return render(
+        request,
+        "frontend/project_review_coordination/view_partial_claim_due_timestamp.html",
+        context={"claim": instance},
     )

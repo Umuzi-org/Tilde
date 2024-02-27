@@ -21,8 +21,16 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
         </tr> -->
         <tr>
             <td>Due time</td>
-            <td id="claim-{{claim.id}}-due">{{ claim.due_timestamp }} 
-                <button class="{{styles.button_primary_small}}" onclick="alert('todo')">Add 15 minutes</button>
+            <td>
+                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp }}</span> 
+                <button 
+                    class="{{styles.button_primary_small}}"
+                    hx-post="{% url 'action_project_review_coordination_add_time' claim.id %}"
+                    hx-trigger="click"
+                    hx-target="#claim-{{claim.id}}-due"
+                    hx-swap="innerHTML"
+                    >
+                    Add 15 minutes</button>
             </td>
         </tr>
         <tr>

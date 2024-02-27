@@ -77,4 +77,9 @@ urlpatterns = [
         views.action_project_review_coordination_unclaim_bundle,
         name="action_project_review_coordination_unclaim_bundle",
     ),
+    path(
+        "project_review_coordination/claims/<int:claim_id>/add_time/",
+        views.action_project_review_coordination_add_time,
+        name="action_project_review_coordination_add_time",
+    ),
 ]

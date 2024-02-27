@@ -24,6 +24,10 @@ class ProjectReviewBundleClaim(models.Model):
 
     is_active = models.BooleanField(default=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.due_timestamp = timezone.now() + timedelta(hours=1)
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # This code only happens if the objects is
+            # not in the database yet. Otherwise it would
+            # have pk
+            self.due_timestamp = timezone.now() + timedelta(hours=1)
+        super(ProjectReviewBundleClaim, self).save(*args, **kwargs)
