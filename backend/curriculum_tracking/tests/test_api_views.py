@@ -65,6 +65,7 @@ class TopicProgressViewsetTests(APITestCase, APITestCaseMixin):
         "complete_time",
         "review_request_time",
         "topic_reviews",
+        "topic_needs_review",
     ]
 
     def verbose_instance_factory(self):
@@ -294,6 +295,7 @@ class AgileCardViewsetTests(APITestCase, APITestCaseMixin):
         # "open_pr_count",
         "users_that_reviewed_open_prs",
         "users_that_reviewed_open_prs_emails",
+        "topic_needs_review",
     ]
 
     def verbose_instance_factory(self):
@@ -556,6 +558,7 @@ class ContentItemViewsetTests(APITestCase, APITestCaseMixin):
         "flavour_names",
         "continue_from_repo",
         "project_submission_type_nice",
+        "topic_needs_review",
     ]
 
     def verbose_instance_factory(self):
