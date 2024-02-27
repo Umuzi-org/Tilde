@@ -8,7 +8,7 @@ from curriculum_tracking.tests import factories
 from curriculum_tracking.models import AgileCard
 
 
-class TestCourseComponent(FrontendTestMixin):
+class TestLinkProjectDetailsPage(FrontendTestMixin):
     def setUp(self):
         super().setUp()
         self.user = UserFactory(
