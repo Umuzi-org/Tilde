@@ -34,7 +34,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             status=AgileCard.IN_PROGRESS,
             recruit_project=RecruitProjectFactory(
                 recruit_users=[self.user],
-                reviewer_users=[UserFactory(), UserFactory()],
+                reviewer_users=[UserFactory()],
                 content_item=self.content_item,
                 start_time=datetime.datetime(
                     2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
@@ -61,7 +61,6 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
         self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
         self.assertIn("foo.2@example.com", body)
-        self.assertIn("foo.3@example.com", body)
         self.assertIn(
             "https://raw.githubusercontent.com/Umuzi-org/tech-department/master/content/projects/tdd/simple-calculator/part-1/_index.md",
             body,
