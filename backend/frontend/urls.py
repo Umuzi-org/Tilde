@@ -56,7 +56,7 @@ urlpatterns = [
         "project/<int:project_id>",
         views.course_component_details,
         name="course_component_details",
-
+    ),
     # Project review coordination
     path(
         "project_review_coordination/unclaimed/",
