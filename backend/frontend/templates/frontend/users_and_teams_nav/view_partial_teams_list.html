@@ -32,12 +32,12 @@
 {% if has_next_page %}
 <button 
     type="button" 
-    class="{{ styles.button_secondary_small }} w-full"
+    class="{{ styles.button_secondary_small }}"
     id="more_teams"
     hx-get="{% url 'view_partial_teams_list' %}"
     hx-vals='js:{count: countLoadedPageItems("teams-list")}'
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_teams"
-    >load more</button>
+    >Load more</button>
 {% endif %}

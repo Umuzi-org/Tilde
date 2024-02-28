@@ -56,5 +56,36 @@ urlpatterns = [
         "project/<int:project_id>",
         views.course_component_details,
         name="course_component_details",
+
+    # Project review coordination
+    path(
+        "project_review_coordination/unclaimed/",
+        views.project_review_coordination_unclaimed,
+        name="project_review_coordination_unclaimed",
+    ),
+    path(
+        "project_review_coordination/my_claims/",
+        views.project_review_coordination_my_claims,
+        name="project_review_coordination_my_claims",
+    ),
+    path(
+        "project_review_coordination/claims/",
+        views.project_review_coordination_all_claims,
+        name="project_review_coordination_all_claims",
+    ),
+    path(
+        "project_review_coordination/claim_bundle/",
+        views.action_project_review_coordination_claim_bundle,
+        name="action_project_review_coordination_claim_bundle",
+    ),
+    path(
+        "project_review_coordination/claims/<int:claim_id>/unclaim/",
+        views.action_project_review_coordination_unclaim_bundle,
+        name="action_project_review_coordination_unclaim_bundle",
+    ),
+    path(
+        "project_review_coordination/claims/<int:claim_id>/add_time/",
+        views.action_project_review_coordination_add_time,
+        name="action_project_review_coordination_add_time",
     ),
 ]

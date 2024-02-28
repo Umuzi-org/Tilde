@@ -1,6 +1,6 @@
 import json
 from functools import wraps
-
+from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
@@ -82,6 +82,10 @@ board_columns = [
 
 def is_super(user):
     return user.is_superuser
+
+
+def is_staff(user):
+    return user.is_staff
 
 
 def user_passes_test_or_forbidden(test_func):
@@ -414,6 +418,8 @@ def view_partial_teams_list(request):
     from guardian.shortcuts import get_objects_for_user
 
     all_teams = Team.objects.filter(active=True).order_by("name")
+    total_teams_count = all_teams.count()
+
     if user.is_superuser:
         teams = all_teams
     else:
@@ -424,7 +430,7 @@ def view_partial_teams_list(request):
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
     teams = teams[current_team_count : current_team_count + limit]
-    has_next_page = len(teams) > current_team_count + limit
+    has_next_page = total_teams_count > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -513,3 +519,172 @@ def view_partial_team_user_progress_chart(request, user_id):
     }
 
     return render(request, "frontend/js_exec_render_chartjs.html", context)
+
+
+## Project review coordination
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_unclaimed(request):
+    from curriculum_tracking.models import AgileCard, ReviewTrust
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    ProjectReviewBundleClaim.objects.filter(is_active=True).filter(
+        due_timestamp__lt=timezone.now()
+    ).update(
+        is_active=False
+    )  # TODO: This should be in a cron job or dramatiq task
+
+    cards = (
+        AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
+        .filter(assignees__active=True)
+        .exclude(content_item__tags__name="technical-assessment")
+        .exclude(content_item__tags__name="ncit")
+        .exclude(
+            recruit_project__project_review_bundle_claims__is_active=True
+        )  # if the project is already in an active claim, skip it
+        .order_by("recruit_project__review_request_time")[:50]  # earliest first
+        .prefetch_related("content_item")
+        .prefetch_related("recruit_project")
+    )
+    # TODO: filter out cards that the current user has reviewed since the last review request time
+    # TODO: filter out cards that current user doesn't have permission to see
+
+    bundles = {}
+    for card in cards:
+        flavours = sorted(card.recruit_project.flavour_names)
+        content_item_id = card.content_item.id
+        bundle_id = f"{content_item_id}.{flavours}"
+        if bundle_id not in bundles:
+            # all_trusts = (
+            #     ReviewTrust.objects.filter(content_item=card.content_item)
+            #     .filter(user=request.user)
+            #     .prefetch_related("user")
+            # )
+            # all_trusts = [t for t in all_trusts if t.flavours_match(flavours)]
+
+            # user_trusts = [t for t in all_trusts if t.user == request.user]
+
+            bundles[bundle_id] = {
+                "title": card.content_item.title,
+                "flavours": flavours,
+                "oldest_review_request_time": card.recruit_project.review_request_time,
+                "project_ids": [],
+                "card_count": 0,
+                # "is_trusted": len(user_trusts) > 0,
+                # "trusted_users": [t.user for t in all_trusts],
+            }
+
+        bundles[bundle_id]["card_count"] += 1
+        bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
+
+    context = {
+        "bundles": bundles.values(),
+    }
+
+    return render(
+        request,
+        "frontend/project_review_coordination/unclaimed/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_my_claims(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    claims = ProjectReviewBundleClaim.objects.filter(claimed_by_user=request.user)
+    active_claims = claims.filter(is_active=True)
+
+    context = {
+        "active_claims": active_claims,
+    }
+    return render(
+        request,
+        "frontend/project_review_coordination/my_claims/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_all_claims(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    claims = ProjectReviewBundleClaim.objects.filter()
+    active_claims = claims.filter(is_active=True)
+
+    context = {
+        "active_claims": active_claims,
+    }
+
+    return render(
+        request,
+        "frontend/project_review_coordination/all_claims/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_claim_bundle(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+    from curriculum_tracking.models import RecruitProject
+
+    user = request.user
+    project_ids = request.POST.getlist("project_ids")
+    assert len(project_ids) > 0, "No project_ids provided"
+    projects = RecruitProject.objects.filter(id__in=project_ids).exclude(
+        project_review_bundle_claims__is_active=True
+    )
+
+    # TODO: filter out projects that the current user has reviewed since the last review request time
+    # TODO: filter out project that the current user doesn't have permission to review
+
+    project_count = projects.count()
+    if project_count > 0:
+        claim = ProjectReviewBundleClaim.objects.create(claimed_by_user=user)
+        claim.projects_to_review.set(projects)
+
+        context = {
+            "project_count": project_count,
+        }
+        return render(
+            request,
+            "frontend/project_review_coordination/unclaimed/view_partial_claim_success.html",
+            context=context,
+        )
+
+    return render(
+        request,
+        "frontend/project_review_coordination/unclaimed/view_partial_claim_failed.html",
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_unclaim_bundle(request, claim_id):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
+
+    instance.is_active = False
+    instance.save()
+
+    return render(
+        request,
+        "frontend/project_review_coordination/view_partial_unclaim_bundle.html",
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_add_time(request, claim_id):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
+
+    instance.due_timestamp = instance.due_timestamp + timezone.timedelta(minutes=15)
+    instance.save()
+
+    return render(
+        request,
+        "frontend/project_review_coordination/view_partial_claim_due_timestamp.html",
+        context={"claim": instance},
+    )
