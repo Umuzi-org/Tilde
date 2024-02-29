@@ -3,9 +3,9 @@
 {# TODO: Load the first page immediately, even if it's a small page. This should reduce lighthouse timing for first contentful paint #}
 
 {% block main %}
-    <div class="grid grid-cols-5 gap-4 h-dvh">
+    <div class="grid grid-cols-5 gap-4 h-dvh min-w-[1024px] ">
         {% for column in columns %}
-        <div class="flex flex-col h-full overflow-hidden">
+        <div class="flex flex-col h-[calc(82dvh-61px)] overflow-hidden">
             <h2 class="sticky top-0 bg-white z-10 p-2 rounded-t-lg text-center w-full ml-1">{{column.title}}</h2>
 
             <div 
