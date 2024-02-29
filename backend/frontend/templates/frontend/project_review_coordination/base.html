@@ -1,0 +1,22 @@
+{% extends "frontend/base_logged_in.html" %}
+
+{% load static %}
+{% block head %}
+{% endblock %}
+
+
+{% block content %}
+
+{% include "frontend/project_review_coordination/partial_header.html" %}
+
+<main>
+    <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        <h2 class="{{ styles.heading2 }}">
+            {% block heading %}{% endblock %}
+        </h2>
+        {% block main %}{% endblock %}
+    </div>
+</main>
+
+
+{% endblock %}
