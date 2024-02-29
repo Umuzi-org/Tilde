@@ -179,9 +179,11 @@ class _TestRunner:
         self.results[self.test_file_name][self.test_name].append(
             {
                 "error_message": error_message,
-                "command_description": self.last_command_output.command_description
-                if self.last_command_output
-                else None,
+                "command_description": (
+                    self.last_command_output.command_description
+                    if self.last_command_output
+                    else None
+                ),
                 "status": status,
             }
         )
@@ -371,6 +373,7 @@ class PythonTestRunner(_TestRunner):
         """
         stderr = self.last_command_output.stderr.strip()
         start_line = re.search(r"\n([A-Za-z].*: .*)", stderr).groups()[0]
+
         final_error = stderr[stderr.index(start_line) :]
         split_at = final_error.index(": ")
         error_type = final_error[:split_at]
