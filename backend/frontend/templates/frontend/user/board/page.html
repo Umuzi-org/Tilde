@@ -1,22 +1,24 @@
-{% extends "frontend/user/base.html" %}
+{% extends "frontend/user/base.html" %} {# TODO: Load the first page
+immediately, even if it's a small page. This should reduce lighthouse timing for
+first contentful paint #} {% block main %}
+<div class="grid grid-cols-5 gap-4 h-dvh min-w-[1024px]">
+  {% for column in columns %}
+  <div class="flex flex-col h-[calc(82dvh-61px)] overflow-hidden">
+    <h2
+      class="sticky top-0 bg-white z-10 p-2 rounded-t-lg text-center w-full ml-1"
+    >
+      {{column.title}}
+    </h2>
 
-{# TODO: Load the first page immediately, even if it's a small page. This should reduce lighthouse timing for first contentful paint #}
-
-{% block main %}
-    <div class="grid grid-cols-5 gap-4 h-dvh min-w-[1024px] ">
-        {% for column in columns %}
-        <div class="flex flex-col h-[calc(82dvh-61px)] overflow-hidden">
-            <h2 class="sticky top-0 bg-white z-10 p-2 rounded-t-lg text-center w-full ml-1">{{column.title}}</h2>
-
-            <div 
-                class="p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white flex-1 overflow-y-scroll ml-1"
-                id="column_{{column.id}}"
-                hx-get="{% url 'view_partial_user_board_column' user.id column.id %}"
-                hx-trigger="load"
-                hx-target="#column_{{column.id}}"
-                hx-swap="beforeend"
-            ></div>
-        </div>
-        {% endfor %}
-    </div>
+    <div
+      class="p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white flex-1 overflow-y-scroll ml-1"
+      id="column_{{column.id}}"
+      hx-get="{% url 'view_partial_user_board_column' user.id column.id %}"
+      hx-trigger="load"
+      hx-target="#column_{{column.id}}"
+      hx-swap="beforeend"
+    ></div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
