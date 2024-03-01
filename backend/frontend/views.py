@@ -395,6 +395,42 @@ def action_request_review(request, card_id):
     )
 
 
+def check_user_can_cancel_review_request_on_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_cancel_review_request(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_cancel_review_request_on_card)
+def action_cancel_review_request(request, card_id):
+    """The card is in review and the user has chosen to cancel the review request"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    if card.recruit_project:
+        card.recruit_project.cancel_request_review()
+    else:
+        raise NotImplementedError("Only project cards can request review")
+
+    log_creators.log_card_review_request_cancelled(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.IN_PROGRESS
+    ), f"Expected to be in progress, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""

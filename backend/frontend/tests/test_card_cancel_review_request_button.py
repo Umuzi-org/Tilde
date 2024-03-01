@@ -36,7 +36,7 @@ class TestCardCanceReviewRequestButton(FrontendTestMixin):
 
         self.page.wait_for_load_state("networkidle")
 
-        review_column = self.page.text_content("div#column_RB")
+        review_column = self.page.text_content("div#column_IR")
         ip_column = self.page.text_content("div#column_IP")
         project_card_title = self.card.content_item.title
 
