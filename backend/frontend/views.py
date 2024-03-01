@@ -321,15 +321,37 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
-@user_passes_test(is_super)
+def check_user_can_start_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_start(logged_in_user)
+
+
 @csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_start_card)
+@check_no_outstanding_reviews_on_card_action
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
-    # TODO implement this
+
+    content_item_type = card.content_item.content_type
+
+    if content_item_type == ContentItem.TOPIC:
+        card.start_topic()
+    elif content_item_type == ContentItem.PROJECT:
+        card.start_project()
+    else:
+        raise NotImplemented(
+            f"Cannot start card of type {card.content_item.content_type}"
+        )
+
+    log_creators.log_card_started(card=card, actor_user=request.user)
+
     return render(
         request,
-        "frontend/user/board/view_partial_action_card_moved.html",
+        "frontend/user/board/js_exec_action_card_moved.html",
         {
             "card": card,
         },
