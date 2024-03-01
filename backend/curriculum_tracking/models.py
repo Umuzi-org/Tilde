@@ -1655,8 +1655,40 @@ class AgileCard(
         """
         if self.content_type_nice != "project":
             return False
-        
+
         if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
+            return False
+
+        if user is None:
+            from threadlocal_middleware import get_current_user
+
+            user = get_current_user()
+
+        if user is not None:
+            is_assignee = user in self.assignees.all()
+
+            if is_assignee:
+                return True
+
+            has_manage_cards_permission = any(
+                (
+                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
+                    for team in self.get_teams()
+                )
+            )
+
+            return has_manage_cards_permission
+
+        return False
+
+    def request_user_can_cancel_review_request(self, user=None):
+        """
+        Check if current user can cancel review request for this card
+        """
+        if self.content_type_nice != "project":
+            return False
+
+        if self.status not in [AgileCard.IN_REVIEW]:
             return False
 
         if user is None:
