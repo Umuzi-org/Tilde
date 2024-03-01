@@ -412,7 +412,7 @@ def action_cancel_review_request(request, card_id):
     if card.recruit_project:
         card.recruit_project.cancel_request_review()
     else:
-        raise NotImplementedError("Only project cards can request review")
+        raise NotImplementedError("Only project cards can cancel review request")
 
     log_creators.log_card_review_request_cancelled(card=card, actor_user=request.user)
 
