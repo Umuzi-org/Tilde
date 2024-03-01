@@ -6,7 +6,7 @@
 {% endif %}
 
 {% for field in form %}
-    <div class="fieldWrapper">
+    <div class="">
         <label for="{{ field.id_for_label }}" class="{{ styles.label_small }}">{{ field.label_tag }}</label>
         {{ field }}
         {% if field.errors %}
