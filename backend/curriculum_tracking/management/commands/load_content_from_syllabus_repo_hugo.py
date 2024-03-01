@@ -175,7 +175,6 @@ class Helper:
             "url": url,
             "raw_url": raw_url,
             "blurb": meta.get("blurb"),
-            "topic_needs_review": meta.get("topic_needs_review", False),
             "project_submission_type": project_submission_type,
             "continue_from_repo": continue_from_repo,
             "template_repo": meta.get("template_repo"),
