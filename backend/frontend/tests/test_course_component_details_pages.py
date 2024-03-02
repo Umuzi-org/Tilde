@@ -25,29 +25,31 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.do_login(self.user)
 
     def make_ip_project_card(self, project_submission_type):
-        self.content_item: ContentItem = ContentItemFactory(
+        content_item = ContentItemFactory(
             content_type=ContentItem.PROJECT,
             project_submission_type=project_submission_type,
         )
 
-        self.learner_reviewer = UserFactory(
+        learner_reviewer = UserFactory(
             email="learner_reviewer@umuzi.org",
         )
 
-        self.card = AgileCardFactory(
-            content_item=self.content_item,
-            status=AgileCard.IN_PROGRESS,
-            recruit_project=RecruitProjectFactory(
-                recruit_users=[self.user],
-                reviewer_users=[self.learner_reviewer],
-                content_item=self.content_item,
-                start_time=datetime.datetime(
-                    2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
-                ),
-                due_time=datetime.datetime(
-                    2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
-                ),
+        recruit_project = RecruitProjectFactory(
+            recruit_users=[self.user],
+            reviewer_users=[learner_reviewer],
+            content_item=content_item,
+            start_time=datetime.datetime(
+                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
             ),
+            due_time=datetime.datetime(
+                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
+            ),
+        )
+
+        AgileCardFactory(
+            content_item=content_item,
+            status=AgileCard.IN_PROGRESS,
+            recruit_project=recruit_project,
         )
 
     def test_link_project_page_displays_correct_details(self):
