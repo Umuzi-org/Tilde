@@ -64,7 +64,7 @@
                 <div class="bold p-2 border-2 rounded-md ">
                     <p class="bold">
                         Content URL: 
-                        <a class="{{styles.link}}" href="{{course_component.content_url}}">{{course_component.content_url}}</a>
+                        <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
                     </p>
                 </div>
 
@@ -75,7 +75,7 @@
                         {% if project.link_submission == None %}
                             No link submitted yet
                         {% else %}
-                        <a class="{{styles.link}}" href="{{course_component.link_submission}}">
+                        <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
                             {{course_component.link_submission}}
                         </a>
                         {% endif%}
