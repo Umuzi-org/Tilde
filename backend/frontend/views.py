@@ -29,7 +29,6 @@ from threadlocal_middleware import get_current_request
 from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
 from .theme import styles
 
-import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
 User = get_user_model()
@@ -397,11 +396,11 @@ def action_request_review(request, card_id):
     )
 
 
-def user_can_finish_topic(logged_in_user):
+def check_user_can_finish_topic(logged_in_user):
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
 
-    card = get_object_or_404(AgileCard, pk=card_id)
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
     card_assignees = card.assignees.all()
 
     if logged_in_user in card_assignees:
@@ -411,38 +410,15 @@ def user_can_finish_topic(logged_in_user):
     checker = ObjectPermissionChecker(logged_in_user)
     checker.prefetch_perms(card_teams)
 
-    return any(
-        (checker.has_perm(Team.PERMISSION_MANAGE_CARDS, team) for team in card_teams)
-    )
+    return card.request_user_can_finish_topic(logged_in_user)
 
 
-@user_passes_test_or_forbidden(user_can_finish_topic)
 @csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_finish_topic)
+@check_no_outstanding_reviews_on_card_action
 def action_finish_topic(request, card_id):
     """The card is in progress and the user has chosen to finish it"""
-    card = get_object_or_404(AgileCard, id=card_id)
-
-    if len(helpers.agile_card_reviews_outstanding(request.user)):
-        return render(
-            request,
-            "frontend/user/board/js_exec_action_show_card_alert.html",
-            {
-                "card": card,
-                "message": "You have outstanding card reviews.",
-                "alert_type": "error",
-            },
-        )
-
-    if len(helpers.pull_request_reviews_outstanding(request.user)):
-        return render(
-            request,
-            "frontend/user/board/js_exec_action_show_card_alert.html",
-            {
-                "card": card,
-                "message": "You have outstanding pull request reviews.",
-                "alert_type": "error",
-            },
-        )
+    card: AgileCard = get_object_or_404(AgileCard, id=card_id)
 
     if card.topic_progress:
         card.finish_topic()
@@ -451,7 +427,7 @@ def action_finish_topic(request, card_id):
 
     log_creators.log_card_moved_to_complete(
         card=card,
-        user=request.user,
+        actor_user=request.user,
     )
 
     card.refresh_from_db()
@@ -462,7 +438,7 @@ def action_finish_topic(request, card_id):
 
     return render(
         request,
-        "frontend/user/board/view_partial_action_card_moved.html",
+        "frontend/user/board/js_exec_action_card_moved.html",
         {
             "card": card,
         },
