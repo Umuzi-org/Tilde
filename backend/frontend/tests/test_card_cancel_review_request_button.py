@@ -9,7 +9,7 @@ from activity_log.models import LogEntry
 import curriculum_tracking.activity_log_entry_creators as creators
 
 
-class TestCardCanceReviewRequestButton(FrontendTestMixin):
+class TestCardCancelReviewRequestButton(FrontendTestMixin):
     def setUp(self):
         super().setUp()
         self.user = UserFactory()

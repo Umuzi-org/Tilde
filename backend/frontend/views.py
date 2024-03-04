@@ -124,7 +124,7 @@ def check_no_outstanding_reviews_on_card_action(view_func):
             return render(
                 request,
                 "frontend/user/board/js_exec_action_show_card_alert.html",
-                {"card": card, "alert_message": "You have outstanding card reviews."},
+                {"card": card, "alert_message": "You have outstanding card reviews"},
             )
 
         if helpers.pull_request_reviews_outstanding(request.user):
