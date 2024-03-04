@@ -165,10 +165,7 @@ class CardSummaryViewset(viewsets.ModelViewSet):
 
     queryset = (
         models.AgileCard.objects.order_by("order")
-        .filter(
-            Q(content_item__content_type=models.ContentItem.PROJECT)
-            | Q(content_item__topic_needs_review=True)
-        )
+        .filter(content_item__content_type=models.ContentItem.PROJECT)
         .prefetch_related("content_item")
         .prefetch_related("recruit_project")
     )

@@ -1,170 +1,205 @@
 {% load humanize %}
-
-<div
-    class="mb-3 rounded-xl {% if user.email in card.reviewer_names %}bg-orange-100{%else%}bg-blue-100{% endif %} {% if card.status == 'B' %}bg-zinc-200{% endif %}"
-    id="card_{{ card.id }}" 
-    data-status="{{card.status}}">
-    <div class="border rounded-t-xl border-gray-300 py-2 px-4  flex justify-between items-center text-xs">
-        <div>
-            <p class="bold">
-                {{ card.content_type_nice }}
+<div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
+     id="card_{{ card.id }}"
+     data-status="{{ card.status }}">
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
+    <!-- Dates and options section -->
+    <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
+      <div class="flex gap-2 items-start col-span-10 pb-2">
+        {% if card.due_time %}
+          {% now "U" as current_timestamp %}
+          {% if current_timestamp > card.due_time|date:"U" %}
+            <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
             </p>
-        </div>
-        {% if card.flavour_names %}
-            <div class="flex gap-1 items-center flex-wrap"> 
-                {% for flavour_name in card.flavour_names %}
-                    {%if flavour_name != "none"%}
-                        {%if flavour_name != "java" or flavour_name != "javascript" or flavour_name != "python"%}
-                            <span class="px-2 rounded-full border border-gray-300" title="{{flavour_name}}">
-                                {{flavour_name|first}}
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "javascript"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-js fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "python"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-python fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                        {%if flavour_name == "java"%}
-                            <span title="{{flavour_name}}">
-                                <i class="fa-regular fa-brands fa-java fa-lg"></i>
-                            </span> 
-                        {%endif%}
-                    {%endif%}
-                {% endfor %}
-            </div>
+          {% else %}
+            <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
+            </p>
+          {% endif %}
         {% endif %}
+        {% if card.start_time and not card.due_time %}
+          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            Started: {{ card.start_time|naturalday }}, {{ card.start_time|time }}
+          </p>
+        {% endif %}
+        {% if card.complete_time and not card.start_time %}
+          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+            Completed: {{ card.complete_time|naturalday }}, {{ card.complete_time|time }}
+          </p>
+        {% endif %}
+      </div>
+      <!-- In this section there should be the options icon. It exists in the design, but we have not came to agreements what this should do -->
     </div>
-    
-    <div class="border rounded-b-xl border-gray-300 border-t-0 p-4 flex flex-col gap-3">
-    {% if card.status == "IP" or card.status == "RF"%}
-        {% if card.open_pr_count and card.oldest_open_pr_updated_time%}
-            <div class="flex" title="Open PRs and their last update time">
-                <div class="flex gap-2 items-center border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
-                    <i class="fa-solid fa-code-pull-request"></i>
-                    <p class="text-xs">
-                        Updated {{card.oldest_open_pr_updated_time|naturaltime}} 
-                    </p>
-                </div>
-                <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0">{{card.open_pr_count}}</div> 
+    <!-- Card status and PR info section-->
+    <div class="grid grid-cols-2 gap-y-2 w-full h-[auto]">
+      <div class="col-span-1">
+        {% if card.code_review_competent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_competent_since_last_review_request }}
             </div>
+          </div>
         {% endif %}
-    {% endif %}
-
-    {% if card.status == "IR" and card.review_request_time%}
-        <div class="flex gap-2 items-center border p-2 bg-blue-200 border-blue-500 rounded-lg mb-2">
-            <i class="fa-solid fa-circle-info"></i>
-            <p class="text-xs">
-                Review requested {{card.review_request_time|naturaltime}} 
-            </p>
-        </div>
-    {% endif %}
-
-    {% if card.status == "RF" or card.status == "IR" or card.status == "C" %}
-        <div class="flex">
-            {% if card.code_review_competent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-smile fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">
-                        {{card.code_review_competent_since_last_review_request}} 
-                    </div>
-                </div>    
-            {% endif %}
-            {% if card.code_review_excellent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-laugh-wink fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-blue-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_excellent_since_last_review_request}} 
-                    </div>
-                </div>
-            {% endif %}
-            {% if card.code_review_ny_competent_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-frown fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-red-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_ny_competent_since_last_review_request}} 
-                    </div>
-                </div>
-            {% endif %}
-            {% if card.code_review_red_flag_since_last_review_request %}
-                <div class="flex" title="Number of competent code reviews since last review request">
-                    <div>
-                        <i class="fa-regular fa-face-sad-tear fa-lg"></i>
-                    </div>
-                    <div class="font-bold bg-red-600 text-white rounded-full flex justify-center items-center h-5 px-2 text-xs -translate-x-1/2 -translate-y-2/4 top-0 right-0 mb-0.8 ml-1">{{card.code_review_red_flag_since_last_review_request}} 
-                    </div>
-                </div>    
-            {% endif %}
-        </div>
-    {% endif %}
-
-    <h3 
-        class="{{ styles.heading3 }}">
-        {{ card.title }}
-    </h3>
-
+        {% if card.code_review_ny_competent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa fa-frown-o"
+               aria-hidden="true"
+               title="Not yet competent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_ny_competent_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+        {% if card.code_review_red_flag_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa-regular fa-face-sad-tear"
+               aria-hidden="true"
+               title="Red-flag reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_red_flag_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+        {% if card.code_review_excellent_since_last_review_request %}
+          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+            <i class="fa-regular fa-face-laugh-wink"
+               aria-hidden="true"
+               title="Excellent reviews"></i>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+              {{ card.code_review_excellent_since_last_review_request }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      {% if card.open_pr_count %}
+        <a href="{{ card.recruit_project.repository.get_github_repo_link }}/pulls"
+           target="_blank"
+           title="Pull request info">
+          <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
+            <i class="fa-solid fa-code-pull-request"></i>
+            <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
+                  title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
+                 title="Number of pull requests">{{ card.open_pr_count }}</div>
+          </div>
+        </a>
+      {% elif card.repo_url %}
+        <a href="{{ card.recruit_project.repository.get_github_repo_link }}"
+           target="_blank">
+           <button class="{{ styles.button_secondary_small }}" title="Repository link">Repo <i class="fa fa-github"></i></button>
+        </a>
+      {% endif %}
+    </div>
+    <!-- Card info section -->
+    <div class="grid grid-cols-0 grid-rows-1 text-left">
+      <p class="w-[195.72px] h-[auto] text-black text-xs font-medium font-'Poppins'">{{ card.content_type_nice }}</p>
+      <h5 class="w-[auto] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight pr-10">{{ card.title }}</h5>
+    </div>
+    <!-- Tags section -->
     {% if card.tag_names %}
-        <div class="flex gap-2 items-center flex-wrap">
-            {% for tag_name in card.tag_names %}
-                <span class="flex px-2 py-1 rounded-full border border-gray-300 text-xs">{{tag_name}}</span> 
-            {% endfor %}
-        </div>
+      <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
+        {% for tag_name in card.tag_names %}
+          {% if tag_name != "none" %}
+            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 pr-0.5">{{ tag_name }}</span><span></span>
+          {% endif %}
+        {% endfor %}
+      </div>
     {% endif %}
-
-    {% if card.due_time %}
-        <div class="flex gap-2 items-start" title="Due time">
-            <i class="fa-regular fa-clock fa-lg mt-3"></i>
-            {% now "U" as current_timestamp %}
-            {% if current_timestamp > card.due_time|date:"U" %}
-                <p class="text-red-600 text-sm">
-                    {{card.due_time|naturalday}}, {{card.due_time|time}} 
-                </p>
-                {% else %}
-                <p class="text-sm">
-                    {{card.due_time|naturalday}}, {{card.due_time|time}} 
-                </p>
+    <!-- Flavours section -->
+    {% if card.flavour_names %}
+      <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
+        {% for flavour_name in card.flavour_names %}
+          {% if flavour_name != "none" %}
+            {% if flavour_name == "javascript" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-js fa-lg"></i>
+              </span>
             {% endif %}
-        </div>
+            {% if flavour_name == "python" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-python fa-lg"></i>
+              </span>
+            {% endif %}
+            {% if flavour_name == "java" %}
+              <span title="{{ flavour_name }}">
+                <i class="fa-regular fa-brands fa-java fa-lg"></i>
+              </span>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
     {% endif %}
-    
-    {% if card.request_user_is_assignee == False %}
-        <div class="w-full" >
-            <p class="text-xs font-bold text-gray-600">Assignee</p>
-            <p class="truncate" title="{{card.assignee_names.0}}">{{card.assignee_names.0}}</p> 
-        </div>
-    {% endif %}
-
-    {% if card.reviewer_names %}
-        <div class="w-full">
-            <p class="text-xs font-bold text-gray-600">Reviewers</p>
-            {% for reviewer_name in card.reviewer_names %}
-                <p class="truncate" title="{{reviewer_name}}">{{reviewer_name}}</p> 
+    <!-- Horizontal line -->
+    <hr class="border-gray-300 inset-x-0 absolute" />
+    <!-- Assignee and reviewers section -->
+    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
+      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
+        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
+        {% if card.assignee_names %}
+          {% for assignee in card.assignee_names %}
+            <img class="w-[30px] h-[30px] rounded-full"
+                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                 alt="{{ assignee }} profile picture"
+                 title="{{ assignee }}" />
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="Reviewer-avatars col-span-1 row-span-1 group">
+        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
+        <div class="flex relative">
+          {% if card.reviewer_names %}
+            {% for reviewer in card.reviewer_names|slice:":2" %}
+              <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                <img class="w-[30px] h-[30px] rounded-full"
+                     src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                     alt="{{ reviewer }} profile picture"
+                     title="{{ reviewer }}" />
+              </div>
             {% endfor %}
+            {% if card.reviewer_names|length > 2 %}
+              <div class="group">
+                <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white cursor-pointer">
+                  <img class="w-[30px] h-[30px] rounded-full"
+                       src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                       alt="more reviewers"
+                       title="{{ card.reviewer_names|join:', ' }}" />
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
         </div>
-    {% endif %}
-
-    {% if card.repo_url %}
-        <div class="flex gap-2 items-center">
-            <i class="fa-regular fa-brands fa-github fa-lg"></i>
-            <a class="{{styles.link}}" target="_blank" href="{{card.recruit_project.repository.get_github_repo_link}}">Repository</a>  
+      </div>
+      <!-- Buttons section -->
+      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
+        <div class="Start-button col-span-1 row-span-1 w-full">
+          <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
+                  class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
+            <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
+          </button>
         </div>
-    {% endif %}
-
-    {% if card.request_user_can_start %}
-        <button type="button" class="{{ styles.button_primary_small }}"
-            hx-post="{% url 'action_start_card' card.id %}"
-            hx-target="#card_{{ card.id }}"
-            hx-swap="outerHTML"
-            >Start
-        </button>
-    {% endif %}
+      </div>
+      <div class="Start-button col-span-1 row-span-1">
+        {% if card.request_user_can_start %}
+          <button type="button"
+                  class="{{ styles.button_primary_small }}"
+                  hx-post="{% url 'action_start_card' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Start</button>
+        {% elif card.request_user_can_request_review %}
+          <button type="button"
+                  class="{{ styles.button_primary_small }}"
+                  hx-post="{% url 'action_request_review' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Request review</button>
+        {% endif %}
+      </div>
     </div>
+  </div>
+  <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
+    {% for reviewer in card.reviewer_names %}
+      <div class="font-['Poppins'] text-[10px] block">{{ reviewer }}</div>
+    {% endfor %}
+  </div>
 </div>

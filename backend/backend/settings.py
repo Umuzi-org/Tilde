@@ -17,6 +17,25 @@ from pathlib import Path
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BUSY_UNIT_TESTING = "test" in sys.argv
+RUNNING_IN_GAE = bool(os.getenv("GAE_APPLICATION", False))
+# BASE_URL = os.getenv("BASE_URL")
+
+
+err = "Cant run unit tests on GAE cloud"
+if BUSY_UNIT_TESTING:
+    assert not RUNNING_IN_GAE, err
+
+# if RUNNING_IN_GAE:
+#     GAE_SERVICE = os.environ["GAE_SERVICE"]
+#     assert not BUSY_UNIT_TESTING, err
+
+#     BASE_URL = {
+#         "management-info-sys": "https://management-info-sys-dot-people-portal-staging.appspot.com",
+#         "management-info-sys-devtest": "https://management-info-sys-devtest-dot-people-portal-staging.appspot.com",
+#     }[GAE_SERVICE]
+
+# else:
 BASE_URL = "http://localhost:8000"
 
 
@@ -31,6 +50,7 @@ DEBUG = True
 
 
 # CORS
+
 # see here for options: https://pypi.org/project/django-cors-headers/
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -108,6 +128,7 @@ INSTALLED_APPS = [
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
     "automarker.apps.AutomarkerConfig",
     "frontend",
+    "project_review_coordination",
     "django.contrib.humanize",
 ]
 
@@ -131,6 +152,19 @@ MIDDLEWARE = [
 ROOT_URLCONF = "backend.urls"
 
 TEMPLATES = [
+    # {
+    #     "BACKEND": "django.template.backends.jinja2.Jinja2",
+    #     "DIRS": [Path(BASE_DIR) / "templates"],
+    #     "APP_DIRS": True,
+    #     "OPTIONS": {
+    #         "context_processors": [
+    #             "django.template.context_processors.debug",
+    #             "django.template.context_processors.request",
+    #             "django.contrib.auth.context_processors.auth",
+    #             "django.contrib.messages.context_processors.messages",
+    #         ],
+    #     },
+    # },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
@@ -155,20 +189,38 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
 # [START db_setup]
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": os.getenv("TILDE_SQL_HOST", "127.0.0.1"),
-        "PORT": os.getenv("TILDE_SQL_PORT", 6543),
-        "NAME": os.getenv("TILDE_SQL_DB", "db"),
-        "USER": os.getenv("TILDE_SQL_USER", "pguser"),
-        "PASSWORD": os.getenv("TILDE_SQL_PASS", "password"),
-        "OPTIONS": {
-            "connect_timeout": 3,
-        },
+if RUNNING_IN_GAE:
+    # Running on production App Engine, so connect to Google Cloud SQL using
+    # the unix socket at /cloudsql/<your-cloudsql-connection string>
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "HOST": f'/cloudsql/{os.environ["SQL_CONNECTION_NAME"]}',
+            "USER": os.environ["TILDE_SQL_USER"],
+            "PASSWORD": os.environ["TILDE_SQL_PASS"],
+            "NAME": os.environ["TILDE_SQL_DB"],
+        }
     }
-}
+
+else:
+    # Running locally so connect to either a local MySQL instance or connect to Cloud SQL via the proxy.
+    # look inside the databases directory to see how to launch the database/proxy
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "HOST": os.getenv("TILDE_SQL_HOST", "127.0.0.1"),
+            "PORT": os.getenv("TILDE_SQL_PORT", 6543),
+            "NAME": os.getenv("TILDE_SQL_DB", "db"),
+            "USER": os.getenv("TILDE_SQL_USER", "pguser"),
+            "PASSWORD": os.getenv("TILDE_SQL_PASS", "password"),
+            "OPTIONS": {
+                "connect_timeout": 3,
+            },
+        }
+    }
 # [END db_setup]
 
 AUTHENTICATION_BACKENDS = (
@@ -221,7 +273,7 @@ STATIC_URL = os.environ.get("STATIC_URL", "/static/")
 GS_PROJECT_ID = os.environ.get("GAE_PROJECT")
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 
-USE_CLOUD_STORAGE = not DEBUG  # Todo: make this a proper env var
+USE_CLOUD_STORAGE = RUNNING_IN_GAE
 
 if USE_CLOUD_STORAGE:
     if GS_PROJECT_ID and GS_BUCKET_NAME:

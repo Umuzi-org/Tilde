@@ -2,11 +2,11 @@ PRIMARY_COLOUR = "indigo"
 TEXT_COLOUR = "gray"
 
 styles = {
-    "button_primary_small": f"rounded bg-{PRIMARY_COLOUR}-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-{PRIMARY_COLOUR}-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{PRIMARY_COLOUR}-600",
-    #
+    # buttons
+    "button_primary_small": f"rounded bg-{PRIMARY_COLOUR}-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-{PRIMARY_COLOUR}-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{PRIMARY_COLOUR}-600 disabled:text-opacity-70 disabled:bg-opacity-50",
     #
     "button_secondary_small": f"rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 ring-1 ring-inset ring-gray-300",
-    #
+    # headings
     "heading1": f"text-2xl font-bold text-{TEXT_COLOUR}-600",
     "heading2": f"text-xl font-bold text-{TEXT_COLOUR}-600",
     "heading3": f"text-l font-bold text-{TEXT_COLOUR}-600",
@@ -15,6 +15,7 @@ styles = {
     # input
     "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1",
     "label_small": f"text-sm font-medium text-gray-700",
+    # alerts
     "alert_debug": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
     "alert_info": f"bg-{PRIMARY_COLOUR}-100 border border-{PRIMARY_COLOUR}-400 text-{PRIMARY_COLOUR}-700 px-4 py-3 rounded relative",
     "alert_warning": f"bg-gray-100 border border-gray-400 text-gray-700 px-4 py-3 rounded relative",

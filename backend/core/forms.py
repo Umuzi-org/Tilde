@@ -87,10 +87,5 @@ class AddGithubCollaboratorForm(forms.Form):
             any_perm=True,
         ):
             teams.append(team.name)
-
-        for team in models.Team.get_teams_from_user_ids([user.id]):
-            for group, perms in get_groups_with_perms(team, attach_perms=True).items():
-                if set(perms).intersection(set(collaborator_permissions)):
-                    teams.append(group.name)
-
+        
         return sorted(set(teams))

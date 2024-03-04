@@ -1,0 +1,67 @@
+<form>
+{% csrf_token %}
+<div
+class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
+    <table>
+        <tr>
+            <td>Claimed by</td>
+            <td>{{ claim.claimed_by_user.email }}</td>
+        </tr>
+        <!-- <tr>
+            <td>Title</td>
+            <td>{{ claim.title }}</td>
+        </tr>
+        <tr>
+            <td>Flavours</td>
+            <td>{{ claim.flavours }}</td>
+        </tr>
+        <tr>
+            <td>Tags</td>
+            <td>{{ claim.tags }}</td>
+        </tr> -->
+        <tr>
+            <td>Due time</td>
+            <td>
+                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp }}</span> 
+                <button 
+                    class="{{styles.button_primary_small}}"
+                    hx-post="{% url 'action_project_review_coordination_add_time' claim.id %}"
+                    hx-trigger="click"
+                    hx-target="#claim-{{claim.id}}-due"
+                    hx-swap="innerHTML"
+                    >
+                    Add 15 minutes</button>
+            </td>
+        </tr>
+        <tr>
+            <td>Remaining project count</td>
+            <td>{{ claim.projects_to_review.count }}</td>
+        </tr>
+        <tr>
+            <td>Projects reviewed</td>
+            <td>{{ claim.projects_reviewed.count }}</td>
+        </tr>
+        <tr>
+            <td>Projects someone else reviewed first</td>
+            <td>{{ claim.projects_someone_else_got_to.count }}</td>
+        </tr>
+
+        <tr>
+            <td>Project links</td>
+            <td>
+                <ul>
+                    {% for project in claim.projects_to_review.all %}
+                    <li><a href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{project.agile_card.id}}" class="{{ styles.link }}">{{ project }}</a></li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <button 
+        class="{{styles.button_primary_small}}"
+        hx-post="{% url 'action_project_review_coordination_unclaim_bundle' claim.id %}"
+        hx-trigger="click"
+        hx-target="#claim-{{claim.id}}"
+    >Unclaim bundle</button>
+</div>
+</form>

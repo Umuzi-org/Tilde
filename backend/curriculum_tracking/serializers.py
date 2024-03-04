@@ -20,9 +20,9 @@ class RecruitProjectSerializer(serializers.ModelSerializer):
             "due_time",
             "complete_time",
             "start_time",  # Used in ZMC learner progress report
-            "review_request_time", # Used in ZMC learner progress report
-            "code_review_competent_since_last_review_request", # Used in ZMC learner progress report
-            "code_review_ny_competent_since_last_review_request", # Used in ZMC learner progress report
+            "review_request_time",  # Used in ZMC learner progress report
+            "code_review_competent_since_last_review_request",  # Used in ZMC learner progress report
+            "code_review_ny_competent_since_last_review_request",  # Used in ZMC learner progress report
             "repository",
             "project_reviews",
             "title",
@@ -60,6 +60,11 @@ class TopicProgressSerializer(serializers.ModelSerializer):
             "topic_needs_review",
             "flavours",
         ]
+
+    topic_needs_review = serializers.SerializerMethodField("get_topic_needs_review")
+
+    def get_topic_needs_review(self, instance):
+        return False
 
     flavours = serializers.CharField(help_text="comma separated list of flavours")
 
@@ -250,6 +255,11 @@ class ContentItemSerializer(serializers.ModelSerializer):
             "template_repo",
         ]
 
+    topic_needs_review = serializers.SerializerMethodField("get_topic_needs_review")
+
+    def get_topic_needs_review(self, instance):
+        return False
+
 
 class ContentItemOrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -316,9 +326,15 @@ class AgileCardSerializer(serializers.ModelSerializer):
     users_that_reviewed_open_prs = serializers.SerializerMethodField(
         "get_users_that_reviewed_open_prs"
     )
+
     users_that_reviewed_open_prs_emails = serializers.SerializerMethodField(
         "get_users_that_reviewed_open_prs_emails"
     )
+
+    topic_needs_review = serializers.SerializerMethodField("get_topic_needs_review")
+
+    def get_topic_needs_review(self, instance):
+        return False
 
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [

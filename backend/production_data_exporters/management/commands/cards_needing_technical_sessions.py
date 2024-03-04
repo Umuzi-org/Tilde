@@ -26,17 +26,6 @@ CODE_PUSHES_WITH_NO_PR_MIN_DAYS = 7
 def get_assessment_cards():
     incomplete_assessment_cards = (
         AgileCard.objects.filter(content_item__title__startswith="Assessment:")
-        # .annotate(
-        #     positive_review_count=Sum(
-        #         F("recruit_project__code_review_competent_since_last_review_request"),
-        #         F("recruit_project__code_review_excellent_since_last_review_request"),
-        #     )
-        # )
-        # .extra(
-        #     select={
-        #         "positive_review_count": "code_review_competent_since_last_review_request + code_review_excellent_since_last_review_request"
-        #     }
-        # )
         .filter(~Q(status=AgileCard.COMPLETE))
         .filter(~Q(status=AgileCard.BLOCKED))
         .filter(assignees__active__in=[True])
@@ -189,9 +178,9 @@ def make_row(card, reason):
         "card title": card.content_item.title,
         "flavours": card.flavour_names,
         "card status": card.status,
-        "project start time": card.start_time.strftime("%d/%m/%Y")
-        if card.start_time
-        else "",
+        "project start time": (
+            card.start_time.strftime("%d/%m/%Y") if card.start_time else ""
+        ),
         "time since last commit": days_since_last_commit,
         "time since last opened pr": days_since_last_pr_opened,
         "time stuck": days_since_last_push,
