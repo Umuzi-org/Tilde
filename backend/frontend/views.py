@@ -17,7 +17,7 @@ from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
@@ -26,7 +26,11 @@ from guardian.core import ObjectPermissionChecker
 
 from threadlocal_middleware import get_current_request
 
-from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
+from .forms import (
+    ForgotPasswordForm,
+    CustomAuthenticationForm,
+    CustomSetPasswordForm,
+)
 from .theme import styles
 
 from curriculum_tracking import helpers
@@ -125,7 +129,7 @@ def check_no_outstanding_reviews_on_card_action(view_func):
             return render(
                 request,
                 "frontend/user/board/js_exec_action_show_card_alert.html",
-                {"card": card, "alert_message": "You have outstanding card reviews."},
+                {"card": card, "alert_message": "You have outstanding card reviews"},
             )
 
         if helpers.pull_request_reviews_outstanding(request.user):
@@ -186,12 +190,12 @@ def can_view_team(logged_in_user):
 
 
 def user_login(request):
-    form = CustomAuthenticationForm()
+    form = CustomAuthenticationForm(request=request)
     context = {"form": form}
 
     if request.method == "POST":
         form = CustomAuthenticationForm(request=request, data=request.POST)
-        context.update({"form": form})
+        context = {"form": form}
 
         if form.is_valid():
             login(
@@ -206,7 +210,11 @@ def user_login(request):
 
             return redirect(redirect_to)
 
-    return render(request, "frontend/auth/page_login.html", context)
+    return render(
+        request,
+        "frontend/auth/page_login.html",
+        context,
+    )
 
 
 @login_required()
@@ -239,7 +247,6 @@ def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
 
 def user_forgot_password(request):
     form = ForgotPasswordForm()
-
     context = {"form": form}
 
     if request.method == "POST":
@@ -359,6 +366,28 @@ def action_start_card(request, card_id):
     )
 
 
+@user_passes_test_or_forbidden(can_view_user_board)
+def course_component_details(request, project_id):
+    project = get_object_or_404(RecruitProject, id=project_id)
+
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == project.agile_card_status
+    ][0]
+
+    context = {
+        "course_component": project,
+        "board_status": board_status,
+    }
+
+    return render(
+        request,
+        "frontend/course_component_details/page.html",
+        context,
+    )
+
+
 def check_user_can_request_review_on_card(logged_in_user):
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
@@ -386,6 +415,42 @@ def action_request_review(request, card_id):
     assert (
         card.status == AgileCard.IN_REVIEW
     ), f"Expected to be in review, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+def check_user_can_cancel_review_request_on_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_cancel_review_request(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_cancel_review_request_on_card)
+def action_cancel_review_request(request, card_id):
+    """The card is in review and the user has chosen to cancel the review request"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    if card.recruit_project:
+        card.recruit_project.cancel_request_review()
+    else:
+        raise NotImplementedError("Only project cards can cancel review request")
+
+    log_creators.log_card_review_request_cancelled(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.IN_PROGRESS
+    ), f"Expected to be in progress, but got {card.status}"
 
     return render(
         request,
@@ -443,7 +508,6 @@ def action_finish_topic(request, card_id):
             "card": card,
         },
     )
-
 
 @login_required()
 def users_and_teams_nav(request):

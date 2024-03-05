@@ -199,6 +199,12 @@
                   hx-post="{% url 'action_finish_topic' card.id %}"
                   hx-target="#card_{{ card.id }}"
                   hx-swap="outerHTML">Done</button>
+        {% elif card.request_user_can_cancel_review_request %}
+          <button type="button"
+                  class="{{ styles.button_primary_small }}"
+                  hx-post="{% url 'action_cancel_review_request' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Cancel review request</button>
         {% endif %}
       </div>
     </div>
