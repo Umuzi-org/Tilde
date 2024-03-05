@@ -2,3 +2,4 @@ __pycache__/
 node_modules/
 gitignore/
 db.sqlite3
+.env
