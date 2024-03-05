@@ -50,11 +50,15 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_project_card()
         ip_column = self.page.text_content("div#column_IP")
         
+        self.page.wait_for_load_state("networkidle")
+
         self.assertNotIn("Done", ip_column)
 
     def test_done_button_shows_for_topic_cards(self):
         self.make_topic_card()
         ip_topic_card = self.page.text_content("div#column_IP")
+        
+        self.page.wait_for_load_state("networkidle")
         
         self.assertIn("Done", ip_topic_card)
 
