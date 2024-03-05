@@ -35,7 +35,6 @@ class TestCardDetailsButton(FrontendTestMixin):
 
     def test_details_button_redirects_to_link_project_details_page(self):
         self.make_project_card(ContentItem.LINK)
-        self.page.wait_for_load_state("networkidle")
 
         link_card_element = self.page.locator(
             f"div#column_IP > div#card_{self.card.id}"
