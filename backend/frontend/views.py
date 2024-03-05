@@ -1,6 +1,6 @@
 import json
 from functools import wraps
-
+from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
@@ -12,19 +12,27 @@ from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem, User, RecruitProject
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
 
 from threadlocal_middleware import get_current_request
 
-from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
+from .forms import (
+    ForgotPasswordForm,
+    CustomAuthenticationForm,
+    CustomSetPasswordForm,
+)
 from .theme import styles
+
+import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking import helpers
 
 User = get_user_model()
 
@@ -76,6 +84,10 @@ def is_super(user):
     return user.is_superuser
 
 
+def is_staff(user):
+    return user.is_staff
+
+
 def user_passes_test_or_forbidden(test_func):
     """
     Decorator for views that checks that the user passes the given test,
@@ -92,12 +104,46 @@ def user_passes_test_or_forbidden(test_func):
                 return view_func(request, *args, **kwargs)
 
             return HttpResponseForbidden(
-                "You don't have permission to access this page."
+                render(request, "frontend/auth/page_permission_denied.html")
             )
 
         return _wrapped_view
 
     return decorator
+
+
+def check_no_outstanding_reviews_on_card_action(view_func):
+    """
+    Decorator for action views that checks that the user has
+    no outstanding card or pull request reviews.
+
+    Decorated view must have card_id in kwargs.
+    """
+
+    def _wrapped_view(request, *args, **kwargs):
+        assert "card_id" in kwargs
+        card = get_object_or_404(AgileCard, pk=kwargs["card_id"])
+
+        if helpers.agile_card_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {"card": card, "alert_message": "You have outstanding card reviews."},
+            )
+
+        if helpers.pull_request_reviews_outstanding(request.user):
+            return render(
+                request,
+                "frontend/user/board/js_exec_action_show_card_alert.html",
+                {
+                    "card": card,
+                    "alert_message": "You have outstanding pull request reviews.",
+                },
+            )
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
 
 
 def can_view_user_board(logged_in_user):
@@ -118,6 +164,26 @@ def can_view_user_board(logged_in_user):
                 (checker.has_perm(view_permission, team) for team in viewed_user_teams)
             ):
                 return True
+
+    return False
+
+
+def can_view_team(logged_in_user):
+    request = get_current_request()
+    viewed_team_id = request.resolver_match.kwargs.get("team_id")
+
+    if logged_in_user.is_superuser:
+        return True
+
+    viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
+    checker = ObjectPermissionChecker(logged_in_user)
+
+    for view_permission in Team.PERMISSION_VIEW:
+        if checker.has_perm(
+            view_permission,
+            viewed_team_obj,
+        ):
+            return True
 
     return False
 
@@ -262,22 +328,103 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
-@user_passes_test(is_super)
+def check_user_can_start_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_start(logged_in_user)
+
+
 @csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_start_card)
+@check_no_outstanding_reviews_on_card_action
 def action_start_card(request, card_id):
     """The card is in the backlog and the user has chosen to start it"""
     card = get_object_or_404(AgileCard, id=card_id)
-    # TODO implement this
+
+    content_item_type = card.content_item.content_type
+
+    if content_item_type == ContentItem.TOPIC:
+        card.start_topic()
+    elif content_item_type == ContentItem.PROJECT:
+        card.start_project()
+    else:
+        raise NotImplemented(
+            f"Cannot start card of type {card.content_item.content_type}"
+        )
+
+    log_creators.log_card_started(card=card, actor_user=request.user)
+
     return render(
         request,
-        "frontend/user/board/view_partial_action_card_moved.html",
+        "frontend/user/board/js_exec_action_card_moved.html",
         {
             "card": card,
         },
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_user_board)
+def course_component_details(request, project_id):
+    project = get_object_or_404(RecruitProject, id=project_id)
+
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == project.agile_card_status
+    ][0]
+
+    context = {
+        "course_component": project,
+        "board_status": board_status,
+    }
+
+    return render(
+        request,
+        "frontend/course_component_details/page.html",
+        context,
+    )
+
+
+def check_user_can_request_review_on_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_request_review(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_request_review_on_card)
+@check_no_outstanding_reviews_on_card_action
+def action_request_review(request, card_id):
+    """The card is in progress or review feedback and the user has chosen to request review"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    if card.recruit_project:
+        card.recruit_project.request_review(force_timestamp=timezone.now())
+    else:
+        raise NotImplementedError("Only project cards can request review")
+
+    log_creators.log_card_review_requested(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.IN_REVIEW
+    ), f"Expected to be in review, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -289,16 +436,26 @@ def users_and_teams_nav(request):
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
 
-@user_passes_test(is_super)
+@login_required()
 def view_partial_teams_list(request):
+    user = request.user
+
+    from guardian.shortcuts import get_objects_for_user
+
+    all_teams = Team.objects.filter(active=True).order_by("name")
+    total_teams_count = all_teams.count()
+
+    if user.is_superuser:
+        teams = all_teams
+    else:
+        teams = get_objects_for_user(
+            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
+        )
+
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-
-    all_teams = Team.objects.filter(active=True).order_by(
-        "name"
-    )  # TODO: only show teams that the current user is allowed to see
-    teams = all_teams[current_team_count : current_team_count + limit]
-    has_next_page = len(all_teams) > current_team_count + limit
+    teams = teams[current_team_count : current_team_count + limit]
+    has_next_page = total_teams_count > current_team_count + limit
 
     context = {
         "teams": teams,
@@ -306,11 +463,13 @@ def view_partial_teams_list(request):
     }
 
     return render(
-        request, "frontend/users_and_teams_nav/view_partial_teams_list.html", context
+        request,
+        "frontend/users_and_teams_nav/view_partial_teams_list.html",
+        context,
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
@@ -324,7 +483,7 @@ def view_partial_team_users_list(request, team_id):
     )
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_team)
 def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
@@ -334,7 +493,7 @@ def team_dashboard(request, team_id):
     return render(request, "frontend/team/dashboard/page.html", context)
 
 
-@user_passes_test(is_super)
+@user_passes_test_or_forbidden(can_view_user_board)
 def view_partial_team_user_progress_chart(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
@@ -385,3 +544,172 @@ def view_partial_team_user_progress_chart(request, user_id):
     }
 
     return render(request, "frontend/js_exec_render_chartjs.html", context)
+
+
+## Project review coordination
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_unclaimed(request):
+    from curriculum_tracking.models import AgileCard, ReviewTrust
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    ProjectReviewBundleClaim.objects.filter(is_active=True).filter(
+        due_timestamp__lt=timezone.now()
+    ).update(
+        is_active=False
+    )  # TODO: This should be in a cron job or dramatiq task
+
+    cards = (
+        AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
+        .filter(assignees__active=True)
+        .exclude(content_item__tags__name="technical-assessment")
+        .exclude(content_item__tags__name="ncit")
+        .exclude(
+            recruit_project__project_review_bundle_claims__is_active=True
+        )  # if the project is already in an active claim, skip it
+        .order_by("recruit_project__review_request_time")[:50]  # earliest first
+        .prefetch_related("content_item")
+        .prefetch_related("recruit_project")
+    )
+    # TODO: filter out cards that the current user has reviewed since the last review request time
+    # TODO: filter out cards that current user doesn't have permission to see
+
+    bundles = {}
+    for card in cards:
+        flavours = sorted(card.recruit_project.flavour_names)
+        content_item_id = card.content_item.id
+        bundle_id = f"{content_item_id}.{flavours}"
+        if bundle_id not in bundles:
+            # all_trusts = (
+            #     ReviewTrust.objects.filter(content_item=card.content_item)
+            #     .filter(user=request.user)
+            #     .prefetch_related("user")
+            # )
+            # all_trusts = [t for t in all_trusts if t.flavours_match(flavours)]
+
+            # user_trusts = [t for t in all_trusts if t.user == request.user]
+
+            bundles[bundle_id] = {
+                "title": card.content_item.title,
+                "flavours": flavours,
+                "oldest_review_request_time": card.recruit_project.review_request_time,
+                "project_ids": [],
+                "card_count": 0,
+                # "is_trusted": len(user_trusts) > 0,
+                # "trusted_users": [t.user for t in all_trusts],
+            }
+
+        bundles[bundle_id]["card_count"] += 1
+        bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
+
+    context = {
+        "bundles": bundles.values(),
+    }
+
+    return render(
+        request,
+        "frontend/project_review_coordination/unclaimed/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_my_claims(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    claims = ProjectReviewBundleClaim.objects.filter(claimed_by_user=request.user)
+    active_claims = claims.filter(is_active=True)
+
+    context = {
+        "active_claims": active_claims,
+    }
+    return render(
+        request,
+        "frontend/project_review_coordination/my_claims/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def project_review_coordination_all_claims(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    claims = ProjectReviewBundleClaim.objects.filter()
+    active_claims = claims.filter(is_active=True)
+
+    context = {
+        "active_claims": active_claims,
+    }
+
+    return render(
+        request,
+        "frontend/project_review_coordination/all_claims/page.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_claim_bundle(request):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+    from curriculum_tracking.models import RecruitProject
+
+    user = request.user
+    project_ids = request.POST.getlist("project_ids")
+    assert len(project_ids) > 0, "No project_ids provided"
+    projects = RecruitProject.objects.filter(id__in=project_ids).exclude(
+        project_review_bundle_claims__is_active=True
+    )
+
+    # TODO: filter out projects that the current user has reviewed since the last review request time
+    # TODO: filter out project that the current user doesn't have permission to review
+
+    project_count = projects.count()
+    if project_count > 0:
+        claim = ProjectReviewBundleClaim.objects.create(claimed_by_user=user)
+        claim.projects_to_review.set(projects)
+
+        context = {
+            "project_count": project_count,
+        }
+        return render(
+            request,
+            "frontend/project_review_coordination/unclaimed/view_partial_claim_success.html",
+            context=context,
+        )
+
+    return render(
+        request,
+        "frontend/project_review_coordination/unclaimed/view_partial_claim_failed.html",
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_unclaim_bundle(request, claim_id):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
+
+    instance.is_active = False
+    instance.save()
+
+    return render(
+        request,
+        "frontend/project_review_coordination/view_partial_unclaim_bundle.html",
+    )
+
+
+@user_passes_test(is_staff)
+def action_project_review_coordination_add_time(request, claim_id):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+
+    instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
+
+    instance.due_timestamp = instance.due_timestamp + timezone.timedelta(minutes=15)
+    instance.save()
+
+    return render(
+        request,
+        "frontend/project_review_coordination/view_partial_claim_due_timestamp.html",
+        context={"claim": instance},
+    )

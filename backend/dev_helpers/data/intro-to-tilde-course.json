@@ -35,7 +35,6 @@
       ],
       "template_repo": null,
       "title": "Introduction to Tilde",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/tilde/intro-to-tilde/"
     },
     {
@@ -56,7 +55,6 @@
       ],
       "template_repo": null,
       "title": "Tilde tutorial: How cards work",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/tilde/different-kinds-of-cards/"
     },
     {
@@ -77,7 +75,6 @@
       ],
       "template_repo": null,
       "title": "How to succeed in this course",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/bootcamp/success-in-bootcamp/"
     },
     {
@@ -98,7 +95,6 @@
       ],
       "template_repo": null,
       "title": "SUPER IMPORTANT STUFF: How to not fail",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/bootcamp/failure-at-bootcamp/"
     },
     {
@@ -120,7 +116,6 @@
       ],
       "template_repo": null,
       "title": "Tilde project tutorial: How to submit a link",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tilde/link-card-tutorial/"
     },
     {
@@ -141,7 +136,6 @@
       ],
       "template_repo": null,
       "title": "Basic introduction to Github - Helloworld",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
     },
     {
@@ -162,7 +156,6 @@
       ],
       "template_repo": null,
       "title": "Getting set up to write code on your device",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/environment-setup/"
     },
     {
@@ -184,7 +177,6 @@
       ],
       "template_repo": null,
       "title": "Tilde project tutorial: Simple repository projects",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tilde/basic-repo-card-tutorial/"
     },
     {
@@ -207,7 +199,6 @@
       ],
       "template_repo": null,
       "title": "Honor Code",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/messaging/honor-code/"
     },
     {
@@ -228,7 +219,6 @@
       ],
       "template_repo": null,
       "title": "Reopening a Pull request",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/reopening-pull-request/"
     }
   ],

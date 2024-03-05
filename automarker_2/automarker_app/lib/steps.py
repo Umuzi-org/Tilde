@@ -20,12 +20,22 @@ from .constants import (
     STEP_STATUS_RED_FLAG,
 )
 import json
+import platform
 
 
 def get_all_file_paths(directory):
     for path, _, filenames in os.walk(directory):
         for filename in filenames:
             yield os.path.join(path, filename)
+
+
+def get_python_executable_path():
+    if platform.system() == "Windows":
+        return "Scripts/python"
+    return "bin/python"
+
+
+PYTHON_EXECUTABLE_PATH = get_python_executable_path()
 
 
 class Step:
@@ -626,9 +636,7 @@ class PythonCreateVirtualEnv(Step):
         if len(stderr):
             self.set_outcome(STEP_STATUS_ERROR, message=stderr)
         else:
-            command = (
-                f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install --upgrade pip"
-            )
+            command = f"{clone_dir_path/ 'automarker_venv'/ PYTHON_EXECUTABLE_PATH} -m pip install --upgrade pip"
             stdout, stderr = subprocess_run(command)
             if stderr:
                 breakpoint()
@@ -639,7 +647,7 @@ class PythonDoRequirementsTxtInstall(Step):
     name = "pip install requirements.txt"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = f"{clone_dir_path/'automarker_venv'/'bin'/'pip'} install -r {clone_dir_path/'requirements.txt'}"
+        command = f"{clone_dir_path/'automarker_venv'/PYTHON_EXECUTABLE_PATH} -m pip install -r {clone_dir_path/'requirements.txt'}"
         stdout, stderr = subprocess_run(command)
         if len(stderr):
             if stderr.startswith("ERROR: Could not open requirements file"):
@@ -673,11 +681,8 @@ class PythonRunPytests(Step):
     name = "run learner pytests"
 
     def run(self, project_uri, clone_dir_path, self_test, config, fail_fast):
-        command = (
-            f"cd {clone_dir_path} && automarker_venv/bin/python -m pytest --tb=line"
-        )
+        command = f"cd {clone_dir_path} && {clone_dir_path/'automarker_venv'/PYTHON_EXECUTABLE_PATH} -m pytest {clone_dir_path}/tests --tb=line"
         stdout, stderr = subprocess_run(command)
-
         if re.search("=== no tests ran in .* ===", stdout):
             self.set_outcome(
                 STEP_STATUS_RED_FLAG,
@@ -764,17 +769,21 @@ class PythonExecuteJupyterNotebooks(Step):
                 )
             else:
                 l = stderr.strip().split("\n")
-                if len(l) == 2:
-                    # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
 
-                    if ("Converting notebook" not in l[0]) and ("Writing" not in l[1]):
-                        breakpoint()
-                        not_sure
+                # It would look something like: ['[NbConvertApp] Converting notebook /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb to notebook', '[NbConvertApp] Writing 96572 bytes to /home/sheena/workspace/Tilde/automarker_2/gitignore/247-python-perfect/notebooks/personality.ipynb', ]
 
-                else:
+                start_line_prefix = "[NbConvertApp] Converting notebook"
+                end_line_prefix = "[NbConvertApp] Writing"
+
+                start_line_present = any(
+                    line.startswith(start_line_prefix) for line in l
+                )
+                end_line_present = any(line.startswith(end_line_prefix) for line in l)
+
+                # We check for these lines only because there may be some warnings in stderr.
+                if not (start_line_present and end_line_present):
                     breakpoint()
-                    # not actually sure what would cause this...
-                    what
+                    not_sure
 
         self.set_outcome(STEP_STATUS_PASS)
 

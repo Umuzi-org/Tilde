@@ -1,0 +1,6 @@
+{% include "frontend/user/board/partial_alert.html" with message=alert_message %}
+{% include "frontend/user/board/partial_card.html" %}
+
+<script>
+  hideCardAlert({{ card.id }});
+</script>

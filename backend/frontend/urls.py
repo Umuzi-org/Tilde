@@ -23,7 +23,7 @@ urlpatterns = [
         name="view_partial_teams_list",
     ),
     path(
-        "users_and_teams_nav/team/<int:team_id>/partial_team_users_list/",
+        "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
         views.view_partial_team_users_list,
         name="view_partial_team_users_list",
     ),
@@ -39,11 +39,53 @@ urlpatterns = [
         views.action_start_card,
         name="action_start_card",
     ),
+    path(
+        "cards/<int:card_id>/request_review",
+        views.action_request_review,
+        name="action_request_review",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(
         "teams/any/dashboard/users/<int:user_id>/progress",
         views.view_partial_team_user_progress_chart,
         name="view_partial_team_user_progress_chart",
+    ),
+    # Course component details
+    path(
+        "project/<int:project_id>",
+        views.course_component_details,
+        name="course_component_details",
+    ),
+    # Project review coordination
+    path(
+        "project_review_coordination/unclaimed/",
+        views.project_review_coordination_unclaimed,
+        name="project_review_coordination_unclaimed",
+    ),
+    path(
+        "project_review_coordination/my_claims/",
+        views.project_review_coordination_my_claims,
+        name="project_review_coordination_my_claims",
+    ),
+    path(
+        "project_review_coordination/claims/",
+        views.project_review_coordination_all_claims,
+        name="project_review_coordination_all_claims",
+    ),
+    path(
+        "project_review_coordination/claim_bundle/",
+        views.action_project_review_coordination_claim_bundle,
+        name="action_project_review_coordination_claim_bundle",
+    ),
+    path(
+        "project_review_coordination/claims/<int:claim_id>/unclaim/",
+        views.action_project_review_coordination_unclaim_bundle,
+        name="action_project_review_coordination_unclaim_bundle",
+    ),
+    path(
+        "project_review_coordination/claims/<int:claim_id>/add_time/",
+        views.action_project_review_coordination_add_time,
+        name="action_project_review_coordination_add_time",
     ),
 ]

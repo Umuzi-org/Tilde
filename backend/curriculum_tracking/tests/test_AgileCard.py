@@ -613,19 +613,6 @@ class TopicMovementTestCase(TestCase):
         self.assertIsNotNone(self.card.topic_progress.start_time)
         self.assertIsNone(self.card.topic_progress.review_request_time)
 
-    def test_finish_when_review_needed(self):
-        content_item = self.card.content_item
-        content_item.topic_needs_review = True
-        content_item.save()
-
-        self.card.start_topic()
-        self.card.finish_topic()
-
-        self.assertIsNone(self.card.topic_progress.complete_time)
-        self.assertIsNotNone(self.card.topic_progress.review_request_time)
-        self.assertIsNotNone(self.card.topic_progress.start_time)
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
-
     def test_start_topic_when_due_date_already_set(self):
         self.card.set_due_time(timezone.now())
 
@@ -635,93 +622,6 @@ class TopicMovementTestCase(TestCase):
         self.assertEqual(self.card.topic_progress.content_item, self.card.content_item)
         self.assertIsNone(self.card.topic_progress.complete_time)
         self.assertIsNotNone(self.card.topic_progress.start_time)
-
-    def test_add_COMPETENT_review(self):
-        self.card.content_item.topic_needs_review = True
-        self.card.content_item.save()
-        self.card.start_topic()
-        self.card.finish_topic()
-
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
-
-        review = TopicReview.objects.create(
-            status=COMPETENT,
-            topic_progress=self.card.topic_progress,
-            reviewer_user=UserFactory(),
-        )
-        self.card.refresh_from_db()
-        self.assertEqual(self.card.status, AgileCard.COMPLETE)
-
-    def test_add_NOT_YET_COMPETENT_review(self):
-        self.card.content_item.topic_needs_review = True
-        self.card.content_item.save()
-        self.card.start_topic()
-        self.card.finish_topic()
-
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
-
-        review = TopicReview.objects.create(
-            status=NOT_YET_COMPETENT,
-            topic_progress=self.card.topic_progress,
-            reviewer_user=UserFactory(),
-        )
-        self.card.refresh_from_db()
-        self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
-
-    def test_add_EXCELLENT_review(self):
-        self.card.content_item.topic_needs_review = True
-        self.card.content_item.save()
-        self.card.start_topic()
-        self.card.finish_topic()
-
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
-
-        review = TopicReview.objects.create(
-            status=EXCELLENT,
-            topic_progress=self.card.topic_progress,
-            reviewer_user=UserFactory(),
-        )
-        self.card.refresh_from_db()
-        self.assertEqual(self.card.status, AgileCard.COMPLETE)
-
-    def test_add_RED_FLAG_review(self):
-        self.card.content_item.topic_needs_review = True
-        self.card.content_item.save()
-        self.card.start_topic()
-        self.card.finish_topic()
-
-        self.assertEqual(self.card.status, AgileCard.IN_REVIEW)
-
-        review = TopicReview.objects.create(
-            status=RED_FLAG,
-            topic_progress=self.card.topic_progress,
-            reviewer_user=UserFactory(),
-        )
-        self.card.refresh_from_db()
-        self.assertEqual(self.card.status, AgileCard.REVIEW_FEEDBACK)
-
-    def test_that_start_topic_cant_make_duplicates(self):
-        content_item = self.card.content_item
-        content_item.topic_needs_review = True
-        content_item.save()
-
-        get_count = lambda: TopicProgress.objects.filter(
-            content_item=content_item, user=self.card.assignees.first()
-        ).count()
-        topic_progress_count = get_count()
-
-        self.assertEqual(topic_progress_count, 0)
-        self.card.start_topic()
-
-        topic_progress_count = get_count()
-
-        self.assertEqual(topic_progress_count, 1)
-
-        self.card.status = AgileCard.READY
-        self.card.start_topic()
-
-        topic_progress_count = get_count()
-        self.assertEqual(topic_progress_count, 1)
 
 
 class WorkshopMovementTests(TestCase):
