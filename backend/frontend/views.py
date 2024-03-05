@@ -17,14 +17,18 @@ from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem
+from curriculum_tracking.models import AgileCard, ContentItem, User, RecruitProject
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
 
 from threadlocal_middleware import get_current_request
 
-from .forms import ForgotPasswordForm, CustomAuthenticationForm, CustomSetPasswordForm
+from .forms import (
+    ForgotPasswordForm,
+    CustomAuthenticationForm,
+    CustomSetPasswordForm,
+)
 from .theme import styles
 
 import curriculum_tracking.activity_log_entry_creators as log_creators
@@ -355,6 +359,28 @@ def action_start_card(request, card_id):
         {
             "card": card,
         },
+    )
+
+
+@user_passes_test_or_forbidden(can_view_user_board)
+def course_component_details(request, project_id):
+    project = get_object_or_404(RecruitProject, id=project_id)
+
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == project.agile_card_status
+    ][0]
+
+    context = {
+        "course_component": project,
+        "board_status": board_status,
+    }
+
+    return render(
+        request,
+        "frontend/course_component_details/page.html",
+        context,
     )
 
 

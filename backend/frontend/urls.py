@@ -51,6 +51,12 @@ urlpatterns = [
         views.view_partial_team_user_progress_chart,
         name="view_partial_team_user_progress_chart",
     ),
+    # Course component details
+    path(
+        "project/<int:project_id>",
+        views.course_component_details,
+        name="course_component_details",
+    ),
     # Project review coordination
     path(
         "project_review_coordination/unclaimed/",

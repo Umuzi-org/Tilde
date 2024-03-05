@@ -28,6 +28,8 @@ class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
 class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):
     pass
 
+class SubmissionLinkForm(ThemedFormMixin, forms.Form):
+    submission_link = forms.URLField()
 
 class ForgotPasswordForm(ThemedFormMixin, forms.Form):
     email = forms.EmailField()
