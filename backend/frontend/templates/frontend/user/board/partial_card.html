@@ -205,7 +205,7 @@
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="Details-button col-span-1 row-span-1 w-full">
           {% if card.content_item.project_submission_type_nice == "link"%}
-            <a href="#" class="{{ styles.button_primary_small }}">Details</a>
+            <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_primary_small }}">Details</a>
           {% endif %}
           </div>
       </div>

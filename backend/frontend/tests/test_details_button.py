@@ -35,18 +35,27 @@ class TestCardDetailsButton(FrontendTestMixin):
 
     def test_details_button_redirects_to_link_project_details_page(self):
         self.make_project_card(ContentItem.LINK)
+        self.page.wait_for_load_state("networkidle")
 
-        link_card_element = self.page.locator("#column_IP > #card_1")
+        link_card_element = self.page.locator(
+            f"div#column_IP > div#card_{self.card.id}"
+        )
         details_link_element = link_card_element.get_by_role("link", name="Details")
 
         expect(link_card_element).to_be_visible()
         expect(details_link_element).to_be_visible()
 
         link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": 1}
+            "course_component_details",
+            kwargs={"project_id": self.card.recruit_project.id},
         )
 
-        self.assertEqual(
-            details_link_element.get_attribute("href"),
-            link_project_url,
-        )
+        board_url = self.reverse_url("user_board", kwargs={"user_id": self.user.id})
+
+        self.assertIn(details_link_element.get_attribute("href"), link_project_url)
+
+        self.assertEqual(self.page.url, board_url)
+
+        details_link_element.click()
+
+        self.assertEqual(self.page.url, link_project_url)
