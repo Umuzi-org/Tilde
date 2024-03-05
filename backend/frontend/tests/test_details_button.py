@@ -42,7 +42,11 @@ class TestCardDetailsButton(FrontendTestMixin):
         expect(link_card_element).to_be_visible()
         expect(details_link_element).to_be_visible()
 
+        link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": 1}
+        )
+
         self.assertEqual(
             details_link_element.get_attribute("href"),
-            "#",
+            link_project_url,
         )
