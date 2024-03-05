@@ -136,16 +136,8 @@ class ContentItemProxyMixin:
         return self.content_item.project_submission_type_nice
 
     @property
-    def topic_needs_review(self):
-        return self.content_item.topic_needs_review
-
-    @property
     def project_submission_type_nice(self):
         return self.content_item.project_submission_type_nice
-
-    @property
-    def topic_needs_review(self):
-        return self.content_item.topic_needs_review
 
     @property
     def protect_main_branch(self):
@@ -271,7 +263,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         through="ContentAvailableFlavour",
         related_name="content_with_flavour",
     )
-    topic_needs_review = models.BooleanField(default=False)
 
     project_submission_type = models.CharField(
         max_length=1, choices=PROJECT_SUBMISSION_TYPES, null=True, blank=True
@@ -302,11 +293,6 @@ class ContentItem(models.Model, Mixins, FlavourMixin, TagMixin):
         return (max_id or 0) + 1
 
     def save(self, *args, **kwargs):
-        if self.topic_needs_review:
-            if self.content_type != self.TOPIC:
-                raise ValidationError(
-                    f"Cannot set `topic_needs_review` for non TOPIC item. content_type = {self.content_type}"
-                )
         if self.content_type == self.PROJECT:
             if self.project_submission_type == None:
                 raise ValidationError(
@@ -1463,14 +1449,9 @@ class AgileCard(
         assert (
             self.content_item.content_type == ContentItem.TOPIC
         ), f"{self.content_item.content_type}"
-        if self.content_item.topic_needs_review:
-            self.topic_progress.review_request_time = timezone.now()
-            self.topic_progress.save()
-            self.status = AgileCard.IN_REVIEW
-        else:
-            self.topic_progress.complete_time = timezone.now()
-            self.topic_progress.save()
-            self.status = AgileCard.COMPLETE
+        self.topic_progress.complete_time = timezone.now()
+        self.topic_progress.save()
+        self.status = AgileCard.COMPLETE
         self.save()
 
     def stop_topic(self):
@@ -1674,8 +1655,40 @@ class AgileCard(
         """
         if self.content_type_nice != "project":
             return False
-        
+
         if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
+            return False
+
+        if user is None:
+            from threadlocal_middleware import get_current_user
+
+            user = get_current_user()
+
+        if user is not None:
+            is_assignee = user in self.assignees.all()
+
+            if is_assignee:
+                return True
+
+            has_manage_cards_permission = any(
+                (
+                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
+                    for team in self.get_teams()
+                )
+            )
+
+            return has_manage_cards_permission
+
+        return False
+
+    def request_user_can_cancel_review_request(self, user=None):
+        """
+        Check if current user can cancel review request for this card
+        """
+        if self.content_type_nice != "project":
+            return False
+
+        if self.status not in [AgileCard.IN_REVIEW]:
             return False
 
         if user is None:

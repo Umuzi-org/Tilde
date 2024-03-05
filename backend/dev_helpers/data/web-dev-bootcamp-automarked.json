@@ -248,7 +248,6 @@
       ],
       "template_repo": null,
       "title": "Writing Assignment",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/writing-assignment/"
     },
     {
@@ -269,7 +268,6 @@
       ],
       "template_repo": null,
       "title": "IMPORTANT!! Naming your files and functions",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/how_to_name_files/"
     },
     {
@@ -290,7 +288,6 @@
       ],
       "template_repo": null,
       "title": "Basic introduction to Github - Helloworld",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/introduction_to_github/"
     },
     {
@@ -311,7 +308,6 @@
       ],
       "template_repo": null,
       "title": "Introduction to coding challenges",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/introduction/"
     },
     {
@@ -340,7 +336,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 1",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_1/"
     },
     {
@@ -369,7 +364,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 2",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_2/"
     },
     {
@@ -398,7 +392,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 3",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_3/"
     },
     {
@@ -427,7 +420,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 4",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_4/"
     },
     {
@@ -456,7 +448,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 5",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_5/"
     },
     {
@@ -485,7 +476,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 6",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_6/"
     },
     {
@@ -514,7 +504,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 7",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_7/"
     },
     {
@@ -543,7 +532,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 8",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_8/"
     },
     {
@@ -572,7 +560,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 9",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_9/"
     },
     {
@@ -601,7 +588,6 @@
       ],
       "template_repo": null,
       "title": "Coding aptitude assessment challenge: Task 10",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/coding_aptitude_assessment/coding_challenges/task_10/"
     },
     {
@@ -623,7 +609,6 @@
       ],
       "template_repo": null,
       "title": "Git Basics",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/git/"
     },
     {
@@ -645,7 +630,6 @@
       ],
       "template_repo": null,
       "title": "Beginning Bash",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/bash-for-bootcamp/"
     },
     {
@@ -666,7 +650,6 @@
       ],
       "template_repo": null,
       "title": "Getting Git set up",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/environment-setup/git/"
     },
     {
@@ -687,7 +670,6 @@
       ],
       "template_repo": null,
       "title": "Useful Git commands",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/bootcamp/git-for-bootcamp/"
     },
     {
@@ -709,7 +691,6 @@
       ],
       "template_repo": null,
       "title": "Git Basic Exercises",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/git-exercises/"
     },
     {
@@ -731,7 +712,6 @@
       ],
       "template_repo": null,
       "title": "General Clean Code Guidelines",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/clean-code/general/"
     },
     {
@@ -754,7 +734,6 @@
       ],
       "template_repo": null,
       "title": "Clean Code For JavaScript",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/clean-code/java-script/"
     },
     {
@@ -775,7 +754,6 @@
       ],
       "template_repo": null,
       "title": "Getting set up to write code on your device",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/environment-setup/"
     },
     {
@@ -798,7 +776,6 @@
       ],
       "template_repo": null,
       "title": "Basic introduction to Github",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/github/intro/"
     },
     {
@@ -819,7 +796,6 @@
       ],
       "template_repo": null,
       "title": "Reopening a Pull request",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/reopening-pull-request/"
     },
     {
@@ -840,7 +816,6 @@
       ],
       "template_repo": null,
       "title": "Tilde project tutorial: How Repo projects work",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-1/"
     },
     {
@@ -861,7 +836,6 @@
       ],
       "template_repo": null,
       "title": "Tilde project tutorial: How Continue Repo projects work",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tilde/repo-card-tutorial/part-2/"
     },
     {
@@ -882,7 +856,6 @@
       ],
       "template_repo": null,
       "title": "Understanding the review column",
-      "topic_needs_review": true,
       "url": "http://syllabus.africacode.net/topics/tilde/understanding-the-review-column/"
     },
     {
@@ -913,7 +886,6 @@
       ],
       "template_repo": null,
       "title": "Level 1 coding challenges",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/katas/level-1/"
     },
     {
@@ -944,7 +916,6 @@
       ],
       "template_repo": null,
       "title": "Level 2 coding challenges",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/katas/level-2/"
     },
     {
@@ -968,7 +939,6 @@
       ],
       "template_repo": null,
       "title": "FreeCodeCamp - Object Oriented Programming",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/free-code-camp/javascript-data-structures-and-algorithms/7-object-oriented-programming/"
     },
     {
@@ -998,7 +968,6 @@
       ],
       "template_repo": null,
       "title": "Person",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/oop/person/"
     },
     {
@@ -1028,7 +997,6 @@
       ],
       "template_repo": null,
       "title": "Animals Part 1. OOP basics",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/oop/animals/part1/"
     },
     {
@@ -1051,7 +1019,6 @@
       ],
       "template_repo": null,
       "title": "What to put in your CV",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/what-to-put-in-your-cv/"
     },
     {
@@ -1076,7 +1043,6 @@
       ],
       "template_repo": null,
       "title": "FreeCodeCamp - Basic HTML and HTML5",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/1-basic-html-and-html-5/"
     },
     {
@@ -1100,7 +1066,6 @@
       ],
       "template_repo": null,
       "title": "FreeCodeCamp - Basic CSS",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/free-code-camp/responsive-web-design/2-basic-css/"
     },
     {
@@ -1123,7 +1088,6 @@
       ],
       "template_repo": null,
       "title": "Simple Website - Build your first personal website",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/simple-website/"
     },
     {
@@ -1145,7 +1109,6 @@
       ],
       "template_repo": null,
       "title": "Introduction to assertive programming",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/intro-to-assertive-programming/"
     },
     {
@@ -1177,7 +1140,6 @@
       ],
       "template_repo": null,
       "title": "Morse code",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/morse-code/"
     },
     {
@@ -1199,7 +1161,6 @@
       ],
       "template_repo": null,
       "title": "Unit testing (language agnostic concepts)",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/unit-testing/"
     },
     {
@@ -1221,7 +1182,6 @@
       ],
       "template_repo": null,
       "title": "Test Driven Development",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/topics/test-driven-development/"
     },
     {
@@ -1251,7 +1211,6 @@
       ],
       "template_repo": null,
       "title": "simple-calculator part 1",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tdd/simple-calculator-part1/"
     },
     {
@@ -1283,7 +1242,6 @@
       ],
       "template_repo": null,
       "title": "Validate a South African ID number",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/language-agnostic/validate-id-number/"
     },
     {
@@ -1314,7 +1272,6 @@
       ],
       "template_repo": null,
       "title": "password-checker",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tdd/password-checker/part1/"
     },
     {
@@ -1344,7 +1301,6 @@
       ],
       "template_repo": null,
       "title": "Add logging to password checker",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/projects/tdd/password-checker/part2/"
     }
   ],

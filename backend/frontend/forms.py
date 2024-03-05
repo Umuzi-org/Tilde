@@ -6,13 +6,13 @@ from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 
 from .theme import styles
 
-
 User = get_user_model()
 
 
 class ThemedFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         for field in self.fields:
             self.fields[field].widget.attrs.update(
                 {
@@ -22,12 +22,14 @@ class ThemedFormMixin:
 
 
 class CustomAuthenticationForm(ThemedFormMixin, AuthenticationForm):
-    pass
+    username = forms.EmailField()
 
 
 class CustomSetPasswordForm(ThemedFormMixin, SetPasswordForm):
     pass
 
+class SubmissionLinkForm(ThemedFormMixin, forms.Form):
+    submission_link = forms.URLField()
 
 class ForgotPasswordForm(ThemedFormMixin, forms.Form):
     email = forms.EmailField()
