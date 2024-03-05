@@ -205,7 +205,7 @@
         {% if card.request_user_can_stop_card %}
           <button type="button"
                   class="{{ styles.button_secondary_small }}"
-                  hx-post="{% url 'action_start_card' card.id %}"
+                  hx-post="{% url 'action_stop_card' card.id %}"
                   hx-target="#card_{{ card.id }}"
                   hx-swap="outerHTML">Stop</button>
         {% endif %}

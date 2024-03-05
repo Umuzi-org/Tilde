@@ -49,6 +49,11 @@ urlpatterns = [
         views.action_cancel_review_request,
         name="action_cancel_review_request",
     ),
+    path(
+        "cards/<int:card_id>/stop_card",
+        views.action_stop_card,
+        name="action_stop_card",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(

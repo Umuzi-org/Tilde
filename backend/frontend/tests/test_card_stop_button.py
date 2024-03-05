@@ -21,10 +21,12 @@ class TestCardStopButton(FrontendTestMixin):
     def make_topic_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
-            status=AgileCard.IN_PROGRESS,
+            status=AgileCard.READY,
         )
 
         self.card.assignees.set([self.user])
+
+        self.card.start_topic()
 
     def test_stop_button_moves_topic_card_to_backlog_column(self):
         self.make_topic_card()
