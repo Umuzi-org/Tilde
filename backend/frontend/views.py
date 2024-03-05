@@ -189,12 +189,12 @@ def can_view_team(logged_in_user):
 
 
 def user_login(request):
-    form = CustomAuthenticationForm()
+    form = CustomAuthenticationForm(request=request)
     context = {"form": form}
 
     if request.method == "POST":
         form = CustomAuthenticationForm(request=request, data=request.POST)
-        context.update({"form": form})
+        context = {"form": form}
 
         if form.is_valid():
             login(
@@ -209,7 +209,11 @@ def user_login(request):
 
             return redirect(redirect_to)
 
-    return render(request, "frontend/auth/page_login.html", context)
+    return render(
+        request,
+        "frontend/auth/page_login.html",
+        context,
+    )
 
 
 @login_required()
@@ -242,7 +246,6 @@ def _send_password_reset_email(request, form: ForgotPasswordForm) -> None:
 
 def user_forgot_password(request):
     form = ForgotPasswordForm()
-
     context = {"form": form}
 
     if request.method == "POST":
