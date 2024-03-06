@@ -48,17 +48,16 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_does_not_show_for_project_cards(self):
         self.make_project_card()
-        ip_column = self.page.text_content("div#column_IP")
-        
         self.page.wait_for_load_state("networkidle")
-
+        
+        ip_column = self.page.text_content("div#column_IP")
         self.assertNotIn("Done", ip_column)
 
     def test_done_button_shows_for_topic_cards(self):
         self.make_topic_card()
-        ip_topic_card = self.page.text_content("div#column_IP")
-        
+
         self.page.wait_for_load_state("networkidle")
+        ip_topic_card = self.page.text_content("div#column_IP")
         
         self.assertIn("Done", ip_topic_card)
 
