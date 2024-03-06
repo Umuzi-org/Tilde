@@ -28,6 +28,7 @@ from .forms import (
     ForgotPasswordForm,
     CustomAuthenticationForm,
     CustomSetPasswordForm,
+    SubmissionLinkForm,
 )
 from .theme import styles
 
@@ -375,10 +376,34 @@ def course_component_details(request, project_id):
         if key == project.agile_card_status
     ][0]
 
-    context = {
-        "course_component": project,
-        "board_status": board_status,
-    }
+    if project.submission_type_nice == "link":
+        form = SubmissionLinkForm()
+
+        if request.method == "POST":
+            form = SubmissionLinkForm(request.POST)
+
+            if form.is_valid():
+                submission_link = form.cleaned_data["submission_link"]
+
+                if project.link_submission_is_valid(submission_link):
+                    project.link_submission = submission_link
+                    project.save()
+
+                else:
+                    # TODO implement invalid form validation
+                    pass
+
+        context = {
+            "link_submission_form": form,
+            "project": project,
+            "board_status": board_status,
+        }
+
+    else:
+        context = {
+            "course_component": project,
+            "board_status": board_status,
+        }
 
     return render(
         request,
