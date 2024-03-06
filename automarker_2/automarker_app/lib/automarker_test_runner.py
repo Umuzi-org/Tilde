@@ -659,7 +659,7 @@ class JupyterTestRunner(PythonTestRunner):
                 error = l[0]
 
                 raise self.StopTestFunctionException(
-                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    f"We could not find your notebook, please make sure that you named your script correctly and put it in the right place. Here is more information: {error}",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
 
