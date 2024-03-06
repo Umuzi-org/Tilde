@@ -87,7 +87,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         body = self.page.text_content("body")
         self.assertIn("No link submitted yet", body)
 
-        self.page.get_by_label("Submission link").fill("https://google.com")
+        self.page.get_by_label("Link submission").fill("https://google.com")
         self.page.click("text=Submit Link")
 
         body = self.page.text_content("body")
@@ -103,7 +103,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
         self.page.goto(self.link_project_url)
 
-        self.page.get_by_label("Submission link").fill("")
+        self.page.get_by_label("Link submission").fill("")
         self.page.click("text=Submit Link")
 
         body = self.page.text_content("body")
@@ -119,7 +119,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
         self.page.goto(self.link_project_url)
 
-        self.page.get_by_label("Submission link").fill("http://google")
+        self.page.get_by_label("Link submission").fill("http://google")
         self.page.click("text=Submit Link")
 
         body = self.page.text_content("body")

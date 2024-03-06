@@ -28,7 +28,7 @@ from .forms import (
     ForgotPasswordForm,
     CustomAuthenticationForm,
     CustomSetPasswordForm,
-    SubmissionLinkForm,
+    LinkSubmissionForm,
 )
 from .theme import styles
 
@@ -377,13 +377,13 @@ def course_component_details(request, project_id):
     ][0]
 
     if project.submission_type_nice == "link":
-        form = SubmissionLinkForm()
+        form = LinkSubmissionForm()
 
         if request.method == "POST":
-            form = SubmissionLinkForm(request.POST)
+            form = LinkSubmissionForm(request.POST)
 
             if form.is_valid():
-                link_submission = form.cleaned_data["submission_link"]
+                link_submission = form.cleaned_data["link_submission"]
 
                 if project.link_submission_is_valid(link_submission):
                     project.link_submission = link_submission
