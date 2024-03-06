@@ -68,11 +68,21 @@
                     </p>
                 </div>
 
-                <div class="grid bold p-2 border-2 rounded-md gap-2">
+                <div x-data="{ formErrors: '{{ link_submission_form.errors|length }}' > 0, 
+                    show_link_submission_form: '{{ course_component.link_submission }}' === 'None' && this.formErrors === 'true',
+                    show_edit_link_submission_icon: '{{ course_component.link_submission }}' !== 'None',
+                    toggleForm(){
+                        console.log(typeof this.formErrors)
+                        console.log(this.formErrors === true)
+                        console.log(this.formErrors)
+                        this.show_link_submission_form = ! this.show_link_submission_form
+                        this.show_edit_link_submission_icon = ! this.show_edit_link_submission_icon
+                    }
+                 }" class="grid bold p-2 border-2 rounded-md gap-2">
                     <h6>Link to your work</h6>
                     
                     <div>Current link submission: 
-                        {% if project.link_submission == None %}
+                        {% if course_component.link_submission == None %}
                             No link submitted yet
                         {% else %}
                         <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
@@ -80,10 +90,10 @@
                         </a>
                         {% endif%}
                     </div>
-                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
-                    <form id="link_submission_form" action="" method="post">
+                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square" x-show="show_edit_link_submission_icon" @click="toggleForm()"></i>
+                    <form id="link_submission_form" action="" method="post" x-show="show_link_submission_form">
                         {% csrf_token %}
-                        {{ link_submission_form.as_p }}
+                        {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                     </form>
                 </div>

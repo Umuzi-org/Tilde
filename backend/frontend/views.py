@@ -391,6 +391,7 @@ def course_component_details(request, project_id):
 
                 else:
                     # TODO implement invalid form validation
+                    print("Yikes")
                     pass
 
         context = {
