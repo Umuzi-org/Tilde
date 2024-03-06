@@ -383,16 +383,17 @@ def course_component_details(request, project_id):
             form = SubmissionLinkForm(request.POST)
 
             if form.is_valid():
-                submission_link = form.cleaned_data["submission_link"]
+                link_submission = form.cleaned_data["submission_link"]
 
-                if project.link_submission_is_valid(submission_link):
-                    project.link_submission = submission_link
+                if project.link_submission_is_valid(link_submission):
+                    project.link_submission = link_submission
                     project.save()
 
                 else:
-                    # TODO implement invalid form validation
-                    print("Yikes")
-                    pass
+                    form.add_error(
+                        "submission_link",
+                        project.link_submission_invalid_message(link_submission),
+                    )
 
         context = {
             "course_component": project,

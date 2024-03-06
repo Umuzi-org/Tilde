@@ -68,15 +68,12 @@
                     </p>
                 </div>
 
-                <div x-data="{ formErrors: '{{ link_submission_form.errors|length }}' > 0, 
-                    show_link_submission_form: '{{ course_component.link_submission }}' === 'None' && this.formErrors === 'true',
-                    show_edit_link_submission_icon: '{{ course_component.link_submission }}' !== 'None',
-                    toggleForm(){
-                        console.log(typeof this.formErrors)
-                        console.log(this.formErrors === true)
-                        console.log(this.formErrors)
-                        this.show_link_submission_form = ! this.show_link_submission_form
-                        this.show_edit_link_submission_icon = ! this.show_edit_link_submission_icon
+                <div x-data="{ 
+                    isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
+                    isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
+                    toggleLinkSubmissionForm(){
+                        this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
+                        this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
                     }
                  }" class="grid bold p-2 border-2 rounded-md gap-2">
                     <h6>Link to your work</h6>
@@ -90,8 +87,8 @@
                         </a>
                         {% endif%}
                     </div>
-                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square" x-show="show_edit_link_submission_icon" @click="toggleForm()"></i>
-                    <form id="link_submission_form" action="" method="post" x-show="show_link_submission_form">
+                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square" x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()"></i>
+                    <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
                         {% csrf_token %}
                         {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
