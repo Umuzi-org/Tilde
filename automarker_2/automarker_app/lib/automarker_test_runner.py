@@ -345,36 +345,36 @@ class PythonTestRunner(_TestRunner):
 
             raise NotImplementedError()
 
-    # def assert_import_learner_code_present(self):
-    #     if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
-    #         stderr = self.last_command_output.stderr
-    #         assert stderr, "there should be an error"
-    #         if "ModuleNotFoundError" in stderr:
-    #             # error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
-    #             l = [s for s in stderr.split("\n") if "ModuleNotFoundError" in s]
-    #             assert len(l) == 1
-    #             error = l[0]
+    def assert_import_learner_code_present(self):
+        if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
+            stderr = self.last_command_output.stderr
+            assert stderr, "there should be an error"
+            if "ModuleNotFoundError" in stderr:
+                # error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
+                l = [s for s in stderr.split("\n") if "ModuleNotFoundError" in s]
+                assert len(l) == 1
+                error = l[0]
 
-    #             raise self.StopTestFunctionException(
-    #                 f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
-    #                 status=STEP_STATUS_NOT_YET_COMPETENT,
-    #             )
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
 
-    #         if "ImportError" in stderr:
-    #             error = re.search(r"\n(ImportError.*) \(.*\n", stderr).groups()[0]
-    #             raise self.StopTestFunctionException(
-    #                 f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
-    #                 status=STEP_STATUS_NOT_YET_COMPETENT,
-    #             )
-    #         if "Traceback" in stderr:
-    #             # get the index of the last time the word File was mentioned in stderr
+            if "ImportError" in stderr:
+                error = re.search(r"\n(ImportError.*) \(.*\n", stderr).groups()[0]
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
+            if "Traceback" in stderr:
+                # get the index of the last time the word File was mentioned in stderr
 
-    #             raise self.StopTestFunctionException(
-    #                 f"There was a fatal error while importing your code. This is very bad because your code is completely unusable. Make sure you can run your own code before you hand it in. `{self.sanitize_stderr()}`",
-    #                 status=STEP_STATUS_RED_FLAG,
-    #             )
+                raise self.StopTestFunctionException(
+                    f"There was a fatal error while importing your code. This is very bad because your code is completely unusable. Make sure you can run your own code before you hand it in. `{self.sanitize_stderr()}`",
+                    status=STEP_STATUS_RED_FLAG,
+                )
 
-    #         raise NotImplementedError()
+            raise NotImplementedError()
 
     def sanitize_stderr(self):
         """The traceback will include a bunch of ifo about our test environment. Remove this so we can show the learner the important stuff without confusing them"""
@@ -644,3 +644,23 @@ class MarkdownTestRunner(PythonTestRunner):
             + "\n- ".join(hints),
             status=STEP_STATUS_NOT_YET_COMPETENT,
         )
+
+
+class JupyterTestRunner(PythonTestRunner):
+
+    def assert_import_learner_code_present(self):
+        if TAG_IMPORT_LEARNER_CODE in self.last_command_output.unfinished_tags():
+            stderr = self.last_command_output.stderr
+            assert stderr, "there should be an error"
+            if "ModuleNotFoundError" in stderr:
+                # error = re.search(r"\n(ModuleNotFoundError.*')\n", stderr).groups()[0]
+                l = [s for s in stderr.split("\n") if "ModuleNotFoundError" in s]
+                assert len(l) == 1
+                error = l[0]
+
+                raise self.StopTestFunctionException(
+                    f"There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `{error}`",
+                    status=STEP_STATUS_NOT_YET_COMPETENT,
+                )
+
+            raise NotImplementedError()
