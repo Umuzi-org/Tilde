@@ -394,8 +394,8 @@ def course_component_details(request, project_id):
                     pass
 
         context = {
+            "course_component": project,
             "link_submission_form": form,
-            "project": project,
             "board_status": board_status,
         }
 
