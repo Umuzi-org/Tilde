@@ -657,9 +657,10 @@ class JupyterTestRunner(PythonTestRunner):
                 l = [s for s in stderr.split("\n") if "ModuleNotFoundError" in s]
                 assert len(l) == 1
                 error = l[0]
+                missing_notebooks_name = error.split("'")[1]
 
                 raise self.StopTestFunctionException(
-                    f"We could not find your notebook, please make sure that you named your script correctly and put it in the right place. Here is more information: {error}",
+                    f"We could not find your notebook '{missing_notebooks_name}', please make sure that you named your script correctly and put it in the right place.",
                     status=STEP_STATUS_NOT_YET_COMPETENT,
                 )
 
