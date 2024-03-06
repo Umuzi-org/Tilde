@@ -32,6 +32,6 @@ ModuleNotFoundError: No module named 'data_wrangling'
             runner.assert_import_learner_code_present()
 
         self.assertTrue(
-            "There was an error importing your code. Please make sure you've named everything correctly. Here is the error message: `ModuleNotFoundError: No module named 'data_wrangling'"
+            "We could not find your notebook, please make sure that you named your script correctly and put it in the right place. Here is more information: ModuleNotFoundError: No module named 'data_wrangling'"
             in str(context.exception)
         )
