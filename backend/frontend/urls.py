@@ -44,12 +44,23 @@ urlpatterns = [
         views.action_request_review,
         name="action_request_review",
     ),
+    path(
+        "cards/<int:card_id>/cancel_review_request",
+        views.action_cancel_review_request,
+        name="action_cancel_review_request",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(
         "teams/any/dashboard/users/<int:user_id>/progress",
         views.view_partial_team_user_progress_chart,
         name="view_partial_team_user_progress_chart",
+    ),
+    # Course component details
+    path(
+        "project/<int:project_id>",
+        views.course_component_details,
+        name="course_component_details",
     ),
     # Project review coordination
     path(

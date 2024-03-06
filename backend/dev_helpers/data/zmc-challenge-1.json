@@ -19,7 +19,6 @@
       ],
       "template_repo": null,
       "title": "Why learn web development?",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/why-learn-web-development/"
     },
     {
@@ -38,7 +37,6 @@
       "tags": [],
       "template_repo": null,
       "title": "What is HTML?",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/web-dev-languages/"
     },
     {
@@ -57,7 +55,6 @@
       "tags": [],
       "template_repo": null,
       "title": "How to get setup to author web code on your own device",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/html-on-phone-or-computer/"
     },
     {
@@ -76,7 +73,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Your first HTML page",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/your-first-html-page/"
     },
     {
@@ -95,7 +91,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Hosting your website on the web",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/hosting-your-page-on-github-pages/"
     },
     {
@@ -114,7 +109,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Adding images to your website",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-images/"
     },
     {
@@ -133,7 +127,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Adding more pages",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/adding-more-pages/"
     },
     {
@@ -152,7 +145,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Introducing CSS",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/intro-to-css/"
     },
     {
@@ -171,7 +163,6 @@
       "tags": [],
       "template_repo": null,
       "title": "Continue learning",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/different-kinds-of-coders/"
     },
     {
@@ -190,7 +181,6 @@
       "tags": [],
       "template_repo": null,
       "title": "How did we do?",
-      "topic_needs_review": false,
       "url": "http://syllabus.africacode.net/zmc-challenges/first-website/how-are-we-doing/"
     }
   ],

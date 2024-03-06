@@ -25,15 +25,6 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         )
         self.card.reviewers.set([self.user])
 
-    def make_ip_topic_card(self):
-        self.card: AgileCard = AgileCardFactory(
-            content_item=ContentItemFactory(
-                content_type=ContentItem.TOPIC, topic_needs_review=True
-            ),
-            status=AgileCard.IN_PROGRESS,
-        )
-        self.card.assignees.set([self.user])
-
     def make_ip_project_card(self, project_submission_type):
         self.card: AgileCard = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -53,13 +44,6 @@ class TestCardRequestReviewButton(FrontendTestMixin):
             status=AgileCard.REVIEW_FEEDBACK,
         )
         self.card.assignees.set([self.user])
-
-    def test_request_review_button_does_not_show_for_topic_cards(self):
-        self.make_ip_topic_card()
-
-        ip_column = self.page.text_content("div#column_IP")
-
-        self.assertNotIn("Request Review", ip_column)
 
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
