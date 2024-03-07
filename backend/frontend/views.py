@@ -372,16 +372,17 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, id, course_component_type):
-    if course_component_type == "project":
+def course_component_details(request, id, type):
+
+    if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
-    elif course_component_type == "topic":
+    elif type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
 
     board_status = [
         value
         for key, value in AgileCard.STATUS_CHOICES
-        if key == course_component.agile_card_status
+        if key == course_component.agile_card.status
     ][0]
 
     context = {

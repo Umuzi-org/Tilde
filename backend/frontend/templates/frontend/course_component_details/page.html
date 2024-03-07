@@ -6,17 +6,17 @@
             Course Component Details
         </h1>
 
-        {% if course_component.submission_type_nice == "link"%}
+        {% if course_component.content_item.content_type_nice == "topic"%}
             <div class="grid gap-4 my-4">
                 <div  class="bold p-2 border-2 rounded-md grid gap-2">
                     <p class="bold p-2 border-2 rounded-md ">
-                        Title: {{ course_component.title }}
+                        Title: {{ course_component.content_item.title }}
                     </p>
                 
                     <div class="bold p-2 border-2 rounded-md ">
                         Tag names: 
-                        {% with course_component.tag_names|length as array_length %}
-                            {% for item in course_component.tag_names %}
+                        {% with course_component.content_item.tag_names|length as array_length %}
+                            {% for item in course_component.content_item.tag_names %}
                                 {{ item }}
                                 {% if not forloop.last %},{% endif %}
                             {% endfor %}
@@ -36,19 +36,20 @@
                         Assignees:
                         <ul class="mx-8">
                             <li class="bold">
-                            {{ course_component.recruit_user_names|first }}
+                            {{ course_component.user }}
                             </li>
                         </ul>
                     </div>
-            
+
                     <div class="bold p-2 border-2 rounded-md ">
                         Reviewers: 
                         <ul class="mx-8">
-                            {% for reviewer in course_component.reviewer_user_names%}
+                            {% for reviewer in course_component.agile_card.reviewer_names%}
                             <li class="bold">{{reviewer}}</li>
                             {%endfor%}
                         </ul>
                     </div>
+
                 </div>
                 
                 <div class="grid bold p-2 border-2 rounded-md gap-2">
@@ -64,25 +65,89 @@
                 <div class="bold p-2 border-2 rounded-md ">
                     <p class="bold">
                         Content URL: 
-                        <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
+                        <a class="{{styles.link}}" href="{{course_component.content_item.content_url}}" target="_blank">{{course_component.content_url}}</a>
                     </p>
                 </div>
-
-                <div class="grid bold p-2 border-2 rounded-md gap-2">
-                    <h6>Link to your work</h6>
-                    
-                    <div>Current link submission: 
-                        {% if project.link_submission == None %}
-                            No link submitted yet
-                        {% else %}
-                        <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
-                            {{course_component.link_submission}}
-                        </a>
-                        {% endif%}
-                    </div>
-                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
-                </div>
             </div>
+        {% elif course_component.content_item.content_type_nice == "project"%}
+            {% if course_component.content_item.project_submission_type_nice == "link" %}
+                <div class="grid gap-4 my-4">
+                    <div  class="bold p-2 border-2 rounded-md grid gap-2">
+                        <p class="bold p-2 border-2 rounded-md ">
+                            Title: {{ course_component.title }}
+                        </p>
+                    
+                        <div class="bold p-2 border-2 rounded-md ">
+                            Tag names: 
+                            {% with course_component.tag_names|length as array_length %}
+                                {% for item in course_component.tag_names %}
+                                    {{ item }}
+                                    {% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                    
+                        <div class="bold p-2 border-2 rounded-md ">
+                            <p class="bold">
+                                Status : {{board_status}}
+                            </p>
+                        </div>
+                    </div>
+                
+                    <div class="bold p-2 border-2 rounded-md grid gap-2">
+                    
+                        <div class="bold p-2 border-2 rounded-md ">
+                            Assignees:
+                            <ul class="mx-8">
+                                <li class="bold">
+                                {{ course_component.recruit_user_names|first }}
+                                </li>
+                            </ul>
+                        </div>
+                
+                        <div class="bold p-2 border-2 rounded-md ">
+                            Reviewers: 
+                            <ul class="mx-8">
+                                {% for reviewer in course_component.reviewer_user_names%}
+                                <li class="bold">{{reviewer}}</li>
+                                {%endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid bold p-2 border-2 rounded-md gap-2">
+                        <p class="bold p-2 border-2 rounded-md" >
+                            Start Date: {{course_component.start_time}}
+                        </p>
+
+                        <p class="bold p-2 border-2 rounded-md">
+                            Due Date: {{course_component.due_time}}
+                        </p>
+                    </div>
+
+                    <div class="bold p-2 border-2 rounded-md ">
+                        <p class="bold">
+                            Content URL: 
+                            <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
+                        </p>
+                    </div>
+
+                    <div class="grid bold p-2 border-2 rounded-md gap-2">
+                        <h6>Link to your work</h6>
+                        
+                        <div>Current link submission: 
+                            {% if project.link_submission == None %}
+                                No link submitted yet
+                            {% else %}
+                            <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
+                                {{course_component.link_submission}}
+                            </a>
+                            {% endif%}
+                        </div>
+                        <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
