@@ -46,7 +46,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             ),
         )
 
-        self.agile_card = AgileCardFactory(
+        AgileCardFactory(
             content_item=content_item,
             status=AgileCard.IN_PROGRESS,
             recruit_project=self.recruit_project,
