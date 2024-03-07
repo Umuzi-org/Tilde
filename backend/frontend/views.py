@@ -17,7 +17,13 @@ from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem, User, RecruitProject
+from curriculum_tracking.models import (
+    AgileCard,
+    ContentItem,
+    User,
+    RecruitProject,
+    TopicProgress,
+)
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
@@ -366,17 +372,20 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, project_id):
-    project = get_object_or_404(RecruitProject, id=project_id)
+def course_component_details(request, id, course_component_type):
+    if course_component_type == "project":
+        course_component = get_object_or_404(RecruitProject, id=id)
+    elif course_component_type == "topic":
+        course_component = get_object_or_404(TopicProgress, id=id)
 
     board_status = [
         value
         for key, value in AgileCard.STATUS_CHOICES
-        if key == project.agile_card_status
+        if key == course_component.agile_card_status
     ][0]
 
     context = {
-        "course_component": project,
+        "course_component": course_component,
         "board_status": board_status,
     }
 
