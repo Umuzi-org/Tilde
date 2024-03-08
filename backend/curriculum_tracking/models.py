@@ -1465,6 +1465,29 @@ class AgileCard(
         self.status = AgileCard.READY
         self.save()
 
+    def stop_project(self):
+        assert self.status == AgileCard.IN_PROGRESS
+        assert self.recruit_project != None, f"Project hasn't been started"
+        assert (
+            self.content_item.content_type == ContentItem.PROJECT
+        ), f"Expected content_type to be 'project', but got {self.content_item.content_type}"
+
+        project_submission_type = self.content_item.project_submission_type
+
+        if project_submission_type == ContentItem.LINK:
+            self.recruit_project.link_submission = ""
+        elif project_submission_type not in ContentItem.PROJECT_SUBMISSION_TYPES:
+            raise NotImplemented(
+                f"Can't stop project of with submission type: {project_submission_type}"
+            )
+
+        self.recruit_project.review_request_time = None
+        self.recruit_project.start_time = None
+        self.recruit_project.due_time = None
+        self.recruit_project.save()
+        self.status = AgileCard.READY
+        self.save()
+
     def attended_workshop(self, timestamp):
         # if self.status == AgileCard.COMPLETE:
         #     return

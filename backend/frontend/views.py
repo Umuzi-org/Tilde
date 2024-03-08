@@ -524,10 +524,12 @@ def action_stop_card(request, card_id):
     """The card is in in-progress and the user wants to stop it"""
     card = get_object_or_404(AgileCard, id=card_id)
 
-    content_type = card.content_type_nice
+    content_type = card.content_item.content_type
 
-    if content_type == "topic":
+    if content_type == ContentItem.TOPIC:
         card.stop_topic()
+    elif content_type == ContentItem.PROJECT:
+        card.stop_project()
     else:
         raise NotImplementedError("Only topics and projects can be stopped")
 
