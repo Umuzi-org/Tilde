@@ -40,7 +40,7 @@ class FrontendTestMixin(StaticLiveServerTestCase):
     ):
         """A wrapper around Django's reverse function that returns a full URL"""
         end = reverse(viewname, urlconf, args, kwargs, current_app)
-        return f"{self.live_server_url}/{end}"
+        return f"{self.live_server_url}{end}"
 
     def do_login(self, user):
         """
