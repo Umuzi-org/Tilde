@@ -1,7 +1,7 @@
 <script>
   window.addEventListener("resize", function () {
-    var columns = document.querySelectorAll(".grid-cols-5 > div");
-    var windowHeight = window.innerHeight;
+    const columns = document.querySelectorAll(".grid-cols-5 > div");
+    const windowHeight = window.innerHeight;
 
     columns.forEach(function (column) {
       column.style.height = windowHeight - 160 + "px";
