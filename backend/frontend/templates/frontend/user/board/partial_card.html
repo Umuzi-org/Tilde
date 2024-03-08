@@ -215,12 +215,12 @@
                   hx-target="#card_{{ card.id }}"
                   hx-swap="outerHTML">Stop</button>
         {% endif %}
-
-      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
+      </div>
+      {% comment %} <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="col-span-1 row-span-1 w-full">
           <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_primary_small }}">Details</a>
         </div>
-      </div>
+      </div> {% endcomment %}
     </div>
   </div>
   <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
