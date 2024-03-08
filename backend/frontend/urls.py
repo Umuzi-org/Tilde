@@ -40,6 +40,11 @@ urlpatterns = [
         name="action_start_card",
     ),
     path(
+        "cards/<int:card_id>/finish_topic",
+        views.action_finish_topic,
+        name="action_finish_topic",
+    ),
+    path(
         "cards/<int:card_id>/request_review",
         views.action_request_review,
         name="action_request_review",

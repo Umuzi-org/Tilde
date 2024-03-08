@@ -1693,7 +1693,6 @@ class AgileCard(
 
         if user is None:
             from threadlocal_middleware import get_current_user
-
             user = get_current_user()
 
         if user is not None:
@@ -1713,16 +1712,18 @@ class AgileCard(
 
         return False
 
-    def request_user_can_stop_card(self, user=None):
+    def request_user_can_finish_topic(self, user=None):
         """
-        Check if current user can stop card
+        Check if current user can finish topic
         """
+        if self.content_type_nice != "topic":
+            return False
+
         if self.status != AgileCard.IN_PROGRESS:
             return False
 
         if user is None:
             from threadlocal_middleware import get_current_user
-
             user = get_current_user()
 
         if user is not None:
@@ -1737,11 +1738,8 @@ class AgileCard(
                     for team in self.get_teams()
                 )
             )
-
             return has_manage_cards_permission
-
         return False
-
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
