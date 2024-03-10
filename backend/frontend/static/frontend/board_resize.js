@@ -7,6 +7,6 @@ function adjustColumnHeight() {
   const windowHeight = window.innerHeight;
 
   columns.forEach(function (column) {
-    column.style.height = windowHeight - 160 + "px";
+    column.style.height = windowHeight - 190 + "px";
   });
 }
