@@ -17,15 +17,7 @@ from django.urls import reverse
 class FrontendTestMixin(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
-        self.context = self.browser.new_context();
-
-        def delay_request(route, request):
-            time.sleep(4)
-            route.continue_()
-
-        self.context.route("", delay_request)
-
-        self.page = self.context.new_page()
+        self.page = self.browser.new_page()
 
     def tearDown(self) -> None:
         super().tearDown()
