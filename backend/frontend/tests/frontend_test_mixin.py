@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/4.2/ref/contrib/staticfiles/#django.contrib.st
 """
 
 import os
+import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from playwright.sync_api import sync_playwright
 from django.urls import reverse
@@ -16,7 +17,15 @@ from django.urls import reverse
 class FrontendTestMixin(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
-        self.page = self.browser.new_page()
+        self.context = self.browser.new_context();
+
+        def delay_request(route, request):
+            time.sleep(4)
+            route.continue_()
+
+        self.context.route("", delay_request)
+
+        self.page = self.context.new_page()
 
     def tearDown(self) -> None:
         super().tearDown()
