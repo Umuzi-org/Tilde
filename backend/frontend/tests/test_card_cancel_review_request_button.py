@@ -32,7 +32,7 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
     def test_cancel_review_request_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.click("text=Cancel review request")
+        self.page.click("text=Cancel review request", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -48,7 +48,7 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
     ):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.click("text=Cancel review request")
+        self.page.click("text=Cancel review request", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 

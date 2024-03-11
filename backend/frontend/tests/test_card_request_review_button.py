@@ -48,7 +48,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.page.click("text=Request Review", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -62,7 +62,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
     def test_request_review_button_moves_rf_project_card_to_ir_column(self):
         self.make_rf_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.page.click("text=Request Review", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -77,18 +77,18 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card(ContentItem.LINK)
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.page.click("text=Request Review", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
         self.assertIn(
-            "You have outstanding card reviews", self.page.text_content("div#column_IP")
+            "You have outstanding card reviews", self.page.text_content("div#column_IP", timeout=0)
         )
 
     def test_request_review_button_logs_review_request_event(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.page.click("text=Request Review", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 

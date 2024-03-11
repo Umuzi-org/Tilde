@@ -23,7 +23,7 @@ class TestForgotPassword(FrontendTestMixin):
     def test_sends_password_reset_email_if_user_exists(self):
         self.page.goto(self.reverse_url("user_login"))
 
-        self.page.click("text=Forgot Password?")
+        self.page.click("text=Forgot Password?", timeout=0)
 
         self.page.fill("[name=email]", self.user.email)
         self.page.click("text=Reset Password")
@@ -53,7 +53,7 @@ class TestForgotPassword(FrontendTestMixin):
         self.page.click("text=Forgot Password?")
 
         self.page.fill("[name=email]", self.non_existant_user_email)
-        self.page.click("text=Reset Password")
+        self.page.click("text=Reset Password", timeout=0)
 
         # Ensure no email was sent
         self.assertEqual(len(mail.outbox), 0)

@@ -40,8 +40,7 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_moves_topic_card_to_ip_column(self):
         self.make_topic_card()
 
-        self.page.wait_for_selector("text=Start", timeout=0)
-        self.page.click("text=Start")
+        self.page.click("text=Start",  timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -55,8 +54,7 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.wait_for_selector("text=Start", timeout=0)
-        self.page.click("text=Start")
+        self.page.click("text=Start", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -70,8 +68,7 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_logs_card_started_event(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.wait_for_selector("text=Start", timeout=0)
-        self.page.click("text=Start")
+        self.page.click("text=Start", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 

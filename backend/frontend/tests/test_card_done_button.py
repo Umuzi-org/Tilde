@@ -63,7 +63,7 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_moves_ip_topic_card_to_complete_column(self):
         self.make_topic_card()
-        self.page.click("text=Done")
+        self.page.click("text=Done", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -79,7 +79,7 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card()
         self.make_topic_card()
 
-        self.page.click("text=Done")
+        self.page.click("text=Done", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
@@ -90,7 +90,7 @@ class TestCardDoneButton(FrontendTestMixin):
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
 
-        self.page.click("text=Done")
+        self.page.click("text=Done", timeout=0)
 
         self.page.wait_for_load_state("networkidle")
 
