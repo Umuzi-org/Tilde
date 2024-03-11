@@ -9,6 +9,7 @@ rm -rf config/migrations
 rm -rf activity_log/migrations
 rm -rf automarker/migrations
 rm -rf zero_marginal_cost_challenges/migrations
+rm -rf project_review_coordination/migrations
 
 
 # rm -rf dev_helpers/migrations
@@ -22,6 +23,7 @@ git checkout master -- config/migrations
 git checkout master -- activity_log/migrations
 git checkout master -- automarker/migrations
 git checkout master -- zero_marginal_cost_challenges/migrations
+git checkout master -- project_review_coordination/migrations
 # git checkout master -- dev_helpers/migrations
 
 
