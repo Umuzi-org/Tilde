@@ -207,12 +207,9 @@
                   hx-swap="outerHTML">Cancel review request</button>
         {% endif %}
       </div>
-
-      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div class="col-span-1 row-span-1 w-full">
+      {%if card.content_item.content_type_nice == "project" and card.content_item.project_submission_type_nice == "link" %}
           <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_primary_small }}">Details</a>
-        </div>
-      </div>
+      {% endif %}
     </div>
   </div>
   <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
