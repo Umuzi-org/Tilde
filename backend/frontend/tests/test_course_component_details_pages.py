@@ -88,7 +88,9 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.assertIn("No link submitted yet", body)
 
         self.page.get_by_label("Link submission").fill("https://google.com")
+
         self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
 
         body = self.page.text_content("body")
         self.assertIn("https://google.com", body)
@@ -105,6 +107,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.page.get_by_label("Link submission").fill("")
         self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
 
         body = self.page.text_content("body")
         self.assertIn("This field is required", body)
@@ -121,6 +124,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.page.get_by_label("Link submission").fill("http://google")
         self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
 
         body = self.page.text_content("body")
         self.assertIn("Enter a valid URL", body)
