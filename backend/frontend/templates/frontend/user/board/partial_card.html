@@ -94,15 +94,15 @@
     </div>
     <!-- Card info section -->
     <div class="grid grid-cols-0 grid-rows-1 text-left">
-      <p class="w-[195.72px] h-[auto] text-black text-xs font-medium font-'Poppins'">{{ card.content_type_nice }}</p>
-      <h5 class="w-[auto] h-[auto] text-black text-base font-bold font-'Poppins' leading-tight pr-10">{{ card.title }}</h5>
+      <p class="h-[auto] text-black text-xs font-medium font-'Poppins'">{{ card.content_type_nice }}</p>
+      <h5 class="h-[auto] text-black text-base font-bold font-'Poppins' leading-tight text-wrap">{{ card.title }}</h5>
     </div>
     <!-- Tags section -->
     {% if card.tag_names %}
-      <div class="grid grid-cols-1 pt-2 gap-y-2 w-full h-[auto]">
+      <div class="grid grid-cols-1 py-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
           {% if tag_name != "none" %}
-            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 pr-0.5">{{ tag_name }}</span><span></span>
+            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ tag_name }}</span><span></span>
           {% endif %}
         {% endfor %}
       </div>
