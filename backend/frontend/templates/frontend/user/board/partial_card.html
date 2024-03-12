@@ -207,21 +207,21 @@
                   hx-swap="outerHTML">Cancel review request</button>
         {% endif %}
       </div>
-      <div class="Start-button col-span-1 row-span-1 group">
-        {% if card.request_user_can_stop_card %}
-          <button type="button"
-                  class="{{ styles.button_secondary_small }}"
-                  hx-post="{% url 'action_stop_card' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Stop</button>
-        {% endif %}
-      </div>
       {%if card.content_item.content_type_nice == "project" and card.content_item.project_submission_type_nice == "link" %}
-        <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-          <div class="col-span-1 row-span-1 w-full">
-            <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_primary_small }}">Details</a>
+      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
+        <div class="col-span-1 row-span-1 w-full">
+          <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_secondary_small }}">Details</a>
         </div>
       </div> 
+      {% endif %}
+      {% if card.request_user_can_stop_card %}
+        <div class="col-span-1 row-span-1 group">
+            <button type="button"
+                    class="{{ styles.button_secondary_small }}"
+                    hx-post="{% url 'action_stop_card' card.id %}"
+                    hx-target="#card_{{ card.id }}"
+                    hx-swap="outerHTML">Stop</button>
+        </div>
       {% endif %}
     </div>
   </div>
