@@ -28,6 +28,16 @@ class TestCardStopButton(FrontendTestMixin):
 
         self.card.start_topic()
 
+    def make_project_card(self, project_submission_type):
+        self.card = AgileCardFactory(
+            content_item=ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=project_submission_type,
+            ),
+            status=AgileCard.IN_PROGRESS,
+        )
+        self.card.assignees.set([self.user])
+
     def test_stop_button_moves_topic_card_to_backlog_column(self):
         self.make_topic_card()
 
@@ -46,6 +56,38 @@ class TestCardStopButton(FrontendTestMixin):
         self,
     ):
         self.make_topic_card()
+
+        self.page.click("text=Stop")
+
+        self.page.wait_for_load_state("networkidle")
+
+        self.assertEqual(LogEntry.objects.count(), 1)
+        entry = LogEntry.objects.first()
+
+        self.assertEqual(entry.actor_user, self.user)
+        self.assertEqual(entry.effected_user, self.card.assignees.first())
+        self.assertEqual(entry.object_1, self.card.recruit_project)
+        self.assertEqual(entry.object_2, None)
+        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
+
+    def test_stop_button_moves_project_card_to_backlog_column(self):
+        self.make_project_card(ContentItem.LINK)
+
+        self.page.click("text=Stop")
+
+        self.page.wait_for_load_state("networkidle")
+
+        backlog_column = self.page.text_content("div#column_RB")
+        ip_column = self.page.text_content("div#column_IP")
+        project_card_title = self.card.content_item.title
+
+        self.assertNotIn(project_card_title, ip_column)
+        self.assertIn(project_card_title, backlog_column)
+
+    def test_project_stop_button_logs_card_review_request_cancelled_event(
+        self,
+    ):
+        self.make_project_card(ContentItem.LINK)
 
         self.page.click("text=Stop")
 
