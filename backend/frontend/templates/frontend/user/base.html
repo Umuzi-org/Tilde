@@ -8,11 +8,12 @@
 
 {% block content %}
 {% include "frontend/user/partial_user_nav_header.html" %}
+<div class="h-screen overflow-x-scroll overflow-y-hidden">
 
-<main>
-    <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        {% block main %}{% endblock %}
-    </div>
-</main>
-
+    <main>
+        <div class="mx-auto max-w-[1224px] py-6 sm:px-7 lg:px-9">
+            {% block main %}{% endblock %}
+        </div>
+    </main>
+</div>
 {% endblock %}
