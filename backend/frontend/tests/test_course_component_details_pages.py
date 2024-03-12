@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils import timezone
+from playwright.sync_api import expect
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -104,14 +105,52 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
         self.page.goto(self.link_project_url)
 
-        link_submission_form = self.page.text_content("form#link_submission_form")
-        self.assertFalse(link_submission_form)
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_visible()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).not_to_be_visible()
 
         self.page.get_by_label("Link submission").fill("https://google.com")
         self.page.click("text=Submit Link")
         self.page.wait_for_load_state("networkidle")
 
-        link_submission_form = self.page.text_content("form#link_submission_form")
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_hidden()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).to_be_visible()
+
+    def test_link_submission_form_appears_after_edit_link_submission_button_is_clicked(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+        self.recruit_project.link_submission = "https://google.com"
+        self.recruit_project.save()
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).not_to_be_visible()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).to_be_visible()
+
+        self.page.click("text=Edit link submission")
+        self.page.wait_for_load_state("networkidle")
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_visible
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).not_to_be_visible()
 
     def test_link_submission_form_displays_correct_error_message_when_form_is_submitted_with_no_input(
         self,
