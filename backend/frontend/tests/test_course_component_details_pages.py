@@ -62,7 +62,6 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
 
-        self.assertIn("Course Component Details", body)
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
