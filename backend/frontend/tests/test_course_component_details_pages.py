@@ -94,6 +94,25 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         body = self.page.text_content("body")
         self.assertIn("https://google.com", body)
 
+    def test_link_submission_form_disappears_after_successful_submission(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        link_submission_form = self.page.text_content("form#link_submission_form")
+        self.assertFalse(link_submission_form)
+
+        self.page.get_by_label("Link submission").fill("https://google.com")
+        self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
+
+        link_submission_form = self.page.text_content("form#link_submission_form")
+
     def test_link_submission_form_displays_correct_error_message_when_form_is_submitted_with_no_input(
         self,
     ):
