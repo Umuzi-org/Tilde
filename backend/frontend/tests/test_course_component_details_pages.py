@@ -74,7 +74,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
         self.assertIn("No link submitted yet", body)
 
-    def test_link_submission_form_correctly_updates_link_submission_after_link_update(
+    def test_link_submission_form_correctly_updates_link_submission(
         self,
     ):
         self.make_ip_project_card(ContentItem.LINK)
