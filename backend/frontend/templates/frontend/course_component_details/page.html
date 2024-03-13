@@ -3,16 +3,12 @@
 {% block content %}
     <div class="mx-auto w-1/2 p-6 bg-white my-4">
         <h1 class="{{ styles.heading1 }}">
-            Course Component Details
+            {{ course_component.content_item.title }}
         </h1>
 
         {% if course_component.content_item.content_type_nice == "topic"%}
             <div class="grid gap-4 my-4">
                 <div  class="bold p-2 border-2 rounded-md grid gap-2">
-                    <p class="bold p-2 border-2 rounded-md ">
-                        Title: {{ course_component.content_item.title }}
-                    </p>
-                
                     <div class="bold p-2 border-2 rounded-md ">
                         Tag names: 
                         {% with course_component.content_item.tag_names|length as array_length %}
@@ -73,10 +69,6 @@
             {% if course_component.content_item.project_submission_type_nice == "link" %}
                 <div class="grid gap-4 my-4">
                     <div  class="bold p-2 border-2 rounded-md grid gap-2">
-                        <p class="bold p-2 border-2 rounded-md ">
-                            Title: {{ course_component.title }}
-                        </p>
-                    
                         <div class="bold p-2 border-2 rounded-md ">
                             Tag names: 
                             {% with course_component.tag_names|length as array_length %}
