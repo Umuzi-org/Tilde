@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -8,8 +9,14 @@ from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
     RecruitProjectFactory,
+    TopicProgressFactory,
 )
-from curriculum_tracking.models import AgileCard, ContentItem
+from curriculum_tracking.models import (
+    AgileCard,
+    ContentItem,
+    TopicProgress,
+    RecruitProject,
+)
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -23,6 +30,26 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
         self.do_login(self.user)
+
+    def make_topic_card(self):
+        content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
+
+        self.topic = TopicProgressFactory(
+            user=self.user,
+            content_item=content_item,
+            start_time=datetime.datetime(
+                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
+            ),
+            due_time=datetime.datetime(
+                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
+            ),
+        )
+
+        AgileCardFactory(
+            content_item=content_item,
+            status=AgileCard.IN_PROGRESS,
+            topic_progress=self.topic,
+        )
 
     def make_ip_project_card(self, project_submission_type):
         content_item = ContentItemFactory(
@@ -52,7 +79,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
-    def test_link_project_page_displays_correct_details(self):
+    def test_course_component_page_displays_correct_details_for_link_project(self):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
@@ -73,3 +100,23 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             body,
         )
         self.assertIn("No link submitted yet", body)
+
+    def test_course_component_page_displays_correct_details_for_topic(self):
+        self.make_topic_card()
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details",
+            kwargs={"id": self.topic.id, "type": "topic"},
+        )
+        self.page.goto(self.link_project_url)
+
+        body = self.page.text_content("body")
+
+        self.assertIn("learner_1@umuzi.org", body)
+        self.assertIn("In Progress", body)
+        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn(
+            self.topic.content_url,
+            body,
+        )

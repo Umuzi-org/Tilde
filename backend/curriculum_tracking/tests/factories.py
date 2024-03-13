@@ -209,6 +209,7 @@ class TopicProgressFactory(DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     content_item = factory.SubFactory(ContentItemFactory)
+
     # due_time
     # start_time
     # complete_time
@@ -248,10 +249,13 @@ class AgileCardFactory(DjangoModelFactory):
     recruit_project = factory.SubFactory(
         RecruitProjectFactory, start_time=timezone.now()
     )
+    topic_progress = factory.SubFactory(TopicProgressFactory)
     content_item = factory.LazyAttribute(
-        lambda o: o.recruit_project.content_item
-        if o.recruit_project
-        else ContentItemFactory()
+        lambda o: (
+            o.recruit_project.content_item
+            if o.recruit_project
+            else ContentItemFactory()
+        )
     )
     order = 1
 
