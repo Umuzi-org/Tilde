@@ -24,6 +24,9 @@ from curriculum_tracking.models import (
     RecruitProject,
     TopicProgress,
 )
+from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
+import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking import helpers
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
@@ -37,7 +40,6 @@ from .forms import (
 )
 from .theme import styles
 
-import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
 User = get_user_model()
@@ -460,6 +462,55 @@ def action_cancel_review_request(request, card_id):
     assert (
         card.status == AgileCard.IN_PROGRESS
     ), f"Expected to be in progress, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+def check_user_can_finish_topic(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    card_assignees = card.assignees.all()
+
+    if logged_in_user in card_assignees:
+        return True
+
+    card_teams = card.get_teams()
+    checker = ObjectPermissionChecker(logged_in_user)
+    checker.prefetch_perms(card_teams)
+
+    return card.request_user_can_finish_topic(logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_finish_topic)
+@check_no_outstanding_reviews_on_card_action
+def action_finish_topic(request, card_id):
+    """The card is in progress and the user has chosen to finish it"""
+    card: AgileCard = get_object_or_404(AgileCard, id=card_id)
+
+    if card.topic_progress:
+        card.finish_topic()
+    else:
+        raise NotImplementedError("Only topic cards can be finished.")
+
+    log_creators.log_card_moved_to_complete(
+        card=card,
+        actor_user=request.user,
+    )
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.COMPLETE
+    ), f"Expected to be completed, but got {card.status}"
 
     return render(
         request,

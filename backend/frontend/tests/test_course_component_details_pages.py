@@ -35,6 +35,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
 
         self.recruit_project = RecruitProjectFactory(
+        self.recruit_project = RecruitProjectFactory(
             recruit_users=[self.user],
             reviewer_users=[learner_reviewer],
             content_item=content_item,
@@ -58,6 +59,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.link_project_url = self.reverse_url(
             "course_component_details",
             kwargs={"id": self.recruit_project.id, "type": "project"},
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
 

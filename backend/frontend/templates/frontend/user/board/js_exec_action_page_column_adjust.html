@@ -1,0 +1,6 @@
+{% load static %}
+<script src="{% static 'frontend/board_resize.js' %}"></script>
+<script>
+  adjustColumnHeight();
+  window.addEventListener("resize", adjustColumnHeight);
+</script>
