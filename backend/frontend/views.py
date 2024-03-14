@@ -12,7 +12,6 @@ from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
@@ -24,7 +23,7 @@ from curriculum_tracking.models import (
     RecruitProject,
     TopicProgress,
 )
-from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
+from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
 
@@ -375,7 +374,6 @@ def action_start_card(request, card_id):
 
 @user_passes_test_or_forbidden(can_view_user_board)
 def course_component_details(request, id, type):
-
     if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
     elif type == "topic":
@@ -387,9 +385,34 @@ def course_component_details(request, id, type):
         if key == course_component.agile_card.status
     ][0]
 
+    log_entries = LogEntry.objects.filter(object_1_id=id)
+
+    relevant_logs = []
+    for log_entry in log_entries:
+        event_type = EventType.objects.get(id=log_entry.event_type_id)
+
+        if (
+            (board_status == "In Progress" and event_type.name == "CARD_STARTED")
+            or (board_status == "Review" and event_type.name == "CARD_REVIEW_REQUESTED")
+            or (
+                board_status == "Review Feedback"
+                and event_type.name == "CARD_REVIEW_REQUEST_CANCELLED"
+            )
+        ):
+            relevant_logs.append(log_entry.timestamp)
+
+    if relevant_logs:
+        duration_in_column = timezone.now() - relevant_logs[-1]
+        days = duration_in_column.days
+        hours, remainder = divmod(duration_in_column.seconds, 3600)
+        formatted_time_difference = f"{days} days, {hours} hours"
+    else:
+        formatted_time_difference = None
+
     context = {
         "course_component": course_component,
         "board_status": board_status,
+        "duration": formatted_time_difference,
     }
 
     return render(

@@ -46,6 +46,11 @@
                     <p class="bold p-2 border-2 rounded-md">
                         Due Date: {{course_component.due_time}}
                     </p>
+                    {% if duration %}
+                        <p class="bold p-2 border-2 rounded-md">
+                            Duration in current column: {{duration}}
+                        </p>
+                    {% endif %}
                 </div>
 
                 <div class="bold p-2 border-2 rounded-md ">
