@@ -25,6 +25,12 @@ from curriculum_tracking.models import (
 )
 from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking.activity_log_entry_creators import (
+    CARD_STARTED,
+    CARD_REVIEW_REQUESTED,
+    CARD_MOVED_TO_REVIEW_FEEDBACK,
+    CARD_REVIEW_REQUEST_CANCELLED,
+)
 from curriculum_tracking import helpers
 
 from taggit.models import Tag
@@ -39,7 +45,6 @@ from .forms import (
 )
 from .theme import styles
 
-from curriculum_tracking import helpers
 
 User = get_user_model()
 
@@ -392,11 +397,15 @@ def course_component_details(request, id, type):
         event_type = EventType.objects.get(id=log_entry.event_type_id)
 
         if (
-            (board_status == "In Progress" and event_type.name == "CARD_STARTED")
-            or (board_status == "Review" and event_type.name == "CARD_REVIEW_REQUESTED")
+            (board_status == "In Progress" and event_type.name == CARD_STARTED)
+            or (
+                board_status == "In Progress"
+                and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
+            )
+            or (board_status == "Review" and event_type.name == CARD_REVIEW_REQUESTED)
             or (
                 board_status == "Review Feedback"
-                and event_type.name == "CARD_REVIEW_REQUEST_CANCELLED"
+                and event_type.name == CARD_MOVED_TO_REVIEW_FEEDBACK
             )
         ):
             relevant_logs.append(log_entry.timestamp)
