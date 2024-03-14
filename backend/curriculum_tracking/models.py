@@ -1467,10 +1467,10 @@ class AgileCard(
 
     def stop_project(self):
         assert self.status == AgileCard.IN_PROGRESS
-        assert self.recruit_project != None, f"Project hasn't been started"
         assert (
             self.content_item.content_type == ContentItem.PROJECT
         ), f"Expected content_type to be 'project', but got {self.content_item.content_type}"
+        assert self.recruit_project != None, f"Project hasn't been started"
 
         project_submission_type = self.content_item.project_submission_type
 
