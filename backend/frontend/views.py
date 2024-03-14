@@ -397,14 +397,20 @@ def course_component_details(request, id, type):
         event_type = EventType.objects.get(id=log_entry.event_type_id)
 
         if (
-            (board_status == "In Progress" and event_type.name == CARD_STARTED)
+            (
+                course_component.agile_card.status == AgileCard.IN_PROGRESS
+                and event_type.name == CARD_STARTED
+            )
             or (
-                board_status == "In Progress"
+                course_component.agile_card.status == AgileCard.IN_PROGRESS
                 and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
             )
-            or (board_status == "Review" and event_type.name == CARD_REVIEW_REQUESTED)
             or (
-                board_status == "Review Feedback"
+                course_component.agile_card.status == AgileCard.IN_REVIEW
+                and event_type.name == CARD_REVIEW_REQUESTED
+            )
+            or (
+                course_component.agile_card.status == AgileCard.REVIEW_FEEDBACK
                 and event_type.name == CARD_MOVED_TO_REVIEW_FEEDBACK
             )
         ):
