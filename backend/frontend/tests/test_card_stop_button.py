@@ -7,6 +7,7 @@ from curriculum_tracking.models import ContentItem, AgileCard
 from .frontend_test_mixin import FrontendTestMixin
 from activity_log.models import LogEntry
 import curriculum_tracking.activity_log_entry_creators as creators
+from django.utils import timezone
 
 
 class TestCardStopButton(FrontendTestMixin):
@@ -21,12 +22,14 @@ class TestCardStopButton(FrontendTestMixin):
     def make_topic_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
-            status=AgileCard.READY,
+            status=AgileCard.IN_PROGRESS,
         )
 
         self.card.assignees.set([self.user])
 
-        self.card.start_topic()
+        # update field needed for an in-progress topic without logging the start event
+        self.card._create_topic_progress_if_not_exists()
+        self.card.topic_progress.start_time = timezone.now()
 
     def make_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
@@ -52,7 +55,7 @@ class TestCardStopButton(FrontendTestMixin):
         self.assertNotIn(project_card_title, ip_column)
         self.assertIn(project_card_title, backlog_column)
 
-    def test_topic_stop_button_logs_card_review_request_cancelled_event(
+    def test_topic_stop_button_logs_card_stopped_event(
         self,
     ):
         self.make_topic_card()
@@ -68,7 +71,7 @@ class TestCardStopButton(FrontendTestMixin):
         self.assertEqual(entry.effected_user, self.card.assignees.first())
         self.assertEqual(entry.object_1, self.card.recruit_project)
         self.assertEqual(entry.object_2, None)
-        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
+        self.assertEqual(entry.event_type.name, creators.CARD_STOPPED)
 
     def test_stop_button_moves_project_card_to_backlog_column(self):
         self.make_project_card(ContentItem.LINK)
@@ -84,7 +87,7 @@ class TestCardStopButton(FrontendTestMixin):
         self.assertNotIn(project_card_title, ip_column)
         self.assertIn(project_card_title, backlog_column)
 
-    def test_project_stop_button_logs_card_review_request_cancelled_event(
+    def test_project_stop_button_logs_card_stopped_event(
         self,
     ):
         self.make_project_card(ContentItem.LINK)
@@ -100,4 +103,4 @@ class TestCardStopButton(FrontendTestMixin):
         self.assertEqual(entry.effected_user, self.card.assignees.first())
         self.assertEqual(entry.object_1, self.card.recruit_project)
         self.assertEqual(entry.object_2, None)
-        self.assertEqual(entry.event_type.name, creators.CARD_REVIEW_REQUEST_CANCELLED)
+        self.assertEqual(entry.event_type.name, creators.CARD_STOPPED)

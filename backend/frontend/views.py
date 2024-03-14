@@ -533,7 +533,7 @@ def action_stop_card(request, card_id):
     else:
         raise NotImplementedError("Only topics and projects can be stopped")
 
-    log_creators.log_card_review_request_cancelled(card=card, actor_user=request.user)
+    log_creators.log_card_stopped(card=card, actor_user=request.user)
 
     card.refresh_from_db()
 
