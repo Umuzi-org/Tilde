@@ -1471,11 +1471,11 @@ class AgileCard(
             self.content_item.content_type == ContentItem.PROJECT
         ), f"Expected content_type to be 'project', but got {self.content_item.content_type}"
         assert self.recruit_project != None, f"Project hasn't been started"
-        
+
         self.recruit_project.review_request_time = None
         self.recruit_project.start_time = None
         self.recruit_project.save()
-        
+
         self.status = self.derive_status_from_project(self.recruit_project)
         self.save()
 
@@ -1652,14 +1652,13 @@ class AgileCard(
 
         return False
 
-    def request_user_is_assignee(self):
+    def request_user_is_assignee(self, user):
         """
         Checks if current user is assignee.
-        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
         """
         from threadlocal_middleware import get_current_user
 
-        user = get_current_user()
+        user = user or get_current_user()
 
         return self.assignees.first() == user
 
@@ -1761,30 +1760,22 @@ class AgileCard(
         """
         Check if current user can stop card
         """
+        from threadlocal_middleware import get_current_user
+
         if self.status != AgileCard.IN_PROGRESS:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
+        user = user or get_current_user()
 
-            user = get_current_user()
+        if not user:
+            return False
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
-            if is_assignee:
-                return True
-
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-
-            return has_manage_cards_permission
-
-        return False
+    def user_has_permission(self, user, permissions):
+        return any((user.has_perm(permissions, team) for team in self.get_teams()))
 
 
 class BurndownSnapshot(models.Model):
