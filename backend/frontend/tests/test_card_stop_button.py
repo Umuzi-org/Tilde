@@ -22,14 +22,12 @@ class TestCardStopButton(FrontendTestMixin):
     def make_topic_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(content_type=ContentItem.TOPIC),
-            status=AgileCard.IN_PROGRESS,
+            status=AgileCard.READY,
         )
 
         self.card.assignees.set([self.user])
 
-        # update field needed for an in-progress topic without logging the start event
-        self.card._create_topic_progress_if_not_exists()
-        self.card.topic_progress.start_time = timezone.now()
+        self.card.start_topic()
 
     def make_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
