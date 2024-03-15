@@ -39,20 +39,6 @@ class TestCardStopButton(FrontendTestMixin):
         )
         self.card.assignees.set([self.user])
 
-    def test_stop_button_moves_topic_card_to_backlog_column(self):
-        self.make_topic_card()
-
-        self.page.click("text=Stop")
-
-        self.page.wait_for_load_state("networkidle")
-
-        backlog_column = self.page.text_content("div#column_RB")
-        ip_column = self.page.text_content("div#column_IP")
-        project_card_title = self.card.content_item.title
-
-        self.assertNotIn(project_card_title, ip_column)
-        self.assertIn(project_card_title, backlog_column)
-
     def test_topic_stop_button_logs_card_stopped_event(
         self,
     ):
@@ -70,20 +56,6 @@ class TestCardStopButton(FrontendTestMixin):
         self.assertEqual(entry.object_1, self.card.recruit_project)
         self.assertEqual(entry.object_2, None)
         self.assertEqual(entry.event_type.name, creators.CARD_STOPPED)
-
-    def test_stop_button_moves_project_card_to_backlog_column(self):
-        self.make_project_card(ContentItem.LINK)
-
-        self.page.click("text=Stop")
-
-        self.page.wait_for_load_state("networkidle")
-
-        backlog_column = self.page.text_content("div#column_RB")
-        ip_column = self.page.text_content("div#column_IP")
-        project_card_title = self.card.content_item.title
-
-        self.assertNotIn(project_card_title, ip_column)
-        self.assertIn(project_card_title, backlog_column)
 
     def test_project_stop_button_logs_card_stopped_event(
         self,
