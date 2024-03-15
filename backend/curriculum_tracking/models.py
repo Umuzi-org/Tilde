@@ -1629,10 +1629,9 @@ class AgileCard(
         if not user:
             return False
 
-        return (
-            (self.request_user_is_assignee(user) and self.can_start())
-            or (self.user_has_permission(user, Team.PERMISSION_MANAGE_CARDS)
-            and (self.can_start() or self.can_force_start()))
+        return (self.request_user_is_assignee(user) and self.can_start()) or (
+            self.user_has_permission(user, Team.PERMISSION_MANAGE_CARDS)
+            and (self.can_start() or self.can_force_start())
         )
 
     def request_user_is_assignee(self, user):
