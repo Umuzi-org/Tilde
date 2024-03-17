@@ -47,10 +47,10 @@ class ProjectReviewBundleClaim(models.Model):
             .exclude(
                 recruit_project__project_review_bundle_claims__is_active=True
             )  # if the project is already in an active claim, skip it
-            .annotate(has_reviewed=Exists(reviewed_projects_subquery))
-            .filter(
-                has_reviewed=False
+            .annotate(
+                has_reviewed=Exists(reviewed_projects_subquery)
             )  # exclude cards with recent project reviews by user
+            .filter(has_reviewed=False)
             .order_by("recruit_project__review_request_time")[:50]  # earliest first
             .prefetch_related("content_item", "recruit_project")
         )
