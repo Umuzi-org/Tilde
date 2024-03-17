@@ -646,30 +646,8 @@ def project_review_coordination_unclaimed(request):
         is_active=False
     )  # TODO: This should be in a cron job or dramatiq task
 
-    cards = (
-        AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
-        .filter(assignees__active=True)
-        .exclude(content_item__tags__name="technical-assessment")
-        .exclude(content_item__tags__name="ncit")
-        .exclude(
-            recruit_project__project_review_bundle_claims__is_active=True
-        )  # if the project is already in an active claim, skip it
-        .order_by("recruit_project__review_request_time")[:50]  # earliest first
-        .prefetch_related("content_item")
-        .prefetch_related("recruit_project")
-    )
+    cards = ProjectReviewBundleClaim.get_projects_user_can_review(request.user)
 
-    user = request.user
-    filtered_cards = []
-
-    for card in cards:
-        if user in card.get_users_that_reviewed_since_last_review_request():
-            continue
-        filtered_cards.append(card)
-
-    cards = filtered_cards
-
-    # TODO: filter out cards that the current user has reviewed since the last review request time
     # TODO: filter out cards that current user doesn't have permission to see
 
     bundles = {}
