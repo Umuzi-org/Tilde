@@ -51,9 +51,9 @@ class get_projects_user_can_review_Tests(TestCase):
         ]
 
     def test_get_projects_user_can_review_returns_the_right_projects(self):
-        projects__user_can_review = (
+        projects_user_can_review = (
             ProjectReviewBundleClaim.get_projects_user_can_review(self.user)
         )
 
-        assert self.project_user_has_reviewed not in projects__user_can_review
-        assert len(self.projects_in_review) != len(projects__user_can_review)
+        assert self.project_user_has_reviewed not in projects_user_can_review
+        assert len(self.projects_in_review) != len(projects_user_can_review)
