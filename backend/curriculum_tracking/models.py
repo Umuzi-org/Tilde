@@ -1693,6 +1693,7 @@ class AgileCard(
 
         if user is None:
             from threadlocal_middleware import get_current_user
+
             user = get_current_user()
 
         if user is not None:
@@ -1724,6 +1725,7 @@ class AgileCard(
 
         if user is None:
             from threadlocal_middleware import get_current_user
+
             user = get_current_user()
 
         if user is not None:
@@ -1740,6 +1742,7 @@ class AgileCard(
             )
             return has_manage_cards_permission
         return False
+
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4

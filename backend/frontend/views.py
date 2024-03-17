@@ -509,6 +509,7 @@ def action_finish_topic(request, card_id):
         },
     )
 
+
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
@@ -657,6 +658,17 @@ def project_review_coordination_unclaimed(request):
         .prefetch_related("content_item")
         .prefetch_related("recruit_project")
     )
+
+    user = request.user
+    filtered_cards = []
+
+    for card in cards:
+        if user in card.get_users_that_reviewed_since_last_review_request():
+            continue
+        filtered_cards.append(card)
+
+    cards = filtered_cards
+
     # TODO: filter out cards that the current user has reviewed since the last review request time
     # TODO: filter out cards that current user doesn't have permission to see
 
