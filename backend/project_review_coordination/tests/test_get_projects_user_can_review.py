@@ -6,11 +6,7 @@ from curriculum_tracking.tests.factories import (
 )
 from core.tests.factories import UserFactory
 from curriculum_tracking.models import ContentItem, AgileCard
-from curriculum_tracking.constants import NOT_YET_COMPETENT, COMPETENT
-from django.utils import timezone
-from datetime import timedelta
-from social_auth.tests.factories import SocialProfileFactory, GithubOAuthTokenFactory
-from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT
+from curriculum_tracking.constants import COMPETENT
 
 from project_review_coordination.models import ProjectReviewBundleClaim
 
