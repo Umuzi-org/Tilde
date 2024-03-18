@@ -32,6 +32,7 @@ class ProjectReviewBundleClaim(models.Model):
             self.due_timestamp = timezone.now() + timedelta(hours=1)
         super(ProjectReviewBundleClaim, self).save(*args, **kwargs)
 
+    @staticmethod
     def get_projects_user_can_review(user):
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
