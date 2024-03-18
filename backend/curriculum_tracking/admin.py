@@ -4,39 +4,6 @@ from core import models as core_models
 from adminsortable2.admin import SortableInlineAdminMixin
 from automarker import models as automarker_models
 
-from django.contrib import admin
-from django.urls import reverse
-from django.contrib import messages
-from django.http import HttpResponseRedirect
-from dramatiq import middleware
-
-from . import models
-from . import long_running_request_actors
-
-
-# Custom admin action for deleting and recreating cards using dramatiq
-def delete_and_recreate_user_cards(modeladmin, request, queryset):
-    for user in queryset:
-        long_running_request_actors.delete_and_recreate_user_cards.send(user.pk)
-    messages.add_message(
-        request, messages.INFO, f"Deleting and recreating cards in the background"
-    )
-    
-delete_and_recreate_user_cards.short_description = "Delete and recreate user cards"
-
-
-# Register the custom admin action with your model admin 
-class UserAdmin(admin.ModelAdmin):
-    actions = [delete_and_recreate_user_cards]
-    list_display = ["email", "is_superuser", "active"]
-    list_filter = ["is_superuser", "is_staff", "active"]
-    search_fields = ["email", "first_name", "last_name"]
-    ordering = ["email", "first_name", "last_name"]
-    filter_horizontal = ("groups", "user_permissions")
-    
-admin.site.register(models.User, UserAdmin)
-
-
 
 class ContentItemAutoMarkerConfigAdmin(admin.TabularInline):
     model = automarker_models.ContentItemAutoMarkerConfig

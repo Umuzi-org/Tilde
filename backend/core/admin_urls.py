@@ -12,4 +12,9 @@ urlpatterns = [
         views.AddUserAsGithubCollaborator.as_view(),
         name="confirm_add_github_collaborator",
     ),
+    path(
+        "delete_regenerate_cards/<int:user_id>",
+        views.DeleteAndRegenerateCards.as_view(),
+        name="delete_regenerate_cards",
+    ),
 ]

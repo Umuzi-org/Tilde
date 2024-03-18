@@ -12,7 +12,7 @@ from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from .forms import BulkAddUsersToTeamForm, AddGithubCollaboratorForm
+from .forms import BulkAddUsersToTeamForm, AddGithubCollaboratorForm, DeleteAndRegenerateCardsForm
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -382,3 +382,46 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
                     "include_complete": include_complete_projects,
                 }
             )
+
+
+class DeleteAndRegenerateCards(LoginRequiredMixin, FormView):
+    template_name = "admin/core/delete_and_regenerate_cards.html"
+    form_class = DeleteAndRegenerateCardsForm
+
+    def get_login_url(self):
+        return reverse("admin:login")
+
+    def form_valid(self, form):
+        user = form.cleaned_data.get("user")
+        self._delete_and_regenerate_cards(user)
+        messages.success(
+            self.request,
+            f"Deleting and Regenerating cards in the background for user: {user}",
+        )
+        return super().form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user = get_object_or_404(User, id=self.kwargs["user_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
+
+    def get_success_url(self):
+        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
+
+    @staticmethod
+    def _delete_and_regenerate_cards(user):
+        # Logic for deleting and regenerating cards goes here
+        from long_running_request_actors import (
+            delete_and_recreate_user_cards as actor,
+        )
+        
+        actor.send_with_options(kwargs={"user_id": user.id})
+        
+        
+        
+        
+        

@@ -87,5 +87,19 @@ class AddGithubCollaboratorForm(forms.Form):
             any_perm=True,
         ):
             teams.append(team.name)
-        
+
         return sorted(set(teams))
+
+
+class DeleteAndRegenerateCardsForm(forms.Form):
+    team = forms.ChoiceField(choices=get_choices(models.Team), required=False)
+
+    def clean(self):
+        data = super(DeleteAndRegenerateCardsForm, self).clean()
+
+        number_of_fields = sum([bool(x) for x in data.values()])
+        if number_of_fields != 1:
+            # not sure why this isn't showing up...
+            raise ValidationError("Choose one, and only one, filter to apply")
+
+        return data
