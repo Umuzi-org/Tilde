@@ -666,30 +666,19 @@ def project_review_coordination_unclaimed(request):
         flavours = sorted(card.recruit_project.flavour_names)
         content_item_id = card.content_item.id
         bundle_id = f"{content_item_id}.{flavours}"
-        if bundle_id not in bundles:
-            # all_trusts = (
-            #     ReviewTrust.objects.filter(content_item=card.content_item)
-            #     .filter(user=request.user)
-            #     .prefetch_related("user")
-            # )
-            # all_trusts = [t for t in all_trusts if t.flavours_match(flavours)]
-            # print("#all trusts", all_trusts)
-            # user_trusts = [t for t in all_trusts if t.user == request.user]
-            # print("#user trusts", user_trusts)
 
+        if bundle_id not in bundles:
             bundles[bundle_id] = {
                 "title": card.content_item.title,
                 "flavours": flavours,
                 "oldest_review_request_time": card.recruit_project.review_request_time,
                 "project_ids": [],
                 "card_count": 0,
-                "is_trusted": card.request_user_is_trusted(request.user),
-                # "trusted_users": [t.user for t in all_trusts],
+                "is_trusted": card.request_user_is_trusted(),
             }
 
         bundles[bundle_id]["card_count"] += 1
         bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
-        # print("#bundle", bundles[bundle_id])
 
     context = {
         "bundles": bundles.values(),
