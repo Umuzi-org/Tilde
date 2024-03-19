@@ -509,6 +509,7 @@ def action_finish_topic(request, card_id):
         },
     )
 
+
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
@@ -672,8 +673,9 @@ def project_review_coordination_unclaimed(request):
             #     .prefetch_related("user")
             # )
             # all_trusts = [t for t in all_trusts if t.flavours_match(flavours)]
-
+            # print("#all trusts", all_trusts)
             # user_trusts = [t for t in all_trusts if t.user == request.user]
+            # print("#user trusts", user_trusts)
 
             bundles[bundle_id] = {
                 "title": card.content_item.title,
@@ -681,12 +683,13 @@ def project_review_coordination_unclaimed(request):
                 "oldest_review_request_time": card.recruit_project.review_request_time,
                 "project_ids": [],
                 "card_count": 0,
-                # "is_trusted": len(user_trusts) > 0,
+                "is_trusted": card.request_user_is_trusted(request.user),
                 # "trusted_users": [t.user for t in all_trusts],
             }
 
         bundles[bundle_id]["card_count"] += 1
         bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
+        # print("#bundle", bundles[bundle_id])
 
     context = {
         "bundles": bundles.values(),
