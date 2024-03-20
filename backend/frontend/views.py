@@ -419,13 +419,12 @@ def course_component_details(request, id, type):
         if key == course_component.agile_card.status
     ][0]
 
-<<<<<<< HEAD
     context = {
         "course_component": course_component,
         "board_status": board_status,
         "duration": formatted_time_difference,
     }
-=======
+
     if project.submission_type_nice == "link":
         form = LinkSubmissionForm()
 
@@ -456,7 +455,37 @@ def course_component_details(request, id, type):
             "course_component": project,
             "board_status": board_status,
         }
->>>>>>> develop
+
+    if project.submission_type_nice == "link":
+        form = LinkSubmissionForm()
+
+        if request.method == "POST":
+            form = LinkSubmissionForm(request.POST)
+
+            if form.is_valid():
+                link_submission = form.cleaned_data["link_submission"]
+
+                if project.link_submission_is_valid(link_submission):
+                    project.link_submission = link_submission
+                    project.save()
+
+                else:
+                    form.add_error(
+                        "submission_link",
+                        project.link_submission_invalid_message(link_submission),
+                    )
+
+        context = {
+            "course_component": project,
+            "link_submission_form": form,
+            "board_status": board_status,
+        }
+
+    else:
+        context = {
+            "course_component": project,
+            "board_status": board_status,
+        }
 
     return render(
         request,
@@ -587,8 +616,6 @@ def action_finish_topic(request, card_id):
     )
 
 
-<<<<<<< HEAD
-=======
 def check_user_can_stop_card(logged_in_user):
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
@@ -629,7 +656,6 @@ def action_stop_card(request, card_id):
     )
 
 
->>>>>>> develop
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
