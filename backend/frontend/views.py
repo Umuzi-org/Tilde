@@ -30,6 +30,7 @@ from .forms import (
     ForgotPasswordForm,
     CustomAuthenticationForm,
     CustomSetPasswordForm,
+    LinkSubmissionForm,
 )
 from .theme import styles
 
@@ -376,10 +377,36 @@ def course_component_details(request, project_id):
         if key == project.agile_card_status
     ][0]
 
-    context = {
-        "course_component": project,
-        "board_status": board_status,
-    }
+    if project.submission_type_nice == "link":
+        form = LinkSubmissionForm()
+
+        if request.method == "POST":
+            form = LinkSubmissionForm(request.POST)
+
+            if form.is_valid():
+                link_submission = form.cleaned_data["link_submission"]
+
+                if project.link_submission_is_valid(link_submission):
+                    project.link_submission = link_submission
+                    project.save()
+
+                else:
+                    form.add_error(
+                        "submission_link",
+                        project.link_submission_invalid_message(link_submission),
+                    )
+
+        context = {
+            "course_component": project,
+            "link_submission_form": form,
+            "board_status": board_status,
+        }
+
+    else:
+        context = {
+            "course_component": project,
+            "board_status": board_status,
+        }
 
     return render(
         request,
@@ -500,6 +527,46 @@ def action_finish_topic(request, card_id):
     assert (
         card.status == AgileCard.COMPLETE
     ), f"Expected to be completed, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
+def check_user_can_stop_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_stop_card(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_stop_card)
+def action_stop_card(request, card_id):
+    """The card is in in-progress and the user wants to stop it"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    content_type = card.content_item.content_type
+
+    if content_type == ContentItem.TOPIC:
+        card.stop_topic()
+    elif content_type == ContentItem.PROJECT:
+        card.stop_project()
+    else:
+        raise NotImplementedError("Only topics and projects can be stopped")
+
+    log_creators.log_card_stopped(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.READY
+    ), f"Expected to be in backlog, but got {card.status}"
 
     return render(
         request,
