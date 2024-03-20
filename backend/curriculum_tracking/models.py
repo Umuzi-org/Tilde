@@ -1732,6 +1732,7 @@ class AgileCard(
         return any((user.has_perm(permissions, team) for team in self.get_teams()))
 
 
+
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
     timestamp = models.DateTimeField(auto_now_add=True)
