@@ -379,59 +379,36 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, id, type):
+def topic(request, id):
+    course_component = get_object_or_404(TopicProgress, id=id)
+
+    log_entries = LogEntry.objects.filter(object_1_id=id)
+
+    relevant_logs = []
+    for log_entry in log_entries:
+        event_type = EventType.objects.get(id=log_entry.event_type_id)
+
+        if (
+            course_component.agile_card.status == AgileCard.IN_PROGRESS
+            and event_type.name == CARD_STARTED
+        ) or (
+            course_component.agile_card.status == AgileCard.IN_PROGRESS
+            and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
+        ):
+            relevant_logs.append(log_entry.timestamp)
+
     formatted_time_difference = None
+    relevant_logs = sorted(relevant_logs, reverse=True)
 
-    if type == "project":
-        course_component = get_object_or_404(RecruitProject, id=id)
-        if course_component.submission_type_nice == "link":
-            form = LinkSubmissionForm()
-
-            if request.method == "POST":
-                form = LinkSubmissionForm(request.POST)
-
-                if form.is_valid():
-                    link_submission = form.cleaned_data["link_submission"]
-
-                    if course_component.link_submission_is_valid(link_submission):
-                        course_component.link_submission = link_submission
-                        course_component.save()
-
-                    else:
-                        form.add_error(
-                            "submission_link",
-                            course_component.link_submission_invalid_message(
-                                link_submission
-                            ),
-                        )
-    elif type == "topic":
-        course_component = get_object_or_404(TopicProgress, id=id)
-
-        log_entries = LogEntry.objects.filter(object_1_id=id)
-
-        relevant_logs = []
-        for log_entry in log_entries:
-            event_type = EventType.objects.get(id=log_entry.event_type_id)
-
-            if (
-                course_component.agile_card.status == AgileCard.IN_PROGRESS
-                and event_type.name == CARD_STARTED
-            ) or (
-                course_component.agile_card.status == AgileCard.IN_PROGRESS
-                and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
-            ):
-                relevant_logs.append(log_entry.timestamp)
-        relevant_logs = sorted(relevant_logs)
-
-        if relevant_logs:
-            duration = timezone.now() - relevant_logs[-1]
-            days = duration.days
-            seconds = duration.total_seconds()
-            hours, remainder = divmod(seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            formatted_time_difference = (
-                f"{days} days, {int(hours)} hours, {int(minutes)} minutes"
-            )
+    if relevant_logs:
+        duration = timezone.now() - relevant_logs[-1]
+        days = duration.days
+        seconds = duration.total_seconds()
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        formatted_time_difference = (
+            f"{days} days, {int(hours)} hours, {int(minutes)} minutes"
+        )
 
     board_status = [
         value
@@ -443,6 +420,49 @@ def course_component_details(request, id, type):
         "course_component": course_component,
         "board_status": board_status,
         "duration": formatted_time_difference,
+    }
+
+    return render(
+        request,
+        "frontend/course_component_details/page.html",
+        context,
+    )
+
+
+@user_passes_test_or_forbidden(can_view_user_board)
+def project(request, id):
+    course_component = get_object_or_404(RecruitProject, id=id)
+
+    if course_component.submission_type_nice == "link":
+        form = LinkSubmissionForm()
+
+        if request.method == "POST":
+            form = LinkSubmissionForm(request.POST)
+
+            if form.is_valid():
+                link_submission = form.cleaned_data["link_submission"]
+
+                if course_component.link_submission_is_valid(link_submission):
+                    course_component.link_submission = link_submission
+                    course_component.save()
+
+                else:
+                    form.add_error(
+                        "submission_link",
+                        course_component.link_submission_invalid_message(
+                            link_submission
+                        ),
+                    )
+
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == course_component.agile_card.status
+    ][0]
+
+    context = {
+        "course_component": course_component,
+        "board_status": board_status,
         "link_submission_form": form,
     }
 

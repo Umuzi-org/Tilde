@@ -209,11 +209,11 @@
       </div>
 
       {%if card.content_item.content_type_nice == "project"%}
-        <a href="{% url 'course_component_details' card.recruit_project.id 'project' %}" class="{{ styles.button_primary_small }}">Details</a>
+        <a href="{% url 'course_component_details_project' card.recruit_project.id %}" class="{{ styles.button_primary_small }}">Details</a>
       {% endif %}
 
       {%if card.content_item.content_type_nice == "topic"%}
-        <a href="{% url 'course_component_details' card.topic_progress.id 'topic' %}" class="{{ styles.button_primary_small }}">Details</a>
+        <a href="{% url 'course_component_details_topic' card.topic_progress.id %}" class="{{ styles.button_primary_small }}">Details</a>
       {% endif %}
       
       {% if card.request_user_can_stop_card %}

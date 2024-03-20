@@ -84,8 +84,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details",
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -108,19 +108,19 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
         body = self.page.text_content("body")
-
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
         self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
         self.assertIn(
-            self.topic.content_url,
+            self.recruit_project.content_url,
             body,
         )
         self.assertIn("No link submitted yet", body)
@@ -139,7 +139,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -169,7 +170,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -196,7 +198,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -213,7 +216,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            "course_component_details_project",
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 

@@ -21,7 +21,6 @@
                     </div>
                 
                     <div class="p-2 border-2 rounded-md ">
-
                         <p>
                             Status : {{board_status}}
                         </p>
@@ -154,11 +153,18 @@
                         </p>
                     </div>
 
-                    <div class="grid p-2 border-2 rounded-md gap-2">
+                    <div x-data="{ 
+                        isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
+                        isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
+                        toggleLinkSubmissionForm(){
+                            this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
+                            this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
+                        }
+                    }" class="grid bold p-2 border-2 rounded-md gap-2">
                         <h6>Link to your work</h6>
                         
                         <div>Current link submission: 
-                            {% if project.link_submission == None %}
+                            {% if course_component.link_submission == None %}
                                 No link submitted yet
                             {% else %}
                             <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
@@ -166,37 +172,16 @@
                             </a>
                             {% endif%}
                         </div>
-                        <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
+                        <button id="edit_link_submission_icon" class="{{ styles.button_primary_small }} max-w-max" x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit link submission
+                        </button>
+                        
+                        <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
+                            {% csrf_token %}
+                            {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
+                            <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
+                        </form>
                     </div>
-
-                <div x-data="{ 
-                    isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
-                    isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
-                    toggleLinkSubmissionForm(){
-                        this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
-                        this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
-                    }
-                 }" class="grid bold p-2 border-2 rounded-md gap-2">
-                    <h6>Link to your work</h6>
-                    
-                    <div>Current link submission: 
-                        {% if course_component.link_submission == None %}
-                            No link submitted yet
-                        {% else %}
-                        <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
-                            {{course_component.link_submission}}
-                        </a>
-                        {% endif%}
-                    </div>
-                    <button id="edit_link_submission_icon" class="{{ styles.button_primary_small }} max-w-max" x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit link submission
-                    </button>
-                    
-                    <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
-                        {% csrf_token %}
-                        {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
-                        <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
-                    </form>
                 </div>
             {% endif %}
         {% endif %}
