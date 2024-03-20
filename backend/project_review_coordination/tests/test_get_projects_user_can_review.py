@@ -31,7 +31,7 @@ class get_projects_user_can_review_Tests(TestCase):
             reviewer_user=self.user,
         )
 
-        projects_user_has_not_reviewed = [
+        self.projects_user_has_not_reviewed = [
             AgileCardFactory(
                 content_item=ContentItemFactory(
                     content_type=ContentItem.PROJECT,
@@ -42,11 +42,11 @@ class get_projects_user_can_review_Tests(TestCase):
             for _ in range(2)
         ]
 
-        for project in projects_user_has_not_reviewed:
+        for project in self.projects_user_has_not_reviewed:
             project.start_project()
             project.recruit_project.request_review()
 
-        self.projects_in_review = projects_user_has_not_reviewed + [
+        self.projects_in_review = self.projects_user_has_not_reviewed + [
             self.project_user_has_reviewed
         ]
 
@@ -56,4 +56,4 @@ class get_projects_user_can_review_Tests(TestCase):
         )
 
         assert self.project_user_has_reviewed not in projects_user_can_review
-        assert len(self.projects_in_review) != len(projects_user_can_review)
+        assert len(projects_user_can_review) == len(self.projects_user_has_not_reviewed)
