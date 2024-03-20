@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils import timezone
+from playwright.sync_api import expect
 from django.shortcuts import get_object_or_404
 
 from core.tests.factories import UserFactory
@@ -73,7 +74,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             ),
         )
 
-        AgileCardFactory(
+        self.agile_card = AgileCardFactory(
             content_item=content_item,
             status=AgileCard.IN_PROGRESS,
             recruit_project=self.recruit_project,
