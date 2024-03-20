@@ -30,6 +30,7 @@ from .forms import (
     ForgotPasswordForm,
     CustomAuthenticationForm,
     CustomSetPasswordForm,
+    LinkSubmissionForm,
 )
 from .theme import styles
 
@@ -376,10 +377,36 @@ def course_component_details(request, project_id):
         if key == project.agile_card_status
     ][0]
 
-    context = {
-        "course_component": project,
-        "board_status": board_status,
-    }
+    if project.submission_type_nice == "link":
+        form = LinkSubmissionForm()
+
+        if request.method == "POST":
+            form = LinkSubmissionForm(request.POST)
+
+            if form.is_valid():
+                link_submission = form.cleaned_data["link_submission"]
+
+                if project.link_submission_is_valid(link_submission):
+                    project.link_submission = link_submission
+                    project.save()
+
+                else:
+                    form.add_error(
+                        "submission_link",
+                        project.link_submission_invalid_message(link_submission),
+                    )
+
+        context = {
+            "course_component": project,
+            "link_submission_form": form,
+            "board_status": board_status,
+        }
+
+    else:
+        context = {
+            "course_component": project,
+            "board_status": board_status,
+        }
 
     return render(
         request,
