@@ -379,50 +379,44 @@ def action_start_card(request, card_id):
 
 @user_passes_test_or_forbidden(can_view_user_board)
 def course_component_details(request, id, type):
+    formatted_time_difference = None
+
     if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
     elif type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
+
+        log_entries = LogEntry.objects.filter(object_1_id=id)
+
+        relevant_logs = []
+        for log_entry in log_entries:
+            event_type = EventType.objects.get(id=log_entry.event_type_id)
+
+            if (
+                course_component.agile_card.status == AgileCard.IN_PROGRESS
+                and event_type.name == CARD_STARTED
+            ) or (
+                course_component.agile_card.status == AgileCard.IN_PROGRESS
+                and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
+            ):
+                relevant_logs.append(log_entry.timestamp)
+        relevant_logs = sorted(relevant_logs)
+
+        if relevant_logs:
+            duration = timezone.now() - relevant_logs[-1]
+            days = duration.days
+            seconds = duration.total_seconds()
+            hours, remainder = divmod(seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            formatted_time_difference = (
+                f"{days} days, {int(hours)} hours, {int(minutes)} minutes"
+            )
 
     board_status = [
         value
         for key, value in AgileCard.STATUS_CHOICES
         if key == course_component.agile_card.status
     ][0]
-
-    log_entries = LogEntry.objects.filter(object_1_id=id)
-
-    relevant_logs = []
-    for log_entry in log_entries:
-        event_type = EventType.objects.get(id=log_entry.event_type_id)
-
-        if (
-            (
-                course_component.agile_card.status == AgileCard.IN_PROGRESS
-                and event_type.name == CARD_STARTED
-            )
-            or (
-                course_component.agile_card.status == AgileCard.IN_PROGRESS
-                and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
-            )
-            or (
-                course_component.agile_card.status == AgileCard.IN_REVIEW
-                and event_type.name == CARD_REVIEW_REQUESTED
-            )
-            or (
-                course_component.agile_card.status == AgileCard.REVIEW_FEEDBACK
-                and event_type.name == CARD_MOVED_TO_REVIEW_FEEDBACK
-            )
-        ):
-            relevant_logs.append(log_entry.timestamp)
-
-    if relevant_logs:
-        duration_in_column = timezone.now() - relevant_logs[-1]
-        days = duration_in_column.days
-        hours, remainder = divmod(duration_in_column.seconds, 3600)
-        formatted_time_difference = f"{days} days, {hours} hours"
-    else:
-        formatted_time_difference = None
 
     context = {
         "course_component": course_component,
