@@ -536,6 +536,47 @@ def action_finish_topic(request, card_id):
         },
     )
 
+
+def check_user_can_stop_card(logged_in_user):
+    request = get_current_request()
+    card_id = request.resolver_match.kwargs.get("card_id")
+
+    card: AgileCard = get_object_or_404(AgileCard, pk=card_id)
+    return card.request_user_can_stop_card(user=logged_in_user)
+
+
+@csrf_exempt
+@user_passes_test_or_forbidden(check_user_can_stop_card)
+def action_stop_card(request, card_id):
+    """The card is in in-progress and the user wants to stop it"""
+    card = get_object_or_404(AgileCard, id=card_id)
+
+    content_type = card.content_item.content_type
+
+    if content_type == ContentItem.TOPIC:
+        card.stop_topic()
+    elif content_type == ContentItem.PROJECT:
+        card.stop_project()
+    else:
+        raise NotImplementedError("Only topics and projects can be stopped")
+
+    log_creators.log_card_stopped(card=card, actor_user=request.user)
+
+    card.refresh_from_db()
+
+    assert (
+        card.status == AgileCard.READY
+    ), f"Expected to be in backlog, but got {card.status}"
+
+    return render(
+        request,
+        "frontend/user/board/js_exec_action_card_moved.html",
+        {
+            "card": card,
+        },
+    )
+
+
 @login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""

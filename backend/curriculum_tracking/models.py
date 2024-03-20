@@ -1465,6 +1465,20 @@ class AgileCard(
         self.status = AgileCard.READY
         self.save()
 
+    def stop_project(self):
+        assert self.status == AgileCard.IN_PROGRESS
+        assert (
+            self.content_item.content_type == ContentItem.PROJECT
+        ), f"Expected content_type to be 'project', but got {self.content_item.content_type}"
+        assert self.recruit_project != None, f"Project hasn't been started"
+
+        self.recruit_project.review_request_time = None
+        self.recruit_project.start_time = None
+        self.recruit_project.save()
+
+        self.status = self.derive_status_from_project(self.recruit_project)
+        self.save()
+
     def attended_workshop(self, timestamp):
         # if self.status == AgileCard.COMPLETE:
         #     return
@@ -1608,44 +1622,28 @@ class AgileCard(
         This function is only used in template rendering and we are using threadlocals,
         that is why we need to avoid argument parameters unless they're for testing purposes
         """
-        if user is None:
-            from threadlocal_middleware import get_current_user
+        from threadlocal_middleware import get_current_user
 
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            can_start = self.can_start()
-            is_assignee = self.assignees.first() == user
+        if not user:
+            return False
 
-            if is_assignee and can_start:
-                return True
+        return (self.request_user_is_assignee(user) and self.can_start()) or (
+            self.user_has_permission(user, Team.PERMISSION_MANAGE_CARDS)
+            and (self.can_start() or self.can_force_start())
+        )
 
-            is_superuser = user.is_superuser
-            can_force_start = self.can_force_start()
-
-            if is_superuser and (can_force_start or can_start):
-                return True
-
-            has_manage_cards_permission = any(
-                [
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.assignees.first().teams()
-                ]
-            )
-
-            if has_manage_cards_permission and (can_force_start or can_start):
-                return True
-
-        return False
-
-    def request_user_is_assignee(self):
+    def request_user_is_assignee(self, user):
         """
         Checks if current user is assignee.
-        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
         """
         from threadlocal_middleware import get_current_user
 
-        user = get_current_user()
+        user = user or get_current_user()
+
+        if not user:
+            return False
 
         return self.assignees.first() == user
 
@@ -1653,93 +1651,86 @@ class AgileCard(
         """
         Check if current user can request review for this card
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "project":
             return False
 
         if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
+        user = user or get_current_user()
 
-            user = get_current_user()
+        if not user:
+            return False
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
-
-            if is_assignee:
-                return True
-
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-
-            return has_manage_cards_permission
-
-        return False
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
     def request_user_can_cancel_review_request(self, user=None):
         """
         Check if current user can cancel review request for this card
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "project":
             return False
 
-        if self.status not in [AgileCard.IN_REVIEW]:
+        if self.status != AgileCard.IN_REVIEW:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
+        if not user:
+            return False
 
-            if is_assignee:
-                return True
-
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-
-            return has_manage_cards_permission
-
-        return False
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
     def request_user_can_finish_topic(self, user=None):
         """
         Check if current user can finish topic
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "topic":
             return False
 
         if self.status != AgileCard.IN_PROGRESS:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
+        if not user:
+            return False
 
-            if is_assignee:
-                return True
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-            return has_manage_cards_permission
-        return False
+    def request_user_can_stop_card(self, user=None):
+        """
+        Check if current user can stop card
+        """
+        from threadlocal_middleware import get_current_user
+
+        if self.status != AgileCard.IN_PROGRESS:
+            return False
+
+        user = user or get_current_user()
+
+        if not user:
+            return False
+
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
+
+    def user_has_permission(self, user, permissions):
+        return any((user.has_perm(permissions, team) for team in self.get_teams()))
+
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
