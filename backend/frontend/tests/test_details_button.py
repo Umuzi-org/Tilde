@@ -41,6 +41,8 @@ class TestCardDetailsButton(FrontendTestMixin):
         )
         details_link_element = link_card_element.get_by_role("link", name="Details")
 
+        self.page.wait_for_load_state("networkidle")
+
         expect(link_card_element).to_be_visible()
         expect(details_link_element).to_be_visible()
 
