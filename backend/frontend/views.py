@@ -27,8 +27,6 @@ from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking.activity_log_entry_creators import (
     CARD_STARTED,
-    CARD_REVIEW_REQUESTED,
-    CARD_MOVED_TO_REVIEW_FEEDBACK,
     CARD_REVIEW_REQUEST_CANCELLED,
 )
 from curriculum_tracking import helpers

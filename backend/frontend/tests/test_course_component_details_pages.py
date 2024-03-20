@@ -1,7 +1,6 @@
 import datetime
 from django.utils import timezone
 from playwright.sync_api import expect
-from django.shortcuts import get_object_or_404
 from playwright.sync_api import expect
 
 from core.tests.factories import UserFactory
@@ -15,8 +14,6 @@ from curriculum_tracking.tests.factories import (
 from curriculum_tracking.models import (
     AgileCard,
     ContentItem,
-    TopicProgress,
-    RecruitProject,
 )
 
 
@@ -227,3 +224,57 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
         self.assertIn("Enter a valid URL", body)
+
+
+class TestTopicDetailsPage(FrontendTestMixin):
+    def setUp(self):
+        super().setUp()
+        self.user = UserFactory(
+            email="learner_1@umuzi.org",
+            is_staff=True,
+            is_superuser=True,
+        )
+        self.user.set_password(self.user.email)
+        self.user.save()
+        self.do_login(self.user)
+
+    def make_topic_card(self, card_status):
+        content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
+
+        self.topic = TopicProgressFactory(
+            user=self.user,
+            start_time=datetime.datetime(
+                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
+            ),
+            due_time=datetime.datetime(
+                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
+            ),
+        )
+
+        self.card = AgileCardFactory(
+            content_item=content_item,
+            status=card_status,
+            topic_progress=self.topic,
+        )
+
+        self.card.assignees.set([self.user])
+
+    def test_course_component_page_displays_correct_details_for_topic(self):
+        self.make_topic_card(AgileCard.IN_PROGRESS)
+
+        self.topic_url = self.reverse_url(
+            "course_component_details_topic",
+            kwargs={"id": self.topic.id},
+        )
+        self.page.goto(self.topic_url)
+
+        body = self.page.text_content("body")
+
+        self.assertIn("learner_1@umuzi.org", body)
+        self.assertIn("In Progress", body)
+        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn(
+            self.topic.content_url,
+            body,
+        )
