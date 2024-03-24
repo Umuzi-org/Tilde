@@ -400,12 +400,13 @@ def topic(request, id):
 
     if relevant_logs:
         duration = timezone.now() - relevant_logs[-1]
-        days = duration.days
         seconds = duration.total_seconds()
-        hours, remainder = divmod(seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, remainder = divmod(remainder, 60)
+
         formatted_time_difference = (
-            f"{days} days, {int(hours)} hours, {int(minutes)} minutes"
+            f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
         )
 
     board_status = [

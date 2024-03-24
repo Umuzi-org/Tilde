@@ -282,14 +282,23 @@ class TestTopicDetailsPage(FrontendTestMixin):
     def test_course_component_page_displays_duration_details_for_topic(self):
         self.make_topic_card(AgileCard.READY)
 
-        self.page.click("text=Start")
+        link_card_element = self.page.locator(
+            f"div#column_RB > div#card_{self.card.id}"
+        )
+        details_link_element = link_card_element.get_by_role("button", name="Start")
+        details_link_element.click()
         self.page.wait_for_load_state("networkidle")
 
-        self.topic_url = self.reverse_url(
-            "course_component_details_topic",
-            kwargs={"id": self.topic.id},
+        link_card_element = self.page.locator(
+            f"div#column_IP > div#card_{self.card.id}"
         )
-        self.page.goto(self.topic_url)
+
+        details_link_element = link_card_element.get_by_role("button", name="Start")
+        details_link_element.click()
+
+        details_link_element = link_card_element.get_by_role("link", name="Details")
+        details_link_element.click()
+        self.page.wait_for_load_state("networkidle")
 
         body = self.page.text_content("body")
 
