@@ -278,3 +278,22 @@ class TestTopicDetailsPage(FrontendTestMixin):
             self.topic.content_url,
             body,
         )
+
+    def test_course_component_page_displays_duration_details_for_topic(self):
+        self.make_topic_card(AgileCard.READY)
+
+        self.page.click("text=Start")
+        self.page.wait_for_load_state("networkidle")
+
+        self.topic_url = self.reverse_url(
+            "course_component_details_topic",
+            kwargs={"id": self.topic.id},
+        )
+        self.page.goto(self.topic_url)
+
+        body = self.page.text_content("body")
+
+        self.assertRegex(
+            body,
+            r"(\d{1,2})\s*days?,\s*(\d{1,2})\s*hours?,\s*(\d{1,2})\s*minutes?",
+        )

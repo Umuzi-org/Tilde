@@ -396,7 +396,7 @@ def topic(request, id):
             relevant_logs.append(log_entry.timestamp)
 
     formatted_time_difference = None
-    relevant_logs = sorted(relevant_logs, reverse=True)
+    relevant_logs = sorted(relevant_logs)
 
     if relevant_logs:
         duration = timezone.now() - relevant_logs[-1]
