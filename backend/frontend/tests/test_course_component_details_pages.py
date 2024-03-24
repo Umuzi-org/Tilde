@@ -1,7 +1,8 @@
-import datetime
 from django.utils import timezone
 from playwright.sync_api import expect
-from playwright.sync_api import expect
+from datetime import datetime, timedelta
+from unittest.mock import patch
+from activity_log.models import LogEntry
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -35,12 +36,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.topic = TopicProgressFactory(
             user=self.user,
             content_item=content_item,
-            start_time=datetime.datetime(
-                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
-            due_time=datetime.datetime(
-                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
         )
 
         AgileCardFactory(
@@ -63,12 +60,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_users=[self.user],
             reviewer_users=[learner_reviewer],
             content_item=content_item,
-            start_time=datetime.datetime(
-                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
-            due_time=datetime.datetime(
-                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
         )
 
         self.agile_card = AgileCardFactory(
@@ -243,12 +236,8 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.topic = TopicProgressFactory(
             user=self.user,
-            start_time=datetime.datetime(
-                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
-            due_time=datetime.datetime(
-                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
         )
 
         self.card = AgileCardFactory(
@@ -285,24 +274,34 @@ class TestTopicDetailsPage(FrontendTestMixin):
         link_card_element = self.page.locator(
             f"div#column_RB > div#card_{self.card.id}"
         )
+
         details_link_element = link_card_element.get_by_role("button", name="Start")
         details_link_element.click()
         self.page.wait_for_load_state("networkidle")
 
-        link_card_element = self.page.locator(
-            f"div#column_IP > div#card_{self.card.id}"
-        )
+        with patch.object(
+            LogEntry._meta.get_field("timestamp"), "auto_now_add", True
+        ), patch(
+            "django.utils.timezone.now",
+            side_effect=[
+                timezone.now(),
+                timezone.now() + timedelta(hours=3),
+            ],
+        ):
 
-        details_link_element = link_card_element.get_by_role("button", name="Start")
-        details_link_element.click()
+            link_card_element = self.page.locator(
+                f"div#column_IP > div#card_{self.card.id}"
+            )
 
-        details_link_element = link_card_element.get_by_role("link", name="Details")
-        details_link_element.click()
-        self.page.wait_for_load_state("networkidle")
+            details_link_element = link_card_element.get_by_role("link", name="Details")
+            details_link_element.click()
+            self.page.wait_for_load_state("networkidle")
 
-        body = self.page.text_content("body")
+            body = self.page.text_content("body")
 
-        self.assertRegex(
-            body,
-            r"(\d{1,2})\s*days?,\s*(\d{1,2})\s*hours?,\s*(\d{1,2})\s*minutes?",
-        )
+            self.assertRegex(
+                body,
+                r"(\d{1,2})\s*days?,\s*(\d{1,2})\s*hours?,\s*(\d{1,2})\s*minutes?",
+            )
+
+            self.assertIn("0 days, 3 hours, 0 minutes", body)
