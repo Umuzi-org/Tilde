@@ -51,7 +51,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.click("text=Request review")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         ip_column = self.page.text_content("div#column_IP")
         review_column = self.page.text_content("div#column_IR")
@@ -65,7 +65,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.click("text=Request review")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         rf_column = self.page.text_content("div#column_RF")
         review_column = self.page.text_content("div#column_IR")
@@ -88,7 +88,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.click("text=Request review")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()

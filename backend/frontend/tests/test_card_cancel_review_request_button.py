@@ -34,7 +34,7 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
 
         self.page.click("text=Cancel review request")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         review_column = self.page.text_content("div#column_IR")
         ip_column = self.page.text_content("div#column_IP")
@@ -50,7 +50,7 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
 
         self.page.click("text=Cancel review request")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()

@@ -15,7 +15,7 @@ class TestPage(FrontendTestMixin):
         self.do_login(user)
         url = self.reverse_url("users_and_teams_nav")
         self.page.goto(url)
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
         body = self.page.text_content("body")
 
         # make sure that every single team name shows up in the body
@@ -40,7 +40,7 @@ class TestPage(FrontendTestMixin):
         self.do_login(user)
         url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
         body = self.page.text_content("body")
 
         # can see teams when the user has view perms
@@ -68,6 +68,6 @@ class TestPage(FrontendTestMixin):
         self.do_login(user)
         url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
         body = self.page.text_content("body")
         self.assertIn("Load more", body)
