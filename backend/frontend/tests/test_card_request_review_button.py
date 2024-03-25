@@ -1,4 +1,5 @@
 from activity_log.models import LogEntry
+from playwright.sync_api import expect
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory, ContentItemFactory
 from curriculum_tracking.models import ContentItem, AgileCard
@@ -16,7 +17,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.do_login(self.user)
 
     def make_outstanding_ir_project_card(self, project_submission_type):
-        self.card: AgileCard = AgileCardFactory(
+        self.card = AgileCardFactory(
             content_item=ContentItemFactory(
                 content_type=ContentItem.PROJECT,
                 project_submission_type=project_submission_type,
@@ -26,7 +27,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.card.reviewers.set([self.user])
 
     def make_ip_project_card(self, project_submission_type):
-        self.card: AgileCard = AgileCardFactory(
+        self.card = AgileCardFactory(
             content_item=ContentItemFactory(
                 content_type=ContentItem.PROJECT,
                 project_submission_type=project_submission_type,
@@ -48,7 +49,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review", timeout=0)
+        self.page.click("text=Request review")
 
         self.page.wait_for_load_state("networkidle")
 
@@ -62,7 +63,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
     def test_request_review_button_moves_rf_project_card_to_ir_column(self):
         self.make_rf_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review", timeout=0)
+        self.page.click("text=Request review")
 
         self.page.wait_for_load_state("networkidle")
 
@@ -77,18 +78,15 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card(ContentItem.LINK)
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review", timeout=0)
+        self.page.locator('text="Request review"').click();
+        
+        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
-        self.page.wait_for_load_state("networkidle")
-
-        self.assertIn(
-            "You have outstanding card reviews", self.page.text_content("div#column_IP", timeout=0)
-        )
 
     def test_request_review_button_logs_review_request_event(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review", timeout=0)
+        self.page.click("text=Request review")
 
         self.page.wait_for_load_state("networkidle")
 

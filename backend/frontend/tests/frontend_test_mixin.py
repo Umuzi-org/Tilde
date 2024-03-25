@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/4.2/ref/contrib/staticfiles/#django.contrib.st
 """
 
 import os
-import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from playwright.sync_api import sync_playwright
 from django.urls import reverse

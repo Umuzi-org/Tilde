@@ -1,4 +1,5 @@
 from activity_log.models import LogEntry
+from playwright.sync_api import expect
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory, ContentItemFactory
 from curriculum_tracking.models import ContentItem, AgileCard
@@ -63,7 +64,7 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_moves_ip_topic_card_to_complete_column(self):
         self.make_topic_card()
-        self.page.click("text=Done", timeout=0)
+        self.page.click("text=Done")
 
         self.page.wait_for_load_state("networkidle")
 
@@ -79,18 +80,15 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card()
         self.make_topic_card()
 
-        self.page.click("text=Done", timeout=0)
+        self.page.locator('text="Done"').click();
+        
+        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
-        self.page.wait_for_load_state("networkidle")
-
-        self.assertIn(
-            "You have outstanding card reviews", self.page.text_content("div#column_IP")
-        )
 
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
 
-        self.page.click("text=Done", timeout=0)
+        self.page.click("text=Done")
 
         self.page.wait_for_load_state("networkidle")
 
