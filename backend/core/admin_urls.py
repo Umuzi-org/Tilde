@@ -15,6 +15,6 @@ urlpatterns = [
     path(
         "delete_regenerate_cards/<int:user_id>",
         views.DeleteAndRegenerateCards.as_view(),
-        name="delete_regenerate_cards",
+        name="confirm_delete_regenerate_cards",
     ),
 ]

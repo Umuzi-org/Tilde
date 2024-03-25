@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from guardian.shortcuts import get_objects_for_user, get_groups_with_perms
+from guardian.shortcuts import get_objects_for_user
 from core import models
 import re
 
@@ -92,14 +92,7 @@ class AddGithubCollaboratorForm(forms.Form):
 
 
 class DeleteAndRegenerateCardsForm(forms.Form):
-    team = forms.ChoiceField(choices=get_choices(models.Team), required=False)
-
     def clean(self):
-        data = super(DeleteAndRegenerateCardsForm, self).clean()
-
-        number_of_fields = sum([bool(x) for x in data.values()])
-        if number_of_fields != 1:
-            # not sure why this isn't showing up...
-            raise ValidationError("Choose one, and only one, filter to apply")
-
-        return data
+        # Any custom validation logic can be added here
+        cleaned_data = super().clean()
+        return cleaned_data

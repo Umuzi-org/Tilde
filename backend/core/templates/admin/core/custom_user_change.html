@@ -1,10 +1,15 @@
 {% extends 'admin/change_form.html' %}
 {% load i18n %}
 {% block object-tools-items %}
-<li>
-    <a title="{% translate 'Add as GitHub collaborator on all permissioned repos' %}" href="{% url 'confirm_add_github_collaborator' original.pk %}">
-        {% translate 'Add as GitHub Collaborator' %}
-    </a>
-</li>
-{{ block.super }}
+    <li>
+        <a title="{% translate 'Add as GitHub collaborator on all permissioned repos' %}" href="{% url 'confirm_add_github_collaborator' original.pk %}">
+            {% translate 'Add as GitHub Collaborator' %}
+        </a>
+    </li>
+    <li>
+        <a title="{% translate 'Delete and recreate cards for this user' %}" href="{% url 'confirm_delete_regenerate_cards' original.pk %}">
+            {% translate 'Delete add Regenerate cards' %}
+        </a>
+    </li>
+    {{ block.super }}
 {% endblock %}
