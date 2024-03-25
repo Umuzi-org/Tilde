@@ -1,18 +1,14 @@
 {% extends "frontend/base_logged_in.html" %}
 
 {% block content %}
-    <div class="mx-auto w-1/2 p-6 bg-white my-4">
+    <div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12">
         <h1 class="{{ styles.heading1 }}">
-            Course Component Details
+            {{course_component.title}}
         </h1>
 
         {% if course_component.submission_type_nice == "link"%}
             <div class="grid gap-4 my-4">
-                <div  class="bold p-2 border-2 rounded-md grid gap-2">
-                    <p class="bold p-2 border-2 rounded-md ">
-                        Title: {{ course_component.title }}
-                    </p>
-                
+                <div class="p-2 border-2 rounded-md grid gap-2">
                     <div class="bold p-2 border-2 rounded-md ">
                         Tag names: 
                         {% with course_component.tag_names|length as array_length %}
@@ -23,19 +19,18 @@
                         {% endwith %}
                     </div>
                 
-                    <div class="bold p-2 border-2 rounded-md ">
+                    <div class="p-2 border-2 rounded-md ">
                         <p class="bold">
                             Status : {{board_status}}
                         </p>
                     </div>
                 </div>
             
-                <div class="bold p-2 border-2 rounded-md grid gap-2">
-                
+                <div class="p-2 border-2 rounded-md grid gap-2">
                     <div class="bold p-2 border-2 rounded-md ">
                         Assignees:
                         <ul class="mx-8">
-                            <li class="bold">
+                            <li>
                             {{ course_component.recruit_user_names|first }}
                             </li>
                         </ul>
@@ -45,13 +40,13 @@
                         Reviewers: 
                         <ul class="mx-8">
                             {% for reviewer in course_component.reviewer_user_names%}
-                            <li class="bold">{{reviewer}}</li>
+                            <li>{{reviewer}}</li>
                             {%endfor%}
                         </ul>
                     </div>
                 </div>
                 
-                <div class="grid bold p-2 border-2 rounded-md gap-2">
+                <div class="grid p-2 border-2 rounded-md gap-2">
                     <p class="bold p-2 border-2 rounded-md" >
                         Start Date: {{course_component.start_time}}
                     </p>
@@ -62,17 +57,24 @@
                 </div>
 
                 <div class="bold p-2 border-2 rounded-md ">
-                    <p class="bold">
+                    <p>
                         Content URL: 
                         <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
                     </p>
                 </div>
 
-                <div class="grid bold p-2 border-2 rounded-md gap-2">
+                <div x-data="{ 
+                    isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
+                    isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
+                    toggleLinkSubmissionForm(){
+                        this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
+                        this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
+                    }
+                 }" class="grid bold p-2 border-2 rounded-md gap-2">
                     <h6>Link to your work</h6>
                     
                     <div>Current link submission: 
-                        {% if project.link_submission == None %}
+                        {% if course_component.link_submission == None %}
                             No link submitted yet
                         {% else %}
                         <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
@@ -80,7 +82,15 @@
                         </a>
                         {% endif%}
                     </div>
-                    <i id="edit_link_submission_icon" class="fa-solid fa-pen-to-square"></i>
+                    <button id="edit_link_submission_icon" class="{{ styles.button_primary_small }} max-w-max" x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit link submission
+                    </button>
+                    
+                    <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
+                        {% csrf_token %}
+                        {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
+                        <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
+                    </form>
                 </div>
             </div>
         {% endif %}

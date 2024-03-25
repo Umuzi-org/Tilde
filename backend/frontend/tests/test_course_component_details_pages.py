@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils import timezone
+from playwright.sync_api import expect
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -46,7 +47,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             ),
         )
 
-        AgileCardFactory(
+        self.agile_card = AgileCardFactory(
             content_item=content_item,
             status=AgileCard.IN_PROGRESS,
             recruit_project=self.recruit_project,
@@ -62,7 +63,6 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
 
-        self.assertIn("Course Component Details", body)
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
@@ -73,3 +73,115 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             body,
         )
         self.assertIn("No link submitted yet", body)
+
+    def test_link_submission_form_correctly_updates_link_submission(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        body = self.page.text_content("body")
+        self.assertIn("No link submitted yet", body)
+
+        self.page.get_by_label("Link submission").fill("https://google.com")
+
+        self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
+
+        body = self.page.text_content("body")
+        self.assertIn("https://google.com", body)
+
+    def test_link_submission_form_disappears_after_successful_submission(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_visible()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).not_to_be_visible()
+
+        self.page.get_by_label("Link submission").fill("https://google.com")
+        self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_hidden()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).to_be_visible()
+
+    def test_link_submission_form_appears_after_edit_link_submission_button_is_clicked(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+        self.recruit_project.link_submission = "https://google.com"
+        self.recruit_project.save()
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).not_to_be_visible()
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).to_be_visible()
+
+        self.page.click("text=Edit link submission")
+        self.page.wait_for_load_state("networkidle")
+
+        link_submission_form = self.page.locator('[id="link_submission_form"]')
+        expect(link_submission_form).to_be_visible
+
+        expect(
+            self.page.get_by_role("button", name="Edit link submission")
+        ).not_to_be_visible()
+
+    def test_link_submission_form_displays_correct_error_message_when_form_is_submitted_with_no_input(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        self.page.get_by_label("Link submission").fill("")
+        self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
+
+        body = self.page.text_content("body")
+        self.assertIn("This field is required", body)
+
+    def test_link_submission_form_displays_correct_error_message_when_form_is_submitted_with_invalid_input(
+        self,
+    ):
+        self.make_ip_project_card(ContentItem.LINK)
+
+        self.link_project_url = self.reverse_url(
+            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+        )
+        self.page.goto(self.link_project_url)
+
+        self.page.get_by_label("Link submission").fill("http://google")
+        self.page.click("text=Submit Link")
+        self.page.wait_for_load_state("networkidle")
+
+        body = self.page.text_content("body")
+        self.assertIn("Enter a valid URL", body)
