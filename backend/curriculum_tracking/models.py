@@ -972,7 +972,7 @@ class TopicProgress(
         }
 
     @property
-    def duration(self):
+    def duration_str(self):
         log_entries = LogEntry.objects.filter(object_1_id=self.id)
 
         card_started_logs = []
@@ -980,11 +980,11 @@ class TopicProgress(
         for log_entry in log_entries:
             event_type = EventType.objects.get(id=log_entry.event_type_id)
 
-            if self.status == AgileCard.COMPLETE and event_type.name == CARD_STARTED:
+            if self.agile_card.status == "C" and event_type.name == CARD_STARTED:
                 card_started_logs.append(log_entry.timestamp)
 
             if (
-                self.status == AgileCard.COMPLETE
+                self.agile_card.status == "C"
                 and event_type.name == CARD_MOVED_TO_COMPLETE
             ):
                 card_completed_logs.append(log_entry.timestamp)
@@ -995,7 +995,13 @@ class TopicProgress(
         if len(card_started_logs) == 0 or len(card_completed_logs) == 0:
             return None
 
-        return card_completed_logs[0] - card_started_logs[0]
+        duration = card_completed_logs[0] - card_started_logs[0]
+        seconds = duration.total_seconds()
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, remainder = divmod(remainder, 60)
+
+        return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
 
 
 class TopicReview(models.Model, Mixins):
