@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
@@ -969,6 +969,10 @@ class TopicProgress(
             "flavour_names": self.content_item.flavour_names,
         }
 
+    @property
+    def duration(self):
+        return datetime.now() + timedelta(hours=3) - datetime.now()
+
 
 class TopicReview(models.Model, Mixins):
     status = models.CharField(
@@ -1730,7 +1734,6 @@ class AgileCard(
 
     def user_has_permission(self, user, permissions):
         return any((user.has_perm(permissions, team) for team in self.get_teams()))
-
 
 
 class BurndownSnapshot(models.Model):
