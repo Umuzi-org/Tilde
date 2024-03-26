@@ -431,6 +431,7 @@ def topic(request, id):
 @user_passes_test_or_forbidden(can_view_user_board)
 def project(request, id):
     course_component = get_object_or_404(RecruitProject, id=id)
+    form = None
 
     if course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
