@@ -992,7 +992,7 @@ class TopicProgress(
             card_started_logs = sorted(card_started_logs)
             card_completed_logs = sorted(card_completed_logs, reverse=True)
 
-        if len(card_started_logs) == 0 or len(card_completed_logs) == 0:
+        if not card_started_logs or not card_completed_logs:
             return None
 
         duration = card_completed_logs[0] - card_started_logs[0]
