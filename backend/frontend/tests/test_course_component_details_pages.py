@@ -305,3 +305,5 @@ class TestTopicDetailsPage(FrontendTestMixin):
             )
 
             self.assertIn("0 days, 3 hours, 0 minutes", body)
+
+            self.page.screenshot(path="screenshot.png", full_page=True)
