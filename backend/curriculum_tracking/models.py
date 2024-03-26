@@ -1731,8 +1731,6 @@ class AgileCard(
     def user_has_permission(self, user, permissions):
         return any((user.has_perm(permissions, team) for team in self.get_teams()))
 
-
-
     def request_user_is_trusted(self, user=None):
         """
         Check if current user is trusted on a card

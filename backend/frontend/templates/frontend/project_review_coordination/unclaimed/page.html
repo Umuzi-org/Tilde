@@ -6,28 +6,29 @@
 {% block main %}
 
     {% for bundle in bundles %}
-    <div id="bundle_{{ forloop.counter0 }}"
-    class="mb-3 p-2 rounded-xl border-2"
-    
+    <div id="bundle_{{ forloop.counter0 }}" 
+    class="mb-3 p-2 rounded-xl border-2 relative {% if bundle.is_trusted %}border-indigo-300{% endif %}"
     >
-    {{ bundle.title }} {{ bundle.flavours }} {{ bundle.tags }}
-    <br/>
+    <div>
+        <h3 class="font-bold inline-block">{{ bundle.title }}</h3> {{ bundle.flavours }}
+    </div>
+    <div>
+        {{ bundle.tags }}
+    </div>
     {% if bundle.is_trusted %} 
-    You are a trusted reviewer on this project
-    {% else %}
-    You are not a trusted reviewer on this project
+    <div 
+    class="absolute top-0 right-0 bg bg-yellow-300 text-xs text-black py-1 px-2 mt-2 mr-2 border-2 border-yellow-400 rounded-full"
+    title="You are trusted on these projects"
+    >
+        trusted
+    </div>
     {% endif %}
         <br/>
         Number of cards = {{ bundle.card_count }}
         <br/>
         Oldest review request time: {{ bundle.oldest_review_request_time | date:"r"}}
         <br/>
-        <!-- Trusted Reviewers: 
-        <ul>
-            {% for user in bundle.trusted_users %}
-            <li>{{user.email}}</li>
-            {% endfor %}
-        </ul> -->
+
         <form>
                 {% csrf_token %}
 
