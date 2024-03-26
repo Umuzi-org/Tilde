@@ -295,7 +295,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
             details_link_element = link_card_element.get_by_role("link", name="Details")
             details_link_element.click()
-            self.page.wait_for_load_state("networkidle", timeout=450000)
+            self.page.wait_for_load_state("networkidle")
 
             body = self.page.text_content("body")
 
