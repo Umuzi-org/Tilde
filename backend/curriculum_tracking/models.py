@@ -2,6 +2,8 @@ from datetime import timedelta, datetime
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
+from activity_log.models import EventType, LogEntry
+from .activity_log_entry_creators import CARD_STARTED, CARD_MOVED_TO_COMPLETE
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -971,7 +973,29 @@ class TopicProgress(
 
     @property
     def duration(self):
-        return datetime.now() + timedelta(hours=3) - datetime.now()
+        log_entries = LogEntry.objects.filter(object_1_id=self.id)
+
+        card_started_logs = []
+        card_completed_logs = []
+        for log_entry in log_entries:
+            event_type = EventType.objects.get(id=log_entry.event_type_id)
+
+            if self.status == AgileCard.COMPLETE and event_type.name == CARD_STARTED:
+                card_started_logs.append(log_entry.timestamp)
+
+            if (
+                self.status == AgileCard.COMPLETE
+                and event_type.name == CARD_MOVED_TO_COMPLETE
+            ):
+                card_completed_logs.append(log_entry.timestamp)
+
+            card_started_logs = sorted(card_started_logs)
+            card_completed_logs = sorted(card_completed_logs, reverse=True)
+
+        if len(card_started_logs) == 0 or len(card_completed_logs) == 0:
+            return None
+
+        return card_completed_logs[0] - card_started_logs[0]
 
 
 class TopicReview(models.Model, Mixins):
