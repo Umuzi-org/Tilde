@@ -93,6 +93,5 @@ class AddGithubCollaboratorForm(forms.Form):
 
 class DeleteAndRegenerateCardsForm(forms.Form):
     def clean(self):
-        # Any custom validation logic can be added here
         cleaned_data = super().clean()
         return cleaned_data

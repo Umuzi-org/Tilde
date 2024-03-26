@@ -391,25 +391,34 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
 class DeleteAndRegenerateCards(LoginRequiredMixin, FormView):
     template_name = "admin/core/confirm_delete_regenerate_cards.html"
     form_class = DeleteAndRegenerateCardsForm
+
+    def get_login_url(self) -> str:
+        return reverse("admin:login")
     
-
-    def get_success_url(self):
-        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
-
     def form_valid(self, form):
-        user_id = self.kwargs.get("user_id")
-        user = get_object_or_404(User, id=user_id)
-        self.user = user 
-        self._delete_and_regenerate_cards(user)
+        self._delete_and_regenerate_cards(self.user.id)
         messages.success(
             self.request,
-            f"Deleting and Regenerating cards in the background for user: {user}",
+            f"Deleting and regenerating cards in the background",
         )
         return super().form_valid(form)
+    
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user = get_object_or_404(User, id=self.kwargs["user_id"])
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
+    
+    def get_success_url(self) -> str:
+        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
+    
+    
 
     @staticmethod
-    def _delete_and_regenerate_cards(user):
-        
+    def _delete_and_regenerate_cards(user_id):
         from long_running_request_actors import delete_and_recreate_user_cards as actor
 
-        actor.send_with_options(kwargs={"user_id": user.id})
+        actor.send_with_options(kwargs={"user_id": user_id})
