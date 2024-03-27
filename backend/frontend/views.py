@@ -23,6 +23,7 @@ from curriculum_tracking.models import (
     RecruitProject,
     TopicProgress,
 )
+
 from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking.activity_log_entry_creators import (
@@ -379,29 +380,16 @@ def action_start_card(request, card_id):
 @user_passes_test_or_forbidden(can_view_user_board)
 def topic_course_component_details(request, id):
     course_component = get_object_or_404(TopicProgress, id=id)
+    duration_in_current_column = course_component.duration_in_current_column
+    formatted_duration_in_current_column = None
 
-    relevant_logs = sorted(
-        LogEntry.objects.filter(
-            Q(event_type__name=CARD_STARTED)
-            | Q(event_type__name=CARD_REVIEW_REQUEST_CANCELLED),
-            object_1_id=id,
-        ),
-        key=lambda log: log.timestamp,
-    )
-
-    formatted_time_difference = None
-
-    if course_component.agile_card.status == AgileCard.IN_PROGRESS:
-        if relevant_logs:
-            duration = timezone.now() - relevant_logs[-1].timestamp
-            seconds = duration.total_seconds()
-            days, remainder = divmod(seconds, 86400)
-            hours, remainder = divmod(remainder, 3600)
-            minutes, remainder = divmod(remainder, 60)
-
-            formatted_time_difference = (
-                f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
-            )
+    if (
+        course_component.agile_card.status == AgileCard.IN_PROGRESS
+        and duration_in_current_column
+    ):
+        formatted_duration_in_current_column = helpers.get_formatted_duration_to_string(
+            duration_in_current_column
+        )
 
     board_status = [
         value
@@ -412,7 +400,7 @@ def topic_course_component_details(request, id):
     context = {
         "course_component": course_component,
         "board_status": board_status,
-        "duration": formatted_time_difference,
+        "duration": formatted_duration_in_current_column,
     }
 
     return render(
