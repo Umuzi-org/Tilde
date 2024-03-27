@@ -377,7 +377,7 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def topic(request, id):
+def topic_course_component_details(request, id):
     course_component = get_object_or_404(TopicProgress, id=id)
 
     relevant_logs = sorted(
@@ -423,7 +423,7 @@ def topic(request, id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def project(request, id):
+def project_course_component_details(request, id):
     course_component = get_object_or_404(RecruitProject, id=id)
     form = None
 
