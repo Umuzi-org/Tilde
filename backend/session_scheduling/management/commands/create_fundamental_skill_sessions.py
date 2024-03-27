@@ -104,12 +104,12 @@ def schedule_session(
     flavour_names,
     skill_name,
 ):
-    print(
-        session_type,
-        flavour_names,
-        skill_name,
-        user_ids,
-    )
+    # print(
+    #     session_type,
+    #     flavour_names,
+    #     skill_name,
+    #     user_ids,
+    # )
     session = Session.objects.create(
         session_type=SessionType.objects.get(name=session_type),
         due_date=timezone.now() + timezone.timedelta(days=DUE_DAYS),
