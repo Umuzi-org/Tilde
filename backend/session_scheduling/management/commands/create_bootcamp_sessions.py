@@ -1,5 +1,5 @@
 """
-Run this script weekly if there is an active bootcamp
+Run this script at least weekly if there is an active bootcamp
 """
 
 from django.core.management.base import BaseCommand

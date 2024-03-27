@@ -17,8 +17,8 @@ SessionTypeConf = namedtuple(
     ],
 )
 
-SESSION_SKILL_SPOT_CHECK = "Skill spot check"
-SESSION_SKILL_ASSISTANCE = "Skill assistance"
+SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK = "Fundamental skill spot check"
+SESSION_FUNDAMENTAL_SKILL_ASSISTANCE = "Fundamental skill assistance"
 SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
 # SESSION_PROBLEM_SOLVING = "Problem solving" TODO
 # SESSION_CARD_BASED = "card progress based" TODO
@@ -26,14 +26,14 @@ SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
 
 session_types = [
     SessionTypeConf(
-        name=SESSION_SKILL_SPOT_CHECK,
+        name=SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK,
         event_copy="It looks like you know what you are doing. We just want to spend a little time with you to make sure. If it turns out that you don't know something then we're here to help.",
         event_title="Skill Spot Check",
         description="The student seems to know what they are doing. We are just checking on them to make sure our other systems are working.",
         duration_minutes=45,
     ),
     SessionTypeConf(
-        name=SESSION_SKILL_ASSISTANCE,
+        name=SESSION_FUNDAMENTAL_SKILL_ASSISTANCE,
         event_copy="It looks like you might need some help with understanding {extra_title_text}. In this session we'll help you get a firm handle on the content",
         event_title="Skill Assistance - {extra_title_text} {flavours}",
         description="The student needs help with a specific skill. We are here to help them.",
