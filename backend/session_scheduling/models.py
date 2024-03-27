@@ -1,3 +1,10 @@
+"""
+TODO: 
+- coderbyte based sessions
+- @risk sessions 
+- attendance monitoring. Missed sessions 
+"""
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -21,12 +28,6 @@ class SessionType(models.Model):
         return f"{self.name}({self.duration_minutes} mins)"
 
 
-# class SessionFacilitatorProfile(models.Model):
-#     user = models.ForeignKey(User)
-#     max_sessions_per_week = models.IntegerField(default=1)
-#     max_sessions_per_day = models.IntegerField(default=1)
-
-
 class Session(models.Model, FlavourMixin):
     """When we create one of these then it implies that a session is required.
 
@@ -39,16 +40,24 @@ class Session(models.Model, FlavourMixin):
     """
 
     session_type = models.ForeignKey(SessionType, on_delete=models.PROTECT)
-    attendees = models.ManyToManyField(User, related_name="attended_sessions")
+    attendees = models.ManyToManyField(
+        User,
+        related_name="attended_sessions",
+        limit_choices_to={"active": True},
+    )
     facilitator = models.ForeignKey(
         User,
         blank=True,
         null=True,
         on_delete=models.PROTECT,
         related_name="facilitated_sessions",
+        limit_choices_to={"is_staff": True, "active": True},
     )
     guest_facilitators = models.ManyToManyField(
-        User, blank=True, related_name="guest_facilitated_sessions"
+        User,
+        blank=True,
+        related_name="guest_facilitated_sessions",
+        limit_choices_to={"active": True},
     )
     created_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
@@ -87,3 +96,28 @@ class Session(models.Model, FlavourMixin):
     def attendee_emails(self):
         emails = sorted([o.email for o in self.attendees.all()])
         return "\n".join(emails)
+
+
+# class SessionFacilitatorProfile(models.Model):
+#     user = models.ForeignKey(User)
+
+
+# class SessionFacilitatorAllowedSession(FlavourMixin):
+#     """
+#     Can facilitate this type of session.
+#     - extra_title_text can be regex
+#     - flavours need to overlap. Eg if flavours=python, javascript then this can do a Python or a Javascript session
+#     """
+#     session_type = models.ForeignKey(SessionType, on_delete=models.CASCADE)
+#     flavours = TaggableManager()
+#     extra_title_text = models.CharField(max_length=128, blank=True, null=True)
+
+
+# class AvailableTimeSlot:
+#     """
+#     order = the order in which slots will get filled
+#     """
+#     order = models.PositiveIntegerField(default=0, blank=False, null=False)
+#     session_facilitator_user = models.ForeignKey(SessionFacilitatorProfile)
+#     start_time = models.TimeField()
+#     day_of_week = models
