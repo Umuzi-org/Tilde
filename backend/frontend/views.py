@@ -378,10 +378,16 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def topic_course_component_details(request, id):
-    course_component = get_object_or_404(TopicProgress, id=id)
-    duration_in_current_column = course_component.duration_in_current_column
+def course_component_details(request, id, type):
+    duration_in_current_column = None
+    if type == "topic":
+        course_component = get_object_or_404(TopicProgress, id=id)
+        duration_in_current_column = course_component.duration_in_current_column
+    if type == "project":
+        course_component = get_object_or_404(RecruitProject, id=id)
+
     formatted_duration_in_current_column = None
+    form = None
 
     if (
         course_component.agile_card.status == AgileCard.IN_PROGRESS
@@ -389,31 +395,7 @@ def topic_course_component_details(request, id):
     ):
         formatted_duration_in_current_column = duration_in_current_column
 
-    board_status = [
-        value
-        for key, value in AgileCard.STATUS_CHOICES
-        if key == course_component.agile_card.status
-    ][0]
-
-    context = {
-        "course_component": course_component,
-        "board_status": board_status,
-        "duration": formatted_duration_in_current_column,
-    }
-
-    return render(
-        request,
-        "frontend/course_component_details/page.html",
-        context,
-    )
-
-
-@user_passes_test_or_forbidden(can_view_user_board)
-def project_course_component_details(request, id):
-    course_component = get_object_or_404(RecruitProject, id=id)
-    form = None
-
-    if course_component.submission_type_nice == "link":
+    if type == "project" and course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
 
         if request.method == "POST":
@@ -443,6 +425,7 @@ def project_course_component_details(request, id):
     context = {
         "course_component": course_component,
         "board_status": board_status,
+        "duration": formatted_duration_in_current_column,
         "link_submission_form": form,
     }
 
