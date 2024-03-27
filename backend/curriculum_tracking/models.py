@@ -2,6 +2,12 @@ from datetime import timedelta
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
+from activity_log.models import LogEntry
+from curriculum_tracking.activity_log_entry_creators import (
+    CARD_STARTED,
+    CARD_REVIEW_REQUEST_CANCELLED,
+)
+from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -941,6 +947,24 @@ class TopicProgress(
             "flavour_names": self.content_item.flavour_names,
         }
 
+    @property
+    def duration_in_current_column(self):
+        relevant_logs = sorted(
+            LogEntry.objects.filter(
+                Q(event_type__name=CARD_STARTED)
+                | Q(event_type__name=CARD_REVIEW_REQUEST_CANCELLED),
+                object_1_id=self.id,
+            ),
+            key=lambda log: log.timestamp,
+        )
+
+        duration = None
+
+        if relevant_logs:
+            duration = timezone.now() - relevant_logs[-1].timestamp
+
+        return helpers.get_formatted_duration_to_string(duration)
+
 
 class TopicReview(models.Model, Mixins):
     status = models.CharField(
@@ -1723,6 +1747,7 @@ class AgileCard(
         all_trusts = [t for t in all_trusts if t.flavours_match(self.flavour_names)]
 
         return len(all_trusts) > 0
+
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4

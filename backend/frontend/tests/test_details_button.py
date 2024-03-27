@@ -47,8 +47,8 @@ class TestCardDetailsButton(FrontendTestMixin):
         expect(details_link_element).to_be_visible()
 
         link_project_url = self.reverse_url(
-            "course_component_details",
-            kwargs={"project_id": self.card.recruit_project.id},
+            "course_component_details_project",
+            kwargs={"id": self.card.recruit_project.id},
         )
 
         board_url = self.reverse_url("user_board", kwargs={"user_id": self.user.id})

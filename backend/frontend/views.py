@@ -12,13 +12,24 @@ from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 from core.models import Team
-from curriculum_tracking.models import AgileCard, ContentItem, RecruitProject
+from curriculum_tracking.models import (
+    AgileCard,
+    ContentItem,
+    User,
+    RecruitProject,
+    TopicProgress,
+)
+
+from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
+from curriculum_tracking.activity_log_entry_creators import (
+    CARD_STARTED,
+    CARD_REVIEW_REQUEST_CANCELLED,
+)
 from curriculum_tracking import helpers
 
 from taggit.models import Tag
@@ -34,7 +45,6 @@ from .forms import (
 )
 from .theme import styles
 
-from curriculum_tracking import helpers
 
 User = get_user_model()
 
@@ -368,16 +378,24 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, project_id):
-    project = get_object_or_404(RecruitProject, id=project_id)
+def course_component_details(request, id, type):
+    duration_in_current_column = None
+    if type == "topic":
+        course_component = get_object_or_404(TopicProgress, id=id)
+        duration_in_current_column = course_component.duration_in_current_column
+    if type == "project":
+        course_component = get_object_or_404(RecruitProject, id=id)
 
-    board_status = [
-        value
-        for key, value in AgileCard.STATUS_CHOICES
-        if key == project.agile_card_status
-    ][0]
+    formatted_duration_in_current_column = None
+    form = None
 
-    if project.submission_type_nice == "link":
+    if (
+        course_component.agile_card.status == AgileCard.IN_PROGRESS
+        and duration_in_current_column
+    ):
+        formatted_duration_in_current_column = duration_in_current_column
+
+    if type == "project" and course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
 
         if request.method == "POST":
@@ -386,27 +404,30 @@ def course_component_details(request, project_id):
             if form.is_valid():
                 link_submission = form.cleaned_data["link_submission"]
 
-                if project.link_submission_is_valid(link_submission):
-                    project.link_submission = link_submission
-                    project.save()
+                if course_component.link_submission_is_valid(link_submission):
+                    course_component.link_submission = link_submission
+                    course_component.save()
 
                 else:
                     form.add_error(
                         "submission_link",
-                        project.link_submission_invalid_message(link_submission),
+                        course_component.link_submission_invalid_message(
+                            link_submission
+                        ),
                     )
 
-        context = {
-            "course_component": project,
-            "link_submission_form": form,
-            "board_status": board_status,
-        }
+    board_status = [
+        value
+        for key, value in AgileCard.STATUS_CHOICES
+        if key == course_component.agile_card.status
+    ][0]
 
-    else:
-        context = {
-            "course_component": project,
-            "board_status": board_status,
-        }
+    context = {
+        "course_component": course_component,
+        "board_status": board_status,
+        "duration": formatted_duration_in_current_column,
+        "link_submission_form": form,
+    }
 
     return render(
         request,
