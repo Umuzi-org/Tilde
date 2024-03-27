@@ -380,34 +380,28 @@ def action_start_card(request, card_id):
 def topic(request, id):
     course_component = get_object_or_404(TopicProgress, id=id)
 
-    log_entries = LogEntry.objects.filter(object_1_id=id)
-
-    relevant_logs = []
-    for log_entry in log_entries:
-        event_type = EventType.objects.get(id=log_entry.event_type_id)
-
-        if (
-            course_component.agile_card.status == AgileCard.IN_PROGRESS
-            and event_type.name == CARD_STARTED
-        ) or (
-            course_component.agile_card.status == AgileCard.IN_PROGRESS
-            and event_type.name == CARD_REVIEW_REQUEST_CANCELLED
-        ):
-            relevant_logs.append(log_entry.timestamp)
+    relevant_logs = sorted(
+        LogEntry.objects.filter(
+            Q(event_type__name=CARD_STARTED)
+            | Q(event_type__name=CARD_REVIEW_REQUEST_CANCELLED),
+            object_1_id=id,
+        ),
+        key=lambda log: log.timestamp,
+    )
 
     formatted_time_difference = None
-    relevant_logs = sorted(relevant_logs)
 
-    if relevant_logs:
-        duration = timezone.now() - relevant_logs[-1]
-        seconds = duration.total_seconds()
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, remainder = divmod(remainder, 60)
+    if course_component.agile_card.status == AgileCard.IN_PROGRESS:
+        if relevant_logs:
+            duration = timezone.now() - relevant_logs[-1].timestamp
+            seconds = duration.total_seconds()
+            days, remainder = divmod(seconds, 86400)
+            hours, remainder = divmod(remainder, 3600)
+            minutes, remainder = divmod(remainder, 60)
 
-        formatted_time_difference = (
-            f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
-        )
+            formatted_time_difference = (
+                f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
+            )
 
     board_status = [
         value
