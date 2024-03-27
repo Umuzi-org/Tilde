@@ -17,6 +17,9 @@ class SessionType(models.Model):
     description = models.TextField()
     duration_minutes = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 # class SessionFacilitatorProfile(models.Model):
 #     user = models.ForeignKey(User)
@@ -67,11 +70,14 @@ class Session(models.Model, FlavourMixin):
 
     is_cancelled = models.BooleanField(default=False)
 
-    def __repr__(self):
+    def __str__(self):
         return self.get_title_copy()
 
     def get_title_copy(self):
-        todo
+        return self.session_type.event_title.format(
+            extra_title_text=self.extra_title_text,
+            flavours=", ".join(self.flavour_names),
+        )
 
     def get_event_copy(self):
         todo

@@ -28,7 +28,7 @@ session_types = [
     SessionTypeConf(
         name=SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK,
         event_copy="It looks like you know what you are doing. We just want to spend a little time with you to make sure. If it turns out that you don't know something then we're here to help.",
-        event_title="Skill Spot Check",
+        event_title="Skill Spot Check - Skill Spot Check - {extra_title_text} {flavours}",
         description="The student seems to know what they are doing. We are just checking on them to make sure our other systems are working.",
         duration_minutes=45,
     ),
