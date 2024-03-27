@@ -83,3 +83,7 @@ class Session(models.Model, FlavourMixin):
         todo
         greeting = "Dear learner(s)"
         return f"{greeting}\n\n{copy}\n\n{form}\n\n{recording}\n\n{regards}"
+
+    def attendee_emails(self):
+        emails = sorted([o.email for o in self.attendees.all()])
+        return "\n".join(emails)
