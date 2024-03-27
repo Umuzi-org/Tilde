@@ -973,18 +973,20 @@ class TopicProgress(
 
     @property
     def duration_str(self):
-        log_entries = LogEntry.objects.filter(object_1_id=self.id)
         card_started_logs = sorted(
-            filter(lambda log: log.event_type.name == CARD_STARTED, log_entries),
-            key=lambda logg: logg.timestamp,
+            LogEntry.objects.filter(
+                Q(event_type__name=CARD_STARTED),
+                object_1_id=self.id,
+            ),
+            key=lambda log: log.timestamp,
         )
 
         card_completed_logs = sorted(
-            filter(
-                lambda log: log.event_type.name == CARD_MOVED_TO_COMPLETE,
-                log_entries,
+            LogEntry.objects.filter(
+                Q(event_type__name=CARD_MOVED_TO_COMPLETE),
+                object_1_id=self.id,
             ),
-            key=lambda logg: logg.timestamp,
+            key=lambda log: log.timestamp,
             reverse=True,
         )
 
