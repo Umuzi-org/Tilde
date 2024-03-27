@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
-from curriculum_tracking.models import FlavourMixin
+from model_mixins import FlavourMixin
 
 User = get_user_model()
 
@@ -50,12 +50,14 @@ class Session(models.Model, FlavourMixin):
     created_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
 
-    related_content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
-    related_object_id = models.PositiveIntegerField()
+    related_object_content_type = models.ForeignKey(
+        ContentType, on_delete=models.PROTECT, null=True, blank=True
+    )
+    related_object_id = models.PositiveIntegerField(null=True, blank=True)
     related_object = GenericForeignKey(
-        "related_content_type",
+        "related_object_content_type",
         "related_object_id",
-        # helptext="Optional information about what this is for. Eg a link to a bootcamp",
+        # eg this might be related to a CB test, a bootcamp, a card, or anything else
     )
     flavours = TaggableManager(blank=True)
     extra_title_text = models.CharField(max_length=128, blank=True, null=True)
