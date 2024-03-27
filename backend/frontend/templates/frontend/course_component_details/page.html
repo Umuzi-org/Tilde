@@ -1,14 +1,14 @@
 {% extends "frontend/base_logged_in.html" %}
 
 {% block content %}
-    <div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12">
+    <div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12 w-full overflow-auto">
         <h1 class="{{ styles.heading1 }}">
             {{course_component.content_item.content_type_nice | title}}: {{ course_component.content_item.title }}
         </h1>
 
         {% if course_component.content_item.content_type_nice == "topic"%}
-            <div class="grid gap-4 my-4">
-                <div  class="p-2 border-2 rounded-md grid gap-2">
+            <div class="grid gap-4 my-4 w-full">
+                <div class="p-2 border-2 rounded-md grid gap-2">
                     <div class="p-2 border-2 rounded-md ">
                         Tag names: 
                         {% with course_component.content_item.tag_names|length as array_length %}
@@ -64,7 +64,7 @@
                 </div>
             </div>
         {% elif course_component.content_item.content_type_nice == "project"%}
-            <div class="grid gap-4 my-4">
+            <div class="grid gap-4 my-4 w-full">
                 <div  class="p-2 border-2 rounded-md grid gap-2">
                     <div class="p-2 border-2 rounded-md ">
                         Tag names: 
@@ -114,10 +114,10 @@
                     </p>
                 </div>
 
-                <div class="p-2 border-2 rounded-md ">
+                <div class="p-2 border-2 rounded-md whitespace-wrap">
                     <p>
                         Content URL: 
-                        <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
+                        <a class="{{styles.link}} whitespace-wrap" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
                     </p>
                 </div>
 
