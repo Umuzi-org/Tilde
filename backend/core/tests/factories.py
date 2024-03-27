@@ -49,3 +49,11 @@ class CurriculumFactory(DjangoModelFactory):
         model = "core.Curriculum"
 
     name = "hello"
+
+
+class StreamFactory(DjangoModelFactory):
+
+    class Meta:
+        model = "core.Stream"
+
+    # name = "core: web dev"

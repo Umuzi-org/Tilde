@@ -130,6 +130,8 @@ INSTALLED_APPS = [
     "frontend",
     "project_review_coordination.apps.ProjectReviewCoordinationConfig",
     "django.contrib.humanize",
+    "session_scheduling",
+    "selection_bootcamps",
 ]
 
 SITE_ID = 1  # from allauth docs
