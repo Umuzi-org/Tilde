@@ -8,7 +8,6 @@ from pathlib import Path
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("curriculum", type=str)
-        # parser.add_argument("as_csv", type=bool, default=False, nargs="?")
 
     def handle(self, *args, **options):
         name = options["curriculum"]

@@ -188,6 +188,7 @@ def auto_assign_competent_reviewers():
     cards = list(get_cards_needing_competent_reviewers())
     total = len(cards)
     for n, card in enumerate(cards):
+        print(f"auto_assign_competent_reviewers: {n+1}/{total}")
         add_reviewers_to_card_until_enough(
             card,
             config.REQUIRED_COMPETENT_REVIEWERS_PER_CARD,
@@ -295,7 +296,10 @@ def auto_assign_reviewers_based_on_reviewer_team_permission():
 
     exclude_users = [user for subset in exclude_users_nested for user in subset]
 
-    for team in Team.objects.filter(active=True):
+    teams = Team.objects.filter(active=True)
+    total_teams = len(teams)
+    for n, team in enumerate(teams):
+
         print(f"\nTeam: {team.id} {team.name}")
         reviewer_users = get_reviewer_users_by_permission(
             team=team, permission=Team.PERMISSION_REVIEW_CARDS
@@ -310,7 +314,11 @@ def auto_assign_reviewers_based_on_reviewer_team_permission():
 
         print(f"users with permission: {reviewer_users}")
         cards = get_cards_needing_reviewer_allocation(team)
-        for card in cards:
+        total_cards = len(cards)
+        for i, card in enumerate(cards):
+            print(
+                f"auto_assign_reviewers_based_on_reviewer_team_permission:\n\tTeam: {n+1}/{total_teams}\n\tCard {i+1}/{total_cards}"
+            )
             add_reviewers_to_card_until_enough(
                 card=card,
                 total_matching_reviewers_needed=config.REQUIRED_REVIEWER_PERMISSIONED_REVIEWERS_PER_CARD,
