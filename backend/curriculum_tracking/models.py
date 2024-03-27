@@ -7,6 +7,7 @@ from curriculum_tracking.activity_log_entry_creators import (
     CARD_STARTED,
     CARD_REVIEW_REQUEST_CANCELLED,
 )
+from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -990,7 +991,7 @@ class TopicProgress(
         if relevant_logs:
             duration = timezone.now() - relevant_logs[-1].timestamp
 
-        return duration
+        return helpers.get_formatted_duration_to_string(duration)
 
 
 class TopicReview(models.Model, Mixins):

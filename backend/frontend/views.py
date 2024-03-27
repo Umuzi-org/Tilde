@@ -387,9 +387,7 @@ def topic_course_component_details(request, id):
         course_component.agile_card.status == AgileCard.IN_PROGRESS
         and duration_in_current_column
     ):
-        formatted_duration_in_current_column = helpers.get_formatted_duration_to_string(
-            duration_in_current_column
-        )
+        formatted_duration_in_current_column = duration_in_current_column
 
     board_status = [
         value
