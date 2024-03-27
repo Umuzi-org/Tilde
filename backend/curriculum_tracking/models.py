@@ -974,28 +974,28 @@ class TopicProgress(
     @property
     def duration_str(self):
         log_entries = LogEntry.objects.filter(object_1_id=self.id)
+        card_started_logs = sorted(
+            filter(lambda log: log.event_type.name == CARD_STARTED, log_entries),
+            key=lambda logg: logg.timestamp,
+        )
 
-        card_started_logs = []
-        card_completed_logs = []
-        for log_entry in log_entries:
-            event_type = EventType.objects.get(id=log_entry.event_type_id)
+        card_completed_logs = sorted(
+            filter(
+                lambda log: log.event_type.name == CARD_MOVED_TO_COMPLETE,
+                log_entries,
+            ),
+            key=lambda logg: logg.timestamp,
+            reverse=True,
+        )
 
-            if self.agile_card.status == "C" and event_type.name == CARD_STARTED:
-                card_started_logs.append(log_entry.timestamp)
-
-            if (
-                self.agile_card.status == "C"
-                and event_type.name == CARD_MOVED_TO_COMPLETE
-            ):
-                card_completed_logs.append(log_entry.timestamp)
-
-            card_started_logs = sorted(card_started_logs)
-            card_completed_logs = sorted(card_completed_logs, reverse=True)
-
-        if not card_started_logs or not card_completed_logs:
+        if (
+            self.agile_card.status != "C"
+            or not card_started_logs
+            or not card_completed_logs
+        ):
             return None
 
-        duration = card_completed_logs[0] - card_started_logs[0]
+        duration = card_completed_logs[0].timestamp - card_started_logs[0].timestamp
         seconds = duration.total_seconds()
         days, remainder = divmod(seconds, 86400)
         hours, remainder = divmod(remainder, 3600)
