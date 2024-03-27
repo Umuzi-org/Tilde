@@ -11,7 +11,12 @@ class SessionTypeAdmin(admin.ModelAdmin):
 
 @admin.register(models.Session)
 class SessionAdmin(admin.ModelAdmin):
-    ordering = ("due_date",)
+    ordering = (
+        "due_date",
+        "session_type__name",
+        "extra_title_text",
+    )
+    list_editable = ["facilitator", "start_time", "is_cancelled"]
     search_fields = ["facilitator__email", "attendees__email"]
     list_display = [
         "__str__",
