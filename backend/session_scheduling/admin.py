@@ -9,13 +9,6 @@ class SessionTypeAdmin(admin.ModelAdmin):
     fields = ["name", "description", "duration_minutes", "event_title", "event_copy"]
 
 
-# class UserSetInline(admin.TabularInline):
-#     model = models.User
-#     raw_id_fields = ("user",)
-# form = UserSetForm
-# formset = UserSetFormSet
-
-
 @admin.register(models.Session)
 class SessionAdmin(admin.ModelAdmin):
     readonly_fields = ["created_date", "end_time"]

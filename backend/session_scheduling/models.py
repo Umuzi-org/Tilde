@@ -18,7 +18,7 @@ class SessionType(models.Model):
     duration_minutes = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return f"{self.name}({self.duration_minutes} mins)"
 
 
 # class SessionFacilitatorProfile(models.Model):
