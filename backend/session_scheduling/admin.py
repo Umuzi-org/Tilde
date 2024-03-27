@@ -11,6 +11,8 @@ class SessionTypeAdmin(admin.ModelAdmin):
 
 @admin.register(models.Session)
 class SessionAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "due_date", "facilitator", "start_time", "is_cancelled"]
+    list_filter = ["session_type", "extra_title_text", "is_cancelled"]
     readonly_fields = ["created_date", "end_time"]
     filter_vertical = ("attendees", "guest_facilitators")
     fieldsets = [
