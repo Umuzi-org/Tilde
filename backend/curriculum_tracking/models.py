@@ -1731,6 +1731,26 @@ class AgileCard(
     def user_has_permission(self, user, permissions):
         return any((user.has_perm(permissions, team) for team in self.get_teams()))
 
+    def request_user_is_trusted(self, user=None):
+        """
+        Check if current user is trusted on a card
+        """
+        from threadlocal_middleware import get_current_user
+
+        user = user or get_current_user()
+
+        if not user:
+            return False
+
+        all_trusts = (
+            ReviewTrust.objects.filter(content_item=self.content_item)
+            .filter(user=user)
+            .prefetch_related("user")
+        )
+
+        all_trusts = [t for t in all_trusts if t.flavours_match(self.flavour_names)]
+
+        return len(all_trusts) > 0
 
 
 class BurndownSnapshot(models.Model):

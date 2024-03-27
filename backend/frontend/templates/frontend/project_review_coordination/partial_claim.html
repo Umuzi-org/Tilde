@@ -51,7 +51,7 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
             <td>
                 <ul>
                     {% for project in claim.projects_to_review.all %}
-                    <li><a href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{project.agile_card.id}}" class="{{ styles.link }}">{{ project }}</a></li>
+                    <li><a href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{project.agile_card.id}}" class="{{ styles.link }}" target="_blank" rel="noopener">{{ project }}</a></li>
                     {% endfor %}
                 </ul>
             </td>
