@@ -7,6 +7,7 @@ from core.tests.factories import UserFactory, CurriculumFactory
 from git_real.tests.factories import RepositoryFactory
 from datetime import timedelta
 from django.utils import timezone
+from test_factories_common import FlavourMixin
 
 
 def _content_url_generator():
@@ -49,18 +50,6 @@ def _next_int_generator():
 _next_int_iterator = _next_int_generator()
 
 
-class FlavourMixin:
-    @staticmethod
-    def flavours(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            self.set_flavours(extracted)
-        else:
-            pass
-
-
 class TagMixin:
     @staticmethod
     def tags(self, create, extracted, **kwargs):
@@ -81,7 +70,7 @@ class TagFactory(DjangoModelFactory):
     name = factory.LazyAttribute(lambda *args, **kwargs: next(_tag_name_iterator))
 
 
-class ProjectContentItemFactory(DjangoModelFactory, TagMixin):
+class ProjectContentItemFactory(DjangoModelFactory, TagMixin, FlavourMixin):
     class Meta:
         model = "curriculum_tracking.ContentItem"
 
@@ -103,7 +92,7 @@ class ProjectContentItemFactory(DjangoModelFactory, TagMixin):
         TagMixin.tags(self, *args, **kwargs)
 
 
-class ContentItemFactory(DjangoModelFactory):
+class ContentItemFactory(DjangoModelFactory, FlavourMixin):
     class Meta:
         model = "curriculum_tracking.ContentItem"
 
