@@ -5,7 +5,7 @@ from core.models import Curriculum, User, Team, TagMixin
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
-from model_mixins import Mixins
+from model_mixins import Mixins, FlavourMixin
 from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
@@ -81,33 +81,6 @@ class ReviewableMixin:
         if timestamp_greater_than != None:
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
-
-
-class FlavourMixin:
-    def flavours_match(self, flavour_strings: List[str]):
-        return sorted(self.flavour_names) == sorted(flavour_strings)
-
-    def flavour_ids_match(self, flavour_ids: List[int]):
-        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
-            flavour_ids
-        )
-
-    @property
-    def flavour_names(self):
-        return [o.name for o in self.flavours.all()]
-
-    def set_flavours(self, flavour_strings):
-        flavour_tags = [
-            taggit.models.Tag.objects.get_or_create(name=name)[0]
-            for name in flavour_strings
-        ]
-
-        for flavour in self.flavours.all():
-            if flavour not in flavour_tags:
-                self.flavours.remove(flavour)
-        for tag in flavour_tags:
-            if tag not in self.flavours.all():
-                self.flavours.add(tag)
 
 
 class ContentItemProxyMixin:
@@ -467,7 +440,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
 ):
-    """what a recruit has done with a specific ContentItem"""
+    """What a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(
         ContentItem, on_delete=models.PROTECT, related_name="projects"
@@ -477,7 +450,6 @@ class RecruitProject(
     start_time = models.DateTimeField(null=True, blank=True)
     due_time = models.DateTimeField(null=True, blank=True)
 
-    # deadline_status = models.CharField()
     repository = models.ForeignKey(
         git_models.Repository,
         on_delete=models.PROTECT,
@@ -1751,7 +1723,6 @@ class AgileCard(
         all_trusts = [t for t in all_trusts if t.flavours_match(self.flavour_names)]
 
         return len(all_trusts) > 0
-
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4

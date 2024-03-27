@@ -1,4 +1,6 @@
 import copy
+import taggit
+from typing import List
 
 
 class Mixins:
@@ -17,3 +19,30 @@ class Mixins:
             o.update(**overrides)
             o.save()
         return o, created
+
+
+class FlavourMixin:
+    def flavours_match(self, flavour_strings: List[str]):
+        return sorted(self.flavour_names) == sorted(flavour_strings)
+
+    def flavour_ids_match(self, flavour_ids: List[int]):
+        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
+            flavour_ids
+        )
+
+    @property
+    def flavour_names(self):
+        return [o.name for o in self.flavours.all()]
+
+    def set_flavours(self, flavour_strings):
+        flavour_tags = [
+            taggit.models.Tag.objects.get_or_create(name=name)[0]
+            for name in flavour_strings
+        ]
+
+        for flavour in self.flavours.all():
+            if flavour not in flavour_tags:
+                self.flavours.remove(flavour)
+        for tag in flavour_tags:
+            if tag not in self.flavours.all():
+                self.flavours.add(tag)

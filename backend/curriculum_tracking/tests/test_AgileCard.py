@@ -4,10 +4,8 @@ from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
     RecruitProject,
-    TopicProgress,
     WorkshopAttendance,
     ContentItem,
-    TopicReview,
     BurndownSnapshot,
 )
 from . import factories
@@ -18,7 +16,6 @@ from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT
 from git_real.tests import factories as git_real_factories
 
 from curriculum_tracking.constants import (
-    RED_FLAG,
     NOT_YET_COMPETENT,
     COMPETENT,
     EXCELLENT,
