@@ -382,3 +382,37 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
                     "include_complete": include_complete_projects,
                 }
             )
+
+
+class DeleteAndRecreateCardsEntireTeam(LoginRequiredMixin, FormView):
+    template_name = "admin/core/confirm_delete_recreate_cards_entire_team.html"
+    form_class = DeleteAndRecreateCardsForm
+
+    def get_login_url(self) -> str:
+        return reverse("admin:login")
+
+    def form_valid(self, form):
+        self._delete_and_recreate_cards(self.team.id)
+        messages.success(
+            self.request,
+            f"Deleting and recreating cards in the background",
+        )
+        return super().form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.team = get_object_or_404(Team, id=self.kwargs["team_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.team
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("admin:core_team_change", kwargs={"object_id": self.team.pk})
+
+    @staticmethod
+    def _delete_and_recreate_cards(team_id):
+        from long_running_request_actors import delete_and_recreate_team_cards as actor
+
+        actor.send_with_options(kwargs={"team_id": team_id})
