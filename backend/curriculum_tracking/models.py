@@ -5,7 +5,7 @@ from core.models import Curriculum, User, Team, TagMixin
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
-from model_mixins import Mixins
+from model_mixins import Mixins, FlavourMixin
 from django.utils import timezone
 import taggit
 from django.core.exceptions import ValidationError
@@ -81,33 +81,6 @@ class ReviewableMixin:
         if timestamp_greater_than != None:
             query = query.filter(timestamp__gt=timestamp_greater_than)
         return query.order_by("timestamp").last()
-
-
-class FlavourMixin:
-    def flavours_match(self, flavour_strings: List[str]):
-        return sorted(self.flavour_names) == sorted(flavour_strings)
-
-    def flavour_ids_match(self, flavour_ids: List[int]):
-        return sorted([flavour.id for flavour in self.flavours.all()]) == sorted(
-            flavour_ids
-        )
-
-    @property
-    def flavour_names(self):
-        return [o.name for o in self.flavours.all()]
-
-    def set_flavours(self, flavour_strings):
-        flavour_tags = [
-            taggit.models.Tag.objects.get_or_create(name=name)[0]
-            for name in flavour_strings
-        ]
-
-        for flavour in self.flavours.all():
-            if flavour not in flavour_tags:
-                self.flavours.remove(flavour)
-        for tag in flavour_tags:
-            if tag not in self.flavours.all():
-                self.flavours.add(tag)
 
 
 class ContentItemProxyMixin:
@@ -467,7 +440,7 @@ class ReviewTrust(models.Model, FlavourMixin, ContentItemProxyMixin):
 class RecruitProject(
     models.Model, Mixins, FlavourMixin, ReviewableMixin, ContentItemProxyMixin
 ):
-    """what a recruit has done with a specific ContentItem"""
+    """What a recruit has done with a specific ContentItem"""
 
     content_item = models.ForeignKey(
         ContentItem, on_delete=models.PROTECT, related_name="projects"
@@ -477,7 +450,6 @@ class RecruitProject(
     start_time = models.DateTimeField(null=True, blank=True)
     due_time = models.DateTimeField(null=True, blank=True)
 
-    # deadline_status = models.CharField()
     repository = models.ForeignKey(
         git_models.Repository,
         on_delete=models.PROTECT,
@@ -1465,6 +1437,20 @@ class AgileCard(
         self.status = AgileCard.READY
         self.save()
 
+    def stop_project(self):
+        assert self.status == AgileCard.IN_PROGRESS
+        assert (
+            self.content_item.content_type == ContentItem.PROJECT
+        ), f"Expected content_type to be 'project', but got {self.content_item.content_type}"
+        assert self.recruit_project != None, f"Project hasn't been started"
+
+        self.recruit_project.review_request_time = None
+        self.recruit_project.start_time = None
+        self.recruit_project.save()
+
+        self.status = self.derive_status_from_project(self.recruit_project)
+        self.save()
+
     def attended_workshop(self, timestamp):
         # if self.status == AgileCard.COMPLETE:
         #     return
@@ -1608,44 +1594,28 @@ class AgileCard(
         This function is only used in template rendering and we are using threadlocals,
         that is why we need to avoid argument parameters unless they're for testing purposes
         """
-        if user is None:
-            from threadlocal_middleware import get_current_user
+        from threadlocal_middleware import get_current_user
 
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            can_start = self.can_start()
-            is_assignee = self.assignees.first() == user
+        if not user:
+            return False
 
-            if is_assignee and can_start:
-                return True
+        return (self.request_user_is_assignee(user) and self.can_start()) or (
+            self.user_has_permission(user, Team.PERMISSION_MANAGE_CARDS)
+            and (self.can_start() or self.can_force_start())
+        )
 
-            is_superuser = user.is_superuser
-            can_force_start = self.can_force_start()
-
-            if is_superuser and (can_force_start or can_start):
-                return True
-
-            has_manage_cards_permission = any(
-                [
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.assignees.first().teams()
-                ]
-            )
-
-            if has_manage_cards_permission and (can_force_start or can_start):
-                return True
-
-        return False
-
-    def request_user_is_assignee(self):
+    def request_user_is_assignee(self, user):
         """
         Checks if current user is assignee.
-        This function is only used in template rendering, that is why we need to avoid argument parameters and we are using threadlocals
         """
         from threadlocal_middleware import get_current_user
 
-        user = get_current_user()
+        user = user or get_current_user()
+
+        if not user:
+            return False
 
         return self.assignees.first() == user
 
@@ -1653,93 +1623,106 @@ class AgileCard(
         """
         Check if current user can request review for this card
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "project":
             return False
 
         if self.status not in [AgileCard.IN_PROGRESS, AgileCard.REVIEW_FEEDBACK]:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
+        user = user or get_current_user()
 
-            user = get_current_user()
+        if not user:
+            return False
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
-
-            if is_assignee:
-                return True
-
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-
-            return has_manage_cards_permission
-
-        return False
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
     def request_user_can_cancel_review_request(self, user=None):
         """
         Check if current user can cancel review request for this card
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "project":
             return False
 
-        if self.status not in [AgileCard.IN_REVIEW]:
+        if self.status != AgileCard.IN_REVIEW:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
+        if not user:
+            return False
 
-            if is_assignee:
-                return True
-
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-
-            return has_manage_cards_permission
-
-        return False
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
     def request_user_can_finish_topic(self, user=None):
         """
         Check if current user can finish topic
         """
+        from threadlocal_middleware import get_current_user
+
         if self.content_type_nice != "topic":
             return False
 
         if self.status != AgileCard.IN_PROGRESS:
             return False
 
-        if user is None:
-            from threadlocal_middleware import get_current_user
-            user = get_current_user()
+        user = user or get_current_user()
 
-        if user is not None:
-            is_assignee = user in self.assignees.all()
+        if not user:
+            return False
 
-            if is_assignee:
-                return True
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
 
-            has_manage_cards_permission = any(
-                (
-                    user.has_perm(Team.PERMISSION_MANAGE_CARDS, team)
-                    for team in self.get_teams()
-                )
-            )
-            return has_manage_cards_permission
-        return False
+    def request_user_can_stop_card(self, user=None):
+        """
+        Check if current user can stop card
+        """
+        from threadlocal_middleware import get_current_user
+
+        if self.status != AgileCard.IN_PROGRESS:
+            return False
+
+        user = user or get_current_user()
+
+        if not user:
+            return False
+
+        return self.request_user_is_assignee(user) or self.user_has_permission(
+            user, Team.PERMISSION_MANAGE_CARDS
+        )
+
+    def user_has_permission(self, user, permissions):
+        return any((user.has_perm(permissions, team) for team in self.get_teams()))
+
+    def request_user_is_trusted(self, user=None):
+        """
+        Check if current user is trusted on a card
+        """
+        from threadlocal_middleware import get_current_user
+
+        user = user or get_current_user()
+
+        if not user:
+            return False
+
+        all_trusts = (
+            ReviewTrust.objects.filter(content_item=self.content_item)
+            .filter(user=user)
+            .prefetch_related("user")
+        )
+
+        all_trusts = [t for t in all_trusts if t.flavours_match(self.flavour_names)]
+
+        return len(all_trusts) > 0
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4

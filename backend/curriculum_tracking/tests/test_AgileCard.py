@@ -4,10 +4,8 @@ from django.test import TestCase
 from curriculum_tracking.models import (
     AgileCard,
     RecruitProject,
-    TopicProgress,
     WorkshopAttendance,
     ContentItem,
-    TopicReview,
     BurndownSnapshot,
 )
 from . import factories
@@ -18,7 +16,6 @@ from git_real.constants import GIT_REAL_BOT_USERNAME, GITHUB_DATETIME_FORMAT
 from git_real.tests import factories as git_real_factories
 
 from curriculum_tracking.constants import (
-    RED_FLAG,
     NOT_YET_COMPETENT,
     COMPETENT,
     EXCELLENT,
@@ -407,6 +404,68 @@ class start_project_Tests(TestCase):
         self.assertEqual(
             card_ts.recruit_project.content_item, card_js.recruit_project.content_item
         )
+
+
+class stop_project_Tests(TestCase):
+    def setUp(self):
+        bot = SocialProfileFactory(github_name=GIT_REAL_BOT_USERNAME)
+        GithubOAuthTokenFactory(user=bot.user)
+
+    @mock.patch("git_real.helpers.get_repo")
+    @mock.patch.object(RecruitProject, "setup_repository")
+    def test_stop_project_for_repository_submissions(self, get_repo, *_):
+
+        card = factories.AgileCardFactory(
+            status=AgileCard.READY,
+            recruit_project=None,
+            content_item=factories.ProjectContentItemFactory(
+                project_submission_type=ContentItem.REPOSITORY
+            ),
+            assignees=[SocialProfileFactory().user],
+        )
+
+        get_repo.return_value = {
+            "full_name": "me/kiff",
+            "owner": {"login": "me"},
+            "ssh_url": "https://whatever.git",
+            "private": True,
+            "created_at": timezone.now().strftime(GITHUB_DATETIME_FORMAT),
+            "archived": False,
+        }
+
+        card.start_project()
+
+        project = card.recruit_project
+
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.assertIsNotNone(project.start_time)
+
+        card.stop_project()
+
+        self.assertEqual(card.status, card.derive_status_from_project(project))
+        self.assertIsNone(project.start_time)
+
+    def test_stop_project_for_link_submissions(self):
+        card = self.card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=ContentItem.PROJECT,
+                project_submission_type=ContentItem.LINK,
+            ),
+            status=AgileCard.READY,
+        )
+        self.card.assignees.set([SocialProfileFactory().user])
+
+        card.start_project()
+
+        project = card.recruit_project
+
+        self.assertEqual(card.status, AgileCard.IN_PROGRESS)
+        self.assertIsNotNone(project.start_time)
+
+        card.stop_project()
+
+        self.assertEqual(card.status, card.derive_status_from_project(project))
+        self.assertIsNone(project.start_time)
 
 
 class Project_set_due_time_Tests(TestCase):

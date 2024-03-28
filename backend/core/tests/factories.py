@@ -3,6 +3,7 @@ import factory
 from backend.settings import (
     AUTH_USER_MODEL,
 )  # there's probably a cleaner way to import this.
+from test_factories_common import FlavourMixin
 
 
 def _email_generator():
@@ -49,3 +50,14 @@ class CurriculumFactory(DjangoModelFactory):
         model = "core.Curriculum"
 
     name = "hello"
+
+
+class StreamFactory(DjangoModelFactory, FlavourMixin):
+
+    class Meta:
+        model = "core.Stream"
+
+    # name = "core: web dev"
+    @factory.post_generation
+    def flavours(self, *args, **kwargs):
+        FlavourMixin.flavours(self, *args, **kwargs)
