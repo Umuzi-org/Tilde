@@ -128,8 +128,10 @@ INSTALLED_APPS = [
     "zero_marginal_cost_challenges.apps.ZeroMarginalCostChallengesConfig",
     "automarker.apps.AutomarkerConfig",
     "frontend",
-    "project_review_coordination",
+    "project_review_coordination.apps.ProjectReviewCoordinationConfig",
     "django.contrib.humanize",
+    "session_scheduling",
+    "selection_bootcamps",
 ]
 
 SITE_ID = 1  # from allauth docs

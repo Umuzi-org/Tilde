@@ -7,6 +7,8 @@ from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.models import PermissionsMixin
 from taggit.managers import TaggableManager
 
+from model_mixins import FlavourMixin
+
 
 class TagMixin:
     @property
@@ -332,11 +334,12 @@ class Team(AuthGroup, Mixins):
                     yield team
 
 
-class Stream(models.Model):
+class Stream(models.Model, FlavourMixin):
     """a collection of curriculums. Eg someone might need to do a soft skills curriculum and then a web dev part 1 curriculum"""
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    flavours = TaggableManager(blank=True)
 
     def __str__(self) -> str:
         return self.name
