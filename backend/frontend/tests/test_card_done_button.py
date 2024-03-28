@@ -1,4 +1,5 @@
 from activity_log.models import LogEntry
+from playwright.sync_api import expect
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory, ContentItemFactory
 from curriculum_tracking.models import ContentItem, AgileCard
@@ -48,7 +49,7 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_does_not_show_for_project_cards(self):
         self.make_project_card()
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
         
         ip_column = self.page.text_content("div#column_IP")
         self.assertNotIn("Done", ip_column)
@@ -56,7 +57,7 @@ class TestCardDoneButton(FrontendTestMixin):
     def test_done_button_shows_for_topic_cards(self):
         self.make_topic_card()
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
         ip_topic_card = self.page.text_content("div#column_IP")
         
         self.assertIn("Done", ip_topic_card)
@@ -65,7 +66,7 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_topic_card()
         self.page.click("text=Done")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         ip_column = self.page.text_content("div#column_IP")
         complete_column = self.page.text_content("div#column_C")
@@ -79,20 +80,17 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card()
         self.make_topic_card()
 
-        self.page.click("text=Done")
+        self.page.locator('text="Done"').click();
+        
+        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
-        self.page.wait_for_load_state("networkidle")
-
-        self.assertIn(
-            "You have outstanding card reviews", self.page.text_content("div#column_IP")
-        )
 
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
 
         self.page.click("text=Done")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()

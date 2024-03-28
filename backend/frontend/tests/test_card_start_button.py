@@ -42,7 +42,7 @@ class TestCardStartButton(FrontendTestMixin):
 
         self.page.click("text=Start")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         ip_column = self.page.text_content("div#column_IP")
         backlog_column = self.page.text_content("div#column_RB")
@@ -56,7 +56,7 @@ class TestCardStartButton(FrontendTestMixin):
 
         self.page.click("text=Start")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         ip_column = self.page.text_content("div#column_IP")
         backlog_column = self.page.text_content("div#column_RB")
@@ -70,7 +70,7 @@ class TestCardStartButton(FrontendTestMixin):
 
         self.page.click("text=Start")
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()
