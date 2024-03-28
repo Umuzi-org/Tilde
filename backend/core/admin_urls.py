@@ -13,8 +13,8 @@ urlpatterns = [
         name="confirm_add_github_collaborator",
     ),
     path(
-        "delete_regenerate_cards/<int:user_id>",
-        views.DeleteAndRegenerateCards.as_view(),
-        name="confirm_delete_regenerate_cards",
+        "delete_recreate_cards/<int:user_id>",
+        views.DeleteAndRecreateCards.as_view(),
+        name="confirm_delete_recreate_cards",
     ),
 ]

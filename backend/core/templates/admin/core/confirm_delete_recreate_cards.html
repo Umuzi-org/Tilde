@@ -2,7 +2,7 @@
 {% load i18n admin_urls %}
 
 {% block title %}
-    Delete and Regenerate cards for user - {{ user }}
+    Delete and Recreate cards for user - {{ user }}
 {% endblock %}
 
 {% block bodyclass %}
@@ -26,19 +26,19 @@
         <a href="{% url 'admin:core_team_changelist' %}">Users</a>
         &rsaquo;
         <a href="{% url 'admin:core_user_change' user.id %}">{{ user }}</a>
-        &rsaquo; Delete and Regenerate cards for user
+        &rsaquo; Delete and Recreate cards for user
     </div>
 {% endblock %}
 
 <div class="content">
     {% block content %}
     <div id="content-main">
-        <form action="{% url 'confirm_delete_regenerate_cards' user.id %}" method="post">
+        <form action="{% url 'confirm_delete_recreate_cards' user.id %}" method="post">
             {% csrf_token %}
             <div>
                 <h2>Are you sure?</h2>
                 <p>
-                    Are you sure you want to delete and regenerate cards for user "{{ user }}"?
+                    Are you sure you want to delete and recreate cards for user "{{ user }}"?
                 </p>
             </div>
             <input type="submit" value="Yes, I'm sure" class="deletelink" />

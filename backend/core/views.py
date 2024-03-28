@@ -15,7 +15,7 @@ from django.contrib import messages
 from .forms import (
     BulkAddUsersToTeamForm,
     AddGithubCollaboratorForm,
-    DeleteAndRegenerateCardsForm,
+    DeleteAndRecreateCardsForm,
 )
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
@@ -388,18 +388,18 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
             )
 
 
-class DeleteAndRegenerateCards(LoginRequiredMixin, FormView):
-    template_name = "admin/core/confirm_delete_regenerate_cards.html"
-    form_class = DeleteAndRegenerateCardsForm
+class DeleteAndRecreateCards(LoginRequiredMixin, FormView):
+    template_name = "admin/core/confirm_delete_recreate_cards.html"
+    form_class = DeleteAndRecreateCardsForm
 
     def get_login_url(self) -> str:
         return reverse("admin:login")
     
     def form_valid(self, form):
-        self._delete_and_regenerate_cards(self.user.id)
+        self._delete_and_recreate_cards(self.user.id)
         messages.success(
             self.request,
-            f"Deleting and regenerating cards in the background",
+            f"Deleting and recreating cards in the background",
         )
         return super().form_valid(form)
     
@@ -418,7 +418,7 @@ class DeleteAndRegenerateCards(LoginRequiredMixin, FormView):
     
 
     @staticmethod
-    def _delete_and_regenerate_cards(user_id):
+    def _delete_and_recreate_cards(user_id):
         from long_running_request_actors import delete_and_recreate_user_cards as actor
 
         actor.send_with_options(kwargs={"user_id": user_id})

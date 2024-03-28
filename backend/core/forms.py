@@ -91,7 +91,5 @@ class AddGithubCollaboratorForm(forms.Form):
         return sorted(set(teams))
 
 
-class DeleteAndRegenerateCardsForm(forms.Form):
-    def clean(self):
-        cleaned_data = super().clean()
-        return cleaned_data
+class DeleteAndRecreateCardsForm(forms.Form):
+    pass

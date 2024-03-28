@@ -7,8 +7,8 @@
         </a>
     </li>
     <li>
-        <a title="{% translate 'Delete and recreate cards for this user' %}" href="{% url 'confirm_delete_regenerate_cards' original.pk %}">
-            {% translate 'Delete add Regenerate cards' %}
+        <a title="{% translate 'Delete and recreate cards for this user' %}" href="{% url 'confirm_delete_recreate_cards' original.pk %}">
+            {% translate 'Delete and Recreate cards' %}
         </a>
     </li>
     {{ block.super }}
