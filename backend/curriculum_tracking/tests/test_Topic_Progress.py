@@ -11,7 +11,7 @@ import curriculum_tracking.activity_log_entry_creators as log_creators
 
 class TestTopicProgress(TestCase):
 
-    def test_duration_in_current_column_returns_none_when_there_are_no_log_entries(
+    def test_get_card_duration_in_current_column_returns_none_when_there_are_no_log_entries(
         self,
     ):
         user = factories.UserFactory(is_superuser=False)
@@ -22,10 +22,10 @@ class TestTopicProgress(TestCase):
 
         card.assignees.set([user])
         card.start_topic()
-        self.assertIn("duration_in_current_column", dir(card.topic_progress))
-        self.assertEquals(card.topic_progress.duration_in_current_column, None)
+        self.assertIn("get_card_duration_in_current_column", dir(card.topic_progress))
+        self.assertEquals(card.topic_progress.get_card_duration_in_current_column, None)
 
-    def test_duration_in_current_column_returns_correct_duration(self):
+    def test_get_card_duration_in_current_column_returns_correct_duration(self):
         user = factories.UserFactory(is_superuser=False)
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
@@ -53,6 +53,6 @@ class TestTopicProgress(TestCase):
             card.status = "IP"
 
             self.assertEquals(
-                card.topic_progress.duration_in_current_column,
+                card.topic_progress.get_card_duration_in_current_column,
                 "0 days, 3 hours, 0 minutes",
             )

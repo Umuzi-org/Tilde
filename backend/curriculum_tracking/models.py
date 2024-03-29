@@ -948,7 +948,7 @@ class TopicProgress(
         }
 
     @property
-    def duration_in_current_column(self):
+    def get_card_duration_in_current_column(self):
         relevant_logs = sorted(
             LogEntry.objects.filter(
                 Q(event_type__name=CARD_STARTED)
