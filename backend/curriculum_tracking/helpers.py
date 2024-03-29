@@ -184,7 +184,7 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
-def get_formatted_duration_to_string(duration):
+def get_formatted_duration_string(duration):
     if duration:
         duration = duration
         seconds = duration.total_seconds()

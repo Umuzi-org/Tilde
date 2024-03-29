@@ -963,7 +963,7 @@ class TopicProgress(
         if relevant_logs:
             duration = timezone.now() - relevant_logs[-1].timestamp
 
-        return helpers.get_formatted_duration_to_string(duration)
+        return helpers.get_formatted_duration_string(duration)
 
 
 class TopicReview(models.Model, Mixins):
