@@ -378,8 +378,11 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, id, type):
+def course_component_details(request, id):
     get_card_duration_in_current_column = None
+    request_url = request.build_absolute_uri()
+    type = request_url.split("/")[3]
+
     if type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
         get_card_duration_in_current_column = (

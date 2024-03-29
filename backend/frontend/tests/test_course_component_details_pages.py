@@ -17,7 +17,8 @@ from curriculum_tracking.models import (
     ContentItem,
 )
 
-VIEW_NAME = "course_component_details"
+TOPIC_VIEW_NAME = "topic"
+PROJECT_VIEW_NAME = "project"
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -76,8 +77,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -100,8 +101,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -131,8 +132,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -162,8 +163,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -190,8 +191,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -208,8 +209,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "type": "project"},
+            PROJECT_VIEW_NAME,
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -254,8 +255,8 @@ class TestTopicDetailsPage(FrontendTestMixin):
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
         self.topic_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={"id": self.topic.id, "type": "topic"},
+            TOPIC_VIEW_NAME,
+            kwargs={"id": self.topic.id},
         )
         self.page.goto(self.topic_url)
 
