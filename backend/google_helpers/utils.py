@@ -16,7 +16,7 @@ def timestamp_to_datetime(timestamp):
 
 
 def fetch_sheet(sheet: str = None, url: str = None):
-    print(f"Fetching sheet: {sheet} {url}")
+    logging.info(f"Fetching sheet: {sheet} {url}")
     service = get_gspread_service()
     if sheet:
         book = service.open(sheet)
