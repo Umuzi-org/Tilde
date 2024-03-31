@@ -217,11 +217,10 @@ def get_blant_duration(id, card_status):
             object_1_id=id,
         ),
         key=lambda log: log.timestamp,
-        reverse=True,
     )
 
     if card_status != "C" or not card_started_logs or not card_completed_logs:
         return None
 
-    duration = card_completed_logs[0].timestamp - card_started_logs[0].timestamp
+    duration = card_completed_logs[-1].timestamp - card_started_logs[-1].timestamp
     return get_formatted_duration_string(duration)
