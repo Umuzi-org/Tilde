@@ -2,8 +2,12 @@ from datetime import timedelta, datetime
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
-from activity_log.models import EventType, LogEntry
-from .activity_log_entry_creators import CARD_STARTED, CARD_MOVED_TO_COMPLETE
+from activity_log.models import LogEntry
+from curriculum_tracking.activity_log_entry_creators import (
+    CARD_STARTED,
+    CARD_MOVED_TO_COMPLETE,
+)
+from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -998,12 +1002,7 @@ class TopicProgress(
             return None
 
         duration = card_completed_logs[0].timestamp - card_started_logs[0].timestamp
-        seconds = duration.total_seconds()
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, remainder = divmod(remainder, 60)
-
-        return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
+        return helpers.get_formatted_duration_string(duration)
 
 
 class TopicReview(models.Model, Mixins):
