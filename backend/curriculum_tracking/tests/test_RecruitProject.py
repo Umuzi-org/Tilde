@@ -1,10 +1,16 @@
-from core.tests.factories import TeamFactory, UserFactory
+from datetime import timedelta
+from unittest.mock import patch
 from django.test import TestCase
+from django.utils import timezone
 
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
 from core.models import Team
+from core.tests.factories import TeamFactory, UserFactory
 from guardian.shortcuts import assign_perm
+from activity_log.models import LogEntry
+import curriculum_tracking.activity_log_entry_creators as log_creators
+
 
 JAVASCRIPT = "js"
 TYPESCRIPT = "ts"
@@ -82,3 +88,53 @@ class generate_repo_name_for_project_Tests(TestCase):
         self.assertIn("-test-project-", repo_name)
         self.assertIn(self.user.first_name, repo_name)
         self.assertIn(self.user.last_name, repo_name)
+
+
+class get_total_duration(TestCase):
+
+    def test_returns_none_when_there_are_no_log_entries(self):
+        user = factories.UserFactory(is_superuser=False)
+        card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=models.ContentItem.PROJECT, project_submission_type="L"
+            ),
+            status=models.AgileCard.READY,
+        )
+
+        card.assignees.set([user])
+        card.start_project()
+        self.assertIn("get_total_duration", dir(card.recruit_project))
+        self.assertEquals(card.recruit_project.get_total_duration, None)
+
+    def test_returns_correct_duration(self):
+        user = factories.UserFactory(is_superuser=False)
+
+        card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=models.ContentItem.PROJECT, project_submission_type="L"
+            ),
+            status=models.AgileCard.READY,
+        )
+
+        card.assignees.set([user])
+        card.start_project()
+
+        with patch.object(
+            LogEntry._meta.get_field("timestamp"), "auto_now_add", True
+        ), patch(
+            "django.utils.timezone.now",
+            side_effect=[
+                timezone.now(),
+                timezone.now(),
+                timezone.now(),
+                timezone.now() + timedelta(hours=3),
+            ],
+        ):
+            log_creators.log_card_started(card=card, actor_user=user)
+            log_creators.log_card_moved_to_complete(card=card, actor_user=user)
+
+            card.status = "C"
+
+            self.assertEquals(
+                card.recruit_project.get_total_duration, "0 days, 3 hours, 0 minutes"
+            )

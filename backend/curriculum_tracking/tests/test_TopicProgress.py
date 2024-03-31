@@ -9,9 +9,9 @@ from activity_log.models import LogEntry
 import curriculum_tracking.activity_log_entry_creators as log_creators
 
 
-class TestTopicProgress(TestCase):
+class get_total_duration(TestCase):
 
-    def test_duration_str_returns_none_when_there_are_no_log_entries(self):
+    def test_returns_none_when_there_are_no_log_entries(self):
         user = factories.UserFactory(is_superuser=False)
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
@@ -20,10 +20,10 @@ class TestTopicProgress(TestCase):
 
         card.assignees.set([user])
         card.start_topic()
-        self.assertIn("duration_str", dir(card.topic_progress))
-        self.assertEquals(card.topic_progress.duration_str, None)
+        self.assertIn("get_total_duration", dir(card.topic_progress))
+        self.assertEquals(card.topic_progress.get_total_duration, None)
 
-    def test_duration_str_returns_correct_duration(self):
+    def test_returns_correct_duration(self):
         user = factories.UserFactory(is_superuser=False)
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
@@ -50,5 +50,5 @@ class TestTopicProgress(TestCase):
             card.status = "C"
 
             self.assertEquals(
-                card.topic_progress.duration_str, "0 days, 3 hours, 0 minutes"
+                card.topic_progress.get_total_duration, "0 days, 3 hours, 0 minutes"
             )

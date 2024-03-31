@@ -2,11 +2,6 @@ from datetime import timedelta, datetime
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
-from activity_log.models import LogEntry
-from curriculum_tracking.activity_log_entry_creators import (
-    CARD_STARTED,
-    CARD_MOVED_TO_COMPLETE,
-)
 from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
@@ -795,6 +790,10 @@ class RecruitProject(
     def agile_card_status(self):
         return self.agile_card.status
 
+    @property
+    def get_total_duration(self):
+        return helpers.get_blant_duration(self.id, self.agile_card_status)
+
 
 class RecruitProjectReview(models.Model, Mixins):
     INCORRECT = "i"
@@ -976,33 +975,8 @@ class TopicProgress(
         }
 
     @property
-    def duration_str(self):
-        card_started_logs = sorted(
-            LogEntry.objects.filter(
-                Q(event_type__name=CARD_STARTED),
-                object_1_id=self.id,
-            ),
-            key=lambda log: log.timestamp,
-        )
-
-        card_completed_logs = sorted(
-            LogEntry.objects.filter(
-                Q(event_type__name=CARD_MOVED_TO_COMPLETE),
-                object_1_id=self.id,
-            ),
-            key=lambda log: log.timestamp,
-            reverse=True,
-        )
-
-        if (
-            self.agile_card.status != "C"
-            or not card_started_logs
-            or not card_completed_logs
-        ):
-            return None
-
-        duration = card_completed_logs[0].timestamp - card_started_logs[0].timestamp
-        return helpers.get_formatted_duration_string(duration)
+    def get_total_duration(self):
+        return helpers.get_blant_duration(self.id, self.agile_card.status)
 
 
 class TopicReview(models.Model, Mixins):
