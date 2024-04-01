@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import timedelta
+from core.models import Team
 from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProjectReview
 from django.utils import timezone
 from django.db.models import OuterRef, Exists
+from guardian.core import ObjectPermissionChecker
+
 
 User = get_user_model()
 
@@ -34,6 +37,7 @@ class ProjectReviewBundleClaim(models.Model):
 
     @staticmethod
     def get_projects_user_can_review(user):
+        
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
             reviewer_user=user,
@@ -56,4 +60,23 @@ class ProjectReviewBundleClaim(models.Model):
             .prefetch_related("content_item", "recruit_project")
         )
 
-        return cards
+        if user.is_superuser:
+            return cards
+        
+        permitted_cards = []
+        perm_checker = ObjectPermissionChecker(user)
+        
+        for card in cards:
+            assignee_teams = card.assignees.first().teams()
+            
+            if len(assignee_teams) == 0:
+                continue
+
+            perm_checker.prefetch_perms(assignee_teams)
+            for view_permission in Team.PERMISSION_VIEW:
+                if any(
+                    (perm_checker.has_perm(view_permission, team) for team in assignee_teams)
+                ):
+                    permitted_cards.append(card)
+    
+        return permitted_cards

@@ -704,7 +704,6 @@ def view_partial_team_user_progress_chart(request, user_id):
 
 @user_passes_test(is_staff)
 def project_review_coordination_unclaimed(request):
-    from curriculum_tracking.models import AgileCard, ReviewTrust
     from project_review_coordination.models import ProjectReviewBundleClaim
 
     ProjectReviewBundleClaim.objects.filter(is_active=True).filter(
