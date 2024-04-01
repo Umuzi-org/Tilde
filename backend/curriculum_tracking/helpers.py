@@ -219,7 +219,11 @@ def get_blant_duration(id, card_status):
         key=lambda log: log.timestamp,
     )
 
-    if card_status != "C" or not card_started_logs or not card_completed_logs:
+    if (
+        card_status != models.AgileCard.COMPLETE
+        or not card_started_logs
+        or not card_completed_logs
+    ):
         return None
 
     duration = card_completed_logs[-1].timestamp - card_started_logs[-1].timestamp
