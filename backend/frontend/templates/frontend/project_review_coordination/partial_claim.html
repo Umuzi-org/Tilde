@@ -1,4 +1,3 @@
-{% load tz %}
 <form>
 {% csrf_token %}
 <div
@@ -23,7 +22,7 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
         <tr>
             <td>Due time</td>
             <td>
-                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp|timezone:"Africa/Johannesburg" }}</span> 
+                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp }}</span> 
                 <button 
                     class="{{styles.button_primary_small}}"
                     hx-post="{% url 'action_project_review_coordination_add_time' claim.id %}"
