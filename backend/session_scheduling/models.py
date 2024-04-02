@@ -73,6 +73,7 @@ class Session(models.Model, FlavourMixin):
     )
     flavours = TaggableManager(blank=True)
     extra_title_text = models.CharField(max_length=128, blank=True, null=True)
+    # extra_event_body_text = models.TextField(blank=True, null=True)
 
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
@@ -89,9 +90,10 @@ class Session(models.Model, FlavourMixin):
         )
 
     def get_event_copy(self):
+
         todo
         greeting = "Dear learner(s)"
-        return f"{greeting}\n\n{copy}\n\n{form}\n\n{recording}\n\n{regards}"
+        return f"{greeting}\n\n{copy}\n\n{extra_event_body_text}\n\n{form}\n\n{recording}\n\n{regards}"
 
     def attendee_emails(self):
         emails = sorted([o.email for o in self.attendees.all()])
