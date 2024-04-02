@@ -2,7 +2,8 @@
 immediately, even if it's a small page. This should reduce lighthouse timing for
 first contentful paint #}
 {% block main %}
-  <main class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 pb-0 overflow-x-auto grid grid-cols-5 gap-3 min-w-[1216px]">
+  <main class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 pb-0 overflow-x-auto">
+    <div class="grid grid-cols-5 gap-3 min-w-[1216px]">
     {% for column in columns %}
       <div class="h-screen flex flex-col overflow-hidden">
         <h2
@@ -20,6 +21,7 @@ first contentful paint #}
         ></div>
       </div>
     {% endfor %}
+    </div>
   </main>
 {% include "frontend/user/board/js_exec_action_page_column_adjust.html" %} 
 {% endblock %}

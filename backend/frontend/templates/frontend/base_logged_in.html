@@ -11,9 +11,7 @@
 {% block main_content %}
     <div class="min-h-full">
         {% include 'frontend/partial_logged_in_main_header.html' %}
-            <header class="bg-white shadow py-5 flex items-center sticky top-[67px] w-full z-50">
-                {% block secondary_header %}{% endblock %}
-            </header>
+        {% block secondary_header %}{% endblock %}
         {% block content %}{% endblock %}
     </div>
 {% endblock %}
