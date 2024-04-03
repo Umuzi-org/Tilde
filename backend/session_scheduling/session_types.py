@@ -20,6 +20,8 @@ SessionTypeConf = namedtuple(
 SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK = "Fundamental skill spot check"
 SESSION_FUNDAMENTAL_SKILL_ASSISTANCE = "Fundamental skill assistance"
 SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
+
+SESSION_CUSTOM = "Custom"
 # SESSION_PROBLEM_SOLVING = "Problem solving" TODO
 # SESSION_CARD_BASED = "card progress based" TODO
 
@@ -28,7 +30,7 @@ session_types = [
     SessionTypeConf(
         name=SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK,
         event_copy="It looks like you know what you are doing. We just want to spend a little time with you to make sure. If it turns out that you don't know something then we're here to help.",
-        event_title="Skill Spot Check",
+        event_title="Skill Spot Check - Skill Spot Check - {extra_title_text} {flavours}",
         description="The student seems to know what they are doing. We are just checking on them to make sure our other systems are working.",
         duration_minutes=45,
     ),
@@ -44,6 +46,13 @@ session_types = [
         event_copy="Well done for getting this far in the bootcamp. The next step is a chat with one of our staff members. Please make sure you are in a quiet place with good internet, and make sure you are on time. To prepare for this session, make sure you UNDERSTAND all the things you did during the bootcamp. Read over all the things and make sure you can answer all the questions.",
         event_title="Bootcamp Assessment - {extra_title_text}",
         description="This is the final assessment for a learner who is taking part in a selection bootcamp. We are assessing them to see if they are ready to join the main bootcamp.",
+        duration_minutes=45,
+    ),
+    SessionTypeConf(
+        name=SESSION_CUSTOM,
+        event_copy="",
+        event_title="{extra_title_text}",
+        description="This is for ad-hoc sessions set up by a human. The event title will come from the field `extra_title_text` and the event copy (the body of the invitation) will come from the `extra_event_body_text` field",
         duration_minutes=45,
     ),
 ]
