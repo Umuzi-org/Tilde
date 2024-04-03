@@ -48,7 +48,10 @@ class TestCardDetailsButton(FrontendTestMixin):
 
         link_project_url = self.reverse_url(
             "project",
-            kwargs={"id": self.card.recruit_project.id},
+            kwargs={
+                "course_component_id": self.card.recruit_project.id,
+                "user_id": self.user.id,
+            },
         )
 
         board_url = self.reverse_url("user_board", kwargs={"user_id": self.user.id})

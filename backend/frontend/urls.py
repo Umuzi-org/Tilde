@@ -68,12 +68,12 @@ urlpatterns = [
     ),
     # Course component details
     path(
-        "project/<int:id>",
+        "project/<int:course_component_id>/<int:user_id>",
         views.course_component_details,
         name="project",
     ),
     path(
-        "topic/<int:id>",
+        "topic/<int:course_component_id>/<int:user_id>",
         views.course_component_details,
         name="topic",
     ),
