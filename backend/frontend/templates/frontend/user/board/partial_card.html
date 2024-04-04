@@ -209,11 +209,11 @@
       </div>
 
  
-      {%if card.content_item.content_type_nice == "project"%}
+      {%if card.recruit_project and card.content_item.content_type_nice == "project"%}
         <a href="{% url 'project' card.recruit_project.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
       {% endif %}
 
-      {%if card.content_item.content_type_nice == "topic"%}
+      {%if card.topic_progress and card.content_item.content_type_nice == "topic"%}
           <a href="{% url 'topic' card.topic_progress.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
         </div>
       {% endif %}
