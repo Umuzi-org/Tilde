@@ -78,10 +78,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -105,10 +102,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -139,10 +133,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -173,10 +164,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -204,10 +192,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -225,10 +210,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.recruit_project.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.recruit_project.id},
         )
         self.page.goto(self.link_project_url)
 
@@ -274,10 +256,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.topic_url = self.reverse_url(
             TOPIC_VIEW_NAME,
-            kwargs={
-                "course_component_id": self.topic.id,
-                "user_id": self.user.id,
-            },
+            kwargs={"id": self.topic.id},
         )
         self.page.goto(self.topic_url)
 
