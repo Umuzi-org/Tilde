@@ -33,7 +33,7 @@
 <div class="content">
     {% block content %}
     <div id="content-main">
-        <form action="{% url 'confirm_delete_recreate_cards' user.id %}" method="post">
+        <form action="{% url 'delete_recreate_cards' user.id %}" method="post">
             {% csrf_token %}
             <div>
                 <h2>Are you sure?</h2>

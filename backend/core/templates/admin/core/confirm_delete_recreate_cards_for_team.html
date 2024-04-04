@@ -2,7 +2,7 @@
 {% load i18n admin_urls %}
 
 {% block title %}
-    Delete and Recreate cards for team - {{ team.name }}
+    Delete and Recreate cards for team - {{ team.id }}
 {% endblock %}
 
 {% block bodyclass %}
@@ -25,7 +25,7 @@
         &rsaquo;
         <a href="{% url 'admin:core_team_changelist' %}">Teams</a>
         &rsaquo;
-        <a href="{% url 'admin:core_team_change' team.name %}">{{ team.name }}</a>
+        <a href="{% url 'admin:core_team_change' team.id %}">{{ team.name }}</a>
         &rsaquo; Delete and Recreate cards for team
     </div>
 {% endblock %}
@@ -33,7 +33,7 @@
 <div class="content">
     {% block content %}
     <div id="content-main">
-        <form action="{% url 'confirm_delete_recreate_cards' team.name %}" method="post">
+        <form action="{% url 'confirm_delete_recreate_cards_for_team' team.id %}" method="post">
             {% csrf_token %}
             <div>
                 <h2>Are you sure?</h2>
@@ -42,7 +42,7 @@
                 </p>
             </div>
             <input type="submit" value="Yes, I'm sure" class="deletelink" />
-            <a href="{% url 'admin:core_team_change' team.name %}" class="cancellink">No, take me back</a>
+            <a href="{% url 'admin:core_team_change' team.id %}" class="cancellink">No, take me back</a>
         </form>
     </div>
     {% endblock %}

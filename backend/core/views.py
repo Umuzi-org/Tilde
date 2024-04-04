@@ -421,35 +421,37 @@ class DeleteAndRecreateCards(LoginRequiredMixin, FormView):
 
         actor.send_with_options(kwargs={"user_id": user_id})
 
-class DeleteAndRecreateCardsEntireTeam(LoginRequiredMixin, FormView):
-    template_name = "admin/core/confirm_delete_recreate_cards_entire_team.html"
+
+class DeleteAndRecreateCardsForTeam(LoginRequiredMixin, FormView):
     form_class = DeleteAndRecreateCardsForm
+    template_name = "admin/core/confirm_delete_recreate_cards_for_team.html"
 
-    def get_login_url(self) -> str:
+    def get_login_url(self):
         return reverse("admin:login")
-
-    def form_valid(self, form):
-        self._delete_and_recreate_cards(self.team.id)
-        messages.success(
-            self.request,
-            f"Deleting and recreating cards in the background",
-        )
-        return super().form_valid(form)
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.team = get_object_or_404(Team, id=self.kwargs["team_id"])
+        team_id = self.kwargs["team_id"]
+        self.team = get_object_or_404(Team, id=team_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["team"] = self.team
         return context
 
-    def get_success_url(self) -> str:
-        return reverse("admin:core_team_change", kwargs={"object_id": self.team.pk})
+    def form_valid(self, form):
+        self._delete_and_recreate_cards_for_team(self.team.id)
+        messages.success(
+            self.request,
+            f"Deleting and recreating cards for team in the background",
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("admin:core_team_change", kwargs={"object_id": self.team.id})
 
     @staticmethod
-    def _delete_and_recreate_cards(team_id):
-        from long_running_request_actors import delete_and_recreate_team_cards as actor
+    def _delete_and_recreate_cards_for_team(team_id):
+        from long_running_request_actors import bulk_regenerate_cards_for_team as actor
 
         actor.send_with_options(kwargs={"team_id": team_id})
