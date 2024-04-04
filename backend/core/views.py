@@ -12,7 +12,11 @@ from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from .forms import BulkAddUsersToTeamForm, AddGithubCollaboratorForm
+from .forms import (
+    BulkAddUsersToTeamForm,
+    AddGithubCollaboratorForm,
+    DeleteAndRecreateCardsForm,
+)
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -383,6 +387,39 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
                 }
             )
 
+
+class DeleteAndRecreateCards(LoginRequiredMixin, FormView):
+    template_name = "admin/core/confirm_delete_recreate_cards.html"
+    form_class = DeleteAndRecreateCardsForm
+
+    def get_login_url(self) -> str:
+        return reverse("admin:login")
+
+    def form_valid(self, form):
+        self._delete_and_recreate_cards(self.user.id)
+        messages.success(
+            self.request,
+            f"Deleting and recreating cards in the background",
+        )
+        return super().form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user = get_object_or_404(User, id=self.kwargs["user_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
+
+    @staticmethod
+    def _delete_and_recreate_cards(user_id):
+        from long_running_request_actors import delete_and_recreate_user_cards as actor
+
+        actor.send_with_options(kwargs={"user_id": user_id})
 
 class DeleteAndRecreateCardsEntireTeam(LoginRequiredMixin, FormView):
     template_name = "admin/core/confirm_delete_recreate_cards_entire_team.html"
