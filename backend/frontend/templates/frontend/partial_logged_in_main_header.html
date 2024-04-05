@@ -73,8 +73,10 @@
                   aria-haspopup="true"
                 >
                   <span class="sr-only">Open user menu</span>
-                  <div class="flex overflow-hidden rounded-full items-center justify-items-center">
-                    {% user_avatar  request.user.email %}
+                  <div
+                    class="flex overflow-hidden rounded-full items-center justify-items-center"
+                  >
+                    {% user_avatar request.user.email %}
                   </div>
                 </button>
 
@@ -186,11 +188,10 @@
       </div>
       <div class="pt-4 pb-3 border-t border-gray-700">
         <div class="flex items-center px-5 space-x-3">
-          <div class="flex w-[30px] h-[30px] -mx-1 overflow-hidden rounded-full border-2 border-white items-center justify-items-center">
-            <div class="bg-slate-400 font-bold text-slate-100 w-[30px] h-[30px] rounded-full flex items-center justify-center flex-nowrap"
-                 title="{{ reviewer }}">
-                {{"L"}}
-                </div>
+          <div
+            class="flex overflow-hidden rounded-full items-center justify-items-center"
+          >
+            {% user_avatar request.user.email %}
           </div>
           <div class="space-y-1">
             <div class="text-base font-medium leading-none text-white">
