@@ -185,12 +185,9 @@ def pull_request_reviews_outstanding(user):
 
 
 def get_days_hours_minutes_string(timestamp):
-    if timestamp:
-        seconds = timestamp.total_seconds()
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, remainder = divmod(remainder, 60)
+    seconds = timestamp.total_seconds()
+    days, remainder = divmod(seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, remainder = divmod(remainder, 60)
 
-        return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
-
-    return None
+    return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
