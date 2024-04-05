@@ -1,3 +1,5 @@
+{% load custom_tags %}
+
 <div class="bg-gray-800 sticky top-0 z-50">
   <nav
     class="bg-gray-800"
@@ -71,11 +73,8 @@
                   aria-haspopup="true"
                 >
                   <span class="sr-only">Open user menu</span>
-                  <div class="flex overflow-hidden rounded-full  items-center justify-items-center">
-                    <div class="bg-slate-400 font-bold text-slate-100 w-[30px] h-[30px] rounded-full flex items-center justify-center flex-nowrap"
-                         title="{{ reviewer }}">
-                        {{"L"}}
-                        </div>
+                  <div class="flex overflow-hidden rounded-full items-center justify-items-center">
+                    {% user_avatar  request.user.email %}
                   </div>
                 </button>
 
