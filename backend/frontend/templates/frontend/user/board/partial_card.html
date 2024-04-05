@@ -138,12 +138,12 @@
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
         {% if card.assignee_names %}
-          {% for assignee in card.assignee_names %}
-            <img class="w-[30px] h-[30px] rounded-full"
-                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                 alt="{{ assignee }} profile picture"
-                 title="{{ assignee }}" />
-          {% endfor %}
+            <div class="flex w-[30px] h-[30px] -mx-1 overflow-hidden rounded-full border-2 border-white items-center justify-items-center">
+                <div class="bg-slate-400 font-bold text-slate-100 w-[30px] h-[30px] rounded-full flex items-center justify-center flex-nowrap"
+                     title="{{ reviewer }}">
+                    {{card.assignee_names.0.0|upper}}
+                    </div>
+              </div>
         {% endif %}
       </div>
       <div class="Reviewer-avatars col-span-1 row-span-1 group">
@@ -151,11 +151,11 @@
         <div class="flex relative">
           {% if card.reviewer_names %}
             {% for reviewer in card.reviewer_names|slice:":2" %}
-              <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
-                <img class="w-[30px] h-[30px] rounded-full"
-                     src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                     alt="{{ reviewer }} profile picture"
-                     title="{{ reviewer }}" />
+              <div class="flex w-[30px] h-[30px] -mx-1 overflow-hidden rounded-full border-2 border-white items-center justify-items-center">
+                <div class="bg-slate-400 font-bold text-slate-100 w-[30px] h-[30px] rounded-full flex items-center justify-center flex-nowrap"
+                     title="{{ reviewer }}">
+                    {{reviewer.0|upper}}
+                    </div>
               </div>
             {% endfor %}
             {% if card.reviewer_names|length > 2 %}
