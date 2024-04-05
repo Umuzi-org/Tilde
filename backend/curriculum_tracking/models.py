@@ -948,7 +948,7 @@ class TopicProgress(
         }
 
     @property
-    def get_card_duration_in_current_column(self):
+    def duration_in_current_column(self):
         relevant_logs = sorted(
             LogEntry.objects.filter(
                 Q(event_type__name=CARD_STARTED)
@@ -963,7 +963,11 @@ class TopicProgress(
         if relevant_logs:
             duration = timezone.now() - relevant_logs[-1].timestamp
 
-        return helpers.get_formatted_duration_string(duration)
+        return duration
+
+    @property
+    def formatted_duration_in_current_column(self):
+        return helpers.get_days_hours_minutes_string(self.duration_in_current_column)
 
 
 class TopicReview(models.Model, Mixins):

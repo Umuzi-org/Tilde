@@ -184,10 +184,9 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
-def get_formatted_duration_string(duration):
-    if duration:
-        duration = duration
-        seconds = duration.total_seconds()
+def get_days_hours_minutes_string(timestamp):
+    if timestamp:
+        seconds = timestamp.total_seconds()
         days, remainder = divmod(seconds, 86400)
         hours, remainder = divmod(remainder, 3600)
         minutes, remainder = divmod(remainder, 60)

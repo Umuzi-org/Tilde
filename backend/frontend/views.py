@@ -379,28 +379,30 @@ def action_start_card(request, card_id):
 
 @user_passes_test_or_forbidden(can_view_user_board)
 def course_component_details(request, id):
-    get_card_duration_in_current_column = None
+    card_duration_in_current_column = None
     request_url = request.build_absolute_uri()
     type = request_url.split("/")[3]
+    user_id = None
 
     if type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
-        get_card_duration_in_current_column = (
-            course_component.get_card_duration_in_current_column
-        )
+        card_duration_in_current_column = course_component.duration_in_current_column
+        user_id = course_component.user.id
+        print(user_id)
+
     if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
+        user_id = course_component.recruit_users.first().id
+        print(user_id)
 
-    formatted_get_card_duration_in_current_column = None
+    formatted_card_duration_in_current_column = None
     form = None
 
     if (
         course_component.agile_card.status == AgileCard.IN_PROGRESS
-        and get_card_duration_in_current_column
+        and card_duration_in_current_column
     ):
-        formatted_get_card_duration_in_current_column = (
-            get_card_duration_in_current_column
-        )
+        formatted_card_duration_in_current_column = card_duration_in_current_column
 
     if type == "project" and course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
@@ -432,8 +434,9 @@ def course_component_details(request, id):
     context = {
         "course_component": course_component,
         "board_status": board_status,
-        "duration": formatted_get_card_duration_in_current_column,
+        "duration": formatted_card_duration_in_current_column,
         "link_submission_form": form,
+        "user_id": user_id,
     }
 
     return render(
