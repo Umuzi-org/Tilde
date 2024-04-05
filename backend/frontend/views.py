@@ -382,18 +382,15 @@ def course_component_details(request, id):
     card_duration_in_current_column = None
     request_url = request.build_absolute_uri()
     type = request_url.split("/")[3]
-    user_id = None
 
     if type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
-        card_duration_in_current_column = course_component.duration_in_current_column
-        user_id = course_component.user.id
-        print(user_id)
+        card_duration_in_current_column = (
+            course_component.formatted_duration_in_current_column
+        )
 
     if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
-        user_id = course_component.recruit_users.first().id
-        print(user_id)
 
     formatted_card_duration_in_current_column = None
     form = None
@@ -436,7 +433,6 @@ def course_component_details(request, id):
         "board_status": board_status,
         "duration": formatted_card_duration_in_current_column,
         "link_submission_form": form,
-        "user_id": user_id,
     }
 
     return render(

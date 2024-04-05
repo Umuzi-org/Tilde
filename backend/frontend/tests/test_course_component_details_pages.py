@@ -86,8 +86,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
         self.assertIn("learner_reviewer@umuzi.org", body)
         self.assertIn(
             self.recruit_project.content_url,
@@ -110,8 +110,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
         self.assertIn(
             self.recruit_project.content_url,
             body,
@@ -264,8 +264,8 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
         self.assertIn(
             self.topic.content_url,
             body,
