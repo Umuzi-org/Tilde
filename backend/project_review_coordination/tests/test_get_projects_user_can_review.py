@@ -13,7 +13,7 @@ from curriculum_tracking.constants import COMPETENT
 from project_review_coordination.models import ProjectReviewBundleClaim
 
 
-class get_projects_user_can_review_with_permission_check_Tests(TestCase):
+class get_projects_user_can_review_Tests(TestCase):
     def setUp(self) -> None:
         self.superuser = UserFactory(is_superuser=True)
         
