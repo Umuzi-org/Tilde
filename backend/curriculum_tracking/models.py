@@ -2,12 +2,6 @@ from datetime import timedelta
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
-from activity_log.models import LogEntry
-from curriculum_tracking.activity_log_entry_creators import (
-    CARD_STARTED,
-    CARD_REVIEW_REQUEST_CANCELLED,
-)
-from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
