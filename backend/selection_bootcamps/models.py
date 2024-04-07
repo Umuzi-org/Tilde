@@ -17,5 +17,5 @@ class Bootcamp(models.Model):
     )  # eg: Bootcamp Data Science
     team = models.ForeignKey(Team, on_delete=models.CASCADE)  # eg: Data Science Team
 
-    def __repr__(self):
-        return f"Bootcamp: {self.stream}  {self.team}"
+    def __str__(self):
+        return f"{self.team} [{self.stream}]"

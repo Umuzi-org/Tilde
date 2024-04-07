@@ -12,7 +12,11 @@ from rest_framework import viewsets
 from curriculum_tracking.serializers import UserDetailedStatsSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from .forms import BulkAddUsersToTeamForm, AddGithubCollaboratorForm
+from .forms import (
+    BulkAddUsersToTeamForm,
+    AddGithubCollaboratorForm,
+    DeleteAndRecreateCardsForm,
+)
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -382,3 +386,72 @@ class AddUserAsGithubCollaborator(LoginRequiredMixin, FormView):
                     "include_complete": include_complete_projects,
                 }
             )
+
+
+class DeleteAndRecreateCards(LoginRequiredMixin, FormView):
+    template_name = "admin/core/confirm_delete_recreate_cards.html"
+    form_class = DeleteAndRecreateCardsForm
+
+    def get_login_url(self) -> str:
+        return reverse("admin:login")
+
+    def form_valid(self, form):
+        self._delete_and_recreate_cards(self.user.id)
+        messages.success(
+            self.request,
+            f"Deleting and recreating cards in the background",
+        )
+        return super().form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user = get_object_or_404(User, id=self.kwargs["user_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("admin:core_user_change", kwargs={"object_id": self.user.pk})
+
+    @staticmethod
+    def _delete_and_recreate_cards(user_id):
+        from long_running_request_actors import delete_and_recreate_user_cards as actor
+
+        actor.send_with_options(kwargs={"user_id": user_id})
+
+
+class DeleteAndRecreateCardsForTeam(LoginRequiredMixin, FormView):
+    form_class = DeleteAndRecreateCardsForm
+    template_name = "admin/core/confirm_delete_recreate_cards_for_team.html"
+
+    def get_login_url(self):
+        return reverse("admin:login")
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        team_id = self.kwargs["team_id"]
+        self.team = get_object_or_404(Team, id=team_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.team
+        return context
+
+    def form_valid(self, form):
+        self._delete_and_recreate_cards_for_team(self.team.id)
+        messages.success(
+            self.request,
+            f"Deleting and recreating cards for team in the background",
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("admin:core_team_change", kwargs={"object_id": self.team.id})
+
+    @staticmethod
+    def _delete_and_recreate_cards_for_team(team_id):
+        from long_running_request_actors import bulk_regenerate_cards_for_team as actor
+
+        actor.send_with_options(kwargs={"team_id": team_id})

@@ -1,14 +1,13 @@
-<header class="bg-white shadow py-5 flex items-center">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h1 class="{{ styles.heading1 }}">Viewing {{user.email}}</h1>
+<header class="{{styles.secondary_header_container}}">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <h1 class="{{ styles.heading1 }}">Viewing {{user.email}}</h1>
+</div>
+  <div class="hidden md:block flex-initial">
+    <div class="ml-10 flex items-baseline space-x-4">
+      <a href="#" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Board</a>
+      <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Review Performance</a>
     </div>
-    <div class="hidden md:block flex-initial">
-        <div class="ml-10 flex items-baseline space-x-4">
-          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-          <a href="#" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Board</a>
-          <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Review Performance</a>
-          
-        </div>
-      </div>
-      <div class="flex-grow"></div>
+  </div>
+  <div class="flex-grow"></div>
 </header>
+  

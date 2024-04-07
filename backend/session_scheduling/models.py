@@ -1,3 +1,10 @@
+"""
+TODO: 
+- coderbyte based sessions
+- @risk sessions 
+- attendance monitoring. Missed sessions 
+"""
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -17,11 +24,8 @@ class SessionType(models.Model):
     description = models.TextField()
     duration_minutes = models.IntegerField()
 
-
-# class SessionFacilitatorProfile(models.Model):
-#     user = models.ForeignKey(User)
-#     max_sessions_per_week = models.IntegerField(default=1)
-#     max_sessions_per_day = models.IntegerField(default=1)
+    def __str__(self):
+        return f"{self.name}({self.duration_minutes} mins)"
 
 
 class Session(models.Model, FlavourMixin):
@@ -36,16 +40,24 @@ class Session(models.Model, FlavourMixin):
     """
 
     session_type = models.ForeignKey(SessionType, on_delete=models.PROTECT)
-    attendees = models.ManyToManyField(User, related_name="attended_sessions")
+    attendees = models.ManyToManyField(
+        User,
+        related_name="attended_sessions",
+        limit_choices_to={"active": True},
+    )
     facilitator = models.ForeignKey(
         User,
         blank=True,
         null=True,
         on_delete=models.PROTECT,
         related_name="facilitated_sessions",
+        limit_choices_to={"is_staff": True, "active": True},
     )
     guest_facilitators = models.ManyToManyField(
-        User, blank=True, related_name="guest_facilitated_sessions"
+        User,
+        blank=True,
+        related_name="guest_facilitated_sessions",
+        limit_choices_to={"active": True},
     )
     created_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
@@ -61,19 +73,53 @@ class Session(models.Model, FlavourMixin):
     )
     flavours = TaggableManager(blank=True)
     extra_title_text = models.CharField(max_length=128, blank=True, null=True)
+    # extra_event_body_text = models.TextField(blank=True, null=True)
 
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
 
     is_cancelled = models.BooleanField(default=False)
 
-    def __repr__(self):
+    def __str__(self):
         return self.get_title_copy()
 
     def get_title_copy(self):
-        todo
+        return self.session_type.event_title.format(
+            extra_title_text=self.extra_title_text,
+            flavours=", ".join(self.flavour_names),
+        )
 
     def get_event_copy(self):
+
         todo
         greeting = "Dear learner(s)"
-        return f"{greeting}\n\n{copy}\n\n{form}\n\n{recording}\n\n{regards}"
+        return f"{greeting}\n\n{copy}\n\n{extra_event_body_text}\n\n{form}\n\n{recording}\n\n{regards}"
+
+    def attendee_emails(self):
+        emails = sorted([o.email for o in self.attendees.all()])
+        return "\n".join(emails)
+
+
+# class SessionFacilitatorProfile(models.Model):
+#     user = models.ForeignKey(User)
+
+
+# class SessionFacilitatorAllowedSession(FlavourMixin):
+#     """
+#     Can facilitate this type of session.
+#     - extra_title_text can be regex
+#     - flavours need to overlap. Eg if flavours=python, javascript then this can do a Python or a Javascript session
+#     """
+#     session_type = models.ForeignKey(SessionType, on_delete=models.CASCADE)
+#     flavours = TaggableManager()
+#     extra_title_text = models.CharField(max_length=128, blank=True, null=True)
+
+
+# class AvailableTimeSlot:
+#     """
+#     order = the order in which slots will get filled
+#     """
+#     order = models.PositiveIntegerField(default=0, blank=False, null=False)
+#     session_facilitator_user = models.ForeignKey(SessionFacilitatorProfile)
+#     start_time = models.TimeField()
+#     day_of_week = models

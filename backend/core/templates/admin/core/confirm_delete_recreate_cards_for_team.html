@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block title %}
+    Delete and Recreate cards for team - {{ team.id }}
+{% endblock %}
+
+{% block bodyclass %}
+    {{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation delete-selected-confirmation
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            {% block site_title %}Tilde Administration{% endblock %}
+        </a>
+    </h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a>
+        &rsaquo;
+        <a href="{% url 'admin:app_list' app_label='core' %}">Core</a>
+        &rsaquo;
+        <a href="{% url 'admin:core_team_changelist' %}">Teams</a>
+        &rsaquo;
+        <a href="{% url 'admin:core_team_change' team.id %}">{{ team.name }}</a>
+        &rsaquo; Delete and Recreate cards for team
+    </div>
+{% endblock %}
+
+<div class="content">
+    {% block content %}
+    <div id="content-main">
+        <form action="{% url 'confirm_delete_recreate_cards_for_team' team.id %}" method="post">
+            {% csrf_token %}
+            <div>
+                <h2>Are you sure?</h2>
+                <p>
+                    Are you sure you want to delete and recreate cards for team "{{ team.name }}"?
+                </p>
+            </div>
+            <input type="submit" value="Yes, I'm sure" class="deletelink" />
+            <a href="{% url 'admin:core_team_change' team.id %}" class="cancellink">No, take me back</a>
+        </form>
+    </div>
+    {% endblock %}
+</div>
