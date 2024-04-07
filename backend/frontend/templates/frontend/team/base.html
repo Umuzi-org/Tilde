@@ -4,14 +4,12 @@
 {% block head %}
 {% endblock %}
 
+{% block secondary_header %}
+    {% include "frontend/team/partial_team_nav_header.html" %}
+{% endblock %}
 
 {% block content %}
-{% include "frontend/team/partial_team_nav_header.html" %}
-
-<main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         {% block main %}{% endblock %}
     </div>
-</main>
-
 {% endblock %}
