@@ -67,10 +67,11 @@ class ProjectReviewBundleClaim(models.Model):
         perm_checker = ObjectPermissionChecker(user)
         
         for card in cards:
-            assignee_teams = card.assignees.first().teams()
+            assignee = card.assignees.first()
+            assignee_teams = assignee.teams()
             
             if len(assignee_teams) == 0:
-                continue
+                continue  # prefetch_perms will fail if there are no teams
 
             perm_checker.prefetch_perms(assignee_teams)
             for view_permission in Team.PERMISSION_VIEW:
