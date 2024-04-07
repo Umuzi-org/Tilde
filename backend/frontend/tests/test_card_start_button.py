@@ -54,23 +54,21 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.click("text=Start")
+        self.page.locator("text=Start").click()
 
         self.page.wait_for_load_state()
 
-        ip_column = self.page.text_content("div#column_IP")
-        backlog_column = self.page.text_content("div#column_RB")
         project_card_title = self.card.content_item.title
 
-        self.assertIn(project_card_title, ip_column)
-        self.assertNotIn(project_card_title, backlog_column)
+        expect(self.page.locator("div#column_IP")).to_contain_text(project_card_title)
+        expect(self.page.locator("div#column_RB")).not_to_contain_text(project_card_title)
 
     def test_start_button_logs_card_started_event(self):
         self.make_project_card(ContentItem.LINK)
 
         self.page.click("text=Start")
 
-        self.page.wait_for_load_state()
+        self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()

@@ -53,12 +53,10 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.wait_for_load_state()
 
-        ip_column = self.page.text_content("div#column_IP")
-        review_column = self.page.text_content("div#column_IR")
         card_title = self.card.content_item.title
 
-        self.assertIn(card_title, review_column)
-        self.assertNotIn(card_title, ip_column)
+        expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
+        expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
 
     def test_request_review_button_moves_rf_project_card_to_ir_column(self):
         self.make_rf_project_card(ContentItem.LINK)
@@ -67,12 +65,11 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.wait_for_load_state()
 
-        rf_column = self.page.text_content("div#column_RF")
-        review_column = self.page.text_content("div#column_IR")
         card_title = self.card.content_item.title
 
-        self.assertIn(card_title, review_column)
-        self.assertNotIn(card_title, rf_column)
+        expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
+        expect(self.page.locator("div#column_RF")).not_to_contain_text(card_title)
+
 
     def test_cannot_request_review_with_outstanding_card_reviews(self):
         self.make_outstanding_ir_project_card(ContentItem.LINK)
@@ -88,7 +85,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
         self.page.click("text=Request review")
 
-        self.page.wait_for_load_state()
+        self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)
         entry = LogEntry.objects.first()

@@ -7,7 +7,6 @@ from curriculum_tracking.models import ContentItem, AgileCard
 from .frontend_test_mixin import FrontendTestMixin
 from activity_log.models import LogEntry
 import curriculum_tracking.activity_log_entry_creators as creators
-from django.utils import timezone
 
 
 class TestCardStopButton(FrontendTestMixin):
