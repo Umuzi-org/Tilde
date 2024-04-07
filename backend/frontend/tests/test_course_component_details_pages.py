@@ -1,8 +1,6 @@
 from django.utils import timezone
 from playwright.sync_api import expect
-from datetime import datetime, timedelta
-from unittest.mock import patch
-from activity_log.models import LogEntry
+from datetime import datetime
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
