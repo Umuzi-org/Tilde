@@ -1,8 +1,7 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 from typing import List
 from django.db import models
 from core.models import Curriculum, User, Team, TagMixin
-from curriculum_tracking import helpers
 from git_real import models as git_models
 from taggit.managers import TaggableManager
 from autoslug import AutoSlugField
@@ -764,7 +763,7 @@ class RecruitProject(
 
     @property
     def get_total_duration(self):
-        return helpers.get_blant_duration(self.id, self.agile_card_status)
+        return self.end_time - self.start_time
 
 
 class RecruitProjectReview(models.Model, Mixins):
@@ -948,7 +947,7 @@ class TopicProgress(
 
     @property
     def get_total_duration(self):
-        return helpers.get_blant_duration(self.id, self.agile_card.status)
+        return self.end_time - self.start_time
 
 
 class TopicReview(models.Model, Mixins):
@@ -1732,6 +1731,7 @@ class AgileCard(
         all_trusts = [t for t in all_trusts if t.flavours_match(self.flavour_names)]
 
         return len(all_trusts) > 0
+
 
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
