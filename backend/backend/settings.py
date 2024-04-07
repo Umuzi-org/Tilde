@@ -149,6 +149,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "threadlocal_middleware.ThreadLocalMiddleware",
     "logging_middleware.RequestUserLogMiddleware",
+    "timezone_middleware.TimezoneMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"

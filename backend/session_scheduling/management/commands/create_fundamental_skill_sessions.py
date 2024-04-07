@@ -110,12 +110,14 @@ def schedule_session(
     #     skill_name,
     #     user_ids,
     # )
+    assert skill_name
     session = Session.objects.create(
         session_type=SessionType.objects.get(name=session_type),
         due_date=timezone.now() + timezone.timedelta(days=DUE_DAYS),
     )
     session.set_flavours(flavour_names)
     session.extra_title_text = skill_name
+    session.save()
 
     for user_id in user_ids:
         session.attendees.add(User.objects.get(pk=user_id))
