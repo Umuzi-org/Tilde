@@ -182,12 +182,3 @@ def agile_card_reviews_outstanding(user):
 def pull_request_reviews_outstanding(user):
     # TODO: only implement this once the github webhook is healthier
     return []
-
-
-def get_days_hours_minutes_string(timestamp):
-    seconds = timestamp.total_seconds()
-    days, remainder = divmod(seconds, 86400)
-    hours, remainder = divmod(remainder, 3600)
-    minutes, remainder = divmod(remainder, 60)
-
-    return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"

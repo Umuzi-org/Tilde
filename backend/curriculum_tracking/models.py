@@ -947,28 +947,6 @@ class TopicProgress(
             "flavour_names": self.content_item.flavour_names,
         }
 
-    @property
-    def duration_in_current_column(self):
-        relevant_logs = sorted(
-            LogEntry.objects.filter(
-                Q(event_type__name=CARD_STARTED)
-                | Q(event_type__name=CARD_REVIEW_REQUEST_CANCELLED),
-                object_1_id=self.id,
-            ),
-            key=lambda log: log.timestamp,
-        )
-
-        duration = None
-
-        if relevant_logs:
-            duration = timezone.now() - relevant_logs[-1].timestamp
-
-        return duration
-
-    @property
-    def formatted_duration_in_current_column(self):
-        return helpers.get_days_hours_minutes_string(self.duration_in_current_column)
-
 
 class TopicReview(models.Model, Mixins):
     status = models.CharField(

@@ -24,12 +24,7 @@ from curriculum_tracking.models import (
     TopicProgress,
 )
 
-from activity_log.models import LogEntry, EventType
 import curriculum_tracking.activity_log_entry_creators as log_creators
-from curriculum_tracking.activity_log_entry_creators import (
-    CARD_STARTED,
-    CARD_REVIEW_REQUEST_CANCELLED,
-)
 from curriculum_tracking import helpers
 
 from taggit.models import Tag
@@ -379,27 +374,16 @@ def action_start_card(request, card_id):
 
 @user_passes_test_or_forbidden(can_view_user_board)
 def course_component_details(request, id):
-    card_duration_in_current_column = None
     request_url = request.build_absolute_uri()
     type = request_url.split("/")[3]
 
     if type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
-        card_duration_in_current_column = (
-            course_component.formatted_duration_in_current_column
-        )
 
     if type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
 
-    formatted_card_duration_in_current_column = None
     form = None
-
-    if (
-        course_component.agile_card.status == AgileCard.IN_PROGRESS
-        and card_duration_in_current_column
-    ):
-        formatted_card_duration_in_current_column = card_duration_in_current_column
 
     if type == "project" and course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
@@ -431,7 +415,6 @@ def course_component_details(request, id):
     context = {
         "course_component": course_component,
         "board_status": board_status,
-        "duration": formatted_card_duration_in_current_column,
         "link_submission_form": form,
     }
 
