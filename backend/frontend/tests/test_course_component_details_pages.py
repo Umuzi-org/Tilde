@@ -70,8 +70,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
-        expect(body).to_contain_text("Feb. 12, 2024, 2:06 p.m.")
-        expect(body).to_contain_text("Feb. 13, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Feb. 12, 2024, 4:06 p.m.")
+        expect(body).to_contain_text("Feb. 13, 2024, 4:06 p.m.")
         expect(body).to_contain_text("learner_reviewer@umuzi.org")
         expect(body).to_contain_text(self.recruit_project.content_url)
         expect(body).to_contain_text("No link submitted yet")
