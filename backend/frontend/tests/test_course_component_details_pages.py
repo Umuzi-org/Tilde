@@ -1,5 +1,4 @@
 import datetime
-import time
 from unittest.mock import patch
 
 from django.utils import timezone

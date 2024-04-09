@@ -1,4 +1,3 @@
-from math import exp
 from guardian.shortcuts import assign_perm
 from playwright.sync_api import expect
 from core.models import Team

@@ -1,4 +1,3 @@
-from math import exp
 from activity_log.models import LogEntry
 from playwright.sync_api import expect
 from core.tests.factories import UserFactory
