@@ -22,6 +22,7 @@ class TestForgotPassword(FrontendTestMixin):
 
     def test_sends_password_reset_email_if_user_exists(self):
         self.page.goto(self.reverse_url("user_login"))
+        self.page.wait_for_load_state()
 
         expect(self.page.locator("text=Forgot Password?")).to_be_visible()
         

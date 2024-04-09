@@ -1,5 +1,6 @@
 import datetime
-from math import exp
+import time
+from unittest.mock import patch
 
 from django.utils import timezone
 from playwright.sync_api import expect
@@ -54,14 +55,17 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
-    def test_link_project_page_displays_correct_details(self):
+    @patch('django.utils.timezone.get_current_timezone')
+    def test_link_project_page_displays_correct_details(self, mock_get_current_timezone):
+        mock_get_current_timezone.return_value = timezone.utc
+
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
-        self.page.goto(self.link_project_url)
 
+        self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
         
         self.assertEqual(self.page.url, self.link_project_url)
@@ -70,8 +74,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
-        expect(body).to_contain_text("Feb. 12, 2024, 4:06 p.m.")
-        expect(body).to_contain_text("Feb. 13, 2024, 4:06 p.m.")
+        
+        expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
+
         expect(body).to_contain_text("learner_reviewer@umuzi.org")
         expect(body).to_contain_text(self.recruit_project.content_url)
         expect(body).to_contain_text("No link submitted yet")
@@ -85,6 +91,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
 
@@ -110,6 +117,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
 
@@ -142,6 +150,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
 
@@ -171,6 +180,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
 
@@ -190,6 +200,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             "course_component_details", kwargs={"project_id": self.recruit_project.id}
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
 

@@ -17,8 +17,6 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.do_login(self.user)
-
     def make_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -33,8 +31,10 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
     def test_cancel_review_request_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.page.locator('text="Cancel review request"').click();
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator('text="Cancel review request"').click();
         self.page.wait_for_load_state("networkidle")
 
         project_card_title = self.card.content_item.title
@@ -47,9 +47,11 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
         self,
     ):
         self.make_project_card(ContentItem.LINK)
+        
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
         self.page.locator("text=Cancel review request").click()
-
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

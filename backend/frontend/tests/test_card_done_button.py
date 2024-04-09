@@ -15,8 +15,6 @@ class TestCardDoneButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.do_login(self.user)
-
     
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
@@ -50,6 +48,8 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_does_not_show_for_project_cards(self):
         self.make_project_card()
+
+        self.do_login(self.user)
         self.page.wait_for_load_state()
 
         expect(self.page.locator("div#column_IP")).not_to_contain_text("Done")
@@ -57,16 +57,20 @@ class TestCardDoneButton(FrontendTestMixin):
     def test_done_button_shows_for_topic_cards(self):
         self.make_topic_card()
 
+        self.do_login(self.user)
         self.page.wait_for_load_state()
 
         expect(self.page.locator("div#column_IP")).to_contain_text("Done")
 
     def test_done_button_moves_ip_topic_card_to_complete_column(self):
         self.make_topic_card()
-        self.page.click("text=Done")
 
+        self.do_login(self.user)
         self.page.wait_for_load_state()
 
+        self.page.locator("text=Done").click()
+
+        self.page.wait_for_load_state("networkidle")
         card_title = self.card.content_item.title
         
         expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
@@ -76,7 +80,11 @@ class TestCardDoneButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card()
         self.make_topic_card()
 
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
+
         self.page.locator('text="Done"').click();
+        self.page.wait_for_load_state("networkidle")
         
         expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
@@ -84,8 +92,10 @@ class TestCardDoneButton(FrontendTestMixin):
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
 
-        self.page.click("text=Done")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator("text=Done").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

@@ -14,7 +14,6 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.do_login(self.user)
 
     def make_outstanding_ir_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
@@ -48,25 +47,27 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
-
-        self.page.click("text=Request review")
-
+        
+        self.do_login(self.user)
         self.page.wait_for_load_state()
 
-        card_title = self.card.content_item.title
+        self.page.locator("text=Request review").click()
+        self.page.wait_for_load_state("networkidle")
 
+        card_title = self.card.content_item.title
         expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
         expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
 
     def test_request_review_button_moves_rf_project_card_to_ir_column(self):
         self.make_rf_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request review")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator("text=Request review").click()
         self.page.wait_for_load_state()
 
         card_title = self.card.content_item.title
-
         expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
         expect(self.page.locator("div#column_RF")).not_to_contain_text(card_title)
 
@@ -75,7 +76,11 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.make_outstanding_ir_project_card(ContentItem.LINK)
         self.make_ip_project_card(ContentItem.LINK)
 
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
+
         self.page.locator('text="Request review"').click();
+        self.page.wait_for_load_state("networkidle")
         
         expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
@@ -83,8 +88,10 @@ class TestCardRequestReviewButton(FrontendTestMixin):
     def test_request_review_button_logs_review_request_event(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request review")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator("text=Request review").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)
