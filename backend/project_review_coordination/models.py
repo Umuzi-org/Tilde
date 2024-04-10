@@ -37,6 +37,7 @@ class ProjectReviewBundleClaim(models.Model):
 
     @staticmethod
     def get_projects_user_can_review(user):
+        from guardian.shortcuts import get_objects_for_user
         
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
@@ -64,20 +65,22 @@ class ProjectReviewBundleClaim(models.Model):
             return cards
         
         permitted_cards = []
-        perm_checker = ObjectPermissionChecker(user)
         
         for card in cards:
             assignee = card.assignees.first()
             assignee_teams = assignee.teams()
-            
-            if len(assignee_teams) == 0:
-                continue  # prefetch_perms will fail if there are no teams
 
-            perm_checker.prefetch_perms(assignee_teams)
-            for view_permission in Team.PERMISSION_VIEW:
-                if any(
-                    (perm_checker.has_perm(view_permission, team) for team in assignee_teams)
-                ):
-                    permitted_cards.append(card)
+            if len(assignee_teams) == 0:
+                continue
+
+            permitted_teams = get_objects_for_user(
+                user=user, perms=Team.PERMISSION_VIEW, klass=Team.objects.filter(active=True).filter(
+                    pk__in=[team.pk for team in assignee_teams]
+                
+                ), any_perm=True
+            )
+
+            if len(permitted_teams) > 0:
+                permitted_cards.append(card)
     
         return permitted_cards
