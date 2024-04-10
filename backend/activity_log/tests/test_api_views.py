@@ -80,6 +80,7 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
     @patch("django.utils.timezone.get_current_timezone")
     def test_list_api_filter_by_timestamp_lte(self, mock_get_current_timezone):
         mock_get_current_timezone.return_value = timezone.utc
+
         url = f"{self.get_list_url()}?timestamp__lte={self.entry_yesterday_1.timestamp}"
         response = self.client.get(url)
         self.assertEqual(len(response.data), 2)
