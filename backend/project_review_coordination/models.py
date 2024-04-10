@@ -5,7 +5,6 @@ from core.models import Team
 from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProjectReview
 from django.utils import timezone
 from django.db.models import OuterRef, Exists
-from guardian.core import ObjectPermissionChecker
 
 
 User = get_user_model()
