@@ -4,6 +4,7 @@ from test_mixins import APITestCaseMixin
 from . import factories
 from django.utils import timezone
 from curriculum_tracking.tests.factories import AgileCardFactory
+from unittest.mock import patch
 
 
 class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
@@ -76,7 +77,9 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(response.data[0]["total"], 1)
         self.assertEqual(response.data[0]["date"], str(self.yesterday.date()))
 
-    def test_list_api_filter_by_timestamp_lte(self):
+    @patch('django.utils.timezone.get_current_timezone')
+    def test_list_api_filter_by_timestamp_lte(self,mock_get_current_timezone):
+        mock_get_current_timezone.return_value = timezone.utc
         url = f"{self.get_list_url()}?timestamp__lte={self.entry_yesterday_1.timestamp}"
         response = self.client.get(url)
         self.assertEqual(len(response.data), 2)
@@ -88,7 +91,10 @@ class TestActivityLogDayCountViewset(APITestCase, APITestCaseMixin):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["total"], 2)
 
-    def test_list_api_filter_by_timestamp_lte_gte(self):
+    @patch('django.utils.timezone.get_current_timezone')
+    def test_list_api_filter_by_timestamp_lte_gte(self,mock_get_current_timezone):
+        mock_get_current_timezone.return_value = timezone.utc
+
         url = f"{self.get_list_url()}?timestamp__lte={self.entry_today_2.timestamp}&timestamp__gte={self.entry_yesterday_2.timestamp}"
         response = self.client.get(url)
         self.assertEqual(len(response.data), 3)
