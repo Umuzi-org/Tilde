@@ -2,7 +2,31 @@
 <div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
      id="card_{{ card.id }}"
      data-status="{{ card.status }}">
-  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-auto shadow-lg p-6 relative">
+    <div class="Reviewer-avatars col-span-1 row-span-1 group">
+      <div class="flex justify-center">
+          <div x-data="{ isOpen: false }" class="relative">
+              <!-- Dropdown Button -->
+              <button @click="isOpen = !isOpen" type="button" class="flex items-left gap-2 bg-white px-5 py-2.5 rounded-md shadow">
+                  Reviewers
+                  <!-- Heroicon: chevron-down -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+              </button>
+              <!-- Dropdown Panel -->
+              <div x-show="isOpen" @click.outside="isOpen = false" class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-10">
+                  {% for reviewer in card.reviewer_names %}
+                      <div class="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-gray-50">
+                          <!-- You can customize how you want to display the reviewer -->
+                          <span class="text-black">{{ reviewer }}</span>
+                      </div>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+  </div>
+  
     <!-- Dates and options section -->
     <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
       <div class="flex gap-2 items-start col-span-10 pb-2">
