@@ -33,9 +33,9 @@
                         <ul class="mx-8">
                             <li class="flex items-center">
                                 <div class="pr-2">
-                                  {% user_avatar course_component.recruit_user_names|first %}
+                                  {% user_avatar course_component.recruit_users.first %}
                                 </div>
-                                {{ course_component.recruit_user_names|first }}
+                                {{ course_component.recruit_users.first }}
                             </li>
                         </ul>
                     </div>
@@ -43,12 +43,15 @@
                     <div class="bold p-2 border-2 rounded-md ">
                         Reviewers: 
                         <ul class="mx-8">
-                            {% for reviewer in course_component.reviewer_user_names%}
-                            <li class="flex items-center pr-2 py-1"> 
-                                <div class="pr-2">
-                                    {% user_avatar reviewer %}
-                                </div>{{reviewer}}</li>
-                            {%endfor%}
+                            {% if course_component.reviewer_users.all %}
+                            {% for reviewer in course_component.reviewer_users.all %}
+                                <li class="flex items-center pr-2 py-1"> 
+                                    <div class="pr-2">
+                                        {% user_avatar reviewer %}
+                                    </div>{{reviewer}}
+                                </li>
+                            {% endfor %}
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
