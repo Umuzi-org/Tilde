@@ -76,7 +76,7 @@
                   <div
                     class="flex overflow-hidden rounded-full items-center justify-items-center"
                   >
-                    {% user_avatar request.user.email %}
+                    {% user_avatar request.user %}
                   </div>
                 </button>
 
@@ -191,7 +191,7 @@
           <div
             class="flex overflow-hidden rounded-full items-center justify-items-center"
           >
-            {% user_avatar request.user.email %}
+            {% user_avatar request.user %}
           </div>
           <div class="space-y-1">
             <div class="text-base font-medium leading-none text-white">

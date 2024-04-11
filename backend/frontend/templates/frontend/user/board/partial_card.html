@@ -139,28 +139,23 @@
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-        {% if card.assignee_names %}
-        <div title={{card.assignee_names.0}}>
-          {% user_avatar card.assignee_names.0 %}
-        </div>
+        {% if card.assignees.first %}
+          <div title={{ card.assignees.first.email }}>
+            {% user_avatar card.assignees.first %}
+          </div>
         {% endif %}
       </div>
       <div class="Reviewer-avatars col-span-1 row-span-1 group">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
         <div class="flex relative">
-          {% if card.reviewer_names %}
-            {% for reviewer in card.reviewer_names|slice:":2" %}
-            <div class="-mx-1" title="{{reviewer}}">
-              {% user_avatar reviewer 'True' %}
-            </div>
-              {% endfor %}
-            {% if card.reviewer_names|length > 2 %}
-              <div class="group"
-                title="{{ card.reviewer_names|join:', ' }}">
-                {% user_avatar reviewer %}
+          {% if card.reviewers %}
+            {% for reviewer in card.reviewers.all|slice:":2" %}
+              <div class="-mx-1" title="{{ card.reviewer_names|join:', '}}">
+                <div class="border-2 rounded-full border-white">
+                  {% user_avatar reviewer %}
+                </div>
               </div>
-            {% endif %}
-          
+            {% endfor %}
           {% endif %}
         </div>
       </div>
