@@ -139,11 +139,9 @@
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-        {% if card.assignees.first %}
           <div title={{ card.assignees.first.email }}>
             {% user_avatar card.assignees.first %}
           </div>
-        {% endif %}
       </div>
       <div class="Reviewer-avatars col-span-1 row-span-1 group">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
