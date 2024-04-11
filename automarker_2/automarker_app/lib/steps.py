@@ -7,6 +7,7 @@ from .automarker_test_runner import (
     JavaTestRunner,
     JavaScriptTestRunner,
     MarkdownTestRunner,
+    JupyterTestRunner,
 )
 import re
 from .utils import subprocess_run
@@ -301,6 +302,10 @@ class JavaScriptRunFunctionalTests(_RunFunctionalTests):
 
 class MarkdownRunFunctionalTests(_RunFunctionalTests):
     TestRunnerClass = MarkdownTestRunner
+
+
+class JupyterRunFunctionalTests(_RunFunctionalTests):
+    TestRunnerClass = JupyterTestRunner
 
 
 class GradleRunJunitTests(Step):
