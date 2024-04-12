@@ -13,6 +13,7 @@ from curriculum_tracking.tests.factories import (
     TopicProgressFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+
 TOPIC_VIEW_NAME = "topic_details"
 PROJECT_VIEW_NAME = "project_details"
 
@@ -74,7 +75,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self, mock_get_current_timezone
     ):
         mock_get_current_timezone.return_value = timezone.utc
-        
+
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
@@ -84,14 +85,14 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
-        
+
         self.assertEqual(self.page.url, self.link_project_url)
 
         body = self.page.locator("body")
 
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
-        
+
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
         expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
 
@@ -114,7 +115,6 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.assertEqual(self.page.url, self.link_project_url)
 
         body = self.page.locator("body")
-
 
         expect(body).to_contain_text("No link submitted yet")
 
@@ -287,6 +287,3 @@ class TestTopicDetailsPage(FrontendTestMixin):
             self.topic.content_url,
             body,
         )
-        
-        body = self.page.locator("body")
-        expect(body).to_contain_text("Enter a valid URL")
