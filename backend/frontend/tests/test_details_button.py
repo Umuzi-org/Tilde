@@ -11,7 +11,6 @@ class TestCardDetailsButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
-        
 
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
@@ -47,7 +46,7 @@ class TestCardDetailsButton(FrontendTestMixin):
         expect(details_link_element).to_be_visible()
 
         link_project_url = self.reverse_url(
-            "project_details",
+            "progress_details",
             kwargs={"id": self.card.recruit_project.id, "content_type": "project"},
         )
 

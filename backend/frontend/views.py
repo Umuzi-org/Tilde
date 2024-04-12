@@ -373,7 +373,7 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(
+def progress_details(
     request,
     content_type,
     id,
