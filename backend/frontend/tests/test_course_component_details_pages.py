@@ -1,6 +1,7 @@
 from django.utils import timezone
 from playwright.sync_api import expect
 from datetime import datetime
+from unittest.mock import patch
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -15,8 +16,8 @@ from curriculum_tracking.models import (
     ContentItem,
 )
 
-TOPIC_VIEW_NAME = "topic"
-PROJECT_VIEW_NAME = "project"
+TOPIC_VIEW_NAME = "topic_details"
+PROJECT_VIEW_NAME = "project_details"
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -76,7 +77,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -100,7 +101,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -131,7 +132,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -162,7 +163,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -190,7 +191,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -208,7 +209,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id},
+            kwargs={"id": self.recruit_project.id, "content_type": "project"},
         )
         self.page.goto(self.link_project_url)
 
@@ -254,7 +255,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.topic_url = self.reverse_url(
             TOPIC_VIEW_NAME,
-            kwargs={"id": self.topic.id},
+            kwargs={"id": self.topic.id, "content_type": "topic"},
         )
         self.page.goto(self.topic_url)
 
