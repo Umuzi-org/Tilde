@@ -3,9 +3,10 @@
 {% block content %}
     <main>
         <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-
-            <h1 class="{{ styles.heading1 }}">Teams</h1>
-            
+            <div class="flex gap-2">
+                <h1 class="{{ styles.heading1 }} pb-2">Teams</h1>
+                <div ><input class="px-1 rounded-md border-2" type="text"/> <input class="px-1 rounded-md border-2" type="submit" value="Search"/></div>
+            </div>
             <div 
             class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white "
             id="teams-list"
