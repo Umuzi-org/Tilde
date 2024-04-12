@@ -13,5 +13,6 @@
     "sendgrid",
     "taggit",
     "viewsets"
-  ]
+  ],
+  "editor.formatOnSave": true
 }
