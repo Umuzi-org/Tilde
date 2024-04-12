@@ -6,6 +6,7 @@
     "authtoken",
     "automarked",
     "automarker",
+    "coderbyte",
     "corsheaders",
     "dramatiq",
     "ncit",
