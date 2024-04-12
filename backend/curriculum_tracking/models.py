@@ -762,7 +762,7 @@ class RecruitProject(
         return self.agile_card.status
 
     @property
-    def get_total_duration(self):
+    def duration(self):
         return self.end_time - self.start_time
 
 
@@ -946,7 +946,7 @@ class TopicProgress(
         }
 
     @property
-    def get_total_duration(self):
+    def duration(self):
         return self.end_time - self.start_time
 
 
