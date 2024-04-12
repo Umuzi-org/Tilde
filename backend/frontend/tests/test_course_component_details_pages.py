@@ -80,7 +80,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
 
         self.page.goto(self.link_project_url)
@@ -107,7 +110,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
@@ -134,7 +140,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
@@ -168,7 +177,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
@@ -199,7 +211,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
@@ -220,7 +235,10 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.link_project_url = self.reverse_url(
             PROJECT_VIEW_NAME,
-            kwargs={"id": self.recruit_project.id, "content_type": "project"},
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
         self.page.wait_for_load_state()
@@ -273,7 +291,10 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.topic_url = self.reverse_url(
             TOPIC_VIEW_NAME,
-            kwargs={"id": self.topic.id, "content_type": "topic"},
+            kwargs={
+                "content_type": "topic",
+                "id": self.topic.id,
+            },
         )
         self.page.goto(self.topic_url)
 

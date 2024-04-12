@@ -196,11 +196,11 @@
 
  
       {%if card.recruit_project and card.content_item.content_type_nice == "project"%}
-        <a href="{% url 'project_details' card.recruit_project.id card.content_item.content_type_nice %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
+        <a href="{% url 'project_details' card.content_item.content_type_nice card.recruit_project.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
       {% endif %}
 
       {%if card.topic_progress and card.content_item.content_type_nice == "topic"%}
-          <a href="{% url 'topic_details' card.topic_progress.id card.content_item.content_type_nice %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
+          <a href="{% url 'topic_details' card.content_item.content_type_nice card.topic_progress.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
         </div>
       {% endif %}
 
