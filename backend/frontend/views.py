@@ -373,7 +373,11 @@ def action_start_card(request, card_id):
 
 
 @user_passes_test_or_forbidden(can_view_user_board)
-def course_component_details(request, id, content_type):
+def course_component_details(
+    request,
+    content_type,
+    id,
+):
     if content_type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
 
