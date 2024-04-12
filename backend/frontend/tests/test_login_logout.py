@@ -1,14 +1,15 @@
-from core.tests.factories import UserFactory, TeamFactory
+from core.tests.factories import UserFactory
+from playwright.sync_api import expect
 from .frontend_test_mixin import FrontendTestMixin
+from django.urls import reverse_lazy
 
 
 class TestLoginLogout(FrontendTestMixin):
     def setUp(self):
         super().setUp()
         self.user = UserFactory(
-            email="learner@umuzi.org",
+            email="learner_login@umuzi.org",
             is_staff=True,
-            is_superuser=True,  # TODO: remove this once "restricted access" PR is merged
         )
         self.user.set_password(self.user.email)
         self.user.save()
@@ -22,8 +23,8 @@ class TestLoginLogout(FrontendTestMixin):
 
         self.page.goto(self.url_requiring_login)
 
-        body = self.page.text_content("body")
-        self.assertIn(f"Viewing {self.user.email}", body)
+        body = self.page.locator("body")
+        expect(body).to_contain_text(f"Viewing {self.user.email}")
 
     def test_user_can_logout(self):
         self.do_login(self.user)
@@ -36,5 +37,9 @@ class TestLoginLogout(FrontendTestMixin):
 
         self.page.goto(self.url_requiring_login)
 
-        body = self.page.text_content("body")
-        self.assertIn("Login", body)
+        url_requiring_login_path = reverse_lazy("user_board", kwargs={"user_id": self.user.id})
+
+        self.assertIn(f"?next={url_requiring_login_path}", self.page.url)
+
+        body = self.page.locator("body")
+        expect(body).to_contain_text("Login")
