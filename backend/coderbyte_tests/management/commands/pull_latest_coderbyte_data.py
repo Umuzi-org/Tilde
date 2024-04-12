@@ -64,15 +64,17 @@ def save_results():
 def _save_single_result(result_row: dict):
     """result_row is a dict with the keys being the column names and the values being the data for that row"""
 
-    email = result_row[COL_EMAIL]
+    report_link = result_row[COL_REPORT_LINK]
+    if report_link == "N/A":
+        return
 
+    email = result_row[COL_EMAIL]
     try:
         user = User.objects.get(email=email)
     except User.DoesNotExist:
         # if the user isn't in our database then they are not a learner. Nothing to do
         return
 
-    report_link = result_row[COL_REPORT_LINK]
     status = result_row[COL_STATUS]
     date_joined = _get_date_or_none(result_row[COL_DATE_JOINED])
     date_invited = _get_date_or_none(result_row[COL_DATE_INVITED])
