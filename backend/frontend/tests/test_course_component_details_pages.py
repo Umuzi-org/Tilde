@@ -72,7 +72,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
-    def test_course_component_page_displays_correct_details_for_link_project(self):
+    @patch("django.utils.timezone.get_current_timezone")
+    def test_course_component_page_displays_correct_details_for_link_project(
+        self, mock_get_current_timezone
+    ):
+        mock_get_current_timezone.return_value = timezone.utc
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
@@ -85,8 +89,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
+        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
         self.assertIn("learner_reviewer@umuzi.org", body)
         self.assertIn(
             self.recruit_project.content_url,
@@ -107,14 +111,6 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
 
-        self.assertIn("learner_1@umuzi.org", body)
-        self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
-        self.assertIn(
-            self.recruit_project.content_url,
-            body,
-        )
         self.assertIn("No link submitted yet", body)
 
         self.page.get_by_label("Link submission").fill("https://google.com")
@@ -250,7 +246,11 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.card.assignees.set([self.user])
 
-    def test_course_component_page_displays_correct_details_for_topic(self):
+    @patch("django.utils.timezone.get_current_timezone")
+    def test_course_component_page_displays_correct_details_for_topic(
+        self, mock_get_current_timezone
+    ):
+        mock_get_current_timezone.return_value = timezone.utc
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
         self.topic_url = self.reverse_url(
@@ -263,8 +263,8 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 4:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 4:06 p.m.", body)
+        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
         self.assertIn(
             self.topic.content_url,
             body,
