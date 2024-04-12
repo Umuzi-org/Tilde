@@ -1,4 +1,6 @@
+{% load custom_tags %}
 {% load humanize %}
+
 <div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
      id="card_{{ card.id }}"
      data-status="{{ card.status }}">
@@ -137,37 +139,21 @@
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-        {% if card.assignee_names %}
-          {% for assignee in card.assignee_names %}
-            <img class="w-[30px] h-[30px] rounded-full"
-                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                 alt="{{ assignee }} profile picture"
-                 title="{{ assignee }}" />
-          {% endfor %}
-        {% endif %}
+          <div title={{ card.assignees.first.email }}>
+            {% user_avatar card.assignees.first %}
+          </div>
       </div>
       <div class="Reviewer-avatars col-span-1 row-span-1 group">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
         <div class="flex relative">
-          {% if card.reviewer_names %}
-            {% for reviewer in card.reviewer_names|slice:":2" %}
-              <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
-                <img class="w-[30px] h-[30px] rounded-full"
-                     src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                     alt="{{ reviewer }} profile picture"
-                     title="{{ reviewer }}" />
-              </div>
-            {% endfor %}
-            {% if card.reviewer_names|length > 2 %}
-              <div class="group">
-                <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white cursor-pointer">
-                  <img class="w-[30px] h-[30px] rounded-full"
-                       src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                       alt="more reviewers"
-                       title="{{ card.reviewer_names|join:', ' }}" />
+          {% if card.reviewers %}
+            {% for reviewer in card.reviewers.all|slice:":2" %}
+              <div class="-mx-1" title="{{ card.reviewer_names|join:', '}}">
+                <div class="border-2 rounded-full border-white">
+                  {% user_avatar reviewer %}
                 </div>
               </div>
-            {% endif %}
+            {% endfor %}
           {% endif %}
         </div>
       </div>

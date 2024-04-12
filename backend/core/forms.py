@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from guardian.shortcuts import get_objects_for_user, get_groups_with_perms
+from guardian.shortcuts import get_objects_for_user
 from core import models
 import re
 
@@ -87,5 +87,9 @@ class AddGithubCollaboratorForm(forms.Form):
             any_perm=True,
         ):
             teams.append(team.name)
-        
+
         return sorted(set(teams))
+
+
+class DeleteAndRecreateCardsForm(forms.Form):
+    pass
