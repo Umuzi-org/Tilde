@@ -86,8 +86,8 @@ class generate_repo_name_for_project_Tests(TestCase):
         self.assertIn(self.user.last_name, repo_name)
 
 
-class get_total_duration(TestCase):
-    def test_returns_correct_duration(self):
+class duration_Tests(TestCase):
+    def test_returns_correct_value(self):
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
                 content_type=models.ContentItem.PROJECT, project_submission_type="L"
@@ -101,6 +101,4 @@ class get_total_duration(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(
-            card.recruit_project.get_total_duration, timedelta(seconds=3600)
-        )
+        self.assertEquals(card.recruit_project.duration, timedelta(seconds=3600))

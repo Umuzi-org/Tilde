@@ -6,8 +6,8 @@ from curriculum_tracking.tests import factories
 from curriculum_tracking.models import AgileCard, ContentItem
 
 
-class get_total_duration(TestCase):
-    def test_returns_correct_duration(self):
+class duration_Tests(TestCase):
+    def test_returns_correct_value(self):
         card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
             status=AgileCard.READY,
@@ -20,6 +20,4 @@ class get_total_duration(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(
-            card.topic_progress.get_total_duration, timedelta(seconds=3600)
-        )
+        self.assertEquals(card.topic_progress.duration, timedelta(seconds=3600))
