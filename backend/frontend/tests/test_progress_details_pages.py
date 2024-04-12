@@ -70,7 +70,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         )
 
     @patch("django.utils.timezone.get_current_timezone")
-    def test_course_component_page_displays_correct_details_for_link_project(
+    def test_progress_details_page_displays_correct_details_for_link_project(
         self, mock_get_current_timezone
     ):
         mock_get_current_timezone.return_value = timezone.utc
@@ -282,7 +282,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
         self.card.assignees.set([self.user])
 
     @patch("django.utils.timezone.get_current_timezone")
-    def test_course_component_page_displays_correct_details_for_topic(
+    def test_progress_details_displays_correct_details_for_topic(
         self, mock_get_current_timezone
     ):
         mock_get_current_timezone.return_value = timezone.utc
