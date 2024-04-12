@@ -12,6 +12,7 @@ from curriculum_tracking.tests.factories import (
     RecruitProjectFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+from unittest.mock import patch
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -57,6 +58,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
     @patch('django.utils.timezone.get_current_timezone')
     def test_link_project_page_displays_correct_details(self, mock_get_current_timezone):
         mock_get_current_timezone.return_value = timezone.utc
+
 
         self.make_ip_project_card(ContentItem.LINK)
 
