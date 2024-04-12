@@ -25,30 +25,27 @@
                 </div>
             </div>
             
-            {% if course_component.content_item.content_type_nice == "topic" %}
-                <div class="p-2 border-2 rounded-md grid gap-2">
-                    <div class="p-2 border-2 rounded-md ">
-                        Assignees:
-                        <ul class="mx-8">
-                            <li>
-                            {{ course_component.user }}
-                            </li>
-                        </ul>
-                    </div>
+            
+            <div class="p-2 border-2 rounded-md grid gap-2">
+                <div class="p-2 border-2 rounded-md ">
+                    Assignees:
+                    <ul class="mx-8">
+                        <li>
+                            {% if course_component.content_item.content_type_nice == "topic" %}
+                                {{ course_component.user }}
+                            {% endif %}
+
+                            {% if course_component.content_item.content_type_nice == "project" %}
+                                {{ course_component.recruit_user_names|first }}
+                            {% endif %}
+                        </li>
+                    </ul>
                 </div>
-            {% endif %}
+            </div>
+        
 
             {% if course_component.content_item.content_type_nice == "project" %}
                 <div class="p-2 border-2 rounded-md grid gap-2">
-                    <div class="p-2 border-2 rounded-md ">
-                        Assignees:
-                        <ul class="mx-8">
-                            <li>
-                            {{ course_component.recruit_user_names|first }}
-                            </li>
-                        </ul>
-                    </div>
-            
                     <div class="p-2 border-2 rounded-md ">
                         Reviewers: 
                         <ul class="mx-8">
