@@ -421,7 +421,7 @@ def progress_details(
 
     return render(
         request,
-        "frontend/course_component_details/page.html",
+        "frontend/progress_details/page.html",
         context,
     )
 
