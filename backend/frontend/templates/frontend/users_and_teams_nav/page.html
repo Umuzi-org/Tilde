@@ -3,9 +3,13 @@
 {% block content %}
     <main>
         <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-col">
                 <h1 class="{{ styles.heading1 }} pb-2">Teams</h1>
-                <div ><input class="px-1 rounded-md border-2" type="text"/> <input class="px-1 rounded-md border-2" type="submit" value="Search"/></div>
+                <form method="post" action="" class="mb-3 flex items-center gap-1">
+                    {% csrf_token %}
+                    {{form.search_term}}
+                    <button class="px-1 rounded-md border-2" type="submit"/>Search</button>
+                </form>
             </div>
             <div 
             class="rounded-xl p-3 ring-1 ring-gray-200 mx-1 mb-1 shadow bg-white "
