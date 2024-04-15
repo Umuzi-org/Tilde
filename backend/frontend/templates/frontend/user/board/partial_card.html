@@ -4,69 +4,7 @@
 <div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
      id="card_{{ card.id }}"
      data-status="{{ card.status }}">
-  <div class="max-w-md  h-auto bg-white rounded-tr rounded-br overflow-auto shadow-lg p-6 relative ">
-  <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2 gap-x-10 gap-y-3">
-    {% comment %} <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
-      <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-      {% if card.assignee_names %}
-        {% for assignee in card.assignee_names %}
-          <img class="w-[30px] h-[30px] rounded-full"
-               src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-               alt="{{ assignee }} profile picture"
-               title="{{ assignee }}" />
-        {% endfor %}
-      {% endif %}
-    </div> {% endcomment %}
-    <div class="Reviewer-avatars col-span-1 row-span-1 group">
-      <div class="flex justify-left mb-1">
-          <div x-data="{ isOpen: false }" class="relative">
-              <!-- Dropdown Button -->
-              <button 
-                    @click="isOpen = !isOpen"
-                    @mouseenter="isOpen = true" 
-                    {% comment %} @mouseleave="isOpen = false" {% endcomment %}
-                    type="button" 
-                    :class="{ 'underline': isOpen }"
-                    class="flex items-right gap-1 bg-white px-1 py-1 rounded-md text-xs mt-[-5px]">
-                    Reviewers
-                    <!-- Heroicon: chevron-down -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-              </button>
-              <!-- Dropdown Panel -->
-              <div 
-                    @mouseenter="isOpen = true" 
-                    @mouseleave="isOpen = false"
-                    x-show="isOpen" 
-                    @click.outside="isOpen = false" 
-                    class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-10">
-                    {% for reviewer in card.reviewer_names %}
-                        <div class="flex items-center gap-2 w-full px-4 py-2.5 text-xs hover:bg-gray-50">
-                            <!-- You can customize how you want to display the reviewer -->
-                            <span class="text-black">{{ reviewer }}</span>
-            </div>
-        {% endfor %}
-    </div>
-          </div>
-      </div>
-      
-  </div>
-  <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
-    <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-    {% if card.assignee_names %}
-      {% for assignee in card.assignee_names %}
-        <img class="w-[30px] h-[30px] rounded-full"
-             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-             alt="{{ assignee }} profile picture"
-             title="{{ assignee }}" />
-      {% endfor %}
-    {% endif %}
-  </div>
-
-  </div>
-
-  
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
     <!-- Dates and options section -->
     <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
       <div class="flex gap-2 items-start col-span-10 pb-2">
@@ -198,15 +136,41 @@
     <!-- Horizontal line -->
     <hr class="border-gray-300 inset-x-0 absolute" />
     <!-- Assignee and reviewers section -->
-    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
-      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
+    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2 mr-1">
+      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block mb-2">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
           <div title={{ card.assignees.first.email }}>
             {% user_avatar card.assignees.first %}
           </div>
       </div>
-      <div class="Reviewer-avatars col-span-1 row-span-1 group">
-        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
+      <div class="Reviewer-avatars col-span-1 row-span-1 group mb-2">
+        <div class="flex justify-left mb-1">
+            <div x-data="{ isOpen: false }" class="relative">
+                <!-- Dropdown Button -->
+                <button 
+                    @click="isOpen = !isOpen"
+                    @mouseenter="isOpen = true" 
+                    type="button" 
+                    :class="{ 'underline': isOpen }"
+                    class="flex items-right gap-1 bg-white px-1 py-1 rounded-md text-xs mt-[-5px]">
+                    Reviewers
+                </button>
+                <!-- Dropdown Panel -->
+                <div 
+                    @mouseenter="isOpen = true" 
+                    @mouseleave="isOpen = false"
+                    x-show="isOpen" 
+                    @click.outside="isOpen = false" 
+                    class="absolute right-1 -translate-x-2  -translate-y-11 mt-2 w-40 rounded-md bg-white shadow-md z-10"
+                    style="max-height: 200px; overflow-y: auto;">
+                    {% for reviewer in card.reviewer_names %}
+                        <div class="flex items-center gap-2 w-full px-4 py-2.5 text-xs hover:bg-gray-50">
+                            <span class="text-black font-bold">{{ reviewer }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
         <div class="flex relative">
           {% if card.reviewers %}
             {% for reviewer in card.reviewers.all|slice:":2" %}
@@ -218,7 +182,8 @@
             {% endfor %}
           {% endif %}
         </div>
-      </div>
+    </div>
+    
       <!-- Buttons section -->
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
         <div class="Start-button col-span-1 row-span-1 w-full">
@@ -278,5 +243,4 @@
       <div class="font-['Poppins'] text-[10px] block">{{ reviewer }}</div>
     {% endfor %}
   </div>
-</div>
 </div>
