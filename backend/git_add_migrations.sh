@@ -12,3 +12,5 @@ git add -f zero_marginal_cost_challenges/migrations/*.py
 git add -f project_review_coordination/migrations/*.py
 git add -f session_scheduling/migrations/*.py
 git add -f selection_bootcamps/migrations/*.py
+git add -f coderbyte_tests/migrations/*.py
+
