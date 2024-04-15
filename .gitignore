@@ -6,3 +6,4 @@ node_modules/
 __pycache__/
 gitmodules/
 .vscode
+.virtual_documents/
