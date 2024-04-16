@@ -5,7 +5,11 @@
         <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             <div class="flex gap-2 flex-col">
                 <h1 class="{{ styles.heading1 }} pb-2">Teams</h1>
-                <form method="post" action="" class="mb-3 flex items-center gap-1">
+                <form hx-post="{% url 'view_partial_teams_list' %}"
+                    hx-trigger="submit"
+                    hx-target="#teams-list"
+                    hx-swap="innerHTML"
+                    class="mb-3 flex items-center gap-1">
                     {% csrf_token %}
                     {{form.search_term}}
                     <button class="px-1 rounded-md border-2" type="submit"/>Search</button>
