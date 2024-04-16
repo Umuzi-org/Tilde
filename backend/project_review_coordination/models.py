@@ -1,4 +1,5 @@
 from django.db import models
+from functools import lru_cache
 from django.contrib.auth import get_user_model
 from datetime import timedelta
 from core.models import Team
@@ -35,9 +36,22 @@ class ProjectReviewBundleClaim(models.Model):
         super(ProjectReviewBundleClaim, self).save(*args, **kwargs)
 
     @staticmethod
-    def get_projects_user_can_review(user):
+    @lru_cache
+    def get_user_teams(user):
+        return user.teams()
+    
+    @staticmethod
+    @lru_cache
+    def get_viewable_teams(user):
         from guardian.shortcuts import get_objects_for_user
-        
+
+        return get_objects_for_user(
+            user=user, perms=Team.PERMISSION_VIEW, klass=Team.objects.filter(active=True), any_perm=True
+        )
+
+    @classmethod
+    def get_projects_user_can_review(cls, user):
+    
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
             reviewer_user=user,
@@ -63,23 +77,19 @@ class ProjectReviewBundleClaim(models.Model):
         if user.is_superuser:
             return cards
         
-        permitted_cards = []
+        viewable_teams = cls.get_viewable_teams(user)
+
+        if not len(viewable_teams):
+            return []
         
+        permitted_cards = []
+
         for card in cards:
             assignee = card.assignees.first()
-            assignee_teams = assignee.teams()
+            assignee_teams = cls.get_user_teams(assignee)
 
-            if len(assignee_teams) == 0:
-                continue
-
-            permitted_teams = get_objects_for_user(
-                user=user, perms=Team.PERMISSION_VIEW, klass=Team.objects.filter(active=True).filter(
-                    pk__in=[team.pk for team in assignee_teams]
-                
-                ), any_perm=True
-            )
-
-            if len(permitted_teams) > 0:
+            if set(viewable_teams).intersection(assignee_teams):
                 permitted_cards.append(card)
+                continue
     
         return permitted_cards
