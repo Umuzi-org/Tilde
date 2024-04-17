@@ -16,17 +16,18 @@ class SessionAdmin(admin.ModelAdmin):
         "session_type__name",
         "extra_title_text",
     )
-    list_editable = ["facilitator", "start_time", "is_cancelled"]
+    list_editable = ["facilitator", "is_cancelled", "is_complete"]
     search_fields = ["facilitator__email", "attendees__email"]
     list_display = [
         "__str__",
-        "due_date",
+        # "due_date",
         "facilitator",
-        "start_time",
+        # "start_time",
         "attendee_emails",
         "is_cancelled",
+        "is_complete",
     ]
-    list_filter = ["session_type", "extra_title_text", "is_cancelled"]
+    list_filter = ["session_type", "extra_title_text", "is_cancelled", "is_complete"]
     readonly_fields = ["created_date", "end_time"]
     filter_horizontal = ("attendees", "guest_facilitators")
 

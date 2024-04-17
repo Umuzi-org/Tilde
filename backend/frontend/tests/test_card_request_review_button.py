@@ -1,4 +1,5 @@
 from activity_log.models import LogEntry
+from playwright.sync_api import expect
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory, ContentItemFactory
 from curriculum_tracking.models import ContentItem, AgileCard
@@ -13,10 +14,9 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.do_login(self.user)
 
     def make_outstanding_ir_project_card(self, project_submission_type):
-        self.card: AgileCard = AgileCardFactory(
+        self.card = AgileCardFactory(
             content_item=ContentItemFactory(
                 content_type=ContentItem.PROJECT,
                 project_submission_type=project_submission_type,
@@ -26,7 +26,7 @@ class TestCardRequestReviewButton(FrontendTestMixin):
         self.card.reviewers.set([self.user])
 
     def make_ip_project_card(self, project_submission_type):
-        self.card: AgileCard = AgileCardFactory(
+        self.card = AgileCardFactory(
             content_item=ContentItemFactory(
                 content_type=ContentItem.PROJECT,
                 project_submission_type=project_submission_type,
@@ -47,49 +47,51 @@ class TestCardRequestReviewButton(FrontendTestMixin):
 
     def test_request_review_button_moves_ip_project_card_to_ir_column(self):
         self.make_ip_project_card(ContentItem.LINK)
+        
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
-        self.page.click("text=Request Review")
-
+        self.page.locator("text=Request review").click()
         self.page.wait_for_load_state("networkidle")
 
-        ip_column = self.page.text_content("div#column_IP")
-        review_column = self.page.text_content("div#column_IR")
         card_title = self.card.content_item.title
-
-        self.assertIn(card_title, review_column)
-        self.assertNotIn(card_title, ip_column)
+        expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
+        expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
 
     def test_request_review_button_moves_rf_project_card_to_ir_column(self):
         self.make_rf_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
-        self.page.wait_for_load_state("networkidle")
+        self.page.locator("text=Request review").click()
+        self.page.wait_for_load_state()
 
-        rf_column = self.page.text_content("div#column_RF")
-        review_column = self.page.text_content("div#column_IR")
         card_title = self.card.content_item.title
+        expect(self.page.locator("div#column_IR")).to_contain_text(card_title)
+        expect(self.page.locator("div#column_RF")).not_to_contain_text(card_title)
 
-        self.assertIn(card_title, review_column)
-        self.assertNotIn(card_title, rf_column)
 
     def test_cannot_request_review_with_outstanding_card_reviews(self):
         self.make_outstanding_ir_project_card(ContentItem.LINK)
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator('text="Request review"').click();
         self.page.wait_for_load_state("networkidle")
+        
+        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
-        self.assertIn(
-            "You have outstanding card reviews", self.page.text_content("div#column_IP")
-        )
 
     def test_request_review_button_logs_review_request_event(self):
         self.make_ip_project_card(ContentItem.LINK)
 
-        self.page.click("text=Request Review")
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
 
+        self.page.locator("text=Request review").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

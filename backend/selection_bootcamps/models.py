@@ -19,3 +19,9 @@ class Bootcamp(models.Model):
 
     def __str__(self):
         return f"{self.team} [{self.stream}]"
+
+
+class ProvisionalGroup(models.Model):
+    """This is for a team that is either provisionally accepted or bridge"""
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
