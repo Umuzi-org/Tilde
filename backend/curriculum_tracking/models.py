@@ -763,7 +763,7 @@ class RecruitProject(
 
     @property
     def duration(self):
-        if self.agile_card.status == AgileCard.Blocked or self.agile_card.status == AgileCard.READY:
+        if self.agile_card.status == AgileCard.BLOCKED or self.agile_card.status == AgileCard.READY:
             return timedelta(0)
         
         if self.agile_card.status == AgileCard.IN_PROGRESS:
@@ -953,7 +953,7 @@ class TopicProgress(
 
     @property
     def duration(self):
-        if self.agile_card.status == AgileCard.Blocked or self.agile_card.status == AgileCard.READY:
+        if self.agile_card.status == AgileCard.BLOCKED or self.agile_card.status == AgileCard.READY:
             return timedelta(0)
         
         if self.agile_card.status == AgileCard.IN_PROGRESS:
