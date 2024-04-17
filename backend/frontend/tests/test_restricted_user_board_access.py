@@ -1,5 +1,4 @@
 from guardian.shortcuts import assign_perm
-from playwright.sync_api import expect
 from core.models import Team
 from core.tests.factories import UserFactory, TeamFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -11,7 +10,7 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
         self.viewed_user_team = TeamFactory()
         self.viewed_user = UserFactory(
-            email="viewed_learner@umuzi.org",
+            email="learner@umuzi.org",
         )
         self.viewed_user.set_password(self.viewed_user.email)
         self.viewed_user.save()
@@ -95,17 +94,18 @@ class TestUserBoardAuthorization(FrontendTestMixin):
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_user_can_view_own_board(self):
         self.do_login(self.viewed_user)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        body = self.page.text_content("body")
+
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_user_without_view_access_cannot_view_other_user_board(self):
         """
@@ -118,9 +118,9 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text("Permission Denied")
+        self.assertIn("Permission Denied", body)
 
     def test_login_redirection_if_unauthenticated(self):
         """
@@ -131,42 +131,42 @@ class TestUserBoardAuthorization(FrontendTestMixin):
 
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text("Log in")
+        self.assertIn("Log in", body)
 
     def test_user_with_manage_card_permission_can_view_user_board(self):
         self.do_login(self.user_with_manage_card_permission)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_user_with_view_all_permission_can_view_user_board(self):
         self.do_login(self.user_with_view_permission)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_user_with_review_cards_permission_can_view_user_board(self):
         self.do_login(self.user_with_review_cards_permission)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)
 
     def test_trusted_reviewer_can_view_user_board(self):
         self.do_login(self.trusted_reviewer)
         url = self.reverse_url("user_board", kwargs={"user_id": self.viewed_user.id})
         self.page.goto(url)
 
-        body = self.page.locator("body")
+        body = self.page.text_content("body")
 
-        expect(body).to_contain_text(f"Viewing {self.viewed_user.email}")
+        self.assertIn(f"Viewing {self.viewed_user.email}", body)

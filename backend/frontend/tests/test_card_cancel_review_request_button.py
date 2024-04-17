@@ -3,7 +3,6 @@ from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
 )
-from playwright.sync_api import expect
 from curriculum_tracking.models import ContentItem, AgileCard
 from .frontend_test_mixin import FrontendTestMixin
 from activity_log.models import LogEntry
@@ -16,6 +15,8 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
+
+        self.do_login(self.user)
 
     def make_project_card(self, project_submission_type):
         self.card = AgileCardFactory(
@@ -31,27 +32,24 @@ class TestCardCancelReviewRequestButton(FrontendTestMixin):
     def test_cancel_review_request_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Cancel review request")
 
-        self.page.locator('text="Cancel review request"').click();
         self.page.wait_for_load_state("networkidle")
 
+        review_column = self.page.text_content("div#column_IR")
+        ip_column = self.page.text_content("div#column_IP")
         project_card_title = self.card.content_item.title
 
-        expect(self.page.locator("div#column_IP")).to_contain_text(project_card_title)
-        expect(self.page.locator("div#column_IR")).not_to_contain_text(project_card_title)
-
+        self.assertNotIn(project_card_title, review_column)
+        self.assertIn(project_card_title, ip_column)
 
     def test_cancel_review_request_button_logs_card_review_request_cancelled_event(
         self,
     ):
         self.make_project_card(ContentItem.LINK)
-        
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
 
-        self.page.locator("text=Cancel review request").click()
+        self.page.click("text=Cancel review request")
+
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

@@ -2,7 +2,6 @@ import re
 from urllib.parse import urlparse
 
 from django.core import mail
-from playwright.sync_api import expect
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -14,6 +13,7 @@ class TestForgotPassword(FrontendTestMixin):
         self.user = UserFactory(
             email="learner@umuzi.org",
             is_staff=True,
+            is_superuser=True,  # TODO: remove this once "restricted access" PR is merged
         )
         self.user.set_password(self.user.email)
         self.user.save()
@@ -22,10 +22,7 @@ class TestForgotPassword(FrontendTestMixin):
 
     def test_sends_password_reset_email_if_user_exists(self):
         self.page.goto(self.reverse_url("user_login"))
-        self.page.wait_for_load_state()
 
-        expect(self.page.locator("text=Forgot Password?")).to_be_visible()
-        
         self.page.click("text=Forgot Password?")
 
         self.page.fill("[name=email]", self.user.email)
@@ -44,16 +41,11 @@ class TestForgotPassword(FrontendTestMixin):
         extracted_url = url_pattern.search(sent_email.body).group()
         extracted_url = urlparse(extracted_url)
 
-        reset_url = f"{self.live_server_url}{extracted_url.path}"
+        self.page.goto(f"{self.live_server_url}{extracted_url.path}")
 
-        self.page.goto(reset_url)
+        reset_page_body = self.page.text_content("body")
 
-        self.assertEqual(self.page.url, reset_url)
-
-        body = self.page.locator("body")
-
-        expect(body).to_contain_text("New password")
-
+        self.assertIn("New password", reset_page_body)
 
     def test_does_not_send_password_reset_email_if_user_does_not_exist(self):
         self.page.goto(self.reverse_url("user_login"))

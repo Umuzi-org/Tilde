@@ -1,5 +1,4 @@
 from activity_log.models import LogEntry
-from playwright.sync_api import expect
 from core.tests.factories import UserFactory
 from curriculum_tracking.tests.factories import AgileCardFactory, ContentItemFactory
 from curriculum_tracking.models import ContentItem, AgileCard
@@ -13,6 +12,8 @@ class TestCardDoneButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
+
+        self.do_login(self.user)
 
     
     def make_topic_card(self):
@@ -47,54 +48,50 @@ class TestCardDoneButton(FrontendTestMixin):
 
     def test_done_button_does_not_show_for_project_cards(self):
         self.make_project_card()
-
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
-
-        expect(self.page.locator("div#column_IP")).not_to_contain_text("Done")
+        self.page.wait_for_load_state("networkidle")
+        
+        ip_column = self.page.text_content("div#column_IP")
+        self.assertNotIn("Done", ip_column)
 
     def test_done_button_shows_for_topic_cards(self):
         self.make_topic_card()
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
-
-        expect(self.page.locator("div#column_IP")).to_contain_text("Done")
+        self.page.wait_for_load_state("networkidle")
+        ip_topic_card = self.page.text_content("div#column_IP")
+        
+        self.assertIn("Done", ip_topic_card)
 
     def test_done_button_moves_ip_topic_card_to_complete_column(self):
         self.make_topic_card()
-
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
-
-        self.page.locator("text=Done").click()
+        self.page.click("text=Done")
 
         self.page.wait_for_load_state("networkidle")
-        card_title = self.card.content_item.title
+
+        ip_column = self.page.text_content("div#column_IP")
+        complete_column = self.page.text_content("div#column_C")
         
-        expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
-        expect(self.page.locator("div#column_C")).to_contain_text(card_title)
+        card_title = self.card.content_item.title
+
+        self.assertIn(card_title, complete_column)
+        self.assertNotIn(card_title, ip_column)
 
     def test_cannot_finish_topic_with_outstanding_card_reviews(self):
         self.make_outstanding_ir_project_card()
         self.make_topic_card()
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Done")
 
-        self.page.locator('text="Done"').click();
         self.page.wait_for_load_state("networkidle")
-        
-        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
+        self.assertIn(
+            "You have outstanding card reviews", self.page.text_content("div#column_IP")
+        )
 
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Done")
 
-        self.page.locator("text=Done").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

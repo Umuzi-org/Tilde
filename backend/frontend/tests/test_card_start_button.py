@@ -3,7 +3,6 @@ from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
 )
-from playwright.sync_api import expect
 from curriculum_tracking.models import ContentItem, AgileCard
 from .frontend_test_mixin import FrontendTestMixin
 from activity_log.models import LogEntry
@@ -16,6 +15,8 @@ class TestCardStartButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
+
+        self.do_login(self.user)
 
     def make_topic_card(self):
         self.card = AgileCardFactory(
@@ -39,37 +40,36 @@ class TestCardStartButton(FrontendTestMixin):
     def test_start_button_moves_topic_card_to_ip_column(self):
         self.make_topic_card()
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Start")
 
-        self.page.locator('text="Start"').click();
-        self.page.wait_for_load_state()
+        self.page.wait_for_load_state("networkidle")
 
+        ip_column = self.page.text_content("div#column_IP")
+        backlog_column = self.page.text_content("div#column_RB")
         topic_card_title = self.card.content_item.title
-        expect(self.page.locator("div#column_IP")).to_contain_text(topic_card_title)
-        expect(self.page.locator("div#column_RB")).not_to_contain_text(topic_card_title)
 
+        self.assertIn(topic_card_title, ip_column)
+        self.assertNotIn(topic_card_title, backlog_column)
 
     def test_start_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Start")
 
-        self.page.locator("text=Start").click()
         self.page.wait_for_load_state("networkidle")
 
+        ip_column = self.page.text_content("div#column_IP")
+        backlog_column = self.page.text_content("div#column_RB")
         project_card_title = self.card.content_item.title
-        expect(self.page.locator("div#column_IP")).to_contain_text(project_card_title)
-        expect(self.page.locator("div#column_RB")).not_to_contain_text(project_card_title)
+
+        self.assertIn(project_card_title, ip_column)
+        self.assertNotIn(project_card_title, backlog_column)
 
     def test_start_button_logs_card_started_event(self):
         self.make_project_card(ContentItem.LINK)
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Start")
 
-        self.page.locator("text=Start").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)

@@ -23,7 +23,7 @@ function moveCardToCorrectColumn(cardId, column) {
 }
 
 /*
-  Hides a card alert after 10 seconds.
+  Hides a card alert after 5 seconds.
 */
 
 function hideCardAlert(cardId) {
@@ -31,5 +31,5 @@ function hideCardAlert(cardId) {
 
   setTimeout(() => {
     cardAlert.remove();
-  }, 10000);
+  }, 5000);
 }

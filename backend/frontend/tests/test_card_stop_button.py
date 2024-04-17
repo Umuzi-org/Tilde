@@ -7,6 +7,7 @@ from curriculum_tracking.models import ContentItem, AgileCard
 from .frontend_test_mixin import FrontendTestMixin
 from activity_log.models import LogEntry
 import curriculum_tracking.activity_log_entry_creators as creators
+from django.utils import timezone
 
 
 class TestCardStopButton(FrontendTestMixin):
@@ -15,7 +16,8 @@ class TestCardStopButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
-        
+
+        self.do_login(self.user)
 
     def make_topic_card(self):
         self.card = AgileCardFactory(
@@ -42,10 +44,8 @@ class TestCardStopButton(FrontendTestMixin):
     ):
         self.make_topic_card()
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Stop")
 
-        self.page.locator("text=Stop").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)
@@ -62,10 +62,8 @@ class TestCardStopButton(FrontendTestMixin):
     ):
         self.make_project_card(ContentItem.LINK)
 
-        self.do_login(self.user)
-        self.page.wait_for_load_state()
+        self.page.click("text=Stop")
 
-        self.page.locator("text=Stop").click()
         self.page.wait_for_load_state("networkidle")
 
         self.assertEqual(LogEntry.objects.count(), 1)
