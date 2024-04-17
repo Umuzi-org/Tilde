@@ -1,2 +1,10 @@
-{% include "frontend/course_component_details/partial_modal.html" %}
-add review form
+{% extends 'frontend/partial_modal_base.html' %}
+{% block modal_content %}
+    <form>
+        {% csrf_token %}
+        
+        {{ review_form.as_p}}
+
+        <button hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}" hx-on:htmx:before-request="alert('Making a request!')" class="{{ styles.button_primary_small }}" type="submit">Submit Review</button>
+    </form>
+{% endblock modal_content %}

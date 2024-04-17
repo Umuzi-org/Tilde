@@ -23,6 +23,7 @@ from curriculum_tracking.models import (
     ContentItem,
     User,
     RecruitProject,
+    RecruitProjectReview,
     TopicProgress,
     RecruitProjectReview,
 )
@@ -40,6 +41,7 @@ from .forms import (
     CustomAuthenticationForm,
     CustomSetPasswordForm,
     LinkSubmissionForm,
+    RecruitProjectReviewForm,
 )
 from .theme import styles
 
@@ -387,9 +389,14 @@ def progress_details(
 ):
     if content_type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
+        review_form = None
 
     if content_type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
+        review_form = RecruitProjectReviewForm(initial={
+            "recruit_project": course_component,
+            "reviewer_user": request.user,
+        })
 
     form = None
 
@@ -451,6 +458,7 @@ def progress_details(
         "board_status": board_status,
         "link_submission_form": form,
         "timeline": sorted(timeline, key=lambda d: d["timestamp"]),
+        "review_form": review_form,
     }
 
     return render(
@@ -459,6 +467,33 @@ def progress_details(
         context,
     )
 
+
+def action_add_review(request, content_type, id):
+    if request.method == "POST":
+        if content_type == "project":
+            project: RecruitProject = get_object_or_404(RecruitProject, id=id)
+            card: AgileCard = project.agile_card
+       
+            form: RecruitProjectReviewForm = RecruitProjectReviewForm(data=request.POST)
+            if form.is_valid():
+                review: RecruitProjectReview = form.save()
+
+                log_creators.log_project_competence_review_done(review)
+
+                card.refresh_from_db()
+
+                if card.status == AgileCard.REVIEW_FEEDBACK:
+                    log_creators.log_card_moved_to_review_feedback(card, review.reviewer_user)
+                elif card.status == AgileCard.COMPLETE:
+                    log_creators.log_card_moved_to_complete(card, review.reviewer_user)
+
+                return render(
+                    request,
+                    "frontend/progress_details/js_exec_action_prepend_new_review.html",
+                    {
+                        "review": review,
+                    },
+                )
 
 def check_user_can_request_review_on_card(logged_in_user):
     request = get_current_request()

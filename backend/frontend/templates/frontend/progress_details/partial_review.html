@@ -1,5 +1,5 @@
 {% load custom_tags %}
-<div class="">
+<div id="review-{{ review.id }}">
     <span class="text-xs">{{ review.timestamp|date:"d/m/Y, H:i:s" }}</span>
     <div class="flex items center gap-2">
         {% user_avatar review.reviewer_user %}
@@ -14,6 +14,20 @@
         nihil
         omnis amet pariatur.
     </p>
-    <button class="{{ styles.button_secondary_small }}"
-            type="button">Read more</button>
+    <div>
+        <span
+              class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span
+                  class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">
+                {{ review.get_status_display }}
+            </span><span></span>
+
+    </div>
+
+
+    <div x-data="{ modalOpen: false }">
+        <button @click="modalOpen = !modalOpen"
+                class="{{ styles.button_secondary_small }}"
+                type="submit">Read more</button>
+        {% include "frontend/progress_details/partial_preview_review.html" %}
+    </div>
 </div>
