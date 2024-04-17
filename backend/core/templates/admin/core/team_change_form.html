@@ -5,9 +5,6 @@
     <li>
         <a href="{% url 'bulk_add_users_to_team' original.pk %}" class="button">{% trans "Bulk Add Users" %}</a>
     </li>
-    <li>
-        <a href="{% url 'confirm_delete_recreate_cards_for_team' original.pk %}" class"=button">{% trans "Delete and Recreate cards For Team" %}</a>
-    </li>
     <li><a href="{% url opts|admin_urlname:'permissions' original.pk|admin_urlquote %}" class="permissionslink">{% trans "Object permissions" %}</a></li>
     {{ block.super }}
 {% endblock %}
