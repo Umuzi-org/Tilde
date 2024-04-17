@@ -767,7 +767,7 @@ class RecruitProject(
             return timedelta(0)
         
         if self.agile_card.status == AgileCard.IN_PROGRESS:
-            return timezone.now() - self.start_time()
+            return timezone.now() - self.start_time
         
         return self.end_time - self.start_time
 
