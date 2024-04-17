@@ -1,0 +1,19 @@
+{% load custom_tags %}
+<div class="">
+    <span class="text-xs">{{ review.timestamp|date:"d/m/Y, H:i:s" }}</span>
+    <div class="flex items center gap-2">
+        {% user_avatar review.reviewer_user %}
+        <div class="">
+            {{ review.reviewer_user.email }}
+        </div>
+    </div>
+    <p class="line-clamp-1">
+        {{ review.comments }} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quod neque, consequuntur
+        veritatis
+        iste aliquid modi deserunt repellendus laboriosam eum cum! Debitis accusamus temporibus facilis mollitia illo
+        nihil
+        omnis amet pariatur.
+    </p>
+    <button class="{{ styles.button_secondary_small }}"
+            type="button">Add Review</button>
+</div>
