@@ -87,62 +87,18 @@ class generate_repo_name_for_project_Tests(TestCase):
 
 
 class duration_Tests(TestCase):
-
-    DATETIME_NONE_TYPEERROR_MESSAGE = "TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'"
-
-    def make_project_card(self):
-        self.card = factories.AgileCardFactory(
+    def test_returns_correct_value(self):
+        card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
                 content_type=models.ContentItem.PROJECT, project_submission_type="L"
             ),
             status=models.AgileCard.READY,
         )
-
-    def test_returns_correct_value(self):
-        self.make_project_card()
-
-        self.card.recruit_project.start_time = datetime(
+        card.recruit_project.start_time = datetime(
             2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
         )
-        self.card.recruit_project.end_time = datetime(
+        card.recruit_project.end_time = datetime(
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(self.card.recruit_project.duration, timedelta(seconds=3600))
-
-    def test_raises_typeerror_when_starttime_is_empty(self):
-        self.make_project_card()
-
-        self.card.recruit_project.start_time = None
-        self.card.recruit_project.end_time = datetime(
-            2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
-        )
-
-        self.assertRaisesMessage(
-            TypeError,
-            self.DATETIME_NONE_TYPEERROR_MESSAGE,
-        )
-
-    def test_raises_typeerror_when_endtime_is_empty(self):
-        self.make_project_card()
-
-        self.card.recruit_project.start_time = datetime(
-            2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
-        )
-        self.card.recruit_project.end_time = None
-
-        self.assertRaisesMessage(
-            TypeError,
-            self.DATETIME_NONE_TYPEERROR_MESSAGE,
-        )
-
-    def test_raises_typeerror_when_both_starttime_and_endtime_are_empty(self):
-        self.make_project_card()
-
-        self.card.recruit_project.start_time = None
-        self.card.recruit_project.end_time = None
-
-        self.assertRaisesMessage(
-            TypeError,
-            self.DATETIME_NONE_TYPEERROR_MESSAGE,
-        )
+        self.assertEquals(card.recruit_project.duration, timedelta(seconds=3600))
