@@ -9,11 +9,15 @@ from curriculum_tracking import models
 
 class duration_Tests(TestCase):
     
+    
     def make_project_card(self,status):
+        content_item = factories.ContentItemFactory(content_type  = models.ContentItem.TOPIC)
         self.card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type  = models.ContentItem.TOPIC),
+            content_item=content_item,
             status=status,
         )
+        
+        self.card.topic_progress = models.TopicProgress(content_item=content_item)
     
     def test_returns_correct_duration_for_cards_unstarted(self):
         self.make_project_card(models.AgileCard.READY)
@@ -45,4 +49,6 @@ class duration_Tests(TestCase):
         )
 
         self.assertEquals(self.card.topic_progress.duration, timedelta(seconds=3600))
+        
+
 
