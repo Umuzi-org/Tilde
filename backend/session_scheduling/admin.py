@@ -16,7 +16,7 @@ class SessionAdmin(admin.ModelAdmin):
         "session_type__name",
         "extra_title_text",
     )
-    list_editable = ["facilitator", "start_time", "is_cancelled"]
+    list_editable = ["facilitator", "is_cancelled", "is_complete"]
     search_fields = ["facilitator__email", "attendees__email"]
     list_display = [
         "__str__",

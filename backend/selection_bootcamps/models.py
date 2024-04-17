@@ -22,4 +22,6 @@ class Bootcamp(models.Model):
 
 
 class ProvisionalGroup(models.Model):
+    """This is for a team that is either provisionally accepted or bridge"""
+
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

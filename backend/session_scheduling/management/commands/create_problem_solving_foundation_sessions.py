@@ -19,8 +19,6 @@ from curriculum_tracking.models import AgileCard
 DUE_DAYS = 21
 GROUP_SIZE = 3
 
-session_type = SessionType.objects.get(name=SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION)
-
 
 def get_most_recent_test_results():
     """get the most recent test for each learner and work from that"""
@@ -58,6 +56,9 @@ def get_users_who_failed(level):
 
 
 def create_session(learners, level, language):
+    session_type = SessionType.objects.get(
+        name=SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION
+    )
     session = Session.objects.create(
         session_type=session_type,
         due_date=timezone.now() + timezone.timedelta(days=DUE_DAYS),

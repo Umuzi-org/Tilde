@@ -45,7 +45,7 @@ session_types = [
     SessionTypeConf(
         name=SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION,
         event_copy="You didn't do well on a recent Problem Solving Foundation Level {extra_title_text} test. Let's see if we can help",
-        event_title="Problem solving foundation {extra_title_text}- {flavours}",
+        event_title="Problem solving foundation {extra_title_text} - {flavours}",
         description="The learner failed a PSF test. These sessions are scheduled for level 0 and level 1 tests",
         duration_minutes=60,
     ),
