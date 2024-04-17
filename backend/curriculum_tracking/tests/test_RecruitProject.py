@@ -90,8 +90,6 @@ class generate_repo_name_for_project_Tests(TestCase):
 
 class duration_Tests(TestCase):
 
-    DATETIME_NONE_TYPEERROR_MESSAGE = "TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'"
-
     def make_project_card(self,status):
         self.card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
