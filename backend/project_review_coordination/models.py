@@ -90,6 +90,5 @@ class ProjectReviewBundleClaim(models.Model):
 
             if set(viewable_teams).intersection(assignee_teams):
                 permitted_cards.append(card)
-                continue
     
         return permitted_cards
