@@ -1733,6 +1733,7 @@ class AgileCard(
 
         return len(all_trusts) > 0
 
+
 class BurndownSnapshot(models.Model):
     MIN_HOURS_BETWEEN_SNAPSHOTS = 4
     timestamp = models.DateTimeField(auto_now_add=True)

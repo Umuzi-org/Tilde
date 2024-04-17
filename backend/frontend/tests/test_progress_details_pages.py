@@ -1,7 +1,12 @@
 import datetime
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
 
+=======
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
 from django.utils import timezone
 from playwright.sync_api import expect
+from datetime import datetime
+from unittest.mock import patch
 
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import FrontendTestMixin
@@ -9,8 +14,14 @@ from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
     RecruitProjectFactory,
+    TopicProgressFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
+=======
+
+VIEW_NAME = "progress_details"
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -24,6 +35,22 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
         self.do_login(self.user)
+
+    def make_topic_card(self):
+        content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
+
+        self.topic = TopicProgressFactory(
+            user=self.user,
+            content_item=content_item,
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
+        )
+
+        AgileCardFactory(
+            content_item=content_item,
+            status=AgileCard.IN_PROGRESS,
+            topic_progress=self.topic,
+        )
 
     def make_ip_project_card(self, project_submission_type):
         content_item = ContentItemFactory(
@@ -39,12 +66,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_users=[self.user],
             reviewer_users=[learner_reviewer],
             content_item=content_item,
-            start_time=datetime.datetime(
-                2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
-            due_time=datetime.datetime(
-                2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc
-            ),
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
         )
 
         self.agile_card = AgileCardFactory(
@@ -53,16 +76,36 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
     def test_link_project_page_displays_correct_details(self):
+=======
+    @patch("django.utils.timezone.get_current_timezone")
+    def test_progress_details_page_displays_correct_details_for_link_project(
+        self, mock_get_current_timezone
+    ):
+        mock_get_current_timezone.return_value = timezone.utc
+
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
+=======
+        self.page.wait_for_load_state()
+
+        self.assertEqual(self.page.url, self.link_project_url)
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
 
         body = self.page.text_content("body")
 
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
         self.assertIn("learner_1@umuzi.org", body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
@@ -73,6 +116,17 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             body,
         )
         self.assertIn("No link submitted yet", body)
+=======
+        expect(body).to_contain_text("learner_1@umuzi.org")
+        expect(body).to_contain_text("In Progress")
+
+        expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
+
+        expect(body).to_contain_text("learner_reviewer@umuzi.org")
+        expect(body).to_contain_text(self.recruit_project.content_url)
+        expect(body).to_contain_text("No link submitted yet")
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
 
     def test_link_submission_form_correctly_updates_link_submission(
         self,
@@ -80,7 +134,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
 
@@ -101,7 +159,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
 
@@ -131,7 +193,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
 
@@ -158,7 +224,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
 
@@ -175,7 +245,11 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            "course_component_details", kwargs={"project_id": self.recruit_project.id}
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.recruit_project.id,
+            },
         )
         self.page.goto(self.link_project_url)
 
@@ -185,3 +259,63 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
         self.assertIn("Enter a valid URL", body)
+<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
+=======
+
+
+class TestTopicDetailsPage(FrontendTestMixin):
+    def setUp(self):
+        super().setUp()
+        self.user = UserFactory(
+            email="learner_1@umuzi.org",
+            is_staff=True,
+            is_superuser=True,
+        )
+        self.user.set_password(self.user.email)
+        self.user.save()
+        self.do_login(self.user)
+
+    def make_topic_card(self, card_status):
+        content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
+
+        self.topic = TopicProgressFactory(
+            user=self.user,
+            start_time=datetime(2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc),
+            due_time=datetime(2024, 2, 13, 14, 6, 17, 373514, tzinfo=timezone.utc),
+        )
+
+        self.card = AgileCardFactory(
+            content_item=content_item,
+            status=card_status,
+            topic_progress=self.topic,
+        )
+
+        self.card.assignees.set([self.user])
+
+    @patch("django.utils.timezone.get_current_timezone")
+    def test_progress_details_displays_correct_details_for_topic(
+        self, mock_get_current_timezone
+    ):
+        mock_get_current_timezone.return_value = timezone.utc
+        self.make_topic_card(AgileCard.IN_PROGRESS)
+
+        self.topic_url = self.reverse_url(
+            VIEW_NAME,
+            kwargs={
+                "content_type": "topic",
+                "id": self.topic.id,
+            },
+        )
+        self.page.goto(self.topic_url)
+
+        body = self.page.text_content("body")
+
+        self.assertIn("learner_1@umuzi.org", body)
+        self.assertIn("In Progress", body)
+        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
+        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
+        self.assertIn(
+            self.topic.content_url,
+            body,
+        )
+>>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
