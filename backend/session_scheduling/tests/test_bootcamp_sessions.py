@@ -1,7 +1,3 @@
-from django.test import TestCase
-from session_scheduling.management.commands.initialise_session_types import (
-    initialise_session_types,
-)
 from session_scheduling.management.commands.create_bootcamp_sessions import (
     create_bootcamp_sessions,
     bootcamp_project_content_item_ids,
@@ -17,11 +13,7 @@ from curriculum_tracking.tests.factories import (
 from curriculum_tracking.models import RecruitProject
 from django.utils import timezone
 
-
-class TechnicalSessionTestCase(TestCase):
-    def setUp(self):
-        super().setUp()
-        initialise_session_types()
+from .base import TechnicalSessionTestCase
 
 
 class create_bootcamp_sessions_Tests(TechnicalSessionTestCase):
