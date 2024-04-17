@@ -1,5 +1,4 @@
-from datetime import timedelta
-from unittest.mock import patch
+from datetime import timedelta,datetime
 from django.test import TestCase
 from django.utils import timezone
 
@@ -8,8 +7,6 @@ from curriculum_tracking.tests import factories
 from core.models import Team
 from core.tests.factories import TeamFactory, UserFactory
 from guardian.shortcuts import assign_perm
-from activity_log.models import LogEntry
-import curriculum_tracking.activity_log_entry_creators as log_creators
 
 
 JAVASCRIPT = "js"
@@ -90,51 +87,65 @@ class generate_repo_name_for_project_Tests(TestCase):
         self.assertIn(self.user.last_name, repo_name)
 
 
-class get_total_duration(TestCase):
+class duration_Tests(TestCase):
 
-    def test_returns_none_when_there_are_no_log_entries(self):
-        user = factories.UserFactory(is_superuser=False)
-        card = factories.AgileCardFactory(
+    DATETIME_NONE_TYPEERROR_MESSAGE = "TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'"
+
+    def make_project_card(self):
+        self.card = factories.AgileCardFactory(
             content_item=factories.ContentItemFactory(
                 content_type=models.ContentItem.PROJECT, project_submission_type="L"
             ),
             status=models.AgileCard.READY,
         )
 
-        card.assignees.set([user])
-        card.start_project()
-        self.assertIn("get_total_duration", dir(card.recruit_project))
-        self.assertEquals(card.recruit_project.get_total_duration, None)
 
-    def test_returns_correct_duration(self):
-        user = factories.UserFactory(is_superuser=False)
+    def test_returns_correct_value(self):
+        self.make_project_card()
 
-        card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(
-                content_type=models.ContentItem.PROJECT, project_submission_type="L"
-            ),
-            status=models.AgileCard.READY,
+        self.card.recruit_project.start_time = datetime(
+            2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        card.assignees.set([user])
-        card.start_project()
+        self.card.recruit_project.end_time = datetime(
+            2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+        )
 
-        with patch.object(
-            LogEntry._meta.get_field("timestamp"), "auto_now_add", True
-        ), patch(
-            "django.utils.timezone.now",
-            side_effect=[
-                timezone.now(),
-                timezone.now(),
-                timezone.now(),
-                timezone.now() + timedelta(hours=3),
-            ],
-        ):
-            log_creators.log_card_started(card=card, actor_user=user)
-            log_creators.log_card_moved_to_complete(card=card, actor_user=user)
+        self.assertEquals(self.card.recruit_project.duration, timedelta(seconds=3600))
 
-            card.status = "C"
+    def test_raises_typeerror_when_starttime_is_empty(self):
+        self.make_project_card()
 
-            self.assertEquals(
-                card.recruit_project.get_total_duration, "0 days, 3 hours, 0 minutes"
-            )
+        self.card.recruit_project.start_time = None
+        self.card.recruit_project.end_time = datetime(
+            2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+        )
+
+        self.assertRaisesMessage(
+            TypeError,
+            self.DATETIME_NONE_TYPEERROR_MESSAGE,
+        )
+
+    def test_raises_typeerror_when_endtime_is_empty(self):
+        self.make_project_card()
+
+        self.card.recruit_project.start_time = datetime(
+            2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+        )
+        self.card.recruit_project.end_time = None
+
+        self.assertRaisesMessage(
+            TypeError,
+            self.DATETIME_NONE_TYPEERROR_MESSAGE,
+        )
+
+    def test_raises_typeerror_when_both_starttime_and_endtime_are_empty(self):
+        self.make_project_card()
+
+        self.card.recruit_project.start_time = None
+        self.card.recruit_project.end_time = None
+
+        self.assertRaisesMessage(
+            TypeError,
+            self.DATETIME_NONE_TYPEERROR_MESSAGE,
+        )

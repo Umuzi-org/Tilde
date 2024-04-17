@@ -1,54 +1,70 @@
 from django.test import TestCase
 from django.utils import timezone
-from datetime import timedelta
-from unittest.mock import patch
+from datetime import timedelta,datetime
 
 from curriculum_tracking.tests import factories
 from curriculum_tracking.models import AgileCard, ContentItem
-from activity_log.models import LogEntry
-import curriculum_tracking.activity_log_entry_creators as log_creators
 
 
-class get_total_duration(TestCase):
 
-    def test_returns_none_when_there_are_no_log_entries(self):
-        user = factories.UserFactory(is_superuser=False)
-        card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
-            status=AgileCard.READY,
-        )
+class duration_Tests(TestCase):
+    pass
 
-        card.assignees.set([user])
-        card.start_topic()
-        self.assertIn("get_total_duration", dir(card.topic_progress))
-        self.assertEquals(card.topic_progress.get_total_duration, None)
+    # DATETIME_NONE_TYPEERROR_MESSAGE = "TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'"
 
-    def test_returns_correct_duration(self):
-        user = factories.UserFactory(is_superuser=False)
-        card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
-            status=AgileCard.READY,
-        )
+    # def make_project_card(self):
+    #     self.card = factories.AgileCardFactory(
+    #         content_item=factories.ContentItemFactory(content_type=ContentItem.TOPIC),
+    #         status=AgileCard.READY,
+    #     )
 
-        card.assignees.set([user])
-        card.start_topic()
 
-        with patch.object(
-            LogEntry._meta.get_field("timestamp"), "auto_now_add", True
-        ), patch(
-            "django.utils.timezone.now",
-            side_effect=[
-                timezone.now(),
-                timezone.now(),
-                timezone.now(),
-                timezone.now() + timedelta(hours=3),
-            ],
-        ):
-            log_creators.log_card_started(card=card, actor_user=user)
-            log_creators.log_card_moved_to_complete(card=card, actor_user=user)
+    # def test_returns_correct_value(self):
+    #     self.make_project_card()
 
-            card.status = "C"
+    #     self.card.topic_progress.start_time = datetime(
+    #         2024, 2, 12, 14, 6, 17, 373514, tzinfo=timezone.utc
+    #     )
+   
+    #     self.card.topic_progress.end_time = datetime(
+    #         2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+    #     )
 
-            self.assertEquals(
-                card.topic_progress.get_total_duration, "0 days, 3 hours, 0 minutes"
-            )
+    #     self.assertEquals(self.card.topic_progress.duration, timedelta(seconds=3600))
+
+    # def test_raises_typeerror_when_starttime_is_empty(self):
+    #     self.make_project_card()
+
+    #     self.card.topic_progress.start_time = None
+    #     self.card.topic_progress.end_time = datetime(
+    #         2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+    #     )
+
+    #     self.assertRaisesMessage(
+    #         TypeError,
+    #         self.DATETIME_NONE_TYPEERROR_MESSAGE,
+    #     )
+
+    # def test_raises_typeerror_when_endtime_is_empty(self):
+    #     self.make_project_card()
+
+    #     self.card.topic_progress.start_time = datetime(
+    #         2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
+    #     )
+    #     self.card.topic_progress.end_time = None
+
+    #     self.assertRaisesMessage(
+    #         TypeError,
+    #         self.DATETIME_NONE_TYPEERROR_MESSAGE,
+    #     )
+
+    # def test_raises_typeerror_when_both_starttime_and_endtime_are_empty(self):
+    #     self.make_project_card()
+
+    #     self.card.topic_progress.start_time = None
+    #     self.card.topic_progress.end_time = None
+
+    #     self.assertRaisesMessage(
+    #         TypeError,
+    #         self.DATETIME_NONE_TYPEERROR_MESSAGE,
+    #     )

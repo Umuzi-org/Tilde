@@ -189,42 +189,6 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
-def get_formatted_duration_string(duration):
-    if duration:
-        duration = duration
-        seconds = duration.total_seconds()
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, remainder = divmod(remainder, 60)
-
-        return f"{int(days)} days, {int(hours)} hours, {int(minutes)} minutes"
-
-    return None
 
 
-def get_blant_duration(id, card_status):
-    card_started_logs = sorted(
-        LogEntry.objects.filter(
-            Q(event_type__name=CARD_STARTED),
-            object_1_id=id,
-        ),
-        key=lambda log: log.timestamp,
-    )
 
-    card_completed_logs = sorted(
-        LogEntry.objects.filter(
-            Q(event_type__name=CARD_MOVED_TO_COMPLETE),
-            object_1_id=id,
-        ),
-        key=lambda log: log.timestamp,
-    )
-
-    if (
-        card_status != models.AgileCard.COMPLETE
-        or not card_started_logs
-        or not card_completed_logs
-    ):
-        return None
-
-    duration = card_completed_logs[-1].timestamp - card_started_logs[-1].timestamp
-    return get_formatted_duration_string(duration)
