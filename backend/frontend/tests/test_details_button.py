@@ -11,7 +11,11 @@ class TestCardDetailsButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
+<<<<<<< HEAD
         self.do_login(self.user)
+=======
+        
+>>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject")
 
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
@@ -35,12 +39,13 @@ class TestCardDetailsButton(FrontendTestMixin):
     def test_details_button_redirects_to_link_project_details_page(self):
         self.make_project_card(ContentItem.LINK)
 
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
+
         link_card_element = self.page.locator(
             f"div#column_IP > div#card_{self.card.id}"
         )
         details_link_element = link_card_element.get_by_role("link", name="Details")
-
-        self.page.wait_for_load_state("networkidle")
 
         expect(link_card_element).to_be_visible()
         expect(details_link_element).to_be_visible()

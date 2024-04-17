@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 
 from django.utils import timezone
 from playwright.sync_api import expect
@@ -14,6 +15,7 @@ from curriculum_tracking.tests.factories import (
     TopicProgressFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+from unittest.mock import patch
 
 VIEW_NAME = "progress_details"
 
@@ -69,10 +71,15 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
+<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
     @patch("django.utils.timezone.get_current_timezone")
     def test_progress_details_page_displays_correct_details_for_link_project(
         self, mock_get_current_timezone
     ):
+=======
+    @patch('django.utils.timezone.get_current_timezone')
+    def test_link_project_page_displays_correct_details(self, mock_get_current_timezone):
+>>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
         mock_get_current_timezone.return_value = timezone.utc
 
 
@@ -85,8 +92,13 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
                 "id": self.recruit_project.id,
             },
         )
-        self.page.goto(self.link_project_url)
 
+        self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
+        
+        self.assertEqual(self.page.url, self.link_project_url)
+
+<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
         self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
@@ -97,13 +109,23 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
 
+=======
+        body = self.page.locator("body")
+
+        expect(body).to_contain_text("learner_1@umuzi.org")
+        expect(body).to_contain_text("In Progress")
+        
+>>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
         expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
 
         expect(body).to_contain_text("learner_reviewer@umuzi.org")
         expect(body).to_contain_text(self.recruit_project.content_url)
         expect(body).to_contain_text("No link submitted yet")
+<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
 
+=======
+>>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
 
     def test_link_submission_form_correctly_updates_link_submission(
         self,
@@ -118,17 +140,22 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
 
-        body = self.page.text_content("body")
-        self.assertIn("No link submitted yet", body)
+        self.assertEqual(self.page.url, self.link_project_url)
+
+        body = self.page.locator("body")
+
+        expect(body).to_contain_text("No link submitted yet")
 
         self.page.get_by_label("Link submission").fill("https://google.com")
 
         self.page.click("text=Submit Link")
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
-        body = self.page.text_content("body")
-        self.assertIn("https://google.com", body)
+        body = self.page.locator("body")
+
+        expect(body).to_contain_text("https://google.com")
 
     def test_link_submission_form_disappears_after_successful_submission(
         self,
@@ -143,6 +170,9 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
+
+        self.assertEqual(self.page.url, self.link_project_url)
 
         link_submission_form = self.page.locator('[id="link_submission_form"]')
         expect(link_submission_form).to_be_visible()
@@ -177,6 +207,9 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
+
+        self.assertEqual(self.page.url, self.link_project_url)
 
         link_submission_form = self.page.locator('[id="link_submission_form"]')
         expect(link_submission_form).not_to_be_visible()
@@ -186,7 +219,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         ).to_be_visible()
 
         self.page.click("text=Edit link submission")
-        self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_load_state()
 
         link_submission_form = self.page.locator('[id="link_submission_form"]')
         expect(link_submission_form).to_be_visible
@@ -208,13 +241,16 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
+
+        self.assertEqual(self.page.url, self.link_project_url)
 
         self.page.get_by_label("Link submission").fill("")
         self.page.click("text=Submit Link")
         self.page.wait_for_load_state("networkidle")
 
-        body = self.page.text_content("body")
-        self.assertIn("This field is required", body)
+        body = self.page.locator("body")
+        expect(body).to_contain_text("This field is required")
 
     def test_link_submission_form_displays_correct_error_message_when_form_is_submitted_with_invalid_input(
         self,
@@ -230,11 +266,15 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
+        self.page.wait_for_load_state()
+
+        self.assertEqual(self.page.url, self.link_project_url)
 
         self.page.get_by_label("Link submission").fill("http://google")
         self.page.click("text=Submit Link")
         self.page.wait_for_load_state("networkidle")
 
+<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
         body = self.page.text_content("body")
         self.assertIn("Enter a valid URL", body)
 
@@ -295,3 +335,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         expect(body).to_contain_text(self.recruit_project.content_url)
 
+=======
+        body = self.page.locator("body")
+        expect(body).to_contain_text("Enter a valid URL")
+>>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
