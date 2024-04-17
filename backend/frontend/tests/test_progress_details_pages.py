@@ -71,15 +71,9 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
-<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
-    @patch("django.utils.timezone.get_current_timezone")
-    def test_progress_details_page_displays_correct_details_for_link_project(
-        self, mock_get_current_timezone
-    ):
-=======
+
     @patch('django.utils.timezone.get_current_timezone')
     def test_link_project_page_displays_correct_details(self, mock_get_current_timezone):
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
         mock_get_current_timezone.return_value = timezone.utc
 
 
@@ -98,34 +92,17 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         
         self.assertEqual(self.page.url, self.link_project_url)
 
-<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
-        self.page.wait_for_load_state()
-
-        self.assertEqual(self.page.url, self.link_project_url)
-
-
-        body = self.page.text_content("body")
-
-        expect(body).to_contain_text("learner_1@umuzi.org")
-        expect(body).to_contain_text("In Progress")
-
-=======
         body = self.page.locator("body")
 
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
         
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
         expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
 
         expect(body).to_contain_text("learner_reviewer@umuzi.org")
         expect(body).to_contain_text(self.recruit_project.content_url)
         expect(body).to_contain_text("No link submitted yet")
-<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
-
-=======
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py
 
     def test_link_submission_form_correctly_updates_link_submission(
         self,
@@ -274,11 +251,8 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.page.click("text=Submit Link")
         self.page.wait_for_load_state("networkidle")
 
-<<<<<<< HEAD:backend/frontend/tests/test_progress_details_pages.py
-        body = self.page.text_content("body")
-        self.assertIn("Enter a valid URL", body)
-
-
+        body = self.page.locator("body")
+        expect(body).to_contain_text("Enter a valid URL")
 
 class TestTopicDetailsPage(FrontendTestMixin):
     def setUp(self):
@@ -325,17 +299,13 @@ class TestTopicDetailsPage(FrontendTestMixin):
         )
         self.page.goto(self.topic_url)
         
-        body = self.page.text_content("body")
-
+        body = self.page.locator("body")
+        
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
 
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
         expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
 
-        expect(body).to_contain_text(self.recruit_project.content_url)
+        expect(body).to_contain_text(self.card.topic_progress.content_url)
 
-=======
-        body = self.page.locator("body")
-        expect(body).to_contain_text("Enter a valid URL")
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/tests/test_course_component_details_pages.py

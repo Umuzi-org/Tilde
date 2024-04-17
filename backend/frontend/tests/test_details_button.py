@@ -11,11 +11,8 @@ class TestCardDetailsButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
-<<<<<<< HEAD
         self.do_login(self.user)
-=======
         
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject")
 
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(

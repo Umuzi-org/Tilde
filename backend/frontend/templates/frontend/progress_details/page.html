@@ -18,6 +18,12 @@
                         {% endfor %}
                     {% endwith %}
                 </div>
+            
+                <div class="p-2 border-2 rounded-md ">
+                    <p>
+                        Status : {{board_status}}
+                    </p>
+                </div>
             </div>
             
             <div class="p-2 border-2 rounded-md grid gap-2">
@@ -40,23 +46,7 @@
 
             {% if course_component.content_item.content_type_nice == "project" %}
                 <div class="p-2 border-2 rounded-md grid gap-2">
-<<<<<<< HEAD:backend/frontend/templates/frontend/progress_details/page.html
                     <div class="p-2 border-2 rounded-md ">
-=======
-                    <div class="bold p-2 border-2 rounded-md ">
-                        Assignees:
-                        <ul class="mx-8">
-                            <li class="flex items-center">
-                                <div class="pr-2">
-                                  {% user_avatar course_component.recruit_users.first %}
-                                </div>
-                                {{ course_component.recruit_users.first }}
-                            </li>
-                        </ul>
-                    </div>
-            
-                    <div class="bold p-2 border-2 rounded-md ">
->>>>>>> parent of 9b9f76c8 (Revert "Merge branch 'develop' into add_total_duration_function_to_classes_topicProgress_and_recruitProject"):backend/frontend/templates/frontend/course_component_details/page.html
                         Reviewers: 
                         <ul class="mx-8">
                             {% if course_component.reviewer_users.all %}
@@ -124,7 +114,5 @@
         </div>
     </div>
 {% endblock %}
-
-
 
 
