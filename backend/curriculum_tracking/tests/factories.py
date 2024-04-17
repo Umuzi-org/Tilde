@@ -238,7 +238,6 @@ class AgileCardFactory(DjangoModelFactory):
     recruit_project = factory.SubFactory(
         RecruitProjectFactory, start_time=timezone.now()
     )
-    topic_progress = factory.SubFactory(TopicProgressFactory, start_time=timezone.now())
     content_item = factory.LazyAttribute(
         lambda o: (
             o.recruit_project.content_item
