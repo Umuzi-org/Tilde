@@ -1,8 +1,5 @@
 import datetime
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
 
-=======
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
 from django.utils import timezone
 from playwright.sync_api import expect
 from datetime import datetime
@@ -17,12 +14,8 @@ from curriculum_tracking.tests.factories import (
     TopicProgressFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
-=======
 
 VIEW_NAME = "progress_details"
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
-
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
     def setUp(self):
@@ -76,16 +69,13 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             recruit_project=self.recruit_project,
         )
 
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
-    def test_link_project_page_displays_correct_details(self):
-=======
     @patch("django.utils.timezone.get_current_timezone")
     def test_progress_details_page_displays_correct_details_for_link_project(
         self, mock_get_current_timezone
     ):
         mock_get_current_timezone.return_value = timezone.utc
 
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
+
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
@@ -96,27 +86,14 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.link_project_url)
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
-=======
+
         self.page.wait_for_load_state()
 
         self.assertEqual(self.page.url, self.link_project_url)
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
+
 
         body = self.page.text_content("body")
 
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
-        self.assertIn("learner_1@umuzi.org", body)
-        self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
-        self.assertIn("learner_reviewer@umuzi.org", body)
-        self.assertIn(
-            self.recruit_project.content_url,
-            body,
-        )
-        self.assertIn("No link submitted yet", body)
-=======
         expect(body).to_contain_text("learner_1@umuzi.org")
         expect(body).to_contain_text("In Progress")
 
@@ -126,7 +103,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         expect(body).to_contain_text("learner_reviewer@umuzi.org")
         expect(body).to_contain_text(self.recruit_project.content_url)
         expect(body).to_contain_text("No link submitted yet")
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
+
 
     def test_link_submission_form_correctly_updates_link_submission(
         self,
@@ -249,6 +226,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
+                
             },
         )
         self.page.goto(self.link_project_url)
@@ -259,8 +237,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
         self.assertIn("Enter a valid URL", body)
-<<<<<<< HEAD:backend/frontend/tests/test_course_component_details_pages.py
-=======
+
 
 
 class TestTopicDetailsPage(FrontendTestMixin):
@@ -307,15 +284,14 @@ class TestTopicDetailsPage(FrontendTestMixin):
             },
         )
         self.page.goto(self.topic_url)
-
+        
         body = self.page.text_content("body")
 
-        self.assertIn("learner_1@umuzi.org", body)
-        self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
-        self.assertIn(
-            self.topic.content_url,
-            body,
-        )
->>>>>>> develop:backend/frontend/tests/test_progress_details_pages.py
+        expect(body).to_contain_text("learner_1@umuzi.org")
+        expect(body).to_contain_text("In Progress")
+
+        expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
+
+        expect(body).to_contain_text(self.recruit_project.content_url)
+

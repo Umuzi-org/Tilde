@@ -11,11 +11,7 @@ class TestCardDetailsButton(FrontendTestMixin):
         self.user = UserFactory()
         self.user.set_password(self.user.email)
         self.user.save()
-<<<<<<< HEAD
-
         self.do_login(self.user)
-=======
->>>>>>> develop
 
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
