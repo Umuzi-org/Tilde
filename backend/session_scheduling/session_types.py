@@ -21,8 +21,9 @@ SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK = "Fundamental skill spot check"
 SESSION_FUNDAMENTAL_SKILL_ASSISTANCE = "Fundamental skill assistance"
 SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
 
+SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION = "Problem solving foundation"
+
 SESSION_CUSTOM = "Custom"
-# SESSION_PROBLEM_SOLVING = "Problem solving" TODO
 # SESSION_CARD_BASED = "card progress based" TODO
 
 
@@ -37,8 +38,15 @@ session_types = [
     SessionTypeConf(
         name=SESSION_FUNDAMENTAL_SKILL_ASSISTANCE,
         event_copy="It looks like you might need some help with understanding {extra_title_text}. In this session we'll help you get a firm handle on the content",
-        event_title="Skill Assistance - {extra_title_text} {flavours}",
+        event_title="Skill Assistance - PSF level {extra_title_text} {flavours}",
         description="The student needs help with a specific skill. We are here to help them.",
+        duration_minutes=60,
+    ),
+    SessionTypeConf(
+        name=SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION,
+        event_copy="You didn't do well on a recent Problem Solving Foundation Level {extra_title_text} test. Let's see if we can help",
+        event_title="Problem solving foundation {extra_title_text} - {flavours}",
+        description="The learner failed a PSF test. These sessions are scheduled for level 0 and level 1 tests",
         duration_minutes=60,
     ),
     SessionTypeConf(

@@ -17,7 +17,7 @@ TASK_8_ID = 762
 
 bootcamp_project_content_item_ids = [TASK_10_ID, TASK_9_ID, TASK_8_ID]
 
-DUE_DAYS = 7  # If a session is created today, it is expected to be complete within {DUE_DAYS} days
+DUE_DAYS = 21  # If a session is created today, it is expected to be complete within {DUE_DAYS} days
 
 
 def get_users_needing_sessions(bootcamp):
