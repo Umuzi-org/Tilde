@@ -19,3 +19,7 @@ class Bootcamp(models.Model):
 
     def __str__(self):
         return f"{self.team} [{self.stream}]"
+
+
+class ProvisionalGroup(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
