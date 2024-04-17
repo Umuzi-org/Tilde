@@ -1,0 +1,7 @@
+{% include "frontend/progress_details/partial_review.html" %}
+<script>
+    const reviewsContainer = document.getElementById("project-reviews");
+    const newReview = document.getElementById("review-{{ review.id }}");
+
+    reviewsContainer.prepend(newReview);
+</script>
