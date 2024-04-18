@@ -762,9 +762,8 @@ class RecruitProject(
     def agile_card_status(self):
         return self.agile_card.status
 
-    @property
-    def duration(self):
-        return helpers.get_duration(self)
+    def get_duration(self):
+        return helpers.get_duration_from_course_component(self)
 
 
 class RecruitProjectReview(models.Model, Mixins):
@@ -945,11 +944,9 @@ class TopicProgress(
             "title": self.content_item.title,
             "flavour_names": self.content_item.flavour_names,
         }
-        
-    @property
-    def duration(self):
-        return helpers.get_duration(self)
 
+    def get_duration(self):
+        return helpers.get_duration_from_course_component(self)
 
 
 class TopicReview(models.Model, Mixins):

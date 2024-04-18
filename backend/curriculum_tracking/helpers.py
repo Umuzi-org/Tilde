@@ -186,15 +186,18 @@ def pull_request_reviews_outstanding(user):
     return []
 
 
-def get_duration(progress):
-    if progress.agile_card.status in [models.AgileCard.BLOCKED, models.AgileCard.READY]:
+def get_duration_from_course_component(course_component):
+    if course_component.agile_card.status in [
+        models.AgileCard.BLOCKED,
+        models.AgileCard.READY,
+    ]:
         return timedelta(0)
 
-    if progress.agile_card.status in [
+    if course_component.agile_card.status in [
         models.AgileCard.IN_PROGRESS,
         models.AgileCard.REVIEW_FEEDBACK,
         models.AgileCard.IN_REVIEW,
     ]:
-        return timezone.now() - progress.start_time
+        return timezone.now() - course_component.start_time
 
-    return progress.end_time - progress.start_time
+    return course_component.end_time - course_component.start_time

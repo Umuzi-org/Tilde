@@ -23,7 +23,7 @@ class duration_Tests(TestCase):
     def test_returns_correct_duration_for_cards_unstarted(self):
         self.make_project_card(models.AgileCard.READY)
 
-        self.assertEquals(self.card.topic_progress.duration, timedelta(seconds=0))
+        self.assertEquals(self.card.topic_progress.get_duration(), timedelta(seconds=0))
 
     @patch("django.utils.timezone.now")
     def test_returns_correct_duration_for_cards_in_progress(self, mock_now):
@@ -36,7 +36,7 @@ class duration_Tests(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(self.card.topic_progress.duration, timedelta(days=4))
+        self.assertEquals(self.card.topic_progress.get_duration(), timedelta(days=4))
 
     @patch("django.utils.timezone.now")
     def test_returns_correct_duration_for_cards_in_review_feedback(self, mock_now):
@@ -49,7 +49,7 @@ class duration_Tests(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(self.card.topic_progress.duration, timedelta(days=4))
+        self.assertEquals(self.card.topic_progress.get_duration(), timedelta(days=4))
 
     @patch("django.utils.timezone.now")
     def test_returns_correct_duration_for_cards_in_review(self, mock_now):
@@ -62,7 +62,7 @@ class duration_Tests(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(self.card.topic_progress.duration, timedelta(days=4))
+        self.assertEquals(self.card.topic_progress.get_duration(), timedelta(days=4))
 
     def test_returns_correct_duration_for_cards_completed(self):
         self.make_project_card(models.AgileCard.COMPLETE)
@@ -75,4 +75,6 @@ class duration_Tests(TestCase):
             2024, 2, 12, 15, 6, 17, 373514, tzinfo=timezone.utc
         )
 
-        self.assertEquals(self.card.topic_progress.duration, timedelta(seconds=3600))
+        self.assertEquals(
+            self.card.topic_progress.get_duration(), timedelta(seconds=3600)
+        )
