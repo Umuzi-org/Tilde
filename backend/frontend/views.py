@@ -374,12 +374,12 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test_or_forbidden(can_view_user_board)
+# @user_passes_test_or_forbidden(can_view_user_board)
 def progress_details(
     request,
     content_type,
     id,
-):
+):  
     if content_type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
         review_form = None
@@ -434,6 +434,19 @@ def progress_details(
     )
 
 
+def check_user_can_add_review(logged_in_user):
+    request = get_current_request()
+    content_type = request.resolver_match.kwargs.get("content_type")
+    id = request.resolver_match.kwargs.get("id")
+
+    if content_type == "project":
+        project = get_object_or_404(RecruitProject, id=id)
+        return project.request_user_can_add_review(logged_in_user)
+
+    return False
+
+
+@user_passes_test_or_forbidden(check_user_can_add_review)
 def action_add_review(request, content_type, id):
     if request.method == "POST":
         if content_type == "project":
