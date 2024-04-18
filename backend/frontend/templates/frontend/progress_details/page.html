@@ -21,7 +21,7 @@
             
                 <div class="p-2 border-2 rounded-md ">
                     <p>
-                        Status : {{board_status}}
+                        Status : <span id="agile-card-status">{{board_status}}</span>
                     </p>
                 </div>
             </div>
@@ -111,22 +111,11 @@
                     </form>
                 </div>
             {% endif %}
-
-            <div x-data="{ 
-                isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
-                isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
-                toggleLinkSubmissionForm(){
-                    this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
-                    this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
-                }
-             }"
+            
+            <div
             class="p-2 border-2 rounded-md">
-                <h6>Reviews ({{ course_component.project_reviews.count }}) </h6>
-                <div id="project-reviews" class="grid gap-2 mt-2 h-56 overflow-scroll">
-                    {% if not course_component.project_reviews.count %}
-                    No reviews yet.
-                    {% endif %}
-
+                <h6>Reviews </h6>
+                <div id="reviews" class="grid gap-2 mt-2 h-56 overflow-scroll">
                     {% for review in course_component.project_reviews.all %}
                         {% include "frontend/progress_details/partial_review.html" %}
                     {% endfor %}

@@ -21,16 +21,20 @@
 </div>
 <hr class="my-3">
 
-<form hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
-      x-on:htmx:after-request="modalOpen = false">
+<form hx-on::after-request="this.reset()">
     {% csrf_token %}
     {{ review_form.as_p }}
     <div class="flex justify-between">
     <button @click="modalOpen = false"
             class="{{ styles.button_secondary_small }}"
-            type="button">Cancel</button>
-    <button class="{{ styles.button_primary_small }}"
-            type="submit">Submit Review</button>
+            type="button">Dismiss</button>
+    <button 
+        hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
+        hx-swap="afterbegin"
+        hx-target="#reviews"
+        x-on:htmx:after-request="modalOpen = false" hx-swap-oob
+        class="{{ styles.button_primary_small }}"
+        type="submit">Submit Review</button>
     </div>
 </form>
 

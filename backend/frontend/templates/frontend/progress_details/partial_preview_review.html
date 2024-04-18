@@ -18,7 +18,7 @@
 </div>
 <hr class="my-3">
 
-<div class="min-h-44 max-h-96 overflow-y-scroll">
+<div class="min-h-44 text-sm max-h-96 overflow-y-scroll">
     {{ review.comments|markdownify|safe }}
 </div>
 
@@ -29,8 +29,11 @@
 </span>
 
 <style>
+    /* Styles apply only to this review modal. */
     .hljs {
         border-radius: 0.8rem;
+        padding: 1px auto;
+        margin: 5px auto
     }
 </style>
 {% endblock modal_content %}

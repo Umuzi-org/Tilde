@@ -23,6 +23,10 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
+        self.user_with_no_permissions = UserFactory()
+        self.user_with_no_permissions.set_password(self.user_with_no_permissions.email)
+        self.user_with_no_permissions.save()
+
         self.reviewer_by_assignment = UserFactory()
         self.reviewer_by_assignment.set_password(self.reviewer_by_assignment.email)
         self.reviewer_by_assignment.save()
@@ -45,7 +49,6 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
             self.assignee_team,
         )
 
-
     def make_in_review_project_card(self):
         self.card = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -58,13 +61,20 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         self.card.reviewers.add(self.reviewer_by_assignment)
         self.card.recruit_project.recruit_users.set([self.user])
 
-    
     def _get_project_progress_details_url(self, project):
         return self.reverse_url(
             PROGRESS_DETAILS_VIEW, kwargs={"id": project.id, "content_type": "project"},
             
         )
     
+    def _submit_review(self, status):
+        self.page.get_by_role("button", name="Add Review").click()
+        self.page.wait_for_load_state()
+        self.page.select_option("select#id_status", status)
+        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
+        self.page.locator("text=Submit Review").click()
+        self.page.wait_for_load_state('networkidle')
+
     def test_super_user_can_add_review(self):
         self.make_in_review_project_card()
 
@@ -76,14 +86,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         ))
         self.page.wait_for_load_state()
 
-        self.page.get_by_role("button", name="Add Review").click()
-        self.page.wait_for_load_state()
-
-        self.page.select_option("select#id_status", "competent")
-        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
-
-        self.page.locator("text=Submit Review").click()
-        self.page.wait_for_load_state('networkidle')
+        self._submit_review("competent")
 
         expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
 
@@ -98,15 +101,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         ))
         self.page.wait_for_load_state()
 
-        self.page.get_by_role("button", name="Add Review").click()
-        self.page.wait_for_load_state()
-
-        
-        self.page.select_option("select#id_status", "competent")
-        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
-
-        self.page.locator("text=Submit Review").click()
-        self.page.wait_for_load_state('networkidle')
+        self._submit_review("competent")
 
         expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
     
@@ -121,18 +116,26 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         ))
         self.page.wait_for_load_state()
 
-        self.page.get_by_role("button", name="Add Review").click()
-        self.page.wait_for_load_state()
+        expect(self.page.locator("#agile-card-status")).to_have_text("Review")
 
-        
-        self.page.select_option("select#id_status", "competent")
-        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
-
-        self.page.locator("text=Submit Review").click()
-        self.page.wait_for_load_state('networkidle')
+        self._submit_review("not yet competent")
 
         expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
+        expect(self.page.locator("#agile-card-status")).to_have_text("Review Feedback")
     
+    def test_user_with_no_permissions_cannot_add_review(self):
+        self.make_in_review_project_card()
+
+        self.do_login(self.user_with_no_permissions)
+        self.page.wait_for_load_state()
+
+        self.page.goto(self._get_project_progress_details_url(
+            project=self.card.recruit_project
+        ))
+        self.page.wait_for_load_state()
+
+        expect(self.page.get_by_role("button", name="Add Review")).not_to_be_visible()
+
     def test_add_review_logs_event(self):
         self.make_in_review_project_card()
 
@@ -144,14 +147,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         ))
         self.page.wait_for_load_state()
 
-        self.page.get_by_role("button", name="Add Review").click()
-        self.page.wait_for_load_state()
-        
-        self.page.select_option("select#id_status", "competent")
-        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
-
-        self.page.locator("text=Submit Review").click()
-        self.page.wait_for_load_state('networkidle')
+        self._submit_review("competent")
 
         log_entries = LogEntry.objects.all()
         self.assertEqual(log_entries.count(), 2)

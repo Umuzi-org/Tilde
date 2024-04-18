@@ -471,8 +471,11 @@ def action_add_review(request, content_type, id):
                     "frontend/progress_details/js_exec_action_prepend_new_review.html",
                     {
                         "review": review,
+                        "card": card,
                     },
                 )
+        
+        raise NotImplementedError(f"Cannot add review to content type {content_type} yet")
 
 def check_user_can_request_review_on_card(logged_in_user):
     request = get_current_request()
