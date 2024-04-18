@@ -2,45 +2,51 @@
 {% load custom_tags %}
 
 {% block content %}
-    <div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12">
+    <div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12 w-full overflow-auto">
         <h1 class="{{ styles.heading1 }}">
-            {{course_component.title}}
+            {{ course_component.content_item.title }}
         </h1>
 
-        {% if course_component.submission_type_nice == "link"%}
-            <div class="grid gap-4 my-4">
-                <div class="p-2 border-2 rounded-md grid gap-2">
-                    <div class="bold p-2 border-2 rounded-md ">
-                        Tag names: 
-                        {% with course_component.tag_names|length as array_length %}
-                            {% for item in course_component.tag_names %}
-                                {{ item }}
-                                {% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        {% endwith %}
-                    </div>
-                
-                    <div class="p-2 border-2 rounded-md ">
-                        <p class="bold">
-                            Status : {{board_status}}
-                        </p>
-                    </div>
+        <div class="grid gap-4 my-4 w-full">
+            <div class="p-2 border-2 rounded-md grid gap-2">
+                <div class="p-2 border-2 rounded-md ">
+                    Tag names: 
+                    {% with course_component.content_item.tag_names|length as array_length %}
+                        {% for item in course_component.content_item.tag_names %}
+                            {{ item }}
+                            {% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    {% endwith %}
                 </div>
             
-                <div class="p-2 border-2 rounded-md grid gap-2">
-                    <div class="bold p-2 border-2 rounded-md ">
-                        Assignees:
-                        <ul class="mx-8">
-                            <li class="flex items-center">
-                                <div class="pr-2">
-                                  {% user_avatar course_component.recruit_users.first %}
-                                </div>
-                                {{ course_component.recruit_users.first }}
-                            </li>
-                        </ul>
-                    </div>
+                <div class="p-2 border-2 rounded-md ">
+                    <p>
+                        Status : {{board_status}}
+                    </p>
+                </div>
+            </div>
             
-                    <div class="bold p-2 border-2 rounded-md ">
+            <div class="p-2 border-2 rounded-md grid gap-2">
+                <div class="p-2 border-2 rounded-md ">
+                    Assignees:
+                    <ul class="mx-8">
+                        <li>
+                            {% if course_component.content_item.content_type_nice == "topic" %}
+                                {{ course_component.user }}
+                            {% endif %}
+
+                            {% if course_component.content_item.content_type_nice == "project" %}
+                                {{ course_component.recruit_user_names|first }}
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        
+
+            {% if course_component.content_item.content_type_nice == "project" %}
+                <div class="p-2 border-2 rounded-md grid gap-2">
+                    <div class="p-2 border-2 rounded-md ">
                         Reviewers: 
                         <ul class="mx-8">
                             {% if course_component.reviewer_users.all %}
@@ -55,24 +61,26 @@
                         </ul>
                     </div>
                 </div>
-                
-                <div class="grid p-2 border-2 rounded-md gap-2">
-                    <p class="bold p-2 border-2 rounded-md" >
-                        Start Date: {{course_component.start_time}}
-                    </p>
+            {% endif %}
 
-                    <p class="bold p-2 border-2 rounded-md">
-                        Due Date: {{course_component.due_time}}
-                    </p>
-                </div>
+            <div class="grid p-2 border-2 rounded-md gap-2">
+                <p class="p-2 border-2 rounded-md" >
+                    Start Date: {{course_component.start_time}}
+                </p>
 
-                <div class="bold p-2 border-2 rounded-md ">
-                    <p>
-                        Content URL: 
-                        <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
-                    </p>
-                </div>
+                <p class="p-2 border-2 rounded-md">
+                    Due Date: {{course_component.due_time}}
+                </p>
+            </div>
 
+            <div class="p-2 border-2 rounded-md ">
+                <p>
+                    Content URL: 
+                    <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
+                </p>
+            </div>
+        
+            {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "link" %}
                 <div x-data="{ 
                     isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
                     isEditLinkSubmissionIconVisible: '{{ course_component.link_submission }}' !== 'None' && {{ link_submission_form.errors|length }} == 0,
@@ -80,7 +88,7 @@
                         this.isLinkSubmissionFormVisible = ! this.isLinkSubmissionFormVisible
                         this.isEditLinkSubmissionIconVisible = ! this.isEditLinkSubmissionIconVisible
                     }
-                 }" class="grid bold p-2 border-2 rounded-md gap-2">
+                }" class="grid bold p-2 border-2 rounded-md gap-2">
                     <h6>Link to your work</h6>
                     
                     <div>Current link submission: 
@@ -102,8 +110,8 @@
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                     </form>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
