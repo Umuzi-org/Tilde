@@ -761,6 +761,23 @@ class RecruitProject(
     def agile_card_status(self):
         return self.agile_card.status
 
+    @property
+    def duration(self):
+        if (
+            self.agile_card.status == AgileCard.BLOCKED
+            or self.agile_card.status == AgileCard.READY
+        ):
+            return timedelta(0)
+
+        if self.agile_card.status in [
+            AgileCard.IN_PROGRESS,
+            AgileCard.REVIEW_FEEDBACK,
+            AgileCard.IN_REVIEW,
+        ]:
+            return timezone.now() - self.start_time
+
+        return self.end_time - self.start_time
+
 
 class RecruitProjectReview(models.Model, Mixins):
     INCORRECT = "i"
