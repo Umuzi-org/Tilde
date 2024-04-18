@@ -4,4 +4,7 @@
     const newReview = document.getElementById("review-{{ review.id }}");
 
     reviewsContainer.prepend(newReview);
+    
+    hljs.highlightAll();  // Highlight new code blocks
+
 </script>

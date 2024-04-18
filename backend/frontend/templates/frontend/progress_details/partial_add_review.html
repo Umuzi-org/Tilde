@@ -1,11 +1,37 @@
 {% extends 'frontend/partial_modal_base.html' %}
+{% load custom_tags %}
 {% block modal_content %}
-    <form hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}" x-on:htmx:after-request="modalOpen = false">
-        {% csrf_token %}
-        {{ review_form.as_p}}
-        <button class="{{ styles.button_primary_small }}" type="submit">Submit Review</button>
-        <button @click="modalOpen = false" class="{{ styles.button_secondary_small }}" type="button">Cancel</button>
-    </form>
-    
-{% endblock modal_content %}
+<div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+        {% user_avatar request.user %}
+        <div class="flex flex-col gap-0">
+            <h1 class="font-bold text-gray-800 ">
+                Add Review for {{ course_component.content_item.content_type_nice|slice:1|title }}: {{ course_component.content_item.title }}
+            </h1>
+            <span class="text-xs text-slate-500">
+                Submitting review as <span class="font-bold">{{ request.user.email }}</span>
+            </span>
+        </div>
+    </div>
 
+    <button @click="modalOpen = false"
+            class="text-gray-600 focus:outline-none hover:text-gray-700">
+        <i class="fa fa-times-circle"> </i>
+    </button>
+</div>
+<hr class="my-3">
+
+<form hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
+      x-on:htmx:after-request="modalOpen = false">
+    {% csrf_token %}
+    {{ review_form.as_p }}
+    <div class="flex justify-between">
+    <button @click="modalOpen = false"
+            class="{{ styles.button_secondary_small }}"
+            type="button">Cancel</button>
+    <button class="{{ styles.button_primary_small }}"
+            type="submit">Submit Review</button>
+    </div>
+</form>
+
+{% endblock modal_content %}
