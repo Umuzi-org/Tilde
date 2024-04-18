@@ -121,9 +121,9 @@
                 }
              }"
             class="p-2 border-2 rounded-md">
-                <h6>Reviews</h6>
+                <h6>Reviews ({{ course_component.project_reviews.count }}) </h6>
                 <div id="project-reviews" class="grid gap-2 mt-2 h-56 overflow-scroll">
-                    {% if not course_component.project_reviews.all %}
+                    {% if not course_component.project_reviews.count %}
                     No reviews yet.
                     {% endif %}
 
