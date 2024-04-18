@@ -136,53 +136,37 @@
     <!-- Horizontal line -->
     <hr class="border-gray-300 inset-x-0 absolute" />
     <!-- Assignee and reviewers section -->
-    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2 mr-1">
-      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block mb-2">
+    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
+      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
           <div title={{ card.assignees.first.email }}>
             {% user_avatar card.assignees.first %}
           </div>
       </div>
-      <div class="Reviewer-avatars col-span-1 row-span-1 group mb-2">
-        <div class="flex justify-left mb-1">
-            <div x-data="{ isOpen: false }" class="relative">
-                <!-- Dropdown Button -->
-                <button 
-                    @click="isOpen = !isOpen"
-                    @mouseenter="isOpen = true" 
-                    type="button" 
-                    :class="{ 'underline': isOpen }"
-                    class="flex items-right gap-1 bg-white px-1 py-1 rounded-md text-xs mt-[-5px]">
-                    Reviewers
-                </button>
-                <!-- Dropdown Panel -->
-                <div 
-                    @mouseenter="isOpen = true" 
-                    @mouseleave="isOpen = false"
-                    x-show="isOpen" 
-                    @click.outside="isOpen = false" 
-                    class="absolute right-1 -translate-x-2  -translate-y-11 mt-2 w-40 rounded-md bg-white shadow-md z-10"
-                    style="max-height: 200px; overflow-y: auto;">
-                    {% for reviewer in card.reviewer_names %}
-                        <div class="flex items-center gap-2 w-full px-4 py-2.5 text-xs hover:bg-gray-50">
-                            <span class="text-black font-bold">{{ reviewer }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+      <div class="Reviewer-avatars col-span-1 row-span-1 group">
+        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
         <div class="flex relative">
-          {% if card.reviewers %}
-            {% for reviewer in card.reviewers.all|slice:":2" %}
-              <div class="-mx-1" title="{{ card.reviewer_names|join:', '}}">
-                <div class="border-2 rounded-full border-white">
-                  {% user_avatar reviewer %}
+            {% if card.reviewers %}
+                {% for reviewer in card.reviewers.all %}
+                    {% if forloop.counter0 < 2 %}
+                        <div class="relative mr-[-8px]"> 
+                            <div class="border-2 rounded-full border-white">
+                                {% user_avatar reviewer %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="absolute bottom-full center-0 transform -translate-x-16 bg-white text-black text-xs px-2 py-1 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50 mt-2">
+                    <ul class="max-h-40 overflow-y-auto">
+                        {% for reviewer in card.reviewers.all %}
+                            <li class="font-['Poppins'] font-bold text-[8px]">{{ reviewer }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-              </div>
-            {% endfor %}
-          {% endif %}
+            {% endif %}
         </div>
-    </div>
+      </div>
+    
     
       <!-- Buttons section -->
       <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
@@ -220,13 +204,18 @@
                   hx-swap="outerHTML">Cancel review request</button>
         {% endif %}
       </div>
-      {%if card.content_item.content_type_nice == "project" and card.content_item.project_submission_type_nice == "link" %}
-      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div class="col-span-1 row-span-1 w-full">
-          <a href="{% url 'course_component_details' card.recruit_project.id %}" class="{{ styles.button_secondary_small }}">Details</a>
-        </div>
-      </div> 
+
+ 
+      {%if card.recruit_project and card.content_item.content_type_nice == "project"%}
+        <a href="{% url 'progress_details' card.content_item.content_type_nice card.recruit_project.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
       {% endif %}
+
+      {%if card.topic_progress and card.content_item.content_type_nice == "topic"%}
+          <a href="{% url 'progress_details' card.content_item.content_type_nice card.topic_progress.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
+        </div>
+      {% endif %}
+
+      
       {% if card.request_user_can_stop_card %}
         <div class="col-span-1 row-span-1 group">
             <button type="button"
