@@ -52,5 +52,5 @@ class ForgotPasswordForm(ThemedFormMixin, forms.Form):
         )
 
 class SearchTeamForm(forms.Form):
-    search_term = forms.CharField(required=True,widget=forms.TextInput(attrs={'class': styles["input_small_not_full"]}))
+    search_term = forms.CharField(required=True)
                

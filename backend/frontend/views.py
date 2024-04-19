@@ -37,7 +37,7 @@ from .forms import (
     CustomAuthenticationForm,
     CustomSetPasswordForm,
     LinkSubmissionForm,
-    SearchTeamForm
+    SearchTeamForm,
 )
 from .theme import styles
 
@@ -601,14 +601,16 @@ def users_and_teams_nav(request):
 
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
-            print("#",search_term)
-            teams = Team.objects.filter(active=True,name__istartswith=search_term).order_by("name")
+            print("#", search_term)
+            teams = Team.objects.filter(
+                active=True, name__istartswith=search_term
+            ).order_by("name")
 
-            print("#1",teams)
-        print("#2",teams)
-            
+            print("#1", teams)
+        print("#2", teams)
+
     context = {
-        "form":SearchTeamForm,
+        "form": SearchTeamForm,
         # "teams": teams,
         # "users": users,
     }
@@ -631,23 +633,25 @@ def view_partial_teams_list(request):
             user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
         )
 
-    form = SearchTeamForm()
+    form = None
     if request.method == "POST":
         form = SearchTeamForm(request.POST)
 
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
-            print("#",search_term)
-            teams = Team.objects.filter(active=True,name__istartswith=search_term).order_by("name")
+            print("#", search_term)
+            teams = Team.objects.filter(
+                active=True, name__istartswith=search_term
+            ).order_by("name")
+            total_teams_count = teams.count()
 
-            print("#1",teams)
-        print("#2",teams)
-        
-    limit = 20
+            print("#1", teams)
+        print("#2", teams)
+
+    limit = 2
     current_team_count = int(request.GET.get("count", 0))
     teams = teams[current_team_count : current_team_count + limit]
     has_next_page = total_teams_count > current_team_count + limit
-
 
     context = {
         "teams": teams,
