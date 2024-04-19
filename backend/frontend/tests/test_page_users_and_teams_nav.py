@@ -99,17 +99,23 @@ class TestPage(FrontendTestMixin):
         self.page.wait_for_load_state()
 
         body = self.page.locator("body")
-        
-        search_input_box = body.get_by_placeholder("Search Teams...")
-        
-        search_input_box.press_sequentially("boots")
-
+        search_input_box = body.locator("input#search-term-box")
+        search_input_box.press_sequentially("dEtecTivEs")
         found_teams = body.page.locator("div#teams-list")
 
+        expect(found_teams).to_contain_text(detectives_team.name)
+        expect(found_teams).not_to_contain_text(boots_1999_team.name)
+        expect(found_teams).not_to_contain_text(boots_2014_team.name)
+
+        search_input_box.clear()
+        search_input_box.press_sequentially("BOOT")
+
+        expect(found_teams).not_to_contain_text(detectives_team.name)
         expect(found_teams).to_contain_text(boots_1999_team.name)
         expect(found_teams).to_contain_text(boots_2014_team.name)
-        expect(found_teams).not_to_contain_text(detectives_team.name)
 
+        search_input_box.clear()
         search_input_box.press_sequentially("zzzzzzzzzzz")
 
         expect(found_teams).to_contain_text("No teams found")
+
