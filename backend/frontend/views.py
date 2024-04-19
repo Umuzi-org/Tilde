@@ -594,23 +594,7 @@ def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
     # users = User.objects.order_by("email")
-    form = SearchTeamForm()
-    teams = None
-    if request.method == "POST":
-        form = SearchTeamForm(request.POST)
-
-        if form.is_valid():
-            search_term = form.cleaned_data["search_term"]
-            print("#", search_term)
-            teams = Team.objects.filter(
-                active=True, name__istartswith=search_term
-            ).order_by("name")
-
-            print("#1", teams)
-        print("#2", teams)
-
     context = {
-        "form": SearchTeamForm,
         # "teams": teams,
         # "users": users,
     }
@@ -648,7 +632,7 @@ def view_partial_teams_list(request):
             print("#1", teams)
         print("#2", teams)
 
-    limit = 2
+    limit = 20
     current_team_count = int(request.GET.get("count", 0))
     teams = teams[current_team_count : current_team_count + limit]
     has_next_page = total_teams_count > current_team_count + limit
