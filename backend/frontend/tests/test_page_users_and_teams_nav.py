@@ -109,3 +109,7 @@ class TestPage(FrontendTestMixin):
         expect(found_teams).to_contain_text(boots_1999_team.name)
         expect(found_teams).to_contain_text(boots_2014_team.name)
         expect(found_teams).not_to_contain_text(detectives_team.name)
+
+        search_input_box.press_sequentially("zzzzzzzzzzz")
+
+        expect(found_teams).to_contain_text("No teams found")
