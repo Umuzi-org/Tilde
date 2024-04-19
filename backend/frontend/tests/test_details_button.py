@@ -12,8 +12,6 @@ class TestCardDetailsButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.do_login(self.user)
-
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -36,19 +34,20 @@ class TestCardDetailsButton(FrontendTestMixin):
     def test_details_button_redirects_to_link_project_details_page(self):
         self.make_project_card(ContentItem.LINK)
 
+        self.do_login(self.user)
+        self.page.wait_for_load_state()
+
         link_card_element = self.page.locator(
             f"div#column_IP > div#card_{self.card.id}"
         )
         details_link_element = link_card_element.get_by_role("link", name="Details")
 
-        self.page.wait_for_load_state("networkidle")
-
         expect(link_card_element).to_be_visible()
         expect(details_link_element).to_be_visible()
 
         link_project_url = self.reverse_url(
-            "course_component_details",
-            kwargs={"project_id": self.card.recruit_project.id},
+            "progress_details",
+            kwargs={"id": self.card.recruit_project.id, "content_type": "project"},
         )
 
         board_url = self.reverse_url("user_board", kwargs={"user_id": self.user.id})

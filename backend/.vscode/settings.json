@@ -6,11 +6,13 @@
     "authtoken",
     "automarked",
     "automarker",
+    "coderbyte",
     "corsheaders",
     "dramatiq",
     "ncit",
     "sendgrid",
     "taggit",
     "viewsets"
-  ]
+  ],
+  "editor.formatOnSave": true
 }

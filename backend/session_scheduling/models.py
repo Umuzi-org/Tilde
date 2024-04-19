@@ -79,6 +79,7 @@ class Session(models.Model, FlavourMixin):
     end_time = models.DateTimeField(blank=True, null=True)
 
     is_cancelled = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.get_title_copy()
