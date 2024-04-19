@@ -48,6 +48,11 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
             self.reviewer_by_permission,
             self.assignee_team,
         )
+        assign_perm(
+            Team.PERMISSION_MANAGE_CARDS,
+            self.reviewer_by_assignment,
+            self.assignee_team,
+        )
 
     def make_in_review_project_card(self):
         self.card = AgileCardFactory(

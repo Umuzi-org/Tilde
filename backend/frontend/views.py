@@ -97,7 +97,7 @@ def is_staff(user):
     return user.is_staff
 
 
-def user_passes_test_or_forbidden(test_func):
+def user_passes_test_or_forbidden(test_func, **test_func_args):
     """
     Decorator for views that checks that the user passes the given test,
     returning a 403 Forbidden response if necessary. The default user_passes_test
@@ -109,7 +109,7 @@ def user_passes_test_or_forbidden(test_func):
         @login_required()
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user):
+            if test_func(request.user, **test_func_args):
                 return view_func(request, *args, **kwargs)
 
             return HttpResponseForbidden(
@@ -155,14 +155,18 @@ def check_no_outstanding_reviews_on_card_action(view_func):
     return _wrapped_view
 
 
-def can_view_user_board(logged_in_user):
+def can_view_user_board(logged_in_user, viewed_user_func=None):
     request = get_current_request()
-    viewed_user_id = request.resolver_match.kwargs.get("user_id")
 
-    if logged_in_user.id == viewed_user_id or logged_in_user.is_superuser:
+    if viewed_user_func is None:
+        viewed_user_id = request.resolver_match.kwargs.get("user_id")
+        viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
+    else:
+        viewed_user_obj = viewed_user_func(request)
+
+    if logged_in_user.id == viewed_user_obj.id or logged_in_user.is_superuser:
         return True
-
-    viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
+    
     viewed_user_teams = viewed_user_obj.teams()
 
     if len(viewed_user_teams):
@@ -374,7 +378,18 @@ def action_start_card(request, card_id):
     )
 
 
-# @user_passes_test_or_forbidden(can_view_user_board)
+def _progress_details_viewed_user_func(request):
+    content_type = request.resolver_match.kwargs.get("content_type")
+    id = request.resolver_match.kwargs.get("id")
+
+    if content_type == "project":
+        return get_object_or_404(RecruitProject, id=id).recruit_users.first()
+    elif content_type == "topic":
+        return get_object_or_404(TopicProgress, id=id).user
+    
+    raise NotImplementedError(f"Cannot get viewed user for content type {content_type}")
+
+@user_passes_test_or_forbidden(can_view_user_board, viewed_user_func=_progress_details_viewed_user_func)
 def progress_details(
     request,
     content_type,
@@ -444,7 +459,6 @@ def check_user_can_add_review(logged_in_user):
         return project.request_user_can_add_review(logged_in_user)
 
     return False
-
 
 @user_passes_test_or_forbidden(check_user_can_add_review)
 def action_add_review(request, content_type, id):
