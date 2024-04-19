@@ -617,7 +617,6 @@ def view_partial_teams_list(request):
             user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
         )
 
-    form = None
     if request.method == "POST":
         form = SearchTeamForm(request.POST)
 
