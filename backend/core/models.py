@@ -103,7 +103,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.teams()
     
     @lru_cache
-    def get_permissioned_teams(self, perms):
+    def get_permissioned_teams(self, perms:tuple):
         from guardian.shortcuts import get_objects_for_user
 
         return get_objects_for_user(

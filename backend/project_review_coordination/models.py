@@ -63,7 +63,7 @@ class ProjectReviewBundleClaim(models.Model):
         if user.is_superuser:
             return cards
         
-        viewable_teams = user.get_permissioned_teams(perms=Team.PERMISSION_VIEW)
+        viewable_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
         if not len(viewable_teams):
             return []
