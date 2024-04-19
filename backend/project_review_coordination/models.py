@@ -36,21 +36,7 @@ class ProjectReviewBundleClaim(models.Model):
         super(ProjectReviewBundleClaim, self).save(*args, **kwargs)
 
     @staticmethod
-    @lru_cache
-    def get_user_teams(user):
-        return user.teams()
-    
-    @staticmethod
-    @lru_cache
-    def get_viewable_teams(user):
-        from guardian.shortcuts import get_objects_for_user
-
-        return get_objects_for_user(
-            user=user, perms=Team.PERMISSION_VIEW, klass=Team.objects.filter(active=True), any_perm=True
-        )
-
-    @classmethod
-    def get_projects_user_can_review(cls, user):
+    def get_projects_user_can_review(user):
     
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
@@ -77,7 +63,7 @@ class ProjectReviewBundleClaim(models.Model):
         if user.is_superuser:
             return cards
         
-        viewable_teams = cls.get_viewable_teams(user)
+        viewable_teams = user.get_permissioned_teams(perms=Team.PERMISSION_VIEW)
 
         if not len(viewable_teams):
             return []
@@ -86,7 +72,7 @@ class ProjectReviewBundleClaim(models.Model):
 
         for card in cards:
             assignee = card.assignees.first()
-            assignee_teams = cls.get_user_teams(assignee)
+            assignee_teams = assignee.teams_cached()
 
             if set(viewable_teams).intersection(assignee_teams):
                 permitted_cards.append(card)

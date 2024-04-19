@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from model_mixins import Mixins
+from functools import lru_cache
 from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.models import PermissionsMixin
@@ -96,6 +97,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def teams(self):
         # this is because we've overridden Django's default group behaviour. We work with teams, not groups
         return [o.team for o in self.groups.all().prefetch_related("team")]
+    
+    @lru_cache
+    def teams_cached(self):
+        return self.teams()
+    
+    @lru_cache
+    def get_permissioned_teams(self, perms):
+        from guardian.shortcuts import get_objects_for_user
+
+        return get_objects_for_user(
+            user=self, perms=perms, klass=Team.objects.filter(active=True), any_perm=True
+        )
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
