@@ -87,3 +87,4 @@ playwright==1.40.0 # frontend testing
 
 # rendering md reviews on the frontend
 markdown==3.6
+pymdown-extensions==10.7.1
