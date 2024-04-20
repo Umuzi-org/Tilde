@@ -106,7 +106,7 @@
                     
                     <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
                         {% csrf_token %}
-                        {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
+                        {% include 'frontend/includes/form_template.html' with form=link_submission_form %}
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                     </form>
                 </div>

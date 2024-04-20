@@ -162,3 +162,4 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
         self.assertEqual(log_entry.event_type.name, creators.COMPETENCE_REVIEW_DONE)
         self.assertEqual(log_entry.object_1, self.card.recruit_project.project_reviews.first())
         self.assertEqual(log_entry.object_2, self.card.recruit_project)
+    
