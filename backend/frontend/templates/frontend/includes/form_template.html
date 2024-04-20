@@ -5,6 +5,19 @@
     </ul>
 {% endif %}
 
+{% for hidden_field in form.hidden_fields %}
+    {% if hidden_field.errors %}
+        <ul class="my-2 text-sm {{styles.alert_error}}">
+            {% for error in hidden_field.errors %}
+                <li>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span class="font-bold">[{{ hidden_field.label }}]</span> {{ error }} 
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
+
 {% for field in form %}
     <div>
         {% if field.is_hidden %}
