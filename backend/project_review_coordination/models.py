@@ -1,9 +1,12 @@
 from django.db import models
+from functools import lru_cache
 from django.contrib.auth import get_user_model
 from datetime import timedelta
+from core.models import Team
 from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProjectReview
 from django.utils import timezone
 from django.db.models import OuterRef, Exists
+
 
 User = get_user_model()
 
@@ -34,6 +37,7 @@ class ProjectReviewBundleClaim(models.Model):
 
     @staticmethod
     def get_projects_user_can_review(user):
+    
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
             reviewer_user=user,
@@ -56,4 +60,21 @@ class ProjectReviewBundleClaim(models.Model):
             .prefetch_related("content_item", "recruit_project")
         )
 
-        return cards
+        if user.is_superuser:
+            return cards
+        
+        viewable_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
+
+        if not len(viewable_teams):
+            return []
+        
+        permitted_cards = []
+
+        for card in cards:
+            assignee = card.assignees.first()
+            assignee_teams = assignee.teams_cached()
+
+            if set(viewable_teams).intersection(assignee_teams):
+                permitted_cards.append(card)
+    
+        return permitted_cards

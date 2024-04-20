@@ -41,7 +41,7 @@ class Command(BaseCommand):
         )
         self.trusted_bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_TRUSTED_REVIEW_BOT_EMAIL,
-            is_superuser=True
+            is_superuser=True,
             # todo: add is_super_trusted = True
         )
 
