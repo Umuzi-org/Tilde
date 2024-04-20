@@ -97,7 +97,7 @@ def is_staff(user):
     return user.is_staff
 
 
-def user_passes_test_or_forbidden(test_func, **test_func_args):
+def user_passes_test_or_forbidden(test_func, **test_func_kwargs):
     """
     Decorator for views that checks that the user passes the given test,
     returning a 403 Forbidden response if necessary. The default user_passes_test
@@ -109,7 +109,7 @@ def user_passes_test_or_forbidden(test_func, **test_func_args):
         @login_required()
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user, **test_func_args):
+            if test_func(request.user, **test_func_kwargs):
                 return view_func(request, *args, **kwargs)
 
             return HttpResponseForbidden(
@@ -468,6 +468,7 @@ def action_add_review(request, content_type, id):
             card: AgileCard = project.agile_card
        
             form: RecruitProjectReviewForm = RecruitProjectReviewForm(data=request.POST)
+
             if form.is_valid():
                 review: RecruitProjectReview = form.save()
 
@@ -480,7 +481,7 @@ def action_add_review(request, content_type, id):
                 elif card.status == AgileCard.COMPLETE:
                     log_creators.log_card_moved_to_complete(card, review.reviewer_user)
 
-                return render(
+                response = render(
                     request,
                     "frontend/progress_details/js_exec_action_prepend_new_review.html",
                     {
@@ -488,7 +489,22 @@ def action_add_review(request, content_type, id):
                         "card": card,
                     },
                 )
-        
+
+                response["HX-Trigger-After-Swap"] = "submitted"
+                return response
+            else:
+                response = render(
+                    request,
+                    "frontend/progress_details/partial_review_form.html",
+                    {
+                        "review_form": form,
+                        "course_component": project,
+                    }
+                )
+                response["HX-Retarget"] = "#review-form"
+                response["HX-Reswap"] = "innerHTML"
+                return response
+                
         raise NotImplementedError(f"Cannot add review to content type {content_type} yet")
 
 def check_user_can_request_review_on_card(logged_in_user):
