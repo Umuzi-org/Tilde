@@ -126,9 +126,8 @@
                 <div x-data="{ modalOpen: false }">
                     <button @click="modalOpen = !modalOpen" class="{{ styles.button_primary_small }}"
                         type="submit">Add Review</button>
-                    {% include "frontend/progress_details/partial_add_review.html" %}
+                    {% include "frontend/progress_details/partial_add_review_modal_content.html" %}
                 </div>
-
             {% endif %}
         </div>
     </div>

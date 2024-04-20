@@ -1,0 +1,28 @@
+
+{% if form.non_field_errors %}
+    <ul class="my-2 text-sm {{styles.alert_error}}">
+        {{ form.non_field_errors.as_ul }}
+    </ul>
+{% endif %}
+
+{% for field in form %}
+    <div>
+        {% if field.is_hidden %}
+            {{ field }}
+        {% else %}
+            <label for="{{ field.id_for_label }}" class="{{ styles.label_small }}">{{ field.label_tag }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <ul class="{{ styles.field_error }}">
+                    {% for error in field.errors %}
+                        <li>
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            {{ error }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <br>
+        {% endif %}
+    </div>
+{% endfor %}
