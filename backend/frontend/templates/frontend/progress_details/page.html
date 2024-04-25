@@ -111,6 +111,14 @@
                     </form>
                 </div>
             {% endif %}
+            {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
+                <div class="p-2 border-2 rounded-md ">
+                    <p>
+                        Repository URL: 
+                        <a class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank">{{course_component.repository.get_github_repo_link}}</a>
+                    </p>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
