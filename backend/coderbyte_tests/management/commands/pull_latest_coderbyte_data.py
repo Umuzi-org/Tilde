@@ -10,9 +10,9 @@ import datetime
 from coderbyte_tests.models import CoderbyteTestResult
 import re
 
-CODERBYTES_EMAIL = os.environ["CODERBYTES_EMAIL"]
-CODERBYTES_PASSWORD = os.environ["CODERBYTES_PASSWORD"]
-CODERBYTES_ORG = os.environ["CODERBYTES_ORG"]
+CODERBYTES_EMAIL = os.environ.get("CODERBYTES_EMAIL")
+CODERBYTES_PASSWORD = os.environ.get("CODERBYTES_PASSWORD")
+CODERBYTES_ORG = os.environ.get("CODERBYTES_ORG")
 
 
 SAVE_PATH = Path(f"gitignore/coderbyte_export.csv")

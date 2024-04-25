@@ -46,3 +46,6 @@ class CoderbyteTestResult(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.assessment_name}"
+
+
+# class UserProblemSolvingLevel(models.model)
