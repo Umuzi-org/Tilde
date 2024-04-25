@@ -1,6 +1,5 @@
 {% load custom_tags %}
 {% load humanize %}
-
 <div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
      id="card_{{ card.id }}"
      data-status="{{ card.status }}">
@@ -90,7 +89,9 @@
       {% elif card.repo_url %}
         <a href="{{ card.recruit_project.repository.get_github_repo_link }}"
            target="_blank">
-           <button class="{{ styles.button_secondary_small }}" title="Repository link">Repo <i class="fa fa-github"></i></button>
+          <button class="{{ styles.button_secondary_small }}" title="Repository link">
+            Repo <i class="fa fa-github"></i>
+          </button>
         </a>
       {% endif %}
     </div>
@@ -104,140 +105,151 @@
       <div class="grid grid-cols-1 py-2 gap-y-2 w-full h-[auto]">
         {% for tag_name in card.tag_names %}
           {% if tag_name != "none" %}
-            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ tag_name }}</span><span></span>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-    <!-- Flavours section -->
-    {% if card.flavour_names %}
-      <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
-        {% for flavour_name in card.flavour_names %}
-          {% if flavour_name != "none" %}
-            {% if flavour_name == "javascript" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-js fa-lg"></i>
-              </span>
+            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight">
+              <span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ tag_name }}</span><span></span>
             {% endif %}
-            {% if flavour_name == "python" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-python fa-lg"></i>
-              </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <!-- Flavours section -->
+      {% if card.flavour_names %}
+        <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
+          {% for flavour_name in card.flavour_names %}
+            {% if flavour_name != "none" %}
+              {% if flavour_name == "javascript" %}
+                <span title="{{ flavour_name }}">
+                  <i class="fa-regular fa-brands fa-js fa-lg"></i>
+                </span>
+              {% endif %}
+              {% if flavour_name == "python" %}
+                <span title="{{ flavour_name }}">
+                  <i class="fa-regular fa-brands fa-python fa-lg"></i>
+                </span>
+              {% endif %}
+              {% if flavour_name == "java" %}
+                <span title="{{ flavour_name }}">
+                  <i class="fa-regular fa-brands fa-java fa-lg"></i>
+                </span>
+              {% endif %}
             {% endif %}
-            {% if flavour_name == "java" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-java fa-lg"></i>
-              </span>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-    <!-- Horizontal line -->
-    <hr class="border-gray-300 inset-x-0 absolute" />
-    <!-- Assignee and reviewers section -->
-    <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
-      <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
-        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <!-- Horizontal line -->
+      <hr class="border-gray-300 inset-x-0 absolute" />
+      <!-- Assignee and reviewers section -->
+      <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
+        <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
+          <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
           <div title={{ card.assignees.first.email }}>
             {% user_avatar card.assignees.first %}
           </div>
-      </div>
-      <div class="Reviewer-avatars col-span-1 row-span-1">
-        <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-        <div class="flex relative group">
-            {% if card.reviewers %}
-                <div class="flex">
-                    {% for reviewer in card.reviewers.all %}
-                        {% if forloop.counter0 < 2 %}
-                            <div class="relative mr-[-6px] group">
-                                <div class="border-2 rounded-full border-white">
-                                    {% user_avatar reviewer %}
-                                </div>
-                                <div class="absolute bottom-full left-0 transform -translate-x-16 w-48 bg-white text-black text-xs px-2 py-1 rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 z-10 mt-2">
-                                    <ul class="max-h-40 overflow-y-auto">
-                                        <li class="font-['Poppins'] font-bold text-[8px]">{{ reviewer }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% if card.reviewers.count > 2 %}
-                    <div class="absolute bottom-full left-0 transform -translate-x-16 w-48 bg-white text-black text-xs px-2 py-1 rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 z-10 mt-2">
-                        <ul class="max-h-40 overflow-y-auto">
-                            {% for reviewer in card.reviewers.all %}
-                                <li class="font-['Poppins'] font-bold text-[8px]">{{ reviewer }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+        </div>
+        <div class="Reviewer-avatars col-span-1 row-span-1 group"
+             x-data="{ isOpen: false }">
+          <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
+          <div class="flex relative">
+            {% if card.reviewer_names %}
+              {% for reviewer in card.reviewers.all %}
+                {% if forloop.counter0 < 2 %}
+                  <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                    <div title="{{ reviewer }}">{% user_avatar reviewer %}</div>
+                  </div>
                 {% endif %}
+              {% endfor %}
+              {% if card.reviewers.count > 2 %}
+                <div class="reviewers">
+                  <div class="flex -mx-2 overflow-auto rounded-full border-2 border-white cursor-pointer"
+                       @click="isOpen = !isOpen">
+                    <img class="w-[30px] h-[30px] rounded-full"
+                         height="auto"
+                         width="auto"
+                         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                         alt="more reviewers" />
+                    <div x-show="isOpen"
+                         @click.away="isOpen = false"
+                         class="absolute h-[20] overflow-y-scroll bg-sky top-full right-50 w-[auto] bg-white text-black text-xs px-2 py-1 rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-3000 mt-2">
+                      {% for reviewer in card.reviewers.all %}
+                        <div class="rounded-full owerflow-scroll z-10 bg-sky"
+                             title="{{ reviewer }}">{% user_avatar reviewer %}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
             {% endif %}
+            {% if not card.reviewer_names %}
+              <button class="{{ styles.button_secondary_small }}" title="No reviewers">reviews(0)</button>
+            {% endif %}
+          </div>
         </div>
-    </div>
-    
-      <!-- Buttons section -->
-      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div class="Start-button col-span-1 row-span-1 w-full">
-          <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
-                  class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
-            <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
-          </button>
+        <!-- Buttons section -->
+        <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
+          <div class="Start-button col-span-1 row-span-1 w-full">
+            <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
+                    class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
+              <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="Start-button col-span-1 row-span-1">
-        {% if card.request_user_can_start %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_start_card' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Start</button>
-        {% elif card.request_user_can_request_review %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_request_review' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Request review</button>
-        {% elif card.request_user_can_finish_topic %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_finish_topic' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Done</button>
-        {% elif card.request_user_can_cancel_review_request %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_cancel_review_request' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Cancel review request</button>
+        <div class="Start-button col-span-1 row-span-1">
+          {% if card.request_user_can_start %}
+            <button type="button"
+                    class="{{ styles.button_primary_small }}"
+                    hx-post="{% url 'action_start_card' card.id %}"
+                    hx-target="#card_{{ card.id }}"
+                    hx-swap="outerHTML">Start</button>
+          {% elif card.request_user_can_request_review %}
+            <button type="button"
+                    class="{{ styles.button_primary_small }}"
+                    hx-post="{% url 'action_request_review' card.id %}"
+                    hx-target="#card_{{ card.id }}"
+                    hx-swap="outerHTML">Request review</button>
+          {% elif card.request_user_can_finish_topic %}
+            <button type="button"
+                    class="{{ styles.button_primary_small }}"
+                    hx-post="{% url 'action_finish_topic' card.id %}"
+                    hx-target="#card_{{ card.id }}"
+                    hx-swap="outerHTML">Done</button>
+          {% elif card.request_user_can_cancel_review_request %}
+            <button type="button"
+                    class="{{ styles.button_primary_small }}"
+                    hx-post="{% url 'action_cancel_review_request' card.id %}"
+                    hx-target="#card_{{ card.id }}"
+                    hx-swap="outerHTML">Cancel review request</button>
+          {% endif %}
+        </div>
+        {% if card.recruit_project and card.content_item.content_type_nice == "project" %}
+          <a href="{% url 'progress_details' card.content_item.content_type_nice card.recruit_project.id %}"
+             class="{{ styles.button_secondary_small }} w-fit">Details</a>
         {% endif %}
-      </div>
-
- 
-      {%if card.recruit_project and card.content_item.content_type_nice == "project"%}
-        <a href="{% url 'progress_details' card.content_item.content_type_nice card.recruit_project.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
-      {% endif %}
-
-      {%if card.topic_progress and card.content_item.content_type_nice == "topic"%}
-          <a href="{% url 'progress_details' card.content_item.content_type_nice card.topic_progress.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
+        {% if card.topic_progress and card.content_item.content_type_nice == "topic" %}
+          <a href="{% url 'progress_details' card.content_item.content_type_nice card.topic_progress.id %}"
+             class="{{ styles.button_secondary_small }} w-fit">Details</a>
         </div>
       {% endif %}
-
-      
       {% if card.request_user_can_stop_card %}
         <div class="col-span-1 row-span-1 group">
-            <button type="button"
-                    class="{{ styles.button_secondary_small }}"
-                    hx-post="{% url 'action_stop_card' card.id %}"
-                    hx-target="#card_{{ card.id }}"
-                    hx-swap="outerHTML">Stop</button>
+          <button type="button"
+                  class="{{ styles.button_secondary_small }}"
+                  hx-post="{% url 'action_stop_card' card.id %}"
+                  hx-target="#card_{{ card.id }}"
+                  hx-swap="outerHTML">Stop</button>
         </div>
       {% endif %}
+      {% comment %} <div class="absolute bg-red right-0 color-red overflow-scroll">
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+          <div>TEST</div>
+
+      </div> {% endcomment %}
     </div>
-  </div>
-  <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
-    {% for reviewer in card.reviewer_names %}
-      <div class="font-['Poppins'] text-[10px] block">{{ reviewer }}</div>
-    {% endfor %}
   </div>
 </div>
