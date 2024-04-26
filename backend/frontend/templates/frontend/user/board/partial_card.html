@@ -161,14 +161,12 @@
                 <div class="reviewers">
                   <div class="flex -mx-2 overflow-auto rounded-full border-2 border-white cursor-pointer"
                        @click="isOpen = !isOpen">
-                    <img class="w-[30px] h-[30px] rounded-full"
-                         height="auto"
-                         width="auto"
-                         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                         alt="more reviewers" />
+                    <button class="w-[30px] h-[30px] rounded-full bg-black z-10">
+                      <i class="fa-regular fa-user" style="color: #FFF;"></i>
+                    </button>
                     <div x-show="isOpen"
                          @click.away="isOpen = false"
-                         class="absolute top-full right-50 h-[125px] bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000">
+                         class="absolute top-full right-50 h-[120px] bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000">
                       {% for reviewer in card.reviewers.all %}
                         <div class="h-4 w-4 py-4"
                              title="{{ reviewer }}">{% user_avatar reviewer %}</div>
@@ -179,7 +177,7 @@
               {% endif %}
             {% endif %}
             {% if not card.reviewers.all %}
-              <button class="{{ styles.button_secondary_small }}" title="No reviewers">no one</button>
+              <button class="{{ styles.button_secondary_small }}" title="No reviewers">None</button>
             {% endif %}
           </div>
         </div>
