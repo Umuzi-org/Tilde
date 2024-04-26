@@ -161,15 +161,14 @@
                 <div class="reviewers">
                   <div class="flex -mx-2 overflow-auto rounded-full border-2 border-white cursor-pointer"
                        @click="isOpen = !isOpen">
-                    <button class="w-[30px] h-[30px] rounded-full bg-black z-10">
+                    <button class="w-[30px] h-[30px] rounded-full bg-gray-400">
                       <i class="fa-regular fa-user" style="color: #FFF;"></i>
                     </button>
                     <div x-show="isOpen"
                          @click.away="isOpen = false"
-                         class="absolute top-full right-50 bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000 {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{%endif%}">
+                         class="absolute top-full right-50 bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000 {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{% endif %}">
                       {% for reviewer in card.reviewers.all %}
-                        <div class="h-4 w-4 py-4"
-                             title="{{ reviewer }}">{% user_avatar reviewer %}</div>
+                        <div class="h-4 w-4 py-4" title="{{ reviewer }}">{% user_avatar reviewer %}</div>
                       {% endfor %}
                     </div>
                   </div>
