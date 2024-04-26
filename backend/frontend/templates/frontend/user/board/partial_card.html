@@ -168,9 +168,9 @@
                          alt="more reviewers" />
                     <div x-show="isOpen"
                          @click.away="isOpen = false"
-                         class="absolute h-[20] overflow-y-scroll bg-sky top-full right-50 w-[auto] bg-white text-black text-xs px-2 py-1 rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-3000 mt-2">
+                         class="absolute top-full right-50 h-[125px] bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000">
                       {% for reviewer in card.reviewers.all %}
-                        <div class="rounded-full owerflow-scroll z-10 bg-sky"
+                        <div class="h-4 w-4 py-4"
                              title="{{ reviewer }}">{% user_avatar reviewer %}</div>
                       {% endfor %}
                     </div>
@@ -178,8 +178,8 @@
                 </div>
               {% endif %}
             {% endif %}
-            {% if not card.reviewer_names %}
-              <button class="{{ styles.button_secondary_small }}" title="No reviewers">reviews(0)</button>
+            {% if not card.reviewers.all %}
+              <button class="{{ styles.button_secondary_small }}" title="No reviewers">no one</button>
             {% endif %}
           </div>
         </div>
@@ -237,19 +237,6 @@
                   hx-swap="outerHTML">Stop</button>
         </div>
       {% endif %}
-      {% comment %} <div class="absolute bg-red right-0 color-red overflow-scroll">
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-          <div>TEST</div>
-
-      </div> {% endcomment %}
     </div>
   </div>
 </div>
