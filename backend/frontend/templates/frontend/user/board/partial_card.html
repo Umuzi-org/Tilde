@@ -149,7 +149,7 @@
              x-data="{ isOpen: false }">
           <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
           <div class="flex relative">
-            {% if card.reviewer_names %}
+            {% if card.reviewers.all %}
               {% for reviewer in card.reviewers.all %}
                 {% if forloop.counter0 < 2 %}
                   <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
