@@ -806,6 +806,27 @@ def project_review_coordination_unclaimed(request):
 
 
 @user_passes_test(is_staff)
+def view_partial_bundle_expanded(request):
+    from curriculum_tracking.models import RecruitProject
+
+    project_ids = request.POST.getlist("project_ids")
+    assert len(project_ids) > 0, "No project_ids provided"
+    projects = RecruitProject.objects.filter(id__in=project_ids).exclude(
+        project_review_bundle_claims__is_active=True
+    )
+
+    context = {
+        "projects": projects,
+    }
+
+    return render(
+        request,
+        "frontend/project_review_coordination/unclaimed/view_partial_bundle_expanded.html",
+        context=context,
+    )
+
+
+@user_passes_test(is_staff)
 def project_review_coordination_my_claims(request):
     from project_review_coordination.models import ProjectReviewBundleClaim
 
