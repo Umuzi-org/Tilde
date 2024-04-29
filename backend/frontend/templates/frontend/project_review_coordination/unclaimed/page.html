@@ -11,9 +11,10 @@
     >
     <div>
         <h3 class="font-bold inline-block">{{ bundle.title }}</h3> {{ bundle.flavours }} 
-        <form method="post">
+        <form>
             {% csrf_token %}
             <button
+                type="button"
                 x-show="bundleExpanded"
                 x-on:click="bundleExpanded = false"
                 class="{{ styles.button_secondary_small }}"
