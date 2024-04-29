@@ -3,9 +3,9 @@
 {% block modal_content %}
 <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
-        {% user_avatar request.user %}
+        <div class="hidden md:block">{% user_avatar request.user %}</div>
         <div class="flex flex-col gap-0">
-            <h1 class="font-bold text-gray-800 ">
+            <h1 class="font-bold leading-tight text-gray-800 ">
                 Add Review for {{ course_component.content_item.content_type_nice|slice:1|title }}: {{ course_component.content_item.title }}
             </h1>
             <span class="text-xs text-slate-500">
@@ -15,7 +15,7 @@
     </div>
 
     <button @click="modalOpen = false"
-            class="text-gray-600 focus:outline-none hover:text-gray-700">
+            class="text-gray-600 hidden md:block focus:outline-none hover:text-gray-700">
         <i class="fa fa-times-circle"> </i>
     </button>
 </div>
