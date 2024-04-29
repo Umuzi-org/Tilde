@@ -380,16 +380,19 @@ def action_start_card(request, card_id):
 
 def _progress_details_viewed_user_func(request):
     content_type = request.resolver_match.kwargs.get("content_type")
-    id = request.resolver_match.kwargs.get("id")
+    course_component_id = request.resolver_match.kwargs.get("id")
 
     if content_type == "project":
-        return get_object_or_404(RecruitProject, id=id).recruit_users.first()
+        return get_object_or_404(RecruitProject, id=course_component_id).recruit_users.first()
     elif content_type == "topic":
-        return get_object_or_404(TopicProgress, id=id).user
+        return get_object_or_404(TopicProgress, id=course_component_id).user
     
     raise NotImplementedError(f"Cannot get viewed user for content type {content_type}")
 
-@user_passes_test_or_forbidden(can_view_user_board, viewed_user_func=_progress_details_viewed_user_func)
+@user_passes_test_or_forbidden(
+    can_view_user_board, 
+    viewed_user_func=_progress_details_viewed_user_func
+)
 def progress_details(
     request,
     content_type,
@@ -452,60 +455,59 @@ def progress_details(
 def check_user_can_add_review(logged_in_user):
     request = get_current_request()
     content_type = request.resolver_match.kwargs.get("content_type")
-    id = request.resolver_match.kwargs.get("id")
+    course_component_id = request.resolver_match.kwargs.get("id")
 
     if content_type == "project":
-        project = get_object_or_404(RecruitProject, id=id)
+        project: RecruitProject = get_object_or_404(RecruitProject, id=course_component_id)
         return project.request_user_can_add_review(logged_in_user)
 
     return False
 
 @user_passes_test_or_forbidden(check_user_can_add_review)
 def action_add_review(request, content_type, id):
-    if request.method == "POST":
-        if content_type == "project":
-            project: RecruitProject = get_object_or_404(RecruitProject, id=id)
-            card: AgileCard = project.agile_card
-       
-            form: RecruitProjectReviewForm = RecruitProjectReviewForm(data=request.POST)
+    assert content_type == "project", "Only projects can be reviewed."
 
-            if form.is_valid():
-                review: RecruitProjectReview = form.save()
+    project: RecruitProject = get_object_or_404(RecruitProject, id=id)
+    card: AgileCard = project.agile_card
 
-                log_creators.log_project_competence_review_done(review)
+    form: RecruitProjectReviewForm = RecruitProjectReviewForm(data=request.POST)
 
-                card.refresh_from_db()
+    if form.is_valid():
+        review: RecruitProjectReview = form.save()
 
-                if card.status == AgileCard.REVIEW_FEEDBACK:
-                    log_creators.log_card_moved_to_review_feedback(card, review.reviewer_user)
-                elif card.status == AgileCard.COMPLETE:
-                    log_creators.log_card_moved_to_complete(card, review.reviewer_user)
+        log_creators.log_project_competence_review_done(review)
 
-                response = render(
-                    request,
-                    "frontend/progress_details/js_exec_action_prepend_new_review.html",
-                    {
-                        "review": review,
-                        "card": card,
-                    },
-                )
+        card.refresh_from_db()
 
-                response["HX-Trigger-After-Swap"] = "submitted"
-                return response
-            else:
-                response = render(
-                    request,
-                    "frontend/progress_details/partial_review_form.html",
-                    {
-                        "review_form": form,
-                        "course_component": project,
-                    }
-                )
-                response["HX-Retarget"] = "#review-form"
-                response["HX-Reswap"] = "innerHTML"
-                return response
-                
-        raise NotImplementedError(f"Cannot add review to content type {content_type} yet")
+        if card.status == AgileCard.REVIEW_FEEDBACK:
+            log_creators.log_card_moved_to_review_feedback(card, review.reviewer_user)
+        elif card.status == AgileCard.COMPLETE:
+            log_creators.log_card_moved_to_complete(card, review.reviewer_user)
+
+        response = render(
+            request,
+            "frontend/progress_details/js_exec_action_prepend_new_review.html",
+            {
+                "review": review,
+                "card": card,
+            },
+        )
+
+        response["HX-Trigger-After-Swap"] = "submitted"
+        return response
+    else:
+        response = render(
+            request,
+            "frontend/progress_details/partial_review_form.html",
+            {
+                "review_form": form,
+                "course_component": project,
+            }
+        )
+        response["HX-Retarget"] = "#review-form"
+        response["HX-Reswap"] = "innerHTML"
+        return response
+
 
 def check_user_can_request_review_on_card(logged_in_user):
     request = get_current_request()
