@@ -15,7 +15,7 @@ from core.models import Team
 PROGRESS_DETAILS_VIEW = "progress_details"
 
 class TestProgressDetailsAddReviewButton(FrontendTestMixin):
-    sample_review_comment = "This is a comment"
+    SAMPLE_REVIEW_COMMENT = "This is a comment"
 
     def setUp(self):
         super().setUp()
@@ -69,15 +69,14 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
     def _get_project_progress_details_url(self, project):
         return self.reverse_url(
             PROGRESS_DETAILS_VIEW, kwargs={"id": project.id, "content_type": "project"},
-            
         )
     
     def _submit_review(self, status):
         self.page.get_by_role("button", name="Add Review").click()
         self.page.wait_for_load_state()
         self.page.select_option("select#id_status", status)
-        self.page.query_selector("textarea#id_comments").fill(self.sample_review_comment)
-        self.page.locator("text=Submit Review").click()
+        self.page.query_selector("textarea#id_comments").fill(self.SAMPLE_REVIEW_COMMENT)
+        self.page.query_selector("#submit_review_button").click()
         self.page.wait_for_load_state('networkidle')
 
     def test_super_user_can_add_review(self):
@@ -93,7 +92,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
 
         self._submit_review("competent")
 
-        expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
+        expect(self.page.locator("div#reviews")).to_contain_text(self.SAMPLE_REVIEW_COMMENT)
 
     def test_reviewer_by_assignment_can_add_review(self):
         self.make_in_review_project_card()
@@ -108,7 +107,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
 
         self._submit_review("competent")
 
-        expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
+        expect(self.page.locator("div#reviews")).to_contain_text(self.SAMPLE_REVIEW_COMMENT)
     
     def test_reviewer_by_permission_can_add_review(self):
         self.make_in_review_project_card()
@@ -125,7 +124,7 @@ class TestProgressDetailsAddReviewButton(FrontendTestMixin):
 
         self._submit_review("not yet competent")
 
-        expect(self.page.locator("div#reviews")).to_contain_text(self.sample_review_comment)
+        expect(self.page.locator("div#reviews")).to_contain_text(self.SAMPLE_REVIEW_COMMENT)
         expect(self.page.locator("#agile-card-status")).to_have_text("Review Feedback")
     
     def test_user_with_no_permissions_cannot_add_review(self):
