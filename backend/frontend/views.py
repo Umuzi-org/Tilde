@@ -39,6 +39,7 @@ from .forms import (
     CustomSetPasswordForm,
     LinkSubmissionForm,
     RecruitProjectReviewForm,
+    SearchTeamForm,
 )
 from .theme import styles
 
@@ -699,6 +700,17 @@ def view_partial_teams_list(request):
             user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
         )
 
+    if request.method == "POST":
+        form = SearchTeamForm(request.POST)
+
+        if form.is_valid():
+            search_term = form.cleaned_data["search_term"]
+
+            teams = Team.objects.filter(
+                active=True, name__istartswith=search_term
+            ).order_by("name")
+            total_teams_count = teams.count()
+
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
     teams = teams[current_team_count : current_team_count + limit]
@@ -798,7 +810,6 @@ def view_partial_team_user_progress_chart(request, user_id):
 
 @user_passes_test(is_staff)
 def project_review_coordination_unclaimed(request):
-    from curriculum_tracking.models import AgileCard, ReviewTrust
     from project_review_coordination.models import ProjectReviewBundleClaim
 
     ProjectReviewBundleClaim.objects.filter(is_active=True).filter(

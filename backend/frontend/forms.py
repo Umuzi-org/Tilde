@@ -63,3 +63,8 @@ class RecruitProjectReviewForm(ThemedFormMixin, forms.ModelForm):
             "recruit_project": forms.HiddenInput(),
             "reviewer_user": forms.HiddenInput(),
         }
+
+
+class SearchTeamForm(forms.Form):
+    search_term = forms.CharField(required=True)
+               

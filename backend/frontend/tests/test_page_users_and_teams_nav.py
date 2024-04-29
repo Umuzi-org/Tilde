@@ -70,7 +70,54 @@ class TestPage(FrontendTestMixin):
         url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
         self.page.wait_for_load_state()
-        
+
         body = self.page.locator("body")
 
         expect(body).to_contain_text("Load more")
+
+    def test_user_sees_teams_that_match_the_search_term(self):
+        user = UserFactory(email="learner@email.com")
+        user.set_password(user.email)
+        user.save()
+
+        boots_1999_team = TeamFactory(name="boots 1999")
+        boots_2014_team = TeamFactory(name="boots 2014")
+        detectives_team = TeamFactory(name="detectives")
+
+        teams = [boots_1999_team, boots_2014_team, detectives_team]
+
+        for team in teams:
+            assign_perm(
+                Team.PERMISSION_MANAGE_CARDS,
+                user,
+                team,
+            )
+
+        self.do_login(user)
+        url = self.reverse_url("users_and_teams_nav")
+        self.page.goto(url)
+        self.page.wait_for_load_state()
+
+        body = self.page.locator("body")
+        search_input_box = body.locator("input#search-term-box")
+        search_input_box.press_sequentially("dEtecTivEs")
+        found_teams = body.page.locator("div#teams-list")
+        self.page.wait_for_load_state("networkidle")
+
+        expect(found_teams).to_contain_text(detectives_team.name)
+        expect(found_teams).not_to_contain_text(boots_1999_team.name)
+        expect(found_teams).not_to_contain_text(boots_2014_team.name)
+
+        search_input_box.clear()
+        search_input_box.press_sequentially("BOOT")
+        self.page.wait_for_load_state("networkidle")
+
+        expect(found_teams).not_to_contain_text(detectives_team.name)
+        expect(found_teams).to_contain_text(boots_1999_team.name)
+        expect(found_teams).to_contain_text(boots_2014_team.name)
+
+        search_input_box.clear()
+        search_input_box.press_sequentially("zzzzzzzzzzz")
+        self.page.wait_for_load_state("networkidle")
+
+        expect(found_teams).to_contain_text("No teams found")

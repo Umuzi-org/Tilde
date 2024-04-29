@@ -18,7 +18,9 @@ class Command(BaseCommand):
         with open("gitignore/technical_sessions.csv", "w") as f:
             writer = csv.writer(f)
             writer.writerow(headings)
-            for session in Session.objects.all():
+            for session in Session.objects.filter(is_complete=False).filter(
+                is_cancelled=False
+            ):
                 flavours = ", ".join(session.flavour_names)
                 for attendee in session.attendees.all():
                     writer.writerow(
