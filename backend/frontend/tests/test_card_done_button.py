@@ -14,7 +14,6 @@ class TestCardDoneButton(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-    
     def make_topic_card(self):
         self.card: AgileCard = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -24,7 +23,7 @@ class TestCardDoneButton(FrontendTestMixin):
         )
         self.card.assignees.set([self.user])
         self.card.start_topic()
-    
+
     def make_project_card(self):
         self.card: AgileCard = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -71,7 +70,7 @@ class TestCardDoneButton(FrontendTestMixin):
 
         self.page.wait_for_load_state("networkidle")
         card_title = self.card.content_item.title
-        
+
         expect(self.page.locator("div#column_IP")).not_to_contain_text(card_title)
         expect(self.page.locator("div#column_C")).to_contain_text(card_title)
 
@@ -82,11 +81,12 @@ class TestCardDoneButton(FrontendTestMixin):
         self.do_login(self.user)
         self.page.wait_for_load_state()
 
-        self.page.locator('text="Done"').click();
+        self.page.locator('text="Done"').click()
         self.page.wait_for_load_state("networkidle")
-        
-        expect(self.page.locator("div#column_IP")).to_contain_text("You have outstanding card reviews")
 
+        expect(self.page.locator("div#column_IP")).to_contain_text(
+            "You have outstanding card reviews"
+        )
 
     def test_done_button_logs_finish_topic_event(self):
         self.make_topic_card()
