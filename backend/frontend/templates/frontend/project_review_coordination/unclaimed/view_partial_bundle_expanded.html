@@ -1,7 +1,7 @@
 {% load custom_tags %}
 <div class="flex flex-wrap gap-2">
     {% for project in projects %}
-    <div class="bg-white drop-shadow border rounded-lg p-2.5 ">
+    <div class="bg-white drop-shadow border rounded-lg p-2.5 expanded-project-card">
         <div class="flex gap-2 items-center">
             {% user_avatar project.recruit_users.first %}
             <a href="#">{{ project.recruit_users.first }}</a>
