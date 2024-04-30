@@ -166,7 +166,7 @@
                     </button>
                     <div x-show="isOpen"
                          @click.away="isOpen = false"
-                         class="absolute top-full mx-2 left-[-130%] w-[auto] bg-white z-10 w-full scroll-smooth overflow-y-scroll text-black opacity-0 opacity-100 transition-opacity duration-1000 shadow-[rgba(0,_0,_0,_0.4)_0px_30px_90px] {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{% endif %}">
+                         class="absolute top-full mx-2 left-[-127%] w-[auto] bg-white z-10 w-full scroll-smooth overflow-y-scroll text-black opacity-0 opacity-100 transition-opacity duration-1000 shadow-[rgba(0,_0,_0,_0.4)_0px_30px_90px] {% if card.status == 'IR' %}h-[125px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[95px]{% endif %} {% if card.status == 'IP' %}h-[110px]{% endif %}">
                       {% for reviewer in card.reviewers.all %}
                         <div class="flex gap-1 text-xs pb-1" title="{{ reviewer }}">{% drop_down_reviewer_avatar reviewer %}{{reviewer}}</div>
                       {% endfor %}
