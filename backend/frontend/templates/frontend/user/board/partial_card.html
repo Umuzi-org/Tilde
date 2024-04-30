@@ -166,9 +166,9 @@
                     </button>
                     <div x-show="isOpen"
                          @click.away="isOpen = false"
-                         class="absolute top-full right-50 bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000 {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{% endif %}">
+                         class="absolute top-full left-[-100%] w-[180px] bg-white z-10 w-full overflow-y-scroll text-black opacity-0 opacity-100 transition-opacity duration-1000 {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{% endif %}">
                       {% for reviewer in card.reviewers.all %}
-                        <div class="p-[2px]" title="{{ reviewer }}">{% user_avatar reviewer %}</div>
+                        <div class="flex gap-1 text-xs" title="{{ reviewer }}">{% drop_down_reviewer_avatar reviewer %}{{reviewer}}</div>
                       {% endfor %}
                     </div>
                   </div>
