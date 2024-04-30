@@ -116,7 +116,7 @@
                 <div
                 class="p-2 border-2 rounded-md">
                     <h6>Reviews </h6>
-                    <div id="reviews" class="grid gap-2 mt-2 h-44 overflow-scroll">
+                    <div id="reviews" class="grid gap-2 mt-2 max-h-44 overflow-scroll">
                         {% for review in course_component.reviews_queryset.all %}
                             {% include "frontend/progress_details/partial_review.html" %}
                         {% endfor %}
