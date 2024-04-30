@@ -148,11 +148,11 @@
         <div class="Reviewer-avatars col-span-1 row-span-1 group"
              x-data="{ isOpen: false }">
           <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-          <div class="flex relative">
+          <div class="flex relative -mx-4">
             {% if card.reviewers.all %}
               {% for reviewer in card.reviewers.all %}
                 {% if forloop.counter0 < 2 %}
-                  <div class="flex -mx-2 overflow-hidden rounded-full border-2 border-white">
+                  <div class="flex -mx-1 overflow-hidden rounded-full border-2 border-white">
                     <div title="{{ reviewer }}">{% user_avatar reviewer %}</div>
                   </div>
                 {% endif %}
@@ -168,7 +168,7 @@
                          @click.away="isOpen = false"
                          class="absolute top-full right-50 bg-white z-10 w-full overflow-y-scroll text-black opacity-0 group-hover:opacity-100 transition-opacity duration-5000 {% if card.status == 'IR' %}h-[130px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[100px]{% endif %} {% if card.status == 'IP' %}h-[115px]{% endif %}">
                       {% for reviewer in card.reviewers.all %}
-                        <div class="h-4 w-4 py-4" title="{{ reviewer }}">{% user_avatar reviewer %}</div>
+                        <div class="p-[2px]" title="{{ reviewer }}">{% user_avatar reviewer %}</div>
                       {% endfor %}
                     </div>
                   </div>
@@ -176,7 +176,7 @@
               {% endif %}
             {% endif %}
             {% if not card.reviewers.all %}
-              <button class="{{ styles.button_secondary_small }}" title="No reviewers">None</button>
+              <div class="absolute right-0">None</div>
             {% endif %}
           </div>
         </div>
