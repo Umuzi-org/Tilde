@@ -2,7 +2,7 @@
 """
 
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push
+from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push, PullRequest
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -17,6 +17,18 @@ import mock
 
 # from git_real.models import PullRequest, PullRequestReview, Push
 from social_auth.tests.factories import SocialProfileFactory
+
+class log_pr_opened_Tests(TestCase):
+    def test_pr_opened_gets_logged(self):
+        pass
+        # body, headers = get_body_and_headers("pr_opened")
+        # pull_request_data = body["pull_request"]
+        # repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+    
+        # pr = PullRequest.create_or_update_from_github_api_data(repo,pull_request_data)
+
+        # self.assertEqual(LogEntry.objects.count(), 1)
+
 
 
 class log_pr_reviewed_created_Tests(TestCase):

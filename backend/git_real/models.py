@@ -7,7 +7,7 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
-from .activity_log_creators import log_push_event
+from .activity_log_creators import log_push_event, log_pr_opened
 
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -126,6 +126,16 @@ class PullRequest(models.Model, Mixins):
         pull_request, _ = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
+        
+        # check if pr_opened log for this pull request exists
+        ## if it does, check if the timestamps match
+        ### if they match, then no need to log
+        ### otherwise we need need to log pr_opened for same pull request with new timestamp
+        ## else log pr_opened
+        
+        
+        # But before we do any of the above steps, lets see if just logging will work
+        log_pr_opened(pull_request) # doing this here raises a GenericForeignKey error
         return pull_request
 
 
