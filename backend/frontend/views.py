@@ -783,6 +783,7 @@ def project_review_coordination_all_claims(request):
 
     context = {
         "active_claims": active_claims,
+        "user": request.user,
     }
 
     return render(
