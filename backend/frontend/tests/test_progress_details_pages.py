@@ -315,21 +315,19 @@ class TestTopicDetailsPage(FrontendTestMixin):
 class TestRepoProjectDetailsPage(FrontendTestMixin):
     def setUp(self):
         super().setUp()
-        self.user = UserFactory(
-            email="learner_1@umuzi.org",
-            is_staff=True,
-            is_superuser=True,
-        )
+        self.user = UserFactory(email="learner_1@umuzi.org")
         self.user.set_password(self.user.email)
         self.user.save()
         self.do_login(self.user)
 
     def make_ip_project_card(self):
-
         self.card = AgileCardFactory()
-        self.card.recruit_project.repository = RepositoryFactory()
+        self.card.recruit_project.repository = RepositoryFactory(user=self.user)
         self.card.recruit_project.save()
         self.card.save()
+
+        self.card.assignees.set([self.user])
+        self.card.recruit_project.recruit_users.set([self.user])
 
     def test_progress_details_page_displays_repo_for_repo_project(self):
         self.make_ip_project_card()
