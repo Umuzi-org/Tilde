@@ -127,7 +127,7 @@
                             <ul class="list-disc">
                                 {% for pr in course_component.repository.pull_requests.all %}
                                     <li class="ml-4 mb-1">
-                                        <a class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
+                                        <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>                            

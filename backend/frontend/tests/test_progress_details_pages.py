@@ -11,8 +11,10 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     RecruitProjectFactory,
     TopicProgressFactory,
-    RepositoryFactory,
 )
+
+from git_real.models import PullRequest
+from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 from curriculum_tracking.models import AgileCard, ContentItem
 
 VIEW_NAME = "progress_details"
@@ -325,8 +327,7 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
     def make_ip_project_card(self):
 
         self.card = AgileCardFactory()
-        self.card.recruit_project.repository = RepositoryFactory(
-        )
+        self.card.recruit_project.repository = RepositoryFactory()
         self.card.recruit_project.save()
         self.card.save()
 
@@ -345,7 +346,33 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
 
         self.page.wait_for_load_state()
 
+        repo_link = self.page.locator("a#repo-link")
 
-        repo_link =self.page.locator("a#repo-link")
+        expect(repo_link).to_contain_text(
+            self.card.recruit_project.repository.full_name
+        )
 
-        expect(repo_link).to_contain_text(self.card.recruit_project.repository.full_name) 
+    def test_progress_details_page_displays_open_prs_for_repo_project(self):
+        self.make_ip_project_card()
+
+        pr = PullRequestFactory(
+            repository=self.card.recruit_project.repository, state=PullRequest.OPEN
+        )
+
+        self.repo_project_progress_details_url = self.reverse_url(
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.card.id,
+            },
+        )
+
+        self.page.goto(self.repo_project_progress_details_url)
+
+        self.page.wait_for_load_state()
+
+        pr_link = self.page.locator(f"a#pr_{pr.number}")
+
+        expect(pr_link).to_contain_text(
+            self.card.recruit_project.repository.pull_requests.first().title
+        )
