@@ -11,6 +11,7 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     RecruitProjectFactory,
     TopicProgressFactory,
+    RepositoryFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
 
@@ -307,3 +308,44 @@ class TestTopicDetailsPage(FrontendTestMixin):
             self.topic.content_url,
             body,
         )
+
+
+class TestRepoProjectDetailsPage(FrontendTestMixin):
+    def setUp(self):
+        super().setUp()
+        self.user = UserFactory(
+            email="learner_1@umuzi.org",
+            is_staff=True,
+            is_superuser=True,
+        )
+        self.user.set_password(self.user.email)
+        self.user.save()
+        self.do_login(self.user)
+
+    def make_ip_project_card(self):
+
+        self.card = AgileCardFactory()
+        self.card.recruit_project.repository = RepositoryFactory(
+        )
+        self.card.recruit_project.save()
+        self.card.save()
+
+    def test_progress_details_page_displays_repo_for_repo_project(self):
+        self.make_ip_project_card()
+
+        self.repo_project_progress_details_url = self.reverse_url(
+            VIEW_NAME,
+            kwargs={
+                "content_type": "project",
+                "id": self.card.id,
+            },
+        )
+
+        self.page.goto(self.repo_project_progress_details_url)
+
+        self.page.wait_for_load_state()
+
+
+        repo_link =self.page.locator("a#repo-link")
+
+        expect(repo_link).to_contain_text(self.card.recruit_project.repository.full_name) 

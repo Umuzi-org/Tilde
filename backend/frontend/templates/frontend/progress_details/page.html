@@ -116,7 +116,7 @@
                     <div class="p-2 border-2 rounded-md ">
                         <p>
                             Repository: 
-                            <a class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank">{{course_component.repository.full_name}}</a>
+                            <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank">{{course_component.repository.full_name}}</a>
                         </p>
                     </div>
                     {% if course_component.repository.pull_requests.all|length %}
