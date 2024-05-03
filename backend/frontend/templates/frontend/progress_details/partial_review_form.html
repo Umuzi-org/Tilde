@@ -1,0 +1,18 @@
+<form 
+    hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
+    hx-target="#reviews"
+    hx-swap="afterbegin"
+    x-on:submitted="modalOpen = false"
+>
+    {% csrf_token %}
+    {% include 'frontend/includes/form_template.html' with form=review_form %}
+    <div class="flex justify-between">
+    <button @click="modalOpen = false"
+            class="{{ styles.button_secondary_small }}"
+            type="button">Dismiss</button>
+    <button
+        id="submit_review_button"
+        class="{{ styles.button_primary_small }}"
+        type="submit">Submit Review</button>
+    </div>
+</form>

@@ -4,7 +4,12 @@
 {% block main_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
     <script src="{% static 'frontend/utils.js' %}"></script>
+    <script>
+        hljs.configure({ cssSelector: 'code' });;
+        hljs.highlightAll();
+    </script>
     {% block head %}{% endblock %}
 {% endblock %}
 

@@ -1,0 +1,27 @@
+{% load custom_tags %}
+<div id="review-{{ review.id }}">
+    <span class="text-xs">{{ review.timestamp|date:"d/m/Y, H:i:s" }}</span>
+    <div class="flex items center gap-2">
+        {% user_avatar review.reviewer_user %}
+        <div class="">
+            {{ review.reviewer_user.email }}
+        </div>
+    </div>
+    <p class="line-clamp-1 my-2">
+        {{ review.comments|markdownify|striptags }}
+    </p>
+
+    <div class="flex gap-2">
+        <span class="{{ styles.badge_secondary}}">
+            {{ review.get_status_display }}
+        </span>
+        <div x-data="{ modalOpen: false }">
+            <button @click="modalOpen = !modalOpen"
+                    class="{{ styles.button_secondary_small }}"
+                    type="submit">Read more</button>
+            {% include "frontend/progress_details/partial_preview_review.html" %}
+        </div>
+    </div>
+
+
+</div>

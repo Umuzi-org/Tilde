@@ -7,7 +7,7 @@
     <div class="my-4" >
       <a class="{{ styles.link }}" href="{% url 'user_forgot_password' %}">Forgot Password?</a>
     </div>
-    {% include 'frontend/auth/form_template.html' with form=form %}
+    {% include 'frontend/includes/form_template.html' with form=form %}
     
     <button class="{{ styles.button_primary_small }}" type="submit">Log in</button>
   </form>
