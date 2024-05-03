@@ -1,9 +1,9 @@
 {% load custom_tags %}
 {% load humanize %}
-<div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
+<div class="mb-3 max-w-md bg-white h-[auto] rounded relative shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
      id="card_{{ card.id }}"
      data-status="{{ card.status }}">
-  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br shadow-lg p-6">
     <!-- Dates and options section -->
     <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
       <div class="flex gap-2 items-start col-span-10 pb-2">
@@ -148,7 +148,7 @@
         <div class="Reviewer-avatars col-span-1 row-span-1 group"
              x-data="{ isOpen: false }">
           <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-          <div class="flex relative -mx-4">
+          <div class="flex -mx-4">
             {% if card.reviewers.all %}
               {% for reviewer in card.reviewers.all %}
                 {% if forloop.counter0 < 2 %}
@@ -161,23 +161,26 @@
                 <div class="reviewers">
                   <div class="flex -mx-2 overflow-auto rounded-full border-2 border-white cursor-pointer"
                        @click="isOpen = !isOpen">
-                    <button class="w-[30px] h-[30px] rounded-full bg-gray-400" title="click to see all reviewers">
+                    <button class="w-[30px] h-[30px] rounded-full bg-gray-400"
+                            title="Click to see all reviewers">
                       <i class="fa-regular fa-user" style="color: #FFF;"></i>
                     </button>
                     <div x-show="isOpen"
-                         @click.away="isOpen = false"
-                         class="absolute top-full mx-2 left-[-127%] w-[auto] bg-white z-10 w-full scroll-smooth overflow-y-scroll text-black opacity-0 opacity-100 transition-opacity duration-1000 shadow-[rgba(0,_0,_0,_0.4)_0px_30px_90px] {% if card.status == 'IR' %}h-[125px]{% endif %}{% if card.status == 'B' or card.status == 'R' %}h-[95px]{% endif %} {% if card.status == 'IP' %}h-[110px]{% endif %}">
+                      @click.away="isOpen = false" 
+                         class="absolute grid gap-1 drop-shadow border rounded-md max-h-36 overflow-y-scroll w-full max-w-full left-0 p-2 z-10 bg-white">
+                      <span class="text-xs font-medium">Reviewers</span>
                       {% for reviewer in card.reviewers.all %}
-                        <div class="flex gap-1 text-xs pb-1" title="{{ reviewer }}">{% drop_down_reviewer_avatar reviewer %}{{reviewer}}</div>
+                        <div class="flex items-center gap-1 text-xs" title="{{ reviewer }}">
+                          <span class="whitespace-nowrap">{% user_avatar reviewer "small" %}</span>
+                          <span class="text-xs">{{ reviewer }}</span>
+                        </div>
                       {% endfor %}
                     </div>
                   </div>
                 </div>
               {% endif %}
             {% endif %}
-            {% if not card.reviewers.all %}
-              <div class="absolute right-0">None</div>
-            {% endif %}
+            {% if not card.reviewers.all %}<div class="absolute right-0">None</div>{% endif %}
           </div>
         </div>
         <!-- Buttons section -->

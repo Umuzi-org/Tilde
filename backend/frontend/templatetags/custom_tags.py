@@ -4,11 +4,10 @@ register = template.Library()
 
 
 @register.inclusion_tag("frontend/user/partial_user_avatar.html")
-def user_avatar(user):
+def user_avatar(user, size="default"):
+    size_css_classes = {
+        "default": "w-[30px] h-[30px]",
+        "small": "w-[15px] h-[15px] text-xs",
+    }
     initial = user.email[0].upper()
-    return {"initial": initial}
-
-@register.inclusion_tag("frontend/user/partial_drop_down_reviewer_avatar.html")
-def drop_down_reviewer_avatar(user):
-    initial = user.email[0].upper()
-    return {"initial": initial}
+    return {"initial": initial, "size": size_css_classes[size]}
