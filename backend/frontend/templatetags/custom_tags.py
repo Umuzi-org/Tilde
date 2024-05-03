@@ -1,5 +1,4 @@
 from django import template
-import markdown
 
 register = template.Library()
 
@@ -11,9 +10,4 @@ def user_avatar(user, size="default"):
     }
     initial = user.email[0].upper()
     return {"initial": initial, "size": size_css_classes[size]}
-
-@register.inclusion_tag("frontend/partial_user_avatar.html")
-def user_avatar(user):
-    initial = user.email[0].upper()
-    return {"initial": initial}
 
