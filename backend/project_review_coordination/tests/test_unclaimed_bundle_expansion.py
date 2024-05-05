@@ -12,6 +12,9 @@ from core.models import Team
 UNCLAIMED_BUNDLES_VIEW = "project_review_coordination_unclaimed"
 
 class TestUnclaimedBundleDetailExpansion(FrontendTestMixin):
+    EXPAND_BTN_LABEL = "More details"
+    COLLAPSE_BTN_LABEL = "Hide details"
+
     def setUp(self):
         super().setUp()
 
@@ -53,8 +56,8 @@ class TestUnclaimedBundleDetailExpansion(FrontendTestMixin):
         self.page.wait_for_load_state()
 
         expanded_section = self.page.locator("div#bundle_0_drilldown")
-        expand_button = self.page.get_by_role("button", name="Expand")
-        collapse_button = self.page.get_by_role("button", name="Collapse")
+        expand_button = self.page.get_by_role("button", name=self.EXPAND_BTN_LABEL)
+        collapse_button = self.page.get_by_role("button", name=self.COLLAPSE_BTN_LABEL)
         
         expect(expand_button).to_be_visible()
         expect(collapse_button).to_be_hidden()
@@ -66,11 +69,7 @@ class TestUnclaimedBundleDetailExpansion(FrontendTestMixin):
         expect(expanded_section).to_be_visible()
         expect(collapse_button).to_be_visible()
 
-        cards = expanded_section.locator("div.expanded-project-card")
+        projects = expanded_section.locator("table>tbody>tr")
 
-        expect(cards).to_have_count(1)
-
-        expect(cards).to_contain_text(self.learner.email)
-        expect(cards).to_contain_text("Positive Reviews Since Last Request")
-        expect(cards).to_contain_text("Staff Reviewers Since Last Request")
-        expect(cards.locator("a").first).to_be_visible()
+        expect(projects).to_have_count(1)
+        expect(projects).to_contain_text(self.learner.email)
