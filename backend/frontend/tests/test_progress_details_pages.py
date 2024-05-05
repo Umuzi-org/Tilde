@@ -326,8 +326,9 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
             kwargs={
                 "content_type": "project",
                 "id": self.card.id,
-            },)
-    
+            },
+        )
+
     def make_ip_project_card(self):
         self.card = AgileCardFactory()
         self.card.recruit_project.repository = RepositoryFactory(user=self.user)
@@ -340,9 +341,9 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
     def test_progress_details_page_displays_repo_for_repo_project(self):
         self.make_ip_project_card()
 
-        self.repo_project_progress_details_url = self._get_project_progress_details_url()
+        repo_project_progress_details_url = self._get_project_progress_details_url()
 
-        self.page.goto(self.repo_project_progress_details_url)
+        self.page.goto(repo_project_progress_details_url)
 
         self.page.wait_for_load_state()
 
@@ -359,9 +360,9 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
             repository=self.card.recruit_project.repository, state=PullRequest.OPEN
         )
 
-        self.repo_project_progress_details_url = self._get_project_progress_details_url()
+        repo_project_progress_details_url = self._get_project_progress_details_url()
 
-        self.page.goto(self.repo_project_progress_details_url)
+        self.page.goto(repo_project_progress_details_url)
 
         self.page.wait_for_load_state()
 
