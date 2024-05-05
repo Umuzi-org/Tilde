@@ -1,8 +1,10 @@
 {% load custom_tags %}
-
 <table class="*:text-left border text-sm">
+    <caption class="caption-top py-1 text-base">
+        Bundle details
+      </caption>
     <thead>
-        <tr class="*:border *:bg-gray-100 *:px-2 *:py-1">
+        <tr class="*:border *:bg-gray-100 *:px-4 *:py-1">
             <th>Project</th>
             <th>Assignee</th>
             <th class="text-center">Positive Reviews</th>
@@ -12,7 +14,7 @@
     <tbody>
         {% for project in projects %}
             {% with assignee=project.recruit_users.first card=project.agile_card %}
-                <tr class="*:border *:px-2 *:py-1">
+                <tr class="*:border *:px-4 *:py-1">
                     <td>
                         <a target="_blank" class="{{ styles.link }}" href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{ card.id }}">
                             {{ project.content_item}}
@@ -24,8 +26,7 @@
                     <td class="text-center">
                         {{ project.code_review_competent_since_last_review_request|add:project.code_review_competent_since_last_review_request }}
                     </td>
-                    <td class="text-xs">
-                        percival.rapha@gmail.com, ngoako.rakokgopa@umuzi.org, percival.rapha@umuzi.org, percival.rapha@gmail.com, ngoako.rakokgopa@umuzi.org, percival.rapha@umuzi.org, percival.rapha@gmail.com, ngoako.rakokgopa@umuzi.org, percival.rapha@umuzi.org, percival.rapha@gmail.com, ngoako.rakokgopa@umuzi.org, percival.rapha@umuzi.org
+                    <td class="break-words hyphens-auto">
                         {% if project.project.users_that_reviewed_since_last_review_request %}
                             {% for user in project.users_that_reviewed_since_last_review_request %}
                                 {% if user.is_staff %}
