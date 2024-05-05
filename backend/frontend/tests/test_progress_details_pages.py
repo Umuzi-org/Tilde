@@ -17,7 +17,7 @@ from git_real.models import PullRequest
 from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 from curriculum_tracking.models import AgileCard, ContentItem
 
-VIEW_NAME = "progress_details"
+PROGRESS_DETAILS_VIEW = "progress_details"
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -81,7 +81,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -111,7 +111,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -141,7 +141,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -178,7 +178,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -212,7 +212,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -236,7 +236,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -292,7 +292,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
         self.topic_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "topic",
                 "id": self.topic.id,
@@ -320,6 +320,14 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
         self.user.save()
         self.do_login(self.user)
 
+    def _get_project_progress_details_url(self):
+        return self.reverse_url(
+            PROGRESS_DETAILS_VIEW,
+            kwargs={
+                "content_type": "project",
+                "id": self.card.id,
+            },)
+    
     def make_ip_project_card(self):
         self.card = AgileCardFactory()
         self.card.recruit_project.repository = RepositoryFactory(user=self.user)
@@ -332,13 +340,7 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
     def test_progress_details_page_displays_repo_for_repo_project(self):
         self.make_ip_project_card()
 
-        self.repo_project_progress_details_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={
-                "content_type": "project",
-                "id": self.card.id,
-            },
-        )
+        self.repo_project_progress_details_url = self._get_project_progress_details_url()
 
         self.page.goto(self.repo_project_progress_details_url)
 
@@ -357,13 +359,7 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
             repository=self.card.recruit_project.repository, state=PullRequest.OPEN
         )
 
-        self.repo_project_progress_details_url = self.reverse_url(
-            VIEW_NAME,
-            kwargs={
-                "content_type": "project",
-                "id": self.card.id,
-            },
-        )
+        self.repo_project_progress_details_url = self._get_project_progress_details_url()
 
         self.page.goto(self.repo_project_progress_details_url)
 
