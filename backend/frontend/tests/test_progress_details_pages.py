@@ -325,7 +325,7 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
             PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
-                "id": self.card.id,
+                "id": self.card.recruit_project.id,
             },
         )
 
