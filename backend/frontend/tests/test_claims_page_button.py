@@ -5,32 +5,7 @@ from playwright.sync_api import expect
 
 
 class TestClaimButtons(FrontendTestMixin):
-    def test_buttons_displayed_when_claimant(self):
-
-        super().setUp()
-        self.user = UserFactory(
-            email="staff_1@umuzi.org",
-            is_staff=True,
-        )
-        self.user.set_password(self.user.email)
-        self.user.save()
-
-        # login user
-        self.do_login(self.user)
-
-        # bundle claimed by user
-        self.claim = ProjectReviewBundleClaim.objects.create(claimed_by_user=self.user)
-        url = self.reverse_url("project_review_coordination_my_claims")
-
-        self.page.goto(url)
-        self.page.wait_for_load_state()
-        body = self.page.locator("body")
-
-        expect(body).to_contain_text("Add 15 minutes")
-        expect(body).to_contain_text("Unclaim bundle")
-
-    def test_buttons_not_displayed_when_not_claimant(self):
-
+    def setUp(self):
         super().setUp()
         self.user = UserFactory(
             email="staff_1@umuzi.org",
@@ -45,10 +20,19 @@ class TestClaimButtons(FrontendTestMixin):
 
         self.do_login(self.user)
 
-        # test that when user is not the claimant, the buttons are not displayed in the all claims page
-        self.claim = ProjectReviewBundleClaim.objects.create(
-            claimed_by_user=self.user_2
-        )
+    def test_buttons_displayed_when_claimant(self):
+        ProjectReviewBundleClaim.objects.create(claimed_by_user=self.user)
+        url = self.reverse_url("project_review_coordination_my_claims")
+
+        self.page.goto(url)
+        self.page.wait_for_load_state()
+        body = self.page.locator("body")
+
+        expect(body).to_contain_text("Add 15 minutes")
+        expect(body).to_contain_text("Unclaim bundle")
+
+    def test_buttons_not_displayed_when_not_claimant(self):
+        ProjectReviewBundleClaim.objects.create(claimed_by_user=self.user_2)
         url = self.reverse_url("project_review_coordination_all_claims")
         self.page.goto(url)
         body = self.page.locator("body")
