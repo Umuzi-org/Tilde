@@ -1,8 +1,9 @@
 """for each of the log entry creators in git_real.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 
+from datetime import timedelta
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push, PullRequest
+from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push, PullRequest,PullRequestFactory
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -18,17 +19,14 @@ import mock
 # from git_real.models import PullRequest, PullRequestReview, Push
 from social_auth.tests.factories import SocialProfileFactory
 
-class log_pr_opened_Tests(TestCase):
-    def test_pr_opened_gets_logged(self):
-        pass
-        # body, headers = get_body_and_headers("pr_opened")
-        # pull_request_data = body["pull_request"]
-        # repo = RepositoryFactory(full_name=body["repository"]["full_name"])
+class log_pr_opened_Tests(APITestCase):
+
+    def test_that_timestamp_properly_set(self):
+        pull_request = PullRequestFactory()
+        creators.log_pr_opened(pull_request)
+        self.assertAlmostEqual(LogEntry.objects.first().timestamp, pull_request.created_at,delta=timedelta(seconds=1))
+
     
-        # pr = PullRequest.create_or_update_from_github_api_data(repo,pull_request_data)
-
-        # self.assertEqual(LogEntry.objects.count(), 1)
-
 
 
 class log_pr_reviewed_created_Tests(TestCase):
