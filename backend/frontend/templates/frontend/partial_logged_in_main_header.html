@@ -11,53 +11,23 @@
         <div class="flex h-16 items-center justify-between px-4 sm:px-0">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <img
-                class="h-8 w-8"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                alt="Your Company"
-              />
+              <span class="text-white font-bold">Tilde</span>
             </div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a
-                  href="#"
-                  class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                  aria-current="page"
-                  >Dashboard</a
-                >
-                <a
-                  href="#"
-                  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  >Team</a
-                >
+                {% with url_name=request.resolver_match.url_name %}
+                  <a
+                    href="{% url 'users_and_teams_nav' %}"
+                    class="{% if url_name == 'users_and_teams_nav' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Teams
+                    </a>
+                {% endwith %}
               </div>
             </div>
           </div>
           <div class="hidden md:block">
             <div class="ml-4 flex items-center md:ml-6">
-              <button
-                type="button"
-                class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              >
-                <span class="absolute -inset-1.5"></span>
-                <span class="sr-only">View notifications</span>
-                <svg
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                  />
-                </svg>
-              </button>
-
               <!-- Profile dropdown -->
               <div
                 class="relative ml-3"
@@ -91,16 +61,10 @@
                   tabindex="-1"
                 >
                   <a
-                    href="#"
+                    href="{% url 'user_board' request.user.pk %}"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                     role="menuitem"
-                    >Your Profile</a
-                  >
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                    role="menuitem"
-                    >Settings</a
+                    >Your Board</a
                   >
                   <a
                     href="{% url 'user_logout' %}"
@@ -171,20 +135,14 @@
       id="mobile-menu"
     >
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a
-          href="#"
-          class="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-          aria-current="page"
-        >
-          Dashboard
-        </a>
-        <a
-          href="#"
-          class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-        >
-          Team
-        </a>
+        {% with url_name=request.resolver_match.url_name %}
+            <a
+              href="{% url 'users_and_teams_nav' %}"
+              class="{% if url_name == 'users_and_teams_nav' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} rounded-md px-3 py-2 text-sm font-medium"
+            >
+              Teams
+            </a>
+        {% endwith %}
       </div>
       <div class="pt-4 pb-3 border-t border-gray-700">
         <div class="flex items-center px-5 space-x-3">
@@ -195,23 +153,18 @@
           </div>
           <div class="space-y-1">
             <div class="text-base font-medium leading-none text-white">
-              Tom Cook
+              {{ request.user.get_full_name }}
             </div>
             <div class="text-sm font-medium leading-none text-gray-400">
-              tom@example.com
+              {{ request.user.email }}
             </div>
           </div>
         </div>
         <div class="mt-3 px-2 space-y-1">
           <a
-            href="#"
+            href="{% url 'user_board' request.user.pk %}"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-            >Your Profile</a
-          >
-          <a
-            href="#"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-            >Settings</a
+            >Your Board</a
           >
           <a
             href="{% url 'user_logout' %}"
