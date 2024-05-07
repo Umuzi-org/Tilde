@@ -135,12 +135,14 @@
       id="mobile-menu"
     >
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        <a
-          href="{% url 'users_and_teams_nav' %}"
-          class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-        >
-          Teams
-        </a>
+        {% with url_name=request.resolver_match.url_name %}
+            <a
+              href="{% url 'users_and_teams_nav' %}"
+              class="{% if url_name == 'users_and_teams_nav' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} rounded-md px-3 py-2 text-sm font-medium"
+            >
+              Teams
+            </a>
+        {% endwith %}
       </div>
       <div class="pt-4 pb-3 border-t border-gray-700">
         <div class="flex items-center px-5 space-x-3">
