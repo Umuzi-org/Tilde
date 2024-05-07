@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
-from curriculum_tracking.constants import NOT_YET_COMPETENT, COMPETENT, EXCELLENT
+from curriculum_tracking.constants import COMPETENT, EXCELLENT
 from core.tests import factories as core_factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
