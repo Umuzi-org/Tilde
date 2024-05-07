@@ -9,42 +9,12 @@
                     <th class="md:text-center">Positive Reviews</th>
                     <th>Staff Reviewers</th>
                 </tr>
-                <tr class="*:border *:bg-gray-100 *:px-4 *:py-1 flex flex-col flex-nowrap sm:table-row">
-                    <th>Project</th>
-                    <th>Assignee</th>
-                    <th class="md:text-center">Positive Reviews</th>
-                    <th>Staff Reviewers</th>
-                </tr>
             {% endfor %}
         </thead>
         <tbody class="flex-1 sm:flex-none">
             {% for project in projects %}
                 {% with assignee=project.recruit_users.first card=project.agile_card %}
                     <tr class="*:border *:px-4 *:py-1 flex flex-col flex-nowrap sm:table-row sm:mb-0">
-                        <td>
-                            <a target="_blank" class="{{ styles.link }}" href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{ card.id }}">
-                                {{ project.content_item}}
-                            </a> 
-                        </td>
-                        <td>
-                            <a class="{{ styles.link }}" href="{% url 'user_board' assignee.pk %}">{{ assignee }}</a>
-                        </td>
-                        <td class="md:text-center">
-                            {{ project.code_review_competent_since_last_review_request|add:project.code_review_excellent_since_last_review_request }}
-                        </td>
-                        <td class="break-words hyphens-auto">
-                            {% if project.users_that_reviewed_since_last_review_request %}
-                                {% for user in project.users_that_reviewed_since_last_review_request %}
-                                    {% if user.is_staff %}
-                                        {{ user }} {% if not forloop.last %}, {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr class="*:border *:px-4 *:py-1 flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0">
                         <td>
                             <a target="_blank" class="{{ styles.link }}" href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{ card.id }}">
                                 {{ project.content_item}}
