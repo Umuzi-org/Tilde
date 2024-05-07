@@ -91,6 +91,11 @@ urlpatterns = [
         name="project_review_coordination_unclaimed",
     ),
     path(
+        "project_review_coordination/view_partial_bundle_expanded",
+        views.view_partial_bundle_expanded,
+        name="view_partial_bundle_expanded",
+    ),
+    path(
         "project_review_coordination/my_claims/",
         views.project_review_coordination_my_claims,
         name="project_review_coordination_my_claims",
