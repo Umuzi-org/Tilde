@@ -39,7 +39,7 @@ from .forms import (
     CustomSetPasswordForm,
     LinkSubmissionForm,
     RecruitProjectReviewForm,
-    SearchTeamForm,
+    SimpleSearchForm,
 )
 from .theme import styles
 
@@ -673,6 +673,44 @@ def action_stop_card(request, card_id):
 
 
 @login_required()
+def view_partial_users_list(request):
+    exclude = {
+        "is_superuser": True,
+    }
+    all_users = User.objects.filter(active=True).order_by("first_name", "last_name").exclude(**exclude)
+    total_user_count = all_users.count()
+
+    if request.method == "POST":
+        form = SimpleSearchForm(request.POST)
+
+        if form.is_valid():
+            search_term = form.cleaned_data["search_term"]
+
+            all_users = User.objects.filter(active=True).filter(
+                Q(first_name__istartswith=search_term) | Q(last_name__istartswith=search_term) | Q(email__istartswith=search_term) | Q(social_profile__github_name__istartswith=search_term)
+            ).order_by("first_name", "last_name").exclude(**exclude)
+            total_user_count = all_users.count()
+
+    limit = 20
+    current_user_count = int(request.GET.get("count", 0))
+    users = all_users[current_user_count : current_user_count + limit]
+    has_next_page = total_user_count > current_user_count + limit
+
+    context = {
+        "users": users,
+        "has_next_page": has_next_page,
+    }
+
+    return render(
+        request,
+        "frontend/users_and_teams_nav/view_partial_users_list.html",
+        context,
+    )
+
+
+
+
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -701,7 +739,7 @@ def view_partial_teams_list(request):
         )
 
     if request.method == "POST":
-        form = SearchTeamForm(request.POST)
+        form = SimpleSearchForm(request.POST)
 
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
