@@ -3,6 +3,8 @@ from django.test import TestCase
 
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
+from curriculum_tracking.constants import NOT_YET_COMPETENT, COMPETENT, EXCELLENT
+from core.tests import factories as core_factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
 
@@ -82,3 +84,44 @@ class generate_repo_name_for_project_Tests(TestCase):
         self.assertIn("-test-project-", repo_name)
         self.assertIn(self.user.first_name, repo_name)
         self.assertIn(self.user.last_name, repo_name)
+
+
+class positive_reviews_since_last_request_review_count_Tests(TestCase):
+    def setUp(self):
+        self.assignee_user = UserFactory()
+        self.competent_reviewers = [UserFactory() for _ in range(2)]
+        self.excellet_reviewer = UserFactory()
+
+        self.in_review_project_card = factories.AgileCardFactory(
+            content_item=factories.ContentItemFactory(
+                content_type=models.ContentItem.PROJECT,
+                project_submission_type=models.ContentItem.LINK,
+            ),
+            status=models.AgileCard.IN_REVIEW,
+        )
+
+        self.in_review_project_card.assignees.add(self.assignee_user)
+        self.in_review_project_card.reviewers.set(
+            [*self.competent_reviewers, self.excellet_reviewer]
+        )
+
+        for reviewer in self.competent_reviewers:
+            factories.RecruitProjectReviewFactory(
+                reviewer_user=reviewer,
+                status=COMPETENT,
+                recruit_project=self.in_review_project_card.recruit_project,
+                comments="Noice!",
+            )
+
+        factories.RecruitProjectReviewFactory(
+            reviewer_user=self.excellet_reviewer,
+            status=EXCELLENT,
+            recruit_project=self.in_review_project_card.recruit_project,
+            comments="Noicest!",
+        )
+
+    def test_positive_reviews_since_last_request_review_count(self):
+        self.assertEqual(
+            self.in_review_project_card.recruit_project.positive_reviews_since_last_request_review_count,
+            3,
+        )
