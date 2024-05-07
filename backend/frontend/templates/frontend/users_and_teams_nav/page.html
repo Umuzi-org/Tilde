@@ -19,9 +19,12 @@
                         Show Users
                     </button>
                 </div>
-                <form method="post" action="" class="mb-3 flex items-center gap-1">
+                <form method="post" action="" class="mb-3 relative flex items-center gap-1">
                     {% csrf_token %}
-                    <input type="text" name="search_term" placeholder="Search Teams..." id="search-term-box" hx-post="{% url 'view_partial_teams_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#teams-list" hx-swap="innerHTML" class="{{styles.input_small}} w-full lg:w-max">
+                    <input type="text" name="search_term" placeholder="Search Teams..." id="search-term-box" hx-post="{% url 'view_partial_teams_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#teams-list" hx-swap="innerHTML" hx-indicator="#team-search-loader" class="{{styles.input_small}} w-full lg:w-max">
+                    <div id="team-search-loader" class="absolute htmx-indicator lg:relative right-0 px-2 lg:px-0 flex justify-end">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                    </div>
                 </form>
             </div>
             <div 
@@ -50,9 +53,12 @@
                         Show Teams
                     </button>
                 </div>
-                <form method="post" action="" class="mb-3 flex items-center gap-1">
+                <form method="post" action="" class="mb-3 relative flex items-center gap-1">
                     {% csrf_token %}
-                    <input type="text" name="search_term" placeholder="Search users..." id="user-search-term-box" hx-post="{% url 'view_partial_users_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#users-list" hx-swap="innerHTML" class="{{ styles.input_small }} w-full lg:w-max">
+                    <input type="text" name="search_term" placeholder="Search users..." id="user-search-term-box" hx-post="{% url 'view_partial_users_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#users-list" hx-indicator="#user-search-loader" hx-swap="innerHTML" class="{{ styles.input_small }} w-full lg:w-max">
+                    <div id="user-search-loader" class="absolute htmx-indicator lg:relative right-0 px-2 lg:px-0 flex justify-end">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                    </div>
                 </form>
             </div>
             <div 

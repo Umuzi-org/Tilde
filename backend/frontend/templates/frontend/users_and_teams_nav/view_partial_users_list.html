@@ -29,12 +29,15 @@
 {% if has_next_page %}
 <button 
     type="button" 
-    class="{{ styles.button_secondary_small }}"
+    class="{{ styles.button_secondary_small }} flex gap-1 items-center"
     id="more_users"
     hx-get="{% url 'view_partial_users_list' %}"
     hx-vals='js:{count: countLoadedPageItems("users-list")}'
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_users"
-    >Load more</button>
+    hx-indicator='#load-more-users-loader'
+    >Load more
+        <i id="load-more-users-loader" class="fa-solid fa-spinner fa-spin htmx-indicator"></i>
+</button>
 {% endif %}
