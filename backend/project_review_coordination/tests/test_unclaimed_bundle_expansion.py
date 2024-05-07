@@ -12,7 +12,7 @@ from core.models import Team
 UNCLAIMED_BUNDLES_VIEW = "project_review_coordination_unclaimed"
 
 class TestUnclaimedBundleDetailExpansion(FrontendTestMixin):
-    EXPAND_BTN_LABEL = "More details"
+    EXPAND_BTN_LABEL = "Show details"
     COLLAPSE_BTN_LABEL = "Hide details"
 
     def setUp(self):
