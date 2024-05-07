@@ -73,8 +73,8 @@ class log_pr_reviewed_Tests(APITestCase):
         # pr = PullRequest.objects.first()
         pr_review = PullRequestReview.objects.first()
 
-        self.assertEqual(LogEntry.objects.count(), 1)
-        entry = LogEntry.objects.first()
+        self.assertEqual(LogEntry.objects.filter(event_type__name=creators.PR_REVIEWED).count(), 1)
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_REVIEWED).first()
 
         self.assertEqual(entry.actor_user, social_profile.user)
         self.assertEqual(entry.effected_user, repo.user)
