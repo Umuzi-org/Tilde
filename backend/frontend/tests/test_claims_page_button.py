@@ -14,10 +14,6 @@ class TestClaimButtons(FrontendTestMixin):
         self.user.set_password(self.user.email)
         self.user.save()
 
-        self.user_2 = UserFactory(email="staff_2@umuzi.org", is_staff=True)
-        self.user_2.set_password(self.user_2.email)
-        self.user_2.save()
-
         self.do_login(self.user)
 
     def test_buttons_displayed_when_claimant(self):
@@ -32,7 +28,11 @@ class TestClaimButtons(FrontendTestMixin):
         expect(body).to_contain_text("Unclaim bundle")
 
     def test_buttons_not_displayed_when_not_claimant(self):
-        ProjectReviewBundleClaim.objects.create(claimed_by_user=self.user_2)
+        user_2 = UserFactory(email="staff_2@umuzi.org", is_staff=True)
+        user_2.set_password(user_2.email)
+        user_2.save()
+
+        ProjectReviewBundleClaim.objects.create(claimed_by_user=user_2)
         url = self.reverse_url("project_review_coordination_all_claims")
         self.page.goto(url)
         body = self.page.locator("body")
