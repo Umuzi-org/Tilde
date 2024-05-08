@@ -56,8 +56,8 @@ def log_pr_opened(pull_request):
 
     if match == None:
         LogEntry.objects.create(
-            actor_user=pull_request.user,
-            effected_user=pull_request.user,
+            actor_user=pull_request.repository.user,
+            effected_user=pull_request.repository.user,
             object_1=pull_request,
             event_type=event_type,
         )
