@@ -6,32 +6,56 @@
 {% block main %}
 
     {% for bundle in bundles %}
-    <div id="bundle_{{ forloop.counter0 }}" 
-    class="mb-3 p-2 rounded-xl border-2 relative {% if bundle.is_trusted %}border-indigo-300{% endif %}"
+    <div x-data="{ bundleExpanded: false }" id="bundle_{{ forloop.counter0 }}" 
+    class="mb-3 bg-white p-2 rounded-xl border-2 relative {% if bundle.is_trusted %}border-indigo-300{% endif %}"
     >
-    <div>
-        <h3 class="font-bold inline-block">{{ bundle.title }}</h3> {{ bundle.flavours }}
-    </div>
-    <div>
-        {{ bundle.tags }}
-    </div>
-    {% if bundle.is_trusted %} 
-    <div 
-    class="absolute top-0 right-0 bg bg-yellow-200 text-xs text-black py-1 px-2 mt-2 mr-2 border-2 border-yellow-300 rounded-full"
-    title="You are trusted on these projects"
-    >
-        trusted
-    </div>
-    {% endif %}
-        <br/>
+        <div>
+            <h3 class="font-bold inline-block">{{ bundle.title }}</h3> {{ bundle.flavours }} 
+        </div>
+        <div>
+            {{ bundle.tags }}
+        </div>
+        {% if bundle.is_trusted %} 
+            <div 
+                class="absolute top-0 right-0 bg bg-yellow-200 text-xs text-black py-1 px-2 mt-2 mr-2 border-2 border-yellow-300 rounded-full"
+                title="You are trusted on these projects"
+            >
+                trusted
+            </div>
+        {% endif %}
         Number of cards = {{ bundle.card_count }}
         <br/>
         Oldest review request time: {{ bundle.oldest_review_request_time | date:"r"}}
         <br/>
-
-        <form>
+        <div class="my-2" x-show="bundleExpanded" id="bundle_{{ forloop.counter0 }}_drilldown"></div>
+        <br/>
+        <!-- card actions -->
+        <div class="flex gap-2">
+            <form>
                 {% csrf_token %}
-
+                <button
+                    type="button"
+                    x-show="bundleExpanded"
+                    x-on:click="bundleExpanded = false"
+                    class="{{ styles.button_secondary_small }}"
+                >
+                    Hide details
+                </button>
+                <button
+                    class="{{ styles.button_secondary_small }}"
+                    x-show="!bundleExpanded"
+                    x-on:htmx:after-request="bundleExpanded = true"
+                    hx-vals='js:{project_ids: {{ bundle.project_ids }} }'
+                    hx-trigger="click"
+                    hx-target="#bundle_{{ forloop.counter0 }}_drilldown"
+                    hx-swap="innerHTML"
+                    hx-post="{% url 'view_partial_bundle_expanded' %}"
+                >
+                    Show details
+                </button>
+            </form>
+            <form>
+                {% csrf_token %}
                 <button
                 hx-trigger="click"
                 hx-target="#bundle_{{ forloop.counter0 }}"
@@ -43,6 +67,8 @@
                 >Claim</button>
             </form>
         </div>
+        
+    </div>
     {% endfor %}
 
 {% endblock %}

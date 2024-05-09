@@ -23,10 +23,17 @@ urlpatterns = [
         name="view_partial_teams_list",
     ),
     path(
+        "users/view_partial_users_list/",
+        views.view_partial_users_list,
+        name="view_partial_users_list",
+    ),
+    path(
         "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
         views.view_partial_team_users_list,
         name="view_partial_team_users_list",
     ),
+    
+
     # User board
     path("users/<int:user_id>/board", views.user_board, name="user_board"),
     path(
@@ -72,11 +79,21 @@ urlpatterns = [
         views.progress_details,
         name="progress_details",
     ),
+    path(
+        "progress_details/<content_type>/<int:id>/add_review/",
+        views.action_add_review,
+        name="action_add_review",
+    ),
     # Project review coordination
     path(
         "project_review_coordination/unclaimed/",
         views.project_review_coordination_unclaimed,
         name="project_review_coordination_unclaimed",
+    ),
+    path(
+        "project_review_coordination/view_partial_bundle_expanded",
+        views.view_partial_bundle_expanded,
+        name="view_partial_bundle_expanded",
     ),
     path(
         "project_review_coordination/my_claims/",

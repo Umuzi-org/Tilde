@@ -1,0 +1,10 @@
+{% include "frontend/progress_details/partial_review.html" %}
+<script>
+    const newReview = document.getElementById("review-{{ review.id }}");
+
+    const statusElement = document.querySelector("#agile-card-status");
+    statusElement.textContent = "{{ card.get_status_display }}";
+
+    hljs.highlightAll();
+
+</script>

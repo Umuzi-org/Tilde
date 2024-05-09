@@ -21,7 +21,7 @@
             
                 <div class="p-2 border-2 rounded-md ">
                     <p>
-                        Status : {{board_status}}
+                        Status : <span id="agile-card-status">{{board_status}}</span>
                     </p>
                 </div>
             </div>
@@ -106,10 +106,55 @@
                     
                     <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
                         {% csrf_token %}
-                        {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
+                        {% include 'frontend/includes/form_template.html' with form=link_submission_form %}
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                     </form>
                 </div>
+            {% endif %}
+
+            {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
+                <div class="flex flex-col p-2 border-2 rounded-md gap-2">
+                    <div class="p-2 border-2 rounded-md ">
+                        <p>
+                            Repository: 
+                            <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank">{{course_component.repository.full_name}}</a>
+                        </p>
+                    </div>
+                    {% if course_component.repository.pull_requests.all|length %}
+                        <div class="p-2 border-2 rounded-md ">
+                            <p>
+                                Open pull requests: 
+                            </p>
+                            <ul class="list-disc">
+                                {% for pr in course_component.repository.pull_requests.all %}
+                                    <li class="ml-4 mb-1">
+                                        <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>                            
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if course_component.content_item.content_type_nice == "project" %}
+                <div
+                class="p-2 border-2 rounded-md">
+                    <h6>Reviews </h6>
+                    <div id="reviews" class="grid gap-2 mt-2 max-h-44 overflow-scroll">
+                        {% for review in course_component.reviews_queryset.all %}
+                            {% include "frontend/progress_details/partial_review.html" %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if course_component.request_user_can_add_review %}
+                    <div x-data="{ modalOpen: false }">
+                        <button id="add_review_trigger_btn" @click="modalOpen = !modalOpen" class="{{ styles.button_primary_small }}"
+                            type="submit">Add Review</button>
+                        {% include "frontend/progress_details/partial_add_review_modal_content.html" %}
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>
