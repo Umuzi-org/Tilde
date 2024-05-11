@@ -47,7 +47,7 @@ class Repository(models.Model, Mixins):
         }
 
     def get_github_repo_link(self):
-        return f"https://github.com/{self.full_name}"
+        return f"https://github.com/{self.owner}/{self.full_name}"
 
 
 class Commit(models.Model, Mixins):

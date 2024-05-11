@@ -2,7 +2,13 @@
 """
 
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push
+from .factories import (
+    PullRequestReviewFactory,
+    RepositoryFactory,
+    PullRequestReview,
+    PushFactory,
+    Push,
+)
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
@@ -83,9 +89,9 @@ class log_push_event_Tests(APITestCase):
     def test_pushing(self, has_permission):
         has_permission.return_value = True
 
-        self.assertEqual(Push.objects.all().count(), 0)   
+        self.assertEqual(Push.objects.all().count(), 0)
 
-        url = reverse(views.github_webhook)  
+        url = reverse(views.github_webhook)
 
         body, headers = get_body_and_headers("push")
         RepositoryFactory(full_name=body["repository"]["full_name"])
@@ -103,3 +109,18 @@ class log_push_event_Tests(APITestCase):
         self.assertEqual(entry.object_1, push)
         self.assertEqual(entry.object_2, push.repository)
         self.assertEqual(entry.event_type.name, creators.GIT_PUSH)
+
+
+class RepositoryTestCase(APITestCase):
+    def test_get_github_repo_link(self):
+        repository = Repository(
+            owner="Umuzi-org",
+            full_name="Tilde",
+            ssh_url="git@github.com:Umuzi-org/Tilde.git",
+            created_at="2020-09-28T00:00:00Z",
+            private=False,
+            archived=False,
+        )
+        repo_link = repository.get_github_repo_link()
+        expected_link = "https://github.com/Umuzi-org/Tilde"
+        self.assertEqual(repo_link, expected_link)
