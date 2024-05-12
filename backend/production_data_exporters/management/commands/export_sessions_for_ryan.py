@@ -15,7 +15,7 @@ class Command(BaseCommand):
             "flavours",
             "attendee.email",
         ]
-        with open("gitignore/technical_sessions.csv", "w") as f:
+        with open("gitignore/technical_sessions_for_ryan.csv", "w") as f:
             writer = csv.writer(f)
             writer.writerow(headings)
             for session in Session.objects.filter(is_complete=False).filter(

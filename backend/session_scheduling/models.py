@@ -85,10 +85,11 @@ class Session(models.Model, FlavourMixin):
         return self.get_title_copy()
 
     def get_title_copy(self):
-        return self.session_type.event_title.format(
+        title= self.session_type.event_title.format(
             extra_title_text=self.extra_title_text,
             flavours=", ".join(self.flavour_names),
         )
+        return f"[{self.id}] {title} {self.facilitator.email}"
 
     def get_event_copy(self):
 

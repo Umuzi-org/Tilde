@@ -59,8 +59,8 @@ session_types = [
 
     SessionTypeConf(
         name=SESSION_PROJECT_PROGRESS, # https://airtable.com/appkr1uRo6nZXyeZb/tblStRQEBcQmJBDVn/viwgATZ10rBZdAZBq?blocks=hide 
-        event_copy = "You are a little behind in your syllabus work. Let's see how we can help",
-        event_title="Syllabus progress help",
+        event_copy = "You are a behind in your syllabus work. Let's see how we can help",
+        event_title="Syllabus progress help {extra_title_text}",
         description="This is for learners who are falling behind in their syllabus work",
         duration_minutes=45
     ),
