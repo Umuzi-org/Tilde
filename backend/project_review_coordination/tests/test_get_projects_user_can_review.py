@@ -11,8 +11,9 @@ from curriculum_tracking.models import ContentItem, AgileCard
 from curriculum_tracking.constants import COMPETENT
 
 from project_review_coordination.models import ProjectReviewBundleClaim
+from django.utils import timezone
 
-
+long_ago = timezone.now() - timezone.timedelta(days=20)
 class get_projects_user_can_review_Tests(TestCase):
     def setUp(self) -> None:
         self.superuser = UserFactory(is_superuser=True)
@@ -40,10 +41,11 @@ class get_projects_user_can_review_Tests(TestCase):
             status=AgileCard.READY
         )
 
+
         self.learner_a_card.assignees.set([self.learner_a])
         self.learner_a_card.recruit_project.recruit_users.set([self.learner_a])
         self.learner_a_card.start_project()
-        self.learner_a_card.recruit_project.request_review()
+        self.learner_a_card.recruit_project.request_review(force_timestamp=long_ago)
 
         self.learner_b_card = AgileCardFactory(
             content_item=ContentItemFactory(
@@ -55,7 +57,7 @@ class get_projects_user_can_review_Tests(TestCase):
         self.learner_b_card.assignees.set([self.learner_b])
         self.learner_b_card.recruit_project.recruit_users.set([self.learner_b])
         self.learner_b_card.start_project()
-        self.learner_b_card.recruit_project.request_review()
+        self.learner_b_card.recruit_project.request_review(long_ago)
 
         self._setup_already_reviewed_card()
 
@@ -68,7 +70,7 @@ class get_projects_user_can_review_Tests(TestCase):
             status=AgileCard.READY
         )
         self.already_reviewed_card.start_project()
-        self.already_reviewed_card.recruit_project.request_review()
+        self.already_reviewed_card.recruit_project.request_review(long_ago)
 
         RecruitProjectReviewFactory(
             status=COMPETENT,

@@ -725,10 +725,25 @@ def project_review_coordination_unclaimed(request):
 
     cards = ProjectReviewBundleClaim.get_projects_user_can_review(request.user)
 
-    # TODO: filter out cards that current user doesn't have permission to see
 
     bundles = {}
     for card in cards:
+
+        project = card.recruit_project
+        staff_positive_reviews_since_request = (
+            project.project_reviews
+            .filter(timestamp__gte = project.review_request_time)
+            .filter(reviewer_user__is_staff = True)
+            ).count()
+        # TODO: Make this faster by using an annotation on the initial query
+        # it was a bit of a pain to attempt because the django docs site was down :/
+        
+        is_trusted = card.request_user_is_trusted(),
+
+        if staff_positive_reviews_since_request >=2 and not is_trusted:
+            # if too many staff have seen this already, no need for another
+            continue
+
         flavours = sorted(card.recruit_project.flavour_names)
         content_item_id = card.content_item.id
         bundle_id = f"{content_item_id}.{flavours}"
@@ -740,7 +755,7 @@ def project_review_coordination_unclaimed(request):
                 "oldest_review_request_time": card.recruit_project.review_request_time,
                 "project_ids": [],
                 "card_count": 0,
-                "is_trusted": card.request_user_is_trusted(),
+                "is_trusted": is_trusted
             }
 
         bundles[bundle_id]["card_count"] += 1
@@ -856,3 +871,10 @@ def action_project_review_coordination_add_time(request, claim_id):
         "frontend/project_review_coordination/view_partial_claim_due_timestamp.html",
         context={"claim": instance},
     )
+
+
+# @user_passes_test(is_staff)
+# def system_dashboard_project_review_health(request):
+#     """
+#     Display some stats about project reviews
+#     """

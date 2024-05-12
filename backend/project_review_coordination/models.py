@@ -1,11 +1,10 @@
 from django.db import models
-from functools import lru_cache
 from django.contrib.auth import get_user_model
 from datetime import timedelta
 from core.models import Team
 from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProjectReview
 from django.utils import timezone
-from django.db.models import OuterRef, Exists
+from django.db.models import OuterRef, Exists, Count, Func,F, Subquery
 
 
 User = get_user_model()
@@ -44,11 +43,15 @@ class ProjectReviewBundleClaim(models.Model):
             timestamp__gte=OuterRef("recruit_project__review_request_time"),
         )
 
+        cutoff_datetime = timezone.now() - timedelta(days=1) 
+        
         cards = (
             AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
             .filter(assignees__active=True)
             .exclude(content_item__tags__name="technical-assessment")
             .exclude(content_item__tags__name="ncit")
+            .exclude(content_item__tags__name="ncba")
+            .filter(recruit_project__review_request_time__lte = cutoff_datetime)
             .exclude(
                 recruit_project__project_review_bundle_claims__is_active=True
             )  # if the project is already in an active claim, skip it
