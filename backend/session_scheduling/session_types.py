@@ -20,7 +20,7 @@ SessionTypeConf = namedtuple(
 SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK = "Fundamental skill spot check"
 SESSION_FUNDAMENTAL_SKILL_ASSISTANCE = "Fundamental skill assistance"
 SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
-
+SESSION_PROJECT_PROGRESS = "Project progress session"
 SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION = "Problem solving foundation"
 
 SESSION_CUSTOM = "Custom"
@@ -55,6 +55,14 @@ session_types = [
         event_title="Bootcamp Assessment - {extra_title_text}",
         description="This is the final assessment for a learner who is taking part in a selection bootcamp. We are assessing them to see if they are ready to join the main bootcamp.",
         duration_minutes=45,
+    ),
+
+    SessionTypeConf(
+        name=SESSION_PROJECT_PROGRESS, # https://airtable.com/appkr1uRo6nZXyeZb/tblStRQEBcQmJBDVn/viwgATZ10rBZdAZBq?blocks=hide 
+        event_copy = "You are a little behind in your syllabus work. Let's see how we can help",
+        event_title="Syllabus progress help",
+        description="This is for learners who are falling behind in their syllabus work",
+        duration_minutes=45
     ),
     SessionTypeConf(
         name=SESSION_CUSTOM,

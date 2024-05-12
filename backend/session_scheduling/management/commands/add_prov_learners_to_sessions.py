@@ -81,7 +81,6 @@ def get_session_user_can_join(card):
 
 def add_prov_learners_to_sessions():
     users = get_prov_users()
-    breakpoint()
     users_added_to_sessions = []
 
     total = len(users)

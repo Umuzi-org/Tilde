@@ -25,7 +25,7 @@ def _get_psf_level_from_team(team):
 
 
 def _remove_user_from_lower_psf_team(teams, user):
-    breakpoint()
+    # breakpoint()
     team_levels = [(_get_psf_level_from_team(team), team) for team in teams]
     team_levels.sort()  # sorts by the first element in each tuple, so the smaller number is first
     for level, team in team_levels[:-1]:
@@ -55,7 +55,7 @@ def _get_psf_team_from_level(level: int):
 
 
 def _set_learner_problem_solving_level(user, new_level):
-    breakpoint()
+    # breakpoint()
     new_level = max([new_level, 0])  # cant be less than 0
     new_level = min([new_level, 3])  # cant be more than 3
     print(f"changing user level to {new_level}")
@@ -74,13 +74,14 @@ def _set_learner_problem_solving_level(user, new_level):
 
 def _get_level_from_test_name(name):
     """
-    eg Problem solving 0.8 => 0
+    eg 'Problem solving 0.8' => 0
+        'Problem solving foundation 2.4'
     """
-    found = re.search("Problem solving (\d)\.\d+", name)
+    found = re.search("Problem solving (foundation )?(?P<level>\d)\.\d+", name)
     if not found:
         breakpoint()
     if found:
-        return int(found.groups()[0])
+        return int(found.group("level")[0])
 
 
 class Command(BaseCommand):

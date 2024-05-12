@@ -11,7 +11,10 @@ SESSION_FUNDAMENTAL_SKILL_SPOT_CHECK: This is for people who seem to be doing ok
 If our spot checks tend to pass, then we can rethink assessment cards
 
 TODO: skip learners who have upcoming sessions? 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 029c282e (improved on CB test scripts)
 TODO: if people are failing our spot checks, make the strength measure more accurate. Eg only look people who have been pod leaders and take peer reviews into account
 """
 
@@ -38,9 +41,7 @@ from ..helpers import (
 User = get_user_model()
 
 DUE_DAYS = 21
-
-ASSISTANCE_GROUP_SIZE = 2  # temporary - usually this is 3 but we want to keep some space for the prov learners for this first round
-
+ASSISTANCE_GROUP_SIZE = 3  
 SPOT_CHECK_GROUP_SIZE = 3
 
 
@@ -75,7 +76,7 @@ def get_weak_learners(df, pod_skill_name):
 
 
 def get_strong_learners(df, pod_skill_name):
-    df = df[df[pod_skill_name] == 4]
+    df = df[df[pod_skill_name] >= 3]
     return df
 
 

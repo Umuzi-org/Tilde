@@ -19,7 +19,7 @@ django-google-cloud-storage==0.0.2
 google-cloud-storage==1.14.0
 Pillow
 
-pandas==1.2.3
+pandas
 
 gspread==3.1.0
 oauth2client==1.5.2
