@@ -30,7 +30,6 @@ def get_prov_users():
 
 
 def get_user_assessment_cards(user):
-    # breakpoint()
     cards = (
         AgileCard.objects.filter(content_item__title__startswith="Assessment:")
         .filter(assignees=user)
@@ -81,7 +80,6 @@ def get_session_user_can_join(card):
 
 def add_prov_learners_to_sessions():
     users = get_prov_users()
-    breakpoint()
     users_added_to_sessions = []
 
     total = len(users)
@@ -91,7 +89,6 @@ def add_prov_learners_to_sessions():
         for card in cards:
             session = get_session_user_can_join(card)
             if session:
-                breakpoint()
                 session.attendees.add(user)
                 users_added_to_sessions.append(user)
                 break
