@@ -85,17 +85,19 @@ class Session(models.Model, FlavourMixin):
         return self.get_title_copy()
 
     def get_title_copy(self):
-        title= self.session_type.event_title.format(
+        title = self.session_type.event_title.format(
             extra_title_text=self.extra_title_text,
             flavours=", ".join(self.flavour_names),
         )
-        return f"[{self.id}] {title} {self.facilitator.email}"
+        if self.facilitator:
+            return f"[{self.id}] {title} {self.facilitator.email}"
+        return f"[{self.id}] {title}"
 
-    def get_event_copy(self):
+    # def get_event_copy(self):
 
-        todo
-        greeting = "Dear learner(s)"
-        return f"{greeting}\n\n{copy}\n\n{extra_event_body_text}\n\n{form}\n\n{recording}\n\n{regards}"
+    #     todo
+    #     greeting = "Dear learner(s)"
+    #     return f"{greeting}\n\n{copy}\n\n{extra_event_body_text}\n\n{form}\n\n{recording}\n\n{regards}"
 
     def attendee_emails(self):
         emails = sorted([o.email for o in self.attendees.all()])
