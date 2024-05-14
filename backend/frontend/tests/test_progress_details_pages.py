@@ -13,8 +13,10 @@ from curriculum_tracking.tests.factories import (
     TopicProgressFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+from git_real.models import PullRequest
+from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 
-VIEW_NAME = "progress_details"
+PROGRESS_DETAILS_VIEW = "progress_details"
 
 
 class TestLinkProjectDetailsPage(FrontendTestMixin):
@@ -78,7 +80,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -108,7 +110,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -138,7 +140,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -175,7 +177,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -209,7 +211,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -233,7 +235,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -289,7 +291,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
         self.topic_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "topic",
                 "id": self.topic.id,
@@ -306,4 +308,65 @@ class TestTopicDetailsPage(FrontendTestMixin):
         self.assertIn(
             self.topic.content_url,
             body,
+        )
+
+
+class TestRepoProjectDetailsPage(FrontendTestMixin):
+    def setUp(self):
+        super().setUp()
+        self.user = UserFactory(email="learner_1@umuzi.org")
+        self.user.set_password(self.user.email)
+        self.user.save()
+        self.do_login(self.user)
+
+    def _get_project_progress_details_url(self):
+        return self.reverse_url(
+            PROGRESS_DETAILS_VIEW,
+            kwargs={
+                "content_type": "project",
+                "id": self.card.recruit_project.id,
+            },
+        )
+
+    def make_ip_project_card(self):
+        self.card = AgileCardFactory()
+        self.card.recruit_project.repository = RepositoryFactory(user=self.user)
+        self.card.recruit_project.save()
+        self.card.save()
+
+        self.card.assignees.set([self.user])
+        self.card.recruit_project.recruit_users.set([self.user])
+    
+    def test_progress_details_page_displays_repo_for_repo_project(self):
+        self.make_ip_project_card()
+
+        repo_project_progress_details_url = self._get_project_progress_details_url()
+
+        self.page.goto(repo_project_progress_details_url)
+
+        self.page.wait_for_load_state()
+
+        repo_link = self.page.locator("a#repo-link")
+
+        expect(repo_link).to_contain_text(
+            self.card.recruit_project.repository.full_name
+        )
+
+    def test_progress_details_page_displays_open_prs_for_repo_project(self):
+        self.make_ip_project_card()
+
+        pr = PullRequestFactory(
+            repository=self.card.recruit_project.repository, state=PullRequest.OPEN
+        )
+
+        repo_project_progress_details_url = self._get_project_progress_details_url()
+
+        self.page.goto(repo_project_progress_details_url)
+
+        self.page.wait_for_load_state()
+
+        pr_link = self.page.locator(f"a#pr_{pr.number}")
+
+        expect(pr_link).to_contain_text(
+        self.card.recruit_project.repository.pull_requests.first().title
         )
