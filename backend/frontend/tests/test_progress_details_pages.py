@@ -5,7 +5,7 @@ from datetime import datetime
 from unittest.mock import patch
 
 from core.tests.factories import UserFactory
-from .frontend_test_mixin import FrontendTestMixin
+from .frontend_test_mixin import SuperuserLoggedInFrontendTestCase
 from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
@@ -19,17 +19,7 @@ from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 PROGRESS_DETAILS_VIEW = "progress_details"
 
 
-class TestLinkProjectDetailsPage(FrontendTestMixin):
-    def setUp(self):
-        super().setUp()
-        self.user = UserFactory(
-            email="learner_1@umuzi.org",
-            is_staff=True,
-            is_superuser=True,
-        )
-        self.user.set_password(self.user.email)
-        self.user.save()
-        self.do_login(self.user)
+class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
 
     def make_topic_card(self):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -94,7 +84,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.locator("body")
 
-        expect(body).to_contain_text("learner_1@umuzi.org")
+        expect(body).to_contain_text(self.user.email)
         expect(body).to_contain_text("In Progress")
 
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
@@ -254,17 +244,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.assertIn("Enter a valid URL", body)
 
 
-class TestTopicDetailsPage(FrontendTestMixin):
-    def setUp(self):
-        super().setUp()
-        self.user = UserFactory(
-            email="learner_1@umuzi.org",
-            is_staff=True,
-            is_superuser=True,
-        )
-        self.user.set_password(self.user.email)
-        self.user.save()
-        self.do_login(self.user)
+class TestTopicDetailsPage(SuperuserLoggedInFrontendTestCase):
 
     def make_topic_card(self, card_status):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -301,7 +281,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 
         body = self.page.text_content("body")
 
-        self.assertIn("learner_1@umuzi.org", body)
+        self.assertIn(self.user.email, body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
         self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
@@ -311,13 +291,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
         )
 
 
-class TestRepoProjectDetailsPage(FrontendTestMixin):
-    def setUp(self):
-        super().setUp()
-        self.user = UserFactory(is_superuser=True)
-        self.user.set_password(self.user.email)
-        self.user.save()
-        self.do_login(self.user)
+class TestRepoProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
 
     def _get_project_progress_details_url(self):
         return self.reverse_url(
@@ -336,7 +310,7 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
 
         self.card.assignees.set([self.user])
         self.card.recruit_project.recruit_users.set([self.user])
-    
+
     def test_progress_details_page_displays_repo_for_repo_project(self):
         self.make_ip_project_card()
 
