@@ -314,7 +314,7 @@ class TestTopicDetailsPage(FrontendTestMixin):
 class TestRepoProjectDetailsPage(FrontendTestMixin):
     def setUp(self):
         super().setUp()
-        self.user = UserFactory(email="learner_1@umuzi.org")
+        self.user = UserFactory(is_superuser=True)
         self.user.set_password(self.user.email)
         self.user.save()
         self.do_login(self.user)
@@ -368,5 +368,5 @@ class TestRepoProjectDetailsPage(FrontendTestMixin):
         pr_link = self.page.locator(f"a#pr_{pr.number}")
 
         expect(pr_link).to_contain_text(
-        self.card.recruit_project.repository.pull_requests.first().title
+            self.card.recruit_project.repository.pull_requests.first().title
         )
