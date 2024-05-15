@@ -6,8 +6,13 @@ register = template.Library()
 
 @register.inclusion_tag("frontend/partial_user_avatar.html")
 def user_avatar(user):
-    initial = user.email[0].upper()
+    if hasattr(user, "email"):
+        initial = user.email[0].upper()
+    else:
+        initial =  user[0].upper()
+
     return {"initial": initial}
+
 
 @register.filter(name='markdownify')
 def markdownify(raw_text):

@@ -16,17 +16,18 @@
                 Status: <span id="agile-card-status">{{board_status}}</span>
             </p>
         </div>
+        <span>
+         <span class="text-orange-400" x-text="open ? 'View less' : 'View more'"></span>
         <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
+        </span>
     </div>
     <div x-show="open" @click.stop class="content p-2 mb-2">
         <div class="grid grid-cols-4 gap-4">
             {% comment %} Details section {% endcomment %}
-            <div class="col-span-1 space-y-2 font-['Poppins']">
+            <div class="col-span-1 space-y-3 font-['Poppins']">
                 <div>Tags</div>
                 <div>Assignees</div>
-                {% if course_component.reviewer_users.all %}
                 <div>Reviewers</div>
-                {%endif%}
                 <div>Start time</div>
                 <div>Due time</div>
                 <div>Review request time</div>
@@ -40,7 +41,15 @@
                         {% if not forloop.last %},{% endif %}
                     {% endfor %}
                 {% endwith %}</div>
-                <div>Assignees</div>
+                <div class="flex relative">
+                    {% if course_component.content_item.content_type_nice == "topic" %}
+                        {% user_avatar course_component.user %}
+                     {% endif %}
+
+                    {% if course_component.content_item.content_type_nice == "project" %}
+                        {% user_avatar course_component.recruit_user_names|first %}
+                    {% endif %}
+                </div>
                 <div class="flex relative">
                     {% if course_component.reviewer_users.all %}
                       {% for reviewer in course_component.reviewer_users.all %}
@@ -50,6 +59,10 @@
                           </div>
                         </div>
                       {% endfor %}
+                      {% else %}
+                      <div>
+                        No reviews yet
+                      </div>
                     {% endif %}
                   </div>
                 <div>{{ course_component.start_time }}</div>
@@ -61,11 +74,11 @@
     </div>
 </div>
 
- {% comment %} Link project submission {% endcomment %}
  {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "link" %}
 <div x-data="{ open: true }" class="review relative cursor-pointer border-2 border-black/opacity-10 rounded p-4 mb-4" @click="open = !open">
     <div class="flex justify-between items-center">
-        <h3 class="mb-2 font-['Poppins']">Link to your work</h3>
+        <h2 class="{{ styles.heading2 }} mb-2 pl-2 font-['Poppins']">Link to your work</h2>
+        <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
         <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
     </div>
     <div x-show="open" @click.stop>
@@ -101,58 +114,18 @@
 </div>
 {% endif %}
 
-{% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
-<div x-data="{ open: false }" class="review relative cursor-pointer border-2 border-black/opacity-10 rounded p-4 mb-4" @click="open = !open">
-    <div class="flex justify-between items-center">
-        <div class="mb-2 font-['Poppins']">Repo details</div>
-        <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
-    </div>
-    <div x-show="open" @click.stop>
-        <div class="relative">
-            <div class="grid grid-cols-4">            
-             <div class="col-span-1 font-['Poppins'] space-y-2">
-                <div>Repository</div>
-                <div>Open Pull Requests</div>
-             </div>
-            
-             <div class="col-span-3 accordion-content space-y-2">
-                <div>
-                    <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank"><button class="{{ styles.button_secondary_small }}" title="Repository link">Repository link <i class="fa fa-github"></i></button></a>
-                </div>
-                {% if course_component.repository.pull_requests.all|length %}
-                <div>
-                    <ul class="list-disc">
-                        {% for pr in course_component.repository.pull_requests.all %}
-                            <li class="ml-4 mb-1">
-                                <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>            
-                </div>
-                {% else %}
-                <div>
-                    <div class="text-xs font-['Poppins']">No open pull requests</div>
-                </div>
-                {%endif%}       
-            </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
 {% if course_component.content_item.content_type_nice == "project" %}
 
 
 <div class="review relative cursor-pointer border-2 border-black/opacity-10 rounded p-4 mb-4">
     <div class="flex justify-between items-center">
-        <div class="mb-2 font-['Poppins']">Reviews</div>
+        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Reviews</h2>
     </div>
     <div class="reviews p-2 mb-2">
         
         {% if not course_component.reviews_queryset.all %}
             <div>
-                <div class="font-['Poppins']">No reviews yet</div>
+                <div class="text-sm font-['Poppins']">No reviews yet</div>
             </div>
         {% else %}
 
@@ -168,10 +141,54 @@
     </div>
 </div>
 
+{% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
+<div x-data="{ open: false }" class="review relative cursor-pointer border-2 border-black/opacity-10 rounded p-4 mb-4" @click="open = !open">
+    <div class="flex justify-between items-center">
+        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Repo details</h2>
+        <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
+        <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
+    </div>
+    <div x-show="open" @click.stop>
+        <div class="relative">
+            <div class="grid grid-cols-4">            
+             <div class="col-span-1 font-['Poppins'] space-y-2">
+                <div>Repository</div>
+             </div>
+            
+             <div class="col-span-3 space-y-2">
+                <div>
+                    <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank"><button class="{{ styles.button_secondary_small }}" title="Repository link">Repository link <i class="fa fa-github"></i></button></a>
+                </div>
+            </div>
+            </div>
+            <div class="cursor-pointer border-2 border-black/opacity-10 rounded mt-4">
+                <div class="flex justify-between items-center p-2">
+                    <h3 class="{{ styles.heading3 }} font-['Poppins']">Pull request details</h3>
+                </div>
+                {% if course_component.repository.pull_requests.all|length %}
+                <ul>
+                    {% for pr in course_component.repository.pull_requests.all %}
+                        <li class="space-x-2 pl-2">
+                            <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>   
+                    {% else %}
+                    <div>
+                        <div class="text-xs font-['Poppins']">No open pull requests</div>
+                    </div>
+                    {% endif %}
+            </div>  
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 <div class="flex space-x-2">
 {% if course_component.request_user_can_add_review %}
 <div x-data="{ modalOpen: false }">
-    <button id="add_review_trigger_btn" @click="modalOpen = !modalOpen" class="{{ styles.button_primary_small }}"
+    <button id="add_review_trigger_btn" @click="modalOpen = !modalOpen" class="{{ styles.button_primary_small }} font-['Poppins']"
         type="submit">Add Review</button>
     {% include "frontend/progress_details/partial_add_review_modal_content.html" %}
 </div>
