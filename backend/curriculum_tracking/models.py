@@ -820,6 +820,16 @@ class RecruitProjectReview(models.Model, Mixins):
     def reviewer_user_email(self):
         return self.reviewer_user.email
 
+    @property
+    def status_nice(self):
+        return dict(REVIEW_STATUS_CHOICES).get(self.status, "MISSING STATUS")
+
+    @property
+    def validated_nice(self):
+        return dict(self.REVIEW_VALIDATED_STATUS_CHOICES).get(
+            self.validated, "not yet validated"
+        )
+
     def update_recent_validation_flags_for_project(self):
         """this review was just added. Look at recent reviews to see if there is agreement or contradiction"""
         reviews = RecruitProjectReview.objects.filter(

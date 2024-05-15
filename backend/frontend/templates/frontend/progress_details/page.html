@@ -135,6 +135,32 @@
                     {% endif %}
                 </div>
             {% endif %}
+
+            <div class="p-2 border-2 rounded-md ">
+                <h2 class="{{ styles.heading2 }}">Timeline</h2>
+            
+                <table class="table-auto">
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Actor</td>
+                            <td>Event</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in timeline %}
+                        <tr>
+                            <td>{{ entry.timestamp | date:"l" }} {{ entry.timestamp | date }}</td>
+                            <td>{{ entry.timestamp | time }}</td>
+                            <td>{{ entry.actor.email }} </td>
+                            <td>{{ entry.event_type }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                    
+            </div>
         </div>
     </div>
 {% endblock %}

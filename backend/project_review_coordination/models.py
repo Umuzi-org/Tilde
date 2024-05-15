@@ -4,7 +4,7 @@ from datetime import timedelta
 from core.models import Team
 from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProjectReview
 from django.utils import timezone
-from django.db.models import OuterRef, Exists, Count, Func,F, Subquery
+from django.db.models import OuterRef, Exists
 
 
 User = get_user_model()
@@ -36,22 +36,22 @@ class ProjectReviewBundleClaim(models.Model):
 
     @staticmethod
     def get_projects_user_can_review(user):
-    
+
         reviewed_projects_subquery = RecruitProjectReview.objects.filter(
             recruit_project=OuterRef("recruit_project"),
             reviewer_user=user,
             timestamp__gte=OuterRef("recruit_project__review_request_time"),
         )
 
-        cutoff_datetime = timezone.now() - timedelta(days=1) 
-        
+        cutoff_datetime = timezone.now() - timedelta(days=1)
+
         cards = (
             AgileCard.objects.filter(status=AgileCard.IN_REVIEW)
             .filter(assignees__active=True)
             .exclude(content_item__tags__name="technical-assessment")
             .exclude(content_item__tags__name="ncit")
             .exclude(content_item__tags__name="ncba")
-            .filter(recruit_project__review_request_time__lte = cutoff_datetime)
+            .filter(recruit_project__review_request_time__lte=cutoff_datetime)
             .exclude(
                 recruit_project__project_review_bundle_claims__is_active=True
             )  # if the project is already in an active claim, skip it
@@ -65,12 +65,12 @@ class ProjectReviewBundleClaim(models.Model):
 
         if user.is_superuser:
             return cards
-        
+
         viewable_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
         if not len(viewable_teams):
             return []
-        
+
         permitted_cards = []
 
         for card in cards:
@@ -79,5 +79,5 @@ class ProjectReviewBundleClaim(models.Model):
 
             if set(viewable_teams).intersection(assignee_teams):
                 permitted_cards.append(card)
-    
+
         return permitted_cards
