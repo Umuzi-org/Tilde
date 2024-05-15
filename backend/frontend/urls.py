@@ -103,4 +103,10 @@ urlpatterns = [
         views.action_project_review_coordination_add_time,
         name="action_project_review_coordination_add_time",
     ),
+    # Dashboards
+    path(
+        "dashboards/project_review_health/",
+        views.dashboard_project_review_health,
+        name="dashboard_project_review_health",
+    ),
 ]
