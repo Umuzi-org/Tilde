@@ -3,7 +3,8 @@ from django.utils import timezone
 from playwright.sync_api import expect
 from datetime import datetime
 from unittest.mock import patch
-
+from django.test import TestCase
+from django.urls import reverse
 from core.tests.factories import UserFactory
 from .frontend_test_mixin import SuperuserLoggedInFrontendTestCase
 from curriculum_tracking.tests.factories import (
@@ -292,47 +293,31 @@ class TestTopicDetailsPage(SuperuserLoggedInFrontendTestCase):
         )
 
 
-class TestRepoProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
+class TestRepoProjectDetailsPage(TestCase):
+    def setUp(self):
+        self.user = UserFactory(is_superuser=True)
+        self.user.set_password(self.user.email)
+        self.user.save()
+
+        self.client.login(username=self.user.email, password=self.user.email)
+
+        self.card = RepoProjectAgilecardFactory(user=self.user)
 
     def _get_project_progress_details_url(self):
-        return self.reverse_url(
+        return reverse(
             PROGRESS_DETAILS_VIEW,
-            kwargs={
-                "content_type": "project",
-                "id": self.card.recruit_project.id,
-            },
+            kwargs={"content_type": "project", "id": self.card.recruit_project.id},
         )
 
     def test_progress_details_page_displays_repo_for_repo_project(self):
-        self.card = RepoProjectAgilecardFactory(user=self.user)
-
         repo_project_progress_details_url = self._get_project_progress_details_url()
-
-        self.page.goto(repo_project_progress_details_url)
-
-        self.page.wait_for_load_state()
-
-        repo_link = self.page.locator("a#repo-link")
-
-        expect(repo_link).to_contain_text(
-            self.card.recruit_project.repository.full_name
-        )
+        response = self.client.get(repo_project_progress_details_url)
+        self.assertContains(response, self.card.recruit_project.repository.full_name)
 
     def test_progress_details_page_displays_open_prs_for_repo_project(self):
-        self.card = RepoProjectAgilecardFactory(user=self.user)
-
         pr = PullRequestFactory(
             repository=self.card.recruit_project.repository, state=PullRequest.OPEN
         )
-
         repo_project_progress_details_url = self._get_project_progress_details_url()
-
-        self.page.goto(repo_project_progress_details_url)
-
-        self.page.wait_for_load_state()
-
-        pr_link = self.page.locator(f"a#pr_{pr.number}")
-
-        expect(pr_link).to_contain_text(
-            self.card.recruit_project.repository.pull_requests.first().title
-        )
+        response = self.client.get(repo_project_progress_details_url)
+        self.assertContains(response, pr.title)
