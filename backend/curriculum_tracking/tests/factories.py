@@ -306,6 +306,23 @@ class AgileCardFactory(DjangoModelFactory):
             self.reviewers.add(UserFactory())
 
 
+class RepoProjectAgilecardFactory(AgileCardFactory):
+    class Meta:
+        model = "curriculum_tracking.AgileCard"
+
+    def create(user):
+        repository = RepositoryFactory(user=user)
+        recruit_project = RecruitProjectFactory(
+            recruit_users=[user], repository=repository
+        )
+        card = AgileCardFactory(
+            recruit_project=recruit_project,
+            assignees=[user],
+        )
+
+        return card
+
+
 class CurriculumContentRequirementFactory(DjangoModelFactory):
     class Meta:
         model = "curriculum_tracking.CurriculumContentRequirement"

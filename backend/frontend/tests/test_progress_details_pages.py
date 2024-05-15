@@ -11,6 +11,7 @@ from curriculum_tracking.tests.factories import (
     ContentItemFactory,
     RecruitProjectFactory,
     TopicProgressFactory,
+    RepoProjectAgilecardFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
 from git_real.models import PullRequest
@@ -302,17 +303,8 @@ class TestRepoProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
             },
         )
 
-    def make_ip_project_card(self):
-        self.card = AgileCardFactory()
-        self.card.recruit_project.repository = RepositoryFactory(user=self.user)
-        self.card.recruit_project.save()
-        self.card.save()
-
-        self.card.assignees.set([self.user])
-        self.card.recruit_project.recruit_users.set([self.user])
-
     def test_progress_details_page_displays_repo_for_repo_project(self):
-        self.make_ip_project_card()
+        self.card = RepoProjectAgilecardFactory(user=self.user)
 
         repo_project_progress_details_url = self._get_project_progress_details_url()
 
@@ -327,7 +319,7 @@ class TestRepoProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
         )
 
     def test_progress_details_page_displays_open_prs_for_repo_project(self):
-        self.make_ip_project_card()
+        self.card = RepoProjectAgilecardFactory(user=self.user)
 
         pr = PullRequestFactory(
             repository=self.card.recruit_project.repository, state=PullRequest.OPEN
