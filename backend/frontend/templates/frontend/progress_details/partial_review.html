@@ -1,5 +1,5 @@
 {% load custom_tags %}
-<div id="review-{{ review.id }}">
+<div id="review-{{ review.id }}" class="p-2 border-b-2 border-black-900">
     <span class="text-xs">{{ review.timestamp|date:"d/m/Y, H:i:s" }}</span>
     <div class="flex items center gap-2">
         {% user_avatar review.reviewer_user %}
@@ -22,6 +22,4 @@
             {% include "frontend/progress_details/partial_preview_review.html" %}
         </div>
     </div>
-
-
 </div>
