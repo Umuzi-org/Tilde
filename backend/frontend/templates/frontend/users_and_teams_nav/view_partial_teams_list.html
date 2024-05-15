@@ -35,12 +35,15 @@
 {% if has_next_page %}
 <button 
     type="button" 
-    class="{{ styles.button_secondary_small }}"
+    class="{{ styles.button_secondary_small }} flex gap-1 items-center"
     id="more_teams"
     hx-get="{% url 'view_partial_teams_list' %}"
     hx-vals='js:{count: countLoadedPageItems("teams-list")}'
     hx-trigger="click"
     hx-swap="outerHTML"
     hx-target="#more_teams"
-    >Load more</button>
+    hx-indicator='#load-more-teams-loader'
+    >Load more
+    <i id="load-more-teams-loader" class="fa-solid fa-spinner fa-spin htmx-indicator"></i>
+</button>
 {% endif %}

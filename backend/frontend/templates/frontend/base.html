@@ -25,7 +25,17 @@
       crossorigin="anonymous"
     ></script>
 
-    
+    <style>
+      .htmx-indicator {
+        display: none;
+      }
+      .htmx-request .htmx-indicator{
+          display:inline-flex;
+      }
+      .htmx-request.htmx-indicator{
+          display:inline-flex;
+      }
+    </style>
 
     {% block main_head %}{% endblock %}
   </head>
