@@ -528,6 +528,18 @@ class RecruitProject(
             if pr:
                 return pr.updated_at
 
+    @property
+    def oldest_open_pr_created_time(self):
+        repo = self.repository
+        if repo:
+            pr = (
+                repo.pull_requests.filter(state=git_models.PullRequest.OPEN)
+                .order_by("created_at")
+                .first()
+            )
+            if pr:
+                return pr.created_at
+
     def get_users_with_permission(self, permissions):
         from guardian.shortcuts import get_users_with_perms
 
@@ -1507,6 +1519,12 @@ class AgileCard(
         if not self.recruit_project:
             return None
         return self.recruit_project.oldest_open_pr_updated_time
+
+    @property
+    def oldest_open_pr_created_time(self):
+        if not self.recruit_project:
+            return None
+        return self.recruit_project.oldest_open_pr_created_time
 
     @property
     def repository(self):

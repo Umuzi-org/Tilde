@@ -9,6 +9,7 @@ from django.utils import timezone
 from config.models import NameSpace
 from taggit.models import Tag
 from git_real import models as git_models
+from git_real.activity_log_creators import PR_MERGED, PR_OPENED, PR_REVIEWED, PR_CLOSED
 
 
 class RecruitProjectSerializer(serializers.ModelSerializer):
@@ -906,7 +907,13 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             "code_review_red_flag_since_last_review_request",
             "code_review_ny_competent_since_last_review_request",
             "open_pr_count",
+            "total_pr_count",
+            # "total_pr_opened_events",
+            # "total_pr_merged_events",
+            # "total_pr_closed_events",
+            # "total_pr_reviewed_events",
             "oldest_open_pr_updated_time",
+            "oldest_open_pr_created_time",
             "repo_url",
             "recruit_users",
             "reviewer_users",
@@ -934,6 +941,20 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
 
     status = serializers.SerializerMethodField("get_status")
 
+    total_pr_count = serializers.SerializerMethodField("get_total_pr_count")
+    # total_pr_opened_events = serializers.SerializerMethodField(
+    #     "get_total_pr_opened_events"
+    # )
+    # total_pr_merged_events = serializers.SerializerMethodField(
+    #     "get_total_pr_merged_events"
+    # )
+    # total_pr_closed_events = serializers.SerializerMethodField(
+    #     "get_total_pr_closed_events"
+    # )
+    # total_pr_reviewed_events = serializers.SerializerMethodField(
+    #     "get_total_pr_reviewed_events"
+    # )
+
     def get_users_that_reviewed_since_last_review_request_emails(self, instance):
         return [
             o.email for o in instance.users_that_reviewed_since_last_review_request()
@@ -956,6 +977,36 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             return instance.agile_card.status
         except models.AgileCard.DoesNotExist:
             return None
+
+    def get_total_pr_count(self, instance):
+        repo = instance.repository
+        if repo:
+            return repo.pull_requests.filter(state=git_models.PullRequest.OPEN).count()
+        return 0
+
+    def get_total_pr_opened_events(self, instance):
+        repo = instance.repository
+        if repo:
+            repo.get_pr_log_entries(event_type_name=PR_OPENED)
+        return 0
+
+    def get_total_pr_merged_events(self, instance):
+        repo = instance.repository
+        if repo:
+            repo.get_pr_log_entries(event_type_name=PR_MERGED)
+        return 0
+
+    def get_total_pr_closed_events(self, instance):
+        repo = instance.repository
+        if repo:
+            repo.get_pr_log_entries(event_type_name=PR_CLOSED)
+        return 0
+
+    def get_total_pr_reviewed_events(self, instance):
+        repo = instance.repository
+        if repo:
+            repo.get_pr_log_entries(event_type_name=PR_REVIEWED)
+        return 0
 
 
 class OutstandingCompetenceReviewSerializer(serializers.ModelSerializer):

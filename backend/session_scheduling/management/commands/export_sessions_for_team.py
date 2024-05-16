@@ -15,14 +15,17 @@ class Command(BaseCommand):
             "duration_minutes",
             "flavours",
             "attendee_emails",
-            "attendee_board_links"
+            "attendee_board_links",
         ]
         with open("gitignore/technical_sessions_for_team.csv", "w") as f:
             writer = csv.writer(f)
             writer.writerow(headings)
-            for session in Session.objects.filter(is_complete=False).filter(
-                is_cancelled=False
+            for session in (
+                Session.objects.exclude(is_complete=True)
+                .exclude(is_cancelled=True)
+                .order_by("pk")
             ):
+                print(session.id)
                 flavours = ", ".join(session.flavour_names)
                 writer.writerow(
                     [
@@ -33,6 +36,9 @@ class Command(BaseCommand):
                         session.session_type.duration_minutes,
                         flavours,
                         "\n".join(u.email for u in session.attendees.all()),
-                        "\n".join(f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{u.id}/board" for u in session.attendees.all())
+                        "\n".join(
+                            f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{u.id}/board"
+                            for u in session.attendees.all()
+                        ),
                     ]
                 )

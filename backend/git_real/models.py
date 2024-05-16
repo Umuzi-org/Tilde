@@ -1,5 +1,4 @@
 from django.db import models
-from curriculum_tracking.constants import POSITIVE_REVIEW_STATUS_CHOICES
 from model_mixins import Mixins
 from core.models import User
 from git_real.helpers import (
@@ -8,8 +7,9 @@ from git_real.helpers import (
     get_user_from_github_name,
 )
 from .activity_log_creators import log_push_event
-
+from activity_log.models import LogEntry
 from django.core.exceptions import MultipleObjectsReturned
+from django.contrib.contenttypes.models import ContentType
 
 
 class Repository(models.Model, Mixins):
@@ -48,6 +48,28 @@ class Repository(models.Model, Mixins):
 
     def get_github_repo_link(self):
         return f"https://github.com/{self.owner.replace('.','-')}/{self.full_name}"
+
+    def get_pr_log_entries(self, event_type_name=None):
+        """Get all the log entries for PRs associated with this repo
+        if event_type_name is provided then filter by event name
+        """
+        TODO  # broken
+        prs = self.pull_requests.all()
+        first_pr = prs.first()
+        if first_pr:
+            pr_content_type = ContentType.objects.get_for_model(first_pr)
+        else:
+            return []
+
+        pr_ids = prs.values_list("id", flat=True)
+
+        log_entries = LogEntry.objects.filter(
+            object_1_id__in=pr_ids,
+            object_1_content_type=pr_content_type,
+        ).order_by("-timestamp")
+        if event_type_name:
+            log_entries = log_entries.filter(event_type__name=event_type_name)
+        return log_entries
 
 
 class Commit(models.Model, Mixins):
