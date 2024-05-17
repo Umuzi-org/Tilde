@@ -623,9 +623,7 @@ def view_partial_teams_list(request):
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
 
-            teams = Team.objects.filter(
-                active=True, name__istartswith=search_term
-            ).order_by("name")
+            teams = Team.get_teams_from_search_term(search_term)
             total_teams_count = teams.count()
 
     limit = 20
