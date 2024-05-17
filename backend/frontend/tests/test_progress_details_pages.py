@@ -272,14 +272,14 @@ class TestTopicDetailsPage(SuperuserLoggedInFrontendMixin):
         mock_get_current_timezone.return_value = timezone.utc
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
-        self.topic_url = self.reverse_url(
+        topic_url = self.reverse_url(
             PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "topic",
                 "id": self.topic.id,
             },
         )
-        self.page.goto(self.topic_url)
+        self.page.goto(topic_url)
 
         body = self.page.text_content("body")
 

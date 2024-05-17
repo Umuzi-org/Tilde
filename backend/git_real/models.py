@@ -128,6 +128,9 @@ class PullRequest(models.Model, Mixins):
         )
         return pull_request
 
+    def get_github_pr_link(self):
+        return f"{self.repository.get_github_repo_link()}/pull/{self.number}"
+
 
 class PullRequestReview(models.Model, Mixins):
     CONTRADICTED = "d"
