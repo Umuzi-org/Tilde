@@ -6,13 +6,13 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.urls import reverse
 from core.tests.factories import UserFactory
-from .frontend_test_mixin import SuperuserLoggedInFrontendTestCase
+from .frontend_test_mixin import SuperuserLoggedInFrontendMixin
 from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
     RecruitProjectFactory,
     TopicProgressFactory,
-    RepoProjectAgilecardFactory,
+    RepoProjectAgileCardFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
 from git_real.models import PullRequest
@@ -21,7 +21,7 @@ from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 PROGRESS_DETAILS_VIEW = "progress_details"
 
 
-class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
+class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendMixin):
 
     def make_topic_card(self):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -246,7 +246,7 @@ class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendTestCase):
         self.assertIn("Enter a valid URL", body)
 
 
-class TestTopicDetailsPage(SuperuserLoggedInFrontendTestCase):
+class TestTopicDetailsPage(SuperuserLoggedInFrontendMixin):
 
     def make_topic_card(self, card_status):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -301,7 +301,7 @@ class TestRepoProjectDetailsPage(TestCase):
 
         self.client.login(username=self.user.email, password=self.user.email)
 
-        self.card = RepoProjectAgilecardFactory(user=self.user)
+        self.card = RepoProjectAgileCardFactory(user=self.user)
 
     def _get_project_progress_details_url(self):
         return reverse(

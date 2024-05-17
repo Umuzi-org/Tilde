@@ -54,7 +54,7 @@ class FrontendTestMixin(StaticLiveServerTestCase):
         self.page.click("text=Log in")
 
 
-class SuperuserLoggedInFrontendTestCase(FrontendTestMixin):
+class SuperuserLoggedInFrontendMixin(FrontendTestMixin):
     def setUp(self):
         super().setUp()
         self.user = UserFactory(is_superuser=True)
