@@ -3,22 +3,29 @@ from core.models import Team
 from django.test import TestCase
 
 
-class TestTeamSearch(TestCase):
-    def test_get_teams_from_search_term(self):
-        TeamFactory(name="boots 1999")
-        TeamFactory(name="boots 2014")
-        TeamFactory(name="detectives")
+class TeamSearchTestCase(TestCase):
 
-        teams_from_search_term = Team.get_teams_from_search_term("boots")
+    def setUp(self):
+        self.boots_1999_team = TeamFactory(name="boots 1999", active=True)
+        self.boots_2014_team = TeamFactory(name="boots 2014", active=True)
+        self.detectives_team = TeamFactory(name="detectives", active=True)
+        self.inactive_team = TeamFactory(name="inactive team", active=False)
 
-        self.assertEqual(len(teams_from_search_term), 2)
+    def test_search_term_detectives(self):
+        search_term = "dEtecTivEs"
+        teams = Team.get_teams_from_search_term(search_term)
+        self.assertIn(self.detectives_team, teams)
+        self.assertNotIn(self.boots_1999_team, teams)
+        self.assertNotIn(self.boots_2014_team, teams)
 
-        teams_from_search_term = Team.get_teams_from_search_term("t")
-        self.assertEqual(len(teams_from_search_term), 3)
+    def test_search_term_boot(self):
+        search_term = "BOOT"
+        teams = Team.get_teams_from_search_term(search_term)
+        self.assertIn(self.boots_1999_team, teams)
+        self.assertIn(self.boots_2014_team, teams)
+        self.assertNotIn(self.detectives_team, teams)
 
-        teams_from_search_term = Team.get_teams_from_search_term("zzzzzzzzz")
-        self.assertEqual(len(teams_from_search_term), 0)
-
-        teams_from_search_term = Team.get_teams_from_search_term("det")
-        self.assertEqual(len(teams_from_search_term), 1)
-        self.assertEqual(teams_from_search_term.first().name, "detectives")
+    def test_search_term_no_match(self):
+        search_term = "zzzzzzzzzzz"
+        teams = Team.get_teams_from_search_term(search_term)
+        self.assertEqual(len(teams), 0)
