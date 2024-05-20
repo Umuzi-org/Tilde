@@ -76,8 +76,10 @@ def hydrate_learner_data(learner_dicts):
 
         cohort_name = d["group_for_reporting"].lower()
         if (
-            "web" in cohort_name xxx
-        ):  # TODO!! DATA. We need to rely on configuration rather than shit I can't control.
+            "web" in cohort_name
+        ):  # TODO: This is not reliable. We need to get the data from somewhere true
+            stream = "Web dev"
+        elif "devops" in cohort_name:
             stream = "Web dev"
         elif "data eng" in cohort_name:
             stream = "Data eng"
@@ -178,7 +180,7 @@ def get_progress_df():
         "design",
         "prov",
         "bridge",
-        "devops",
+        # "devops",
     ]:
         df = df[~df["group_for_reporting"].str.contains(s, case=False)]
 

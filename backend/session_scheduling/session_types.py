@@ -22,6 +22,8 @@ SESSION_FUNDAMENTAL_SKILL_ASSISTANCE = "Fundamental skill assistance"
 SESSION_BOOTCAMP_ASSESSMENT = "Bootcamp"
 SESSION_PROJECT_PROGRESS = "Project progress session"
 SESSION_PROBLEM_SOLVING_FOUNDATION_SESSION = "Problem solving foundation"
+# SESSION_TROUBLESHOOT_BOUNCY_PR = "PR review troubleshooting"
+SESSION_TROUBLESHOOT_BOUNCY_CARD = "Project review troubleshooting"
 
 SESSION_CUSTOM = "Custom"
 # SESSION_CARD_BASED = "card progress based" TODO
@@ -56,13 +58,25 @@ session_types = [
         description="This is the final assessment for a learner who is taking part in a selection bootcamp. We are assessing them to see if they are ready to join the main bootcamp.",
         duration_minutes=45,
     ),
-
     SessionTypeConf(
-        name=SESSION_PROJECT_PROGRESS, # https://airtable.com/appkr1uRo6nZXyeZb/tblStRQEBcQmJBDVn/viwgATZ10rBZdAZBq?blocks=hide 
-        event_copy = "You are a behind in your syllabus work. Let's see how we can help",
+        name=SESSION_PROJECT_PROGRESS,  # https://airtable.com/appkr1uRo6nZXyeZb/tblStRQEBcQmJBDVn/viwgATZ10rBZdAZBq?blocks=hide
+        event_copy="You are a behind in your syllabus work. Let's see how we can help",
         event_title="Syllabus progress help {extra_title_text}",
         description="This is for learners who are falling behind in their syllabus work",
-        duration_minutes=45
+        duration_minutes=45,
+    ),
+    # SessionTypeConf(
+    #     name=SESSION_TROUBLESHOOT_BOUNCY_PR,
+    #     event_copy="Something is going wrong with this card, it seems to be bouncing around a lot. Let's see if we can get to the bottom of this.",
+    #     event_title="Troubleshooting PR review for card {extra_title_text} - {flavours}",
+    #     duration_minutes=45,
+    # ),
+    SessionTypeConf(
+        name=SESSION_TROUBLESHOOT_BOUNCY_CARD,
+        event_copy="Something is going wrong with the reviews, it seems to be bouncing around a lot. Let's see if we can get to the bottom of this.",
+        event_title="Troubleshooting reviews {extra_title_text} - {flavours}",
+        duration_minutes=45,
+        description="A card has been receiving a lot of PR reviews or a lot of negative competence reviews. The people involved might need some coaching",
     ),
     SessionTypeConf(
         name=SESSION_CUSTOM,
