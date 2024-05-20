@@ -908,6 +908,7 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
             "code_review_ny_competent_since_last_review_request",
             "open_pr_count",
             "total_pr_count",
+            "pull_request_review_count",
             # "total_pr_opened_events",
             # "total_pr_merged_events",
             # "total_pr_closed_events",
@@ -942,6 +943,9 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField("get_status")
 
     total_pr_count = serializers.SerializerMethodField("get_total_pr_count")
+    pull_request_review_count = serializers.SerializerMethodField(
+        "get_pull_request_review_count"
+    )
     # total_pr_opened_events = serializers.SerializerMethodField(
     #     "get_total_pr_opened_events"
     # )
@@ -1007,6 +1011,11 @@ class ProjectReviewQueueSerializer(serializers.ModelSerializer):
         if repo:
             repo.get_pr_log_entries(event_type_name=PR_REVIEWED)
         return 0
+
+    def get_pull_request_review_count(self, instance):
+        return PullRequestReview.objects.filter(
+            pull_request__repository__recruit_projects=instance
+        ).count()
 
 
 class OutstandingCompetenceReviewSerializer(serializers.ModelSerializer):
