@@ -76,7 +76,7 @@
         {% endif %}
       </div>
       {% if card.open_pr_count %}
-        <a href="{{ card.recruit_project.repository.get_github_repo_link }}/pulls"
+        <a href="{{ card.recruit_project.repository.get_github_link }}/pulls"
            target="_blank"
            title="Pull request info">
           <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
@@ -88,7 +88,7 @@
           </div>
         </a>
       {% elif card.repo_url %}
-        <a href="{{ card.recruit_project.repository.get_github_repo_link }}"
+        <a href="{{ card.recruit_project.repository.get_github_link }}"
            target="_blank">
            <button class="{{ styles.button_secondary_small }}" title="Repository link">Repo <i class="fa fa-github"></i></button>
         </a>

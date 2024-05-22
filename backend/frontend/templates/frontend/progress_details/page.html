@@ -116,7 +116,7 @@
                     <div class="p-2 border-2 rounded-md ">
                         <p>
                             Repository: 
-                            <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_repo_link}}" target="_blank">{{course_component.repository.full_name}}</a>
+                            <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_link}}" target="_blank">{{course_component.repository.full_name}}</a>
                         </p>
                     </div>
                     {% if course_component.repository.pull_requests.all|length %}
@@ -127,7 +127,7 @@
                             <ul class="list-disc">
                                 {% for pr in course_component.repository.pull_requests.all %}
                                     <li class="ml-4 mb-1">
-                                        <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{pr.get_github_pr_link}}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
+                                        <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{pr.get_github_link}}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>                            
