@@ -3,31 +3,25 @@ from django.utils import timezone
 from playwright.sync_api import expect
 from datetime import datetime
 from unittest.mock import patch
-
+from django.test import TestCase
+from django.urls import reverse
 from core.tests.factories import UserFactory
-from .frontend_test_mixin import FrontendTestMixin
+from .frontend_test_mixin import SuperuserLoggedInFrontendMixin
 from curriculum_tracking.tests.factories import (
     AgileCardFactory,
     ContentItemFactory,
     RecruitProjectFactory,
     TopicProgressFactory,
+    RepoProjectAgileCardFactory,
 )
 from curriculum_tracking.models import AgileCard, ContentItem
+from git_real.models import PullRequest
+from git_real.tests.factories import PullRequestFactory, RepositoryFactory
 
-VIEW_NAME = "progress_details"
+PROGRESS_DETAILS_VIEW = "progress_details"
 
 
-class TestLinkProjectDetailsPage(FrontendTestMixin):
-    def setUp(self):
-        super().setUp()
-        self.user = UserFactory(
-            email="learner_1@umuzi.org",
-            is_staff=True,
-            is_superuser=True,
-        )
-        self.user.set_password(self.user.email)
-        self.user.save()
-        self.do_login(self.user)
+class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendMixin):
 
     def make_topic_card(self):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -78,7 +72,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -92,7 +86,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
 
         body = self.page.locator("body")
 
-        expect(body).to_contain_text("learner_1@umuzi.org")
+        expect(body).to_contain_text(self.user.email)
         expect(body).to_contain_text("In Progress")
 
         expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
@@ -108,7 +102,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -138,7 +132,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -175,7 +169,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.recruit_project.save()
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -209,7 +203,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -233,7 +227,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.make_ip_project_card(ContentItem.LINK)
 
         self.link_project_url = self.reverse_url(
-            VIEW_NAME,
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "project",
                 "id": self.recruit_project.id,
@@ -252,17 +246,7 @@ class TestLinkProjectDetailsPage(FrontendTestMixin):
         self.assertIn("Enter a valid URL", body)
 
 
-class TestTopicDetailsPage(FrontendTestMixin):
-    def setUp(self):
-        super().setUp()
-        self.user = UserFactory(
-            email="learner_1@umuzi.org",
-            is_staff=True,
-            is_superuser=True,
-        )
-        self.user.set_password(self.user.email)
-        self.user.save()
-        self.do_login(self.user)
+class TestTopicDetailsPage(SuperuserLoggedInFrontendMixin):
 
     def make_topic_card(self, card_status):
         content_item = ContentItemFactory(content_type=ContentItem.TOPIC)
@@ -288,18 +272,18 @@ class TestTopicDetailsPage(FrontendTestMixin):
         mock_get_current_timezone.return_value = timezone.utc
         self.make_topic_card(AgileCard.IN_PROGRESS)
 
-        self.topic_url = self.reverse_url(
-            VIEW_NAME,
+        topic_url = self.reverse_url(
+            PROGRESS_DETAILS_VIEW,
             kwargs={
                 "content_type": "topic",
                 "id": self.topic.id,
             },
         )
-        self.page.goto(self.topic_url)
+        self.page.goto(topic_url)
 
         body = self.page.text_content("body")
 
-        self.assertIn("learner_1@umuzi.org", body)
+        self.assertIn(self.user.email, body)
         self.assertIn("In Progress", body)
         self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
         self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
@@ -307,3 +291,33 @@ class TestTopicDetailsPage(FrontendTestMixin):
             self.topic.content_url,
             body,
         )
+
+
+class TestRepoProjectDetailsPage(TestCase):
+    def setUp(self):
+        self.user = UserFactory(is_superuser=True)
+        self.user.set_password(self.user.email)
+        self.user.save()
+
+        self.client.login(username=self.user.email, password=self.user.email)
+
+        self.card = RepoProjectAgileCardFactory(user=self.user)
+
+    def _get_project_progress_details_url(self):
+        return reverse(
+            PROGRESS_DETAILS_VIEW,
+            kwargs={"content_type": "project", "id": self.card.recruit_project.id},
+        )
+
+    def test_progress_details_page_displays_repo_for_repo_project(self):
+        repo_project_progress_details_url = self._get_project_progress_details_url()
+        response = self.client.get(repo_project_progress_details_url)
+        self.assertContains(response, self.card.recruit_project.repository.full_name)
+
+    def test_progress_details_page_displays_open_prs_for_repo_project(self):
+        pr = PullRequestFactory(
+            repository=self.card.recruit_project.repository, state=PullRequest.OPEN
+        )
+        repo_project_progress_details_url = self._get_project_progress_details_url()
+        response = self.client.get(repo_project_progress_details_url)
+        self.assertContains(response, pr.title)

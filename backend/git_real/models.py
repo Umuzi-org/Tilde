@@ -46,7 +46,7 @@ class Repository(models.Model, Mixins):
             "flavour_names": project.flavour_names if project else None,
         }
 
-    def get_github_repo_link(self):
+    def get_github_link(self):
         return f"https://github.com/{self.owner.replace('.','-')}/{self.full_name}"
 
     def get_pr_log_entries(self, event_type_name=None):
@@ -149,6 +149,9 @@ class PullRequest(models.Model, Mixins):
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
         return pull_request
+
+    def get_github_link(self):
+        return f"{self.repository.get_github_link()}/pull/{self.number}"
 
 
 class PullRequestReview(models.Model, Mixins):

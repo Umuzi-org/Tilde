@@ -11,6 +11,7 @@ import os
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from playwright.sync_api import sync_playwright
 from django.urls import reverse
+from core.tests.factories import UserFactory
 
 
 class FrontendTestMixin(StaticLiveServerTestCase):
@@ -51,3 +52,12 @@ class FrontendTestMixin(StaticLiveServerTestCase):
         self.page.fill("[name=username]", user.email)
         self.page.fill("[name=password]", user.email)
         self.page.click("text=Log in")
+
+
+class SuperuserLoggedInFrontendMixin(FrontendTestMixin):
+    def setUp(self):
+        super().setUp()
+        self.user = UserFactory(is_superuser=True)
+        self.user.set_password(self.user.email)
+        self.user.save()
+        self.do_login(self.user)
