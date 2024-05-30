@@ -1,0 +1,111 @@
+{% extends "frontend/base_logged_in.html" %}
+{% load custom_tags %}
+
+{% block content %}
+    <main>
+        <h1 class="{{ styles.heading1 }}">Project review health dashboard - last 7 days</h1>
+            
+        <h2 class="{{ styles.heading2 }}">Closing review stats</h2>  
+        
+        <table class="table-auto">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Total reviews</td>
+                    <td>Ave wait time</td>
+                    <td>Max wait time</td>
+                    <td>Min wait time</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in closing_reviews %}
+                <tr>
+                    <td>{% user_avatar data.user %} {{ data.user.email }} </td>
+                    <td>{{ data.total }} </td>
+                    <td>{{ data.average_wait_time }} </td>
+                    <td>{{ data.max_wait_time }}</td>
+                    <td>{{ data.min_wait_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+
+        <h2 class="{{ styles.heading2 }}">Staff Competence reviews</h2>  
+
+         
+
+        <table class="table-auto">
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <td rowspan="2">Total</td>
+                    <td rowspan="2">Total trusted</td>
+                    <td colspan="6">Positive</td>
+                    <td colspan="4">Negative</td>
+                </tr>
+                <tr>
+                    <td>Competent</td>
+                    <td>Excellent</td>
+                    <td>Incorrect</td>
+                    <td>Correct</td>
+                    <td>Contradicted</td>
+                    <td>Not yet validated</td>
+                    <td>Not yet competent</td>
+                    <td>Red flag</td>
+                    <td>Complete review cycle</td>
+                    <td>Bouncey review cycle</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in competence_review_counts %}
+                <tr>
+                    <td>{% user_avatar data.user %} {{ data.user.email }}</td>
+                    <td>{{ data.total }}</td>
+                    <td>{{ data.trusted }}</td>
+                    <td>{{ data.competent }}</td>
+                    <td>{{ data.excellent }}</td>
+                    <td>{{ data.incorrect }}</td>
+                    <td>{{ data.correct }}</td>
+                    <td>{{ data.contradicted }}</td>
+                    <td>{{ data.not_yet_validated }}</td>
+                    <td>{{ data.not_yet_competent }}</td>
+                    <td>{{ data.red_flag }}</td>
+                    <td>{{ data.complete_review_cycle }}</td>
+                    <td>{{ data.bouncey_review_cycle }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        
+        
+
+        <h2 class="{{ styles.heading2 }}">Longest Running open projects</h2>  
+            
+        <table class="table-auto">
+            <thead>
+                <tr>
+                    <td>Title</td>
+                    <td>Flavours</td>
+                    <td>Assignee</td>
+                    <td>Start time</td>
+                    <td>Review request time</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in longest_running_open_projects %}
+                <tr>
+                    <td>{{ project.content_item.title }}</td>
+                    <td>{{ project.flavour_names }}</td>
+                    <td>{% user_avatar project.recruit_users.first %} {{ project.recruit_users.first.email }}</td>
+                    <td>{{ project.start_time }}</td>
+                    <td>{{ project.review_request_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
+
+    </main>
+{% endblock %}

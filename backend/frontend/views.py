@@ -14,6 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.contenttypes.models import ContentType
+from activity_log.models import LogEntry
 
 from core.models import Team
 from curriculum_tracking.models import (
@@ -22,6 +24,7 @@ from curriculum_tracking.models import (
     User,
     RecruitProject,
     TopicProgress,
+    RecruitProjectReview,
 )
 
 import curriculum_tracking.activity_log_entry_creators as log_creators
@@ -41,6 +44,10 @@ from .forms import (
 )
 from .theme import styles
 
+from curriculum_tracking.constants import (
+    COMPETENT,
+    EXCELLENT,
+)
 
 User = get_user_model()
 
@@ -387,6 +394,32 @@ def progress_details(
 
     form = None
 
+    timeline = []
+    log_entries = LogEntry.objects.filter(
+        object_1_content_type=ContentType.objects.get_for_model(course_component),
+        object_1_id=course_component.id,
+    ).prefetch_related("event_type")
+
+    for entry in log_entries:
+        timeline.append(
+            {
+                "timestamp": entry.timestamp,
+                "event_type": entry.event_type.name,
+                "actor": entry.actor_user,
+            }
+        )
+
+    if content_type == "project":
+        reviews = RecruitProjectReview.objects.filter(recruit_project=course_component)
+        for review in reviews:
+            timeline.append(
+                {
+                    "timestamp": review.timestamp,
+                    "event_type": f"REVIEW {review.status_nice} validated={review.validated_nice} trusted={review.trusted}",
+                    "actor": review.reviewer_user,
+                }
+            )
+
     if content_type == "project" and course_component.submission_type_nice == "link":
         form = LinkSubmissionForm()
 
@@ -418,6 +451,7 @@ def progress_details(
         "course_component": course_component,
         "board_status": board_status,
         "link_submission_form": form,
+        "timeline": sorted(timeline, key=lambda d: d["timestamp"]),
     }
 
     return render(
@@ -735,10 +769,24 @@ def project_review_coordination_unclaimed(request):
 
     cards = ProjectReviewBundleClaim.get_projects_user_can_review(request.user)
 
-    # TODO: filter out cards that current user doesn't have permission to see
-
     bundles = {}
     for card in cards:
+
+        project = card.recruit_project
+        staff_positive_reviews_since_request = (
+            project.project_reviews.filter(
+                timestamp__gte=project.review_request_time
+            ).filter(reviewer_user__is_staff=True)
+        ).count()
+        # TODO: Make this faster by using an annotation on the initial query
+        # it was a bit of a pain to attempt because the django docs site was down :/
+
+        is_trusted = card.request_user_is_trusted()
+
+        if staff_positive_reviews_since_request >= 2 and not is_trusted:
+            # if too many staff have seen this already, no need for another
+            continue
+
         flavours = sorted(card.recruit_project.flavour_names)
         content_item_id = card.content_item.id
         bundle_id = f"{content_item_id}.{flavours}"
@@ -750,7 +798,7 @@ def project_review_coordination_unclaimed(request):
                 "oldest_review_request_time": card.recruit_project.review_request_time,
                 "project_ids": [],
                 "card_count": 0,
-                "is_trusted": card.request_user_is_trusted(),
+                "is_trusted": is_trusted,
             }
 
         bundles[bundle_id]["card_count"] += 1
@@ -865,4 +913,142 @@ def action_project_review_coordination_add_time(request, claim_id):
         request,
         "frontend/project_review_coordination/view_partial_claim_due_timestamp.html",
         context={"claim": instance},
+    )
+
+
+# DASHBOARDING
+
+
+@user_passes_test(is_staff)
+def dashboard_project_review_health(request):
+    """
+    Display some stats about project reviews
+    """
+
+    DAYS = 7
+
+    recently_closed_projects = RecruitProject.objects.filter(
+        complete_time__gte=timezone.now() - timezone.timedelta(days=DAYS)
+    )
+
+    closing_reviews = {
+        # email: {
+        #   "user": User,
+        #   "total": 0,
+        #   "total wait time": 0,
+        #  "closing reviews": [review1, review2]
+        # max_wait_time: timedelta
+        # min_wait_time: timedelta
+        # }
+    }
+
+    for project in recently_closed_projects:
+        recent_reviews = project.project_reviews.filter(
+            timestamp__gte=project.review_request_time
+        ).order_by("-timestamp")[:2]
+        closing_reviewer = recent_reviews[0].reviewer_user
+        if len(recent_reviews) < 2:
+            continue
+        delta = recent_reviews[0].timestamp - recent_reviews[1].timestamp
+        closing_reviews[closing_reviewer.email] = closing_reviews.get(
+            closing_reviewer.email,
+            {
+                "user": closing_reviewer,
+                "total": 0,
+                "total_wait_time": 0,
+                "max_wait_time": delta,
+                "min_wait_time": delta,
+                "closing_reviews": [],
+            },
+        )
+        closing_reviews[closing_reviewer.email]["total"] += 1
+        closing_reviews[closing_reviewer.email][
+            "total_wait_time"
+        ] += delta.total_seconds()
+        closing_reviews[closing_reviewer.email]["closing_reviews"].append(
+            recent_reviews[0]
+        )
+        if delta > closing_reviews[closing_reviewer.email]["max_wait_time"]:
+            closing_reviews[closing_reviewer.email]["max_wait_time"] = delta
+        if delta < closing_reviews[closing_reviewer.email]["min_wait_time"]:
+            closing_reviews[closing_reviewer.email]["min_wait_time"] = delta
+
+    for email, data in closing_reviews.items():
+        data["average_wait_time"] = timezone.timedelta(
+            seconds=data["total_wait_time"] / data["total"]
+        )
+
+    closing_reviews_sorted = sorted(closing_reviews.values(), key=lambda x: x["total"])
+
+    # get number of competence reviews done in the last DAYS days per staff member
+
+    all_staff_competence_reviews = RecruitProjectReview.objects.filter(
+        timestamp__gte=timezone.now() - timezone.timedelta(days=DAYS)
+    ).filter(reviewer_user__is_staff=True)
+
+    competence_reviews = {}
+    for review in all_staff_competence_reviews:
+        competence_reviews[review.reviewer_user.email] = competence_reviews.get(
+            review.reviewer_user.email,
+            {
+                "user": review.reviewer_user,
+                "total": 0,
+                "competent": 0,
+                "not_yet_competent": 0,
+                "excellent": 0,
+                "red_flag": 0,
+                "trusted": 0,
+                "complete_review_cycle": 0,
+                "bouncey_review_cycle": 0,
+                "incorrect": 0,
+                "correct": 0,
+                "contradicted": 0,
+                "not_yet_validated": 0,
+            },
+        )
+        current = competence_reviews[review.reviewer_user.email]
+        current["total"] += 1
+        current[review.status_nice.replace(" ", "_")] += 1
+        if review.trusted:
+            current["trusted"] += 1
+        if review.status in [COMPETENT, EXCELLENT]:
+            current[review.validated_nice.replace(" ", "_")] += 1
+        else:
+            if review.complete_review_cycle == True:
+                current["complete_review_cycle"] += 1
+            elif review.complete_review_cycle == False:
+                current["bouncey_review_cycle"] += 1
+
+    competence_reviews_sorted = sorted(
+        competence_reviews.values(), key=lambda d: d["total"]
+    )
+
+    longest_running_open_cards = (
+        AgileCard.objects.filter(
+            Q(status=AgileCard.IN_REVIEW)
+            | Q(status=AgileCard.IN_PROGRESS)
+            | Q(status=AgileCard.REVIEW_FEEDBACK)
+        )
+        .filter(content_item__content_type=ContentItem.PROJECT)
+        .filter(assignees__active=True)
+        .filter(assignees__is_staff=False)
+        .exclude(assignees__groups__team__active=False)
+        .order_by("recruit_project__start_time")
+        .prefetch_related("recruit_project")
+    )
+
+    longest_running_open_projects = [
+        card.recruit_project for card in longest_running_open_cards[:15]
+    ]
+
+    context = {
+        "closing_reviews": closing_reviews_sorted,
+        "competence_review_counts": competence_reviews_sorted,
+        "longest_running_open_projects": longest_running_open_projects,
+    }
+
+    return render(
+        request,
+        "frontend/dashboards/project_review_health/page.html",
+        context=context,
     )
