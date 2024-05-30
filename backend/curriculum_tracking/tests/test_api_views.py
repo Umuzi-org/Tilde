@@ -938,6 +938,7 @@ class TestPullRequestReviewQueueViewSet(APITestCase, APITestCaseMixin):
         "review_request_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
+        "pull_request_review_count",
     ]
 
     def verbose_instance_factory(self):
@@ -969,8 +970,15 @@ class TestCompetenceReviewQueueViewSet(APITestCase, APITestCaseMixin):
     FIELDS_THAT_CAN_BE_FALSEY = [
         "open_pr_count",
         "oldest_open_pr_updated_time",
+        "oldest_open_pr_created_time",
         "users_that_reviewed_since_last_review_request",
         "users_that_reviewed_since_last_review_request_emails",
+        "total_pr_count",
+        "pull_request_review_count",
+        # "total_pr_opened_events",
+        # "total_pr_merged_events",
+        # "total_pr_closed_events",
+        # "total_pr_reviewed_events",
     ]
 
     def verbose_instance_factory(self):

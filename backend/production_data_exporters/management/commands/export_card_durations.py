@@ -14,7 +14,9 @@ from curriculum_tracking.activity_log_entry_creators import (
     CARD_REVIEW_REQUESTED,
     CARD_MOVED_TO_REVIEW_FEEDBACK,
 )
+from git_real.activity_log_creators import PR_OPENED, PR_CLOSED, PR_MERGED
 from datetime import timedelta
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -40,16 +42,42 @@ def get_number_of_review_requests(project):
     ).count()
 
 
-def ave_delay_between_feedback_and_review_request(project):
+def total_prs_reviewed(project):
+    if project.repository is None:
+        return 0
+    return project.repository.pull_requests.filter(
+        Q(closed_at__isnull=True) | Q(merged_at__isnull=True)
+    ).count()
+
+
+def total_pr_review_wait_time(project):
+    """time that the learner was waiting for a review or close"""
+    if project.repository is None:
+        return timedelta(0)
+    pull_requests = project.repository.pull_requests.filter(
+        Q(closed_at__isnull=True) | Q(merged_at__isnull=True)
+    )
+    wait_time = timedelta(0)
+    count = len(pull_requests)
+    for pr in pull_requests:
+
+        if pr.closed_at:
+            wait_time += pr.closed_at - pr.created_at
+        if pr.merged_at:
+            wait_time += pr.merged_at - pr.created_at
+    return wait_time
+
+
+def sum_delay_between_feedback_and_review_request(project):
     feedback_given_logs = LogEntry.objects.filter(
         event_type__name=CARD_MOVED_TO_REVIEW_FEEDBACK,
         object_1_content_type=ContentType.objects.get_for_model(project),
         object_1_id=project.id,
     )
 
-    cycles = 0
     total_duration = timedelta(0)
 
+    seen = set()
     for entry in feedback_given_logs:
         feedback_timestamp = entry.timestamp
         review_request = LogEntry.objects.filter(
@@ -59,11 +87,11 @@ def ave_delay_between_feedback_and_review_request(project):
             timestamp__gte=feedback_timestamp,  # only consider review requests after feedback
         ).first()
         if review_request:
-            cycles += 1
+            if review_request.id in seen:
+                continue
+            seen.add(review_request.id)
             total_duration += review_request.timestamp - feedback_timestamp
-
-    if cycles:
-        return total_duration / cycles
+    return total_duration
 
 
 class Command(BaseCommand):
@@ -90,13 +118,17 @@ class Command(BaseCommand):
                 "first_review_request_time": first_review_request_time(
                     card.recruit_project
                 ),
+                "total_pr_review_wait_time": total_pr_review_wait_time(
+                    card.recruit_project
+                ),
+                "total_prs_reviewed": total_prs_reviewed(card.recruit_project),
                 "complete_time": card.recruit_project.complete_time,
                 "duration": card.recruit_project.complete_time
                 - card.recruit_project.start_time,
                 "number_of_review_requests": get_number_of_review_requests(
                     card.recruit_project
                 ),
-                "ave_delay_between_feedback_and_review_request": ave_delay_between_feedback_and_review_request(
+                "sum_delay_between_feedback_and_review_request": sum_delay_between_feedback_and_review_request(
                     card.recruit_project
                 ),
                 "link": f"https://backend.tilde.umuzi.org/progress_details/project/{card.recruit_project.id}",

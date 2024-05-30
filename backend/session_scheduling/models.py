@@ -72,7 +72,7 @@ class Session(models.Model, FlavourMixin):
         # eg this might be related to a CB test, a bootcamp, a card, or anything else
     )
     flavours = TaggableManager(blank=True)
-    extra_title_text = models.CharField(max_length=128, blank=True, null=True)
+    extra_title_text = models.CharField(max_length=256, blank=True, null=True)
     # extra_event_body_text = models.TextField(blank=True, null=True)
 
     start_time = models.DateTimeField(blank=True, null=True)
