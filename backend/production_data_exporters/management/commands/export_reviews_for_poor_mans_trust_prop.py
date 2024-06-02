@@ -5,7 +5,7 @@ python manage.py export_reviews_for_poor_mans_trust_prop percival.rapha@umuzi.or
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from curriculum_tracking.models import RecruitProjectReview
+from curriculum_tracking.models import RecruitProjectReview, AgileCard
 
 User = get_user_model()
 
@@ -35,8 +35,11 @@ class Command(BaseCommand):
         for review in reviews:
             project = review.recruit_project
             if project.flavours_match(flavours):
-                card = project.agile_card
-                if card:
+                try:
+                    card = project.agile_card
+                except AgileCard.DoesNotExist:
+                    pass
+                else:
                     final.add(card.id)
                     if len(final) > 10:
                         break
