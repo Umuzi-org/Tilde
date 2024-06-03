@@ -9,8 +9,10 @@ from .anthropic_interactions import (
 
 
 class ProjectReviewPricingScore(models.Model):
-    project_review = models.ForeignKey(
-        RecruitProjectReview, related_name="price_score", unique=True
+    project_review = models.OneToOneField(
+        RecruitProjectReview,
+        related_name="price_score",
+        on_delete=models.CASCADE,
     )
     score = models.SmallIntegerField(null=True, blank=True)
 
