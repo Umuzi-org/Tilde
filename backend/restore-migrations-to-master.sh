@@ -13,6 +13,7 @@ rm -rf project_review_coordination/migrations
 rm -rf session_scheduling/migrations
 rm -rf selection_bootcamps/migrations
 rm -rf coderbyte_tests/migrations
+rm -rf project_review_pricing/migrations
 
 
 git checkout master -- core/migrations
@@ -28,6 +29,7 @@ git checkout master -- project_review_coordination/migrations
 git checkout master -- session_scheduling/migrations
 git checkout master -- selection_bootcamps/migrations
 git checkout master -- coderbyte_tests/migrations
+git checkout master -- project_review_pricing/migrations
 
 
 
