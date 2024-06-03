@@ -30,6 +30,8 @@ class ProjectReviewPricingScore(models.Model):
 
     def calculate_score(self):
         """use ai to give the current review a score"""
+        # TODO: check if this is like "looks good", in this case the score is 0
+
         parts = get_distinct_parts_from_review_comments(self.project_review.comments)
 
         part_scores = get_scores_from_comments(parts)
