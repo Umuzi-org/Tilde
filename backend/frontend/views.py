@@ -649,13 +649,9 @@ def view_partial_users_list(request):
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
 
-            filtered_users = filtered_users.filter(
-                Q(first_name__istartswith=search_term)
-                | Q(last_name__istartswith=search_term)
-                | Q(email__istartswith=search_term)
-                | Q(social_profile__github_name__istartswith=search_term)
-            ).order_by("first_name", "last_name")
-            total_user_count = filtered_users.count()
+            filtered_users = User.get_users_from_search_term(
+                search_term, filtered_users
+            )
 
     limit = 20
     current_user_count = int(request.GET.get("count", 0))
