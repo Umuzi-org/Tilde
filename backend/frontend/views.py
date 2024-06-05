@@ -631,12 +631,17 @@ def view_partial_users_list(request):
     total_user_count = all_users.count()
 
     if user.is_superuser:
-        all_users = all_users
+        filtered_users = all_users
     else:
         permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
-        all_users = []
+        permitted_users = []
         for team in permitted_teams:
-            all_users += team.active_users
+            permitted_users.extend(team.active_users.all())
+
+        permitted_user_ids = [user.id for user in permitted_users]
+
+        # Convert the list of user IDs back to a QuerySet for ease of filtering
+        filtered_users = User.objects.filter(id__in=permitted_user_ids, active=True)
 
     if request.method == "POST":
         form = SimpleSearchForm(request.POST)
@@ -644,17 +649,17 @@ def view_partial_users_list(request):
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
 
-            all_users = all_users.filter(
+            filtered_users = filtered_users.filter(
                 Q(first_name__istartswith=search_term)
                 | Q(last_name__istartswith=search_term)
                 | Q(email__istartswith=search_term)
                 | Q(social_profile__github_name__istartswith=search_term)
             ).order_by("first_name", "last_name")
-            total_user_count = all_users.count()
+            total_user_count = filtered_users.count()
 
     limit = 20
     current_user_count = int(request.GET.get("count", 0))
-    users = all_users[current_user_count : current_user_count + limit]
+    users = filtered_users[current_user_count : current_user_count + limit]
     has_next_page = total_user_count > current_user_count + limit
 
     context = {
