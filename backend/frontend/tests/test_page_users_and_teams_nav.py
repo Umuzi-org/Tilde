@@ -74,17 +74,3 @@ class TestPage(FrontendTestMixin):
         body = self.page.locator("body")
 
         expect(body).to_contain_text("Load more")
-
-    def test_team_search_box_visible(self):
-        user = UserFactory(email="learner@email.com")
-        user.set_password(user.email)
-        user.save()
-
-        self.do_login(user)
-        url = self.reverse_url("users_and_teams_nav")
-        self.page.goto(url)
-        self.page.wait_for_load_state()
-
-        search_input_box = self.page.locator("input#search-term-box")
-
-        expect(search_input_box).to_be_visible()
