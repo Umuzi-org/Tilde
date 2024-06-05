@@ -174,10 +174,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         users = users_list or cls.objects.all(active=True)
 
         filtered_users = users.filter(
-            Q(first_name__istartswith=search_term)
-            | Q(last_name__istartswith=search_term)
-            | Q(email__istartswith=search_term)
-            | Q(social_profile__github_name__istartswith=search_term)
+            Q(first_name__icontains=search_term)
+            | Q(last_name__icontains=search_term)
+            | Q(email__icontains=search_term)
+            | Q(social_profile__github_name__icontains=search_term)
         ).order_by("first_name", "last_name")
 
         return filtered_users
