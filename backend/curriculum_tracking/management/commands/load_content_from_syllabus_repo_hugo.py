@@ -656,7 +656,7 @@ def _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter):
     }
 
 
-def load_all_curriculums_with_known_ids(curriculums_base_dir):
+def load_all_curriculums_with_known_ids(curriculums_base_dir, currculum_name=None):
     seen_ids = {}
 
     for file_path in curriculum_file_paths(curriculums_base_dir):
@@ -673,6 +673,10 @@ def load_all_curriculums_with_known_ids(curriculums_base_dir):
 
         defaults = _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter)
 
+        if currculum_name:
+            if defaults["name"] != currculum_name:
+                continue
+
         print("======================")
         print(defaults)
         curriculum, _ = Curriculum.get_or_create_or_update(
@@ -682,13 +686,17 @@ def load_all_curriculums_with_known_ids(curriculums_base_dir):
         set_up_single_curriculum_from_file(curriculum, file_path, syllabus_frontmatter)
 
 
-def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
+def load_all_curriculums_with_unknown_ids(curriculums_base_dir, currculum_name):
     for file_path in curriculum_file_paths(curriculums_base_dir):
         syllabus_frontmatter = frontmatter.load(file_path)
         if DB_ID in syllabus_frontmatter:
             # this one already has an id. Skip it
             continue
         defaults = _get_creation_args_from_curriculum_frontmatter(syllabus_frontmatter)
+
+        if currculum_name:
+            if defaults["name"] != currculum_name:
+                continue
 
         curriculum = Curriculum.objects.create(
             id=Curriculum.get_next_available_id(), **defaults
@@ -701,10 +709,9 @@ def load_all_curriculums_with_unknown_ids(curriculums_base_dir):
 
 
 def set_up_curriculums_from_tech_dept_repo(curriculums_base_dir, currculum_name):
-    if currculum_name:
-        raise NotImplemented
-    load_all_curriculums_with_known_ids(curriculums_base_dir)
-    load_all_curriculums_with_unknown_ids(curriculums_base_dir)
+
+    load_all_curriculums_with_known_ids(curriculums_base_dir, currculum_name)
+    load_all_curriculums_with_unknown_ids(curriculums_base_dir, currculum_name)
 
 
 class Command(BaseCommand):
