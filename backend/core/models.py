@@ -170,10 +170,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     @classmethod
-    def get_users_from_search_term(cls, search_term, users_list=None):
-        users = users_list or cls.objects.all(active=True)
-
-        filtered_users = users.filter(
+    def get_users_from_search_term(cls, search_term, user_objects):
+        filtered_users = user_objects.filter(
             Q(first_name__icontains=search_term)
             | Q(last_name__icontains=search_term)
             | Q(email__icontains=search_term)
