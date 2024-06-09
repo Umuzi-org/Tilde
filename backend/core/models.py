@@ -350,12 +350,12 @@ class Team(AuthGroup, Mixins):
                     yield team
 
     @staticmethod
-    def get_teams_from_search_term(search_term):
-        teams = Team.objects.filter(active=True, name__icontains=search_term).order_by(
-            "name"
-        )
+    def get_teams_from_search_term(search_term, team_objects):
+        filtered_teams = team_objects.filter(
+            active=True, name__icontains=search_term
+        ).order_by("name")
 
-        return teams
+        return filtered_teams
 
 
 class Stream(models.Model, FlavourMixin):

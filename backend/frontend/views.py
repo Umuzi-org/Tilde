@@ -645,11 +645,9 @@ def view_partial_teams_list(request):
     total_teams_count = all_teams.count()
 
     if user.is_superuser:
-        teams = all_teams
+        permitted_teams = all_teams
     else:
-        teams = get_objects_for_user(
-            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
-        )
+        permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
     if request.method == "POST":
         form = SearchTeamForm(request.POST)
@@ -657,12 +655,14 @@ def view_partial_teams_list(request):
         if form.is_valid():
             search_term = form.cleaned_data["search_term"]
 
-            teams = Team.get_teams_from_search_term(search_term)
-            total_teams_count = teams.count()
+            permitted_teams = Team.get_teams_from_search_term(
+                search_term, permitted_teams
+            )
+            total_teams_count = permitted_teams.count()
 
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-    teams = teams[current_team_count : current_team_count + limit]
+    teams = permitted_teams[current_team_count : current_team_count + limit]
     has_next_page = total_teams_count > current_team_count + limit
 
     context = {
