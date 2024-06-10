@@ -85,7 +85,6 @@ def group_users_by_main_language(users):
 def create_psf_sessions():
     for level in [0, 1]:
         failed_users = get_users_who_failed(level)
-        breakpoint()
         users_by_main_language = group_users_by_main_language(failed_users)
 
         for language, users in users_by_main_language.items():
