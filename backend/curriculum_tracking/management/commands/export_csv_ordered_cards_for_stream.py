@@ -5,6 +5,7 @@ from pathlib import Path
 from core.models import Stream
 from project_review_pricing.models import ProjectReviewAgileWeight
 
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("stream", type=str)
@@ -22,7 +23,7 @@ class Command(BaseCommand):
             "flavours",
             "tags",
             "url",
-            "review_weight"
+            "review_weight",
         ]
 
         seen = []
@@ -39,8 +40,13 @@ class Command(BaseCommand):
                     if identity not in seen:
                         seen.append(identity)
                         print(identity)
-                        flavour_names= [f.name for f in x.flavours]
-                        review_weight = ProjectReviewAgileWeight.get_review_weight(content_item_id=x.content_item.id,flavour_names=flavour_names)
+                        flavour_names = [f.name for f in x.flavours]
+                        review_weight = ProjectReviewAgileWeight.get_review_weight(
+                            content_item_id=x.content_item.id,
+                            flavour_names=flavour_names,
+                        )
+                        if review_weight:
+                            review_weight = review_weight.weight
                         writer.writerow(
                             [
                                 stream_name,
@@ -51,6 +57,6 @@ class Command(BaseCommand):
                                 " ".join(flavour_names),
                                 [str(s) for s in x.content_item.tags.all()],
                                 x.content_item.url,
-                                review_weight
+                                review_weight,
                             ]
                         )

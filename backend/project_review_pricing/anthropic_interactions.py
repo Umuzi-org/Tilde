@@ -2,6 +2,8 @@ from anthropic import Anthropic
 import os
 import json
 
+MAX_TOKENS = 1024 * 4
+
 
 def get_anthropic_client():
     client = Anthropic(
@@ -13,7 +15,7 @@ def get_anthropic_client():
 def prompt_to_json(prompt, model="claude-3-opus-20240229"):
     client = get_anthropic_client()
     message = client.messages.create(
-        max_tokens=1024,
+        max_tokens=MAX_TOKENS,
         messages=[
             {
                 "role": "user",
@@ -23,11 +25,22 @@ def prompt_to_json(prompt, model="claude-3-opus-20240229"):
         model=model,
     )
     json_string = message.content[0].text
-    return json.loads(json_string)
+    try:
+        return json.loads(json_string)
+    except json.decoder.JSONDecodeError:
+        breakpoint()
+
+
+def shorten_to_token_length(text, max_length=MAX_TOKENS):
+    result = text
+    client = get_anthropic_client()
+    while client.count_tokens(result) > MAX_TOKENS:
+        result = result[:-100]  # cut off some characters from the end
+    return result
 
 
 def get_distinct_parts_from_review_comments(comment):
-    prompt = prompt_break_comment_down.format(comment=comment)
+    prompt = prompt_break_comment_down.format(comment=shorten_to_token_length(comment))
     return prompt_to_json(prompt)
 
 
@@ -41,7 +54,9 @@ prompt_break_comment_down = """The following piece of text represents a review l
 - no information should be thrown away
 - if two points cover similar things then they should be combined into a single point
 
-Format the result as a JSON array. Each element in the array should be a string.  Please respond with ONLY the array, please do not include any extra explanations or text.
+Format the result as a JSON array. Each element in the array should be a string.  Please respond with ONLY the array, please do not include any extra explanations or text. 
+
+It is critical that the result is valid JSON. Double check the work. The result will be passed into the python function `json.loads`
 
 Here is the text:
 
@@ -106,15 +121,20 @@ Score: Negative score, depending on the severity
 """
 
 
-prompt_score_all_comments = """Label the following comments based on the defined scoring criteria. Assign an integer score from 1 (low value) to 10 (high value) for each comment.
+prompt_score_all_comments = (
+    f"""Label the following comments based on the defined scoring criteria. Assign an integer score from 1 (low value) to 10 (high value) for each comment.
 
-Please output a JSON array of integers representing the different scores. Do not output any extra text or explanations.
+Format the result as a JSON array. Each element in the array should be an integer.  Please respond with ONLY the array, please do not include any extra explanations or text. 
 
+It is critical that the result is valid JSON. Double check the work. The result will be passed into the python function `json.loads`
 Here is the scoring criteria:
 
 {comment_score_criteria}
 
 Here is a list of comments, formatted as a JSON array:
 
+"""
+    + """
 {comments_json}
 """
+)
