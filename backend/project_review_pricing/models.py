@@ -31,8 +31,8 @@ class ProjectReviewPricingScore(models.Model):
     )
     score = models.SmallIntegerField(null=True, blank=True)
 
-    weight_share = models.FloatField(
-        null=True, blank=True
+    weight_share = models.DecimalField(
+        null=True, blank=True, decimal_places=3, max_digits=6
     )  # what weight is this worth? Total weight amount
 
     def __str__(self):
