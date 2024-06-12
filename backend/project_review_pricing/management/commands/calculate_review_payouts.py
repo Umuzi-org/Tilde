@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from curriculum_tracking.models import RecruitProjectReview, RecruitProject
+from curriculum_tracking.models import RecruitProject
 from project_review_pricing.models import ProjectReviewPricingScore, reviewers
 from django.utils import timezone
 
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         total = len(projects)
         for i, project in enumerate(projects):
             print(f"Scoring reviews for project {i+1}/{total}")
-            if i <= 22:
-                continue
+            # if i <= 90:
+            #     continue
 
             ProjectReviewPricingScore.calculate_weight_shares_for_project(project)

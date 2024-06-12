@@ -42,9 +42,12 @@ class ProjectReviewPricingScore(models.Model):
 
     @property
     def trust_adjusted_score(self):
+        score = self.score
+        if score < 0:
+            score = 1
         if self.project_review.trusted:
-            return self.score * TRUSTED_REVIEW_MULTIPLIER
-        return self.score
+            return score * TRUSTED_REVIEW_MULTIPLIER
+        return score
 
     @classmethod
     def calculate_weight_shares_for_project(Cls, project):
@@ -71,7 +74,7 @@ class ProjectReviewPricingScore(models.Model):
         if not weight_instance:
             print(project)
             print(project.flavour_names)
-            print([o.name for o in project.tags])
+            print([o.name for o in project.content_item.tags.all()])
             set_weight = int(input("What weight should this project have? (integer)"))
             weight_instance = ProjectReviewAgileWeight.set_review_weight(
                 project.content_item_id, project.flavour_names, set_weight
