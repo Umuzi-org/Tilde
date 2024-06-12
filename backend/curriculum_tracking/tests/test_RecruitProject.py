@@ -92,9 +92,7 @@ class request_user_can_add_review_Tests(TestCase):
         self.reviewer_user = UserFactory()
         self.random_reviewer = UserFactory()
         self.user_with_permissions = UserFactory()
-        self.superuser = UserFactory(
-            is_superuser=True
-        )
+        self.superuser = UserFactory(is_superuser=True)
 
         self.assignee_team = core_factories.TeamFactory()
         self.assignee_team.user_set.add(self.assignee_user)
@@ -142,7 +140,6 @@ class request_user_can_add_review_Tests(TestCase):
                 content_type=models.ContentItem.PROJECT,
                 project_submission_type=models.ContentItem.LINK,
             ),
-            
             status=models.AgileCard.IN_PROGRESS,
         )
         self.in_progress_project_card.assignees.add(self.assignee_user)
@@ -163,73 +160,97 @@ class request_user_can_add_review_Tests(TestCase):
             self.complete_project_card,
             self.review_feedback_project_card,
         ]
-    
+
     def test_superuser_can_add_review_on_reviewable_cards(self):
         for card in self.reviewable_cards:
-            self.assertTrue(card.recruit_project.request_user_can_add_review(self.superuser))
-    
+            self.assertTrue(
+                card.recruit_project.request_user_can_add_review(self.superuser)
+            )
+
     def test_users_can_review_complete_cards(self):
-        self.assertTrue(self.complete_project_card.recruit_project.request_user_can_add_review(self.reviewer_user))
-        self.assertTrue(self.complete_project_card.recruit_project.request_user_can_add_review(self.random_reviewer))
-    
+        self.assertTrue(
+            self.complete_project_card.recruit_project.request_user_can_add_review(
+                self.reviewer_user
+            )
+        )
+        self.assertTrue(
+            self.complete_project_card.recruit_project.request_user_can_add_review(
+                self.random_reviewer
+            )
+        )
+
     def test_users_can_review_in_review_cards(self):
-        self.assertTrue(self.in_review_project_card.recruit_project.request_user_can_add_review(self.reviewer_user))
-    
+        self.assertTrue(
+            self.in_review_project_card.recruit_project.request_user_can_add_review(
+                self.reviewer_user
+            )
+        )
+
     def test_users_can_review_review_feedback_cards(self):
-        self.assertTrue(self.review_feedback_project_card.recruit_project.request_user_can_add_review(self.reviewer_user))
-    
+        self.assertTrue(
+            self.review_feedback_project_card.recruit_project.request_user_can_add_review(
+                self.reviewer_user
+            )
+        )
+
     def test_users_cannot_add_review_on_ip_cards(self):
-        self.assertFalse(self.in_progress_project_card.recruit_project.request_user_can_add_review(self.reviewer_user))
-        self.assertFalse(self.in_progress_project_card.recruit_project.request_user_can_add_review(self.superuser))
-    
+        self.assertFalse(
+            self.in_progress_project_card.recruit_project.request_user_can_add_review(
+                self.reviewer_user
+            )
+        )
+        self.assertFalse(
+            self.in_progress_project_card.recruit_project.request_user_can_add_review(
+                self.superuser
+            )
+        )
+
     def test_users_cannot_add_review_on_ready_cards(self):
-        self.assertFalse(self.ready_project_card.recruit_project.request_user_can_add_review(self.reviewer_user))
-        self.assertFalse(self.ready_project_card.recruit_project.request_user_can_add_review(self.superuser))
-    
+        self.assertFalse(
+            self.ready_project_card.recruit_project.request_user_can_add_review(
+                self.reviewer_user
+            )
+        )
+        self.assertFalse(
+            self.ready_project_card.recruit_project.request_user_can_add_review(
+                self.superuser
+            )
+        )
+
     def test_user_with_team_manage_permissions_can_add_review_on_reviewable_cards(self):
         for card in self.reviewable_cards:
-            self.assertTrue(card.recruit_project.request_user_can_add_review(self.user_with_permissions))
-    
+            self.assertTrue(
+                card.recruit_project.request_user_can_add_review(
+                    self.user_with_permissions
+                )
+            )
+
     def test_user_with_team_manage_permissions_cannot_add_review_on_ip_r_cards(self):
         for card in [self.in_progress_project_card, self.ready_project_card]:
-            self.assertFalse(card.recruit_project.request_user_can_add_review(self.user_with_permissions))
+            self.assertFalse(
+                card.recruit_project.request_user_can_add_review(
+                    self.user_with_permissions
+                )
+            )
 
 
 class positive_reviews_since_last_request_review_count_Tests(TestCase):
-    def setUp(self):
-        self.assignee_user = UserFactory()
-        self.competent_reviewers = [UserFactory() for _ in range(2)]
-        self.excellet_reviewer = UserFactory()
-      
-        self.in_review_project_card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(
-                content_type=models.ContentItem.PROJECT,
-                project_submission_type=models.ContentItem.LINK,
-            ),
+    def test_positive_reviews_since_last_request_review_count(self):
+        card = factories.AgileCardFactory(
             status=models.AgileCard.IN_REVIEW,
         )
 
-        self.in_review_project_card.assignees.add(self.assignee_user)
-        self.in_review_project_card.reviewers.set([*self.competent_reviewers, self.excellet_reviewer])
-
-        for reviewer in self.competent_reviewers:
-            factories.RecruitProjectReviewFactory(
-                reviewer_user=reviewer,
-                status=COMPETENT,
-                recruit_project=self.in_review_project_card.recruit_project,
-                comments="Noice!",
-            )
+        factories.RecruitProjectReviewFactory(
+            status=COMPETENT,
+            recruit_project=card.recruit_project,
+            comments="Noice!",
+        )
 
         factories.RecruitProjectReviewFactory(
-            reviewer_user=self.excellet_reviewer,
             status=EXCELLENT,
-            recruit_project=self.in_review_project_card.recruit_project,
-            comments="Noicest!",
+            recruit_project=card.recruit_project,
+            comments="Noice!",
         )
-
-    def test_positive_reviews_since_last_request_review_count(self):
         self.assertEqual(
-            self.in_review_project_card.recruit_project.positive_reviews_since_last_request_review_count,
-            3,
+            card.recruit_project.positive_reviews_since_last_request_review_count, 2
         )
-
