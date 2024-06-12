@@ -4,7 +4,6 @@ from django.test import TestCase
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
 from curriculum_tracking.constants import COMPETENT, EXCELLENT
-from core.tests import factories as core_factories
 from core.models import Team
 from guardian.shortcuts import assign_perm
 
@@ -87,41 +86,23 @@ class generate_repo_name_for_project_Tests(TestCase):
 
 
 class positive_reviews_since_last_request_review_count_Tests(TestCase):
-    def setUp(self):
-        self.assignee_user = UserFactory()
-        self.competent_reviewers = [UserFactory() for _ in range(2)]
-        self.excellet_reviewer = UserFactory()
 
-        self.in_review_project_card = factories.AgileCardFactory(
-            content_item=factories.ContentItemFactory(
-                content_type=models.ContentItem.PROJECT,
-                project_submission_type=models.ContentItem.LINK,
-            ),
+    def test_positive_reviews_since_last_request_review_count(self):
+        card = factories.AgileCardFactory(
             status=models.AgileCard.IN_REVIEW,
         )
 
-        self.in_review_project_card.assignees.add(self.assignee_user)
-        self.in_review_project_card.reviewers.set(
-            [*self.competent_reviewers, self.excellet_reviewer]
+        factories.RecruitProjectReviewFactory(
+            status=COMPETENT,
+            recruit_project=card.recruit_project,
+            comments="Noice!",
         )
-
-        for reviewer in self.competent_reviewers:
-            factories.RecruitProjectReviewFactory(
-                reviewer_user=reviewer,
-                status=COMPETENT,
-                recruit_project=self.in_review_project_card.recruit_project,
-                comments="Noice!",
-            )
 
         factories.RecruitProjectReviewFactory(
-            reviewer_user=self.excellet_reviewer,
             status=EXCELLENT,
-            recruit_project=self.in_review_project_card.recruit_project,
-            comments="Noicest!",
+            recruit_project=card.recruit_project,
+            comments="Noice!",
         )
-
-    def test_positive_reviews_since_last_request_review_count(self):
         self.assertEqual(
-            self.in_review_project_card.recruit_project.positive_reviews_since_last_request_review_count,
-            3,
+            card.recruit_project.positive_reviews_since_last_request_review_count, 2
         )
