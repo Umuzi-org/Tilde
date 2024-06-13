@@ -5,6 +5,8 @@ from backend.settings import REVIEW_SPAM_THRESHOLD
 from django.db.models import Count, Subquery
 from sql_util.utils import SubqueryAggregate
 from django.db.models import Q
+from datetime import timedelta
+from django.utils import timezone
 
 
 def get_projects(cohort=None, user=None):
@@ -182,3 +184,20 @@ def agile_card_reviews_outstanding(user):
 def pull_request_reviews_outstanding(user):
     # TODO: only implement this once the github webhook is healthier
     return []
+
+
+def get_duration_from_course_component(course_component):
+    if course_component.agile_card.status in [
+        models.AgileCard.BLOCKED,
+        models.AgileCard.READY,
+    ]:
+        return timedelta(0)
+
+    if course_component.agile_card.status in [
+        models.AgileCard.IN_PROGRESS,
+        models.AgileCard.REVIEW_FEEDBACK,
+        models.AgileCard.IN_REVIEW,
+    ]:
+        return timezone.now() - course_component.start_time
+
+    return course_component.end_time - course_component.start_time

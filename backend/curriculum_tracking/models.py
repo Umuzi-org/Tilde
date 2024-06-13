@@ -23,6 +23,7 @@ from git_real.constants import GIT_REAL_BOT_USERNAME
 import re
 import logging
 from django.db.models import Q
+from . import helpers
 
 logger = logging.getLogger(__name__)
 
@@ -773,6 +774,9 @@ class RecruitProject(
     def agile_card_status(self):
         return self.agile_card.status
 
+    def get_duration(self):
+        return helpers.get_duration_from_course_component(self)
+
 
 class RecruitProjectReview(models.Model, Mixins):
     INCORRECT = "i"
@@ -962,6 +966,9 @@ class TopicProgress(
             "title": self.content_item.title,
             "flavour_names": self.content_item.flavour_names,
         }
+
+    def get_duration(self):
+        return helpers.get_duration_from_course_component(self)
 
 
 class TopicReview(models.Model, Mixins):
