@@ -167,8 +167,8 @@
                     </button>
                     <div x-show="isOpen"
                       @click.away="isOpen = false" 
-                         class="absolute grid gap-1 drop-shadow border rounded-md max-h-36 overflow-y-scroll w-full max-w-full left-0 p-2 z-10 bg-white">
-                      <span class="flex text-xs font-medium">Reviewers <i class="fa-solid fa-x absolute right-1" title="Close dropdown"></i></span>
+                         class="absolute grid gap-1 drop-shadow border rounded-md max-h-36 overflow-y-auto left-[-11px] right-[-11px] p-2 z-10 bg-white">
+                      <span class="flex text-xs font-medium">Reviewers<i class="fa fa-times-circle absolute right-1" title="Close dropdown"></i></span>
                       {% for reviewer in card.reviewers.all %}
                         <div class="flex items-center gap-1 text-xs" title="{{ reviewer }}">
                           <span class="whitespace-nowrap">{% user_avatar reviewer "small" %}</span>
