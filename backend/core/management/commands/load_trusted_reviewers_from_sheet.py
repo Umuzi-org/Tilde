@@ -7,6 +7,8 @@ from google_helpers.utils import fetch_sheet
 def process_row(row):
     if bool(int(row["broken"] or 0)):
         return
+    if bool(int(row["processed"] or 0)):
+        return
 
     print(f"Processing {row}")
 
