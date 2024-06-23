@@ -42,6 +42,7 @@
                     Hide details
                 </button>
                 <button
+                    type="button"
                     class="{{ styles.button_secondary_small }}"
                     x-show="!bundleExpanded"
                     x-on:htmx:after-request="bundleExpanded = true"
