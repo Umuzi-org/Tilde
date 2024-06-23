@@ -4,7 +4,7 @@ from django.core.signing import TimestampSigner
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 
-from curriculum_tracking.models import (RecruitProject, RecruitProjectReview)
+from curriculum_tracking.models import RecruitProject, RecruitProjectReview
 
 from .theme import styles
 
@@ -58,8 +58,4 @@ class RecruitProjectReviewForm(ThemedFormMixin, forms.ModelForm):
 
     class Meta:
         model = RecruitProjectReview
-        fields = ["status", "comments", "recruit_project", "reviewer_user"]
-        widgets = {
-            "recruit_project": forms.HiddenInput(),
-            "reviewer_user": forms.HiddenInput(),
-        }
+        fields = ["status", "comments"]
