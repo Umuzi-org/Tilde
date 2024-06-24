@@ -490,43 +490,6 @@ def progress_details(
     )
 
 
-def action_add_review(request, content_type, id):
-    if request.method == "POST":
-        if content_type == "project":
-            project: RecruitProject = get_object_or_404(RecruitProject, id=id)
-            card: AgileCard = project.agile_card
-
-            form: RecruitProjectReviewForm = RecruitProjectReviewForm(
-                data=request.POST,
-            )
-            if form.is_valid():
-                review: RecruitProjectReview = RecruitProjectReview(
-                    **form.cleaned_data,
-                    recruit_project=project,
-                    reviewer_user=request.user,
-                )
-                review.save()
-
-                log_creators.log_project_competence_review_done(review)
-
-                card.refresh_from_db()
-
-                if card.status == AgileCard.REVIEW_FEEDBACK:
-                    log_creators.log_card_moved_to_review_feedback(
-                        card, review.reviewer_user
-                    )
-                elif card.status == AgileCard.COMPLETE:
-                    log_creators.log_card_moved_to_complete(card, review.reviewer_user)
-
-                return render(
-                    request,
-                    "frontend/progress_details/js_exec_action_prepend_new_review.html",
-                    {
-                        "review": review,
-                    },
-                )
-
-
 def check_user_can_add_review(logged_in_user):
     request = get_current_request()
     content_type = request.resolver_match.kwargs.get("content_type")
