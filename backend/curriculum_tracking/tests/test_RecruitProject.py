@@ -99,7 +99,7 @@ class request_user_can_add_review_Tests(TestCase):
         self.assignee_team.save()
 
         assign_perm(
-            Team.PERMISSION_MANAGE_CARDS,
+            Team.PERMISSION_REVIEW_CARDS,
             self.user_with_permissions,
             self.assignee_team,
         )
@@ -217,7 +217,7 @@ class request_user_can_add_review_Tests(TestCase):
             )
         )
 
-    def test_user_with_team_manage_permissions_can_add_review_on_reviewable_cards(self):
+    def test_user_with_permissions_can_add_review_on_reviewable_cards(self):
         for card in self.reviewable_cards:
             self.assertTrue(
                 card.recruit_project.request_user_can_add_review(
@@ -225,7 +225,7 @@ class request_user_can_add_review_Tests(TestCase):
                 )
             )
 
-    def test_user_with_team_manage_permissions_cannot_add_review_on_ip_r_cards(self):
+    def test_user_with_permissions_cannot_add_review_on_ip_r_cards(self):
         for card in [self.in_progress_project_card, self.ready_project_card]:
             self.assertFalse(
                 card.recruit_project.request_user_can_add_review(
