@@ -61,5 +61,36 @@
             </div>
 
         </div>
+        <div 
+            id="users"
+            class="col-span-12 md:col-span-6 py-4"
+            :class="{ 'hidden md:block': activeTab !== 'users' }"
+            >
+            <div class="flex gap-2 flex-col">
+                <div class="flex justify-between items-start">
+                    <h1 @click="activeTab = 'teams'" class="{{ styles.heading1 }} pb-2">Users</h1>
+                    <button
+                        @click="activeTab = 'teams'"
+                        class="{{ styles.button_secondary_small }} md:hidden"
+                        >
+                        Show Teams
+                    </button>
+                </div>
+                <form method="get" action="" class="mb-3 flex items-center gap-1">
+                    {% csrf_token %}
+                    <input type="text" name="search_term" placeholder="Search users..." id="user-search-term-box" hx-post="{% url 'view_partial_users_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#users-list" hx-swap="innerHTML" class="{{ styles.input_small }} w-full lg:w-max">
+                </form>
+            </div>
+            <div 
+            class="rounded-xl p-3 ring-1 ring-gray-200 mb-1 shadow bg-white "
+            id="users-list"
+                hx-get="{% url 'view_partial_users_list' %}"
+                hx-trigger="load"
+                hx-target="#users-list"
+                hx-swap="beforeend"
+                >
+            </div>
+
+        </div>
     </main>
 {% endblock %}

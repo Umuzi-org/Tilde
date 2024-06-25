@@ -132,7 +132,9 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "session_scheduling",
     "selection_bootcamps",
-    "coderbyte_tests"
+    "coderbyte_tests",
+    "project_review_pricing"
+
 ]
 
 SITE_ID = 1  # from allauth docs

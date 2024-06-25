@@ -70,7 +70,7 @@ class TestPage(FrontendTestMixin):
         url = self.reverse_url("view_partial_teams_list")
         self.page.goto(url)
         self.page.wait_for_load_state()
-        
+
         body = self.page.locator("body")
 
         expect(body).to_contain_text("Load more")

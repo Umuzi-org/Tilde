@@ -361,6 +361,14 @@ class Team(AuthGroup, Mixins):
                     yielded.append(team.id)
                     yield team
 
+    @staticmethod
+    def get_teams_from_search_term(search_term, team_objects):
+        filtered_teams = team_objects.filter(
+            active=True, name__icontains=search_term
+        ).order_by("name")
+
+        return filtered_teams
+
 
 class Stream(models.Model, FlavourMixin):
     """a collection of curriculums. Eg someone might need to do a soft skills curriculum and then a web dev part 1 curriculum"""

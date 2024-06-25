@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
 from curriculum_tracking.card_generation_helpers import get_ordered_content_items
-from curriculum_tracking.models import Curriculum
 import csv
 from pathlib import Path
 from core.models import Stream
+from project_review_pricing.models import ProjectReviewAgileWeight
 
 
 class Command(BaseCommand):
@@ -23,6 +23,7 @@ class Command(BaseCommand):
             "flavours",
             "tags",
             "url",
+            "review_weight",
         ]
 
         seen = []
@@ -39,6 +40,13 @@ class Command(BaseCommand):
                     if identity not in seen:
                         seen.append(identity)
                         print(identity)
+                        flavour_names = [f.name for f in x.flavours]
+                        review_weight = ProjectReviewAgileWeight.get_review_weight(
+                            content_item_id=x.content_item.id,
+                            flavour_names=flavour_names,
+                        )
+                        if review_weight:
+                            review_weight = review_weight.weight
                         writer.writerow(
                             [
                                 stream_name,
@@ -46,8 +54,9 @@ class Command(BaseCommand):
                                 x.content_item.id,
                                 x.content_item.title,
                                 x.content_item.content_type,
-                                " ".join([f.name for f in x.flavours]),
+                                " ".join(flavour_names),
                                 [str(s) for s in x.content_item.tags.all()],
                                 x.content_item.url,
+                                review_weight,
                             ]
                         )

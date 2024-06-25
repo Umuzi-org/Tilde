@@ -13,4 +13,5 @@ git add -f project_review_coordination/migrations/*.py
 git add -f session_scheduling/migrations/*.py
 git add -f selection_bootcamps/migrations/*.py
 git add -f coderbyte_tests/migrations/*.py
+git add -f project_review_pricing/migrations/*.py
 
