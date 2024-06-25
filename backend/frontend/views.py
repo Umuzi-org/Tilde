@@ -643,15 +643,12 @@ def view_partial_users_list(request):
         # Convert the list of user IDs back to a QuerySet for ease of filtering
         filtered_users = User.objects.filter(id__in=permitted_user_ids, active=True)
 
-    if request.method == "POST":
-        form = SimpleSearchForm(request.POST)
+    form = SimpleSearchForm(request.POST)
 
-        if form.is_valid():
-            search_term = form.cleaned_data["search_term"]
+    if form.is_valid():
+        search_term = form.cleaned_data["search_term"]
 
-            filtered_users = User.get_users_from_search_term(
-                search_term, filtered_users
-            )
+        filtered_users = User.get_users_from_search_term(search_term, filtered_users)
 
     limit = 20
     current_user_count = int(request.GET.get("count", 0))
