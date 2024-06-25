@@ -783,6 +783,9 @@ class RecruitProject(
 
         card: AgileCard = self.agile_card
 
+        if card.request_user_is_assignee(user):
+            return False
+
         if card.status not in [
             AgileCard.IN_REVIEW,
             AgileCard.COMPLETE,
@@ -801,8 +804,11 @@ class RecruitProject(
         if user in card.reviewers.all():
             return True
 
-        return not card.request_user_is_assignee(user) and any(
-            card.user_has_permission(user, perm) for perm in Team.PERMISSION_VIEW
+        return any(
+            card.user_has_permission(user, perm) for perm in [
+                Team.PERMISSION_REVIEW_CARDS,
+                Team.PERMISSION_TRUSTED_REVIEWER
+            ]
         )
 
 class RecruitProjectReview(models.Model, Mixins):
