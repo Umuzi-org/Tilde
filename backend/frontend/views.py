@@ -649,6 +649,7 @@ def view_partial_users_list(request):
         search_term = form.cleaned_data["search_term"]
 
         filtered_users = User.get_users_from_search_term(search_term, filtered_users)
+        total_user_count = filtered_users.count()
 
     limit = 20
     current_user_count = int(request.GET.get("count", 0))
@@ -682,8 +683,6 @@ def users_and_teams_nav(request):
 @login_required()
 def view_partial_teams_list(request):
     user = request.user
-
-    from guardian.shortcuts import get_objects_for_user
 
     all_teams = Team.objects.filter(active=True).order_by("name")
     total_teams_count = all_teams.count()
