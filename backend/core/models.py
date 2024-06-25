@@ -169,8 +169,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         except SocialProfile.DoesNotExist:
             return None
 
-    @classmethod
-    def get_users_from_search_term(cls, search_term, user_objects):
+    @staticmethod
+    def get_users_from_search_term(search_term, user_objects):
         filtered_users = user_objects.filter(
             Q(first_name__icontains=search_term)
             | Q(last_name__icontains=search_term)
