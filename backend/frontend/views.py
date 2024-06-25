@@ -693,7 +693,7 @@ def view_partial_teams_list(request):
     else:
         permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
-    form = SearchTeamForm(request.POST)
+    form = SimpleSearchForm(request.POST)
 
     if form.is_valid():
         search_term = form.cleaned_data["search_term"]
