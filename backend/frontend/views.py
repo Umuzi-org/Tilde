@@ -649,16 +649,13 @@ def view_partial_teams_list(request):
     else:
         permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
-    if request.method == "POST":
-        form = SearchTeamForm(request.POST)
+    form = SearchTeamForm(request.POST)
 
-        if form.is_valid():
-            search_term = form.cleaned_data["search_term"]
+    if form.is_valid():
+        search_term = form.cleaned_data["search_term"]
 
-            permitted_teams = Team.get_teams_from_search_term(
-                search_term, permitted_teams
-            )
-            total_teams_count = permitted_teams.count()
+        permitted_teams = Team.get_teams_from_search_term(search_term, permitted_teams)
+        total_teams_count = permitted_teams.count()
 
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
