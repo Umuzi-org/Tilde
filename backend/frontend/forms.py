@@ -55,7 +55,10 @@ class ForgotPasswordForm(ThemedFormMixin, forms.Form):
 
 
 class RecruitProjectReviewForm(ThemedFormMixin, forms.ModelForm):
-
     class Meta:
         model = RecruitProjectReview
         fields = ["status", "comments"]
+
+
+class SearchTeamForm(forms.Form):
+    search_term = forms.CharField(required=True)

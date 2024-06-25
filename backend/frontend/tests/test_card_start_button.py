@@ -42,13 +42,12 @@ class TestCardStartButton(FrontendTestMixin):
         self.do_login(self.user)
         self.page.wait_for_load_state()
 
-        self.page.locator('text="Start"').click();
+        self.page.locator('text="Start"').click()
         self.page.wait_for_load_state()
 
         topic_card_title = self.card.content_item.title
         expect(self.page.locator("div#column_IP")).to_contain_text(topic_card_title)
         expect(self.page.locator("div#column_RB")).not_to_contain_text(topic_card_title)
-
 
     def test_start_button_moves_project_card_to_ip_column(self):
         self.make_project_card(ContentItem.LINK)
@@ -61,7 +60,9 @@ class TestCardStartButton(FrontendTestMixin):
 
         project_card_title = self.card.content_item.title
         expect(self.page.locator("div#column_IP")).to_contain_text(project_card_title)
-        expect(self.page.locator("div#column_RB")).not_to_contain_text(project_card_title)
+        expect(self.page.locator("div#column_RB")).not_to_contain_text(
+            project_card_title
+        )
 
     def test_start_button_logs_card_started_event(self):
         self.make_project_card(ContentItem.LINK)

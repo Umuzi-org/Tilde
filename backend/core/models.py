@@ -97,17 +97,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     def teams(self):
         # this is because we've overridden Django's default group behaviour. We work with teams, not groups
         return [o.team for o in self.groups.all().prefetch_related("team")]
-    
+
     @lru_cache
     def teams_cached(self):
         return self.teams()
-    
+
     @lru_cache
-    def get_permissioned_teams(self, perms:tuple):
+    def get_permissioned_teams(self, perms: tuple):
         from guardian.shortcuts import get_objects_for_user
 
         return get_objects_for_user(
-            user=self, perms=perms, klass=Team.objects.filter(active=True), any_perm=True
+            user=self,
+            perms=perms,
+            klass=Team.objects.filter(active=True),
+            any_perm=True,
         )
 
     def get_full_name(self):
@@ -345,6 +348,14 @@ class Team(AuthGroup, Mixins):
                 if team.active and team.id not in yielded:
                     yielded.append(team.id)
                     yield team
+
+    @staticmethod
+    def get_teams_from_search_term(search_term, team_objects):
+        filtered_teams = team_objects.filter(
+            active=True, name__icontains=search_term
+        ).order_by("name")
+
+        return filtered_teams
 
 
 class Stream(models.Model, FlavourMixin):
