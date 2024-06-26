@@ -6,4 +6,5 @@ node_modules/
 __pycache__/
 gitmodules/
 .vscode
+.idea
 .virtual_documents/

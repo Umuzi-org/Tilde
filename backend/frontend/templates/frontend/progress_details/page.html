@@ -10,7 +10,7 @@
         <div class="grid gap-4 my-4 w-full">
             <div class="p-2 border-2 rounded-md grid gap-2">
                 <div class="p-2 border-2 rounded-md ">
-                    Tag names: 
+                    Tag names:
                     {% with course_component.content_item.tag_names|length as array_length %}
                         {% for item in course_component.content_item.tag_names %}
                             {{ item }}
@@ -18,14 +18,14 @@
                         {% endfor %}
                     {% endwith %}
                 </div>
-            
+
                 <div class="p-2 border-2 rounded-md ">
                     <p>
-                        Status : {{board_status}}
+                        Status : {{ board_status }}
                     </p>
                 </div>
             </div>
-            
+
             <div class="p-2 border-2 rounded-md grid gap-2">
                 <div class="p-2 border-2 rounded-md ">
                     Assignees:
@@ -42,21 +42,22 @@
                     </ul>
                 </div>
             </div>
-        
+
 
             {% if course_component.content_item.content_type_nice == "project" %}
                 <div class="p-2 border-2 rounded-md grid gap-2">
                     <div class="p-2 border-2 rounded-md ">
-                        Reviewers: 
+                        Reviewers:
                         <ul class="mx-8">
                             {% if course_component.reviewer_users.all %}
-                            {% for reviewer in course_component.reviewer_users.all %}
-                                <li class="flex items-center pr-2 py-1"> 
-                                    <div class="pr-2">
-                                        {% user_avatar reviewer %}
-                                    </div>{{reviewer}}
-                                </li>
-                            {% endfor %}
+                                {% for reviewer in course_component.reviewer_users.all %}
+                                    <li class="flex items-center pr-2 py-1">
+                                        <div class="pr-2">
+                                            {% user_avatar reviewer %}
+                                        </div>
+                                        {{ reviewer }}
+                                    </li>
+                                {% endfor %}
                             {% endif %}
                         </ul>
                     </div>
@@ -64,22 +65,23 @@
             {% endif %}
 
             <div class="grid p-2 border-2 rounded-md gap-2">
-                <p class="p-2 border-2 rounded-md" >
-                    Start Date: {{course_component.start_time}}
+                <p class="p-2 border-2 rounded-md">
+                    Start Date: {{ course_component.start_time }}
                 </p>
 
                 <p class="p-2 border-2 rounded-md">
-                    Due Date: {{course_component.due_time}}
+                    Due Date: {{ course_component.due_time }}
                 </p>
             </div>
 
             <div class="p-2 border-2 rounded-md ">
                 <p>
-                    Content URL: 
-                    <a class="{{styles.link}}" href="{{course_component.content_url}}" target="_blank">{{course_component.content_url}}</a>
+                    Content URL:
+                    <a class="{{ styles.link }}" href="{{ course_component.content_url }}"
+                       target="_blank">{{ course_component.content_url }}</a>
                 </p>
             </div>
-        
+
             {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "link" %}
                 <div x-data="{ 
                     isLinkSubmissionFormVisible: '{{ course_component.link_submission }}' === 'None' || {{ link_submission_form.errors|length }} > 0,
@@ -90,90 +92,104 @@
                     }
                 }" class="grid bold p-2 border-2 rounded-md gap-2">
                     <h6>Link to your work</h6>
-                    
-                    <div>Current link submission: 
+
+                    <div>Current link submission:
                         {% if course_component.link_submission == None %}
                             No link submitted yet
                         {% else %}
-                        <a class="{{styles.link}}" href="{{course_component.link_submission}}" target="_blank">
-                            {{course_component.link_submission}}
-                        </a>
-                        {% endif%}
+                            <a class="{{ styles.link }}" href="{{ course_component.link_submission }}" target="_blank">
+                                {{ course_component.link_submission }}
+                            </a>
+                        {% endif %}
                     </div>
-                    <button id="edit_link_submission_icon" class="{{ styles.button_primary_small }} max-w-max" x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()">
+                    <button id="edit_link_submission_icon" class="{{ styles.button_primary_small }} max-w-max"
+                            x-show="isEditLinkSubmissionIconVisible" @click="toggleLinkSubmissionForm()">
                         <i class="fa-solid fa-pen-to-square"></i> Edit link submission
                     </button>
-                    
-                    <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible" novalidate>
+
+                    <form id="link_submission_form" action="" method="post" x-show="isLinkSubmissionFormVisible"
+                          novalidate>
                         {% csrf_token %}
                         {% include 'frontend/auth/form_template.html' with form=link_submission_form %}
                         <button class="{{ styles.button_primary_small }}" type="submit">Submit Link</button>
                     </form>
                 </div>
             {% endif %}
-            
+
             {% if course_component.content_item.content_type_nice == "project" %}
+                <div class="p-2 border-2 rounded-md">
+                    <h2 class="{{ styles.heading2 }}">Reviews</h2>
+                    <div id="reviews" class="grid gap-2 mt-2 max-h-44 overflow-y-scroll">
+                        {% for review in course_component.reviews_queryset.all %}
+                            {% include "frontend/progress_details/partial_review.html" %}
+                        {% endfor %}
+                    </div>
+                </div>
                 {% if course_component.request_user_can_add_review %}
                     <div x-data="{ modalOpen: false }">
                         <button @click="modalOpen = !modalOpen" class="{{ styles.button_primary_small }}"
-                            type="submit">Add Review</button>
+                                type="submit">Add Review
+                        </button>
                         {% include "frontend/progress_details/partial_add_review.html" %}
                     </div>
                 {% endif %}
-                <div id="reviews" class="border-2 p-2 rounded-md grid gap-2"></div>
-            {% endif %}
-            
-            {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
-                <div class="flex flex-col p-2 border-2 rounded-md gap-2">
-                    <div class="p-2 border-2 rounded-md ">
-                        <p>
-                            Repository: 
-                            <a id="repo-link" class="{{styles.link}}" href="{{course_component.repository.get_github_link}}" target="_blank">{{course_component.repository.full_name}}</a>
-                        </p>
-                    </div>
-                    {% if course_component.repository.pull_requests.all|length %}
-                        <div class="p-2 border-2 rounded-md ">
-                            <p>
-                                Open pull requests: 
-                            </p>
-                            <ul class="list-disc">
-                                {% for pr in course_component.repository.pull_requests.all %}
-                                    <li class="ml-4 mb-1">
-                                        <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{pr.get_github_link}}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>                            
-                        </div>
-                    {% endif %}
-                </div>
             {% endif %}
 
-            <div class="p-2 border-2 rounded-md ">
-                <h2 class="{{ styles.heading2 }}">Timeline</h2>
-            
-                <table class="table-auto">
-                    <thead>
-                        <tr>
-                            <td>Date</td>
-                            <td>Time</td>
-                            <td>Actor</td>
-                            <td>Event</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in timeline %}
-                        <tr>
-                            <td>{{ entry.timestamp | date:"l" }} {{ entry.timestamp | date }}</td>
-                            <td>{{ entry.timestamp | time }}</td>
-                            <td>{{ entry.actor.email }} </td>
-                            <td>{{ entry.event_type }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                    
+        {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
+            <div class="flex flex-col p-2 border-2 rounded-md gap-2">
+                <div class="p-2 border-2 rounded-md ">
+                    <p>
+                        Repository:
+                        <a id="repo-link" class="{{ styles.link }}"
+                           href="{{ course_component.repository.get_github_link }}"
+                           target="_blank">{{ course_component.repository.full_name }}</a>
+                    </p>
+                </div>
+                {% if course_component.repository.pull_requests.all|length %}
+                    <div class="p-2 border-2 rounded-md ">
+                        <p>
+                            Open pull requests:
+                        </p>
+                        <ul class="list-disc">
+                            {% for pr in course_component.repository.pull_requests.all %}
+                                <li class="ml-4 mb-1">
+                                    <a id="pr_{{ pr.number }}" class="{{ styles.link }} underline"
+                                       href="{{ pr.get_github_link }}" target="_blank">{{ pr.title }}
+                                        - {{ pr.created_at }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
+        {% endif %}
+
+        <div class="p-2 border-2 rounded-md ">
+            <h2 class="{{ styles.heading2 }}">Timeline</h2>
+
+            <table class="table-auto">
+                <thead>
+                <tr>
+                    <td>Date</td>
+                    <td>Time</td>
+                    <td>Actor</td>
+                    <td>Event</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in timeline %}
+                    <tr>
+                        <td>{{ entry.timestamp | date:"l" }} {{ entry.timestamp | date }}</td>
+                        <td>{{ entry.timestamp | time }}</td>
+                        <td>{{ entry.actor.email }} </td>
+                        <td>{{ entry.event_type }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
         </div>
+    </div>
     </div>
 {% endblock %}
 
