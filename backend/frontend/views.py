@@ -809,7 +809,7 @@ def project_review_coordination_unclaimed(request):
 def view_partial_bundle_expanded(request):
     from curriculum_tracking.models import RecruitProject
 
-    project_ids = request.POST.getlist("project_ids")
+    project_ids = request.GET.getlist("project_ids")
     assert len(project_ids) > 0, "No project_ids provided"
     projects = RecruitProject.objects.filter(id__in=project_ids).exclude(
         project_review_bundle_claims__is_active=True
