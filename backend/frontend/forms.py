@@ -4,6 +4,8 @@ from django.core.signing import TimestampSigner
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 
+from curriculum_tracking.models import RecruitProject, RecruitProjectReview
+
 from .theme import styles
 
 User = get_user_model()
@@ -51,5 +53,14 @@ class ForgotPasswordForm(ThemedFormMixin, forms.Form):
             kwargs={"token": self._get_password_reset_token()},
         )
 
-class SimpleSearchForm(forms.Form):
+
+class RecruitProjectReviewForm(ThemedFormMixin, forms.ModelForm):
+    class Meta:
+        model = RecruitProjectReview
+        fields = ["status", "comments"]
+
+
+class SearchTeamForm(forms.Form):
     search_term = forms.CharField(required=True)
+
+

@@ -17,16 +17,17 @@
       integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
       crossorigin="anonymous"
     ></script>
+    <script src='https://unpkg.com/htmx.org/dist/ext/response-targets.js'></script>
     {# TODO https://htmx.org/docs/#installing #}
     <script src="https://cdn.tailwindcss.com"></script>
     <script
       src="https://kit.fontawesome.com/6e84d8828f.js"
       crossorigin="anonymous"
     ></script>
-
+    
     {% block main_head %}{% endblock %}
   </head>
-  <body class="{% block body_classes %}h-full{% endblock %}">
+  <body hx-ext="response-targets" class="{% block body_classes %}h-full{% endblock %}">
     {% block main_content %} {% endblock %}
   </body>
 </html>

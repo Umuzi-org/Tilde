@@ -77,6 +77,11 @@ urlpatterns = [
         views.progress_details,
         name="progress_details",
     ),
+    path(
+        "progress_details/<content_type>/<int:id>/add_review/",
+        views.action_add_review,
+        name="action_add_review",
+    ),
     # Project review coordination
     path(
         "project_review_coordination/unclaimed/",

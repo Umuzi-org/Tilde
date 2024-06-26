@@ -1,0 +1,16 @@
+{% load custom_tags %}
+<div id="review-{{ review.id }}">
+    <span class="text-xs tracking-tight">{{ review.timestamp|date:"d F Y H:i" }}</span>
+    <div class="flex items center gap-2">
+        {% user_avatar review.reviewer_user %}
+        <div class="">
+            {{ review.reviewer_user.email }}
+        </div>
+    </div>
+
+    <div class="flex gap-2 mt-2">
+        <span class="{{ styles.badge_secondary}}">
+            {{ review.get_status_display }}
+        </span>
+    </div>
+</div>
