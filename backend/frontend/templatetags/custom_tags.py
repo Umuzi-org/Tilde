@@ -17,6 +17,4 @@ def markdownify(raw_text):
         'markdown.extensions.fenced_code',
         'markdown.extensions.codehilite',
         'markdown.extensions.tables',
-        'pymdownx.inlinehilite',
-        'markdown_checklist.extension'
     ], ).strip()
