@@ -23,7 +23,7 @@ class TeamSearchTestCase(TestCase):
     def test_search_term_first_name_john(self):
         search_term = "jOHn"
         users = User.get_users_from_search_term(search_term, self.users)
-        self.assertTrue(len(users), 1)
+        self.assertEqual(len(users), 1)
         self.assertIn(self.john_nolan, users)
         self.assertNotIn(self.lucy_chen, users)
 
