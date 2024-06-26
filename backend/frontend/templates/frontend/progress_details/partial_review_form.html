@@ -1,20 +1,22 @@
-<form 
-    id="review-form"
-    hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
-    hx-swap="afterbegin"
-    hx-target="#reviews"
-    hx-target-4xx='#review-form-wrapper'
-    hx-on::after-request="handleReviewResponse(event)"
-    x-on:review-submitted="modalOpen = false"
+<form
+        id="review-form"
+        hx-post="{% url 'action_add_review' course_component.content_item.content_type_nice course_component.id %}"
+        hx-swap="afterbegin"
+        hx-target="#reviews"
+        hx-target-4xx='#review-form-wrapper'
+        hx-on::after-request="handleReviewResponse(event)"
+        x-on:review-submitted="modalOpen = false"
 >
     {% csrf_token %}
-    {{ review_form.as_p}}
-    <button id="submit-review-button" class="{{ styles.button_primary_small }}" type="submit">
-        Submit Review
-    </button>
-    <button @click="modalOpen = false" class="{{ styles.button_secondary_small }}" type="button">
-        Cancel
-    </button>
+    {{ review_form.as_p }}
+    <div class="flex justify-between">
+        <button @click="modalOpen = false" class="{{ styles.button_secondary_small }}" type="button">
+            Cancel
+        </button>
+        <button id="submit-review-button" class="{{ styles.button_primary_small }}" type="submit">
+            Submit Review
+        </button>
+    </div>
 </form>
 
 <script>

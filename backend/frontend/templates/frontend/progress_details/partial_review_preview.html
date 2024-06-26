@@ -1,0 +1,25 @@
+{% extends 'frontend/partial_modal_base.html' %}
+{% load custom_tags %}
+{% block modal_classes %}w-auto max-w-2xl{% endblock modal_classes %}
+{% block modal_header %}
+<div class="hidden md:block">{% user_avatar request.user %}</div>
+<div class="flex flex-col gap-0">
+    <div class="flex flex-col gap-0">
+        <h1 class="font-bold text-gray-800 ">{{ review.reviewer_user }} </h1>
+        <span class="text-xs text-slate-500">{{ review.timestamp|date:"d/m/Y, H:i:s" }}</span>
+    </div>
+</div>
+{% endblock modal_header %}
+
+{% block modal_content %}
+<div class="min-h-44 text-sm max-h-96 overflow-y-auto pr-2">
+    {{ review.comments|markdownify|safe }}
+</div>
+
+<br class="my-2" />
+
+<span class="{{ styles.badge_secondary }}">
+    {{ review.status_nice }}
+</span>
+
+{% endblock modal_content %}
