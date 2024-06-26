@@ -7,6 +7,7 @@ from django_countries.fields import CountryField
 from django.contrib.auth.models import Group as AuthGroup
 from django.contrib.auth.models import PermissionsMixin
 from taggit.managers import TaggableManager
+from django.db.models import Q
 
 from model_mixins import FlavourMixin
 
@@ -167,6 +168,17 @@ class User(AbstractBaseUser, PermissionsMixin):
             return self.social_profile.github_name
         except SocialProfile.DoesNotExist:
             return None
+
+    @staticmethod
+    def get_users_from_search_term(search_term, user_objects):
+        filtered_users = user_objects.filter(
+            Q(first_name__icontains=search_term)
+            | Q(last_name__icontains=search_term)
+            | Q(email__icontains=search_term)
+            | Q(social_profile__github_name__icontains=search_term)
+        ).order_by("first_name", "last_name")
+
+        return filtered_users
 
 
 class Curriculum(models.Model, Mixins, TagMixin):

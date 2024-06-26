@@ -23,6 +23,11 @@ urlpatterns = [
         name="view_partial_teams_list",
     ),
     path(
+        "users/view_partial_users_list/",
+        views.view_partial_users_list,
+        name="view_partial_users_list",
+    ),
+    path(
         "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
         views.view_partial_team_users_list,
         name="view_partial_team_users_list",

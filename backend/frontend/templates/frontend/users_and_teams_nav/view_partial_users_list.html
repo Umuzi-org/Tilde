@@ -1,0 +1,40 @@
+{% if users %}
+    {% for user in users %}
+        {% with github_username=user.social_profile.github_name%}
+            <div class="rounded-xl p-2 ring-1 ring-gray-200 mb-3 shadow">
+                <h3 class="{{ styles.heading3 }} leading-none">{{user.get_full_name}}</h3>
+                <a href="{% url 'user_board' user.pk %}" class="{{ styles.link }} text-sm">{{ user.email }}</a>
+                {% if github_username %}
+                    <a target="_blank" href="https://github.com/{{ github_username }}" class="flex items-center gap-1">
+                        <i class="fa fa-github"></i>
+                        {{ github_username }}
+                    </a>
+                {% endif %}
+                <!-- actions -->
+                <div>
+                    <a 
+                    class="{{ styles.button_secondary_small }} inline-block"
+                    href="{% url 'user_board' user.pk %}"
+                    >
+                        View
+                    </a>
+                </div>
+            </div>
+        {% endwith %}
+    {% endfor %}
+{% else %}
+    <div class="p-2 mb-3 flex items-center justify-center">No users found</div>
+{% endif %}
+
+{% if has_next_page %}
+<button 
+    type="button" 
+    class="{{ styles.button_secondary_small }}"
+    id="more_users"
+    hx-get="{% url 'view_partial_users_list' %}"
+    hx-vals='js:{count: countLoadedPageItems("users-list")}'
+    hx-trigger="click"
+    hx-swap="outerHTML"
+    hx-target="#more_users"
+    >Load more</button>
+{% endif %}
