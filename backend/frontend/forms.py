@@ -51,6 +51,5 @@ class ForgotPasswordForm(ThemedFormMixin, forms.Form):
             kwargs={"token": self._get_password_reset_token()},
         )
 
-class SearchTeamForm(forms.Form):
+class SimpleSearchForm(forms.Form):
     search_term = forms.CharField(required=True)
-               

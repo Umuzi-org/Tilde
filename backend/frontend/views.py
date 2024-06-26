@@ -40,7 +40,7 @@ from .forms import (
     CustomAuthenticationForm,
     CustomSetPasswordForm,
     LinkSubmissionForm,
-    SearchTeamForm,
+    SimpleSearchForm,
 )
 from .theme import styles
 
@@ -624,6 +624,51 @@ def action_stop_card(request, card_id):
 
 
 @login_required()
+def view_partial_users_list(request):
+    user = request.user
+
+    all_users = User.objects.filter(active=True)
+    total_user_count = all_users.count()
+
+    if user.is_superuser:
+        filtered_users = all_users
+    else:
+        permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
+        permitted_users = []
+        for team in permitted_teams:
+            permitted_users.extend(team.active_users.all())
+
+        permitted_user_ids = [user.id for user in permitted_users]
+
+        # Convert the list of user IDs back to a QuerySet for ease of filtering
+        filtered_users = User.objects.filter(id__in=permitted_user_ids, active=True)
+
+    form = SimpleSearchForm(request.POST)
+
+    if form.is_valid():
+        search_term = form.cleaned_data["search_term"]
+
+        filtered_users = User.get_users_from_search_term(search_term, filtered_users)
+        total_user_count = filtered_users.count()
+
+    limit = 20
+    current_user_count = int(request.GET.get("count", 0))
+    users = filtered_users[current_user_count : current_user_count + limit]
+    has_next_page = total_user_count > current_user_count + limit
+
+    context = {
+        "users": users,
+        "has_next_page": has_next_page,
+    }
+
+    return render(
+        request,
+        "frontend/users_and_teams_nav/view_partial_users_list.html",
+        context,
+    )
+
+
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -639,8 +684,6 @@ def users_and_teams_nav(request):
 def view_partial_teams_list(request):
     user = request.user
 
-    from guardian.shortcuts import get_objects_for_user
-
     all_teams = Team.objects.filter(active=True).order_by("name")
     total_teams_count = all_teams.count()
 
@@ -649,7 +692,7 @@ def view_partial_teams_list(request):
     else:
         permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
-    form = SearchTeamForm(request.POST)
+    form = SimpleSearchForm(request.POST)
 
     if form.is_valid():
         search_term = form.cleaned_data["search_term"]
