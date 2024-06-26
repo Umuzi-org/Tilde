@@ -32,7 +32,6 @@
         <!-- card actions -->
         <div class="flex gap-2">
             <form>
-                {% csrf_token %}
                 <button
                     type="button"
                     x-show="bundleExpanded"
@@ -50,7 +49,7 @@
                     hx-trigger="click"
                     hx-target="#bundle_{{ forloop.counter0 }}_drilldown"
                     hx-swap="innerHTML"
-                    hx-post="{% url 'view_partial_bundle_expanded' %}"
+                    hx-get="{% url 'view_partial_bundle_expanded' %}"
                 >
                     Show details
                 </button>
