@@ -47,7 +47,7 @@ class Repository(models.Model, Mixins):
         }
 
     def get_github_link(self):
-        return f"https://github.com/{self.owner.replace('.','-')}/{self.full_name}"
+        return f"https://github.com/{self.full_name}"
 
     def get_pr_log_entries(self, event_type_name=None):
         """Get all the log entries for PRs associated with this repo
