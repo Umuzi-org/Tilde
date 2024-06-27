@@ -1,0 +1,23 @@
+{% extends "frontend/user/base.html" %}
+{% block main %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Flavours</th>
+        </tr>
+    </thead>
+    {% for trust in trusts %}
+    <tr>
+        <td>{{ trust.content_item.title }}</td>
+        <td>
+            {% for flavour in trust.flavour_names %}
+            {{ flavour }}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "frontend/user/board/js_exec_action_page_column_adjust.html" %}
+{% endblock %}

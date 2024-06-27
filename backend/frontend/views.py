@@ -42,7 +42,7 @@ from .forms import (
     CustomSetPasswordForm,
     LinkSubmissionForm,
     RecruitProjectReviewForm,
-    SearchTeamForm,
+    SimpleSearchForm,
 )
 from .theme import styles
 
@@ -347,6 +347,22 @@ def view_partial_user_board_column(request, user_id, column_id):
     return render(
         request, "frontend/user/board/view_partial_user_board_column.html", context
     )
+
+
+@user_passes_test(is_staff)
+def user_review_trust_list(request, user_id):
+    """This is a bit of a quick and nasty thing for now. It's important to
+    be able to see what different people are trusted on"""
+    from curriculum_tracking.models import ReviewTrust
+
+    user = get_object_or_404(User, id=user_id)
+    trusts = ReviewTrust.objects.filter(user_id=user_id).order_by("content_item__title")
+
+    context = {
+        "trusts": trusts,
+        "user": user,
+    }
+    return render(request, "frontend/user/review_trusts/page.html", context=context)
 
 
 def check_user_can_start_card(logged_in_user):
