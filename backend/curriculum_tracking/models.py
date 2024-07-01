@@ -845,6 +845,9 @@ class RecruitProjectReview(models.Model, Mixins):
     # the card is closed (meaning the previous negative review was complete and completely implemented)
     complete_review_cycle = models.BooleanField(null=True, blank=True)
 
+    class Meta:
+        ordering = ('-timestamp', )
+
     def __str__(self):
         # feel free to edit this
         return f"{self.recruit_project} = {self.status}"

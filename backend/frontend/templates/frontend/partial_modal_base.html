@@ -1,5 +1,6 @@
 <div x-show="modalOpen"
-     class="fixed inset-0 z-50 overflow-y-auto"
+     class="inset-0 z-50 overflow-y-auto"
+     :class="{'block fixed': modalOpen }"
      aria-labelledby="modal-title"
      role="dialog"
      aria-modal="true">
