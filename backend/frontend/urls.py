@@ -64,6 +64,12 @@ urlpatterns = [
         views.action_stop_card,
         name="action_stop_card",
     ),
+    # user review trust
+    path(
+        "users/<int:user_id>/user_review_trust_list/",
+        views.user_review_trust_list,
+        name="user_review_trust_list",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(

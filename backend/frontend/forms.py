@@ -60,7 +60,5 @@ class RecruitProjectReviewForm(ThemedFormMixin, forms.ModelForm):
         fields = ["status", "comments"]
 
 
-class SearchTeamForm(forms.Form):
+class SimpleSearchForm(forms.Form):
     search_term = forms.CharField(required=True)
-
-

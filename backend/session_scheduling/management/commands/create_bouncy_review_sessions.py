@@ -18,8 +18,8 @@ from session_scheduling.models import Session, SessionType
 User = get_user_model()
 DUE_DAYS = 14
 
-PR_REVIEW_COUNT_THRESHOLD = 8
-COMPETENCE_REVIEW_COUNT_THRESHOLD = 8
+PR_REVIEW_COUNT_THRESHOLD = 5
+COMPETENCE_REVIEW_COUNT_THRESHOLD = 5
 
 
 # def create_competence_review_based_sessions(self):

@@ -11,10 +11,15 @@ def user_avatar(user):
     return {"initial": initial}
 
 
-@register.filter(name='markdownify')
+@register.filter(name="markdownify")
 def markdownify(raw_text):
-    return markdown(raw_text, safe_mode='escape', extensions=[
-        'markdown.extensions.fenced_code',
-        'markdown.extensions.codehilite',
-        'markdown.extensions.tables',
-    ], ).strip()
+    return markdown(
+        raw_text,
+        safe_mode="escape",
+        extensions=[
+            "markdown.extensions.fenced_code",
+            "markdown.extensions.codehilite",
+            "markdown.extensions.tables",
+            "pymdownx.inlinehilite",
+        ],
+    ).strip()
