@@ -517,6 +517,10 @@ class RecruitProject(
         return 0
 
     @property
+    def positive_reviews_since_last_request_review_count(self):
+        return self.code_review_competent_since_last_review_request + self.code_review_excellent_since_last_review_request
+
+    @property
     def oldest_open_pr_updated_time(self):
         repo = self.repository
         if repo:

@@ -4,8 +4,10 @@ from django.test import TestCase
 
 from curriculum_tracking import models
 from curriculum_tracking.tests import factories
+from curriculum_tracking.constants import COMPETENT, EXCELLENT
 from core.tests import factories as core_factories
 from core.models import Team
+
 from guardian.shortcuts import assign_perm
 
 JAVASCRIPT = "js"
@@ -84,6 +86,29 @@ class generate_repo_name_for_project_Tests(TestCase):
         self.assertIn("-test-project-", repo_name)
         self.assertIn(self.user.first_name, repo_name)
         self.assertIn(self.user.last_name, repo_name)
+
+
+class positive_reviews_since_last_request_review_count_Tests(TestCase):
+
+    def test_positive_reviews_since_last_request_review_count(self):
+        card = factories.AgileCardFactory(
+            status=models.AgileCard.IN_REVIEW,
+        )
+
+        factories.RecruitProjectReviewFactory(
+            status=COMPETENT,
+            recruit_project=card.recruit_project,
+            comments="Noice!",
+        )
+
+        factories.RecruitProjectReviewFactory(
+            status=EXCELLENT,
+            recruit_project=card.recruit_project,
+            comments="Noice!",
+        )
+        self.assertEqual(
+            card.recruit_project.positive_reviews_since_last_request_review_count, 2
+        )
 
 
 class request_user_can_add_review_Tests(TestCase):

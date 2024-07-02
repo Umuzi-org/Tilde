@@ -1,0 +1,47 @@
+{% load custom_tags %}
+<div class="flex items-center overflow-x-scroll">
+    <table class="*:text-left text-sm w-full">
+        <thead>
+        <tr class="*:border *:bg-gray-100 *:px-4 *:py-1">
+            <th>Project</th>
+            <th>Assignee</th>
+            <th class="md:text-center">Positive Reviews</th>
+            <th>Staff Reviewers</th>
+        </tr>
+        </thead>
+        <tbody class="flex-1 sm:flex-none">
+        {% for project in projects %}
+            {% with assignee=project.recruit_users.first card=project.agile_card %}
+                <tr class="*:border *:px-4 *:py-1">
+                    <td>
+                        <a target="_blank" class="{{ styles.link }}"
+                           href="https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/card/{{ card.id }}">
+                            {{ project.content_item }}
+                        </a>
+                    </td>
+                    <td>
+                        <a class="{{ styles.link }}" href="{% url 'user_board' assignee.pk %}">{{ assignee }}</a>
+                    </td>
+                    <td class="md:text-center">
+                        {{ project.positive_reviews_since_last_request_review_count }}
+                    </td>
+                    <td class="">
+                        <div class="grid gap-2">
+                            {% for user in project.users_that_reviewed_since_last_review_request %}
+                                {% if user.is_staff %}
+                                    <div class="flex items-center gap-2">
+                                        {% user_avatar user %} <span>{{ user.email }}</span>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        </div>
+
+                    </td>
+                </tr>
+            {% endwith %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
