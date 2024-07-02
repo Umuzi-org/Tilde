@@ -1,14 +1,22 @@
 """for each of the log entry creators in git_real.activity_log_entry_creators, make sure it is called when it should be and creates the correct log entries
 """
 
+from datetime import timedelta
 from django.test import TestCase
-from .factories import PullRequestReviewFactory, RepositoryFactory, PullRequestReview, PushFactory, Push
+from .factories import (
+    PullRequestReviewFactory,
+    RepositoryFactory,
+    PullRequestReview,
+    PushFactory,
+    Push,
+    PullRequest,
+    PullRequestFactory,
+)
 import git_real.activity_log_creators as creators
 from activity_log.models import LogEntry
 
 from rest_framework.test import APITestCase
 
-from git_real.models import Repository
 from .utils import get_body_and_headers
 from git_real.permissions import IsWebhookSignatureOk
 from django.urls import reverse
@@ -17,6 +25,40 @@ import mock
 
 # from git_real.models import PullRequest, PullRequestReview, Push
 from social_auth.tests.factories import SocialProfileFactory
+
+
+class log_pr_opened_Tests(APITestCase):
+    def test_that_timestamp_properly_set(self):
+        pull_request = PullRequestFactory()
+        creators.log_pr_opened(pull_request)
+        self.assertAlmostEqual(
+            LogEntry.objects.first().timestamp,
+            pull_request.created_at,
+            delta=timedelta(seconds=1),
+        )
+
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_open_a_pr(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(PullRequest.objects.all().count(), 0)
+
+        url = reverse(views.github_webhook)
+
+        body, headers = get_body_and_headers("pull_request_opened")
+        RepositoryFactory(full_name=body["repository"]["full_name"])
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        self.assertEqual(PullRequest.objects.all().count(), 1)
+        pull_request = PullRequest.objects.first()
+        self.assertEqual(LogEntry.objects.count(), 1)
+
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_OPENED).first()
+
+        self.assertEqual(entry.actor_user, pull_request.user)
+        self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.event_type.name, creators.PR_OPENED)
 
 
 class log_pr_reviewed_created_Tests(TestCase):
@@ -40,6 +82,7 @@ class log_pr_reviewed_created_Tests(TestCase):
 
 
 class log_pr_reviewed_Tests(APITestCase):
+
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_adding_a_pr_review(self, has_permission):
         has_permission.return_value = True
@@ -63,8 +106,10 @@ class log_pr_reviewed_Tests(APITestCase):
         # pr = PullRequest.objects.first()
         pr_review = PullRequestReview.objects.first()
 
-        self.assertEqual(LogEntry.objects.count(), 1)
-        entry = LogEntry.objects.first()
+        self.assertEqual(
+            LogEntry.objects.filter(event_type__name=creators.PR_REVIEWED).count(), 1
+        )
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_REVIEWED).first()
 
         self.assertEqual(entry.actor_user, social_profile.user)
         self.assertEqual(entry.effected_user, repo.user)
@@ -83,9 +128,9 @@ class log_push_event_Tests(APITestCase):
     def test_pushing(self, has_permission):
         has_permission.return_value = True
 
-        self.assertEqual(Push.objects.all().count(), 0)   
+        self.assertEqual(Push.objects.all().count(), 0)
 
-        url = reverse(views.github_webhook)  
+        url = reverse(views.github_webhook)
 
         body, headers = get_body_and_headers("push")
         RepositoryFactory(full_name=body["repository"]["full_name"])

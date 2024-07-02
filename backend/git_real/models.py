@@ -6,7 +6,7 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
-from .activity_log_creators import log_push_event
+from .activity_log_creators import log_push_event, log_pr_opened
 from activity_log.models import LogEntry
 from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
@@ -148,7 +148,32 @@ class PullRequest(models.Model, Mixins):
         pull_request, _ = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
+
+        log_pr_opened(pull_request)
+
         return pull_request
+
+    def get_activity_log_summary_data(self):
+        """This is used by the activityLog serializer"""
+        # Note: the import direction is wrong. We should not be importing fro curriculum_tracking here. This is technical debt
+        from curriculum_tracking.models import AgileCard, RecruitProject
+
+        repo = self.repository
+        project = RecruitProject.objects.filter(repository=repo).order_by("pk").last()
+        card_id = None
+        if project:
+            try:
+                card = project.agile_card
+                card_id = card.id
+            except AgileCard.DoesNotExist:
+                pass
+
+        return {
+            "recruit_project": project.id if project else None,
+            "card": card_id,
+            "title": project.content_item.title if project else None,
+            "flavour_names": project.flavour_names if project else None,
+        }
 
     def get_github_link(self):
         return f"{self.repository.get_github_link()}/pull/{self.number}"

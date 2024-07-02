@@ -46,7 +46,7 @@ def log_pr_opened(pull_request):
     match = LogEntry.objects.filter(
         actor_user=pull_request.user,
         effected_user=pull_request.user,
-        object_1=pull_request,
+        object_1_id=pull_request.pk,
         event_type=event_type,
         timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
     ).first()
@@ -81,7 +81,7 @@ def log_pr_reviewed(pull_request_review):
 
 def log_push_event(push):
     event_type, _ = EventType.objects.get_or_create(name=GIT_PUSH)
-    
+
     repo = push.repository
     effected_project = repo.recruit_projects.first()
 
