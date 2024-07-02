@@ -17,7 +17,6 @@ from activity_log.models import LogEntry
 
 from rest_framework.test import APITestCase
 
-from git_real.models import Repository
 from .utils import get_body_and_headers
 from git_real.permissions import IsWebhookSignatureOk
 from django.urls import reverse
@@ -29,10 +28,6 @@ from social_auth.tests.factories import SocialProfileFactory
 
 
 class log_pr_opened_Tests(APITestCase):
-    def tearDown(self):
-        PullRequest.objects.all().delete()
-        LogEntry.objects.all().delete()
-
     def test_that_timestamp_properly_set(self):
         pull_request = PullRequestFactory()
         creators.log_pr_opened(pull_request)
@@ -55,13 +50,13 @@ class log_pr_opened_Tests(APITestCase):
         self.client.post(url, format="json", data=body, extra=headers)
 
         self.assertEqual(PullRequest.objects.all().count(), 1)
-
         pull_request = PullRequest.objects.first()
-
         self.assertEqual(LogEntry.objects.count(), 1)
-        entry = LogEntry.objects.first()
-        self.assertEqual(entry.actor_user, pull_request.repository.user)
-        self.assertEqual(entry.effected_user, pull_request.repository.user)
+
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_OPENED).first()
+
+        self.assertEqual(entry.actor_user, pull_request.user)
+        self.assertEqual(entry.effected_user, pull_request.user)
         self.assertEqual(entry.object_1, pull_request)
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
 
@@ -87,9 +82,6 @@ class log_pr_reviewed_created_Tests(TestCase):
 
 
 class log_pr_reviewed_Tests(APITestCase):
-    def tearDown(self):
-        LogEntry.objects.all().delete()
-        PullRequest.objects.all().delete()
 
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
     def test_adding_a_pr_review(self, has_permission):
@@ -127,10 +119,6 @@ class log_pr_reviewed_Tests(APITestCase):
 
 
 class log_push_event_Tests(APITestCase):
-    def tearDown(self):
-        LogEntry.objects.all().delete()
-        Push.objects.all().delete()
-
     def test_that_timestamp_properly_set(self):
         push = PushFactory()
         creators.log_push_event(push)

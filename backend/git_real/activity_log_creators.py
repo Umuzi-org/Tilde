@@ -1,6 +1,5 @@
 from django.utils import timezone
 from activity_log.models import LogEntry, EventType
-from django.contrib.contenttypes.models import ContentType
 
 
 PR_MERGED = "PR_MERGED"
@@ -44,11 +43,9 @@ def log_pr_opened(pull_request):
 
     event_type, _ = EventType.objects.get_or_create(name=PR_OPENED)
 
-    content_type = ContentType.objects.get_for_model(pull_request)
     match = LogEntry.objects.filter(
         actor_user=pull_request.user,
         effected_user=pull_request.user,
-        object_1_content_type=content_type,
         object_1_id=pull_request.pk,
         event_type=event_type,
         timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
@@ -56,8 +53,8 @@ def log_pr_opened(pull_request):
 
     if match == None:
         LogEntry.objects.create(
-            actor_user=pull_request.repository.user,
-            effected_user=pull_request.repository.user,
+            actor_user=pull_request.user,
+            effected_user=pull_request.user,
             object_1=pull_request,
             event_type=event_type,
         )
