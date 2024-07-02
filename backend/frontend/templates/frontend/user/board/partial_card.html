@@ -1,34 +1,33 @@
 {% load custom_tags %}
 {% load humanize %}
-
-<div class="mb-3 max-w-md bg-white h-[auto] rounded overflow-hidden shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
-     id="card_{{ card.id }}"
-     data-status="{{ card.status }}">
-  <div class="max-w-md h-auto bg-white rounded-tr rounded-br overflow-hidden shadow-lg p-6 relative">
+<div
+  class="mb-3 max-w-md bg-white h-[auto] rounded relative shadow-lg pl-2 {% if card.status == 'B' %}bg-zinc-500{% endif %} {% if card.content_type_nice == 'topic' %}bg-blue-500{% endif %} {% if card.content_type_nice == 'project' %}bg-purple-500{% endif %}"
+  id="card_{{ card.id }}" data-status="{{ card.status }}">
+  <div class="max-w-md h-auto bg-white rounded-tr rounded-br shadow-lg p-6">
     <!-- Dates and options section -->
     <div class="grid grid-cols-11 gap-y-2 w-full h-[auto]">
       <div class="flex gap-2 items-start col-span-10 pb-2">
         {% if card.due_time %}
-          {% now "U" as current_timestamp %}
-          {% if current_timestamp > card.due_time|date:"U" %}
-            <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
-            </p>
-          {% else %}
-            <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-              Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
-            </p>
-          {% endif %}
+        {% now "U" as current_timestamp %}
+        {% if current_timestamp > card.due_time|date:"U" %}
+        <p class="text-red-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+          Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
+        </p>
+        {% else %}
+        <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+          Due date: {{ card.due_time|naturalday }}, {{ card.due_time|time }}
+        </p>
+        {% endif %}
         {% endif %}
         {% if card.start_time and not card.due_time %}
-          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-            Started: {{ card.start_time|naturalday }}, {{ card.start_time|time }}
-          </p>
+        <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+          Started: {{ card.start_time|naturalday }}, {{ card.start_time|time }}
+        </p>
         {% endif %}
         {% if card.complete_time and not card.start_time %}
-          <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
-            Completed: {{ card.complete_time|naturalday }}, {{ card.complete_time|time }}
-          </p>
+        <p class="text-gray-600 text-sm text-black text-opacity-50 text-[11px] font-medium font-['Poppins']">
+          Completed: {{ card.complete_time|naturalday }}, {{ card.complete_time|time }}
+        </p>
         {% endif %}
       </div>
       <!-- In this section there should be the options icon. It exists in the design, but we have not came to agreements what this should do -->
@@ -37,61 +36,61 @@
     <div class="grid grid-cols-2 gap-y-2 w-full h-[auto]">
       <div class="col-span-1">
         {% if card.code_review_competent_since_last_review_request %}
-          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-            <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
-              {{ card.code_review_competent_since_last_review_request }}
-            </div>
+        <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+          <i class="fa fa-smile-o" aria-hidden="true" title="Competent reviews"></i>
+          <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+            {{ card.code_review_competent_since_last_review_request }}
           </div>
+        </div>
         {% endif %}
         {% if card.code_review_ny_competent_since_last_review_request %}
-          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-            <i class="fa fa-frown-o"
-               aria-hidden="true"
-               title="Not yet competent reviews"></i>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
-              {{ card.code_review_ny_competent_since_last_review_request }}
-            </div>
+        <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+          <i class="fa fa-frown-o" aria-hidden="true" title="Not yet competent reviews"></i>
+          <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+            {{ card.code_review_ny_competent_since_last_review_request }}
           </div>
+        </div>
         {% endif %}
         {% if card.code_review_red_flag_since_last_review_request %}
-          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-            <i class="fa-regular fa-face-sad-tear"
-               aria-hidden="true"
-               title="Red-flag reviews"></i>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
-              {{ card.code_review_red_flag_since_last_review_request }}
-            </div>
+        <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+          <i class="fa-regular fa-face-sad-tear" aria-hidden="true" title="Red-flag reviews"></i>
+          <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+            {{ card.code_review_red_flag_since_last_review_request }}
           </div>
+        </div>
         {% endif %}
         {% if card.code_review_excellent_since_last_review_request %}
-          <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
-            <i class="fa-regular fa-face-laugh-wink"
-               aria-hidden="true"
-               title="Excellent reviews"></i>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
-              {{ card.code_review_excellent_since_last_review_request }}
-            </div>
+        <div class="relative inline-flex items-center p-2 text-sm font-medium text-center bg-opacity-10 rounded-lg">
+          <i class="fa-regular fa-face-laugh-wink" aria-hidden="true" title="Excellent reviews"></i>
+          <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-red-600 border-2 border-white rounded-full -top-2 -end-2">
+            {{ card.code_review_excellent_since_last_review_request }}
           </div>
+        </div>
         {% endif %}
       </div>
       {% if card.open_pr_count %}
-        <a href="{{ card.recruit_project.repository.get_github_link }}/pulls"
-           target="_blank"
-           title="Pull request info">
-          <div class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
-            <i class="fa-solid fa-code-pull-request"></i>
-            <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
-                  title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
-                 title="Number of pull requests">{{ card.open_pr_count }}</div>
-          </div>
-        </a>
+      <a href="{{ card.recruit_project.repository.get_github_repo_link }}/pulls" target="_blank"
+        title="Pull request info">
+        <div
+          class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-neutral-800 bg-opacity-10 rounded-lg">
+          <i class="fa-solid fa-code-pull-request"></i>
+          <span class="text-black text-opacity-90 text-[10px] font-light font-['Poppins'] leading-tight tracking-tight"
+            title="Pull request update time">{{ card.oldest_open_pr_updated_time|naturaltime }}</span>
+          <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-800 border-2 border-white rounded-full -top-2 -end-2"
+            title="Number of pull requests">{{ card.open_pr_count }}</div>
+        </div>
+      </a>
       {% elif card.repo_url %}
-        <a href="{{ card.recruit_project.repository.get_github_link }}"
-           target="_blank">
-           <button class="{{ styles.button_secondary_small }}" title="Repository link">Repo <i class="fa fa-github"></i></button>
-        </a>
+      <a href="{{ card.recruit_project.repository.get_github_repo_link }}" target="_blank">
+        <button class="{{ styles.button_secondary_small }}" title="Repository link">
+          Repo <i class="fa fa-github"></i>
+        </button>
+      </a>
       {% endif %}
     </div>
     <!-- Card info section -->
@@ -101,124 +100,124 @@
     </div>
     <!-- Tags section -->
     {% if card.tag_names %}
-      <div class="grid grid-cols-1 py-2 gap-y-2 w-full h-[auto]">
-        {% for tag_name in card.tag_names %}
-          {% if tag_name != "none" %}
-            <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ tag_name }}</span><span></span>
-          {% endif %}
+    <div class="grid grid-cols-1 py-2 gap-y-2 w-full h-[auto]">
+      {% for tag_name in card.tag_names %}
+      {% if tag_name != "none" %}
+      <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight">
+        <span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ tag_name }}</span><span></span>
+        {% endif %}
         {% endfor %}
-      </div>
+    </div>
     {% endif %}
     <!-- Flavours section -->
     {% if card.flavour_names %}
-      <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
-        {% for flavour_name in card.flavour_names %}
-          {% if flavour_name != "none" %}
-            {% if flavour_name == "javascript" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-js fa-lg"></i>
-              </span>
-            {% endif %}
-            {% if flavour_name == "python" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-python fa-lg"></i>
-              </span>
-            {% endif %}
-            {% if flavour_name == "java" %}
-              <span title="{{ flavour_name }}">
-                <i class="fa-regular fa-brands fa-java fa-lg"></i>
-              </span>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </div>
+    <div class="grid grid-cols-1 gap-y-0 w-full h-[auto] pb-2">
+      {% for flavour_name in card.flavour_names %}
+      {% if flavour_name != "none" %}
+      {% if flavour_name == "javascript" %}
+      <span title="{{ flavour_name }}">
+        <i class="fa-regular fa-brands fa-js fa-lg"></i>
+      </span>
+      {% endif %}
+      {% if flavour_name == "python" %}
+      <span title="{{ flavour_name }}">
+        <i class="fa-regular fa-brands fa-python fa-lg"></i>
+      </span>
+      {% endif %}
+      {% if flavour_name == "java" %}
+      <span title="{{ flavour_name }}">
+        <i class="fa-regular fa-brands fa-java fa-lg"></i>
+      </span>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+    </div>
     {% endif %}
     <!-- Horizontal line -->
-    <hr class="border-gray-300 inset-x-0 absolute" />
+    <hr class="border-gray-300 inset-x-2 absolute right-0" />
     <!-- Assignee and reviewers section -->
     <div class="grid grid-cols-2 grid-rows-1 gap-x-10 gap-y-3 w-full h-[auto] pt-2">
       <div class="Assignee-avatar col-span-1 row-span-1 group inline-block">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Assignee</div>
-          <div title={{ card.assignees.first.email }}>
-            {% user_avatar card.assignees.first %}
-          </div>
+        <div title={{ card.assignees.first.email }}>
+          {% user_avatar card.assignees.first %}
+        </div>
       </div>
-      <div class="Reviewer-avatars col-span-1 row-span-1 group">
+      <div class="Reviewer-avatars col-span-1 row-span-1 group" x-data="{ isOpen: false }">
         <div class="mb-2 text-xs text-indigo-950 font-['Poppins']">Reviewers</div>
-        <div class="flex relative">
-          {% if card.reviewers %}
-            {% for reviewer in card.reviewers.all|slice:":2" %}
-              <div class="-mx-1" title="{{ card.reviewer_names|join:', '}}">
-                <div class="border-2 rounded-full border-white">
-                  {% user_avatar reviewer %}
-                </div>
-              </div>
-            {% endfor %}
-          {% endif %}
+        <div class="flex -mx-4 {% if card.reviewers.count > 2 %} cursor-pointer {% endif %}" @click="isOpen = !isOpen">
+          {% if card.reviewers.all %}
+          {% for reviewer in card.reviewers.all %}
+          {% if forloop.counter0 < 2 %} <div class="flex -mx-1 overflow-hidden rounded-full border-2 border-white">
+            <div title="{{ reviewer }}">{% user_avatar reviewer %}</div>
         </div>
-      </div>
-      <!-- Buttons section -->
-      <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
-        <div class="Start-button col-span-1 row-span-1 w-full">
-          <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
-                  class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
-            <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
-          </button>
-        </div>
-      </div>
-      <div class="Start-button col-span-1 row-span-1">
-        {% if card.request_user_can_start %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_start_card' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Start</button>
-        {% elif card.request_user_can_request_review %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_request_review' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Request review</button>
-        {% elif card.request_user_can_finish_topic %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_finish_topic' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Done</button>
-        {% elif card.request_user_can_cancel_review_request %}
-          <button type="button"
-                  class="{{ styles.button_primary_small }}"
-                  hx-post="{% url 'action_cancel_review_request' card.id %}"
-                  hx-target="#card_{{ card.id }}"
-                  hx-swap="outerHTML">Cancel review request</button>
         {% endif %}
+        {% endfor %}
+        {% if card.reviewers.count > 2 %}
+        <div class="reviewers">
+          <div class="flex -mx-2 overflow-auto rounded-full border-2 border-white cursor-pointer">
+            <button class="w-[30px] h-[30px] rounded-full bg-gray-400" title="Click to see all reviewers">
+              <span class="text-white" title="More reviewers">+{{ card.reviewers.count|add:"-2" }}</span>
+            </button>
+            <div x-show="isOpen" @click.away="isOpen = false"
+              class="absolute grid gap-1 drop-shadow border rounded-md max-h-36 overflow-y-auto left-[-11px] right-[-11px] p-2 z-10 bg-white">
+              <span class="flex text-xs font-medium">Reviewers<i class="fa fa-times-circle absolute right-1"
+                  title="Close dropdown"></i></span>
+              {% for reviewer in card.reviewers.all %}
+              <div class="flex items-center gap-1 text-xs" title="{{ reviewer }}">
+                <span class="whitespace-nowrap">{% user_avatar reviewer "small" %}</span>
+                <span class="text-xs">{{ reviewer }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% if not card.reviewers.all %}<div class="absolute right-5">None</div>{% endif %}
       </div>
-
- 
-      {%if card.recruit_project and card.content_item.content_type_nice == "project"%}
-        <a href="{% url 'progress_details' card.content_item.content_type_nice card.recruit_project.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
-      {% endif %}
-
-      {%if card.topic_progress and card.content_item.content_type_nice == "topic"%}
-          <a href="{% url 'progress_details' card.content_item.content_type_nice card.topic_progress.id %}" class="{{ styles.button_secondary_small }} w-fit">Details</a>
-        </div>
-      {% endif %}
-
-      
-      {% if card.request_user_can_stop_card %}
-        <div class="col-span-1 row-span-1 group">
-            <button type="button"
-                    class="{{ styles.button_secondary_small }}"
-                    hx-post="{% url 'action_stop_card' card.id %}"
-                    hx-target="#card_{{ card.id }}"
-                    hx-swap="outerHTML">Stop</button>
-        </div>
+    </div>
+    <!-- Buttons section -->
+    <div class="grid grid-cols-2 grid-auto-rows-1fr gap-x-10 gap-y-10 w-full h-[auto]">
+      <div class="Start-button col-span-1 row-span-1 w-full">
+        <button onclick="window.open('{{ card.content_item_url }}', '_blank')"
+          class="w-[auto] h-6 pl-[7px] pr-[7px] bg-indigo-950 rounded shadow justify-start items-center inline-flex">
+          <span class="w-[auto] text-white text-xs font-semibold font-['Poppins'] leading-none">Content</span>
+        </button>
+      </div>
+    </div>
+    <div class="Start-button col-span-1 row-span-1">
+      {% if card.request_user_can_start %}
+      <button type="button" class="{{ styles.button_primary_small }}" hx-post="{% url 'action_start_card' card.id %}"
+        hx-target="#card_{{ card.id }}" hx-swap="outerHTML">Start</button>
+      {% elif card.request_user_can_request_review %}
+      <button type="button" class="{{ styles.button_primary_small }}"
+        hx-post="{% url 'action_request_review' card.id %}" hx-target="#card_{{ card.id }}" hx-swap="outerHTML">Request
+        review</button>
+      {% elif card.request_user_can_finish_topic %}
+      <button type="button" class="{{ styles.button_primary_small }}" hx-post="{% url 'action_finish_topic' card.id %}"
+        hx-target="#card_{{ card.id }}" hx-swap="outerHTML">Done</button>
+      {% elif card.request_user_can_cancel_review_request %}
+      <button type="button" class="{{ styles.button_primary_small }}"
+        hx-post="{% url 'action_cancel_review_request' card.id %}" hx-target="#card_{{ card.id }}"
+        hx-swap="outerHTML">Cancel review request</button>
       {% endif %}
     </div>
+    {% if card.recruit_project and card.content_item.content_type_nice == "project" %}
+    <a href="{% url 'progress_details' card.content_item.content_type_nice card.recruit_project.id %}"
+      class="{{ styles.button_secondary_small }} w-fit">Details</a>
+    {% endif %}
+    {% if card.topic_progress and card.content_item.content_type_nice == "topic" %}
+    <a href="{% url 'progress_details' card.content_item.content_type_nice card.topic_progress.id %}"
+      class="{{ styles.button_secondary_small }} w-fit">Details</a>
   </div>
-  <div class="hidden group-hover:block top-7 right-[2] mt-2 p-2 bg-white border absolute rounded">
-    {% for reviewer in card.reviewer_names %}
-      <div class="font-['Poppins'] text-[10px] block">{{ reviewer }}</div>
-    {% endfor %}
+  {% endif %}
+  {% if card.request_user_can_stop_card %}
+  <div class="col-span-1 row-span-1 group">
+    <button type="button" class="{{ styles.button_secondary_small }}" hx-post="{% url 'action_stop_card' card.id %}"
+      hx-target="#card_{{ card.id }}" hx-swap="outerHTML">Stop</button>
   </div>
+  {% endif %}
+</div>
+</div>
 </div>
