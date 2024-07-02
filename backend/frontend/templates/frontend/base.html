@@ -1,33 +1,27 @@
 {% load static %}
 <!-- main base that all other bases can inherit from -->
 <!DOCTYPE html>
-<html
-  lang="en-US"
-  class="{% block html_classes %}h-full bg-gray-100{% endblock %}"
->
+<html lang="en-US"
+      class="has-[div[role='dialog'][data-modal-open='true']]:overflow-hidden {% block html_classes %}h-full bg-gray-100{% endblock %}">
   <head>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+          rel="stylesheet" />
     <meta charset="utf-8" />
-    <title>Tilde ~ {% block page_title %}{% endblock %}</title>
-    <script
-      src="https://unpkg.com/htmx.org@1.9.6"
-      integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
-      crossorigin="anonymous"
-    ></script>
+    <title>Tilde ~
+      {% block page_title %}{% endblock %}
+    </title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"
+            integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+            crossorigin="anonymous"></script>
     <script src='https://unpkg.com/htmx.org/dist/ext/response-targets.js'></script>
     {# TODO https://htmx.org/docs/#installing #}
     <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      src="https://kit.fontawesome.com/6e84d8828f.js"
-      crossorigin="anonymous"
-    ></script>
-    
+    <script src="https://kit.fontawesome.com/6e84d8828f.js"
+            crossorigin="anonymous"></script>
     {% block main_head %}{% endblock %}
   </head>
-  <body hx-ext="response-targets" class="{% block body_classes %}h-full{% endblock %}">
-    {% block main_content %} {% endblock %}
+  <body hx-ext="response-targets"
+        class="{% block body_classes %}h-full{% endblock %}">
+    {% block main_content %}{% endblock %}
   </body>
 </html>
