@@ -202,7 +202,7 @@ def create_spot_check_sessions_for_strong_learners(df_self_report):
 def create_fundamental_skill_sessions():
     df_self_report = get_learner_pod_self_report()
     create_assistance_sessions_for_weak_learners(df_self_report)
-    create_spot_check_sessions_for_strong_learners(df_self_report)
+    # create_spot_check_sessions_for_strong_learners(df_self_report)
 
 
 class Command(BaseCommand):

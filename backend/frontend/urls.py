@@ -23,6 +23,11 @@ urlpatterns = [
         name="view_partial_teams_list",
     ),
     path(
+        "users/view_partial_users_list/",
+        views.view_partial_users_list,
+        name="view_partial_users_list",
+    ),
+    path(
         "users_and_teams_nav/team/<int:team_id>/view_partial_team_users_list/",
         views.view_partial_team_users_list,
         name="view_partial_team_users_list",
@@ -59,6 +64,12 @@ urlpatterns = [
         views.action_stop_card,
         name="action_stop_card",
     ),
+    # user review trust
+    path(
+        "users/<int:user_id>/user_review_trust_list/",
+        views.user_review_trust_list,
+        name="user_review_trust_list",
+    ),
     # Team dashboard
     path("teams/<int:team_id>/dashboard", views.team_dashboard, name="team_dashboard"),
     path(
@@ -71,6 +82,11 @@ urlpatterns = [
         "progress_details/<content_type>/<int:id>",
         views.progress_details,
         name="progress_details",
+    ),
+    path(
+        "progress_details/<content_type>/<int:id>/add_review/",
+        views.action_add_review,
+        name="action_add_review",
     ),
     # Project review coordination
     path(

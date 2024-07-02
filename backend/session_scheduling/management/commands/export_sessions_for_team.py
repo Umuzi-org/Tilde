@@ -16,6 +16,7 @@ class Command(BaseCommand):
             "flavours",
             "attendee_emails",
             "attendee_board_links",
+            "attendee_teams",
         ]
         with open("gitignore/technical_sessions_for_team.csv", "w") as f:
             writer = csv.writer(f)
@@ -32,13 +33,19 @@ class Command(BaseCommand):
                         session.id,
                         session.session_type.name,
                         session.get_title_copy(),
-                        session.facilitator.email,
+                        session.facilitator.email if session.facilitator else "",
                         session.session_type.duration_minutes,
                         flavours,
                         "\n".join(u.email for u in session.attendees.all()),
                         "\n".join(
                             f"https://tilde-front-dot-umuzi-prod.nw.r.appspot.com/users/{u.id}/board"
                             for u in session.attendees.all()
+                        ),
+                        "\n".join(
+                            [
+                                str([t.name for t in o.teams() if t.active])
+                                for o in session.attendees.all()
+                            ]
                         ),
                     ]
                 )

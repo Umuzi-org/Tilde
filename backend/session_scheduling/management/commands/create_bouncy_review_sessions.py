@@ -18,8 +18,8 @@ from session_scheduling.models import Session, SessionType
 User = get_user_model()
 DUE_DAYS = 14
 
-PR_REVIEW_COUNT_THRESHOLD = 10
-COMPETENCE_REVIEW_COUNT_THRESHOLD = 10
+PR_REVIEW_COUNT_THRESHOLD = 5
+COMPETENCE_REVIEW_COUNT_THRESHOLD = 5
 
 
 # def create_competence_review_based_sessions(self):
@@ -62,6 +62,8 @@ def create_session_if_not_exists(project, pr_review_count, negative_review_count
         due_date=timezone.now() + timezone.timedelta(days=DUE_DAYS),
         extra_title_text=extra_title_text,
         # TODO related object
+        # related_object_content_type
+        # related_object_id
     )
     session.attendees.set(
         project.reviewer_users.filter(is_staff=False).filter(active=True)
@@ -74,6 +76,7 @@ def create_session_if_not_exists(project, pr_review_count, negative_review_count
 def create_all_review_based_sessions():
     projects = (
         RecruitProject.objects.filter(recruit_users__active=True)
+        .filter(recruit_users__email__endswith="@umuzi.org")
         .filter(recruit_users__is_staff=False)
         .filter(recruit_users__groups__team__active=True)
         .filter(agile_card__isnull=False)

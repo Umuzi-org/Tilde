@@ -23,6 +23,7 @@ from curriculum_tracking.models import (
     ContentItem,
     User,
     RecruitProject,
+    RecruitProjectReview,
     TopicProgress,
     RecruitProjectReview,
 )
@@ -40,6 +41,8 @@ from .forms import (
     CustomAuthenticationForm,
     CustomSetPasswordForm,
     LinkSubmissionForm,
+    RecruitProjectReviewForm,
+    SimpleSearchForm,
 )
 from .theme import styles
 
@@ -102,7 +105,7 @@ def is_staff(user):
     return user.is_staff
 
 
-def user_passes_test_or_forbidden(test_func):
+def user_passes_test_or_forbidden(test_func, **test_func_kwargs):
     """
     Decorator for views that checks that the user passes the given test,
     returning a 403 Forbidden response if necessary. The default user_passes_test
@@ -114,7 +117,7 @@ def user_passes_test_or_forbidden(test_func):
         @login_required()
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user):
+            if test_func(request.user, **test_func_kwargs):
                 return view_func(request, *args, **kwargs)
 
             return HttpResponseForbidden(
@@ -160,14 +163,18 @@ def check_no_outstanding_reviews_on_card_action(view_func):
     return _wrapped_view
 
 
-def can_view_user_board(logged_in_user):
+def can_view_user_board(logged_in_user, viewed_user_func=None):
     request = get_current_request()
-    viewed_user_id = request.resolver_match.kwargs.get("user_id")
 
-    if logged_in_user.id == viewed_user_id or logged_in_user.is_superuser:
+    if viewed_user_func is None:
+        viewed_user_id = request.resolver_match.kwargs.get("user_id")
+        viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
+    else:
+        viewed_user_obj = viewed_user_func(request)
+
+    if logged_in_user.id == viewed_user_obj.id or logged_in_user.is_superuser:
         return True
 
-    viewed_user_obj = get_object_or_404(User, pk=viewed_user_id)
     viewed_user_teams = viewed_user_obj.teams()
 
     if len(viewed_user_teams):
@@ -342,6 +349,22 @@ def view_partial_user_board_column(request, user_id, column_id):
     )
 
 
+@user_passes_test(is_staff)
+def user_review_trust_list(request, user_id):
+    """This is a bit of a quick and nasty thing for now. It's important to
+    be able to see what different people are trusted on"""
+    from curriculum_tracking.models import ReviewTrust
+
+    user = get_object_or_404(User, id=user_id)
+    trusts = ReviewTrust.objects.filter(user_id=user_id).order_by("content_item__title")
+
+    context = {
+        "trusts": trusts,
+        "user": user,
+    }
+    return render(request, "frontend/user/review_trusts/page.html", context=context)
+
+
 def check_user_can_start_card(logged_in_user):
     request = get_current_request()
     card_id = request.resolver_match.kwargs.get("card_id")
@@ -379,7 +402,23 @@ def action_start_card(request, card_id):
     )
 
 
-@user_passes_test_or_forbidden(can_view_user_board)
+def _progress_details_viewed_user_func(request):
+    content_type = request.resolver_match.kwargs.get("content_type")
+    course_component_id = request.resolver_match.kwargs.get("id")
+
+    if content_type == "project":
+        return get_object_or_404(
+            RecruitProject, id=course_component_id
+        ).recruit_users.first()
+    elif content_type == "topic":
+        return get_object_or_404(TopicProgress, id=course_component_id).user
+
+    raise NotImplementedError(f"Cannot get viewed user for content type {content_type}")
+
+
+@user_passes_test_or_forbidden(
+    can_view_user_board, viewed_user_func=_progress_details_viewed_user_func
+)
 def progress_details(
     request,
     content_type,
@@ -387,9 +426,16 @@ def progress_details(
 ):
     if content_type == "topic":
         course_component = get_object_or_404(TopicProgress, id=id)
+        review_form = None
 
     if content_type == "project":
         course_component = get_object_or_404(RecruitProject, id=id)
+        review_form = RecruitProjectReviewForm(
+            initial={
+                "recruit_project": course_component,
+                "reviewer_user": request.user,
+            }
+        )
 
     form = None
 
@@ -451,6 +497,7 @@ def progress_details(
         "board_status": board_status,
         "link_submission_form": form,
         "timeline": sorted(timeline, key=lambda d: d["timestamp"]),
+        "review_form": review_form,
     }
 
     return render(
@@ -458,6 +505,67 @@ def progress_details(
         "frontend/progress_details/page.html",
         context,
     )
+
+
+def check_user_can_add_review(logged_in_user):
+    request = get_current_request()
+    content_type = request.resolver_match.kwargs.get("content_type")
+    course_component_id = request.resolver_match.kwargs.get("id")
+
+    if content_type == "project":
+        project: RecruitProject = get_object_or_404(
+            RecruitProject, id=course_component_id
+        )
+        return project.request_user_can_add_review(logged_in_user)
+
+    return False
+
+
+@user_passes_test_or_forbidden(check_user_can_add_review)
+def action_add_review(request, content_type, id):
+    assert content_type == "project", "Only projects can be reviewed."
+
+    project: RecruitProject = get_object_or_404(RecruitProject, id=id)
+    card: AgileCard = project.agile_card
+
+    form: RecruitProjectReviewForm = RecruitProjectReviewForm(data=request.POST)
+
+    if form.is_valid():
+        review: RecruitProjectReview = RecruitProjectReview(
+            **form.cleaned_data,
+            recruit_project=project,
+            reviewer_user=request.user,
+        )
+        review.save()
+
+        log_creators.log_project_competence_review_done(review)
+
+        card.refresh_from_db()
+
+        if card.status == AgileCard.REVIEW_FEEDBACK:
+            log_creators.log_card_moved_to_review_feedback(card, review.reviewer_user)
+        elif card.status == AgileCard.COMPLETE:
+            log_creators.log_card_moved_to_complete(card, review.reviewer_user)
+
+        return render(
+            request,
+            "frontend/progress_details/partial_review.html",
+            {
+                "review": review,
+                "card": card,
+            },
+        )
+        return response
+    else:
+        return render(
+            request,
+            "frontend/progress_details/partial_review_form.html",
+            {
+                "review_form": form,
+                "course_component": project,
+            },
+            status=404,
+        )
 
 
 def check_user_can_request_review_on_card(logged_in_user):
@@ -623,6 +731,51 @@ def action_stop_card(request, card_id):
 
 
 @login_required()
+def view_partial_users_list(request):
+    user = request.user
+
+    all_users = User.objects.filter(active=True)
+    total_user_count = all_users.count()
+
+    if user.is_superuser:
+        filtered_users = all_users
+    else:
+        permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
+        permitted_users = []
+        for team in permitted_teams:
+            permitted_users.extend(team.active_users.all())
+
+        permitted_user_ids = [user.id for user in permitted_users]
+
+        # Convert the list of user IDs back to a QuerySet for ease of filtering
+        filtered_users = User.objects.filter(id__in=permitted_user_ids, active=True)
+
+    form = SimpleSearchForm(request.POST)
+
+    if form.is_valid():
+        search_term = form.cleaned_data["search_term"]
+
+        filtered_users = User.get_users_from_search_term(search_term, filtered_users)
+        total_user_count = filtered_users.count()
+
+    limit = 20
+    current_user_count = int(request.GET.get("count", 0))
+    users = filtered_users[current_user_count : current_user_count + limit]
+    has_next_page = total_user_count > current_user_count + limit
+
+    context = {
+        "users": users,
+        "has_next_page": has_next_page,
+    }
+
+    return render(
+        request,
+        "frontend/users_and_teams_nav/view_partial_users_list.html",
+        context,
+    )
+
+
+@login_required()
 def users_and_teams_nav(request):
     """This lets a user search for users and teams. It should only display what the logged in user is allowed to see"""
     # teams = Team.objects.order_by("name")
@@ -638,21 +791,25 @@ def users_and_teams_nav(request):
 def view_partial_teams_list(request):
     user = request.user
 
-    from guardian.shortcuts import get_objects_for_user
-
     all_teams = Team.objects.filter(active=True).order_by("name")
     total_teams_count = all_teams.count()
 
     if user.is_superuser:
-        teams = all_teams
+        permitted_teams = all_teams
     else:
-        teams = get_objects_for_user(
-            user=user, perms=Team.PERMISSION_VIEW, klass=all_teams, any_perm=True
-        )
+        permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
+
+    form = SimpleSearchForm(request.POST)
+
+    if form.is_valid():
+        search_term = form.cleaned_data["search_term"]
+
+        permitted_teams = Team.get_teams_from_search_term(search_term, permitted_teams)
+        total_teams_count = permitted_teams.count()
 
     limit = 20
     current_team_count = int(request.GET.get("count", 0))
-    teams = teams[current_team_count : current_team_count + limit]
+    teams = permitted_teams[current_team_count : current_team_count + limit]
     has_next_page = total_teams_count > current_team_count + limit
 
     context = {
