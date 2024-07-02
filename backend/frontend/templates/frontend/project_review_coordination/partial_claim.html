@@ -22,7 +22,8 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
         <tr>
             <td>Due time</td>
             <td>
-                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp }}</span> 
+                <span id="claim-{{claim.id}}-due">{{ claim.due_timestamp }}</span>
+                {% if claim.claimed_by_user == request.user %}
                 <button 
                     class="{{styles.button_primary_small}}"
                     hx-post="{% url 'action_project_review_coordination_add_time' claim.id %}"
@@ -31,6 +32,7 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
                     hx-swap="innerHTML"
                     >
                     Add 15 minutes</button>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -57,11 +59,13 @@ class="mb-3 p-2 rounded-xl border-2" id="claim-{{claim.id}}">
             </td>
         </tr>
     </table>
-    <button 
-        class="{{styles.button_primary_small}}"
-        hx-post="{% url 'action_project_review_coordination_unclaim_bundle' claim.id %}"
-        hx-trigger="click"
-        hx-target="#claim-{{claim.id}}"
-    >Unclaim bundle</button>
+    {% if claim.request_user_can_unclaim %}
+        <button
+            class="{{styles.button_primary_small}}"
+            hx-post="{% url 'action_project_review_coordination_unclaim_bundle' claim.id %}"
+            hx-trigger="click"
+            hx-target="#claim-{{claim.id}}"
+        >Unclaim bundle</button>
+    {% endif %}
 </div>
 </form>

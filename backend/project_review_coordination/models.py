@@ -81,3 +81,10 @@ class ProjectReviewBundleClaim(models.Model):
                 permitted_cards.append(card)
 
         return permitted_cards
+
+    def request_user_can_unclaim(self, user=None):
+        from threadlocal_middleware import get_current_user
+
+        user = user or get_current_user()
+
+        return self.claimed_by_user == user or user.is_superuser

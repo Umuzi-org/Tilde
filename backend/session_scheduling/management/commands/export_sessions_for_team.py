@@ -33,7 +33,7 @@ class Command(BaseCommand):
                         session.id,
                         session.session_type.name,
                         session.get_title_copy(),
-                        session.facilitator.email,
+                        session.facilitator.email if session.facilitator else "",
                         session.session_type.duration_minutes,
                         flavours,
                         "\n".join(u.email for u in session.attendees.all()),

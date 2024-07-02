@@ -772,7 +772,44 @@ class RecruitProject(
     @property
     def agile_card_status(self):
         return self.agile_card.status
+    
+    def request_user_can_add_review(self, user=None):
+        """
+        Check if current user can add a review to this project
+        This function is only used in template rendering and we are using threadlocals,
+        that is why we need to avoid argument parameters unless they're for testing purposes.
+        """
+        from threadlocal_middleware import get_current_user
 
+        card: AgileCard = self.agile_card
+
+        if card.request_user_is_assignee(user):
+            return False
+
+        if card.status not in [
+            AgileCard.IN_REVIEW,
+            AgileCard.COMPLETE,
+            AgileCard.REVIEW_FEEDBACK,
+        ]:
+            return False
+
+        user = user or get_current_user()
+
+        if not user:
+            return False
+
+        if user.is_superuser:
+            return True
+
+        if user in card.reviewers.all():
+            return True
+
+        return any(
+            card.user_has_permission(user, perm) for perm in [
+                Team.PERMISSION_REVIEW_CARDS,
+                Team.PERMISSION_TRUSTED_REVIEWER
+            ]
+        )
 
 class RecruitProjectReview(models.Model, Mixins):
     INCORRECT = "i"
@@ -807,6 +844,9 @@ class RecruitProjectReview(models.Model, Mixins):
     # either the next review is negative (meaning the previous review was incomplete or incompletely implemented) or
     # the card is closed (meaning the previous negative review was complete and completely implemented)
     complete_review_cycle = models.BooleanField(null=True, blank=True)
+
+    class Meta:
+        ordering = ('-timestamp', )
 
     def __str__(self):
         # feel free to edit this

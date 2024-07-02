@@ -69,10 +69,7 @@ django-widget-tweaks==1.4.3
 djangorestframework-csv==2.1.0
 djangorestframework-guardian==0.3.0
 
-
-
 dramatiq[rabbitmq, watch]
-
 
 django-sql-utils==0.6.1
 
@@ -88,3 +85,5 @@ playwright==1.40.0 # frontend testing
 pyairtable==2.3.3
 
 anthropic==0.28.0
+
+markdown==3.6
