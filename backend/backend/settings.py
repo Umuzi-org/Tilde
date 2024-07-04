@@ -133,8 +133,8 @@ INSTALLED_APPS = [
     "session_scheduling",
     "selection_bootcamps",
     "coderbyte_tests",
-    "project_review_pricing"
-
+    "project_review_pricing",
+    "interventions",
 ]
 
 SITE_ID = 1  # from allauth docs

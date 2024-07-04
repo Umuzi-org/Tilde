@@ -30,7 +30,7 @@ CUTOFF_YELLOW = 0.15
 
 
 def get_users_and_progress():
-    df = get_progress_df()
+    df = get_card_progress_df()
 
     df_red = df[
         df["priority"] > CUTTOFF_RED
@@ -145,60 +145,60 @@ def schedule_orange_sessions(orange_learner_dicts, yellow_learner_dicts):
                 session.attendees.add(d["user"])
 
 
-def get_progress_df():
-    """
-    get a df with all the users who are behind on their work
-    """
-    assert AIRTABLE_ACCESS_TOKEN
-    api = Api(AIRTABLE_ACCESS_TOKEN)
-    table = api.table("appkr1uRo6nZXyeZb", "tblStRQEBcQmJBDVn")
-    rows = table.all()
-    # TODO: filter while we query airtable. This will return fewer rows and make the script run faster
+# def get_card_progress_df():
+#     """
+#     get a df with all the users who are behind on their work
+#     """
+#     assert AIRTABLE_ACCESS_TOKEN
+#     api = Api(AIRTABLE_ACCESS_TOKEN)
+#     table = api.table("appkr1uRo6nZXyeZb", "tblStRQEBcQmJBDVn")
+#     rows = table.all()
+#     # TODO: filter while we query airtable. This will return fewer rows and make the script run faster
 
-    df = pd.DataFrame.from_records([x["fields"] for x in rows])
+#     df = pd.DataFrame.from_records([x["fields"] for x in rows])
 
-    df["end_date"] = pd.to_datetime(df["end_date"])
-    df = df[df["end_date"] > timezone.now()]
+#     df["end_date"] = pd.to_datetime(df["end_date"])
+#     df = df[df["end_date"] > timezone.now()]
 
-    df["Created"] = pd.to_datetime(df["Created"])
-    df = df[df["Created"] > timezone.now() - timezone.timedelta(days=7)]
-    df = df.sort_values(by="Created")
-    df = df.drop_duplicates(subset=["email"], keep="last")
+#     df["Created"] = pd.to_datetime(df["Created"])
+#     df = df[df["Created"] > timezone.now() - timezone.timedelta(days=7)]
+#     df = df.sort_values(by="Created")
+#     df = df.drop_duplicates(subset=["email"], keep="last")
 
-    # filter out prov and dpd groups
+#     # filter out prov and dpd groups
 
-    df = df[
-        [
-            "email",
-            "how_far_in_program",
-            "agile_percent_core_complete",
-            "group_for_reporting",
-        ]
-    ]
-    for s in [
-        "strat",
-        "design",
-        "prov",
-        "bridge",
-        # "devops",
-    ]:
-        df = df[~df["group_for_reporting"].str.contains(s, case=False)]
+#     df = df[
+#         [
+#             "email",
+#             "how_far_in_program",
+#             "agile_percent_core_complete",
+#             "group_for_reporting",
+#         ]
+#     ]
+#     for s in [
+#         "strat",
+#         "design",
+#         "prov",
+#         "bridge",
+#         # "devops",
+#     ]:
+#         df = df[~df["group_for_reporting"].str.contains(s, case=False)]
 
-    df = df[df["how_far_in_program"] > df["agile_percent_core_complete"]]
+#     df = df[df["how_far_in_program"] > df["agile_percent_core_complete"]]
 
-    df["target"] = df.apply(
-        lambda row: row["agile_percent_core_complete"] / row["how_far_in_program"],
-        axis=1,
-    )
+#     df["target"] = df.apply(
+#         lambda row: row["agile_percent_core_complete"] / row["how_far_in_program"],
+#         axis=1,
+#     )
 
-    df["time_left"] = df.apply(lambda row: 1 - row["how_far_in_program"], axis=1)
-    df["priority"] = df.apply(
-        lambda row: (1 - row["target"]) / row["time_left"], axis=1
-    )
-    df["priority"] = pd.to_numeric(df["priority"])
-    df = df.sort_values(by="priority", ascending=False)
+#     df["time_left"] = df.apply(lambda row: 1 - row["how_far_in_program"], axis=1)
+#     df["priority"] = df.apply(
+#         lambda row: (1 - row["target"]) / row["time_left"], axis=1
+#     )
+#     df["priority"] = pd.to_numeric(df["priority"])
+#     df = df.sort_values(by="priority", ascending=False)
 
-    return df
+#     return df
 
 
 def create_card_progress_based_sessions():

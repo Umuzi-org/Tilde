@@ -8,45 +8,15 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from core.models import Team
 import re
+
+from coderbyte_tests.management.utils import (
+    get_current_psf_level_for_user,
+    get_psf_level_from_team,
+    get_current_psf_team_for_user,
+)
 from coderbyte_tests.constants import PROBLEM_SOLVING_TEAM_NAME_START
 
-
 User = get_user_model()
-
-
-def _get_current_psf_level_for_user(user):
-    team = _get_current_psf_team_for_user(user)
-    if team:
-        return _get_psf_level_from_team(team)
-
-
-def _get_psf_level_from_team(team):
-    return int(team.name.split()[-1])
-
-
-def _remove_user_from_lower_psf_team(teams, user):
-    # breakpoint()
-    team_levels = [(_get_psf_level_from_team(team), team) for team in teams]
-    team_levels.sort()  # sorts by the first element in each tuple, so the smaller number is first
-    for level, team in team_levels[:-1]:
-        team.user_set.remove(user)
-
-
-def _get_current_psf_team_for_user(user):
-    teams = [
-        o.team
-        for o in user.groups.filter(
-            name__startswith=PROBLEM_SOLVING_TEAM_NAME_START
-        ).prefetch_related("team")
-    ]
-    if len(teams) == 0:
-        return None
-
-    if len(teams) > 1:
-        # something was misconfigured by a human. Aarg
-        _remove_user_from_lower_psf_team(teams, user)
-        return _get_current_psf_team_for_user(user)
-    return teams[0]
 
 
 def _get_psf_team_from_level(level: int):
@@ -60,8 +30,8 @@ def _set_learner_problem_solving_level(user, new_level):
     new_level = min([new_level, 3])  # cant be more than 3
     print(f"changing user level to {new_level}")
 
-    current_team = _get_current_psf_team_for_user(user)
-    current_level = _get_psf_level_from_team(current_team)
+    current_team = get_current_psf_team_for_user(user)
+    current_level = get_psf_level_from_team(current_team)
 
     if current_level == new_level:
         return  # noting to do
@@ -93,7 +63,7 @@ class Command(BaseCommand):
         total = users.count()
         for i, user in enumerate(users):
             print(f"{i+1}/{total}: {user.email}")
-            current_level = _get_current_psf_level_for_user(user)
+            current_level = get_current_psf_level_for_user(user)
             if current_level == None:
                 breakpoint()
             assert current_level != None
