@@ -152,6 +152,9 @@ class PullRequest(models.Model, Mixins):
         if created:
             log_pr_opened(pull_request)
 
+        if pull_request.state == "closed":
+            log_pr_closed(pull_request)
+
         return pull_request
 
     def get_activity_log_summary_data(self):
