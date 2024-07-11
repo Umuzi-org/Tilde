@@ -6,7 +6,7 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
-from .activity_log_creators import log_push_event, log_pr_opened
+from .activity_log_creators import log_push_event, log_pr_opened, log_pr_merged
 from activity_log.models import LogEntry
 from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
@@ -145,11 +145,15 @@ class PullRequest(models.Model, Mixins):
             "user": get_user_from_github_name(github_name),
         }
 
-        pull_request, _ = cls.get_or_create_or_update(
+        pull_request, created = cls.get_or_create_or_update(
             repository=repo, number=number, defaults=defaults, overrides=defaults
         )
 
-        log_pr_opened(pull_request)
+        if created:
+            log_pr_opened(pull_request)
+
+        if pull_request.state == cls.CLOSED and pull_request.merged_at:
+            log_pr_merged(pull_request)
 
         return pull_request
 

@@ -81,6 +81,38 @@ class log_pr_reviewed_created_Tests(TestCase):
         self.assertEqual(LogEntry.objects.count(), 2)
 
 
+class log_pr_merged_Tests(APITestCase):
+    def test_that_timestamp_properly_set(self):
+        pull_request = PullRequestFactory()
+        creators.log_pr_merged(pull_request)
+        self.assertAlmostEqual(
+            LogEntry.objects.first().timestamp,
+            pull_request.created_at,
+            delta=timedelta(seconds=1),
+        )
+
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_merge_a_pr(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(LogEntry.objects.all().count(), 0)
+
+        body, headers = get_body_and_headers("pull_request_merged")
+        RepositoryFactory(full_name=body["repository"]["full_name"])
+        url = reverse(views.github_webhook)
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        # two logs expected because a new pr is created then logged, merged then logged
+        self.assertEqual(LogEntry.objects.all().count(), 2)
+
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_MERGED).first()
+        pull_request = PullRequest.objects.first()
+
+        self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.event_type.name, creators.PR_MERGED)
+
+
 class log_pr_reviewed_Tests(APITestCase):
 
     @mock.patch.object(IsWebhookSignatureOk, "has_permission")
