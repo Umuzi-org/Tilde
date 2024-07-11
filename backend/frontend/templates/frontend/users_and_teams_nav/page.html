@@ -19,7 +19,7 @@
                     Show Users
                 </button>
             </div>
-            <form method="get" action="" class="mb-3 flex items-center gap-1">
+            <form method="get" action="" class="mb-3 flex items-center gap-1" hx-trigger="keydown" hx-on="keydown: event.key === 'Enter' ? event.preventDefault() : ''">
                 <input type="text" name="search_term" placeholder="Search Teams..." id="search-term-box" hx-get="{% url 'view_partial_teams_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#teams-list" hx-swap="innerHTML" class="{{styles.input_small}} w-full lg:w-max">
             </form>
         </div>
@@ -49,7 +49,7 @@
                     Show Teams
                 </button>
             </div>
-            <form method="get" action="" class="mb-3 flex items-center gap-1">
+            <form method="get" action="" class="mb-3 flex items-center gap-1" hx-trigger="keydown" hx-on="keydown: event.key === 'Enter' ? event.preventDefault() : ''">
                 <input type="text" name="search_term" placeholder="Search users..." id="user-search-term-box" hx-get="{% url 'view_partial_users_list' %}" hx-trigger="keyup changed delay:500ms" hx-target="#users-list" hx-swap="innerHTML" class="{{ styles.input_small }} w-full lg:w-max">
             </form>
         </div>
