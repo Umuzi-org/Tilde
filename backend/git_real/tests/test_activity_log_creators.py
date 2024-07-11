@@ -75,11 +75,14 @@ class log_pr_closed_Tests(APITestCase):
     def test_close_a_pr(self, has_permission):
         has_permission.return_value = True
 
+        self.assertEqual(LogEntry.objects.all().count(), 0)
+
         body, headers = get_body_and_headers("pull_request_closed")
         RepositoryFactory(full_name=body["repository"]["full_name"])
         url = reverse(views.github_webhook)
         self.client.post(url, format="json", data=body, extra=headers)
 
+        # two logs expected because a new pr is created then logged, merged then logged
         self.assertEqual(LogEntry.objects.all().count(), 2)
 
         entry = LogEntry.objects.filter(event_type__name=creators.PR_CLOSED).first()
