@@ -152,7 +152,7 @@ class PullRequest(models.Model, Mixins):
         if created:
             log_pr_opened(pull_request)
 
-        if pull_request.state == "closed":
+        if pull_request.state == cls.CLOSED and not (pull_request.merged_at):
             log_pr_closed(pull_request)
 
         return pull_request
