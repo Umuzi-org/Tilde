@@ -27,9 +27,13 @@ from curriculum_tracking.models import (
     TopicProgress,
     RecruitProjectReview,
 )
-
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
+from project_review_coordination.activity_log_creators import (
+    log_bundle_claimed,
+    log_bundle_unclaimed,
+    log_bundle_time_added,
+)
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
@@ -908,11 +912,7 @@ def view_partial_team_user_progress_chart(request, user_id):
 def project_review_coordination_unclaimed(request):
     from project_review_coordination.models import ProjectReviewBundleClaim
 
-    ProjectReviewBundleClaim.objects.filter(is_active=True).filter(
-        due_timestamp__lt=timezone.now()
-    ).update(
-        is_active=False
-    )  # TODO: This should be in a cron job or dramatiq task
+    ProjectReviewBundleClaim.deactivate_expired_claims()
 
     cards = ProjectReviewBundleClaim.get_projects_user_can_review(request.user)
 
@@ -1038,6 +1038,8 @@ def action_project_review_coordination_claim_bundle(request):
         claim = ProjectReviewBundleClaim.objects.create(claimed_by_user=user)
         claim.projects_to_review.set(projects)
 
+        log_bundle_claimed(claim)
+
         context = {
             "project_count": project_count,
         }
@@ -1062,6 +1064,8 @@ def action_project_review_coordination_unclaim_bundle(request, claim_id):
     instance.is_active = False
     instance.save()
 
+    log_bundle_unclaimed(instance)
+
     return render(
         request,
         "frontend/project_review_coordination/view_partial_unclaim_bundle.html",
@@ -1076,6 +1080,8 @@ def action_project_review_coordination_add_time(request, claim_id):
 
     instance.due_timestamp = instance.due_timestamp + timezone.timedelta(minutes=15)
     instance.save()
+
+    log_bundle_time_added(instance)
 
     return render(
         request,

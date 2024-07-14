@@ -43,9 +43,9 @@ from backend.settings import (
 
 connection = {}
 if RABBITMQ_PASSWORD:
-    connection[
-        "url"
-    ] = f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}"
+    connection["url"] = (
+        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}"
+    )
 
 rabbitmq_broker = RabbitmqBroker(**connection)
 dramatiq.set_broker(rabbitmq_broker)
@@ -143,6 +143,15 @@ def invite_user_to_github_org(user_id):
     api.add_user_to_org_return_accepted(
         organisation_name=ORGANISATION, github_name=user.github_name
     )
+
+
+@actor()
+def log_expired_bundle_claims(claim_ids: list):
+    from project_review_coordination.models import ProjectReviewBundleClaim
+    from project_review_coordination.activity_log_creators import log_bundle_expired
+
+    for claim in ProjectReviewBundleClaim.objects.filter(pk__in=claim_ids):
+        log_bundle_expired(claim)
 
 
 from automarker.long_running_request_actors import *

@@ -88,3 +88,22 @@ class ProjectReviewBundleClaim(models.Model):
         user = user or get_current_user()
 
         return self.claimed_by_user == user or user.is_superuser
+
+    @classmethod
+    def deactivate_expired_claims(cls):
+        from backend.long_running_request_actors import log_expired_bundle_claims
+
+        expired_claims = cls.objects.filter(
+            due_timestamp__lt=timezone.now(), is_active=True
+        ).select_for_update()
+
+        expired_claim_ids = list(expired_claims.values_list("pk", flat=True))
+
+        if not expired_claim_ids:
+            return
+
+        expired_claims.update(
+            is_active=False
+        )  # TODO: This should be in a cron job or dramatiq task
+
+        log_expired_bundle_claims(claim_ids=expired_claim_ids)
