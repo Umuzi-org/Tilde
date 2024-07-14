@@ -8,13 +8,13 @@ from curriculum_tracking.constants import (
     RED_FLAG,
     EXCELLENT,
 )
-from .activity_log_creators import log_bundle_claimed
+from . import activity_log_creators as log_creators
 
 
 @receiver([post_save], sender=ProjectReviewBundleClaim)
 def handle_new_claim(sender, instance, created, **kwargs):
     if created:
-        log_bundle_claimed(instance)
+        log_creators.log_bundle_claimed(instance)
 
 
 @receiver([post_save], sender=RecruitProjectReview)
@@ -38,6 +38,7 @@ def update_claims(sender, instance, created, **kwargs):
         if claim.projects_to_review.count() == 0:
             claim.is_active = False
             claim.save()
+            log_creators.log_bundle_completed(claim)
 
     # if someone moved a card and it no longer needs a review then update the claim as well
     # this would be done if the project received a negative review or a trusted positive review

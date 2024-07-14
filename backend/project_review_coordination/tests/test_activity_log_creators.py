@@ -4,6 +4,10 @@ import datetime
 from django.utils import timezone
 
 from core.tests.factories import UserFactory
+from curriculum_tracking.tests.factories import (
+    RecruitProjectInReviewFactory,
+    RecruitProjectReviewFactory,
+)
 from activity_log.models import LogEntry
 from project_review_coordination import activity_log_creators as creators
 from project_review_coordination.models import ProjectReviewBundleClaim
@@ -77,3 +81,30 @@ class review_bundle_claim_activity_log_Tests(TestCase):
         self.assertEqual(log.actor_user, None)
         self.assertEqual(log.effected_user, self.user)
         self.assertEqual(log.event_type.name, creators.BUNDLE_EXPIRED)
+
+    def test_log_bundle_completed(self):
+        self.assertEqual(LogEntry.objects.all().count(), 0)
+
+        claim = ProjectReviewBundleClaimFactory(claimed_by_user=self.user)
+        project = RecruitProjectInReviewFactory()
+        claim.projects_to_review.set(
+            [
+                project,
+            ]
+        )
+        claim.save()
+
+        RecruitProjectReviewFactory(
+            recruit_project=project,
+            reviewer_user=self.user,
+        )
+
+        self.assertEqual(
+            LogEntry.objects.all().count(), 2
+        )  # Includes the claim creation log
+
+        log = LogEntry.objects.last()
+
+        self.assertEqual(log.actor_user, self.user)
+        self.assertEqual(log.effected_user, self.user)
+        self.assertEqual(log.event_type.name, creators.BUNDLE_COMPLETED)
