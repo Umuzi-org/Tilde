@@ -29,11 +29,6 @@ from curriculum_tracking.models import (
 )
 import curriculum_tracking.activity_log_entry_creators as log_creators
 from curriculum_tracking import helpers
-from project_review_coordination.activity_log_creators import (
-    log_bundle_claimed,
-    log_bundle_unclaimed,
-    log_bundle_time_added,
-)
 
 from taggit.models import Tag
 from guardian.core import ObjectPermissionChecker
@@ -1038,8 +1033,6 @@ def action_project_review_coordination_claim_bundle(request):
         claim = ProjectReviewBundleClaim.objects.create(claimed_by_user=user)
         claim.projects_to_review.set(projects)
 
-        log_bundle_claimed(claim)
-
         context = {
             "project_count": project_count,
         }
@@ -1061,10 +1054,7 @@ def action_project_review_coordination_unclaim_bundle(request, claim_id):
 
     instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
 
-    instance.is_active = False
-    instance.save()
-
-    log_bundle_unclaimed(instance)
+    instance.unclaim()
 
     return render(
         request,
@@ -1077,11 +1067,7 @@ def action_project_review_coordination_add_time(request, claim_id):
     from project_review_coordination.models import ProjectReviewBundleClaim
 
     instance = get_object_or_404(ProjectReviewBundleClaim, id=claim_id)
-
-    instance.due_timestamp = instance.due_timestamp + timezone.timedelta(minutes=15)
-    instance.save()
-
-    log_bundle_time_added(instance)
+    instance.add_time()
 
     return render(
         request,

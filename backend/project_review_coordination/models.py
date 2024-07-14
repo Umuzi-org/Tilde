@@ -6,6 +6,8 @@ from curriculum_tracking.models import RecruitProject, AgileCard, RecruitProject
 from django.utils import timezone
 from django.db.models import OuterRef, Exists
 
+from . import activity_log_creators as log_creators
+
 
 User = get_user_model()
 
@@ -82,6 +84,18 @@ class ProjectReviewBundleClaim(models.Model):
 
         return permitted_cards
 
+    def unclaim(self):
+        self.is_active = False
+        self.save()
+
+        log_creators.log_bundle_unclaimed(self)
+
+    def add_time(self):
+        self.due_timestamp = self.due_timestamp + timezone.timedelta(minutes=15)
+        self.save()
+
+        log_creators.log_bundle_time_added(self)
+
     def request_user_can_unclaim(self, user=None):
         from threadlocal_middleware import get_current_user
 
@@ -89,12 +103,29 @@ class ProjectReviewBundleClaim(models.Model):
 
         return self.claimed_by_user == user or user.is_superuser
 
+    def get_activity_log_summary_data(self):
+        """This is used by the ActivityLog serializer"""
+        return {
+            "claimed_by_user": self.claimed_by_user.email,
+            "claim_timestamp": self.claim_timestamp.isoformat(),
+            "due_timestamp": self.due_timestamp.isoformat(),
+            "is_active": self.is_active,
+        }
+
     @classmethod
-    def deactivate_expired_claims(cls):
-        from backend.long_running_request_actors import log_expired_bundle_claims
+    def deactivate_expired_claims(cls, by_timestamp=None):
+        """
+        Deactivate claims that have expired
+
+        by_timestamp: If provided, will deactivate claims that are expired by this timestamp. Mainly for testing purposes
+        """
+        from long_running_request_actors import log_expired_bundle_claims
+
+        if not by_timestamp:
+            by_timestamp = timezone.now()
 
         expired_claims = cls.objects.filter(
-            due_timestamp__lt=timezone.now(), is_active=True
+            due_timestamp__lt=by_timestamp, is_active=True
         ).select_for_update()
 
         expired_claim_ids = list(expired_claims.values_list("pk", flat=True))

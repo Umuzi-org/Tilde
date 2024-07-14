@@ -8,6 +8,13 @@ from curriculum_tracking.constants import (
     RED_FLAG,
     EXCELLENT,
 )
+from .activity_log_creators import log_bundle_claimed
+
+
+@receiver([post_save], sender=ProjectReviewBundleClaim)
+def handle_new_claim(sender, instance, created, **kwargs):
+    if created:
+        log_bundle_claimed(instance)
 
 
 @receiver([post_save], sender=RecruitProjectReview)
