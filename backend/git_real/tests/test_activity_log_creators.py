@@ -61,6 +61,38 @@ class log_pr_opened_Tests(APITestCase):
         self.assertEqual(entry.event_type.name, creators.PR_OPENED)
 
 
+class log_pr_closed_Tests(APITestCase):
+    def test_that_timestamp_properly_set(self):
+        pull_request = PullRequestFactory()
+        creators.log_pr_closed(pull_request)
+        self.assertAlmostEqual(
+            LogEntry.objects.first().timestamp,
+            pull_request.created_at,
+            delta=timedelta(seconds=1),
+        )
+
+    @mock.patch.object(IsWebhookSignatureOk, "has_permission")
+    def test_close_a_pr(self, has_permission):
+        has_permission.return_value = True
+
+        self.assertEqual(LogEntry.objects.all().count(), 0)
+
+        body, headers = get_body_and_headers("pull_request_closed")
+        RepositoryFactory(full_name=body["repository"]["full_name"])
+        url = reverse(views.github_webhook)
+        self.client.post(url, format="json", data=body, extra=headers)
+
+        # two logs expected because a new pr is created then logged, merged then logged
+        self.assertEqual(LogEntry.objects.all().count(), 2)
+
+        entry = LogEntry.objects.filter(event_type__name=creators.PR_CLOSED).first()
+        pull_request = PullRequest.objects.first()
+
+        self.assertEqual(entry.effected_user, pull_request.user)
+        self.assertEqual(entry.object_1, pull_request)
+        self.assertEqual(entry.event_type.name, creators.PR_CLOSED)
+
+
 class log_pr_reviewed_created_Tests(TestCase):
     def test_that_timestamp_properly_set(self):
         review = PullRequestReviewFactory()
