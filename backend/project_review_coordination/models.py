@@ -126,7 +126,7 @@ class ProjectReviewBundleClaim(models.Model):
 
         expired_claims = cls.objects.filter(
             due_timestamp__lt=by_timestamp, is_active=True
-        ).select_for_update()
+        )
 
         expired_claim_ids = list(expired_claims.values_list("pk", flat=True))
 
