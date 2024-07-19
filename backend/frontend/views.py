@@ -750,7 +750,7 @@ def view_partial_users_list(request):
         # Convert the list of user IDs back to a QuerySet for ease of filtering
         filtered_users = User.objects.filter(id__in=permitted_user_ids, active=True)
 
-    form = SimpleSearchForm(request.POST)
+    form = SimpleSearchForm(request.GET)
 
     if form.is_valid():
         search_term = form.cleaned_data["search_term"]
@@ -799,7 +799,7 @@ def view_partial_teams_list(request):
     else:
         permitted_teams = user.get_permissioned_teams(perms=tuple(Team.PERMISSION_VIEW))
 
-    form = SimpleSearchForm(request.POST)
+    form = SimpleSearchForm(request.GET)
 
     if form.is_valid():
         search_term = form.cleaned_data["search_term"]
