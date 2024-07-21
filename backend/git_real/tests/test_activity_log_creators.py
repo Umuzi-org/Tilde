@@ -140,6 +140,7 @@ class log_pr_merged_Tests(APITestCase):
         entry = LogEntry.objects.filter(event_type__name=creators.PR_MERGED).first()
         pull_request = PullRequest.objects.first()
 
+        self.assertEqual(entry.actor_user, pull_request.merged_by)
         self.assertEqual(entry.effected_user, pull_request.user)
         self.assertEqual(entry.object_1, pull_request)
         self.assertEqual(entry.event_type.name, creators.PR_MERGED)

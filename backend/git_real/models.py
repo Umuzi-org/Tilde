@@ -113,6 +113,13 @@ class PullRequest(models.Model, Mixins):
     updated_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
     merged_at = models.DateTimeField(blank=True, null=True)
+    merged_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="merged_pull_requests",
+    )
     number = models.PositiveSmallIntegerField()
 
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
@@ -146,6 +153,8 @@ class PullRequest(models.Model, Mixins):
             ),
             "merged_at": pull_request_data["merged_at"]
             and strp_github_standard_time(pull_request_data["merged_at"]),
+            "merged_by": pull_request_data["merged_by"]["login"]
+            and get_user_from_github_name(pull_request_data["merged_by"]["login"]),
             "author_github_name": github_name,
             "user": get_user_from_github_name(github_name),
         }

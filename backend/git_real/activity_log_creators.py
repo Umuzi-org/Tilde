@@ -12,7 +12,7 @@ GIT_PUSH = "GIT_PUSH"
 def log_pr_merged(pull_request):
     event_type, _ = EventType.objects.get_or_create(name=PR_MERGED)
     match = LogEntry.objects.filter(
-        actor_user=None,
+        actor_user=pull_request.merged_by,
         effected_user=pull_request.user,
         object_1_id=pull_request.pk,
         event_type=event_type,
@@ -21,7 +21,7 @@ def log_pr_merged(pull_request):
 
     if match == None:
         LogEntry.objects.create(
-            actor_user=None,  # we dont care who clicked the merge button. Maybe we'll fill this in later
+            actor_user=pull_request.merged_by,
             effected_user=pull_request.user,
             object_1=pull_request,
             event_type=event_type,
