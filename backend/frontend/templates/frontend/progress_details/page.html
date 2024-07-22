@@ -4,10 +4,10 @@
 
 {% block content %}
 
-<div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12 w-full overflow-auto">
+<div class="mx-auto p-6 bg-white my-4 sm:w-11/12 lg:w-8/12 w-full max-sm:text-sm sm:text-sm md:text-base lg:text-base">
 <div x-data="{ open: true }" class="card relative cursor-pointer p-4 mb-4" @click="open = !open">
     <div class="flex justify-between items-center">
-        <div class="font-['Poppins']">
+        <div class="font-['Poppins'] cursor-default max-sm:w-[80%] sm:w-[80%]">
             {% comment %} project or topic section {% endcomment %}
             <p>{{ course_component.content_item.content_type_nice }} </p>
             <h1 class="{{ styles.heading1 }}">
@@ -17,44 +17,45 @@
                 Status: <span id="agile-card-status">{{board_status}}</span>
             </p>
         </div>
-        <span>
-         <span class="text-orange-400" x-text="open ? 'View less' : 'View more'"></span>
+        <div  class="flex ml-1">
+         <span class="text-orange-400 absolute right-10 flex-none" x-text="open ? 'View less' : 'View more'"></span>
         <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
-        </span>
+        </div>
     </div>
-    <div x-show="open" @click.stop class="content p-2 mb-2">
+    <div x-show="open" @click.stop class="content p-2 mb-2 cursor-default">
         <div class="grid grid-cols-4 gap-4">
-            {% comment %} Details section {% endcomment %}
-            <div class="col-span-1 space-y-3 font-['Poppins']">
+            <div class="space-y-3 font-['Poppins'] max-sm:col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
                 <div>Tags</div>
                 <div>Assignees</div>
                 <div>Reviewers</div>
                 <div>Start time</div>
                 <div>Due time</div>
-                <div>Review request time</div>
-    
             </div>
-            <div class="col-span-3 space-y-2">
+            <div class="lg:space-y-2 md:space-y-2 sm:space-y-2 max-sm:space-y-3 sm:col-span-2">
                 <div>{% with course_component.content_item.tag_names|length as array_length %}
                     {% for item in course_component.content_item.tag_names %}
             <span class="text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight"><span class="bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md pl-0.5 p-0.5">{{ item }}</span><span></span>
     
                         {% if not forloop.last %},{% endif %}
                     {% endfor %}
-                {% endwith %}</div>
+                {% endwith %}
+            </div>
                 <div class="flex relative">
-                    {% if course_component.content_item.content_type_nice == "topic" %}
-                        {% user_avatar course_component.user %}
-                     {% endif %}
-
-                    {% if course_component.content_item.content_type_nice == "project" %}
-                        {% user_avatar course_component.recruit_user_names|first %}
-                    {% endif %}
+                    <div title="{{course_component.user}}">
+                        {% if course_component.content_item.content_type_nice == "topic" %}
+                            {% user_avatar course_component.user %}
+                        {% endif %}
+                    </div>
+                    <div title="{{course_component.recruit_user_names}}">
+                        {% if course_component.content_item.content_type_nice == "project" %}
+                            {% user_avatar course_component.recruit_user_names|first %}
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="flex relative">
                     {% if course_component.reviewer_users.all %}
                       {% for reviewer in course_component.reviewer_users.all %}
-                        <div class="-mx-1" title="{{ card.reviewer_names|join:', '}}">
+                        <div class="-mx-1" title="{{ reviewer }}">
                           <div class="border-2 rounded-full border-white">
                             {% user_avatar reviewer %}
                           </div>
@@ -67,9 +68,7 @@
                     {% endif %}
                   </div>
                 <div>{{ course_component.start_time }}</div>
-                <div>{{ course_component.due_time }}</div>
-                <div>Review request time</div>
-    
+                <div>{{ course_component.due_time }}</div>    
             </div>
         </div>
     </div>
@@ -117,12 +116,11 @@
 
 {% if course_component.content_item.content_type_nice == "project" %}
 
-
-<div class="review relative cursor-pointer border-2 border-black/opacity-10 rounded p-4 mb-4">
+<div class="review relative border-2 border-black/opacity-10 rounded p-4 mb-4 lg:ml-[-0px]">
     <div class="flex justify-between items-center">
-        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Reviews</h2>
+        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins'] pl-2">Reviews</h2>
     </div>
-    <div class="reviews p-2 mb-2">
+    <div class="p-2">
         
         {% if not course_component.reviews_queryset.all %}
             <div>
@@ -130,8 +128,8 @@
             </div>
         {% else %}
 
-        <div class="accordion-content">
-            <div id="reviews" class="grid gap-2 mt-2 max-h-44 overflow-y-scroll overflow-x-auto">
+        <div class="relative">
+            <div class="grid gap first:border-t-2 last:border-m-b-0 mt-2 max-h-44 overflow-y-scroll overflow-x-auto lg:ml-[-0px] lg:mr-[-0px] md:ml-[-0px] md:mr-[-0px] sm:ml-[-25px] sm:mr-[-25px] max-sm:ml-[-25px] max-sm:mr-[-25px]  lg:pr-[0px] lg:pr-[0px] sm:pl-[10px] sm:pr-[10px] max-sm:pl-[10px] max-sm:pr-[10px]">
                 {% for review in course_component.reviews_queryset.all %}
                     {% include "frontend/progress_details/partial_review.html" %}
                 {% endfor %}
@@ -149,7 +147,7 @@
         <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
         <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
     </div>
-    <div x-show="open" @click.stop>
+    <div x-show="open" @click.stop class="cursor-default">
         <div class="relative">
             <div class="grid grid-cols-4">            
              <div class="col-span-1 font-['Poppins'] space-y-2">
@@ -169,14 +167,14 @@
                 {% if course_component.repository.pull_requests.all|length %}
                 <ul>
                     {% for pr in course_component.repository.pull_requests.all %}
-                        <li class="space-x-2 pl-2">
+                        <li class="space-x-2 p-2">
                             <a id="pr_{{pr.number}}" class="{{ styles.link }} underline" href="{{ course_component.repository.get_github_repo_link }}/pull/{{ pr.number }}" target="_blank">{{ pr.title }} - {{ pr.created_at }}</a>
                         </li>
                     {% endfor %}
                     </ul>   
                     {% else %}
                     <div>
-                        <div class="text-xs font-['Poppins']">No open pull requests</div>
+                        <div class="text-xs font-['Poppins'] space-x-2 ml-2 p-2">No open pull requests</div>
                     </div>
                     {% endif %}
             </div>  
@@ -184,6 +182,7 @@
     </div>
 </div>
 {% endif %}
+
 
 
 <div class="flex space-x-2">
