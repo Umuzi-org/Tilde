@@ -145,13 +145,4 @@ def invite_user_to_github_org(user_id):
     )
 
 
-@actor()
-def log_expired_bundle_claims(claim_ids: list):
-    from project_review_coordination.models import ProjectReviewBundleClaim
-    from project_review_coordination.activity_log_creators import log_bundle_expired
-
-    for claim in ProjectReviewBundleClaim.objects.filter(pk__in=claim_ids):
-        log_bundle_expired(claim)
-
-
 from automarker.long_running_request_actors import *

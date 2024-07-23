@@ -96,6 +96,11 @@ class ProjectReviewBundleClaim(models.Model):
 
         log_creators.log_bundle_time_added(self)
 
+    def expire_claim(self):
+        self.is_active = False
+        self.save()
+        log_creators.log_bundle_expired(self)
+
     def request_user_can_unclaim(self, user=None):
         from threadlocal_middleware import get_current_user
 
@@ -119,8 +124,6 @@ class ProjectReviewBundleClaim(models.Model):
 
         by_timestamp: If provided, will deactivate claims that are expired by this timestamp. Mainly for testing purposes
         """
-        from long_running_request_actors import log_expired_bundle_claims
-
         if not by_timestamp:
             by_timestamp = timezone.now()
 
@@ -128,13 +131,8 @@ class ProjectReviewBundleClaim(models.Model):
             due_timestamp__lt=by_timestamp, is_active=True
         )
 
-        expired_claim_ids = list(expired_claims.values_list("pk", flat=True))
-
-        if not expired_claim_ids:
+        if not expired_claims.exists():
             return
 
-        expired_claims.update(
-            is_active=False
-        )  # TODO: This should be in a cron job or dramatiq task
-
-        log_expired_bundle_claims(claim_ids=expired_claim_ids)
+        for claim in expired_claims:
+            claim.expire_claim()
