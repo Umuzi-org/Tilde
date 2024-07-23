@@ -153,7 +153,7 @@ class PullRequest(models.Model, Mixins):
             ),
             "merged_at": pull_request_data["merged_at"]
             and strp_github_standard_time(pull_request_data["merged_at"]),
-            "merged_by": pull_request_data["merged_by"]["login"]
+            "merged_by": pull_request_data["merged_at"]
             and get_user_from_github_name(pull_request_data["merged_by"]["login"]),
             "author_github_name": github_name,
             "user": get_user_from_github_name(github_name),
