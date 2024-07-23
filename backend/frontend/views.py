@@ -907,7 +907,7 @@ def view_partial_team_user_progress_chart(request, user_id):
 def project_review_coordination_unclaimed(request):
     from project_review_coordination.models import ProjectReviewBundleClaim
 
-    ProjectReviewBundleClaim.deactivate_expired_claims()
+    ProjectReviewBundleClaim.deactivate_expired_claims()  # TODO: This should be in a cron job or dramatiq task
 
     cards = ProjectReviewBundleClaim.get_projects_user_can_review(request.user)
 
