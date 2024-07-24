@@ -1,18 +1,27 @@
 {% load custom_tags %}
-<div id="review-{{ review.id }}" class="border shadow-md p-4 pt-2">
-  <span class="text-xs tracking-tight">{{ review.timestamp|date:"d F Y H:i" }}</span>
-  <div class="flex items center gap-2">
-    {% user_avatar review.reviewer_user %}
-    <div>{{ review.reviewer_user_email }}</div>
-  </div class="pb-4">
-  <p class="line-clamp-1 my-2">{{ review.comments|markdownify|striptags }}</p>
-  <div x-data="{ modalOpen: false }" class="flex gap-2 mt-2">
-    <span class="{{ styles.badge_secondary }}">{{ review.status_nice }}</span>
-    <div>
-      <button @click="modalOpen = !modalOpen"
-              class="{{ styles.button_secondary_small }}"
-              type="button">Read more</button>
+<div>
+  <div id="review-{{ review.id }}" class="flex flex-wrap relative shadow-md rounded p-3 pt-2 hover:bg-slate-100">
+    <div class="flex items-center gap-2">
+      {% user_avatar review.reviewer_user %}
+      <div class="flex flex-col">
+        <div class="text-xs tracking-tight">{{ review.timestamp|date:"d F Y H:i" }}</div>
+        <div class="">{{ review.reviewer_user_email }}</div>
+      </div>
     </div>
-    {% include "frontend/progress_details/partial_review_preview.html" %}
+    <div class="w-full md:w-auto">
+      <div class="ml-4 mr-4 mt-4 self-center md:inline-block block">
+        <p class="">{{ review.comments|slice:11|markdownify|striptags }}...</p>
+      </div>
+      <div class="flex">
+        <div x-data="{ modalOpen: false }"
+          class="gap-2 lg:absolute md:absolute lg:right-2 md:right-2 lg:top-5 md:top-5">
+          <span class="{{ styles.badge_secondary }}">{{ review.status }}</span>
+          <button @click="modalOpen = !modalOpen" class="{{ styles.button_secondary_small }}" type="button">
+            Read more
+          </button>
+          {% include "frontend/progress_details/partial_review_preview.html" %}
+        </div>
+      </div>
+    </div>
   </div>
 </div>

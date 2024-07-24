@@ -75,7 +75,7 @@
 </div>
 
  {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "link" %}
-<div x-data="{ open: true }" class="review relative cursor-pointer shadow-2xl rounded p-4 mb-4" @click="open = !open">
+<div x-data="{ open: true }" class="review relative cursor-pointer shadow-md rounded p-4 mb-4" @click="open = !open">
     <div class="flex justify-between items-center">
         <h2 class="{{ styles.heading2 }} mb-2 pl-2 font-['Poppins']">Link to your work</h2>
         <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
@@ -116,7 +116,7 @@
 
 {% if course_component.content_item.content_type_nice == "project" %}
 
-<div class="relative shadow-lg rounded">
+<div class="relative shadow-lg border rounded mb-4">
     <div class="flex justify-between items-center">
         <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins'] pl-2">Reviews</h2>
     </div>
@@ -129,7 +129,7 @@
         {% else %}
 
         <div class="relative">
-            <div class="grid gap mt-2 max-h-44 overflow-y-scroll overflow-x-auto">
+            <div class="grid gap mt-2 lg:max-h-44 md:max-h-44 sm:max-h-44 max-sm:max-h-50 overflow-y-scroll overflow-x-auto">
                 {% for review in course_component.reviews_queryset.all %}
                     {% include "frontend/progress_details/partial_review.html" %}
                 {% endfor %}
@@ -141,7 +141,7 @@
 </div>
 
 {% if course_component.content_item.content_type_nice == "project" and course_component.content_item.project_submission_type_nice == "repo" or course_component.content_item.project_submission_type_nice == "continue_repo" %}
-<div x-data="{ open: false }" class="review relative cursor-pointer shadow-lg rounded p-4 mb-4" @click="open = !open">
+<div x-data="{ open: false }" class="review relative border cursor-pointer shadow-md rounded p-4 mb-4" @click="open = !open">
     <div class="flex justify-between items-center">
         <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Repo details</h2>
         <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
