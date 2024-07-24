@@ -129,7 +129,7 @@
         {% else %}
 
         <div class="relative">
-            <div class="grid gap mt-2 lg:max-h-44 md:max-h-44 sm:max-h-44 max-sm:max-h-50 overflow-y-scroll overflow-x-auto">
+            <div class="grid gap mt-2 lg:max-h-[250px] md:max-h-47 sm:max-h-50 max-sm:max-h-[290px] overflow-y-scroll overflow-x-auto">
                 {% for review in course_component.reviews_queryset.all %}
                     {% include "frontend/progress_details/partial_review.html" %}
                 {% endfor %}
@@ -160,7 +160,7 @@
                 </div>
             </div>
             </div>
-            <div class="cursor-pointer border-2 border-black/opacity-10 rounded mt-4">
+            <div class="cursor-pointer border shadow-md rounded mt-4">
                 <div class="flex justify-between items-center p-2">
                     <h3 class="{{ styles.heading3 }} font-['Poppins']">Pull request details</h3>
                 </div>
