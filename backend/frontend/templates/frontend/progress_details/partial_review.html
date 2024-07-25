@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="w-full md:w-auto">
-      <div class="lg:ml-4 lg:mr-4 md:ml-4 md:mr-4 lg:mt-5 md:mt-5 sm:pb-2 self-center md:inline-block block">
+      <div class="lg:ml-4 lg:mr-4 md:ml-4 md:mr-4 lg:mt-5 md:mt-5 sm:pb-2 self-center md:inline-block block text-sm">
         <p class="">
           {% if review.comments|length > 11 %}
             {{ review.comments|slice:11|markdownify|striptags }}...

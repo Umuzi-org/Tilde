@@ -48,7 +48,7 @@
                     </div>
                     <div title="{{course_component.recruit_user_names}}">
                         {% if course_component.content_item.content_type_nice == "project" %}
-                        {% user_avatar course_component.recruit_users.first %} {{ course_component.recruit_users.first }}
+                        {% user_avatar course_component.recruit_users.first %}
                         {% endif %}
                     </div>
                 </div>
@@ -117,8 +117,8 @@
 {% if course_component.content_item.content_type_nice == "project" %}
 
 <div class="relative shadow-lg border rounded mb-4">
-    <div class="flex justify-between items-center">
-        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins'] pl-2">Reviews</h2>
+    <div class="flex justify-between items-center pt-4 pl-4">
+        <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Reviews</h2>
     </div>
     <div class="p-2">
         
