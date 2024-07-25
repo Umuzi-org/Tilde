@@ -10,10 +10,8 @@ def user_avatar(user, size="default"):
         "default": "w-[30px] h-[30px]",
         "small": "w-[15px] h-[15px] text-xs",
     }
-    if hasattr(user, "email"):
-        initial = user.email[0].upper()
-    else:
-        initial =  user[0].upper()
+
+    initial = user.email[0].upper()
         
     return {"initial": initial, "size": size_css_classes[size]}
 

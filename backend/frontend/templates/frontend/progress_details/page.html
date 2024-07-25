@@ -48,7 +48,7 @@
                     </div>
                     <div title="{{course_component.recruit_user_names}}">
                         {% if course_component.content_item.content_type_nice == "project" %}
-                            {% user_avatar course_component.recruit_user_names|first %}
+                        {% user_avatar course_component.recruit_users.first %} {{ course_component.recruit_users.first }}
                         {% endif %}
                     </div>
                 </div>
