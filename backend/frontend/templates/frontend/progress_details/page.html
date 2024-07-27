@@ -32,7 +32,7 @@
                     <div>Due time</div>
                 </div>
                 <div class="lg:space-y-2 md:space-y-2 sm:space-y-2 max-sm:space-y-3 sm:col-span-2">
-                    <div>
+                    <div class="flex gap-2">
                         {% with course_component.content_item.tag_names|length as array_length %}
                         {% for item in course_component.content_item.tag_names %}
                         <span
@@ -213,6 +213,61 @@
             </div>
         </div>
     </div>
+
+    {% if timeline %}
+    <div x-data="{ open: false }" class="relative p-2 mt-4 border shadow-md rounded-md" @click="open = !open">
+        <div class="flex justify-between items-center cursor-pointer">
+            <h2 class="{{ styles.heading2 }} mb-2 font-['Poppins']">Timeline</h2>
+            <span class="text-orange-400 absolute right-10" x-text="open ? 'View less' : 'View more'"></span>
+            <i class="ml-4 fa-solid fa-chevron-down transform" :class="{ 'rotate-180': open }"></i>
+        </div>
+
+        <div x-show="open" @click.stop class="m-4">
+            <div class="hidden sm:grid sm:grid-cols-12 gap-4 mb-2 font-['Poppins'] text-sm">
+                <div class="col-span-4 font-semibold">Actor</div>
+                <div class="col-span-4 font-semibold">Event</div>
+                <div class="col-span-2 font-semibold">Date</div>
+                <div class="col-span-2 font-semibold">Time</div>
+            </div>
+
+            <div class="grid gap-4 font-['Poppins'] text-sm">
+                {% for entry in timeline %}
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center border-b pb-2 hover:bg-slate-100">
+                    <div class="flex flex-col items-start sm:col-span-4" title="{{ entry.actor.email }}">
+                        <span>{% user_avatar entry.actor.email|first %}</span>
+                        <span class="text-xs sm:text-base">{{ entry.actor.email }}</span>
+                    </div>
+
+                    <div class="sm:col-span-4">
+                        <div class="text-base">
+                            <div class="relative">
+                                <p class="{{ entry.event_type|event_class }}">
+                                    {{ entry.event_type|event_text }}
+                                </p>
+                                <span class="absolute top-0 right-0 text-xs rounded ml-1">
+                                    {% if entry.event_type|trusted_icon %}
+                                    <i title="{{ entry.event_type }}" class="{{ entry.event_type|trusted_icon }}"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2 text-xs sm:text-base">
+                        {{ entry.timestamp | date:"l" }} {{ entry.timestamp | date }}
+                    </div>
+
+                    <div class="sm:col-span-2 text-xs sm:text-base">
+                        {{ entry.timestamp | time }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    </div>
+    {% endif %}
 
 </div>
 {% endblock %}
