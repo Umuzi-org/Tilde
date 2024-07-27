@@ -49,7 +49,7 @@
                             {% user_avatar course_component.user %}
                             {% endif %}
                         </div>
-                        <div title="{{course_component.recruit_user_names}}">
+                        <div title="{{course_component.recruit_user_names|first}}">
                             {% if course_component.content_item.content_type_nice == "project" %}
                             {% user_avatar course_component.recruit_users.first %}
                             {% endif %}
@@ -241,12 +241,13 @@
                     <div class="sm:col-span-4">
                         <div class="text-base">
                             <div class="relative">
-                                <p class="{{ entry.event_type|event_class }}">
-                                    {{ entry.event_type|event_text }}
+                                <p class="{{ entry.event_type|match_color_with_event }}">
+                                    {{ entry.event_type|match_text_with_event }}
                                 </p>
                                 <span class="absolute top-0 right-0 text-xs rounded ml-1">
-                                    {% if entry.event_type|trusted_icon %}
-                                    <i title="{{ entry.event_type }}" class="{{ entry.event_type|trusted_icon }}"></i>
+                                    {% if entry.event_type|display_trusted_reviewer_icon %}
+                                    <i title="{{ entry.event_type }}"
+                                        class="{{ entry.event_type|display_trusted_reviewer_icon }}"></i>
                                     {% endif %}
                                 </span>
                             </div>

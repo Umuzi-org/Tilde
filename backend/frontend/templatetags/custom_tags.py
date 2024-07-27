@@ -39,7 +39,7 @@ def markdownify(raw_text):
     ).strip()
 
 @register.filter
-def event_class(event_type):
+def match_color_with_event(event_type):
     class_mapping = {
         'CARD_STARTED': 'text-green-400',
         'CARD_MOVED_TO_COMPLETE': 'text-yellow-400',
@@ -57,7 +57,7 @@ def event_class(event_type):
     return ''
 
 @register.filter
-def event_text(event_type):
+def match_text_with_event(event_type):
     event_mapping = {
         'CARD_MOVED_TO_COMPLETE': 'card moved to complete',
         'CARD_STARTED': 'card started',
@@ -81,7 +81,7 @@ def event_text(event_type):
     return ''
 
 @register.filter
-def trusted_icon(event_type):
+def display_trusted_reviewer_icon(event_type):
     if 'trusted=True' in event_type:
         return 'fa-solid fa-circle-check'
     if 'trusted=False' in event_type:
