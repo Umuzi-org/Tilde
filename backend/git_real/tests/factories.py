@@ -68,6 +68,8 @@ class PullRequestFactory(DjangoModelFactory):
     repository = factory.SubFactory(RepositoryFactory)
     created_at = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
     updated_at = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    closed_at = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
+    merged_at = factory.LazyAttribute(lambda *args, **kwargs: timezone.now())
     number = LazyAttribute(lambda *args, **kwargs: next(_number_iterator))
 
     title = "title"
