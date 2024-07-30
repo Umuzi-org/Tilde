@@ -10,8 +10,10 @@ styles = {
     "heading1": f"text-2xl font-bold text-{TEXT_COLOUR}-600",
     "heading2": f"text-xl font-bold text-{TEXT_COLOUR}-600",
     "heading3": f"text-l font-bold text-{TEXT_COLOUR}-600",
-    # link
+    # links
     "link": f"text-{PRIMARY_COLOUR}-600 hover:text-{PRIMARY_COLOUR}-500 focus:text-{PRIMARY_COLOUR}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{PRIMARY_COLOUR}-500 underline underline-offset-2",
+    "main_header_nav_link": "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium",
+    "main_header_nav_link_active": "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium",
     # input
     "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1 my-2 w-full",
     "label_small": f"text-sm font-medium text-gray-700",
@@ -23,5 +25,5 @@ styles = {
     "alert_error": f"bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative",
     "field_error": f"text-red-700",
     "secondary_header_container": "bg-white shadow py-5 flex items-center sticky top-[65px] w-full z-40 flex-wrap",
-    "badge_secondary": "text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md p-0.5 px-2"
+    "badge_secondary": "text-black text-opacity-90 text-xs font-light font-['Poppins'] leading-relaxed tracking-tight bg-[gray] bg-neutral-800 bg-opacity-10 rounded-md p-0.5 px-2",
 }

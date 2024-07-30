@@ -18,7 +18,7 @@
                 {% with url_name=request.resolver_match.url_name %}
                   <a
                     href="{% url 'users_and_teams_nav' %}"
-                    class="{% if url_name == 'users_and_teams_nav' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} rounded-md px-3 py-2 text-sm font-medium"
+                    class="{% if url_name == 'users_and_teams_nav' %}{{styles.main_header_nav_link_active}}{% else %}{{styles.main_header_nav_link}}{% endif %}"
                     >
                       Teams
                     </a>
