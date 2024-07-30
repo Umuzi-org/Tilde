@@ -131,8 +131,5 @@ class ProjectReviewBundleClaim(models.Model):
             due_timestamp__lt=by_timestamp, is_active=True
         )
 
-        if not expired_claims.exists():
-            return
-
         for claim in expired_claims:
             claim.expire_claim()
