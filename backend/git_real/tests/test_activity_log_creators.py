@@ -67,7 +67,7 @@ class log_pr_closed_Tests(APITestCase):
         creators.log_pr_closed(pull_request)
         self.assertAlmostEqual(
             LogEntry.objects.first().timestamp,
-            pull_request.created_at,
+            pull_request.closed_at,
             delta=timedelta(seconds=1),
         )
 
@@ -119,7 +119,7 @@ class log_pr_merged_Tests(APITestCase):
         creators.log_pr_merged(pull_request)
         self.assertAlmostEqual(
             LogEntry.objects.first().timestamp,
-            pull_request.created_at,
+            pull_request.merged_at,
             delta=timedelta(seconds=1),
         )
 
