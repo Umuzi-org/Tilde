@@ -3,7 +3,7 @@ from activity_log.models import LogEntry, EventType
 
 BUNDLE_CLAIMED = "PROJECT_REVIEW_BUNDLE_CLAIMED"
 BUNDLE_UNCLAIMED = "PROJECT_REVIEW_BUNDLE_UNCLAIMED"
-TIME_ADDED = "PROJECT_REVIEW_BUNDLE_TIME_ADDED"
+BUNDLE_TIME_ADDED = "PROJECT_REVIEW_BUNDLE_TIME_ADDED"
 BUNDLE_EXPIRED = "PROJECT_REVIEW_BUNDLE_EXPIRED"
 BUNDLE_COMPLETED = "PROJECT_REVIEW_BUNDLE_COMPLETED"
 
@@ -29,7 +29,7 @@ def log_bundle_unclaimed(claim):
 
 
 def log_bundle_time_added(claim):
-    event_type, _ = EventType.objects.get_or_create(name=TIME_ADDED)
+    event_type, _ = EventType.objects.get_or_create(name=BUNDLE_TIME_ADDED)
     LogEntry.objects.create(
         actor_user=claim.claimed_by_user,
         effected_user=claim.claimed_by_user,

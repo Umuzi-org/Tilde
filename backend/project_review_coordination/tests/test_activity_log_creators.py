@@ -59,7 +59,7 @@ class review_bundle_claim_activity_log_Tests(TestCase):
         log = LogEntry.objects.last()
         self.assertEqual(log.actor_user, self.user)
         self.assertEqual(log.effected_user, self.user)
-        self.assertEqual(log.event_type.name, creators.TIME_ADDED)
+        self.assertEqual(log.event_type.name, creators.BUNDLE_TIME_ADDED)
 
     def test_log_bundle_expired(
         self,
