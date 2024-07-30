@@ -14,6 +14,8 @@ styles = {
     "link": f"text-{PRIMARY_COLOUR}-600 hover:text-{PRIMARY_COLOUR}-500 focus:text-{PRIMARY_COLOUR}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{PRIMARY_COLOUR}-500 underline underline-offset-2",
     "main_header_nav_link": "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium",
     "main_header_nav_link_active": "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium",
+    "secondary_header_nav_link":"rounded-md text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 text-sm font-medium",
+    "secondary_header_nav_link_active":"bg-gray-900 text-white rounded-md text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 text-sm font-medium",
     # input
     "input_small": f"border border-gray-300 rounded-md shadow-sm text-sm focus:ring-{PRIMARY_COLOUR}-500 focus:border-{PRIMARY_COLOUR}-500 px-2 py-1 my-2 w-full",
     "label_small": f"text-sm font-medium text-gray-700",
