@@ -6,7 +6,12 @@ from git_real.helpers import (
     github_timestamp_int_to_tz_aware_datetime,
     get_user_from_github_name,
 )
-from .activity_log_creators import log_push_event, log_pr_opened, log_pr_closed
+from .activity_log_creators import (
+    log_push_event,
+    log_pr_opened,
+    log_pr_closed,
+    log_pr_merged,
+)
 from activity_log.models import LogEntry
 from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
@@ -108,6 +113,13 @@ class PullRequest(models.Model, Mixins):
     updated_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
     merged_at = models.DateTimeField(blank=True, null=True)
+    merged_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="merged_pull_requests",
+    )
     number = models.PositiveSmallIntegerField()
 
     # assignees = ArrayField(models.CharField(max_length=100), default=list)
@@ -141,6 +153,8 @@ class PullRequest(models.Model, Mixins):
             ),
             "merged_at": pull_request_data["merged_at"]
             and strp_github_standard_time(pull_request_data["merged_at"]),
+            "merged_by": pull_request_data["merged_at"]
+            and get_user_from_github_name(pull_request_data["merged_by"]["login"]),
             "author_github_name": github_name,
             "user": get_user_from_github_name(github_name),
         }
@@ -151,6 +165,9 @@ class PullRequest(models.Model, Mixins):
 
         if created:
             log_pr_opened(pull_request)
+
+        if pull_request.state == cls.CLOSED and pull_request.merged_at:
+            log_pr_merged(pull_request)
 
         if pull_request.state == cls.CLOSED and not (pull_request.merged_at):
             log_pr_closed(pull_request)

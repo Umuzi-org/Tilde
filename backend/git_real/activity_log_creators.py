@@ -11,12 +11,22 @@ GIT_PUSH = "GIT_PUSH"
 
 def log_pr_merged(pull_request):
     event_type, _ = EventType.objects.get_or_create(name=PR_MERGED)
-    LogEntry.objects.get_or_create(
-        actor_user=None,  # we don't care who clicked the merge button. Maybe we'll fill this in later
+    match = LogEntry.objects.filter(
+        actor_user=pull_request.merged_by,
         effected_user=pull_request.user,
-        object_1=pull_request,
+        object_1_id=pull_request.pk,
         event_type=event_type,
-    )
+        timestamp=pull_request.merged_at,
+    ).first()
+
+    if match == None:
+        LogEntry.objects.create(
+            actor_user=pull_request.merged_by,
+            effected_user=pull_request.user,
+            object_1=pull_request,
+            event_type=event_type,
+            timestamp=pull_request.merged_at
+        )
 
 
 def log_pr_closed(pull_request):
@@ -27,7 +37,7 @@ def log_pr_closed(pull_request):
         effected_user=pull_request.user,
         object_1_id=pull_request.pk,
         event_type=event_type,
-        timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
+        timestamp=pull_request.closed_at,
     ).first()
 
     if match == None:
@@ -36,6 +46,7 @@ def log_pr_closed(pull_request):
             effected_user=pull_request.user,
             object_1=pull_request,
             event_type=event_type,
+            timestamp=pull_request.closed_at,
         )
 
 
@@ -48,7 +59,7 @@ def log_pr_opened(pull_request):
         effected_user=pull_request.user,
         object_1_id=pull_request.pk,
         event_type=event_type,
-        timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
+        timestamp=pull_request.created_at,
     ).first()
 
     if match == None:
@@ -57,6 +68,7 @@ def log_pr_opened(pull_request):
             effected_user=pull_request.user,
             object_1=pull_request,
             event_type=event_type,
+            timestamp=pull_request.created_at,
         )
 
 
