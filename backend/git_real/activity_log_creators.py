@@ -16,7 +16,7 @@ def log_pr_merged(pull_request):
         effected_user=pull_request.user,
         object_1_id=pull_request.pk,
         event_type=event_type,
-        timestamp__gte=timezone.now() - timezone.timedelta(minutes=2),
+        timestamp=pull_request.merged_at,
     ).first()
 
     if match == None:
@@ -25,6 +25,7 @@ def log_pr_merged(pull_request):
             effected_user=pull_request.user,
             object_1=pull_request,
             event_type=event_type,
+            timestamp=pull_request.merged_at
         )
 
 
