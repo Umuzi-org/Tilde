@@ -1,5 +1,11 @@
 navigation = {
-    "users_and_teams_nav": {},
+    "users_and_teams_nav": {
+        "users_and_teams_nav":{
+            "url_name": "users_and_teams_nav",
+            "label": "Teams",
+            "permissions": [],
+        },
+    },
     "user_board": {
         "user_board":{
             "url_name": "user_board",
@@ -48,7 +54,9 @@ navigation = {
 
 """
 MAIN TASKS
-- create data structure - mostly done
+- create data structure - done
+- pass the main nav dictionary to each page that requires main headers - not done
+- reorg how navigation is accessed for secondary headers - not done
 - document data strucure in a comment - not done
 - simplify code using data structure - not done
 - active links should get highlighted - not done

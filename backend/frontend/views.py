@@ -324,7 +324,14 @@ def user_reset_password(request, token):
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
-    context = {"navigation":navigation["user_board"],"user": user, "columns": board_columns}
+    context = {
+        "navigation": {
+            "user_board": navigation["user_board"],
+            "users_and_teams_nav": navigation["users_and_teams_nav"],
+        },
+        "user": user,
+        "columns": board_columns,
+    }
     return render(request, "frontend/user/board/page.html", context)
 
 
@@ -785,6 +792,7 @@ def users_and_teams_nav(request):
     context = {
         # "teams": teams,
         # "users": users,
+        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]}
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
@@ -815,6 +823,7 @@ def view_partial_teams_list(request):
     has_next_page = total_teams_count > current_team_count + limit
 
     context = {
+        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]},
         "teams": teams,
         "has_next_page": has_next_page,
     }
@@ -831,6 +840,7 @@ def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
     context = {
+        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]},
         "users": users,
     }
     return render(
@@ -845,7 +855,7 @@ def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
     context = {
-        "navigation":navigation["team_dashboard"],
+        "navigation": navigation["team_dashboard"],
         "team": team,
     }
     return render(request, "frontend/team/dashboard/page.html", context)

@@ -16,12 +16,11 @@
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
                 {% with url_name=request.resolver_match.url_name %}
-                  <a
-                    href="{% url 'users_and_teams_nav' %}"
-                    class="{% if url_name == 'users_and_teams_nav' %}{{styles.main_header_nav_link_active}}{% else %}{{styles.main_header_nav_link}}{% endif %}"
-                    >
-                      Teams
+                  {% for link, link_details in navigation.users_and_teams_nav.items %}
+                    <a href="{% url link_details.url_name %}" class="{% if url_name == link %}{{ styles.secondary_header_nav_link_active }}{% else %}{{ styles.secondary_header_nav_link }}{% endif %}">
+                      {{ link_details.label }}
                     </a>
+                  {% endfor %}
                 {% endwith %}
               </div>
             </div>

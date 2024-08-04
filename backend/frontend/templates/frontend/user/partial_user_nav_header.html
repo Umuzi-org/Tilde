@@ -5,12 +5,12 @@
   <div class="hidden md:block flex-initial">
     <div class="ml-10 flex items-baseline space-x-4">
       {% with url_name=request.resolver_match.url_name user_id=request.resolver_match.kwargs.user_id %}
-            {% for link, link_details in navigation.items %}
-              <a href="{% url link_details.url_name user_id%}" class="{% if url_name == link %}{{ styles.secondary_header_nav_link_active }}{% else %}{{ styles.secondary_header_nav_link }}{% endif %}">
-                {{ link_details.label }}
-              </a>
-            {% endfor %}
-          {% endwith %}
+        {% for link, link_details in navigation.user_board.items %}
+          <a href="{% url link_details.url_name user_id%}" class="{% if url_name == link %}{{ styles.secondary_header_nav_link_active }}{% else %}{{ styles.secondary_header_nav_link }}{% endif %}">
+            {{ link_details.label }}
+          </a>
+        {% endfor %}
+      {% endwith %}
     </div>
   </div>
   <div class="flex-grow"></div>
