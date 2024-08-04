@@ -51,6 +51,8 @@ from curriculum_tracking.constants import (
     EXCELLENT,
 )
 
+from frontend.navigation import navigation
+
 User = get_user_model()
 
 board_columns = [
@@ -322,7 +324,7 @@ def user_reset_password(request, token):
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
-    context = {"user": user, "columns": board_columns}
+    context = {"navigation":navigation["user_board"],"user": user, "columns": board_columns}
     return render(request, "frontend/user/board/page.html", context)
 
 
@@ -843,6 +845,7 @@ def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
     context = {
+        "navigation":navigation["team_dashboard"],
         "team": team,
     }
     return render(request, "frontend/team/dashboard/page.html", context)
@@ -952,6 +955,7 @@ def project_review_coordination_unclaimed(request):
         bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
 
     context = {
+        "navigation": navigation["project_review_coordination"],
         "bundles": bundles.values(),
     }
 
@@ -991,6 +995,7 @@ def project_review_coordination_my_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
+        "navigation": navigation["project_review_coordination"],
         "active_claims": active_claims,
     }
     return render(
@@ -1008,6 +1013,7 @@ def project_review_coordination_all_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
+        "navigation": navigation["project_review_coordination"],
         "active_claims": active_claims,
     }
 
