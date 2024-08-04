@@ -49,12 +49,14 @@ navigation = {
 """
 MAIN TASKS
 - create data structure - mostly done
+- document data strucure in a comment - not done
 - simplify code using data structure - not done
 - active links should get highlighted - not done
   - main nav links highlights - done
   - secondary nav links highlights - done
   - active parent links should also be highlighted when instance link is active - not done
   - will need to pass in a list of links for each nav header to keep things dry - done
+
 
 Potential new tasks:
 - Have instance overview pages. E.g user profile with all info about user at /user/<id>. Same with team.
