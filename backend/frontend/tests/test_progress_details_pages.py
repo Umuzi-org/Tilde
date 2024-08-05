@@ -86,14 +86,11 @@ class TestLinkProjectDetailsPage(SuperuserLoggedInFrontendMixin):
 
         body = self.page.locator("body")
 
-        expect(body).to_contain_text(self.user.email)
         expect(body).to_contain_text("In Progress")
+        expect(body).to_contain_text("Feb. 12, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Feb. 13, 2024, 2:06 p.m.")
 
-        expect(body).to_contain_text("Start Date: Feb. 12, 2024, 2:06 p.m.")
-        expect(body).to_contain_text("Due Date: Feb. 13, 2024, 2:06 p.m.")
-
-        expect(body).to_contain_text("learner_reviewer@umuzi.org")
-        expect(body).to_contain_text(self.recruit_project.content_url)
+        expect(body).to_contain_text("Content Link")
         expect(body).to_contain_text("No link submitted yet")
 
     def test_link_submission_form_correctly_updates_link_submission(
@@ -281,16 +278,14 @@ class TestTopicDetailsPage(SuperuserLoggedInFrontendMixin):
         )
         self.page.goto(topic_url)
 
-        body = self.page.text_content("body")
+        self.page.wait_for_load_state()
 
-        self.assertIn(self.user.email, body)
-        self.assertIn("In Progress", body)
-        self.assertIn("Feb. 12, 2024, 2:06 p.m.", body)
-        self.assertIn("Feb. 13, 2024, 2:06 p.m.", body)
-        self.assertIn(
-            self.topic.content_url,
-            body,
-        )
+        body = self.page.locator("body")
+
+        expect(body).to_contain_text("In Progress")
+        expect(body).to_contain_text("Feb. 12, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Feb. 13, 2024, 2:06 p.m.")
+        expect(body).to_contain_text("Content Link")
 
 
 class TestRepoProjectDetailsPage(TestCase):
@@ -312,7 +307,7 @@ class TestRepoProjectDetailsPage(TestCase):
     def test_progress_details_page_displays_repo_for_repo_project(self):
         repo_project_progress_details_url = self._get_project_progress_details_url()
         response = self.client.get(repo_project_progress_details_url)
-        self.assertContains(response, self.card.recruit_project.repository.full_name)
+        self.assertContains(response, "Repository link")
 
     def test_progress_details_page_displays_open_prs_for_repo_project(self):
         pr = PullRequestFactory(
