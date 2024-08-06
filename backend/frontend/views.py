@@ -167,6 +167,8 @@ def check_no_outstanding_reviews_on_card_action(view_func):
 
 def can_view_user_board(logged_in_user, viewed_user_func=None):
     request = get_current_request()
+    current_url_name = "user_board"
+    permissions =  navigation[current_url_name][current_url_name]["permissions"]
 
     if viewed_user_func is None:
         viewed_user_id = request.resolver_match.kwargs.get("user_id")
@@ -182,7 +184,7 @@ def can_view_user_board(logged_in_user, viewed_user_func=None):
     if len(viewed_user_teams):
         checker = ObjectPermissionChecker(logged_in_user)
         checker.prefetch_perms(viewed_user_teams)
-        for view_permission in Team.PERMISSION_VIEW:
+        for view_permission in permissions:
             if any(
                 (checker.has_perm(view_permission, team) for team in viewed_user_teams)
             ):

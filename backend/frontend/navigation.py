@@ -1,3 +1,5 @@
+from core.models import Team
+
 """
 Navigation configuration for the frontend.
 
@@ -29,16 +31,16 @@ navigation = {
         "users_and_teams_nav":{
             "url_name": "users_and_teams_nav",
             "label": "Teams",
-            "permissions": [],
+            "permissions": Team.PERMISSION_VIEW,
         },
     },
     "user_board": {
         "user_board":{
             "url_name": "user_board",
             "label": "Board",
-            "permissions": [],
+            "permissions": Team.PERMISSION_VIEW,
         },
-        "review_perfomance":{
+        "review_performance":{
             "url_name": "user_board",
             "label": "Review perfomance",
             "permissions": [],
@@ -62,17 +64,17 @@ navigation = {
         "project_review_coordination_unclaimed": {
             "url_name": "project_review_coordination_unclaimed",
             "label": "Unclaimed bundles",
-            "permissions": [],
+            "permissions": Team.PERMISSION_VIEW,
         },
         "project_review_coordination_my_claims": {
             "url_name": "project_review_coordination_my_claims",
             "label": "My claims",
-            "permissions": [],
+            "permissions": Team.PERMISSION_VIEW,
         },
         "project_review_coordination_all_claims": {
             "url_name": "project_review_coordination_all_claims",
             "label": "All claims",
-            "permissions": [],
+            "permissions": Team.PERMISSION_VIEW,
         },
     },
     "dashboard_project_review_health": {},
@@ -84,7 +86,7 @@ MAIN TASKS
 - pass the main nav dictionary to each page that requires main headers - done
 - reorg how navigation is accessed for secondary headers - done
 - document data strucure in a comment - done
-- simplify code using data structure - not done
+- simplify code using data structure - somewhat done
 - active links should get highlighted - not done
   - main nav links highlights - done
   - secondary nav links highlights - done
