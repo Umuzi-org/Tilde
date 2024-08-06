@@ -55,8 +55,8 @@ navigation = {
 """
 MAIN TASKS
 - create data structure - done
-- pass the main nav dictionary to each page that requires main headers - not done
-- reorg how navigation is accessed for secondary headers - not done
+- pass the main nav dictionary to each page that requires main headers - done
+- reorg how navigation is accessed for secondary headers - done
 - document data strucure in a comment - not done
 - simplify code using data structure - not done
 - active links should get highlighted - not done

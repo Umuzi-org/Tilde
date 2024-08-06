@@ -325,10 +325,7 @@ def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
     context = {
-        "navigation": {
-            "user_board": navigation["user_board"],
-            "users_and_teams_nav": navigation["users_and_teams_nav"],
-        },
+        "navigation": navigation,
         "user": user,
         "columns": board_columns,
     }
@@ -502,6 +499,7 @@ def progress_details(
     ][0]
 
     context = {
+        "navigation": navigation,
         "course_component": course_component,
         "board_status": board_status,
         "link_submission_form": form,
@@ -792,7 +790,7 @@ def users_and_teams_nav(request):
     context = {
         # "teams": teams,
         # "users": users,
-        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]}
+        "navigation": navigation
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
@@ -823,7 +821,7 @@ def view_partial_teams_list(request):
     has_next_page = total_teams_count > current_team_count + limit
 
     context = {
-        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]},
+        "navigation": navigation,
         "teams": teams,
         "has_next_page": has_next_page,
     }
@@ -840,7 +838,7 @@ def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
     context = {
-        "navigation": {"users_and_teams_nav": navigation["users_and_teams_nav"]},
+        "navigation": navigation,
         "users": users,
     }
     return render(
@@ -855,7 +853,7 @@ def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
     context = {
-        "navigation": navigation["team_dashboard"],
+        "navigation": navigation,
         "team": team,
     }
     return render(request, "frontend/team/dashboard/page.html", context)
@@ -965,7 +963,7 @@ def project_review_coordination_unclaimed(request):
         bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
 
     context = {
-        "navigation": navigation["project_review_coordination"],
+        "navigation": navigation,
         "bundles": bundles.values(),
     }
 
@@ -1005,7 +1003,7 @@ def project_review_coordination_my_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
-        "navigation": navigation["project_review_coordination"],
+        "navigation": navigation,
         "active_claims": active_claims,
     }
     return render(
@@ -1023,7 +1021,7 @@ def project_review_coordination_all_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
-        "navigation": navigation["project_review_coordination"],
+        "navigation": navigation,
         "active_claims": active_claims,
     }
 
