@@ -1,3 +1,29 @@
+"""
+Navigation configuration for the frontend.
+
+This dictionary defines the structure and properties of the navigation menu.
+Top-level keys represent main pages/headers.
+Second-level keys represent secondary pages/headers.
+
+Each second-level dictionary contains:
+- 'url_name': The URL name according to Django's naming convention
+- 'label': The text to be displayed for the link
+- 'permissions': Required permissions to access the page
+
+Example:
+navigation = {
+    'main_page': {
+        'secondary_page': {
+            'url_name': 'django_url_name',
+            'label': 'Link Display Text',
+            'permissions': ['required_permission1', 'required_permission2']
+        },
+        # ... other secondary pages ...
+    },
+    # ... other main pages ...
+}
+"""
+
 navigation = {
     "users_and_teams_nav": {
         "users_and_teams_nav":{
@@ -57,7 +83,7 @@ MAIN TASKS
 - create data structure - done
 - pass the main nav dictionary to each page that requires main headers - done
 - reorg how navigation is accessed for secondary headers - done
-- document data strucure in a comment - not done
+- document data strucure in a comment - done
 - simplify code using data structure - not done
 - active links should get highlighted - not done
   - main nav links highlights - done
