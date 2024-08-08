@@ -20,7 +20,7 @@
                         </a>
                     </td>
                     <td>
-                        <a class="{{ styles.link }}" href="{% url 'user_board' project.recruit_users.first.pk %}">{{ assignee }}</a>
+                        <a class="{{ styles.link }}" href="{% url 'user_board' assignee.pk %}">{{ assignee }}</a>
                     </td>
                     <td class="md:text-center">
                         {{ project.positive_reviews_since_last_request_review_count }}
