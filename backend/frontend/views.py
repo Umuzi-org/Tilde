@@ -51,6 +51,8 @@ from curriculum_tracking.constants import (
     EXCELLENT,
 )
 
+from frontend.navigation import navigation
+
 User = get_user_model()
 
 board_columns = [
@@ -180,7 +182,9 @@ def can_view_user_board(logged_in_user, viewed_user_func=None):
     if len(viewed_user_teams):
         checker = ObjectPermissionChecker(logged_in_user)
         checker.prefetch_perms(viewed_user_teams)
-        for view_permission in Team.PERMISSION_VIEW:
+        url_name = "user_board"
+        permissions = navigation[url_name][url_name]["permissions"]
+        for view_permission in permissions:
             if any(
                 (checker.has_perm(view_permission, team) for team in viewed_user_teams)
             ):
@@ -199,7 +203,9 @@ def can_view_team(logged_in_user):
     viewed_team_obj = get_object_or_404(Team, pk=viewed_team_id)
     checker = ObjectPermissionChecker(logged_in_user)
 
-    for view_permission in Team.PERMISSION_VIEW:
+    url_name = "team_dashboard"
+    permissions = navigation[url_name][url_name]["permissions"]
+    for view_permission in permissions:
         if checker.has_perm(
             view_permission,
             viewed_team_obj,
@@ -322,7 +328,11 @@ def user_reset_password(request, token):
 def user_board(request, user_id):
     """The user board page. this displays the kanban board for a user"""
     user = get_object_or_404(User, id=user_id)
-    context = {"user": user, "columns": board_columns}
+    context = {
+        "navigation": navigation,
+        "user": user,
+        "columns": board_columns,
+    }
     return render(request, "frontend/user/board/page.html", context)
 
 
@@ -493,6 +503,7 @@ def progress_details(
     ][0]
 
     context = {
+        "navigation": navigation,
         "course_component": course_component,
         "board_status": board_status,
         "link_submission_form": form,
@@ -555,7 +566,6 @@ def action_add_review(request, content_type, id):
                 "card": card,
             },
         )
-        return response
     else:
         return render(
             request,
@@ -783,6 +793,7 @@ def users_and_teams_nav(request):
     context = {
         # "teams": teams,
         # "users": users,
+        "navigation": navigation
     }
     return render(request, "frontend/users_and_teams_nav/page.html", context)
 
@@ -813,6 +824,7 @@ def view_partial_teams_list(request):
     has_next_page = total_teams_count > current_team_count + limit
 
     context = {
+        "navigation": navigation,
         "teams": teams,
         "has_next_page": has_next_page,
     }
@@ -829,6 +841,7 @@ def view_partial_team_users_list(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     users = team.active_users.order_by("email")
     context = {
+        "navigation": navigation,
         "users": users,
     }
     return render(
@@ -843,6 +856,7 @@ def team_dashboard(request, team_id):
     """The team dashboard page. this displays the kanban board for a team"""
     team = get_object_or_404(Team, id=team_id)
     context = {
+        "navigation": navigation,
         "team": team,
     }
     return render(request, "frontend/team/dashboard/page.html", context)
@@ -952,6 +966,7 @@ def project_review_coordination_unclaimed(request):
         bundles[bundle_id]["project_ids"].append(card.recruit_project_id)
 
     context = {
+        "navigation": navigation,
         "bundles": bundles.values(),
     }
 
@@ -991,6 +1006,7 @@ def project_review_coordination_my_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
+        "navigation": navigation,
         "active_claims": active_claims,
     }
     return render(
@@ -1008,6 +1024,7 @@ def project_review_coordination_all_claims(request):
     active_claims = claims.filter(is_active=True)
 
     context = {
+        "navigation": navigation,
         "active_claims": active_claims,
     }
 
