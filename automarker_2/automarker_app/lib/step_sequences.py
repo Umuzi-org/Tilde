@@ -1,6 +1,7 @@
 """
 A lot of the time, a marker will have the exact same steps as other markers. 
 """
+
 from . import steps
 
 
@@ -152,5 +153,5 @@ def python_jupyter_notebook_sequence():
         steps.PythonExecuteJupyterNotebooks(),
         steps.PythonConvertJupyterNotebooksToModules(),
         steps.PrepareFunctionalTests(),
-        steps.PythonRunFunctionalTests(),
+        steps.JupyterRunFunctionalTests(),
     ]
