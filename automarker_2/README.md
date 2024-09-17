@@ -48,7 +48,7 @@ python manage.py test
 
 ## How to run the automarker
 
-1. Activate up your shell and make sure all the required environmental variables exported
+1. Activate up your shell and make sure all the required environmental variables exported. For Windows users, kindly use git bash/cygwin/windows subsytem for linux terminal to run all automarker commads.
 
 ```
 poetry shell 
