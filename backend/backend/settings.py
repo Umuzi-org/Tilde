@@ -135,6 +135,7 @@ INSTALLED_APPS = [
     "coderbyte_tests",
     "project_review_pricing",
     "interventions",
+    "sis_integrations",
 ]
 
 SITE_ID = 1  # from allauth docs
@@ -208,7 +209,15 @@ if RUNNING_IN_GAE:
             "USER": os.environ["TILDE_SQL_USER"],
             "PASSWORD": os.environ["TILDE_SQL_PASS"],
             "NAME": os.environ["TILDE_SQL_DB"],
-        }
+        },
+        "sis_db": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "HOST": os.environ["SIS_DB_HOST"],
+            "PORT": os.environ["SIS_DB_PORT"],
+            "USER": os.environ["SIS_DB_USER"],
+            "PASSWORD": os.environ["SIS_DB_PASS"],
+            "NAME": os.environ["SIS_DB_NAME"],
+        },
     }
 
 else:
@@ -225,9 +234,23 @@ else:
             "OPTIONS": {
                 "connect_timeout": 3,
             },
-        }
+        },
+        "sis_db": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "HOST": os.getenv("SIS_DB_HOST"),
+            "PORT": os.getenv("SIS_DB_PORT"),
+            "NAME": os.getenv("SIS_DB_NAME"),
+            "USER": os.getenv("SIS_DB_USER"),
+            "PASSWORD": os.getenv("SIS_DB_PASS"),
+            "OPTIONS": {
+                "connect_timeout": 3,
+            },
+        },
     }
+
+DATABASE_ROUTERS = ["sis_integrations.sis_db_router.SISDBRouter"]
 # [END db_setup]
+
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
