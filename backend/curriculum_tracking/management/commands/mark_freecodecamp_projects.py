@@ -115,6 +115,7 @@ class Command(BaseCommand):
                 print(f"Reviewing {url} ({i+1}/{card_count})")
 
                 page.goto(url)
+                page.wait_for_load_state()
 
                 if "page not found" in page.title().lower():
                     print(f"Red flagging {url}. Page not found.")
