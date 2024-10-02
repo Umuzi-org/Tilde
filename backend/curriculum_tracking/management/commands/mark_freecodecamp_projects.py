@@ -5,7 +5,7 @@ import os
 
 from playwright.sync_api import sync_playwright, Page
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 from django.utils import timezone
 from django.db.models import F, Q
 
@@ -79,6 +79,13 @@ NEXT_BTN_SELECTOR = "ul.timeline-pagination_list button[aria-label='Go to next p
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser: CommandParser) -> None:
+        parser.add_argument(
+            "--elevated",
+            action="store_false",
+            help="If the bot should be elevated to a superuser",
+        )
+
     def handle(self, *args, **options):
         self.bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
@@ -87,6 +94,7 @@ class Command(BaseCommand):
             email=CURRICULUM_TRACKING_TRUSTED_REVIEW_BOT_EMAIL,
             is_superuser=True,
         )
+        self.elevated = options["elevated"]
 
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
@@ -120,7 +128,9 @@ class Command(BaseCommand):
         available_content_item_ids = [i["content_item_id"] for i in automarker_data]
 
         with sync_playwright() as p:
-            print(f"Starting review of {card_count} FreeCodeCamp projects")
+            print(
+                f"Starting review of {card_count} FreeCodeCamp projects as {self.bot_user.email if self.elevated else self.trusted_bot_user.email}"
+            )
             browser = p.firefox.launch(headless=True, timeout=60000)
             context = browser.new_context()
             page: Page = context.new_page()
@@ -152,12 +162,7 @@ class Command(BaseCommand):
                     next_page_btn.click()
 
                 if not len(timeline):
-                    self.add_review(
-                        card,
-                        RED_FLAG,
-                        RED_FLAG_TEMPLATE,
-                        self.bot_user,
-                    )
+                    self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
 
                 required_items = next(
@@ -178,18 +183,23 @@ class Command(BaseCommand):
                                 list(set(required_items) - set(timeline))
                             )
                         ),
-                        self.bot_user,
                     )
                     continue
 
                 self.add_review(
-                    card,
-                    COMPETENT,
-                    "Looks good. Well done on completing your project!",
-                    self.bot_user,
+                    card, COMPETENT, "Looks good. Well done on completing your project!"
                 )
 
-    def add_review(self, card, status, comments, bot_user):
+    def add_review(
+        self,
+        card,
+        status,
+        comments,
+    ):
+        bot_user = self.bot_user
+        if self.elevated:
+            bot_user = self.trusted_bot_user
+
         print(f"Adding review for card #{card.id} with status {status}")
         RecruitProjectReview.objects.create(
             status=status,
