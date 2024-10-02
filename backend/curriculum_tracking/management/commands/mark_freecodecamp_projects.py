@@ -104,21 +104,25 @@ class Command(BaseCommand):
 
             for i, card in enumerate(freecodecamp_cards):
                 project = card.recruit_project
-                url = project.link_submission
+                url = (
+                    "https://www.freecodecamp.org/fcce116986c-9701-464d-9253-20adb07b4ad2s"
+                    or project.link_submission
+                )
                 content_item_id = project.content_item.id
 
                 print(f"Reviewing {url} ({i+1}/{card_count})")
 
                 response = page.goto(url)
+
                 if response.status == 404:
-                    self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
+                    print(f"Red flagging {url}. Bad status code: [{response.status}]")
+                    # self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
 
-                if response.status != 200:
+                if not response.ok:
                     print(f"Skipping {url}. Bad status code: [{response.status}]")
                     continue
 
-                print(response.status, " is the status")
                 page.wait_for_selector(".bio-container")
 
                 while True:
