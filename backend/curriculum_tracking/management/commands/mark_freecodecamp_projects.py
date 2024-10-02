@@ -114,6 +114,10 @@ class Command(BaseCommand):
                     self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
 
+                if response.status != 200:
+                    print(f"Skipping {url}. Bad status code: [{response.status}]")
+                    continue
+
                 print(response.status, " is the status")
                 page.wait_for_selector(".bio-container")
 
