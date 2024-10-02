@@ -104,10 +104,7 @@ class Command(BaseCommand):
 
             for i, card in enumerate(freecodecamp_cards):
                 project = card.recruit_project
-                url = (
-                    "https://www.freecodecamp.org/fcc16c28926-0845-451c-876d-e88fa8efe751"
-                    or project.link_submission
-                )
+                url = project.link_submission
                 content_item_id = project.content_item.id
 
                 print(f"Reviewing {url} ({i+1}/{card_count})")
