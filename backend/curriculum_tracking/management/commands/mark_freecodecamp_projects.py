@@ -44,6 +44,11 @@ class Command(BaseCommand):
             action="store_false",
             help="If the bot should be elevated to a superuser",
         )
+        parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="If the bot should add reviews",
+        )
 
     def handle(self, *args, **options):
         self.bot_user, _ = User.objects.get_or_create(
@@ -54,7 +59,7 @@ class Command(BaseCommand):
             is_superuser=True,
         )
         self.elevated = options["elevated"]
-
+        self.dry_run = options["dry_run"]
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
         self.handle_freecodecamp()
@@ -162,10 +167,11 @@ class Command(BaseCommand):
         bot_user = self._get_bot_user()
 
         print(f"Adding review for card #{card.id} with status {status}")
-        RecruitProjectReview.objects.create(
-            status=status,
-            timestamp=timezone.now(),
-            comments=comments,
-            recruit_project=card.recruit_project,
-            reviewer_user=bot_user,
-        )
+        if not self.dry_run:
+            RecruitProjectReview.objects.create(
+                status=status,
+                timestamp=timezone.now(),
+                comments=comments,
+                recruit_project=card.recruit_project,
+                reviewer_user=bot_user,
+            )
