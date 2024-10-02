@@ -25,54 +25,13 @@ FREECODECAMP_AUTOMARKER_DATA_PATH = os.environ.get(
     "FREECODECAMP_AUTOMARKER_DATA_PATH", None
 )
 
-# MAPPING: dict[int, list[str]] = {
-#         318: [
-#         "Create a Basic JavaScript Object",
-#         "Use Dot Notation to Access the Properties of an Object",
-#         "Create a Method on an Object",
-#         "Create a Method on an Object",
-#         "Make Code More Reusable with the this Keyword",
-#         "Define a Constructor Function",
-#         "Use a Constructor to Create Objects",
-#         "Extend Constructors to Receive Arguments",
-#         "Verify an Object's Constructor with instanceof",
-#         "Understand Own Properties",
-#         "Use Prototype Properties to Reduce Duplicate Code",
-#         "Iterate Over All Properties",
-#         "Understand the Constructor Property",
-#         "Change the Prototype to a New Object",
-#         "Remember to Set the Constructor Property when Changing the Prototype",
-#         "Understand Where an Object’s Prototype Comes From",
-#         "Understand the Prototype Chain",
-#         "Use Inheritance So You Don't Repeat Yourself",
-#         "Inherit Behaviors from a Supertype",
-#         "Set the Child's Prototype to an Instance of the Parent",
-#         "Reset an Inherited Constructor Property",
-#         "Add Methods After Inheritance",
-#         "Override Inherited Methods",
-#         "Use a Mixin to Add Common Behavior Between Unrelated Objects",
-#         "Use Closure to Protect Properties Within an Object from Being Modified Externally",
-#         "Understand the Immediately Invoked Function Expression (IIFE)",
-#         "Use an IIFE to Create a Module",
-#         "Set the Child's Prototype to an Instance of the Parent",
-#         "Reset an Inherited Constructor Property",
-#         "Add Methods After Inheritance",
-#         "Override Inherited Methods",
-#         "Use a Mixin to Add Common Behavior Between Unrelated Objects",
-#         "Use Closure to Protect Properties Within an Object from Being Modified Externally",
-#         "Understand the Immediately Invoked Function Expression (IIFE)",
-#         "Use an IIFE to Create a Module",
-#     ],
-#     307: ,
-# }
-
 
 NYC_TEMPLATE = """Something has gone wrong - your timeline is missing some of the required items. Please make sure you have completed all required sections relevant to this project. You can click on __View Content__ on your project page to see the project instructions and requirements.
 
 The missing items are:
 - {missing_items}
 """
-RED_FLAG_TEMPLATE = """Something has gone wrong - Your timeline is empty. Please make sure to set all your privacy settings to "Public"""
+RED_FLAG_TEMPLATE = """Something has gone wrong - We couldn't find your "timeline" on freecodecamp. Please make sure you have provided a valid link and all your privacy settings are set to "Public". """
 
 
 NEXT_BTN_SELECTOR = "ul.timeline-pagination_list button[aria-label='Go to next page']"
@@ -145,12 +104,20 @@ class Command(BaseCommand):
 
             for i, card in enumerate(freecodecamp_cards):
                 project = card.recruit_project
-                url = project.link_submission
+                url = (
+                    "https://www.freecodecamp.org/fcc16c28926-0845-451c-876d-e88fa8efe751"
+                    or project.link_submission
+                )
                 content_item_id = project.content_item.id
 
                 print(f"Reviewing {url} ({i+1}/{card_count})")
 
-                page.goto(url)
+                response = page.goto(url)
+                if response.status == 404:
+                    self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
+                    continue
+
+                print(response.status, " is the status")
                 page.wait_for_selector(".bio-container")
 
                 while True:
