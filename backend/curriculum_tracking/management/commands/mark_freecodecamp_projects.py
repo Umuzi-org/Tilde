@@ -104,6 +104,9 @@ class Command(BaseCommand):
         with open(FREECODECAMP_AUTOMARKER_DATA_PATH, "r") as f:
             return json.load(f)
 
+    def _get_bot_user(self):
+        return self.bot_user if self.elevated else self.trusted_bot_user
+
     def extract_timeline_from_page(self, page: Page, timeline):
         timeline_rows = page.query_selector_all(".timeline-row")
         for row in timeline_rows:
@@ -129,7 +132,7 @@ class Command(BaseCommand):
 
         with sync_playwright() as p:
             print(
-                f"Starting review of {card_count} FreeCodeCamp projects as {self.bot_user.email if self.elevated else self.trusted_bot_user.email}"
+                f"Starting review of {card_count} FreeCodeCamp projects as {self._get_bot_user().email}"
             )
             browser = p.firefox.launch(headless=True, timeout=60000)
             context = browser.new_context()
@@ -196,9 +199,7 @@ class Command(BaseCommand):
         status,
         comments,
     ):
-        bot_user = self.bot_user
-        if self.elevated:
-            bot_user = self.trusted_bot_user
+        bot_user = self._get_bot_user()
 
         print(f"Adding review for card #{card.id} with status {status}")
         RecruitProjectReview.objects.create(
