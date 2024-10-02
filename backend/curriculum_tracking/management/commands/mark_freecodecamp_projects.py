@@ -109,15 +109,11 @@ class Command(BaseCommand):
 
                 print(f"Reviewing {url} ({i+1}/{card_count})")
 
-                response = page.goto(url)
+                page.goto(url)
 
-                if response.status == 404:
-                    print(f"Red flagging {url}. Bad status code: [{response.status}]")
+                if "page not found" in page.title().lower():
+                    print(f"Red flagging {url}. Page not found.")
                     # self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
-                    continue
-
-                if not response.ok:
-                    print(f"Skipping {url}. Bad status code: [{response.status}]")
                     continue
 
                 page.wait_for_selector(".bio-container")
