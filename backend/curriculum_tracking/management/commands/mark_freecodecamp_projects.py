@@ -114,9 +114,15 @@ class Command(BaseCommand):
             timeline.append(title)
 
     def handle_freecodecamp(self):
+        automarker_data = self._get_automarker_data()
+        available_content_item_ids = [i["content_item_id"] for i in automarker_data]
+
         freecodecamp_tag = Tag.objects.get(name="free-code-camp")
         freecodecamp_cards = (
-            AgileCard.objects.filter(content_item__tags__in=[freecodecamp_tag])
+            AgileCard.objects.filter(
+                content_item__tags__in=[freecodecamp_tag],
+                content_item__id__in=available_content_item_ids,
+            )
             .filter(content_item__content_type=ContentItem.PROJECT)
             .filter(status=AgileCard.IN_REVIEW)
         )
@@ -126,9 +132,6 @@ class Command(BaseCommand):
         if not card_count:
             print("No cards to review")
             return
-
-        automarker_data = self._get_automarker_data()
-        available_content_item_ids = [i["content_item_id"] for i in automarker_data]
 
         with sync_playwright() as p:
             print(
@@ -147,12 +150,6 @@ class Command(BaseCommand):
 
                 page.goto(url)
                 page.wait_for_selector(".bio-container")
-
-                if content_item_id not in available_content_item_ids:
-                    print(
-                        f"Skipping {url} as there is no automarker data for content item {content_item_id}"
-                    )
-                    continue
 
                 print(f"Reviewing {url} ({i+1}/{card_count})")
 
