@@ -190,9 +190,7 @@ class Command(BaseCommand):
                 )
 
     def add_review(self, card, status, comments, bot_user):
-        print(
-            f"Adding review for {card.recruit_project.link_submission} with status {status}"
-        )
+        print(f"Adding review for card #{card.id} with status {status}")
         RecruitProjectReview.objects.create(
             status=status,
             timestamp=timezone.now(),
