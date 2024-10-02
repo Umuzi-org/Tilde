@@ -171,10 +171,10 @@ class Command(BaseCommand):
         bot_user = self._get_bot_user()
 
         print(f"Adding review for card #{card.id} with status {status}")
-        RecruitProjectReview.objects.create(
-            status=status,
-            timestamp=timezone.now(),
-            comments=comments,
-            recruit_project=card.recruit_project,
-            reviewer_user=bot_user,
-        )
+        # RecruitProjectReview.objects.create(
+        #     status=status,
+        #     timestamp=timezone.now(),
+        #     comments=comments,
+        #     recruit_project=card.recruit_project,
+        #     reviewer_user=bot_user,
+        # )
