@@ -144,11 +144,11 @@ class Command(BaseCommand):
             timeline = []
 
             for i, card in enumerate(freecodecamp_cards):
-                print(f"Reviewing {url} ({i+1}/{card_count})")
-
                 project = card.recruit_project
                 url = project.link_submission
                 content_item_id = project.content_item.id
+
+                print(f"Reviewing {url} ({i+1}/{card_count})")
 
                 page.goto(url)
                 page.wait_for_selector(".bio-container")
