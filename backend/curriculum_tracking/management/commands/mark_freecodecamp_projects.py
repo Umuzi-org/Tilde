@@ -1,13 +1,10 @@
 import json
-import re
-from pathlib import Path
 import os
 
 from playwright.sync_api import sync_playwright, Page
 
 from django.core.management.base import BaseCommand, CommandParser
 from django.utils import timezone
-from django.db.models import F, Q
 
 from curriculum_tracking.models import AgileCard, ContentItem, RecruitProjectReview
 from curriculum_tracking.constants import RED_FLAG, NOT_YET_COMPETENT, COMPETENT
@@ -17,9 +14,6 @@ from backend.settings import (
     CURRICULUM_TRACKING_REVIEW_BOT_EMAIL,
     CURRICULUM_TRACKING_TRUSTED_REVIEW_BOT_EMAIL,
 )
-
-
-TODAY = timezone.now().date().strftime("%a %d %b %Y")
 
 FREECODECAMP_AUTOMARKER_DATA_PATH = os.environ.get(
     "FREECODECAMP_AUTOMARKER_DATA_PATH", None
@@ -166,8 +160,6 @@ class Command(BaseCommand):
         comments,
     ):
         bot_user = self._get_bot_user()
-
-        print(f"Adding review for card #{card.id} with status {status}")
         if not self.dry_run:
             RecruitProjectReview.objects.create(
                 status=status,
@@ -176,3 +168,4 @@ class Command(BaseCommand):
                 recruit_project=card.recruit_project,
                 reviewer_user=bot_user,
             )
+            print(f"Added review for card #{card.id} with status {status}")
