@@ -200,3 +200,7 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> str | None:
         df_performance = get_learner_performance_data()
         df_performance.to_csv("gitignore/learner_risk.csv")
+
+        from sis_integrations.models import LearnerFlaggedForAcademicSupport
+
+        LearnerFlaggedForAcademicSupport.create_from_at_risk_df(df_performance)
