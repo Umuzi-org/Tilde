@@ -106,7 +106,7 @@ class Command(BaseCommand):
             timeline = []
 
             for i, card in enumerate(freecodecamp_cards):
-                print(f"Reviewing {url} ({i+1}/{card_count})")
+                print(f"Reviewing card #{card.id} ({i+1}/{card_count})")
 
                 project = card.recruit_project
                 url = project.link_submission
