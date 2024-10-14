@@ -71,6 +71,10 @@ class Command(BaseCommand):
             title = row.query_selector("td a").inner_text()
             timeline.append(title)
 
+    @staticmethod
+    def is_freecodecamp_url(url: str) -> bool:
+        return "freecodecamp.org" in url
+
     def handle_freecodecamp(self):
         automarker_data = self._get_automarker_data()
         available_content_item_ids = [i["content_item_id"] for i in automarker_data]
@@ -102,16 +106,21 @@ class Command(BaseCommand):
             timeline = []
 
             for i, card in enumerate(freecodecamp_cards):
+                print(f"Reviewing {url} ({i+1}/{card_count})")
+
                 project = card.recruit_project
                 url = project.link_submission
                 content_item_id = project.content_item.id
 
-                print(f"Reviewing {url} ({i+1}/{card_count})")
+                if not self.is_freecodecamp_url(url):
+                    print(f"Red flagging {url}. Non freecodecamp project URL provided.")
+                    self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
+                    continue
 
                 page.goto(url)
                 page.wait_for_load_state()
 
-                if "page not found" in page.title().lower():
+                if page.locator("img[alt='404 Not Found:']").is_visible():
                     print(f"Red flagging {url}. Page not found.")
                     self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
