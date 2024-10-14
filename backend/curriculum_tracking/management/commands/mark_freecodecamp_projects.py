@@ -113,7 +113,7 @@ class Command(BaseCommand):
 
                 if "page not found" in page.title().lower():
                     print(f"Red flagging {url}. Page not found.")
-                    # self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
+                    self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
 
                 page.wait_for_selector(".bio-container")
