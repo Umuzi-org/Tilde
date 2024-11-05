@@ -30,30 +30,16 @@ RED_FLAG_TEMPLATE = """Something has gone wrong - We couldn't find your "timelin
 
 NEXT_BTN_SELECTOR = "ul.timeline-pagination_list button[aria-label='Go to next page']"
 
+FREECODECAMP_URL = "freecodecamp.org"
+FREECODECAMP_TAG = "free-code-camp"
+
 
 class Command(BaseCommand):
-    def add_arguments(self, parser: CommandParser) -> None:
-        parser.add_argument(
-            "--elevated",
-            action="store_false",
-            help="If the bot should be elevated to a superuser",
-        )
-        parser.add_argument(
-            "--dry-run",
-            action="store_true",
-            help="If the bot should add reviews",
-        )
-
     def handle(self, *args, **options):
         self.bot_user, _ = User.objects.get_or_create(
-            email=CURRICULUM_TRACKING_REVIEW_BOT_EMAIL
-        )
-        self.trusted_bot_user, _ = User.objects.get_or_create(
             email=CURRICULUM_TRACKING_TRUSTED_REVIEW_BOT_EMAIL,
             is_superuser=True,
         )
-        self.elevated = options["elevated"]
-        self.dry_run = options["dry_run"]
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
         self.handle_freecodecamp()
@@ -61,9 +47,6 @@ class Command(BaseCommand):
     def _get_automarker_data(self):
         with open(FREECODECAMP_AUTOMARKER_DATA_PATH, "r") as f:
             return json.load(f)
-
-    def _get_bot_user(self):
-        return self.bot_user if self.elevated else self.trusted_bot_user
 
     def extract_timeline_from_page(self, page: Page, timeline):
         timeline_rows = page.query_selector_all(".timeline-row")
@@ -73,13 +56,13 @@ class Command(BaseCommand):
 
     @staticmethod
     def is_freecodecamp_url(url: str) -> bool:
-        return "freecodecamp.org" in url
+        return FREECODECAMP_URL in url
 
     def handle_freecodecamp(self):
         automarker_data = self._get_automarker_data()
         available_content_item_ids = [i["content_item_id"] for i in automarker_data]
 
-        freecodecamp_tag = Tag.objects.get(name="free-code-camp")
+        freecodecamp_tag = Tag.objects.get(name=FREECODECAMP_TAG)
         freecodecamp_cards = (
             AgileCard.objects.filter(
                 content_item__tags__in=[freecodecamp_tag],
@@ -168,13 +151,12 @@ class Command(BaseCommand):
         status,
         comments,
     ):
-        bot_user = self._get_bot_user()
-        if not self.dry_run:
-            RecruitProjectReview.objects.create(
-                status=status,
-                timestamp=timezone.now(),
-                comments=comments,
-                recruit_project=card.recruit_project,
-                reviewer_user=bot_user,
-            )
-            print(f"Added review for card #{card.id} with status {status}")
+        bot_user = self.bot_user
+        RecruitProjectReview.objects.create(
+            status=status,
+            timestamp=timezone.now(),
+            comments=comments,
+            recruit_project=card.recruit_project,
+            reviewer_user=bot_user,
+        )
+        print(f"Added review for card #{card.id} with status {status}")
