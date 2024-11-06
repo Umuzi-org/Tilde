@@ -209,6 +209,10 @@ if RUNNING_IN_GAE:
             "USER": os.environ["TILDE_SQL_USER"],
             "PASSWORD": os.environ["TILDE_SQL_PASS"],
             "NAME": os.environ["TILDE_SQL_DB"],
+            "CONN_MAX_AGE": 60,
+            "OPTIONS": {
+                "connect_timeout": 10,
+            },
         },
         "sis_db": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -217,6 +221,10 @@ if RUNNING_IN_GAE:
             "USER": os.environ["SIS_DB_USER"],
             "PASSWORD": os.environ["SIS_DB_PASS"],
             "NAME": os.environ["SIS_DB_NAME"],
+            "CONN_MAX_AGE": 60,
+            "OPTIONS": {
+                "connect_timeout": 10,
+            },
         },
     }
 
@@ -231,8 +239,9 @@ else:
             "NAME": os.getenv("TILDE_SQL_DB", "db"),
             "USER": os.getenv("TILDE_SQL_USER", "pguser"),
             "PASSWORD": os.getenv("TILDE_SQL_PASS", "password"),
+            "CONN_MAX_AGE": 60,
             "OPTIONS": {
-                "connect_timeout": 3,
+                "connect_timeout": 10,
             },
         },
         "sis_db": {
@@ -242,8 +251,9 @@ else:
             "NAME": os.getenv("SIS_DB_NAME"),
             "USER": os.getenv("SIS_DB_USER"),
             "PASSWORD": os.getenv("SIS_DB_PASS"),
+            "CONN_MAX_AGE": 60,
             "OPTIONS": {
-                "connect_timeout": 3,
+                "connect_timeout": 10,
             },
         },
     }
