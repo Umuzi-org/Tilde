@@ -162,10 +162,10 @@ class LearnerFlaggedForAcademicSupport(models.Model):
     def create_from_at_risk_df(cls, at_risk_df: pd.DataFrame):
         for index, row in at_risk_df.iterrows():
             # Currently only picking highest priority problem
-            highest_risk = row["highest_priority_problem"]
+            psf_risk = row["psf_risk"]
+            progress_risk = row["progress_risk"]
 
-            # highest risk could be NaN in which case we skip
-            if pd.isna(highest_risk):
+            if all(pd.isna([psf_risk, progress_risk])):
                 continue
 
             learner_email = row["email"]
@@ -174,17 +174,21 @@ class LearnerFlaggedForAcademicSupport(models.Model):
             if learner is None:
                 continue
 
-            # TODO: add all risks to flags
+            if not pd.isna(psf_risk):
+                reason_obj, _ = AcademicSupportFlagReason.objects.get_or_create(
+                    reason=psf_risk,
+                )
+                flag = cls.objects.create(
+                    learner_id=learner.id,
+                    reason_id=reason_obj.id,
+                )
+                flag.create_support_initiative(psf_risk)
 
-            reason_obj, _ = AcademicSupportFlagReason.objects.get_or_create(
-                reason=highest_risk
-            )
-
-            flag = cls.objects.create(
-                learner_id=learner.id,
-                reason_id=reason_obj.id,
-            )
-            flag.create_support_initiative(highest_risk)
+            if not pd.isna(progress_risk):
+                reason_obj, _ = AcademicSupportFlagReason.objects.get_or_create(
+                    reason=progress_risk,
+                )
+                flag.create_support_initiative(progress_risk)
 
     def create_support_initiative(self, risk: str):
         subtype_obj, _ = SupportInitiativeSubtype.objects.get_or_create(
