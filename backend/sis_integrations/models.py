@@ -197,11 +197,14 @@ class LearnerFlaggedForAcademicSupport(models.Model):
         status, _ = SupportInitiativeStatus.objects.get_or_create(
             name="Pending",
         )
+        support_initiative_reson, _ = SupportIniatiativeReason.objects.get_or_create(
+            reason=f"Flagged for Academic Support",
+        )
         SupportInitiative.objects.create(
             type=SupportInitiative.TYPE_ACADEMIC,
             subtype_id=subtype_obj.id,
             learner_id=self.learner_id,
-            reason_id=self.reason_id,
+            reason_id=support_initiative_reson.id,
             status_id=status.id,
             learners_flagged_academic_support_id=self.id,
         )
