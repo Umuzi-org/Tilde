@@ -174,21 +174,21 @@ class LearnerFlaggedForAcademicSupport(models.Model):
             if learner is None:
                 continue
 
-            if not pd.isna(psf_risk):
+            def create_flag_and_support_initiative(risk: str):
                 reason_obj, _ = AcademicSupportFlagReason.objects.get_or_create(
-                    reason=psf_risk,
+                    reason=risk,
                 )
                 flag = cls.objects.create(
                     learner_id=learner.id,
                     reason_id=reason_obj.id,
                 )
-                flag.create_support_initiative(psf_risk)
+                flag.create_support_initiative(risk)
+
+            if not pd.isna(psf_risk):
+                create_flag_and_support_initiative(psf_risk)
 
             if not pd.isna(progress_risk):
-                reason_obj, _ = AcademicSupportFlagReason.objects.get_or_create(
-                    reason=progress_risk,
-                )
-                flag.create_support_initiative(progress_risk)
+                create_flag_and_support_initiative(progress_risk)
 
     def create_support_initiative(self, risk: str):
         subtype_obj, _ = SupportInitiativeSubtype.objects.get_or_create(
