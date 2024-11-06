@@ -199,8 +199,10 @@ def get_learner_performance_data():
 class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> str | None:
         df_performance = get_learner_performance_data()
+        print("Done getting learner performance data")
         df_performance.to_csv("gitignore/learner_risk.csv")
 
+        print("Creating flags on SIS DB")
         from sis_integrations.models import LearnerFlaggedForAcademicSupport
 
         LearnerFlaggedForAcademicSupport.create_from_at_risk_df(df_performance)
