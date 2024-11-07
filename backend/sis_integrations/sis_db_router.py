@@ -20,9 +20,12 @@ class SISDBRouter:
             or obj2._meta.app_label == "sis_integrations"
         ):
             return True
-        return False
+        if obj1._state.db == obj2._state.db:
+            # Ensure relation is allowed only if both are in the same db
+            return True
+        return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         if app_label == "sis_integrations":
-            return db == "sis_db"
-        return False
+            return False
+        return db == "default"
