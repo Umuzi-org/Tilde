@@ -291,7 +291,7 @@ class _TestRunner:
         stderr = self.last_command_output.stderr
         if not stderr:
             raise self.StopTestFunctionException(
-                f"There was meant to be an {self.EXCEPTION_OR_ERROR} but there wasn't one. Make sure you remember to {self.RAISE_OR_THROW} an {self.EXCEPTION_OR_ERROR} when you need to. If you are {self.RAISE_OR_THROW} the {self.EXCEPTION_OR_ERROR} then the problem might be that you are catching it as well. Don't catch {self.EXCEPTION_OR_ERROR}s unless you are doing something very specific and intentional with them. Errors should never pass silently. Unless explicitly silenced.",
+                f"There was meant to be an {self.EXCEPTION_OR_ERROR} but there wasn't one. Make sure you remember to {self.RAISE_OR_THROW} an {self.EXCEPTION_OR_ERROR} when you need to. If you do {self.RAISE_OR_THROW} the {self.EXCEPTION_OR_ERROR} then the problem might be that you are catching it as well. Don't catch {self.EXCEPTION_OR_ERROR}s unless you are doing something very specific and intentional with them. Errors should never pass silently. Unless explicitly silenced.",
                 status=STEP_STATUS_NOT_YET_COMPETENT,
             )
         error_type, error_message = self.get_error_type_and_message()
