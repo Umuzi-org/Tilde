@@ -103,7 +103,7 @@ class Command(BaseCommand):
                 page.goto(url)
                 page.wait_for_load_state()
 
-                if page.query_selector("img[alt='404 Not Found:']").is_visible():
+                if page.query_selector("img[alt='404 Not Found:']"):
                     print(f"Red flagging {url}. Page not found.")
                     self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
