@@ -56,6 +56,8 @@ class Command(BaseCommand):
 
     @staticmethod
     def is_freecodecamp_url(url: str) -> bool:
+        if not url:
+            return False
         return FREECODECAMP_URL in url
 
     def handle_freecodecamp(self):
