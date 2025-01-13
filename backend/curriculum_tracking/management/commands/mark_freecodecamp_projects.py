@@ -1,7 +1,8 @@
 import json
 import os
+from sqlite3 import Time
 
-from playwright.sync_api import sync_playwright, Page
+from playwright.sync_api import sync_playwright, Page, TimeoutError
 
 from django.core.management.base import BaseCommand, CommandParser
 from django.utils import timezone
@@ -27,6 +28,11 @@ The missing items are:
 """
 RED_FLAG_TEMPLATE = """Something has gone wrong - We couldn't find your "timeline" on freecodecamp. Please make sure you have provided a valid link and all your privacy settings are set to "Public". """
 
+HUMAN_REVIEW_NEEDED_MSG = """
+Human needed!
+Card Link: {url}
+Reason: {reason}
+"""
 
 NEXT_BTN_SELECTOR = "ul.timeline-pagination_list button[aria-label='Go to next page']"
 
@@ -110,7 +116,11 @@ class Command(BaseCommand):
                     self.add_review(card, RED_FLAG, RED_FLAG_TEMPLATE)
                     continue
 
-                page.wait_for_selector(".bio-container")
+                try:
+                    page.wait_for_selector(".bio-container")
+                except TimeoutError:
+                    print(HUMAN_REVIEW_NEEDED_MSG.format(url=url, reason="Could not find bio-container. Link may be incorrect."))
+                    continue
 
                 while True:
                     self.extract_timeline_from_page(page, timeline)
