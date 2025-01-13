@@ -30,7 +30,7 @@ RED_FLAG_TEMPLATE = """Something has gone wrong - We couldn't find your "timelin
 
 HUMAN_REVIEW_NEEDED_MSG = """
 Human needed!
-Card Link: {url}
+Card ID: {card_id}
 Reason: {reason}
 """
 
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 try:
                     page.wait_for_selector(".bio-container")
                 except TimeoutError:
-                    print(HUMAN_REVIEW_NEEDED_MSG.format(url=url, reason="Could not find bio-container. Link may be incorrect."))
+                    print(HUMAN_REVIEW_NEEDED_MSG.format(card_id=card.id, reason="Could not find bio-container. Link may be incorrect."))
                     continue
 
                 while True:
