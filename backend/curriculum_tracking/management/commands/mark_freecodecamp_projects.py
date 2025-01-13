@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
         with sync_playwright() as p:
             print(
-                f"Starting review of {card_count} FreeCodeCamp projects as {self._get_bot_user().email}"
+                f"Starting review of {card_count} FreeCodeCamp projects as {self.bot_user.email}"
             )
             browser = p.firefox.launch(headless=True, timeout=60000)
             context = browser.new_context()
